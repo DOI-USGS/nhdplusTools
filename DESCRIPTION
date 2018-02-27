@@ -6,6 +6,8 @@ Author: David Blodgett <dblodgett@usgs.gov>
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Description: A grab bag of tools for traversing and
     working with NHDPlus data.
+Imports: dplyr
 License: CC0
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.0.1

@@ -1,0 +1,42 @@
+#' @title Prep NHDPlus Data for Refactor
+#' @description Function to prep NHDPlus data for network refactoring
+#' @param flines data.frame NHDPlus flowlines including at a minimum: COMID, LENGTHKM,
+#' FTYPE, TerminalFl, FromNode, ToNode, TotDASqKM, StartFlag, StreamOrde,
+#' StreamCalc, TerminalPa, and Pathlength variables.
+#' @param min_network_size numeric Minimum size (sqkm) of drainage network to include in output.
+#' @param  min_path_length numeric Minimum length (km) of terminal level path of a network.
+#' @return data.frame ready to be used with the refactor_network function.
+#' @importFrom dplyr select filter left_join
+#' @export
+#'
+prepare_nhdplus <- function(flines, min_network_size, min_path_length) {
+  orig_rows <- nrow(flines)
+
+  flines <- select(flines, COMID, LENGTHKM, FTYPE, TerminalFl,
+                   FromNode, ToNode, TotDASqKM, StartFlag,
+                   StreamOrde, StreamCalc, TerminalPa, Pathlength) %>%
+    filter(FTYPE != "Coastline" & # Remove Coastlines
+             StreamOrde == StreamCalc & # Also use streamorder and streamcalc to select only the main paths.
+             !(StartFlag==1 & TerminalFl == 1)) # Remove totally isoloated flowlines.
+
+  tiny_networks <- rbind(filter(flines, TerminalFl == 1 & TotDASqKM < min_network_size),
+                         filter(flines, StartFlag == 1 & Pathlength < min_path_length))
+
+  flines <- filter(flines, !flines$TerminalPa %in% unique(tiny_networks$TerminalPa))
+
+  warning(paste("Removed", orig_rows - nrow(flines), "flowlines that don't apply.\n",
+                "Includes: Coastlines, non-dendritic paths, \n single-flowline networks, and networks",
+                "\n with drainage area less than",
+                min_network_size, "sqkm"))
+
+  # Join ToNode and FromNode along with COMID and Length to get downstream attributes.
+  flines <- left_join(flines, select(flines, toCOMID = COMID, FromNode), by = c("ToNode" = "FromNode"))
+
+  if(!all(flines[["TerminalFl"]][which(is.na(flines$toCOMID))] == 1)) {
+    stop("FromNode - ToNode imply terminal flowlines that are not\n flagged terminal.",
+         "Can't assume NA toCOMIDs go to the ocean.")
+  }
+
+  select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
+         -StreamOrde, -StreamCalc, -TerminalPa, -FTYPE, -Pathlength)
+}

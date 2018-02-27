@@ -16,7 +16,7 @@ StreamCalc, TerminalPa, and Pathlength variables.}
 \item{min_path_length}{numeric Minimum length (km) of terminal level path of a network.}
 }
 \value{
-data.frame ready to be used with the refactor_network function.
+data.frame ready to be used with the refactor_flowlines function.
 }
 \description{
 Function to prep NHDPlus data for network refactoring

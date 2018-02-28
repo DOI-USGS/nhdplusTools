@@ -20,9 +20,29 @@ collapse_flowlines <- function(flines, thresh) {
       is.na(flines$joined_fromCOMID) # and hasn't been combined yet.
   }
 
+  count <- 0
+
   while(any(short_outlets(flines))) {
-    short_flines <- filter(flines, short_outlets(flines))
+    short_flines_next <- filter(flines, short_outlets(flines))
+
+    if(!exists("short_flines")) {
+      short_flines <- short_flines_next
+    } else if(all(short_flines_next$COMID %in% short_flines$COMID)) {
+      stop("Stuck in short flines loop")
+    } else {
+      short_flines <- short_flines_next
+    }
+
     short_flines_index <- which(short_outlets(flines))
+
+    headwaters <- !short_flines$COMID %in% original_fline_atts$toCOMID
+
+    if(any(headwaters)) {
+      headwater_COMIDs <- short_flines[["COMID"]][which(headwaters)]
+      flines[["joined_fromCOMID"]][match(headwater_COMIDs, flines$COMID)] <- -9999
+      short_flines <- short_flines[!headwaters,]
+      short_flines_index <- short_flines_index[!headwaters]
+    }
 
     # Get from length and from area with a join on toCOMID.
     short_flines <- left_join(short_flines,
@@ -34,12 +54,8 @@ collapse_flowlines <- function(flines, thresh) {
       group_by(COMID) %>%  # deduplicate with area then length.
       filter(fromTotDASqKM == max(fromTotDASqKM)) %>%
       filter(fromLENGTHKM == max(fromLENGTHKM)) %>%
+      filter(fromCOMID == max(fromCOMID)) %>% # This is dumb, but happens if DA and Length are equal...
       ungroup()
-
-    if(nrow(short_flines) != length(short_flines_index)) {
-      stop("Problem with small isolated network. \nRaise minimum network size threshold of input.")
-    }
-
     # This is a pointer to the flines rows that need to absorb a downstream short flowline.
     flines_to_update_index <- match(short_flines$fromCOMID, flines$COMID)
 
@@ -56,6 +72,9 @@ collapse_flowlines <- function(flines, thresh) {
     flines[["joined_fromCOMID"]][short_flines_index] <- short_flines$fromCOMID
 
     flines[["toCOMID"]][flines_to_update_index] <- NA
+
+    count <- count + 1
+    if(count > 100) stop("stuck in short outlet loop")
   }
 
   # Combine along main stems with no confluences.

@@ -23,17 +23,29 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
   # We need to change those toCOMIDs to the toCOMID of the removed flowline
   # Need to keep doing it until no toCOMIDs are pointing to removed catchmetns
   stale_toCOMID <- function() which(flines$toCOMID %in% removed$removed_COMID)
+
+  count <- 0
+
   while(length(stale_toCOMID()) > 0) {
     bad_toCOMID <- flines[["toCOMID"]][stale_toCOMID()]
 
     # downstream_index is a pointer to flowline that was removed that we want the toCOMID of.
     downstream_index <- match(bad_toCOMID, flines$COMID)
 
+    if(any(flines[["toCOMID"]][stale_toCOMID()] == flines[["toCOMID"]][downstream_index], na.rm = TRUE)) {
+      stop("found a loop while culling stale toCOMIDs!!!")
+    }
+
     flines[["LENGTHKM"]][stale_toCOMID()] <-
       flines[["LENGTHKM"]][stale_toCOMID()] + flines[["LENGTHKM"]][downstream_index]
 
     # This is the bad_toCOMID that we are making good.
     flines[["toCOMID"]][stale_toCOMID()] <- flines[["toCOMID"]][downstream_index]
+
+    count <- count + 1
+    if(count > 100) {
+      stop("stuck in stale toCOMID loop")
+    }
   }
 
   already_removed <- filter(flines, !is.na(joined_fromCOMID)) %>%
@@ -47,6 +59,9 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
   # This is a pointer to joined_fromCOMID records that point to already removed COMIDs.
   joined_from_to_replace <- function(removed) which(removed$joined_fromCOMID %in% removed$removed_COMID)
 
+
+  count <- 0
+
   while(length(joined_from_to_replace(removed)) > 0) {
     # left join to its self in the joined_from direction. Copy over and repeat.
     removed <- left_join(removed,
@@ -55,6 +70,9 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
       mutate(joined_fromCOMID = ifelse(!is.na(joined_fromCOMID_new),
                                        joined_fromCOMID_new, joined_fromCOMID)) %>%
       select(-joined_fromCOMID_new)
+
+    count <- count + 1
+    if(count > 100) stop("stuck in joined from to replace loop")
   }
 
   # Actually join the removed dataframe to the flines dataframe.

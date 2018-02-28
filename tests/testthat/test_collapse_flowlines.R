@@ -7,3 +7,10 @@ test_that("collapse flowlines works as expected", {
   expect_equal_to_reference(collapse_flowlines(flines, 1),
                             "data/baltimore_collapsed.rds")
 })
+
+test_that("collapse flowlines works with small networks", {
+  flines <- readRDS("data/smallish_networks.rds")
+  flines_collapse <- collapse_flowlines(flines, 2)
+  expect_equal(length(which(flines_collapse$joined_fromCOMID == -9999)),
+               3)
+})

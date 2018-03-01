@@ -14,3 +14,11 @@ test_that("collapse flowlines works with small networks", {
   expect_equal(length(which(flines_collapse$joined_fromCOMID == -9999)),
                3)
 })
+
+test_that("collapse flowlines works as expected", {
+  flines <- readRDS("data/baltimore_network.rds")
+  flines <- sf::st_set_geometry(flines, NULL)
+  flines <- suppressWarnings(prepare_nhdplus(flines, 20, 1))
+  flines <- collapse_flowlines(flines, 1, add_category = TRUE)
+  expect_equal(names(flines)[7], "join_category")
+})

@@ -2,11 +2,12 @@
 #' @description Refactors the NHDPlus flowline network, eliminating short and non-cconfluence flowlines.
 #' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns
 #' @param thresh numeric a length threshold (km). Flowlines shorter than this will be eliminated
+#' @param add_category boolean if combination category is desired in output, set to TRUE
 #' @return A refactored network with merged up and down flowlines.
 #' @importFrom dplyr filter left_join select mutate group_by ungroup summarise
 #' @export
 #'
-collapse_flowlines <- function(flines, thresh) {
+collapse_flowlines <- function(flines, thresh, add_category = FALSE) {
 
   original_fline_atts <- flines
 
@@ -21,6 +22,7 @@ collapse_flowlines <- function(flines, thresh) {
   }
 
   count <- 0
+  short_outlets_tracker <- c()
 
   while(any(short_outlets(flines))) {
     short_flines_next <- filter(flines, short_outlets(flines))
@@ -72,6 +74,10 @@ collapse_flowlines <- function(flines, thresh) {
     flines[["joined_fromCOMID"]][short_flines_index] <- short_flines$fromCOMID
 
     flines[["toCOMID"]][flines_to_update_index] <- NA
+
+    if(add_category) {
+      short_outlets_tracker <- c(short_outlets_tracker, flines[["COMID"]][short_flines_index])
+    }
 
     count <- count + 1
     if(count > 100) stop("stuck in short outlet loop")
@@ -132,6 +138,14 @@ collapse_flowlines <- function(flines, thresh) {
                                             toCOMID,
                                             NA)) %>%
     select(-dsLENGTHKM)
+
+  if(add_category) {
+    flines <- mutate(flines,
+                     join_category = ifelse(COMID %in% short_outlets_tracker, "outlet",
+                                            ifelse(COMID %in% removed_mainstem$removed_COMID, "mainstem",
+                                                   ifelse(COMID %in% removed_confluence$removed_COMID, "confluence",
+                                                          ifelse(COMID %in% flines[["COMID"]][remove_headwaters_index], "headwater", NA)))))
+  }
 
   return(flines)
 }

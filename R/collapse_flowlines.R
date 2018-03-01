@@ -134,9 +134,9 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE) {
   flines[["LENGTHKM"]][adjust_headwater_index] <-
     flines[["LENGTHKM"]][adjust_headwater_index] + flines[["LENGTHKM"]][remove_headwaters_index]
 
-  flines <- mutate(flines, toCOMID = ifelse(is.na(joined_fromCOMID),
-                                            toCOMID,
-                                            NA)) %>%
+  flines <- mutate(flines, toCOMID = ifelse(!is.na(joined_fromCOMID) | !is.na(joined_toCOMID),
+                                            NA,
+                                            toCOMID)) %>%
     select(-dsLENGTHKM)
 
   if(add_category) {

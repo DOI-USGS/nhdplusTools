@@ -3,6 +3,7 @@
 export(collapse_flowlines)
 export(get_UT)
 export(prepare_nhdplus)
+export(reconcile_collapsed_flowlines)
 export(reconcile_removed_flowlines)
 importFrom(dplyr,arrange)
 importFrom(dplyr,distinct)

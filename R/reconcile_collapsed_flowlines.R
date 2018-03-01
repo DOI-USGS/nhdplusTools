@@ -1,0 +1,33 @@
+#' @title Reconcile collapsed flowlines
+#' @description Reconciles output of collapse_flowlines giving a unique ID to each new unit and providing a mapping to NHDPlus COMIDs.
+#' @return reconciled flines
+#' @importFrom dplyr group_by ungroup filter left_join select rename mutate distinct
+#' @export
+#'
+reconcile_collapsed_flowlines <- function(flines) {
+  new_flines <- flines %>%
+    mutate(becomes = ifelse(is.na(joined_fromCOMID),
+                            ifelse(is.na(joined_toCOMID),
+                                   COMID, joined_toCOMID),
+                            joined_fromCOMID)) %>%
+    group_by(becomes) %>%
+    mutate(TotDASqKM = max(TotDASqKM), LENGTHKM = max(LENGTHKM)) %>%
+    select(-joined_fromCOMID, -joined_toCOMID)
+
+  new_flines <- ungroup(new_flines)
+  new_flines <- left_join(new_flines,
+                          data.frame(becomes = unique(new_flines$becomes),
+                                     ID = 1:length(unique(new_flines$becomes))),
+                          by = "becomes")
+
+  toCOMID_updater <- filter(select(new_flines, becomes, toCOMID), !is.na(toCOMID))
+
+  new_flines <- left_join(select(new_flines, -toCOMID), toCOMID_updater, by = "becomes")
+
+  new_flines <- left_join(new_flines,
+                          select(new_flines, becomes, toID = ID),
+                          by = c("toCOMID" = "becomes"))
+
+  distinct(new_flines) %>%
+    select(ID, toID, LENGTHKM, TotDASqKM, member_COMID = COMID)
+}

@@ -4,7 +4,8 @@
 \alias{collapse_flowlines}
 \title{Collapse NHDPlus Network}
 \usage{
-collapse_flowlines(flines, thresh, add_category = FALSE)
+collapse_flowlines(flines, thresh, add_category = FALSE,
+  mainstem_thresh = NULL)
 }
 \arguments{
 \item{flines}{data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns}
@@ -12,6 +13,8 @@ collapse_flowlines(flines, thresh, add_category = FALSE)
 \item{thresh}{numeric a length threshold (km). Flowlines shorter than this will be eliminated}
 
 \item{add_category}{boolean if combination category is desired in output, set to TRUE}
+
+\item{mainstem_thresh}{numeric threshold for combining inter-confluence mainstems}
 }
 \value{
 A refactored network with merged up and down flowlines.

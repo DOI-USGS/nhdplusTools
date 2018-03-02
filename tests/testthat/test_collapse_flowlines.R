@@ -15,10 +15,18 @@ test_that("collapse flowlines works with small networks", {
                3)
 })
 
-test_that("collapse flowlines works as expected", {
+test_that("collapse flowlines works as expected with add category", {
   flines <- readRDS("data/baltimore_network.rds")
   flines <- sf::st_set_geometry(flines, NULL)
   flines <- suppressWarnings(prepare_nhdplus(flines, 20, 1))
   flines <- collapse_flowlines(flines, 1, add_category = TRUE)
   expect_equal(names(flines)[7], "join_category")
+})
+
+test_that("collapse flowlines works as expected with mainstem thresh", {
+  flines <- readRDS("data/baltimore_network.rds")
+  flines <- sf::st_set_geometry(flines, NULL)
+  flines <- suppressWarnings(prepare_nhdplus(flines, 20, 1))
+  expect_equal_to_reference(collapse_flowlines(flines, .5, add_category = TRUE, mainstem_thresh = 1),
+                            "data/baltimore_collapsed_mainthresh.rds")
 })

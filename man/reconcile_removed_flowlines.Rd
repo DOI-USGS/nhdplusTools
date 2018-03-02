@@ -4,7 +4,8 @@
 \alias{reconcile_removed_flowlines}
 \title{Reconcile removed flowlines}
 \usage{
-reconcile_removed_flowlines(flines, reroute_set, removed, original_fline_atts)
+reconcile_removed_flowlines(flines, reroute_set, removed, original_fline_atts,
+  normalize_mainstems = FALSE)
 }
 \arguments{
 \item{flines}{data.frame ...}

@@ -6,11 +6,18 @@ get_dsLENGTHKM <- function(flines) {
   flines[["dsLENGTHKM"]]
 }
 
+get_upstream <- function(flines) {
+  left_join(select(flines, COMID), select(flines, COMID, toCOMID),
+            by = c("COMID" = "toCOMID")) %>%
+    rename(fromCOMID = COMID.y)
+}
+
 get_num_upstream <- function(flines) {
   left_join(select(flines, COMID, toCOMID),
-            left_join(select(flines, COMID), select(flines, COMID, toCOMID), by = c("COMID" = "toCOMID")) %>%
+            get_upstream(flines) %>%
               group_by(COMID) %>%
-              summarise(num_upstream = n()), by = "COMID")[["num_upstream"]]
+              summarise(num_upstream = n()),
+            by = "COMID")[["num_upstream"]]
 }
 
 get_ds_num_upstream <- function(flines) {

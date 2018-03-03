@@ -17,7 +17,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   original_fline_atts <- flines
 
   # Need to clean up the short outlets first so they don't get broken by the method below.
-  # Could move this to a stand alone function.
+
   flines$joined_fromCOMID <- NA
 
   short_outlets <- function(flines) {
@@ -25,6 +25,8 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
       flines$LENGTHKM < thresh & # too short,
       is.na(flines$joined_fromCOMID) # and hasn't been combined yet.
   }
+
+  #######################################################
 
   count <- 0
   short_outlets_tracker <- c()
@@ -88,6 +90,27 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
     if(count > 100) stop("stuck in short outlet loop")
   }
 
+  #######################################################
+  flines$joined_toCOMID <- NA
+
+  flines$num_upstream <- get_num_upstream(flines)
+  flines$ds_num_upstream <- get_ds_num_upstream(flines)
+
+  remove_mainstem_top_index <- which((flines$num_upstream > 1 & flines$ds_num_upstream ==1) & # At the top of a mainstem
+                                      flines$LENGTHKM < mainstem_thresh & # shorter than threshold
+                                      !is.na(flines$toCOMID)) # is still in scope
+
+  flines[["joined_toCOMID"]][remove_mainstem_top_index] <- flines[["toCOMID"]][remove_mainstem_top_index]
+
+  adjust_mainstem_top_index <- match(flines[["toCOMID"]][remove_mainstem_top_index], flines$COMID)
+
+  flines[["LENGTHKM"]][adjust_mainstem_top_index] <-
+    flines[["LENGTHKM"]][adjust_mainstem_top_index] + flines[["LENGTHKM"]][remove_mainstem_top_index]
+
+  flines[["toCOMID"]][remove_mainstem_top_index] <- NA
+
+  flines <- select(flines, -num_upstream)
+  #######################################################
   # Combine along main stems with no confluences.
   flines <- mutate(flines, dsLENGTHKM = get_dsLENGTHKM(flines),
                    ds_num_upstream = get_ds_num_upstream(flines))
@@ -128,12 +151,13 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   flines <- reconcile_removed_flowlines(select(flines, -ds_num_upstream), reroute_confluence_set, removed_confluence, original_fline_atts)
 
+  #######################################################
   # Clean up short headwaters that aren't handled by the next downstream logic above.
-
   remove_headwaters_index <- which(!(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
                                      flines$LENGTHKM < thresh & # shorter than threshold
-                                     is.na(flines$joined_fromCOMID)) # hasn't already been removed
-  flines$joined_toCOMID <- NA
+                                     !is.na(flines$toCOMID) & # hasn't already been removed
+                                     (is.na(flines$joined_fromCOMID) |
+                                        is.na(flines$joined_toCOMID)))
 
   flines[["joined_toCOMID"]][remove_headwaters_index] <- flines[["toCOMID"]][remove_headwaters_index]
 

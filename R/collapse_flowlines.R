@@ -72,6 +72,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
     flines[["LENGTHKM"]][flines_to_update_index] <- # Adjust the length of the set we need to update.
       flines[["LENGTHKM"]][flines_to_update_index] + flines[["LENGTHKM"]][short_flines_index]
+
     # Set LENGTHKM to 0 since this one's gone from the network.
     flines[["LENGTHKM"]][short_flines_index] <- 0
 
@@ -94,6 +95,37 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   #######################################################
   flines$joined_toCOMID <- NA
+
+  # Clean up short headwaters that aren't handled by the next downstream logic above.
+  remove_headwaters <- !(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
+    flines$LENGTHKM < thresh & # shorter than threshold
+    is.na(flines$joined_fromCOMID)
+  # !is.na(flines$toCOMID) & # hasn't already been removed
+  # (is.na(flines$joined_fromCOMID) |
+  #    is.na(flines$joined_toCOMID)))
+
+  flines$ds_num_upstream <- get_ds_num_upstream(flines)
+
+  problem_headwaters <- remove_headwaters & flines$ds_num_upstream > 1
+
+  remove_headwaters <- remove_headwaters & !problem_headwaters
+
+  remove_headwaters_index <- which(remove_headwaters)
+
+  problem_headwaters_index <- which(problem_headwaters)
+
+  flines[["joined_toCOMID"]][problem_headwaters_index] <- -9999
+
+  flines[["joined_toCOMID"]][remove_headwaters_index] <- flines[["toCOMID"]][remove_headwaters_index]
+
+  adjust_headwater_index <- match(flines[["toCOMID"]][remove_headwaters_index], flines$COMID)
+
+  flines[["LENGTHKM"]][adjust_headwater_index] <-
+    flines[["LENGTHKM"]][adjust_headwater_index] + flines[["LENGTHKM"]][remove_headwaters_index]
+
+  flines[["LENGTHKM"]][remove_headwaters_index] <- 0
+
+  #######################################################
 
   # if(!is.null(mainstem_thresh)) {
   #   flines$num_upstream <- get_num_upstream(flines)
@@ -155,40 +187,10 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   flines <- reconcile_removed_flowlines(select(flines, -ds_num_upstream), reroute_confluence_set, removed_confluence, original_fline_atts)
 
-  #######################################################
-  # Clean up short headwaters that aren't handled by the next downstream logic above.
-  remove_headwaters <- !(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
-    flines$LENGTHKM < thresh & # shorter than threshold
-    is.na(flines$joined_fromCOMID)
-                                     # !is.na(flines$toCOMID) & # hasn't already been removed
-                                     # (is.na(flines$joined_fromCOMID) |
-                                     #    is.na(flines$joined_toCOMID)))
-
-  flines$ds_num_upstream <- get_ds_num_upstream(flines)
-
-  problem_headwaters <- remove_headwaters & flines$ds_num_upstream > 1
-
-  remove_headwaters <- remove_headwaters & !problem_headwaters
-
-  remove_headwaters_index <- which(remove_headwaters)
-
-  problem_headwaters_index <- which(problem_headwaters)
-
-  flines[["joined_toCOMID"]][problem_headwaters_index] <- -9999
-
-  flines[["joined_toCOMID"]][remove_headwaters_index] <- flines[["toCOMID"]][remove_headwaters_index]
-
-  adjust_headwater_index <- match(flines[["toCOMID"]][remove_headwaters_index], flines$COMID)
-
-  flines[["LENGTHKM"]][adjust_headwater_index] <-
-    flines[["LENGTHKM"]][adjust_headwater_index] + flines[["LENGTHKM"]][remove_headwaters_index]
-
-  flines[["LENGTHKM"]][remove_headwaters_index] <- 0
-
   flines <- mutate(flines, toCOMID = ifelse(!is.na(joined_fromCOMID) | !is.na(joined_toCOMID),
                                             NA,
                                             toCOMID)) %>%
-    select(-dsLENGTHKM, -ds_num_upstream)
+    select(-dsLENGTHKM)
 
   if(add_category) {
     flines <- mutate(flines,

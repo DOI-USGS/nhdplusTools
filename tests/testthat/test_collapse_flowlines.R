@@ -9,6 +9,9 @@ test_that("collapse flowlines works as expected", {
   # problem headwater
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11687206)] == -9999)
 
+  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11690332)] == 11689030) # this will break when we go further downstream with headwaters.
+  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11690332)] == 11689092) # this will work when we go further downstream
+
   # confluence join worked
   expect(flines_out$joined_fromCOMID[which(flines_out$COMID == 11687234)] == 11687224)
 

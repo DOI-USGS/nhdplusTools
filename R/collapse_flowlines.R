@@ -155,6 +155,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   # it should not include flowlines just upstream of a confluence.
   reroute_mainstem_set <- function(flines) {
     (flines$dsLENGTHKM > 0 & # is still in scope
+       is.na(flines$joined_toCOMID) &
        flines$ds_num_upstream == 1 & # is not upstream of a confluence
        flines$dsLENGTHKM < mainstem_thresh_use) # is shorter than the mainstem threshold
   }

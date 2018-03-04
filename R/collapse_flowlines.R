@@ -157,12 +157,24 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   #######################################################
   # Clean up short headwaters that aren't handled by the next downstream logic above.
-  remove_headwaters_index <- which(!(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
-                                     flines$LENGTHKM < thresh & # shorter than threshold
-                                     is.na(flines$joined_fromCOMID))
+  remove_headwaters <- !(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
+    flines$LENGTHKM < thresh & # shorter than threshold
+    is.na(flines$joined_fromCOMID)
                                      # !is.na(flines$toCOMID) & # hasn't already been removed
                                      # (is.na(flines$joined_fromCOMID) |
                                      #    is.na(flines$joined_toCOMID)))
+
+  flines$ds_num_upstream <- get_ds_num_upstream(flines)
+
+  problem_headwaters <- remove_headwaters & flines$ds_num_upstream > 1
+
+  remove_headwaters <- remove_headwaters & !problem_headwaters
+
+  remove_headwaters_index <- which(remove_headwaters)
+
+  problem_headwaters_index <- which(problem_headwaters)
+
+  flines[["joined_toCOMID"]][problem_headwaters_index] <- -9999
 
   flines[["joined_toCOMID"]][remove_headwaters_index] <- flines[["toCOMID"]][remove_headwaters_index]
 
@@ -171,10 +183,12 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   flines[["LENGTHKM"]][adjust_headwater_index] <-
     flines[["LENGTHKM"]][adjust_headwater_index] + flines[["LENGTHKM"]][remove_headwaters_index]
 
+  flines[["LENGTHKM"]][remove_headwaters_index] <- 0
+
   flines <- mutate(flines, toCOMID = ifelse(!is.na(joined_fromCOMID) | !is.na(joined_toCOMID),
                                             NA,
                                             toCOMID)) %>%
-    select(-dsLENGTHKM)
+    select(-dsLENGTHKM, -ds_num_upstream)
 
   if(add_category) {
     flines <- mutate(flines,

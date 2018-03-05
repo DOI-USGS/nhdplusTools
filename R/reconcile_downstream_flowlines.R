@@ -29,12 +29,6 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
 
     rfl_index <- which(rfl)
 
-    if(count > 0) {
-      # look for instances of COMID that are about to get skipped over fix them.
-      adjust_toCOMID_index <- match(flines[["COMID"]][rfl_index], flines[["joined_toCOMID"]])
-      flines[["joined_toCOMID"]][adjust_toCOMID_index] <- flines[["toCOMID"]][rfl_index]
-    }
-
     # Set joined_toCOMID for remove set.
     flines[["joined_toCOMID"]][rfl_index] <- flines[["toCOMID"]][rfl_index]
 
@@ -47,6 +41,17 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
     # Set removed so they won't get used later.
     flines[["LENGTHKM"]][rfl_index] <- 0
     flines[["toCOMID"]][rfl_index] <- NA
+
+    if(count > 0) {
+      # look for instances of COMID that are about to get skipped over -- fix them.
+      flines <- left_join(flines, select(flines, COMID, new_joined_toCOMID = joined_toCOMID),
+                           by = c("joined_toCOMID" = "COMID"))
+
+      flines <- mutate(flines, joined_toCOMID = ifelse(!is.na(new_joined_toCOMID),
+                                                       new_joined_toCOMID,
+                                                       joined_toCOMID))
+      flines <- select(flines, -new_joined_toCOMID)
+    }
 
     removed_tracker <- c(removed_tracker, flines[["COMID"]][rfl_index])
 

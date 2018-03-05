@@ -11,6 +11,7 @@ test_that("collapse flowlines works as expected", {
 
   # Multi combination headwater
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11690332)] == 11689092)
+  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11689030)] == 11689092)
 
   # confluence join worked
   expect(flines_out$joined_fromCOMID[which(flines_out$COMID == 11687234)] == 11687224)

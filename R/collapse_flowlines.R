@@ -18,6 +18,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   original_fline_atts <- flines
 
+  #######################################################
   # Need to clean up the short outlets first so they don't get broken by the method below.
 
   flines <- collapse_outlets(flines, thresh, add_category, original_fline_atts)
@@ -26,37 +27,66 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   flines <- flines[["flines"]]
 
   #######################################################
+
   flines$joined_toCOMID <- NA
 
   # Clean up short headwaters that aren't handled by the next downstream logic above.
-  remove_headwaters <- !(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
-    flines$LENGTHKM < thresh & # shorter than threshold
-    is.na(flines$joined_fromCOMID)
-  # !is.na(flines$toCOMID) & # hasn't already been removed
-  # (is.na(flines$joined_fromCOMID) |
-  #    is.na(flines$joined_toCOMID)))
+  remove_headwaters <- function(flines) {
+    !(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
+      flines$LENGTHKM < thresh & # shorter than threshold
+      is.na(flines$joined_fromCOMID) &
+      is.na(flines$joined_toCOMID)
+  }
 
-  flines$ds_num_upstream <- get_ds_num_upstream(flines)
+  headwaters_tracker <- c()
+  count <- 0
 
-  problem_headwaters <- remove_headwaters & flines$ds_num_upstream > 1
+  while(any(remove_headwaters(flines))) {
 
-  remove_headwaters <- remove_headwaters & !problem_headwaters
+    flines$ds_num_upstream <- get_ds_num_upstream(flines)
 
-  remove_headwaters_index <- which(remove_headwaters)
+    # remove headwaters
+    rh <- remove_headwaters(flines)
 
-  problem_headwaters_index <- which(problem_headwaters)
+    # problem headwaters
+    ph <- rh & flines$ds_num_upstream > 1
 
-  flines[["joined_toCOMID"]][problem_headwaters_index] <- -9999
+    # remove problems from remove
+    rh <- rh & !ph
 
-  flines[["joined_toCOMID"]][remove_headwaters_index] <- flines[["toCOMID"]][remove_headwaters_index]
+    # create indexes
+    rh_index <- which(rh)
+    ph_index <- which(ph)
 
-  adjust_headwater_index <- match(flines[["toCOMID"]][remove_headwaters_index], flines$COMID)
+    # Set broken ones to -9999 to indicate they can't be combined.
+    flines[["joined_toCOMID"]][ph_index] <- -9999
 
-  flines[["LENGTHKM"]][adjust_headwater_index] <-
-    flines[["LENGTHKM"]][adjust_headwater_index] + flines[["LENGTHKM"]][remove_headwaters_index]
+    if(count > 0) {
+      # look for instances of COMID that are about to get skipped over fix them.
+      adjust_toCOMID_index <- match(flines[["COMID"]][rh_index], flines[["joined_toCOMID"]])
+      flines[["joined_toCOMID"]][adjust_toCOMID_index] <- flines[["toCOMID"]][rh_index]
+    }
 
-  flines[["LENGTHKM"]][remove_headwaters_index] <- 0
+    # Set joined_toCOMID for remove set.
+    flines[["joined_toCOMID"]][rh_index] <- flines[["toCOMID"]][rh_index]
 
+    # Find index of next downstream to add length to.
+    adjust_headwater_index <- match(flines[["toCOMID"]][rh_index], flines$COMID)
+
+    flines[["LENGTHKM"]][adjust_headwater_index] <-
+      flines[["LENGTHKM"]][adjust_headwater_index] + flines[["LENGTHKM"]][rh_index]
+
+    # Set removed so they won't get used later.
+    flines[["LENGTHKM"]][rh_index] <- 0
+    flines[["toCOMID"]][rh_index] <- NA
+
+    headwaters_tracker <- c(headwaters_tracker, flines[["COMID"]][rh_index])
+
+    count <- count + 1
+    if(count > 100) {
+      stop("stuck in headwaters while loop")
+    }
+  }
   #######################################################
 
   # if(!is.null(mainstem_thresh)) {
@@ -130,7 +160,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
                      join_category = ifelse(COMID %in% short_outlets_tracker, "outlet",
                                             ifelse(COMID %in% removed_mainstem$removed_COMID, "mainstem",
                                                    ifelse(COMID %in% removed_confluence$removed_COMID, "confluence",
-                                                          ifelse(COMID %in% flines[["COMID"]][remove_headwaters_index], "headwater", NA)))))
+                                                          ifelse(COMID %in% headwaters_tracker, "headwater", NA)))))
   }
 
   return(flines)

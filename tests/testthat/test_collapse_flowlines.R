@@ -9,8 +9,8 @@ test_that("collapse flowlines works as expected", {
   # problem headwater
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11687206)] == -9999)
 
-  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11690332)] == 11689030) # this will break when we go further downstream with headwaters.
-  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11690332)] == 11689092) # this will work when we go further downstream
+  # Multi combination headwater
+  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11690332)] == 11689092)
 
   # confluence join worked
   expect(flines_out$joined_fromCOMID[which(flines_out$COMID == 11687234)] == 11687224)
@@ -61,6 +61,13 @@ test_that("mainstem collapes works as expected", {
 
   expect(flines_out$LENGTHKM[which(flines_out$COMID == 3839043)] ==
            (flines$LENGTHKM[which(flines$COMID == 3839043)] + flines$LENGTHKM[which(flines$COMID == 24670381)]))
+
+  flines <- readRDS("data/petapsco_network.rds")
+  flines <- sf::st_set_geometry(flines, NULL)
+  flines <- suppressWarnings(prepare_nhdplus(flines, 0, 0))
+
+  flines_out <- collapse_flowlines(flines, 0.5, mainstem_thresh = 1)
+
 })
 
 test_that("collapse flowlines works with small networks", {

@@ -89,6 +89,16 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   flines <- reconcile_removed_flowlines(flines, reroute_mainstem_set, removed_mainstem, original_fline_atts)
 
+  removed_mainstem$joined_toCOMID <- NA
+
+  if(!is.null(mainstem_thresh)) {
+    removed_mainstem_top <- left_join(data.frame(removed_COMID = mainstem_top_tracker,
+                                                 joined_fromCOMID = NA),
+                                      select(flines, COMID, joined_toCOMID),
+                                      by = c("removed_COMID" = "COMID"))
+    removed_mainstem <- rbind(removed_mainstem, removed_mainstem_top)
+  }
+
   # Short Single Confluence to Confluence Flowpaths
   #######################################################
   # Combine accross confluences next -- slightly different logic from "mainstems"

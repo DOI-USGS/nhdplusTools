@@ -50,7 +50,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   # Short Interconfluence Flowpath Top Flowlines
   #######################################################
   # If mainstems are being collapsed at a threshold, these need to be treated seperately
-
+  mainstem_top_tracker <- NULL
   if(!is.null(mainstem_thresh)) {
     flines$num_upstream <- get_num_upstream(flines)
     flines$ds_num_upstream <- get_ds_num_upstream(flines)
@@ -131,10 +131,6 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
                                -usLENGTHKM, -usTotDASqKM) # clean
 
   flines <- reconcile_removed_flowlines(flines, reroute_confluence_set, removed_confluence, original_fline_atts)
-
-  flines <- mutate(flines, toCOMID = ifelse(!is.na(joined_fromCOMID) | !is.na(joined_toCOMID),
-                                            NA,
-                                            toCOMID))
 
   if(add_category) {
     flines <- mutate(flines,

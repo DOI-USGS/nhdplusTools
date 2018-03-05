@@ -8,6 +8,7 @@ test_that("collapse flowlines works as expected", {
 
   # problem headwater
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11687206)] == -9999)
+  expect(flines_out$toCOMID[which(flines_out$COMID == 11687206)] == flines$toCOMID[which(flines$COMID == 11687206)])
 
   # Multi combination headwater
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11690332)] == 11689092)

@@ -6,8 +6,8 @@
 #'
 reconcile_collapsed_flowlines <- function(flines) {
   new_flines <- flines %>%
-    mutate(becomes = ifelse(is.na(joined_fromCOMID),
-                            ifelse(is.na(joined_toCOMID),
+    mutate(becomes = ifelse((is.na(joined_fromCOMID) | joined_fromCOMID == -9999),
+                            ifelse((is.na(joined_toCOMID) | joined_toCOMID == -9999),
                                    COMID, joined_toCOMID),
                             joined_fromCOMID)) %>%
     group_by(becomes) %>%

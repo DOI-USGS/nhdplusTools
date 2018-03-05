@@ -89,9 +89,9 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   flines <- reconcile_removed_flowlines(flines, reroute_mainstem_set, removed_mainstem, original_fline_atts)
 
-  removed_mainstem$joined_toCOMID <- NA
+  if(nrow(removed_mainstem) > 0) removed_mainstem$joined_toCOMID <- NA
 
-  if(!is.null(mainstem_thresh)) {
+  if(!is.null(mainstem_thresh) & !is.null(mainstem_top_tracker)) {
     removed_mainstem_top <- left_join(data.frame(removed_COMID = mainstem_top_tracker,
                                                  joined_fromCOMID = NA),
                                       select(flines, COMID, joined_toCOMID),

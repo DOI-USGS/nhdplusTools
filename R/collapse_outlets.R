@@ -68,6 +68,7 @@ collapse_outlets <- function(flines, thresh, original_fline_atts) {
 
     # Set LENGTHKM to 0 since this one's gone from the network.
     flines[["LENGTHKM"]][short_flines_index] <- 0
+    flines[["toCOMID"]][flines_to_update_index] <- NA
 
     # Check if the eliminated COMID had anything going to it.
     need_to_update_index <- which(flines$joined_fromCOMID %in% short_flines$COMID)
@@ -75,8 +76,6 @@ collapse_outlets <- function(flines, thresh, original_fline_atts) {
 
     # Mark the ones that are being removed with which comid they got joined with.
     flines[["joined_fromCOMID"]][short_flines_index] <- short_flines$fromCOMID
-
-    flines[["toCOMID"]][flines_to_update_index] <- NA
 
     short_outlets_tracker <- c(short_outlets_tracker, flines[["COMID"]][short_flines_index])
 

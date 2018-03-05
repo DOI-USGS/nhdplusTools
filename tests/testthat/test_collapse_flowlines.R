@@ -51,16 +51,44 @@ test_that("collapse flowlines works as expected", {
 
 })
 
-test_that("mainstem collapes works as expected", {
+test_that("headwater / top of mainstem collapes works as expected", {
   flines <- readRDS("data/guadalupe_network.rds")
   flines_out <- collapse_flowlines(flines, 0.5, mainstem_thresh = 0.5)
 
+  # small headwater gets combined downstream.
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 24670381)] == 3839043)
 
   expect(flines_out$LENGTHKM[which(flines_out$COMID == 24670381)] == 0)
 
   expect(flines_out$LENGTHKM[which(flines_out$COMID == 3839043)] ==
            (flines$LENGTHKM[which(flines$COMID == 3839043)] + flines$LENGTHKM[which(flines$COMID == 24670381)]))
+
+  # Very short top of interconfluence flow path gets combined with next downstream correctly
+  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 1628129)] == 1628527)
+
+  expect(flines_out$LENGTHKM[which(flines_out$COMID == 1628129)] == 0)
+  expect(is.na(flines_out$toCOMID[which(flines_out$COMID == 1628129)]))
+
+  expect(flines_out$LENGTHKM[which(flines_out$COMID == 1628527)] ==
+           (flines$LENGTHKM[which(flines$COMID == 1628527)] + flines$LENGTHKM[which(flines$COMID == 1628129)]))
+
+  # second instance of very short top of interconfluence flow path gets combined
+  # with next downstream correctly and also has a collapse upstream below it.
+  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 1629537)] == 1629821)
+
+  expect(flines_out$LENGTHKM[which(flines_out$COMID == 1629537)] == 0)
+  expect(is.na(flines_out$toCOMID[which(flines_out$COMID == 1629537)]))
+
+  expect(flines_out$joined_fromCOMID[which(flines_out$COMID == 1629565)] == 1629821)
+
+  expect(flines_out$LENGTHKM[which(flines_out$COMID == 1629565)] == 0)
+  expect(is.na(flines_out$toCOMID[which(flines_out$COMID == 1629565)]))
+
+  expect(flines_out$LENGTHKM[which(flines_out$COMID == 1629821)] ==
+           (flines$LENGTHKM[which(flines$COMID == 1629821)] +
+              flines$LENGTHKM[which(flines$COMID == 1629537)] +
+              flines$LENGTHKM[which(flines$COMID == 1629565)])) # This one combined in upstream direction
+
 
   flines <- readRDS("data/petapsco_network.rds")
   flines <- sf::st_set_geometry(flines, NULL)

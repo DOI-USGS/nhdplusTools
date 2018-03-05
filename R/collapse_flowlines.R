@@ -30,40 +30,55 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   #######################################################
   # Next merge headwaters that down't cross confluences downstream
 
-  flines <- collapse_headwaters(flines, thresh)
+  if(!"joined_toCOMID" %in% names(flines)) flines$joined_toCOMID <- NA
+  if(!"joined_fromCOMID" %in% names(flines)) flines$joined_fromCOMID <- NA
 
-  headwaters_tracker <- flines[["headwaters_tracker"]]
+  # Clean up short headwaters that aren't handled by the next downstream logic above.
+  remove_headwaters <- function(flines) {
+    !(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
+      flines$LENGTHKM < thresh & # shorter than threshold
+      is.na(flines$joined_fromCOMID) &
+      is.na(flines$joined_toCOMID)
+  }
+
+  flines <- reconcile_downstream(flines, remove_headwaters, remove_problem_headwaters = TRUE)
+
+  headwaters_tracker <- flines[["removed_tracker"]]
   flines <- flines[["flines"]]
 
-  # if(!is.null(mainstem_thresh)) {
-  #   flines$num_upstream <- get_num_upstream(flines)
-  #   flines$ds_num_upstream <- get_ds_num_upstream(flines)
-  #
-  #   remove_mainstem_top_index <- which((flines$num_upstream > 1 & flines$ds_num_upstream ==1) & # At the top of a mainstem
-  #                                        flines$LENGTHKM < mainstem_thresh_use & # shorter than threshold
-  #                                        !is.na(flines$toCOMID)) # is still in scope
-  #
-  #   flines[["joined_toCOMID"]][remove_mainstem_top_index] <- flines[["toCOMID"]][remove_mainstem_top_index]
-  #
-  #   adjust_mainstem_top_index <- match(flines[["toCOMID"]][remove_mainstem_top_index], flines$COMID)
-  #
-  #   flines[["LENGTHKM"]][adjust_mainstem_top_index] <-
-  #     flines[["LENGTHKM"]][adjust_mainstem_top_index] + flines[["LENGTHKM"]][remove_mainstem_top_index]
-  #
-  #   flines[["toCOMID"]][remove_mainstem_top_index] <- NA
-  #
-  #   flines <- select(flines, -num_upstream)
-  # }
   #######################################################
+  if(!is.null(mainstem_thresh)) {
+
+    flines$num_upstream <- get_num_upstream(flines)
+    flines$ds_num_upstream <- get_ds_num_upstream(flines)
+
+    remove_mainstem_top <- function(flines) {
+      (flines$num_upstream > 1 & # At the top of a mainstem
+         flines$ds_num_upstream ==1) &
+        flines$LENGTHKM < mainstem_thresh_use & # shorter than mainstem threshold
+        !is.na(flines$toCOMID) # is still in scope
+    }
+
+    flines <- reconcile_downstream(flines, remove_mainstem_top, remove_problem_headwaters = FALSE)
+
+
+    mainstem_top_tracker <- flines[["removed_tracker"]]
+    flines <- flines[["flines"]]
+
+    flines <- select(flines, -num_upstream)
+
+
+  }
+  #######################################################
+
   # Combine along main stems with no confluences.
-  flines <- mutate(flines, dsLENGTHKM = get_dsLENGTHKM(flines),
+  flines <- mutate(flines,
+                   dsLENGTHKM = get_dsLENGTHKM(flines),
                    ds_num_upstream = get_ds_num_upstream(flines))
 
-  # this is the set that will get routed over short main stem flowlines.
-  # it should not include flowlines just upstream of a confluence.
   reroute_mainstem_set <- function(flines) {
     (flines$dsLENGTHKM > 0 & # is still in scope
-       is.na(flines$joined_toCOMID) &
+       is.na(flines$joined_toCOMID) & # wasn't already collapsed as a headwater
        flines$ds_num_upstream == 1 & # is not upstream of a confluence
        flines$dsLENGTHKM < mainstem_thresh_use) # is shorter than the mainstem threshold
   }

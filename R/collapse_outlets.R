@@ -7,7 +7,12 @@
 #' @importFrom dplyr filter left_join select mutate group_by ungroup
 #' @export
 #'
-collapse_outlets <- function(flines, thresh, add_category, original_fline_atts) {
+collapse_outlets <- function(flines, thresh, original_fline_atts) {
+
+  if("joined_toCOMID" %in% names(flines) | "joined_fromCOMID" %in% names(flines)) {
+    stop("collapse outllets must be used with un modified flines")
+  }
+
   flines$joined_fromCOMID <- NA
 
   short_outlets <- function(flines) {
@@ -73,9 +78,7 @@ collapse_outlets <- function(flines, thresh, add_category, original_fline_atts) 
 
     flines[["toCOMID"]][flines_to_update_index] <- NA
 
-    if(add_category) {
-      short_outlets_tracker <- c(short_outlets_tracker, flines[["COMID"]][short_flines_index])
-    }
+    short_outlets_tracker <- c(short_outlets_tracker, flines[["COMID"]][short_flines_index])
 
     count <- count + 1
     if(count > 100) stop("stuck in short outlet loop")

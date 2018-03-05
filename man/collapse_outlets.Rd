@@ -4,7 +4,7 @@
 \alias{collapse_outlets}
 \title{Collapse Outlets}
 \usage{
-collapse_outlets(flines, thresh, add_category, original_fline_atts)
+collapse_outlets(flines, thresh, original_fline_atts)
 }
 \arguments{
 \item{flines}{data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns}

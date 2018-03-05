@@ -21,73 +21,19 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   #######################################################
   # Need to clean up the short outlets first so they don't get broken by the method below.
 
-  flines <- collapse_outlets(flines, thresh, add_category, original_fline_atts)
+  flines <- collapse_outlets(flines, thresh, original_fline_atts)
 
   short_outlets_tracker <- flines[["short_outlets_tracker"]]
   flines <- flines[["flines"]]
 
+
   #######################################################
+  # Next merge headwaters that down't cross confluences downstream
 
-  flines$joined_toCOMID <- NA
+  flines <- collapse_headwaters(flines, thresh)
 
-  # Clean up short headwaters that aren't handled by the next downstream logic above.
-  remove_headwaters <- function(flines) {
-    !(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
-      flines$LENGTHKM < thresh & # shorter than threshold
-      is.na(flines$joined_fromCOMID) &
-      is.na(flines$joined_toCOMID)
-  }
-
-  headwaters_tracker <- c()
-  count <- 0
-
-  while(any(remove_headwaters(flines))) {
-
-    flines$ds_num_upstream <- get_ds_num_upstream(flines)
-
-    # remove headwaters
-    rh <- remove_headwaters(flines)
-
-    # problem headwaters
-    ph <- rh & flines$ds_num_upstream > 1
-
-    # remove problems from remove
-    rh <- rh & !ph
-
-    # create indexes
-    rh_index <- which(rh)
-    ph_index <- which(ph)
-
-    # Set broken ones to -9999 to indicate they can't be combined.
-    flines[["joined_toCOMID"]][ph_index] <- -9999
-
-    if(count > 0) {
-      # look for instances of COMID that are about to get skipped over fix them.
-      adjust_toCOMID_index <- match(flines[["COMID"]][rh_index], flines[["joined_toCOMID"]])
-      flines[["joined_toCOMID"]][adjust_toCOMID_index] <- flines[["toCOMID"]][rh_index]
-    }
-
-    # Set joined_toCOMID for remove set.
-    flines[["joined_toCOMID"]][rh_index] <- flines[["toCOMID"]][rh_index]
-
-    # Find index of next downstream to add length to.
-    adjust_headwater_index <- match(flines[["toCOMID"]][rh_index], flines$COMID)
-
-    flines[["LENGTHKM"]][adjust_headwater_index] <-
-      flines[["LENGTHKM"]][adjust_headwater_index] + flines[["LENGTHKM"]][rh_index]
-
-    # Set removed so they won't get used later.
-    flines[["LENGTHKM"]][rh_index] <- 0
-    flines[["toCOMID"]][rh_index] <- NA
-
-    headwaters_tracker <- c(headwaters_tracker, flines[["COMID"]][rh_index])
-
-    count <- count + 1
-    if(count > 100) {
-      stop("stuck in headwaters while loop")
-    }
-  }
-  #######################################################
+  headwaters_tracker <- flines[["headwaters_tracker"]]
+  flines <- flines[["flines"]]
 
   # if(!is.null(mainstem_thresh)) {
   #   flines$num_upstream <- get_num_upstream(flines)

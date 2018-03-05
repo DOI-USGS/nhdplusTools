@@ -18,6 +18,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   original_fline_atts <- flines
 
+  # Short Outlets
   #######################################################
   # Need to clean up the short outlets first so they don't get broken by the method below.
 
@@ -26,7 +27,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   short_outlets_tracker <- flines[["short_outlets_tracker"]]
   flines <- flines[["flines"]]
 
-
+  # Short Headwaters
   #######################################################
   # Next merge headwaters that down't cross confluences downstream
 
@@ -46,9 +47,11 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   headwaters_tracker <- flines[["removed_tracker"]]
   flines <- flines[["flines"]]
 
+  # Short Interconfluence Flowpath Top Flowlines
   #######################################################
-  if(!is.null(mainstem_thresh)) {
+  # If mainstems are being collapsed at a threshold, these need to be treated seperately
 
+  if(!is.null(mainstem_thresh)) {
     flines$num_upstream <- get_num_upstream(flines)
     flines$ds_num_upstream <- get_ds_num_upstream(flines)
 
@@ -60,61 +63,68 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
     }
 
     flines <- reconcile_downstream(flines, remove_mainstem_top, remove_problem_headwaters = FALSE)
-
-
     mainstem_top_tracker <- flines[["removed_tracker"]]
     flines <- flines[["flines"]]
 
-    flines <- select(flines, -num_upstream)
-
-
+    flines <- select(flines, -num_upstream, -ds_num_upstream)
   }
-  #######################################################
 
+  # Short Interconfluence Flowpath Flowlines
+  #######################################################
   # Combine along main stems with no confluences.
+
   flines <- mutate(flines,
                    dsLENGTHKM = get_dsLENGTHKM(flines),
                    ds_num_upstream = get_ds_num_upstream(flines))
 
-  reroute_mainstem_set <- function(flines) {
-    (flines$dsLENGTHKM > 0 & # is still in scope
-       is.na(flines$joined_toCOMID) & # wasn't already collapsed as a headwater
-       flines$ds_num_upstream == 1 & # is not upstream of a confluence
-       flines$dsLENGTHKM < mainstem_thresh_use) # is shorter than the mainstem threshold
-  }
+  reroute_mainstem_set <- (flines$dsLENGTHKM > 0 & # is still in scope
+                             is.na(flines$joined_toCOMID) & # wasn't already collapsed as a headwater
+                             flines$ds_num_upstream == 1 & # is not upstream of a confluence
+                             flines$dsLENGTHKM < mainstem_thresh_use) # is shorter than the mainstem threshold
+
 
   # This is the set that is going to get skipped in the rerouting.
-  removed_mainstem <- data.frame(removed_COMID = flines[["toCOMID"]][reroute_mainstem_set(flines)],
-                        joined_fromCOMID = flines[["COMID"]][reroute_mainstem_set(flines)])
+  removed_mainstem <- data.frame(removed_COMID = flines[["toCOMID"]][reroute_mainstem_set],
+                                 joined_fromCOMID = flines[["COMID"]][reroute_mainstem_set])
 
-  flines <- reconcile_removed_flowlines(flines, reroute_mainstem_set(flines), removed_mainstem, original_fline_atts)
+  flines <- reconcile_removed_flowlines(flines, reroute_mainstem_set, removed_mainstem, original_fline_atts)
 
-  # Combine accross confluences next slightly different logic from mainstems
+  # Short Single Confluence to Confluence Flowpaths
+  #######################################################
+  # Combine accross confluences next -- slightly different logic from "mainstems"
 
-  # This is the set that is going to get rerouted.
-  # Note that dsLengthKM > 0 removes all terminal and already removed flowlines from consideration.
+  flines <- mutate(flines,
+                   dsLENGTHKM = get_dsLENGTHKM(flines),
+                   ds_num_upstream = get_ds_num_upstream(flines))
+
+  # This is the set that is going to get rerouted removing their next downstream.
   reroute_confluence_set <- (flines$dsLENGTHKM < thresh &
-                               flines$dsLENGTHKM > 0 &
+                               flines$dsLENGTHKM > 0 & # removes all terminal and already removed flowlines from consideration.
                                flines$ds_num_upstream > 1)
+
+  flines <- select(flines, -ds_num_upstream)
 
   # This is the set that is going to get skipped in the rerouting.
   removed_confluence <- data.frame(removed_COMID = flines[["toCOMID"]][reroute_confluence_set],
-                                   joined_fromCOMID = flines[["COMID"]][reroute_confluence_set]) %>%
-    left_join(select(original_fline_atts, COMID,
-                     usTotDASqKM = TotDASqKM, # Get upstream area and length
-                     usLENGTHKM = LENGTHKM), # by joining fromCOMID to COMID
-              by = c("joined_fromCOMID" = "COMID")) %>%
-    group_by(removed_COMID) %>% # Deduplicate by area first then length.
-    filter(usTotDASqKM == max(usTotDASqKM)) %>%
-    filter(usLENGTHKM == max(usLENGTHKM)) %>% # Clean up.
-    ungroup() %>% select(-usLENGTHKM, -usTotDASqKM) %>% data.frame()
+                                   joined_fromCOMID = flines[["COMID"]][reroute_confluence_set])
 
-  flines <- reconcile_removed_flowlines(select(flines, -ds_num_upstream), reroute_confluence_set, removed_confluence, original_fline_atts)
+  # Need to deduplicate the upstream that removed will get combined with.
+  removed_confluence <- group_by(left_join(removed_confluence,
+                                           select(original_fline_atts, COMID,
+                                                  usTotDASqKM = TotDASqKM, # Get upstream area and length
+                                                  usLENGTHKM = LENGTHKM), # by joining fromCOMID to COMID
+                                           by = c("joined_fromCOMID" = "COMID")),
+                                 removed_COMID)
+  removed_confluence <- select(ungroup(filter(filter(removed_confluence,
+                                                     usTotDASqKM == max(usTotDASqKM)), # Deduplicate by area first
+                                              usLENGTHKM == max(usLENGTHKM))), # then length.
+                               -usLENGTHKM, -usTotDASqKM) # clean
+
+  flines <- reconcile_removed_flowlines(flines, reroute_confluence_set, removed_confluence, original_fline_atts)
 
   flines <- mutate(flines, toCOMID = ifelse(!is.na(joined_fromCOMID) | !is.na(joined_toCOMID),
                                             NA,
-                                            toCOMID)) %>%
-    select(-dsLENGTHKM)
+                                            toCOMID))
 
   if(add_category) {
     flines <- mutate(flines,

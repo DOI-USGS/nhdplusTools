@@ -1,4 +1,4 @@
-context("prepare_nhdplus")
+context("reconcile removed")
 
 test_that("remove flowlines works for first pass", {
   expect_equal(

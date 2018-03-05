@@ -97,8 +97,7 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
                                      joined_fromCOMID_new,
                                      joined_fromCOMID),
            LENGTHKM = ifelse(!is.na(joined_fromCOMID),0, LENGTHKM)) %>%
-    select(-joined_fromCOMID_new)
+    select(-joined_fromCOMID_new, -dsLENGTHKM)
 
-  flines <- mutate(flines, dsLENGTHKM = get_dsLENGTHKM(flines))
   return(flines)
 }

@@ -91,6 +91,14 @@ test_that("headwater / top of mainstem collapes works as expected", {
               flines$LENGTHKM[which(flines$COMID == 1629537)] +
               flines$LENGTHKM[which(flines$COMID == 1629565)])) # This one combined in upstream direction
 
+  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 10840906)] == 10840550)
+  expect(flines_out$joined_toCOMID[which(flines_out$COMID == 10840550)] == -9999)
+  expect(flines_out$toCOMID[which(flines_out$COMID == 10840550)] == flines$toCOMID[which(flines$COMID == 10840554)])
+
+  expect_equal(flines_out$LENGTHKM[which(flines_out$COMID == 10840550)],
+           (flines$LENGTHKM[which(flines$COMID == 10840550)] +
+              flines$LENGTHKM[which(flines$COMID == 10840906)] +
+              flines$LENGTHKM[which(flines$COMID == 10840554)]))
 
   flines <- readRDS("data/petapsco_network.rds")
   flines <- sf::st_set_geometry(flines, NULL)

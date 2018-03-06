@@ -47,7 +47,7 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
       flines <- left_join(flines, select(flines, COMID, new_joined_toCOMID = joined_toCOMID),
                            by = c("joined_toCOMID" = "COMID"))
 
-      flines <- mutate(flines, joined_toCOMID = ifelse(!is.na(new_joined_toCOMID),
+      flines <- mutate(flines, joined_toCOMID = ifelse((!is.na(new_joined_toCOMID) & !new_joined_toCOMID == -9999),
                                                        new_joined_toCOMID,
                                                        joined_toCOMID))
       flines <- select(flines, -new_joined_toCOMID)

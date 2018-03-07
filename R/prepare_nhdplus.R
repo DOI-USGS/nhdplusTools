@@ -11,6 +11,11 @@
 #' @export
 #'
 prepare_nhdplus <- function(flines, min_network_size, min_path_length) {
+  if("sf" %in% class(flines)) {
+    warning("removing geometry")
+    flines <- sf::st_set_geometry(flines, NULL)
+  }
+
   orig_rows <- nrow(flines)
 
   flines <- select(flines, COMID, LENGTHKM, FTYPE, TerminalFl,
@@ -20,10 +25,16 @@ prepare_nhdplus <- function(flines, min_network_size, min_path_length) {
              StreamOrde == StreamCalc & # Also use streamorder and streamcalc to select only the main paths.
              !(StartFlag==1 & TerminalFl == 1)) # Remove totally isoloated flowlines.
 
-  tiny_networks <- rbind(filter(flines, TerminalFl == 1 & TotDASqKM < min_network_size),
-                         filter(flines, StartFlag == 1 & Pathlength < min_path_length))
+  terminal_filter <- flines$TerminalFl == 1 & flines$TotDASqKM < min_network_size
+  start_filter <- flines$StartFlag == 1 & flines$Pathlength < min_path_length
 
-  flines <- filter(flines, !flines$TerminalPa %in% unique(tiny_networks$TerminalPa))
+  if(any(terminal_filter) | any(start_filter)) {
+
+    tiny_networks <- rbind(filter(flines, terminal_filter),
+                           filter(flines, start_filter))
+
+    flines <- filter(flines, !flines$TerminalPa %in% unique(tiny_networks$TerminalPa))
+  }
 
   warning(paste("Removed", orig_rows - nrow(flines), "flowlines that don't apply.\n",
                 "Includes: Coastlines, non-dendritic paths, \n single-flowline networks, and networks",

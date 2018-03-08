@@ -1,3 +1,51 @@
+#' @title split flowlines
+#' @description A wrapper for split_lines that works on nhdplus attributes
+#' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM and LINESTRING sf column in "meters" projection
+#' @param max_length maximum segment length to return
+#' @return All the flowlines with some split apart.
+#' @importFrom dplyr group_by ungroup filter select mutate
+#' @export
+#'
+split_flowlines <- function(flines, max_length, para = 0) {
+  split <- split_lines(flines, max_length, id = "COMID", para = para)
+
+  split <- left_join(split, sf::st_set_geometry(flines, NULL), by = "COMID")
+
+  split <- group_by(mutate(split, split_fID = as.character(as.numeric(split_fID) + 0.1)), COMID)
+
+  split$part <- unlist(lapply(strsplit(split$split_fID, "\\."), function(x) x[2]))
+
+  split <- ungroup(mutate(split, toCOMID = ifelse(part == max(part), # Assume flowdir is with digitized for now -- need to check in prep code.
+                                          as.character(toCOMID),
+                                          paste(lead(COMID), lead(part), sep = "."))))
+  split <- mutate(split, COMID = paste(COMID, part, sep = "."),
+                  LENGTHKM = sf::st_length(geometry)/1000,
+                  TotDASqKM = TotDASqKM) # THIS IS WRONG BUT CAN'T BE NA!!!
+
+  split <- sf::st_as_sf(select(split, -part, -split_fID))
+
+  attr(split$LENGTHKM, "units") <- NULL
+  split$LENGTHKM <- as.numeric(split$LENGTHKM)
+
+  remove_COMID <- unique(as.integer(split$COMID))
+
+  not_split <- filter(flines, !(COMID %in% remove_COMID))
+
+  flines <- rbind(not_split, split)
+
+  # Rows with COMID like this need to be updated
+  redirect_toCOMID <- all_flines$COMID[which(grepl("\\.1", all_flines$COMID))]
+
+  old_toCOMID <- stringr::str_replace(redirect_toCOMID, "\\.1", "")
+
+  mutate(all_flines,
+         toCOMID = as.numeric(ifelse(toCOMID %in% old_toCOMID, paste0(toCOMID, ".1"), toCOMID)),
+         COMID = as.numeric(COMID))
+}
+
+
+
+
 #' @title split lines
 #' @description Splits lines longer than a given threshold into the minimum number of pieces to all be under the given threshold.
 #' @param lines data.frame of class sf with LINESTRING sfc column.

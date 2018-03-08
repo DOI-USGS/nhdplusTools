@@ -4,7 +4,7 @@
 \alias{reconcile_collapsed_flowlines}
 \title{Reconcile collapsed flowlines}
 \usage{
-reconcile_collapsed_flowlines(flines)
+reconcile_collapsed_flowlines(flines, geom = NULL, id = "COMID")
 }
 \value{
 reconciled flines

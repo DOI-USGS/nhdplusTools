@@ -24,3 +24,22 @@ test_that("split lines works", {
   expect(nrow(split) == 574)
 
 })
+
+test_that("split lines works", {
+  library(sf)
+  library(dplyr)
+
+  flines_in <- readRDS("data/guadalupe_network_geom.rds")
+
+  flines <- suppressWarnings(
+    st_set_geometry(flines_in, NULL) %>%
+    prepare_nhdplus(0, 0) %>%
+    inner_join(select(flines_in, COMID), by = "COMID") %>%
+    sf::st_as_sf() %>%
+    sf::st_cast("LINESTRING") %>%
+    sf::st_transform(5070) %>%
+    split_flowlines(2000, 3))
+
+  expect(length(which(stringr::str_detect(as.character(flines$COMID), "1623361"))) == 10)
+
+})

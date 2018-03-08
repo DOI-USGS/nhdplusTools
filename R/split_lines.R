@@ -11,9 +11,10 @@ split_flowlines <- function(flines, max_length, para = 0) {
 
   split <- left_join(split, sf::st_set_geometry(flines, NULL), by = "COMID")
 
-  split <- group_by(mutate(split, split_fID = as.character(as.numeric(split_fID) + 0.1)), COMID)
+  split <- group_by(split, COMID)
 
   split$part <- unlist(lapply(strsplit(split$split_fID, "\\."), function(x) x[2]))
+  split <- mutate(split, part = (ifelse(is.na(part), 0, as.integer(part)) + 1))
 
   split <- ungroup(mutate(split, toCOMID = ifelse(part == max(part), # Assume flowdir is with digitized for now -- need to check in prep code.
                                           as.character(toCOMID),
@@ -34,11 +35,11 @@ split_flowlines <- function(flines, max_length, para = 0) {
   flines <- rbind(not_split, split)
 
   # Rows with COMID like this need to be updated
-  redirect_toCOMID <- all_flines$COMID[which(grepl("\\.1", all_flines$COMID))]
+  redirect_toCOMID <- flines$COMID[which(grepl("\\.1", flines$COMID))]
 
   old_toCOMID <- stringr::str_replace(redirect_toCOMID, "\\.1", "")
 
-  mutate(all_flines,
+  mutate(flines,
          toCOMID = as.numeric(ifelse(toCOMID %in% old_toCOMID, paste0(toCOMID, ".1"), toCOMID)),
          COMID = as.numeric(COMID))
 }

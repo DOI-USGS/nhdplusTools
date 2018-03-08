@@ -44,8 +44,9 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
 
     if(count > 0) {
       # look for instances of COMID that are about to get skipped over -- fix them.
-      flines <- left_join(flines, select(flines, COMID, new_joined_toCOMID = joined_toCOMID),
-                           by = c("joined_toCOMID" = "COMID"))
+      flines <- left_join(flines,
+                          filter(select(flines, COMID, new_joined_toCOMID = joined_toCOMID), !is.na(new_joined_toCOMID)),
+                          by = c("joined_toCOMID" = "COMID"))
 
       flines <- mutate(flines, joined_toCOMID = ifelse((!is.na(new_joined_toCOMID) & !new_joined_toCOMID == -9999),
                                                        new_joined_toCOMID,

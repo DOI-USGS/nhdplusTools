@@ -3,11 +3,12 @@
 #' @param lines data.frame of class sf with LINESTRING sfc column.
 #' @param max_length maximum segment length to return
 #' @param id name of ID column in data.frame
+#' @param
 #' @return only the split lines.
-#' @importFrom dplyr group_by ungroup filter left_join select rename mutate
+#' @importFrom dplyr group_by ungroup filter select mutate
 #' @export
 #'
-split_lines <- function(input_lines, max_length, id = "ID") {
+split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
   if(max_length < 50) warning("short max length detected, do you have your units right?")
 
   geom_column <- attr(input_lines, "sf_column")
@@ -25,56 +26,112 @@ split_lines <- function(input_lines, max_length, id = "ID") {
 
   too_long <- mutate(too_long,
                      pieces = ceiling(geom_len / max_length),
-                     piece_len = (geom_len / pieces),
-                     fID = 1:nrow(too_long))
+                     fID = 1:nrow(too_long)) %>%
+    select(-geom_len)
 
-  split_points <- sf::st_set_geometry(too_long, NULL)[rep(seq_len(nrow(too_long)), too_long[["pieces"]]),]
+  split_points <- sf::st_set_geometry(too_long, NULL)[rep(seq_len(nrow(too_long)), too_long[["pieces"]]),] %>%
+    select(-pieces)
 
   split_points <- mutate(split_points, split_fID = row.names(split_points)) %>%
-    select(-geom_len, -pieces) %>%
     group_by(fID) %>%
-    mutate(ideal_len = cumsum(piece_len)) %>%
+    mutate(piece = 1:n()) %>%
+    mutate(start = (piece - 1) / n(),
+           end = piece / n()) %>%
     ungroup()
 
-  coords <- data.frame(sf::st_coordinates(too_long[[geom_column]]))
-  rm(too_long)
-
-  coords <- rename(coords, fID = L1) %>% mutate(nID = 1:nrow(coords))
-
-  split_nodes <- group_by(coords, fID) %>%
-    # First calculate cumulative length by feature.
-    mutate(len  = sqrt(((X - (lag(X)))^2) + (((Y - (lag(Y)))^2)))) %>%
-    mutate(len = ifelse(is.na(len), 0, len)) %>%
-    mutate(len = cumsum(len)) %>%
-    # Now join nodes to split points -- this generates all combinations.
-    left_join(select(split_points, fID, ideal_len, split_fID), by = "fID") %>%
-    # Calculate the difference between node-wise distance and split-point distance.
-    mutate(diff_len = abs(len - ideal_len)) %>%
-    # regroup by the new split features.
-    group_by(split_fID) %>%
-    # filter out na then grab the min distance
-    filter(!is.na(diff_len) & diff_len == min(diff_len)) %>%
-    ungroup() %>%
-    # Grab the start node for each geometry -- the end node of the geometry before it.
-    mutate(start_nID = lag(nID),
-           # need to move the start node one for new features.
-           new_feature = fID - lag(fID, default = -1),
-           start_nID = ifelse(new_feature == 1, start_nID + 1, start_nID)) %>%
-    # Clean up the mess
-    select(fID, split_fID, start_nID, stop_nID = nID, -diff_len, -ideal_len, -len, -X, -Y)
-
-  split_nodes$start_nID[1] <- 1
-
-  split_points <- left_join(split_points, select(split_nodes, split_fID, start_nID, stop_nID), by = "split_fID")
-
-  new_line <- function(start_stop, coords) {
-    sf::st_linestring(as.matrix(coords[start_stop[1]:start_stop[2], c("X", "Y")]))
+  new_line <- function(i, f, t) {
+    lwgeom::st_linesubstring(x = too_long[[geom_column]][i], from = f, to = t)[[1]]
   }
 
-  split_lines <- apply(as.matrix(split_points[c("start_nID", "stop_nID")]),
-                        MARGIN = 1, FUN = new_line, coords = coords)
+  if(para > 0) {
+
+    cl <- parallel::makeCluster(rep('localhost',2), type = "SOCK")
+
+    split_lines <- parallel::parApply(cl, split_points[c("fID", "start", "end")], 1,
+                                      function(x) new_line(i = x[["fID"]], f = x[["start"]], t = x[["end"]]))
+
+    parallel::stopCluster(cl)
+  } else {
+    split_lines <- apply(split_points[c("fID", "start", "end")], 1,
+                         function(x) new_line(i = x[["fID"]], f = x[["start"]], t = x[["end"]]))
+  }
+
+  rm(too_long)
 
   split_lines <- st_sf(split_points[c(id, "split_fID")], geometry = st_sfc(split_lines, crs = input_crs))
 
   return(split_lines)
 }
+
+# Non lwgeom method
+# split_lines_2 <- function(input_lines, max_length, id = "ID") {
+#   if(max_length < 50) warning("short max length detected, do you have your units right?")
+#
+#   geom_column <- attr(input_lines, "sf_column")
+#
+#   input_crs <- sf::st_crs(input_lines)
+#
+#   input_lines[["geom_len"]] <- sf::st_length(input_lines[[geom_column]])
+#
+#   attr(input_lines[["geom_len"]], "units") <- NULL
+#   input_lines[["geom_len"]] <- as.numeric(input_lines[["geom_len"]])
+#
+#   too_long <- filter(select(input_lines, id, geom_column, geom_len), geom_len >= max_length)
+#
+#   rm(input_lines) # just to control memory usage in case this is big.
+#
+#   too_long <- mutate(too_long,
+#                      pieces = ceiling(geom_len / max_length),
+#                      piece_len = (geom_len / pieces),
+#                      fID = 1:nrow(too_long))
+#
+#   split_points <- sf::st_set_geometry(too_long, NULL)[rep(seq_len(nrow(too_long)), too_long[["pieces"]]),]
+#
+#   split_points <- mutate(split_points, split_fID = row.names(split_points)) %>%
+#     select(-geom_len, -pieces) %>%
+#     group_by(fID) %>%
+#     mutate(ideal_len = cumsum(piece_len)) %>%
+#     ungroup()
+#
+#   coords <- data.frame(sf::st_coordinates(too_long[[geom_column]]))
+#   rm(too_long)
+#
+#   coords <- rename(coords, fID = L1) %>% mutate(nID = 1:nrow(coords))
+#
+#   split_nodes <- group_by(coords, fID) %>%
+#     # First calculate cumulative length by feature.
+#     mutate(len  = sqrt(((X - (lag(X)))^2) + (((Y - (lag(Y)))^2)))) %>%
+#     mutate(len = ifelse(is.na(len), 0, len)) %>%
+#     mutate(len = cumsum(len)) %>%
+#     # Now join nodes to split points -- this generates all combinations.
+#     left_join(select(split_points, fID, ideal_len, split_fID), by = "fID") %>%
+#     # Calculate the difference between node-wise distance and split-point distance.
+#     mutate(diff_len = abs(len - ideal_len)) %>%
+#     # regroup by the new split features.
+#     group_by(split_fID) %>%
+#     # filter out na then grab the min distance
+#     filter(!is.na(diff_len) & diff_len == min(diff_len)) %>%
+#     ungroup() %>%
+#     # Grab the start node for each geometry -- the end node of the geometry before it.
+#     mutate(start_nID = lag(nID),
+#            # need to move the start node one for new features.
+#            new_feature = fID - lag(fID, default = -1),
+#            start_nID = ifelse(new_feature == 1, start_nID + 1, start_nID)) %>%
+#     # Clean up the mess
+#     select(fID, split_fID, start_nID, stop_nID = nID, -diff_len, -ideal_len, -len, -X, -Y)
+#
+#   split_nodes$start_nID[1] <- 1
+#
+#   split_points <- left_join(split_points, select(split_nodes, split_fID, start_nID, stop_nID), by = "split_fID")
+#
+#   new_line <- function(start_stop, coords) {
+#     sf::st_linestring(as.matrix(coords[start_stop[1]:start_stop[2], c("X", "Y")]))
+#   }
+#
+#   split_lines <- apply(as.matrix(split_points[c("start_nID", "stop_nID")]),
+#                        MARGIN = 1, FUN = new_line, coords = coords)
+#
+#   split_lines <- st_sf(split_points[c(id, "split_fID")], geometry = st_sfc(split_lines, crs = input_crs))
+#
+#   return(split_lines)
+# }

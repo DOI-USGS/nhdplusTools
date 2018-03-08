@@ -4,7 +4,7 @@
 \alias{split_lines}
 \title{split lines}
 \usage{
-split_lines(input_lines, max_length, id = "ID")
+split_lines(input_lines, max_length, id = "ID", para = 0)
 }
 \arguments{
 \item{max_length}{maximum segment length to return}

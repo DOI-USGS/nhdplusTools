@@ -35,9 +35,9 @@ split_flowlines <- function(flines, max_length, para = 0) {
   flines <- rbind(not_split, split)
 
   # Rows with COMID like this need to be updated
-  redirect_toCOMID <- flines$COMID[which(grepl("\\.1", flines$COMID))]
+  redirect_toCOMID <- flines$COMID[which(grepl("\\.1$", flines$COMID))]
 
-  old_toCOMID <- stringr::str_replace(redirect_toCOMID, "\\.1", "")
+  old_toCOMID <- stringr::str_replace(redirect_toCOMID, "\\.1$", "")
 
   mutate(flines,
          toCOMID = as.numeric(ifelse(toCOMID %in% old_toCOMID, paste0(toCOMID, ".1"), toCOMID)),
@@ -52,7 +52,7 @@ split_flowlines <- function(flines, max_length, para = 0) {
 #' @param lines data.frame of class sf with LINESTRING sfc column.
 #' @param max_length maximum segment length to return
 #' @param id name of ID column in data.frame
-#' @param
+#' @param para how many cores to use
 #' @return only the split lines.
 #' @importFrom dplyr group_by ungroup filter select mutate
 #' @export

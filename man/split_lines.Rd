@@ -11,6 +11,8 @@ split_lines(input_lines, max_length, id = "ID", para = 0)
 
 \item{id}{name of ID column in data.frame}
 
+\item{para}{how many cores to use}
+
 \item{lines}{data.frame of class sf with LINESTRING sfc column.}
 }
 \value{

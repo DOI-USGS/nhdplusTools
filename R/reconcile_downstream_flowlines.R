@@ -8,12 +8,10 @@
 reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters = FALSE) {
   removed_tracker <- c()
   count <- 0
-
-  while(any(remove_fun(flines))) {
+  rfl <- remove_fun(flines)
+  while(any(rfl)) {
 
     flines$ds_num_upstream <- get_ds_num_upstream(flines)
-
-    rfl <- remove_fun(flines)
 
     if(remove_problem_headwaters) {
       # problem headwaters
@@ -60,6 +58,9 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
     if(count > 100) {
       stop("stuck in headwaters while loop")
     }
+
+    rfl <- remove_fun(flines)
+
   }
   return(list(flines = flines, removed_tracker = removed_tracker))
 }

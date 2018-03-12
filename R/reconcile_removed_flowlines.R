@@ -33,7 +33,7 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
   downstream_index <- match(flines[["toCOMID"]][reroute_set], flines$COMID)
   flines[["toCOMID"]][reroute_set] <- flines[["toCOMID"]][downstream_index]
 
-  # keep_going is true if the toCOMID is one of the removed comids.
+  # stale_toCOMID is true if the toCOMID is one of the removed comids.
   # We need to change those toCOMIDs to the toCOMID of the removed flowline
   # Need to keep doing it until no toCOMIDs are pointing to removed catchmetns
   stale_toCOMID <- function() which(flines$toCOMID %in% removed$removed_COMID)
@@ -72,7 +72,6 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
 
   # This is a pointer to joined_fromCOMID records that point to already removed COMIDs.
   joined_from_to_replace <- function(removed) which(removed$joined_fromCOMID %in% removed$removed_COMID)
-
 
   count <- 0
 

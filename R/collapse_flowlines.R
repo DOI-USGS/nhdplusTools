@@ -18,6 +18,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   original_fline_atts <- flines
 
+  #######################################################
   # Short Outlets
   #######################################################
   # Need to clean up the short outlets first so they don't get broken by the method below.
@@ -27,9 +28,10 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   short_outlets_tracker <- flines[["short_outlets_tracker"]]
   flines <- flines[["flines"]]
 
+  #######################################################
   # Short Headwaters
   #######################################################
-  # Next merge headwaters that down't cross confluences downstream
+  # Next merge headwaters that don't cross confluences downstream
 
   if(!"joined_toCOMID" %in% names(flines)) flines$joined_toCOMID <- NA
   if(!"joined_fromCOMID" %in% names(flines)) flines$joined_fromCOMID <- NA
@@ -47,6 +49,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   headwaters_tracker <- flines[["removed_tracker"]]
   flines <- flines[["flines"]]
 
+  #######################################################
   # Short Interconfluence Flowpath Top Flowlines
   #######################################################
   # If mainstems are being collapsed at a threshold, these need to be treated seperately
@@ -69,6 +72,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
     flines <- select(flines, -num_upstream, -ds_num_upstream)
   }
 
+  #######################################################
   # Short Interconfluence Flowpath Flowlines
   #######################################################
   # Combine along main stems with no confluences.
@@ -99,6 +103,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
     removed_mainstem <- rbind(removed_mainstem, removed_mainstem_top)
   }
 
+  #######################################################
   # Short Single Confluence to Confluence Flowpaths
   #######################################################
   # Combine accross confluences next -- slightly different logic from "mainstems"
@@ -132,12 +137,28 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   flines <- reconcile_removed_flowlines(flines, reroute_confluence_set, removed_confluence, original_fline_atts)
 
+  # Catchments that joined downstream but are referenced as a joined fromCOMID.
+  # These need to be adjusted to be joined_toCOMID the same as the one they reference in joined_fromCOMID.
+  # bad_joined_fromCOMID are the actual COMIDs that exist in the joinded_fromCOMID column but should not.
+  bad_joined_fromCOMID <- flines$COMID[which(!is.na(flines$joined_toCOMID))][flines$COMID[which(!is.na(flines$joined_toCOMID))] %in% flines$joined_fromCOMID]
+  if(length(bad_joined_fromCOMID > 0)) {
+    # This is the row we will update
+    bad_joined_fromCOMID_index <- match(bad_joined_fromCOMID, flines$joined_fromCOMID)
+    # This is the row we will get our update from
+    new_joined_toCOMID_index <- match(bad_joined_fromCOMID, flines$COMID)
+    flines$joined_toCOMID[bad_joined_fromCOMID_index] <- flines$joined_toCOMID[new_joined_toCOMID_index]
+    flines$joined_fromCOMID[bad_joined_fromCOMID_index] <- NA
+  }
+
   if(add_category) {
+    if(!"join_category" %in% names(flines)) {
+      flines$join_category <- NA
+    }
     flines <- mutate(flines,
                      join_category = ifelse(COMID %in% short_outlets_tracker, "outlet",
                                             ifelse(COMID %in% removed_mainstem$removed_COMID, "mainstem",
                                                    ifelse(COMID %in% removed_confluence$removed_COMID, "confluence",
-                                                          ifelse(COMID %in% headwaters_tracker, "headwater", NA)))))
+                                                          ifelse(COMID %in% headwaters_tracker, "headwater", join_category)))))
   }
 
   return(flines)

@@ -10,7 +10,9 @@
 collapse_outlets <- function(flines, thresh, original_fline_atts) {
 
   if("joined_toCOMID" %in% names(flines) | "joined_fromCOMID" %in% names(flines)) {
-    stop("collapse outllets must be used with un modified flines")
+    warning("collapse outllets must be used with un modified flines. \n",
+            "returning unmodified flines from collapse outlets.")
+    return(list(flines = flines, short_outlets_tracker = c()))
   }
 
   flines$joined_fromCOMID <- NA

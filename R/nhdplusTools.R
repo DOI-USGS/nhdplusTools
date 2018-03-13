@@ -12,6 +12,12 @@ get_upstream <- function(flines) {
     rename(fromCOMID = COMID.y)
 }
 
+get_upstream_length <- function(flines) {
+  left_join(select(flines, COMID), select(flines, toCOMID, LENGTHKM),
+            by = c("COMID" = "toCOMID")) %>%
+    rename(usLENGTHKM = LENGTHKM)
+}
+
 get_num_upstream <- function(flines) {
   left_join(select(flines, COMID, toCOMID),
             get_upstream(flines) %>%

@@ -136,3 +136,24 @@ test_that("collapse flowlines works as expected with mainstem thresh", {
 
   expect(flines$joined_fromCOMID[which(flines$COMID == 11690124)] == 11688868)
 })
+
+test_that("repeat collapse doesn't leave orphans", {
+  library(sf)
+  flines <- dplyr::rename(sf::st_read("data/oswego_network_geo.gpkg", quiet = T),
+    geometry = geom)
+  attr(flines, "sf_column") <- "geometry"
+  flines <- nhdplusTools::split_flowlines(flines, 2000, 3)
+  flines <- collapse_flowlines(st_set_geometry(flines, NULL), (0.125), TRUE, (0.125))
+
+  # this is right the first pass.
+  expect(flines$joined_fromCOMID[which(flines$COMID == 21974341)] == 21975097)
+
+  flines <- suppressWarnings(collapse_flowlines(flines, (0.25), TRUE, (0.25)))
+
+  # needs to get redirected on the second pass.
+  expect(flines$joined_toCOMID[which(flines$COMID == 21974341)] == 21975095)
+  expect(flines$joined_toCOMID[which(flines$COMID == 21975097)] == 21975095)
+
+  expect(flines$toCOMID[which(flines$COMID == 21975777)] == flines$joined_toCOMID[which(flines$COMID == 21975773)])
+
+})

@@ -13,16 +13,19 @@ test_that("reconcile collapse flowlines works as expected", {
 
   expect_equal(flines$toID[which(flines$ID == 18)], c(17, 17, 17))
 
-  # flines_rec <- sf::st_as_sf(inner_join(flines, flines_geo, by = c("member_COMID" = "COMID"))) %>%
-  #   select(-member_COMID) %>%
-  #   distinct() %>%
-  #   group_by(ID) %>%
-  #   summarise(toID = toID[1], LENGTHKM = LENGTHKM[1], TotDASqKM = TotDASqKM[1]) %>%
-  #   st_cast("MULTILINESTRING") %>%
-  #   ungroup() %>%
-  #   st_line_merge()
-  #
-  # sf::st_write(flines_rec, "reconciled_output.geojson")
+  expect(flines$toID[which(flines$ID == 42)] == 18)
+  expect(flines$toID[which(flines$ID == 19)] == 18)
+
+  flines_rec <- sf::st_as_sf(inner_join(flines, flines_geo, by = c("member_COMID" = "COMID"))) %>%
+    select(-member_COMID) %>%
+    distinct() %>%
+    group_by(ID) %>%
+    summarise(toID = toID[1], LENGTHKM = LENGTHKM[1], TotDASqKM = TotDASqKM[1]) %>%
+    st_cast("MULTILINESTRING") %>%
+    ungroup() %>%
+    st_line_merge()
+
+  sf::st_write(flines_rec, "reconciled_output.geojson")
   #
   # plot(flines_rec[c("ID", "geometry")])
 

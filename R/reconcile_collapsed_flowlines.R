@@ -5,16 +5,26 @@
 #' @export
 #'
 reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
-  new_flines <- flines %>%
-    mutate(becomes = ifelse((is.na(joined_fromCOMID) | joined_fromCOMID == -9999),
+
+  # This takes care of na toCOMIDs that result from join_toCOMID pointers.
+  new_flines <- left_join(flines,
+                            select(flines,
+                                   COMID,
+                                   new_toCOMID = joined_toCOMID),
+                            by = c("toCOMID" = "COMID"))
+
+  new_flines <- mutate(new_flines, toCOMID = ifelse(!is.na(new_toCOMID), new_toCOMID, toCOMID))
+
+  new_flines <- mutate(new_flines, becomes = ifelse((is.na(joined_fromCOMID) | joined_fromCOMID == -9999),
                             ifelse((is.na(joined_toCOMID) | joined_toCOMID == -9999),
                                    COMID, joined_toCOMID),
                             joined_fromCOMID)) %>%
     group_by(becomes) %>%
     mutate(TotDASqKM = max(TotDASqKM), LENGTHKM = max(LENGTHKM)) %>%
-    select(-joined_fromCOMID, -joined_toCOMID)
+    select(-joined_fromCOMID, -joined_toCOMID, -new_toCOMID)
 
   new_flines <- ungroup(new_flines)
+
   new_flines <- left_join(new_flines,
                           data.frame(becomes = unique(new_flines$becomes),
                                      ID = 1:length(unique(new_flines$becomes))),
@@ -22,7 +32,7 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 
   toCOMID_updater <- filter(select(new_flines, becomes, toCOMID), !is.na(toCOMID))
 
-  new_flines <- left_join(select(new_flines, -toCOMID), toCOMID_updater, by = "becomes")
+  new_flines <- distinct(left_join(select(new_flines, -toCOMID), toCOMID_updater, by = "becomes"))
 
   new_flines <- left_join(new_flines,
                           select(new_flines, becomes, toID = ID),

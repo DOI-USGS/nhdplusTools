@@ -16,17 +16,67 @@ test_that("reconcile collapse flowlines works as expected", {
   expect(flines$toID[which(flines$ID == 42)] == 18)
   expect(flines$toID[which(flines$ID == 19)] == 18)
 
-  flines_rec <- sf::st_as_sf(inner_join(flines, flines_geo, by = c("member_COMID" = "COMID"))) %>%
-    select(-member_COMID) %>%
-    distinct() %>%
-    group_by(ID) %>%
-    summarise(toID = toID[1], LENGTHKM = LENGTHKM[1], TotDASqKM = TotDASqKM[1]) %>%
-    st_cast("MULTILINESTRING") %>%
-    ungroup() %>%
-    st_line_merge()
-
-  sf::st_write(flines_rec, "reconciled_output.geojson")
+  # flines_rec <- sf::st_as_sf(inner_join(flines, flines_geo, by = c("member_COMID" = "COMID"))) %>%
+  #   select(-member_COMID) %>%
+  #   distinct() %>%
+  #   group_by(ID) %>%
+  #   summarise(toID = toID[1], LENGTHKM = LENGTHKM[1], TotDASqKM = TotDASqKM[1]) %>%
+  #   st_cast("MULTILINESTRING") %>%
+  #   ungroup() %>%
+  #   st_line_merge()
+  #
+  # sf::st_write(flines_rec, "reconciled_output.geojson")
   #
   # plot(flines_rec[c("ID", "geometry")])
+
+})
+
+test_that("collapse works on a double pass", {
+  library(sf)
+  library(dplyr)
+
+  nhdplus_flines <- readRDS("data/oswego_network.rds")
+  split_flines_meters <- 2000
+  split_flines_cores <- 3
+  collapse_flines_meters <- 500
+  collapse_flines_mainstem_meters <- 500
+
+  flines <- suppressWarnings(st_set_geometry(nhdplus_flines, NULL) %>%
+    prepare_nhdplus(0, 0) %>%
+    inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
+    sf::st_as_sf() %>%
+    sf::st_cast("LINESTRING") %>%
+    sf::st_transform(5070) %>%
+    split_flowlines(split_flines_meters, split_flines_cores))
+
+  collapsed_flines <- collapse_flowlines(st_set_geometry(flines, NULL),
+                                         (0.25*collapse_flines_meters/1000),
+                                         TRUE,
+                                         (0.25*collapse_flines_mainstem_meters/1000))
+
+  collapsed_flines <- suppressWarnings(collapse_flowlines(collapsed_flines,
+                                         (0.5*collapse_flines_meters/1000),
+                                         TRUE,
+                                         (0.5*collapse_flines_mainstem_meters/1000)))
+
+  # collapsed_flines <- suppressWarnings(collapse_flowlines(collapsed_flines,
+  #                                        (collapse_flines_meters/1000),
+  #                                        TRUE,
+  #                                        (collapse_flines_mainstem_meters/1000)))
+
+  # collapsed_flines %>%
+  #   inner_join(select(flines, COMID), by = "COMID") %>%
+  #   sf::st_as_sf() %>%
+  #   sf::st_transform(4326) %>%
+  #   sf::st_write("out_collapsed.gpkg", layer_options = "OVERWRITE=YES")
+
+  collapsed <- reconcile_collapsed_flowlines(collapsed_flines, select(flines, COMID), id = "COMID")
+
+  # Make sure a short headwater gets joined downstream properly.
+  expect(collapsed$toID[which(collapsed$ID==65)] == 64)
+  expect(collapsed$toID[which(collapsed$ID==6236)] == 64)
+  expect(collapsed$toID[which(collapsed$ID==64)] == 3381)
+
+  # sf::st_write(sf::st_transform(collapsed, 4326), "out_reconciled.gpkg", layer_options = "OVERWRITE=YES")
 
 })

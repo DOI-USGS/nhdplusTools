@@ -3,6 +3,7 @@
 export(collapse_flowlines)
 export(collapse_outlets)
 export(get_UT)
+export(nhdplus_refactor_2)
 export(prepare_nhdplus)
 export(reconcile_collapsed_flowlines)
 export(reconcile_downstream)

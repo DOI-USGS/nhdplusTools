@@ -172,7 +172,10 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   flines <- select(flines, -new_toCOMID)
 
-  bad_rows <- function(flines) is.na(flines$toCOMID) & flines$LENGTHKM == 0 & flines$COMID %in% flines$joined_toCOMID
+  bad_rows <- function(flines) is.na(flines$toCOMID) &
+    flines$LENGTHKM == 0 &
+    flines$COMID %in% flines$joined_toCOMID &
+    flines$joined_toCOMID != -9999
 
   count <- 0
 

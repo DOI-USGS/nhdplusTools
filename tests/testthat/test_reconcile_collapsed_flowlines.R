@@ -59,10 +59,16 @@ test_that("collapse works on a double pass", {
                                          TRUE,
                                          (0.5*collapse_flines_mainstem_meters/1000)))
 
-  # collapsed_flines <- suppressWarnings(collapse_flowlines(collapsed_flines,
-  #                                        (collapse_flines_meters/1000),
-  #                                        TRUE,
-  #                                        (collapse_flines_mainstem_meters/1000)))
+  collapsed_flines <- suppressWarnings(collapse_flowlines(collapsed_flines,
+                                         (collapse_flines_meters/1000),
+                                         TRUE,
+                                         (collapse_flines_mainstem_meters/1000)))
+
+  expect_equal(collapsed_flines$joined_toCOMID[which(collapsed_flines$COMID == 21975773)], 21975819)
+  expect_equal(collapsed_flines$joined_toCOMID[which(collapsed_flines$COMID == 21976313)], 21975819)
+
+  expect_equal(collapsed_flines$joined_toCOMID[which(collapsed_flines$COMID == 21976891)],
+               collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == 21974583)])
 
   # collapsed_flines %>%
   #   inner_join(select(flines, COMID), by = "COMID") %>%
@@ -72,10 +78,10 @@ test_that("collapse works on a double pass", {
 
   collapsed <- reconcile_collapsed_flowlines(collapsed_flines, select(flines, COMID), id = "COMID")
 
-  # Make sure a short headwater gets joined downstream properly.
-  expect(collapsed$toID[which(collapsed$ID==65)] == 64)
-  expect(collapsed$toID[which(collapsed$ID==6236)] == 64)
-  expect(collapsed$toID[which(collapsed$ID==64)] == 3381)
+  # Make sure a short top of mainstem gets joined downstream properly.
+  expect(collapsed$toID[which(collapsed$ID==60)] == 59)
+  expect(collapsed$toID[which(collapsed$ID==5817)] == 59)
+  expect(collapsed$toID[which(collapsed$ID==59)] == 3032)
 
   # sf::st_write(sf::st_transform(collapsed, 4326), "out_reconciled.gpkg", layer_options = "OVERWRITE=YES")
 

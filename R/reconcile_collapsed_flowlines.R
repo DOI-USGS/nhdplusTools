@@ -6,22 +6,13 @@
 #'
 reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 
-  # This takes care of na toCOMIDs that result from join_toCOMID pointers.
-  new_flines <- left_join(flines,
-                            select(flines,
-                                   COMID,
-                                   new_toCOMID = joined_toCOMID),
-                            by = c("toCOMID" = "COMID"))
-
-  new_flines <- mutate(new_flines, toCOMID = ifelse(!is.na(new_toCOMID), new_toCOMID, toCOMID))
-
-  new_flines <- mutate(new_flines, becomes = ifelse((is.na(joined_fromCOMID) | joined_fromCOMID == -9999),
+  new_flines <- mutate(flines, becomes = ifelse((is.na(joined_fromCOMID) | joined_fromCOMID == -9999),
                             ifelse((is.na(joined_toCOMID) | joined_toCOMID == -9999),
                                    COMID, joined_toCOMID),
                             joined_fromCOMID)) %>%
     group_by(becomes) %>%
     mutate(TotDASqKM = max(TotDASqKM), LENGTHKM = max(LENGTHKM)) %>%
-    select(-joined_fromCOMID, -joined_toCOMID, -new_toCOMID)
+    select(-joined_fromCOMID, -joined_toCOMID)
 
   new_flines <- ungroup(new_flines)
 

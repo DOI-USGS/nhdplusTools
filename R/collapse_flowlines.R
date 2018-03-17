@@ -161,5 +161,41 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
                                                           ifelse(COMID %in% headwaters_tracker, "headwater", join_category)))))
   }
 
+  # This takes care of na toCOMIDs that result from join_toCOMID pointers.
+  flines <- left_join(flines,
+                          select(flines,
+                                 COMID,
+                                 new_toCOMID = joined_toCOMID),
+                          by = c("toCOMID" = "COMID"))
+
+  flines <- mutate(flines, toCOMID = ifelse(!is.na(new_toCOMID), new_toCOMID, toCOMID))
+
+  flines <- select(flines, -new_toCOMID)
+
+  bad_rows <- function(flines) is.na(flines$toCOMID) & flines$LENGTHKM == 0 & flines$COMID %in% flines$joined_toCOMID
+
+  count <- 0
+
+  while(any(bad_rows(flines))) {
+    flines <- left_join(flines,
+                        select(flines,
+                               new_joined_toCOMID = joined_toCOMID,
+                               new_joined_fromCOMID = joined_fromCOMID,
+                               COMID), by = c("joined_toCOMID" = "COMID"))
+
+    flines <- mutate(flines, joined_toCOMID = ifelse((!is.na(new_joined_toCOMID) & new_joined_toCOMID != -9999),
+                                                     new_joined_toCOMID,
+                                                     ifelse(!is.na(new_joined_fromCOMID),
+                                                            new_joined_fromCOMID,
+                                                            joined_toCOMID)))
+
+    flines <- select(flines, -new_joined_toCOMID, -new_joined_fromCOMID)
+
+    count <- count + 1
+    if(count > 100) {
+      browser()
+      # stop("stuck in final clean up loop")
+    }
+  }
   return(flines)
 }

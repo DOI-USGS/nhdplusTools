@@ -179,7 +179,8 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   count <- 0
 
-  while(any(bad_rows(flines))) {
+  # Should investigate why NAs are coming out of the splitter.
+  while(any(bad_rows(flines), na.rm = TRUE)) {
     flines <- left_join(flines,
                         select(flines,
                                new_joined_toCOMID = joined_toCOMID,

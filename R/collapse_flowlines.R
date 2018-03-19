@@ -5,10 +5,17 @@
 #' @param add_category boolean if combination category is desired in output, set to TRUE
 #' @param mainstem_thresh numeric threshold for combining inter-confluence mainstems
 #' @return A refactored network with merged up and down flowlines.
-#' @importFrom dplyr filter left_join select mutate group_by ungroup summarise
+#' @importFrom dplyr filter left_join select mutate group_by ungroup summarise distinct
 #' @export
 #'
 collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_thresh = NULL) {
+
+  if("joined_fromCOMID" %in% names(flines)) {
+    first_pass <- FALSE
+    warning("second pass, only running confluence collapse")
+  } else {
+    first_pass <- TRUE
+  }
 
   if(is.null(mainstem_thresh)) { # very large thresh
     mainstem_thresh_use <- max(flines$LENGTHKM)
@@ -18,11 +25,16 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   original_fline_atts <- flines
 
+  short_outlets_tracker <- c()
+  headwaters_tracker <- c()
+  removed_mainstem <- data.frame(removed_COMID = c())
+
   #######################################################
   # Short Outlets
   #######################################################
   # Need to clean up the short outlets first so they don't get broken by the method below.
 
+  if(first_pass) {
   flines <- collapse_outlets(flines, thresh, original_fline_atts)
 
   short_outlets_tracker <- flines[["short_outlets_tracker"]]
@@ -41,7 +53,9 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
     !(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
       flines$LENGTHKM < thresh & # shorter than threshold
       is.na(flines$joined_fromCOMID) &
-      is.na(flines$joined_toCOMID)
+      is.na(flines$joined_toCOMID) &
+      !is.na(flines$toCOMID) &
+      flines$toCOMID != -9999
   }
 
   flines <- reconcile_downstream(flines, remove_headwaters, remove_problem_headwaters = TRUE)
@@ -102,7 +116,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
                                       by = c("removed_COMID" = "COMID"))
     removed_mainstem <- rbind(removed_mainstem, removed_mainstem_top)
   }
-
+  }
   #######################################################
   # Short Single Confluence to Confluence Flowpaths
   #######################################################
@@ -172,15 +186,20 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   flines <- select(flines, -new_toCOMID)
 
-  bad_rows <- function(flines) is.na(flines$toCOMID) &
+  bad_rows_to <- function(flines) is.na(flines$toCOMID) &
     flines$LENGTHKM == 0 &
     flines$COMID %in% flines$joined_toCOMID &
     flines$joined_toCOMID != -9999
 
+  bad_rows_from <- function(flines) is.na(flines$toCOMID) &
+    flines$LENGTHKM == 0 &
+    flines$COMID %in% flines$joined_fromCOMID &
+    flines$joined_fromCOMID != -9999
+
   count <- 0
 
   # Should investigate why NAs are coming out of the splitter.
-  while(any(bad_rows(flines), na.rm = TRUE)) {
+  while(any(bad_rows_to(flines), na.rm = TRUE) | any(bad_rows_from(flines), na.rm = TRUE)) {
     flines <- left_join(flines,
                         select(flines,
                                new_joined_toCOMID = joined_toCOMID,
@@ -195,11 +214,27 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
     flines <- select(flines, -new_joined_toCOMID, -new_joined_fromCOMID)
 
+    flines <- left_join(flines,
+                        select(flines,
+                               new_joined_toCOMID = joined_toCOMID,
+                               new_joined_fromCOMID = joined_fromCOMID,
+                               COMID), by = c("joined_fromCOMID" = "COMID"))
+
+    flines <- mutate(flines, joined_fromCOMID = ifelse((!is.na(new_joined_fromCOMID) & new_joined_fromCOMID != -9999),
+                                                       new_joined_fromCOMID,
+                                                       ifelse(!is.na(new_joined_toCOMID),
+                                                              new_joined_toCOMID,
+                                                              joined_fromCOMID)))
+
+    flines <- select(flines, -new_joined_toCOMID, -new_joined_fromCOMID)
+
     count <- count + 1
-    if(count > 100) {
+    if(count > 10) {
       browser()
       # stop("stuck in final clean up loop")
     }
   }
-  return(flines)
+
+
+  return(distinct(flines))
 }

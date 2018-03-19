@@ -156,9 +156,14 @@ test_that("repeat collapse doesn't leave orphans", {
   flines <- suppressWarnings(collapse_flowlines(flines, (0.25), TRUE, (0.25)))
 
   # needs to get redirected on the second pass.
-  expect(flines$joined_toCOMID[which(flines$COMID == 21974341)] == 21975095)
-  expect(flines$joined_toCOMID[which(flines$COMID == 21975097)] == 21975095)
+  expect(flines$joined_fromCOMID[which(flines$COMID == 21974341)] == 21975119)
+  expect(flines$joined_fromCOMID[which(flines$COMID == 21975097)] == 21975119)
 
-  # expect(flines$toCOMID[which(flines$COMID == 21975777)] == flines$joined_toCOMID[which(flines$COMID == 21975773)])
+  expect(flines$joined_fromCOMID[which(flines$COMID == 21975773)] == 21975777)
+  expect(flines$joined_fromCOMID[which(flines$COMID == 21976313)] == 21975777)
+
+  expect(flines$toCOMID[which(flines$COMID == 21975771.1)] == 21975771.2)
+  expect(flines$toCOMID[which(flines$COMID == 21975771.2)] == 21976315)
 
 })
+

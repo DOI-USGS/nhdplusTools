@@ -111,8 +111,15 @@ test_that("headwater / top of mainstem collapes works as expected", {
 test_that("collapse flowlines works with small networks", {
   flines <- readRDS("data/smallish_networks.rds")
   flines_collapse <- collapse_flowlines(flines, 2)
-  expect_equal(length(which(flines_collapse$joined_fromCOMID == -9999)),
-               3)
+  # Dumb test...
+  # expect_equal(length(which(flines_collapse$joined_fromCOMID == -9999)), 3)
+
+  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/frost_network.rds"),0,0))
+
+  c1 <- collapse_flowlines(flines,1000,F,1000)
+
+  expect(c1$joined_fromCOMID[which(c1$COMID==5876961)] == -9999)
+  expect(c1$joined_fromCOMID[which(c1$COMID==5876993)] == 5876961)
 })
 
 test_that("collapse flowlines works as expected with add category", {

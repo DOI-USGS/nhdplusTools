@@ -10,19 +10,6 @@
 #'
 reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_fline_atts, normalize_mainstems = FALSE) {
 
-  # if(normalize_mainstems) {
-  #   # These are the ones we could possibly combine upstream instead of downstream.
-  #   single_fromCOMID <- filter(get_upstream(flines), !is.na(fromCOMID)) %>% group_by(COMID) %>% filter(n() == 1) %>% ungroup() %>%
-  #     left_join(select(flines, usLENGTHKM = LENGTHKM, COMID), by = c("fromCOMID" = "COMID"))
-  #
-  #   flines <- left_join(flines, single_fromCOMID, by = "COMID")
-  #
-  #   # Modify this to select off more flines content!!!
-  #   removed_adjust <- left_join(removed, select(flines, -joined_fromCOMID), by = c("removed_COMID" = "COMID")) %>%
-  #     mutate(joined_toCOMID = ifelse(dsLENGTHKM > usLENGTHKM, toCOMID, NA)) %>%
-  #     mutate(joined_fromCOMID = ifelse(is.na(joined_toCOMID), joined_fromCOMID, NA))
-  # }
-
   # Everything that is rerouted gets its length adjusted.
   # e.g. both tribs and main stem get lengthened the same.
   flines[["LENGTHKM"]][reroute_set] <-
@@ -62,7 +49,7 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
     }
   }
 
-  already_removed <- filter(flines, !is.na(joined_fromCOMID)) %>%
+  already_removed <- filter(flines, (!is.na(joined_fromCOMID) & joined_fromCOMID != -9999)) %>%
     select(removed_COMID = COMID, joined_fromCOMID)
 
   # Need to sort removed_COMID by drainage area to get the right "first matches" below.

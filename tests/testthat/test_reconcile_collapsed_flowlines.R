@@ -71,13 +71,6 @@ test_that("collapse works on a double pass", {
   expect_equal(collapsed_flines$joined_toCOMID[which(collapsed_flines$COMID == 21976891)],
                collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == 21974583)])
 
-  # New Tests:
-  # expect_equal(collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == 21975773)], 21975777)
-  # expect_equal(collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == 21976313)], 21975777)
-  #
-  # expect_equal(collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == 21976891)],
-  #              collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == 21974583)])
-
   # collapsed_flines %>%
   #   inner_join(select(flines, COMID), by = "COMID") %>%
   #   sf::st_as_sf() %>%
@@ -86,15 +79,12 @@ test_that("collapse works on a double pass", {
 
   collapsed <- reconcile_collapsed_flowlines(collapsed_flines, select(flines, COMID), id = "COMID")
 
-  # Old Tests:
-  expect(collapsed$toID[which(collapsed$ID==60)] == 59)
-  expect(collapsed$toID[which(collapsed$ID==5816)] == 59)
-  expect(collapsed$toID[which(collapsed$ID==59)] == 3031)
-
-  # New Tests?
-  # Make sure a short top of mainstem gets joined downstream properly.
-  # expect(collapsed$toID[which(collapsed$ID==6141)] == 3305)
-  # expect(collapsed$toID[which(collapsed$ID==66)] == 3305)
+  # These tests are dumb but don't know how else to handle.
+  # Checking neighborhood of: c(21976315, 21975773, 21976313, 21975819.1) and 21975817
+  expect(collapsed$toID[which(collapsed$ID==58)] == 3019)
+  expect(collapsed$toID[which(collapsed$ID==5805)] == 3019)
+  expect(collapsed$toID[which(collapsed$ID==59)] == 3022)
+  expect(collapsed$toID[which(collapsed$ID==3022)] == 58)
 
   # sf::st_write(sf::st_transform(collapsed, 4326), "out_reconciled.gpkg", layer_options = "OVERWRITE=YES")
 

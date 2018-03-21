@@ -120,6 +120,18 @@ test_that("collapse flowlines works with small networks", {
 
   expect(c1$joined_fromCOMID[which(c1$COMID==5876961)] == -9999)
   expect(c1$joined_fromCOMID[which(c1$COMID==5876993)] == 5876961)
+
+  expect_equal(c1$LENGTHK[which(c1$COMID == 5876989)], 0.878)
+
+  r1 <- reconcile_collapsed_flowlines(c1)
+
+  expect_equal(length(which(r1$ID == 1)), 7)
+  expect(all(is.na(r1$toID)))
+
+  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/tiny_network.rds"),0,0))
+  c1 <- collapse_flowlines(flines,1000,F,1000)
+
+  expect_equal(c1$LENGTHKM[which(c1$COMID == 7733111)], 0.221)
 })
 
 test_that("collapse flowlines works as expected with add category", {
@@ -167,16 +179,6 @@ test_that("repeat collapse doesn't leave orphans", {
   expect(flines$joined_toCOMID[which(flines$COMID == 21974341)] == 21975095)
   expect(flines$joined_toCOMID[which(flines$COMID == 21975097)] == 21975095)
   expect(flines$toCOMID[which(flines$COMID == 21975777)] == flines$joined_toCOMID[which(flines$COMID == 21975773)])
-
-  # New Tests?
-  # expect(flines$joined_fromCOMID[which(flines$COMID == 21974341)] == 21975119)
-  # expect(flines$joined_fromCOMID[which(flines$COMID == 21975097)] == 21975119)
-  #
-  # expect(flines$joined_fromCOMID[which(flines$COMID == 21975773)] == 21975777)
-  # expect(flines$joined_fromCOMID[which(flines$COMID == 21976313)] == 21975777)
-  #
-  # expect(flines$toCOMID[which(flines$COMID == 21975771.1)] == 21975771.2)
-  # expect(flines$toCOMID[which(flines$COMID == 21975771.2)] == 21976315)
 
 })
 

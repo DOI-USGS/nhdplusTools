@@ -14,8 +14,10 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
     flines$ds_num_upstream <- get_ds_num_upstream(flines)
 
     if(remove_problem_headwaters) {
+      flines$ds_joined_fromCOMID <- get_ds_joined_fromCOMID(flines)
+
       # problem headwaters
-      ph <- rfl & flines$ds_num_upstream > 1
+      ph <- rfl & (flines$ds_num_upstream > 1 | !is.na(flines$ds_joined_fromCOMID))
 
       # remove problems from remove
       rfl <- rfl & !ph
@@ -23,6 +25,8 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
 
       # Set broken ones to -9999 to indicate they can't be combined.
       flines[["joined_toCOMID"]][ph_index] <- -9999
+
+      flines <- select(flines, -ds_joined_fromCOMID)
     }
 
     rfl_index <- which(rfl)

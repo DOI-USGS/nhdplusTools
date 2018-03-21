@@ -30,3 +30,8 @@ get_ds_num_upstream <- function(flines) {
   flines <- mutate(flines, num_upstream = get_num_upstream(flines))
   flines[["num_upstream"]][match(flines$toCOMID, flines$COMID)]
 }
+
+get_ds_joined_fromCOMID <- function(flines) {
+  flines <- mutate(flines, ds_joined_fromCOMID = joined_fromCOMID)
+  flines[["ds_joined_fromCOMID"]][match(flines$toCOMID, flines$COMID)]
+}

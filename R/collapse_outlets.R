@@ -58,6 +58,7 @@ collapse_outlets <- function(flines, thresh, original_fline_atts) {
                                      fromTotDASqKM = TotDASqKM),
                               by = c("COMID" = "toCOMID")) %>%
       group_by(COMID) %>%  # deduplicate with area then length.
+      filter(is.na(joined_fromCOMID) | joined_fromCOMID != -9999) %>%
       filter(fromTotDASqKM == max(fromTotDASqKM)) %>%
       filter(fromLENGTHKM == max(fromLENGTHKM)) %>%
       filter(fromCOMID == max(fromCOMID)) %>% # This is dumb, but happens if DA and Length are equal...

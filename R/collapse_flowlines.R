@@ -168,6 +168,19 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
     flines$joined_fromCOMID[bad_joined_fromCOMID_index] <- NA
   }
 
+  # And the opposite direction
+  potential_bad_rows <- flines$COMID[which(!is.na(flines$joined_fromCOMID) & flines$joined_fromCOMID != -9999)]
+  bad_joined_toCOMID <- potential_bad_rows[potential_bad_rows %in% flines$joined_toCOMID]
+
+  if(length(bad_joined_toCOMID > 0)) {
+    # This is the row we will update
+    bad_joined_toCOMID_index <- match(bad_joined_toCOMID, flines$joined_toCOMID)
+    # This is the row we will get our update from
+    new_joined_fromCOMID_index <- match(bad_joined_toCOMID, flines$COMID)
+    flines$joined_fromCOMID[bad_joined_toCOMID_index] <- flines$joined_fromCOMID[new_joined_fromCOMID_index]
+    flines$joined_toCOMID[bad_joined_toCOMID_index] <- NA
+  }
+
   if(add_category) {
     if(!"join_category" %in% names(flines)) {
       flines$join_category <- NA

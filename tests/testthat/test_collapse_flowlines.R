@@ -132,6 +132,14 @@ test_that("collapse flowlines works with small networks", {
   c1 <- collapse_flowlines(flines,1000,F,1000)
 
   expect_equal(c1$LENGTHKM[which(c1$COMID == 7733111)], 0.221)
+
+  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/flag_network.rds"),0,0))
+
+  c1 <- collapse_flowlines(flines, 1000,F,1000)
+
+  expect(c1$joined_fromCOMID[which(c1$COMID == 1797871)] == 1798051)
+  r1 <- reconcile_collapsed_flowlines(c1)
+
 })
 
 test_that("collapse flowlines works as expected with add category", {

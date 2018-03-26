@@ -22,8 +22,8 @@ prepare_nhdplus <- function(flines, min_network_size, min_path_length) {
                    FromNode, ToNode, TotDASqKM, StartFlag,
                    StreamOrde, StreamCalc, TerminalPa, Pathlength) %>%
     filter(FTYPE != "Coastline" & # Remove Coastlines
-             StreamOrde == StreamCalc & # Also use streamorder and streamcalc to select only the main paths.
-             !(StartFlag==1 & TerminalFl == 1)) # Remove totally isoloated flowlines.
+             StreamOrde == StreamCalc) #& # Also use streamorder and streamcalc to select only the main paths.
+             # !(StartFlag==1 & TerminalFl == 1)) # Remove totally isoloated flowlines.
 
   terminal_filter <- flines$TerminalFl == 1 & flines$TotDASqKM < min_network_size
   start_filter <- flines$StartFlag == 1 & flines$Pathlength < min_path_length
@@ -37,8 +37,8 @@ prepare_nhdplus <- function(flines, min_network_size, min_path_length) {
   }
 
   warning(paste("Removed", orig_rows - nrow(flines), "flowlines that don't apply.\n",
-                "Includes: Coastlines, non-dendritic paths, \n single-flowline networks, and networks",
-                "\n with drainage area less than",
+                "Includes: Coastlines, non-dendritic paths, \nand networks",
+                "with drainage area less than",
                 min_network_size, "sqkm"))
 
   # Join ToNode and FromNode along with COMID and Length to get downstream attributes.

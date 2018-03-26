@@ -10,13 +10,6 @@
 #'
 collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_thresh = NULL) {
 
-  if("joined_fromCOMID" %in% names(flines)) {
-    first_pass <- FALSE
-    warning("second pass, only running confluence collapse")
-  } else {
-    first_pass <- TRUE
-  }
-
   if(is.null(mainstem_thresh)) { # very large thresh
     mainstem_thresh_use <- max(flines$LENGTHKM)
   } else {
@@ -34,7 +27,6 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
   #######################################################
   # Need to clean up the short outlets first so they don't get broken by the method below.
 
-  # if(first_pass) {
   flines <- collapse_outlets(flines, thresh, original_fline_atts)
 
   short_outlets_tracker <- flines[["short_outlets_tracker"]]
@@ -116,7 +108,6 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
                                       by = c("removed_COMID" = "COMID"))
     removed_mainstem <- rbind(removed_mainstem, removed_mainstem_top)
   }
-  # }
   #######################################################
   # Short Single Confluence to Confluence Flowpaths
   #######################################################

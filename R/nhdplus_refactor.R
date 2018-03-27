@@ -22,10 +22,14 @@ nhdplus_refactor <- function(nhdplus_flines,
                              out_reconciled,
                              three_pass = FALSE) {
 
-  flines <- st_set_geometry(nhdplus_flines, NULL) %>%
-    prepare_nhdplus(0, 0) %>%
-    inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
-    st_as_sf() %>%
+  if("FTYPE" %in% nhdplus_flines) {
+    nhdplus_flines <- st_set_geometry(nhdplus_flines, NULL) %>%
+      prepare_nhdplus(0, 0) %>%
+      inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
+      st_as_sf()
+  }
+
+  flines <- nhdplus_flines %>%
     st_cast("LINESTRING") %>%
     st_transform(5070) %>%
     split_flowlines(split_flines_meters, split_flines_cores)

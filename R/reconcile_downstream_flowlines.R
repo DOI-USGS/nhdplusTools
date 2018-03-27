@@ -9,7 +9,7 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
   removed_tracker <- c()
   count <- 0
   rfl <- remove_fun(flines)
-  while(any(rfl)) {
+  while(any(rfl, na.rm = T)) {
 
     flines$ds_num_upstream <- get_ds_num_upstream(flines)
 

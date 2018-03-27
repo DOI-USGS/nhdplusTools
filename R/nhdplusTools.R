@@ -1,3 +1,10 @@
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage(paste(strwrap(
+    'USGS Research Package:
+    https://owi.usgs.gov/R/packages.html#research'),
+    collapse='\n'))
+}
+
 get_dsLENGTHKM <- function(flines) {
   # This gets all the next-downstream flowlines and finds the length of the next downstream
   flines$dsLENGTHKM <- flines[["LENGTHKM"]][match(flines$toCOMID, flines$COMID)]

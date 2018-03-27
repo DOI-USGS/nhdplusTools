@@ -10,7 +10,7 @@
 #' @importFrom dplyr select filter left_join
 #' @export
 #'
-prepare_nhdplus <- function(flines, min_network_size, min_path_length) {
+prepare_nhdplus <- function(flines, min_network_size, min_path_length, purge_non_dendritic = TRUE) {
   if("sf" %in% class(flines)) {
     warning("removing geometry")
     flines <- sf::st_set_geometry(flines, NULL)
@@ -20,11 +20,15 @@ prepare_nhdplus <- function(flines, min_network_size, min_path_length) {
 
   flines <- select(flines, COMID, LENGTHKM, FTYPE, TerminalFl,
                    FromNode, ToNode, TotDASqKM, StartFlag,
-                   StreamOrde, StreamCalc, TerminalPa, Pathlength) %>%
-    filter(FTYPE != "Coastline" & # Remove Coastlines
-             StreamOrde == StreamCalc) #& # Also use streamorder and streamcalc to select only the main paths.
-             # !(StartFlag==1 & TerminalFl == 1)) # Remove totally isoloated flowlines.
+                   StreamOrde, StreamCalc, TerminalPa, Pathlength, Divergence)
 
+  if(purge_non_dendritic) {
+    flines <- filter(flines, FTYPE != "Coastline" & # Remove Coastlines
+                     StreamOrde == StreamCalc) #& # Also use streamorder and streamcalc to select only the main paths.
+  } else {
+    flines <- filter(flines, FTYPE != "Coastline") # Remove Coastlines
+    flines[["FromNode"]][which(flines$Divergence == 2)] <- NA
+  }
   terminal_filter <- flines$TerminalFl == 1 & flines$TotDASqKM < min_network_size
   start_filter <- flines$StartFlag == 1 & flines$Pathlength < min_path_length
 
@@ -50,5 +54,5 @@ prepare_nhdplus <- function(flines, min_network_size, min_path_length) {
   }
 
   select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
-         -StreamOrde, -StreamCalc, -TerminalPa, -FTYPE, -Pathlength)
+         -StreamOrde, -StreamCalc, -TerminalPa, -FTYPE, -Pathlength, -Divergence)
 }

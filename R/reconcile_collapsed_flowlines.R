@@ -18,7 +18,7 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 
   new_flines <- left_join(new_flines,
                           data.frame(becomes = unique(new_flines$becomes),
-                                     ID = 1:length(unique(new_flines$becomes))),
+                                     ID = 1:length(unique(new_flines$becomes)), stringsAsFactors = FALSE),
                           by = "becomes")
 
   toCOMID_updater <- filter(select(new_flines, becomes, toCOMID), !is.na(toCOMID))

@@ -4,7 +4,8 @@
 \alias{prepare_nhdplus}
 \title{Prep NHDPlus Data for Refactor}
 \usage{
-prepare_nhdplus(flines, min_network_size, min_path_length)
+prepare_nhdplus(flines, min_network_size, min_path_length,
+  purge_non_dendritic = TRUE)
 }
 \arguments{
 \item{flines}{data.frame NHDPlus flowlines including at a minimum: COMID, LENGTHKM,

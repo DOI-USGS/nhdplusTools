@@ -20,7 +20,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   short_outlets_tracker <- c()
   headwaters_tracker <- c()
-  removed_mainstem <- data.frame(removed_COMID = c())
+  removed_mainstem <- data.frame(removed_COMID = c(), stringsAsFactors = FALSE)
 
   #######################################################
   # Short Outlets
@@ -95,7 +95,8 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   # This is the set that is going to get skipped in the rerouting.
   removed_mainstem <- data.frame(removed_COMID = flines[["toCOMID"]][reroute_mainstem_set],
-                                 joined_fromCOMID = flines[["COMID"]][reroute_mainstem_set])
+                                 joined_fromCOMID = flines[["COMID"]][reroute_mainstem_set],
+                                 stringsAsFactors = FALSE)
 
   flines <- reconcile_removed_flowlines(flines, reroute_mainstem_set, removed_mainstem, original_fline_atts)
 
@@ -103,7 +104,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   if(!is.null(mainstem_thresh) & !is.null(mainstem_top_tracker)) {
     removed_mainstem_top <- left_join(data.frame(removed_COMID = mainstem_top_tracker,
-                                                 joined_fromCOMID = NA),
+                                                 joined_fromCOMID = NA, stringsAsFactors = FALSE),
                                       select(flines, COMID, joined_toCOMID),
                                       by = c("removed_COMID" = "COMID"))
     removed_mainstem <- rbind(removed_mainstem, removed_mainstem_top)
@@ -126,7 +127,8 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 
   # This is the set that is going to get skipped in the rerouting.
   removed_confluence <- data.frame(removed_COMID = flines[["toCOMID"]][reroute_confluence_set],
-                                   joined_fromCOMID = flines[["COMID"]][reroute_confluence_set])
+                                   joined_fromCOMID = flines[["COMID"]][reroute_confluence_set],
+                                   stringsAsFactors = FALSE)
 
   # Need to deduplicate the upstream that removed will get combined with.
   removed_confluence <- group_by(left_join(removed_confluence,

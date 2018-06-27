@@ -40,8 +40,7 @@ split_flowlines <- function(flines, max_length, para = 0) {
   old_toCOMID <- stringr::str_replace(redirect_toCOMID, "\\.1$", "")
 
   mutate(flines,
-         toCOMID = as.numeric(ifelse(toCOMID %in% old_toCOMID, paste0(toCOMID, ".1"), toCOMID)),
-         COMID = as.numeric(COMID))
+         toCOMID = ifelse(toCOMID %in% old_toCOMID, paste0(toCOMID, ".1"), toCOMID))
 }
 
 

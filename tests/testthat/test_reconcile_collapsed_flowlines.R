@@ -65,11 +65,11 @@ test_that("collapse works on a double pass", {
                                          (collapse_flines_mainstem_meters/1000)))
 
   # Old Tests:
-  expect_equal(collapsed_flines$joined_toCOMID[which(collapsed_flines$COMID == 21975773)], 21975819)
-  expect_equal(collapsed_flines$joined_toCOMID[which(collapsed_flines$COMID == 21976313)], 21975819)
+  expect_equal(collapsed_flines$joined_toCOMID[which(collapsed_flines$COMID == "21975773")], "21975819.1")
+  expect_equal(collapsed_flines$joined_toCOMID[which(collapsed_flines$COMID == "21976313")], "21975819.1")
 
-  expect_equal(collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == 21976891)],
-               collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == 21974583)])
+  expect_equal(collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == "21976891")],
+               collapsed_flines$joined_fromCOMID[which(collapsed_flines$COMID == "21974583")])
 
   # collapsed_flines %>%
   #   inner_join(select(flines, COMID), by = "COMID") %>%

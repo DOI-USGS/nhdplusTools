@@ -11,7 +11,8 @@ test_that("prep_nhdplus_works", {
 })
 
 test_that("prep_nhdplus leaves non-dendritic", {
-  flines <- prepare_nhdplus(readRDS("data/petapsco_network.rds"),
+  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/petapsco_network.rds"),
     min_network_size = 10,
-    min_path_length = 1, purge_non_dendritic = FALSE)
+    min_path_length = 1, purge_non_dendritic = FALSE))
+  expect_equal(nrow(flines), 707)
 })

@@ -16,6 +16,13 @@ test_that("get_DM works for no divergence", {
   expect_equal(length(result),35)
 })
 
+test_that("get_DM works upstream of diversion", {
+  result <- get_DM(readRDS("data/petapsco_network.rds"),11689280)
+  expect(!11689758 %in% result)
+  expect(11689286 %in% result)
+  expect_equal(length(result),29)
+})
+
 context("get_UM")
 
 test_that("get_UM works short", {
@@ -43,3 +50,11 @@ test_that("get_DD works", {
   expect(11688828 %in% result)
   expect_equal(length(result),36)
 })
+
+test_that("get_DD works upstream of diversion", {
+  result <- get_DD(readRDS("data/petapsco_network.rds"),11689280)
+  expect(11689758 %in% result)
+  expect(11689286 %in% result)
+  expect_equal(length(result),33)
+})
+

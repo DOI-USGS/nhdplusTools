@@ -3,7 +3,7 @@
 export(collapse_flowlines)
 export(collapse_outlets)
 export(get_DD)
-export(get_DM_2)
+export(get_DM)
 export(get_UM)
 export(get_UT)
 export(nhdplus_refactor)

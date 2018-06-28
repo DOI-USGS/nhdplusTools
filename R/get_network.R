@@ -65,7 +65,6 @@ get_UM <- function(network, comid) {
   }
 }
 
-
 #' @title Get all downstream mainstem COMIDs
 #' @description Traverse NHDPlus network downstream main stem
 #' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
@@ -75,27 +74,6 @@ get_UM <- function(network, comid) {
 #' @importFrom dplyr filter
 #' @export
 #'
-get_DM_2 <- function(network, comid) {
-
-  # Grab the submitted comids
-  main <- filter(network, COMID %in% comid)
-
-  # grab comids for "main network"
-  main_ds <- filter(network, LevelPathI %in% main$LevelPathI &
-                         Hydroseq <= main$Hydroseq)[c("COMID", "Hydroseq")]
-
-  # find ds hydroseq
-  ds_hs <- filter(network, Hydroseq == min(main_ds$Hydroseq))$DnHydroseq
-
-  ds_comid <- filter(network, Hydroseq == ds_hs)$COMID
-
-  if(length(ds_comid) > 0) {
-    c(main_ds$COMID, get_DM(network, ds_comid))
-  } else {
-    return(main_ds$COMID)
-  }
-}
-
 get_DM <- function(network, comid) {
 
   # Grab the submitted comids
@@ -106,7 +84,7 @@ get_DM <- function(network, comid) {
                      Hydroseq %in% main$DnHydroseq)$COMID
 
   if(length(ds_comid) > 0) {
-    c(main$COMID, get_DD(network, ds_comid))
+    c(main$COMID, get_DM(network, ds_comid))
   } else {
     return(main$COMID)
   }
@@ -132,7 +110,7 @@ get_DD <- function(network, comid) {
                      Hydroseq %in% main$DnHydroseq | Hydroseq %in% main$DnMinorHyd)$COMID
 
   if(length(ds_comid) > 0) {
-    c(main$COMID, get_DD(network, ds_comid))
+    unique(c(main$COMID, get_DD(network, ds_comid)))
   } else {
     return(main$COMID)
   }

@@ -59,6 +59,16 @@ test_that("get_UM works long", {
   expect_equal(length(result),80)
 })
 
+test_that("get_UM returns 1 for distance 0", {
+  result <- get_UM(readRDS("data/petapsco_network.rds"), 11690570, distance = 0)
+  expect_equal(length(result),1)
+})
+
+test_that("get_UM returns a certain length for given distance", {
+  result <- get_UM(readRDS("data/petapsco_network.rds"), 11690570, distance = 10)
+  expect_equal(length(result),12)
+})
+
 context("get_UT")
 
 test_that("get_UT works", {

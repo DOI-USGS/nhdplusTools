@@ -70,21 +70,38 @@ get_UM <- function(network, comid) {
 #' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
 #' LevelPathI, DnHydroseq, and HydroSeq.
 #' @param comid integer identifier to start navigating from.
+#' @param distance numeric distance in km to limit how many COMIDs are returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs downstream of the starting catchment along the mainstem.
 #' @importFrom dplyr filter
 #' @export
 #'
-get_DM <- function(network, comid) {
+get_DM <- function(network, comid, distance = NULL) {
 
-  # Grab the submitted comids
+  private_get_DM(network, comid, distance, run_distance = 0)
+
+}
+
+private_get_DM <- function(network, comid, distance = NULL, run_distance = NULL) {
+
   main <- filter(network, COMID %in% comid)
 
-  # find ds
   ds_comid <- filter(network,
                      Hydroseq %in% main$DnHydroseq)$COMID
 
+  if(!is.null(distance)) {
+    accum_distance <- run_distance + main$LENGTHKM
+  }
+
   if(length(ds_comid) > 0) {
-    c(main$COMID, get_DM(network, ds_comid))
+    if(!is.null(distance)) {
+      if(accum_distance < distance) {
+        c(main$COMID, private_get_DM(network, ds_comid, distance, accum_distance))
+      } else {
+        return(main$COMID)
+      }
+    } else {
+      c(main$COMID, private_get_DM(network, ds_comid))
+    }
   } else {
     return(main$COMID)
   }

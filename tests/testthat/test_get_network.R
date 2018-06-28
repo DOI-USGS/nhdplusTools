@@ -82,3 +82,14 @@ test_that("get_DD works upstream of diversion", {
   expect_equal(length(result),33)
 })
 
+test_that("get_DD with distance 0.2 returns 3", {
+  result <- get_DD(readRDS("data/petapsco_network.rds"), 11688810, distance = 0.2)
+  expect_equal(length(result),3)
+})
+
+test_that("get_DD with distance 2 returns 4 specific", {
+  result <- get_DD(readRDS("data/petapsco_network.rds"), 11688810, distance = 2)
+  expect_equal(length(result),4)
+  expect(all(c(11688810, 11688826, 11688828, 11688884) %in% result))
+})
+

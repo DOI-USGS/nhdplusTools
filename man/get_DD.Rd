@@ -4,13 +4,17 @@
 \alias{get_DD}
 \title{Get all downstream mainstem COMIDs}
 \usage{
-get_DD(network, comid)
+get_DD(network, comid, distance = NULL)
 }
 \arguments{
 \item{network}{data.frame NHDPlus flowlines including at a minimum: COMID,
 DnMinorHyd, DnHydroseq, and HydroSeq.}
 
 \item{comid}{integer identifier to start navigating from.}
+
+\item{distance}{numeric distance in km to limit how many COMIDs are returned.
+The COMID that exceeds the distance specified is returned.
+The longest of the diverted paths is used for limiting distance.}
 }
 \value{
 integer vector of all COMIDs downstream of the starting catchment along the mainstem.

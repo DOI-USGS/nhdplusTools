@@ -1,5 +1,12 @@
 # nhdplusTools
 
+### Installation:
+
+```
+install.packages("devtools")
+devtools::install_github("dblodgett-usgs/nhdplusTools")
+```
+
 ## Tools for Manipulating the NHDPlus Network
 
 This package is a growing collection of tools for manipulation of hydrographic data that adheres to the NHDPlus data model. It is being developed as part of an ongoing collaboration between the National Weather Service and the U.S. Geological Survey between January and October 2018. There is no established funding or plan to continue devlopment of this package beyond October 2018.

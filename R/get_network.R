@@ -1,39 +1,55 @@
 #' @title Get all upstream with tributaries COMIDs
 #' @description Traverse NHDPlus network upstream with tributaries
 #' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
-#' LevelPathI, DnLevelPt, and HydroSeq.
+#' Pathlength, LENGTHKM, and HydroSeq.
 #' @param comid integer Identifier to start navigating from.
+#' @param distance numeric distance in km to limit how many COMIDs are returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs upstream with tributaries of the starting catchment.
 #' @importFrom dplyr filter
 #' @export
 #'
-get_UT <- function(network, comid) {
+get_UT <- function(network, comid, distance = NULL) {
 
   # Grab the submitted comids
   main <- filter(network, COMID %in% comid)
 
-  # grab comids for "main network"
-  if(length(main$Hydroseq) == 1) {
-    main_comid <- filter(network, LevelPathI %in% main$LevelPathI &
-                           Hydroseq >= main$Hydroseq)$COMID
+  if(!is.null(distance)) {
+    stop_pathlength <- main$Pathlength - main$LENGTHKM + distance
+
+    if(length(main$LENGTHKM) == 1) {
+      if(main$LENGTHKM > distance) return(main$COMID)
+    }
   } else {
-    main_comid <- filter(network, LevelPathI %in% main$LevelPathI)$COMID
+    stop_pathlength <- NULL
   }
 
-  # find tributary lpids
-  trib_lpid <- filter(network, DnLevelPat %in% main$LevelPathI &
-                        !LevelPathI %in% main$LevelPathI)$LevelPathI
-
-  # grab comids of tributaries
-  trib_comid <- filter(network, LevelPathI %in% trib_lpid)$COMID
-
-  if(length(trib_comid) > 0) {
-    comids <- c(main_comid, get_UT(network, trib_comid))
-  } else {
-    return(main_comid)
-  }
+  return(private_get_UT(network, comid, distance, stop_pathlength))
 }
 
+private_get_UT <- function(network, comid, distance = NULL, stop_pathlength = NULL) {
+
+  # Grab the submitted comids
+  main <- filter(network, COMID %in% comid)
+
+  if(!is.null(distance)) {
+
+    ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
+                         (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)) &
+                         Pathlength < stop_pathlength)$COMID
+
+  } else {
+
+    ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
+                         (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)))$COMID
+
+  }
+
+  if(length(ut_comid) > 0) {
+    return(c(main$COMID, private_get_UT(network, ut_comid, distance, stop_pathlength)))
+  } else {
+    return(main$COMID)
+  }
+}
 
 #' @title Get all upstream mainstem COMIDs
 #' @description Traverse NHDPlus network upstream main stem

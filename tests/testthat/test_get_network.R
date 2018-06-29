@@ -72,8 +72,22 @@ test_that("get_UM returns a certain length for given distance", {
 context("get_UT")
 
 test_that("get_UT works", {
-  result <- get_UT(readRDS("data/petapsco_network.rds"),11689276)
-  expect_equal(length(result),683)
+  result <- get_UT(readRDS("data/petapsco_network.rds"), 11687180)
+  expect_equal(length(result),5)
+  result <- get_UT(readRDS("data/petapsco_network.rds"), 11687224)
+  expect_equal(length(result),7)
+})
+
+test_that("get_UT works with distance", {
+  result <- get_UT(readRDS("data/petapsco_network.rds"), 11689276, distance = 0)
+  expect_equal(result, 11689276)
+  result <- get_UT(readRDS("data/petapsco_network.rds"), 11689276, distance = 3)
+  expect_equal(length(result),6)
+})
+
+test_that("get_UT works with distance specific", {
+  result <- get_UT(readRDS("data/petapsco_network.rds"), 11687180, 2)
+  expect_equal(length(result),3)
 })
 
 context("get_DD")

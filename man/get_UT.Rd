@@ -4,13 +4,15 @@
 \alias{get_UT}
 \title{Get all upstream with tributaries COMIDs}
 \usage{
-get_UT(network, comid)
+get_UT(network, comid, distance = NULL)
 }
 \arguments{
 \item{network}{data.frame NHDPlus flowlines including at a minimum: COMID,
-LevelPathI, DnLevelPt, and HydroSeq.}
+Pathlength, LENGTHKM, and HydroSeq.}
 
 \item{comid}{integer Identifier to start navigating from.}
+
+\item{distance}{numeric distance in km to limit how many COMIDs are returned. The COMID that exceeds the distance specified is returned.}
 }
 \value{
 integer vector of all COMIDs upstream with tributaries of the starting catchment.

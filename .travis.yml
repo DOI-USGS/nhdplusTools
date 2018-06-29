@@ -8,6 +8,8 @@ dist: trusty
 matrix:
   include:
     - os: linux
+      r: release
+    - os: linux
       r: devel
       env: R_CODECOV=true
 
@@ -23,12 +25,18 @@ addons:
 
 warnings_are_errors: true
 
-r_github_packages:
-  - jimhester/covr
-
 script:
   - |
     R CMD build .
-    travis_wait 20 R CMD check EflowStats*tar.gz
+    travis_wait 20 R CMD check nhdplusTools*tar.gz
+
+r_github_packages:
+  - jimhester/covr
+
 after_success:
-  - if [[ "${R_CODECOV}" ]]; then travis_wait 20 R -e 'covr::coveralls()'; fi
+  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::coveralls()'; fi
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change

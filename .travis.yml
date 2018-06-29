@@ -1,0 +1,34 @@
+language: r
+cache:
+  - packages
+  - ccache
+sudo: required
+dist: trusty
+
+matrix:
+  include:
+    - os: linux
+      r: devel
+      env: R_CODECOV=true
+
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+    packages:
+      - libudunits2-dev
+      - libproj-dev
+      - libgeos-dev
+      - libgdal-dev
+
+warnings_are_errors: true
+
+r_github_packages:
+  - jimhester/covr
+
+script:
+  - |
+    R CMD build .
+    travis_wait 20 R CMD check EflowStats*tar.gz
+after_success:
+  - if [[ "${R_CODECOV}" ]]; then travis_wait 20 R -e 'covr::coveralls()'; fi

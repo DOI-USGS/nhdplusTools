@@ -174,6 +174,8 @@ test_that("repeat collapse doesn't leave orphans", {
     sf::st_cast("LINESTRING") %>%
     sf::st_transform(5070))
 
+  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+
   flines <- nhdplusTools::split_flowlines(flines, 2000, 3)
   flines <- collapse_flowlines(st_set_geometry(flines, NULL), (0.125), TRUE, (0.125))
 
@@ -188,5 +190,6 @@ test_that("repeat collapse doesn't leave orphans", {
   expect(flines$joined_toCOMID[which(flines$COMID == 21975097)] == 21975095)
   expect(flines$toCOMID[which(flines$COMID == 21975777)] == flines$joined_toCOMID[which(flines$COMID == 21975773)])
 
+  }
 })
 

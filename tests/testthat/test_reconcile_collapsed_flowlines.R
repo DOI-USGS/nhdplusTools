@@ -41,6 +41,8 @@ test_that("collapse works on a double pass", {
   collapse_flines_meters <- 500
   collapse_flines_mainstem_meters <- 500
 
+  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+
   flines <- suppressWarnings(st_set_geometry(nhdplus_flines, NULL) %>%
     prepare_nhdplus(0, 0) %>%
     inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
@@ -88,4 +90,5 @@ test_that("collapse works on a double pass", {
 
   # sf::st_write(sf::st_transform(collapsed, 4326), "out_reconciled.gpkg", layer_options = "OVERWRITE=YES")
 
+  }
 })

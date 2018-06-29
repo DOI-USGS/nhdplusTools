@@ -1,6 +1,10 @@
 context("split_lines")
 
 test_that("split lines works", {
+
+  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+
+
   library(sf)
   library(dplyr)
 
@@ -23,9 +27,15 @@ test_that("split lines works", {
 
   expect(nrow(split) == 574)
 
+  }
+
 })
 
 test_that("split lines works", {
+
+  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+
+
   library(sf)
   library(dplyr)
 
@@ -41,5 +51,7 @@ test_that("split lines works", {
     split_flowlines(2000, 3))
 
   expect(length(which(grepl("1623361", as.character(flines$COMID)))) == 10)
+
+  }
 
 })

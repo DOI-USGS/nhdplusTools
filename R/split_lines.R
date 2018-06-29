@@ -162,7 +162,7 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
 #     filter(!is.na(diff_len) & diff_len == min(diff_len)) %>%
 #     ungroup() %>%
 #     # Grab the start node for each geometry -- the end node of the geometry before it.
-#     mutate(start_nID = lag(nID),
+#     mutate(start_nID = lag(nID), ## There's an issue here where start_nID and stop_nID are equal for some flowlines
 #            # need to move the start node one for new features.
 #            new_feature = fID - lag(fID, default = -1),
 #            start_nID = ifelse(new_feature == 1, start_nID + 1, start_nID)) %>%

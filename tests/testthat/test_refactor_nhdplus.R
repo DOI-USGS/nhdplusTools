@@ -1,6 +1,9 @@
 context("three pass")
 
 test_that("refactor_nhdplus works as expected with three pass mode",{
+
+  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+
   library(dplyr)
   library(sf)
   nhdplus_flines <- sf::st_zm(readRDS("data/north_network.rds"))
@@ -53,4 +56,6 @@ test_that("refactor_nhdplus works as expected with three pass mode",{
 
   # Taken care of in clean up! All kinds of wierd around this one in this test.
   expect(collapsed_flines$joined_fromCOMID[collapsed_flines$COMID == 5876435] == 5876083)
+
+  }
 })

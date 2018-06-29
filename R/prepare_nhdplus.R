@@ -5,6 +5,7 @@
 #' StreamCalc, TerminalPa, and Pathlength variables.
 #' @param min_network_size numeric Minimum size (sqkm) of drainage network to include in output.
 #' @param  min_path_length numeric Minimum length (km) of terminal level path of a network.
+#' @param purge_non_dendritic boolean Should non dendritic paths be removed or not.
 #' @return data.frame ready to be used with the refactor_flowlines function.
 #' @import dplyr
 #' @importFrom dplyr select filter left_join

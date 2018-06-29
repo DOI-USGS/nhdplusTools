@@ -16,3 +16,6 @@ reconcile_downstream(flines, remove_fun, remove_problem_headwaters = FALSE)
 \value{
 flines data.frame with short flowlines merged downstream
 }
+\description{
+... TBD ...
+}

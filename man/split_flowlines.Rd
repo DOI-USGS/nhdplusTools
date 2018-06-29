@@ -10,6 +10,8 @@ split_flowlines(flines, max_length, para = 0)
 \item{flines}{data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM and LINESTRING sf column in "meters" projection}
 
 \item{max_length}{maximum segment length to return}
+
+\item{para}{numeric how many threads to use in parallel computation}
 }
 \value{
 All the flowlines with some split apart.

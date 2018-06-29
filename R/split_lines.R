@@ -2,6 +2,7 @@
 #' @description A wrapper for split_lines that works on nhdplus attributes
 #' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM and LINESTRING sf column in "meters" projection
 #' @param max_length maximum segment length to return
+#' @param para numeric how many threads to use in parallel computation
 #' @return All the flowlines with some split apart.
 #' @importFrom dplyr group_by ungroup filter select mutate
 #' @export
@@ -37,7 +38,7 @@ split_flowlines <- function(flines, max_length, para = 0) {
   # Rows with COMID like this need to be updated
   redirect_toCOMID <- flines$COMID[which(grepl("\\.1$", flines$COMID))]
 
-  old_toCOMID <- stringr::str_replace(redirect_toCOMID, "\\.1$", "")
+  old_toCOMID <- gsub("\\.1$", "", redirect_toCOMID)
 
   mutate(flines,
          toCOMID = ifelse(toCOMID %in% old_toCOMID, paste0(toCOMID, ".1"), toCOMID))
@@ -48,7 +49,7 @@ split_flowlines <- function(flines, max_length, para = 0) {
 
 #' @title split lines
 #' @description Splits lines longer than a given threshold into the minimum number of pieces to all be under the given threshold.
-#' @param lines data.frame of class sf with LINESTRING sfc column.
+#' @param input_lines data.frame of class sf with LINESTRING sfc column.
 #' @param max_length maximum segment length to return
 #' @param id name of ID column in data.frame
 #' @param para how many cores to use

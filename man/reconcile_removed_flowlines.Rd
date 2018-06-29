@@ -15,6 +15,8 @@ reconcile_removed_flowlines(flines, reroute_set, removed, original_fline_atts,
 \item{removed}{data.frame ...}
 
 \item{original_fline_atts}{data.frame ...}
+
+\item{normalize_mainstems}{boolean ...}
 }
 \value{
 reconciled flines

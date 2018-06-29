@@ -1,4 +1,5 @@
 #' @title Reconcile removed flowlines in the downstream direction
+#' @description ... TBD ...
 #' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns
 #' @param remove_fun a function that will return boolean indicating which flines should be removed
 #' @param remove_problem_headwaters whether to mark headwaters upstream of confluences as unable to remove

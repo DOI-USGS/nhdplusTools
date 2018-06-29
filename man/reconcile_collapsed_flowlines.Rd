@@ -6,6 +6,13 @@
 \usage{
 reconcile_collapsed_flowlines(flines, geom = NULL, id = "COMID")
 }
+\arguments{
+\item{flines}{data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns}
+
+\item{geom}{sf data.frame for flines}
+
+\item{id}{character id collumn name.}
+}
 \value{
 reconciled flines
 }

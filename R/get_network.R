@@ -54,7 +54,7 @@ private_get_UT <- function(network, comid, distance = NULL, stop_pathlength = NU
 #' @title Get all upstream mainstem COMIDs
 #' @description Traverse NHDPlus network upstream main stem
 #' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
-#' LevelPathI, UsHydroseq, and HydroSeq.
+#' Pathlength, LevelPathI, UsHydroseq, and HydroSeq.
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs upstream of the starting catchment along the mainstem.
@@ -66,19 +66,18 @@ get_UM <- function(network, comid, distance = NULL) {
   main <- filter(network, COMID %in% comid)
 
   main_us <- filter(network, LevelPathI %in% main$LevelPathI &
-                      Hydroseq >= main$Hydroseq)[c("COMID", "Hydroseq", "LENGTHKM")]
+                      Hydroseq >= main$Hydroseq)[c("COMID", "Hydroseq",
+                                                   "Pathlength", "LENGTHKM")]
 
   if(!is.null(distance)) {
-    if((sum(main_us$LENGTHKM)) >= distance) {
-      # upstream/downstream order
-      main_us <- arrange(main_us, Hydroseq)
 
-      starts <- cumsum(main_us$LENGTHKM) - main_us$LENGTHKM
-      ends <- cumsum(main_us$LENGTHKM)
-
-      # returns true for all the whole ones and the one partial one.
-      main_us <- filter(main_us, ends <= distance | (starts <= distance & ends >= distance))
+    if(length(main$LENGTHKM) == 1) {
+      if(main$LENGTHKM > distance) return(main$COMID)
     }
+
+    stop_pathlength <- main$Pathlength - main$LENGTHKM + distance
+
+    main_us <- filter(main_us, Pathlength <= stop_pathlength)
   }
   return(main_us$COMID)
 }

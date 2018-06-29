@@ -2,7 +2,7 @@ context("split_lines")
 
 test_that("split lines works", {
 
-  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
 
 
   library(sf)
@@ -33,7 +33,7 @@ test_that("split lines works", {
 
 test_that("split lines works", {
 
-  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
 
 
   library(sf)

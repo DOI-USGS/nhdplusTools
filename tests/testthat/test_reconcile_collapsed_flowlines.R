@@ -41,7 +41,7 @@ test_that("collapse works on a double pass", {
   collapse_flines_meters <- 500
   collapse_flines_mainstem_meters <- 500
 
-  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
 
   flines <- suppressWarnings(st_set_geometry(nhdplus_flines, NULL) %>%
     prepare_nhdplus(0, 0) %>%

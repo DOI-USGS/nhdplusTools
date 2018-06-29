@@ -174,7 +174,7 @@ test_that("repeat collapse doesn't leave orphans", {
     sf::st_cast("LINESTRING") %>%
     sf::st_transform(5070))
 
-  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
 
   flines <- nhdplusTools::split_flowlines(flines, 2000, 3)
   flines <- collapse_flowlines(st_set_geometry(flines, NULL), (0.125), TRUE, (0.125))

@@ -2,7 +2,7 @@ context("three pass")
 
 test_that("refactor_nhdplus works as expected with three pass mode",{
 
-  if(require(lwgeom) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
 
   library(dplyr)
   library(sf)

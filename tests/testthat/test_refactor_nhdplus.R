@@ -59,3 +59,23 @@ test_that("refactor_nhdplus works as expected with three pass mode",{
 
   }
 })
+
+test_that("The nhdplus_refactor function runs as expected", {
+  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+
+  nhdplus_flowlines <- sf::st_zm(readRDS("data/north_network.rds"))
+  suppressWarnings( # Known warnings -- just check for errors.
+    nhdplus_refactor(nhdplus_flines = nhdplus_flowlines,
+                   split_flines_meters = 2000, split_flines_cores = 3,
+                   collapse_flines_meters = 500, collapse_flines_mainstem_meters = 500,
+                   out_collapsed = "temp.gpkg",
+                   out_reconciled = "temp_rec.gpkg",
+                   three_pass = TRUE)
+    )
+  expect(file.exists("temp.gpkg"))
+  expect(file.exists("temp_rec.gpkg"))
+  unlink("temp.gpkg")
+  unlink("temp_rec.gpkg")
+
+  }
+})

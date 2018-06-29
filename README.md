@@ -1,6 +1,6 @@
 # nhdplusTools
 
-[![](https://travis-ci.org/dblodgett-usgs/nhdplusTools.svg?branch=master)](https://travis-ci.org/dblodgett-usgs/nhdplusTools) [![](https://coveralls.io/repos/github/dblodgett-usgs/nhdplusTools/badge.svg?branch=master)](https://coveralls.io/repos/github/dblodgett-usgs/nhdplusTools)
+[![](https://travis-ci.org/dblodgett-usgs/nhdplusTools.svg?branch=master)](https://travis-ci.org/dblodgett-usgs/nhdplusTools) [![](https://coveralls.io/repos/github/dblodgett-usgs/nhdplusTools/badge.svg?branch=master)](https://coveralls.io/github/dblodgett-usgs/nhdplusTools)
 
 ## Tools for Manipulating the NHDPlus Network
 

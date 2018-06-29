@@ -64,7 +64,7 @@ nhdplus_refactor <- function(nhdplus_flines,
     inner_join(select(flines, COMID), by = "COMID") %>%
     st_as_sf() %>%
     st_transform(4326) %>%
-    st_write(out_collapsed, layer_options = "OVERWRITE=YES")
+    st_write(out_collapsed, layer_options = "OVERWRITE=YES", quiet = TRUE)
 
   message("collapse complete, out collapse written to disk, reconciling")
 
@@ -72,5 +72,5 @@ nhdplus_refactor <- function(nhdplus_flines,
 
   collapsed$member_COMID <- unlist(lapply(collapsed$member_COMID, function(x) paste(x, collapse = ",")))
 
-  st_write(st_transform(collapsed, 4326), out_reconciled, layer_options = "OVERWRITE=YES")
+  st_write(st_transform(collapsed, 4326), out_reconciled, layer_options = "OVERWRITE=YES", quiet = TRUE)
 }

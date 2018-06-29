@@ -6,7 +6,8 @@ Author: David Blodgett <dblodgett@usgs.gov>
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Description: A grab bag of tools for traversing and
     working with NHDPlus data.
-Imports: dplyr, sf, lwgeom
+Imports: dplyr, sf, lwgeom, snow
+Remotes: r-spatial/lwgeom
 Suggests: testthat
 License: CC0
 Encoding: UTF-8

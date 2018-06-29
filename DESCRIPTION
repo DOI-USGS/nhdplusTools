@@ -7,6 +7,7 @@ Maintainer: David Blodgett <dblodgett@usgs.gov>
 Description: A grab bag of tools for traversing and
     working with NHDPlus data.
 Imports: dplyr, sf, lwgeom
+Suggests: testthat
 License: CC0
 Encoding: UTF-8
 LazyData: true

@@ -2,5 +2,4 @@
 .Rhistory
 .RData
 .Ruserdata
-*.gpkg
 .DS_Store

@@ -60,6 +60,9 @@ test_that("split_lines_2 works the same as split_lines", {
 
   if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
 
+  library(sf)
+  library(dplyr)
+
   flines_in <- readRDS("data/oswego_network.rds")
 
   flines_in <- suppressWarnings(

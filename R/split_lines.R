@@ -206,8 +206,9 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
     # https://math.stackexchange.com/questions/175896/
     # finding-a-point-along-a-line-a-certain-distance-away-from-another-point
     mutate(dist_ratio = ifelse(is.na(X) & is.na(lead(X)),
-                               (len-lag(len)) /
-                                 (lead(len,2)-lag(len,1)), NA)) %>%
+                               ((len-lag(len)) /
+                                 (lead(len,2)-lag(len,1))) + 0.001, NA)) %>%
+    # +0.001 to avoid precice split point locations.
     mutate(X = ifelse((is.na(X) & is.na(lead(X))), (1 - dist_ratio)*lag(X) + dist_ratio*lead(X, 2), X),
            Y = ifelse((is.na(Y) & is.na(lead(Y))), (1 - dist_ratio)*lag(Y) + dist_ratio*lead(Y, 2), Y)) %>%
     mutate(X = ifelse(is.na(X), lag(X), X), Y = ifelse(is.na(Y), lag(Y), Y)) %>%
@@ -218,10 +219,16 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
 
   starts_stops <- data.frame(start = which(split_nodes$breaks == 1), stop = which(split_nodes$breaks == 2))
 
-  starts_stops <- cbind(split_nodes[,c("fID", "split_fID")][starts_stops[["start"]], ], starts_stops)
+  starts_stops <- dplyr::distinct(cbind(split_nodes[,c("fID", "split_fID")][starts_stops[["start"]], ], starts_stops))
 
   if(nrow(split_points) != nrow(starts_stops)) {
-    stop("After splitting, some fIDs were lost. Can't continue. Not enough nodes?")
+    stop(paste("After splitting, some fIDs were lost. Can't continue.",
+               "Not enough nodes? missing:",
+               split_points$split_fID[which(!split_points$split_fID %in%
+                                              starts_stops$split_fID)],
+               "from output",
+               "split_points has", nrow(split_points), "rows",
+               "starts_stops has", nrow(starts_stops), "rows"))
   }
 
   new_line <- function(start_stop, coords) {

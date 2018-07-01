@@ -55,3 +55,28 @@ test_that("split lines works", {
   }
 
 })
+
+test_that("split_lines_2 works the same as split_lines", {
+
+  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+
+  flines_in <- readRDS("data/oswego_network.rds")
+
+  flines_in <- suppressWarnings(
+    st_set_geometry(flines_in, NULL) %>%
+      prepare_nhdplus(0, 0) %>%
+      inner_join(select(flines_in, COMID), by = "COMID") %>%
+      sf::st_as_sf() %>%
+      sf::st_cast("LINESTRING") %>%
+      sf::st_transform(5070))
+
+  flines <- nhdplusTools:::split_lines(flines_in, 2000, id = "COMID", para = 3)
+
+  expect_warning(flines_2 <- nhdplusTools:::split_lines_2(flines_in, 2000, id = "COMID"),
+                 "Found 139 geometries without very many vertices. Densifying")
+
+  expect_equal(nrow(flines), nrow(flines_2))
+
+  }
+
+})

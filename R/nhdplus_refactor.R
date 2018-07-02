@@ -22,7 +22,7 @@ nhdplus_refactor <- function(nhdplus_flines,
                              out_reconciled,
                              three_pass = FALSE) {
 
-  if("FTYPE" %in% names(nhdplus_flines)) {
+  if ("FTYPE" %in% names(nhdplus_flines)) {
     nhdplus_flines <- st_set_geometry(nhdplus_flines, NULL) %>%
       prepare_nhdplus(0, 0) %>%
       inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
@@ -38,26 +38,26 @@ nhdplus_refactor <- function(nhdplus_flines,
 
   message("flowlines split complete, collapsing")
 
-  if(three_pass) {
+  if (three_pass) {
     collapsed_flines <- collapse_flowlines(st_set_geometry(flines, NULL),
-                                           (0.25*collapse_flines_meters/1000),
+                                           (0.25 * collapse_flines_meters / 1000),
                                            TRUE,
-                                           (0.25*collapse_flines_mainstem_meters/1000))
+                                           (0.25 * collapse_flines_mainstem_meters / 1000))
 
     collapsed_flines <- collapse_flowlines(collapsed_flines,
-                                           (0.5*collapse_flines_meters/1000),
+                                           (0.5 * collapse_flines_meters / 1000),
                                            TRUE,
-                                           (0.5*collapse_flines_mainstem_meters/1000))
+                                           (0.5 * collapse_flines_mainstem_meters / 1000))
 
     collapsed_flines <- collapse_flowlines(collapsed_flines,
-                                           (collapse_flines_meters/1000),
+                                           (collapse_flines_meters / 1000),
                                            TRUE,
-                                           (collapse_flines_mainstem_meters/1000))
+                                           (collapse_flines_mainstem_meters / 1000))
   } else {
     collapsed_flines <- collapse_flowlines(st_set_geometry(flines, NULL),
-                                           (collapse_flines_meters/1000),
+                                           (collapse_flines_meters / 1000),
                                            TRUE,
-                                           (collapse_flines_mainstem_meters/1000))
+                                           (collapse_flines_mainstem_meters / 1000))
   }
 
   collapsed_flines %>%

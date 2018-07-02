@@ -9,7 +9,8 @@
 #' @importFrom dplyr filter left_join select rename mutate arrange distinct
 #' @export
 #'
-reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_fline_atts, normalize_mainstems = FALSE) {
+reconcile_removed_flowlines <- function(flines, reroute_set, removed,
+                                        original_fline_atts, normalize_mainstems = FALSE) {
 
   # Everything that is rerouted gets its length adjusted.
   # e.g. both tribs and main stem get lengthened the same.
@@ -28,13 +29,13 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
 
   count <- 0
 
-  while(length(stale_toCOMID()) > 0) {
+  while (length(stale_toCOMID()) > 0) {
     bad_toCOMID <- flines[["toCOMID"]][stale_toCOMID()]
 
     # downstream_index is a pointer to flowline that was removed that we want the toCOMID of.
     downstream_index <- match(bad_toCOMID, flines$COMID)
 
-    if(any(flines[["toCOMID"]][stale_toCOMID()] == flines[["toCOMID"]][downstream_index], na.rm = TRUE)) {
+    if (any(flines[["toCOMID"]][stale_toCOMID()] == flines[["toCOMID"]][downstream_index], na.rm = TRUE)) {
       stop("found a loop while culling stale toCOMIDs!!!")
     }
 
@@ -45,7 +46,7 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
     flines[["toCOMID"]][stale_toCOMID()] <- flines[["toCOMID"]][downstream_index]
 
     count <- count + 1
-    if(count > 100) {
+    if (count > 100) {
       stop("stuck in stale toCOMID loop")
     }
   }
@@ -63,7 +64,7 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
 
   count <- 0
 
-  while(length(joined_from_to_replace(removed)) > 0) {
+  while (length(joined_from_to_replace(removed)) > 0) {
     # left join to its self in the joined_from direction. Copy over and repeat.
     removed <- left_join(removed,
                          rename(removed, joined_fromCOMID_new = joined_fromCOMID),
@@ -73,7 +74,7 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
       select(-joined_fromCOMID_new)
 
     count <- count + 1
-    if(count > 100) stop("stuck in joined from to replace loop")
+    if (count > 100) stop("stuck in joined from to replace loop")
   }
 
   # Actually join the removed dataframe to the flines dataframe.
@@ -83,8 +84,8 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed, original_f
     mutate(joined_fromCOMID = ifelse(!is.na(joined_fromCOMID_new),
                                      joined_fromCOMID_new,
                                      joined_fromCOMID),
-           LENGTHKM = ifelse((!is.na(joined_fromCOMID) & joined_fromCOMID != -9999), 0, LENGTHKM),
-           toCOMID = ifelse((!is.na(joined_fromCOMID) & joined_toCOMID != -9999), NA, toCOMID)) %>%
+           LENGTHKM = ifelse( (!is.na(joined_fromCOMID) & joined_fromCOMID != -9999), 0, LENGTHKM),
+           toCOMID = ifelse( (!is.na(joined_fromCOMID) & joined_toCOMID != -9999), NA, toCOMID)) %>%
     select(-joined_fromCOMID_new, -dsLENGTHKM)
 
   return(flines)

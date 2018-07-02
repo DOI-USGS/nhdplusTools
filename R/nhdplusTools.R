@@ -11,9 +11,9 @@ piece_len <- setNames <- start <- NULL
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(
-    'USGS Research Package:
-    https://owi.usgs.gov/R/packages.html#research'),
-    collapse='\n'))
+    "USGS Research Package:
+    https://owi.usgs.gov/R/packages.html#research"),
+    collapse = "\n"))
 }
 
 get_dsLENGTHKM <- function(flines) {

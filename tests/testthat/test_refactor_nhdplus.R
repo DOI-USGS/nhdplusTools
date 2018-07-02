@@ -10,7 +10,7 @@ test_that("refactor_nhdplus works as expected with three pass mode", {
 
   split_flines_meters <- 2000
   split_flines_cores <- 3
-  collapse_flines_meters <- collapse_flines_mainstem_meters <- 1000
+  collapse_flines_meters <- collapse_flines_main_meters <- 1000
   out_collapsed <- "nhdplus_collapsed.gpkg"
   out_reconciled <- "nhdplus_reconciled.gpkg"
 
@@ -25,17 +25,17 @@ test_that("refactor_nhdplus works as expected with three pass mode", {
     collapsed_flines <- collapse_flowlines(st_set_geometry(flines, NULL),
                                            (0.25 * collapse_flines_meters / 1000),
                                            TRUE,
-                                           (0.25 * collapse_flines_mainstem_meters / 1000))
+                                           (0.25 * collapse_flines_main_meters / 1000))
 
     collapsed_flines <- suppressWarnings(collapse_flowlines(collapsed_flines,
                                            (0.5 * collapse_flines_meters / 1000),
                                            TRUE,
-                                           (0.5 * collapse_flines_mainstem_meters / 1000)))
+                                           (0.5 * collapse_flines_main_meters / 1000)))
 
     collapsed_flines <- suppressWarnings(collapse_flowlines(collapsed_flines,
                                            (collapse_flines_meters / 1000),
                                            TRUE,
-                                           (collapse_flines_mainstem_meters / 1000)))
+                                           (collapse_flines_main_meters / 1000)))
 
   collapsed <- reconcile_collapsed_flowlines(collapsed_flines, select(flines, COMID), id = "COMID")
 
@@ -56,7 +56,7 @@ test_that("The nhdplus_refactor function runs as expected", {
   suppressWarnings( # Known warnings -- just check for errors.
     nhdplus_refactor(nhdplus_flines = nhdplus_flowlines,
                    split_flines_meters = 2000, split_flines_cores = 3,
-                   collapse_flines_meters = 500, collapse_flines_mainstem_meters = 500,
+                   collapse_flines_meters = 500, collapse_flines_main_meters = 500,
                    out_collapsed = "temp.gpkg",
                    out_reconciled = "temp_rec.gpkg",
                    three_pass = TRUE)

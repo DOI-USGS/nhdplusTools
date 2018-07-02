@@ -37,12 +37,12 @@ split_flowlines <- function(flines, max_length, para = 0) {
   flines <- rbind(not_split, split)
 
   # Rows with COMID like this need to be updated
-  redirect_toCOMID <- flines$COMID[which(grepl("\\.1$", flines$COMID))]
+  redirect_tocomid <- flines$COMID[which(grepl("\\.1$", flines$COMID))]
 
-  old_toCOMID <- gsub("\\.1$", "", redirect_toCOMID)
+  old_tocomid <- gsub("\\.1$", "", redirect_tocomid)
 
   mutate(flines,
-         toCOMID = ifelse(toCOMID %in% old_toCOMID, paste0(toCOMID, ".1"), toCOMID))
+         toCOMID = ifelse(toCOMID %in% old_tocomid, paste0(toCOMID, ".1"), toCOMID))
 }
 
 

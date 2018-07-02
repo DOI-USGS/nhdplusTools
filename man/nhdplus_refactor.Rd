@@ -5,7 +5,7 @@
 \title{nhdplus refactor}
 \usage{
 nhdplus_refactor(nhdplus_flines, split_flines_meters, split_flines_cores,
-  collapse_flines_meters, collapse_flines_mainstem_meters, out_collapsed,
+  collapse_flines_meters, collapse_flines_main_meters, out_collapsed,
   out_reconciled, three_pass = FALSE)
 }
 \arguments{
@@ -17,7 +17,7 @@ nhdplus_refactor(nhdplus_flines, split_flines_meters, split_flines_cores,
 
 \item{collapse_flines_meters}{numeric collapse threshold in meters}
 
-\item{collapse_flines_mainstem_meters}{numeric collapse threshold for mainstems in meters}
+\item{collapse_flines_main_meters}{numeric collapse threshold for mainstems in meters}
 
 \item{out_collapsed}{character geopackage path to write collapsed to (one layer per gpkg)}
 

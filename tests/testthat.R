@@ -1,4 +1,4 @@
 library(testthat)
-library(nhdplusTools)
+library("nhdplusTools")
 library(sf)
 test_check("nhdplusTools")

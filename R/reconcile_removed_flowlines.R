@@ -22,28 +22,28 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed,
   downstream_index <- match(flines[["toCOMID"]][reroute_set], flines$COMID)
   flines[["toCOMID"]][reroute_set] <- flines[["toCOMID"]][downstream_index]
 
-  # stale_toCOMID is true if the toCOMID is one of the removed comids.
+  # stale_tocomid is true if the toCOMID is one of the removed comids.
   # We need to change those toCOMIDs to the toCOMID of the removed flowline
   # Need to keep doing it until no toCOMIDs are pointing to removed catchmetns
-  stale_toCOMID <- function() which(flines$toCOMID %in% removed$removed_COMID)
+  stale_tocomid <- function() which(flines$toCOMID %in% removed$removed_COMID)
 
   count <- 0
 
-  while (length(stale_toCOMID()) > 0) {
-    bad_toCOMID <- flines[["toCOMID"]][stale_toCOMID()]
+  while (length(stale_tocomid()) > 0) {
+    bad_tocomid <- flines[["toCOMID"]][stale_tocomid()]
 
     # downstream_index is a pointer to flowline that was removed that we want the toCOMID of.
-    downstream_index <- match(bad_toCOMID, flines$COMID)
+    downstream_index <- match(bad_tocomid, flines$COMID)
 
-    if (any(flines[["toCOMID"]][stale_toCOMID()] == flines[["toCOMID"]][downstream_index], na.rm = TRUE)) {
+    if (any(flines[["toCOMID"]][stale_tocomid()] == flines[["toCOMID"]][downstream_index], na.rm = TRUE)) {
       stop("found a loop while culling stale toCOMIDs!!!")
     }
 
-    flines[["LENGTHKM"]][stale_toCOMID()] <-
-      flines[["LENGTHKM"]][stale_toCOMID()] + flines[["LENGTHKM"]][downstream_index]
+    flines[["LENGTHKM"]][stale_tocomid()] <-
+      flines[["LENGTHKM"]][stale_tocomid()] + flines[["LENGTHKM"]][downstream_index]
 
-    # This is the bad_toCOMID that we are making good.
-    flines[["toCOMID"]][stale_toCOMID()] <- flines[["toCOMID"]][downstream_index]
+    # This is the bad_tocomid that we are making good.
+    flines[["toCOMID"]][stale_tocomid()] <- flines[["toCOMID"]][downstream_index]
 
     count <- count + 1
     if (count > 100) {

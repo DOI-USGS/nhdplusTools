@@ -19,8 +19,8 @@ split_flowlines <- function(flines, max_length, para = 0) {
 
   # Assume flowdir is with digitized for now -- need to check in prep code.
   split <- ungroup(mutate(split, toCOMID = ifelse(part == max(part),
-                                          as.character(toCOMID),
-                                          paste(lead(COMID), lead(part), sep = "."))))
+                                                  as.character(toCOMID),
+                                                  paste(lead(COMID), lead(part), sep = "."))))
   split <- mutate(split, COMID = paste(COMID, part, sep = "."),
                   LENGTHKM = sf::st_length(geometry) / 1000,
                   TotDASqKM = TotDASqKM) # THIS IS WRONG BUT CAN'T BE NA!!!
@@ -206,7 +206,7 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
     select(-start, -ideal_len, -nID) %>% rename(nID = new_index) %>%
     mutate(dist_ratio = ifelse(is.na(X) & is.na(lead(X)),
                                ( (len - lag(len)) /
-                                 (lead(len, 2) - lag(len, 1))), NA)) %>%
+                                   (lead(len, 2) - lag(len, 1))), NA)) %>%
     mutate(X = ifelse( (is.na(X) & is.na(lead(X))),
                        (1 - dist_ratio) * lag(X) + dist_ratio * lead(X, 2),
                        X),
@@ -225,10 +225,10 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
   starts_stops <- dplyr::distinct(cbind(split_nodes[, c("fID", "split_fID")][starts_stops[["start"]], ], starts_stops))
 
   if (nrow(split_points) != nrow(starts_stops)) {
-   stop(paste("After splitting, some fIDs were lost. Can't continue.",
+    stop(paste("After splitting, some fIDs were lost. Can't continue.",
                "Not enough nodes? missing:",
                paste(split_points$split_fID[which(!split_points$split_fID %in%
-                                              starts_stops$split_fID)], collapse = ", "),
+                                                    starts_stops$split_fID)], collapse = ", "),
                "from output",
                "split_points has", nrow(split_points), "rows",
                "starts_stops has", nrow(starts_stops), "rows"))

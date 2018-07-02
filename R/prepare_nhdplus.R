@@ -25,7 +25,7 @@ prepare_nhdplus <- function(flines, min_network_size, min_path_length, purge_non
 
   if (purge_non_dendritic) {
     flines <- filter(flines, FTYPE != "Coastline" & # Remove Coastlines
-                     StreamOrde == StreamCalc) #& # Also use streamorder and streamcalc to select only the main paths.
+                       StreamOrde == StreamCalc) #& # Also use streamorder and streamcalc to select only the main paths.
   } else {
     flines <- filter(flines, FTYPE != "Coastline") # Remove Coastlines
     flines[["FromNode"]][which(flines$Divergence == 2)] <- NA

@@ -34,13 +34,13 @@ private_get_UT <- function(network, comid, distance = NULL, stop_pathlength = NU
   if (!is.null(distance)) {
 
     ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
-                         (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)) &
+                                   (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)) &
                          Pathlength < stop_pathlength)$COMID
 
   } else {
 
     ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
-                         (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)))$COMID
+                                   (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)))$COMID
 
   }
 

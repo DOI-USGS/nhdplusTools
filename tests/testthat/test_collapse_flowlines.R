@@ -111,15 +111,13 @@ test_that("headwater / top of mainstem collapes works as expected", {
 test_that("collapse flowlines works with small networks", {
   flines <- readRDS("data/smallish_networks.rds")
   flines_collapse <- collapse_flowlines(flines, 2)
-  # Dumb test...
-  # expect_equal(length(which(flines_collapse$joined_fromCOMID == -9999)), 3)
 
-  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/frost_network.rds"),0,0))
+  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/frost_network.rds"), 0, 0))
 
-  c1 <- collapse_flowlines(flines,1000,F,1000)
+  c1 <- collapse_flowlines(flines, 1000, F, 1000)
 
-  expect(c1$joined_fromCOMID[which(c1$COMID==5876961)] == -9999)
-  expect(c1$joined_fromCOMID[which(c1$COMID==5876993)] == 5876961)
+  expect(c1$joined_fromCOMID[which(c1$COMID == 5876961)] == -9999)
+  expect(c1$joined_fromCOMID[which(c1$COMID == 5876993)] == 5876961)
 
   expect_equal(c1$LENGTHK[which(c1$COMID == 5876989)], 0.878)
 
@@ -128,14 +126,14 @@ test_that("collapse flowlines works with small networks", {
   expect_equal(length(which(r1$ID == 1)), 7)
   expect(all(is.na(r1$toID)))
 
-  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/tiny_network.rds"),0,0))
-  c1 <- collapse_flowlines(flines,1000,F,1000)
+  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/tiny_network.rds"), 0, 0))
+  c1 <- collapse_flowlines(flines, 1000, F, 1000)
 
   expect_equal(c1$LENGTHKM[which(c1$COMID == 7733111)], 0.221)
 
-  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/flag_network.rds"),0,0))
+  flines <- suppressWarnings(prepare_nhdplus(readRDS("data/flag_network.rds"), 0, 0))
 
-  c1 <- collapse_flowlines(flines, 1000,F,1000)
+  c1 <- collapse_flowlines(flines, 1000, F, 1000)
 
   expect(c1$joined_fromCOMID[which(c1$COMID == 1797871)] == 1798051)
   r1 <- reconcile_collapsed_flowlines(c1)
@@ -174,7 +172,7 @@ test_that("repeat collapse doesn't leave orphans", {
     sf::st_cast("LINESTRING") %>%
     sf::st_transform(5070))
 
-  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+  if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = "package:lwgeom", mode = "function")) {
 
   flines <- nhdplusTools::split_flowlines(flines, 2000, 3)
   flines <- collapse_flowlines(st_set_geometry(flines, NULL), (0.125), TRUE, (0.125))
@@ -192,4 +190,3 @@ test_that("repeat collapse doesn't leave orphans", {
 
   }
 })
-

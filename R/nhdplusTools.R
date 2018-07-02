@@ -1,19 +1,19 @@
 COMID <- COMID.y <- Divergence <- DnHydroseq <- DnMinorHyd <- FTYPE <- FromNode <-
-Hydroseq <- ID <- LENGTHKM <- LevelPathI <- Pathlength <- StartFlag <- StreamCalc <-
-StreamOrde <- TerminalFl <- TerminalPa <- ToNode <- TotDASqKM <- becomes <- dsLENGTHKM <-
-ds_joined_fromCOMID <- ds_num_upstream <- fID <- fromCOMID <- fromLENGTHKM <-
-fromTotDASqKM <- geom_len <- geometry <- join_category <- joined_fromCOMID <-
-joined_fromCOMID_new <- joined_toCOMID <- member_COMID <- new_joined_fromCOMID <-
-new_joined_toCOMID <- new_toCOMID <- num_upstream <- part <- piece <- pieces <-
-removed_COMID <- split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
-. <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <- len <- nID <- new_index <-
-piece_len <- setNames <- start <- NULL
+  Hydroseq <- ID <- LENGTHKM <- LevelPathI <- Pathlength <- StartFlag <- StreamCalc <-
+  StreamOrde <- TerminalFl <- TerminalPa <- ToNode <- TotDASqKM <- becomes <- dsLENGTHKM <-
+  ds_joined_fromCOMID <- ds_num_upstream <- fID <- fromCOMID <- fromLENGTHKM <-
+  fromTotDASqKM <- geom_len <- geometry <- join_category <- joined_fromCOMID <-
+  joined_fromCOMID_new <- joined_toCOMID <- member_COMID <- new_joined_fromCOMID <-
+  new_joined_toCOMID <- new_toCOMID <- num_upstream <- part <- piece <- pieces <-
+  removed_COMID <- split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
+  . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <- len <- nID <- new_index <-
+  piece_len <- setNames <- start <- NULL
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(
-    'USGS Research Package:
-    https://owi.usgs.gov/R/packages.html#research'),
-    collapse='\n'))
+    "USGS Research Package:
+    https://owi.usgs.gov/R/packages.html#research"),
+    collapse = "\n"))
 }
 
 get_dsLENGTHKM <- function(flines) {

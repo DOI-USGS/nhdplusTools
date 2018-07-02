@@ -9,7 +9,7 @@
 #'
 collapse_outlets <- function(flines, thresh, original_fline_atts) {
 
-  if("joined_toCOMID" %in% names(flines) | "joined_fromCOMID" %in% names(flines)) {
+  if ("joined_toCOMID" %in% names(flines) | "joined_fromCOMID" %in% names(flines)) {
     warning("collapse outllets must be used with un modified flines. \n",
             "returning unmodified flines from collapse outlets. \n")
     return(list(flines = flines, short_outlets_tracker = c()))
@@ -28,12 +28,12 @@ collapse_outlets <- function(flines, thresh, original_fline_atts) {
   count <- 0
   short_outlets_tracker <- c()
 
-  while(any(short_outlets(flines))) {
+  while (any(short_outlets(flines))) {
     short_flines_next <- filter(flines, short_outlets(flines))
 
-    if(!exists("short_flines")) {
+    if (!exists("short_flines")) {
       short_flines <- short_flines_next
-    } else if(all(short_flines_next$COMID %in% short_flines$COMID)) {
+    } else if (all(short_flines_next$COMID %in% short_flines$COMID)) {
       stop("Stuck in short flines loop")
     } else {
       short_flines <- short_flines_next
@@ -43,10 +43,10 @@ collapse_outlets <- function(flines, thresh, original_fline_atts) {
 
     headwaters <- !short_flines$COMID %in% original_fline_atts$toCOMID
 
-    if(any(headwaters)) {
+    if (any(headwaters)) {
       headwater_COMIDs <- short_flines[["COMID"]][which(headwaters)]
       flines[["joined_fromCOMID"]][match(headwater_COMIDs, flines$COMID)] <- -9999
-      short_flines <- short_flines[!headwaters,]
+      short_flines <- short_flines[!headwaters, ]
       short_flines_index <- short_flines_index[!headwaters]
     }
 
@@ -83,7 +83,7 @@ collapse_outlets <- function(flines, thresh, original_fline_atts) {
     short_outlets_tracker <- c(short_outlets_tracker, flines[["COMID"]][short_flines_index])
 
     count <- count + 1
-    if(count > 100) stop("stuck in short outlet loop")
+    if (count > 100) stop("stuck in short outlet loop")
   }
   return(list(flines = flines, short_outlets_tracker = short_outlets_tracker))
 }

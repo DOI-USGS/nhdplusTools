@@ -17,11 +17,12 @@ split_flowlines <- function(flines, max_length, para = 0) {
   split$part <- unlist(lapply(strsplit(split$split_fID, "\\."), function(x) x[2]))
   split <- mutate(split, part = (ifelse(is.na(part), 0, as.integer(part)) + 1))
 
-  split <- ungroup(mutate(split, toCOMID = ifelse(part == max(part), # Assume flowdir is with digitized for now -- need to check in prep code.
-                                          as.character(toCOMID),
-                                          paste(lead(COMID), lead(part), sep = "."))))
+  # Assume flowdir is with digitized for now -- need to check in prep code.
+  split <- ungroup(mutate(split, toCOMID = ifelse(part == max(part),
+                                                  as.character(toCOMID),
+                                                  paste(lead(COMID), lead(part), sep = "."))))
   split <- mutate(split, COMID = paste(COMID, part, sep = "."),
-                  LENGTHKM = sf::st_length(geometry)/1000,
+                  LENGTHKM = sf::st_length(geometry) / 1000,
                   TotDASqKM = TotDASqKM) # THIS IS WRONG BUT CAN'T BE NA!!!
 
   split <- sf::st_as_sf(select(split, -part, -split_fID))
@@ -36,12 +37,12 @@ split_flowlines <- function(flines, max_length, para = 0) {
   flines <- rbind(not_split, split)
 
   # Rows with COMID like this need to be updated
-  redirect_toCOMID <- flines$COMID[which(grepl("\\.1$", flines$COMID))]
+  redirect_tocomid <- flines$COMID[which(grepl("\\.1$", flines$COMID))]
 
-  old_toCOMID <- gsub("\\.1$", "", redirect_toCOMID)
+  old_tocomid <- gsub("\\.1$", "", redirect_tocomid)
 
   mutate(flines,
-         toCOMID = ifelse(toCOMID %in% old_toCOMID, paste0(toCOMID, ".1"), toCOMID))
+         toCOMID = ifelse(toCOMID %in% old_tocomid, paste0(toCOMID, ".1"), toCOMID))
 }
 
 
@@ -57,7 +58,7 @@ split_flowlines <- function(flines, max_length, para = 0) {
 #' @importFrom dplyr group_by ungroup filter select mutate
 #'
 split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
-  if(max_length < 50) warning("short max length detected, do you have your units right?")
+  if (max_length < 50) warning("short max length detected, do you have your units right?")
 
   geom_column <- attr(input_lines, "sf_column")
 
@@ -77,7 +78,7 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
                      fID = 1:nrow(too_long)) %>%
     select(-geom_len)
 
-  split_points <- sf::st_set_geometry(too_long, NULL)[rep(seq_len(nrow(too_long)), too_long[["pieces"]]),] %>%
+  split_points <- sf::st_set_geometry(too_long, NULL)[rep(seq_len(nrow(too_long)), too_long[["pieces"]]), ] %>%
     select(-pieces)
 
   split_points <- mutate(split_points, split_fID = row.names(split_points)) %>%
@@ -91,9 +92,9 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
     lwgeom::st_linesubstring(x = too_long[[geom_column]][i], from = f, to = t)[[1]]
   }
 
-  if(para > 0) {
+  if (para > 0) {
 
-    cl <- parallel::makeCluster(rep('localhost',2), type = "SOCK")
+    cl <- parallel::makeCluster(rep("localhost", 2), type = "SOCK")
 
     split_lines <- parallel::parApply(cl, split_points[c("fID", "start", "end")], 1,
                                       function(x) new_line(i = x[["fID"]], f = x[["start"]], t = x[["end"]]))
@@ -124,7 +125,7 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
 #'
 # Non lwgeom method
 split_lines_2 <- function(input_lines, max_length, id = "ID") {
-  if(max_length < 50) warning("short max length detected, do you have your units right?")
+  if (max_length < 50) warning("short max length detected, do you have your units right?")
 
   geom_column <- attr(input_lines, "sf_column")
 
@@ -145,7 +146,7 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
                      piece_len = (geom_len / pieces),
                      fID = 1:nrow(too_long))
 
-  split_points <- sf::st_set_geometry(too_long, NULL)[rep(seq_len(nrow(too_long)), too_long[["pieces"]]),]
+  split_points <- sf::st_set_geometry(too_long, NULL)[rep(seq_len(nrow(too_long)), too_long[["pieces"]]), ]
 
   split_points <- mutate(split_points, split_fID = row.names(split_points)) %>%
     select(-geom_len, -pieces) %>%
@@ -167,12 +168,12 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
     summarize(count = n()) %>%
     left_join(select(sf::st_set_geometry(too_long, NULL), fID, pieces), by = "fID")
 
-  problem_geoms <- (node_count$pieces*5) > node_count$count
-  if(any(problem_geoms)) {
+  problem_geoms <- (node_count$pieces * 5) > node_count$count
+  if (any(problem_geoms)) {
     warning(paste("Found", length(which(problem_geoms)),
                   "geometries without very many vertices. Densifying"))
-    for(g in which(problem_geoms)) {
-      too_long$geometry[g] <- sf::st_segmentize(too_long$geometry[g], max_length / (5*too_long$pieces[g]))
+    for (g in which(problem_geoms)) {
+      too_long$geometry[g] <- sf::st_segmentize(too_long$geometry[g], max_length / (5 * too_long$pieces[g]))
     }
     coords <- get_coords(too_long)
   }
@@ -181,7 +182,7 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
 
   split_nodes <- group_by(coords, fID) %>%
     # First calculate cumulative length by feature.
-    mutate(len  = sqrt(((X - (lag(X)))^2) + (((Y - (lag(Y)))^2)))) %>%
+    mutate(len  = sqrt( ( (X - (lag(X))) ^ 2) + ( ( (Y - (lag(Y))) ^ 2)))) %>%
     mutate(len = ifelse(is.na(len), 0, len)) %>%
     mutate(len = cumsum(len)) %>%
     # Now join nodes to split points -- this generates all combinations.
@@ -203,28 +204,31 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
     mutate(len = ifelse(is.na(len), lag(ideal_len), len)) %>%
     mutate(len = ifelse(is.na(len), lead(start), len)) %>%
     select(-start, -ideal_len, -nID) %>% rename(nID = new_index) %>%
-    # https://math.stackexchange.com/questions/175896/
-    # finding-a-point-along-a-line-a-certain-distance-away-from-another-point
     mutate(dist_ratio = ifelse(is.na(X) & is.na(lead(X)),
-                               ((len-lag(len)) /
-                                 (lead(len,2)-lag(len,1))), NA)) %>%
-    mutate(X = ifelse((is.na(X) & is.na(lead(X))), (1 - dist_ratio)*lag(X) + dist_ratio*lead(X, 2), X),
-           Y = ifelse((is.na(Y) & is.na(lead(Y))), (1 - dist_ratio)*lag(Y) + dist_ratio*lead(Y, 2), Y)) %>%
-    mutate(X = ifelse(is.na(X), lag(X), X), Y = ifelse(is.na(Y), lag(Y), Y)) %>%
-    mutate(breaks = ifelse(!is.na(lag(dist_ratio)), 1, fID- lag(fID, default = 0))) %>%
+                               ( (len - lag(len)) /
+                                   (lead(len, 2) - lag(len, 1))), NA)) %>%
+    mutate(X = ifelse( (is.na(X) & is.na(lead(X))),
+                       (1 - dist_ratio) * lag(X) + dist_ratio * lead(X, 2),
+                       X),
+           Y = ifelse( (is.na(Y) & is.na(lead(Y))),
+                       (1 - dist_ratio) * lag(Y) + dist_ratio * lead(Y, 2),
+                       Y)) %>%
+    mutate(X = ifelse(is.na(X), lag(X), X),
+           Y = ifelse(is.na(Y), lag(Y), Y)) %>%
+    mutate(breaks = ifelse(!is.na(lag(dist_ratio)), 1, fID - lag(fID, default = 0))) %>%
     mutate(breaks = ifelse(lead(breaks == 1), 2, breaks))
 
   split_nodes$breaks[nrow(split_nodes)] <- 2
 
   starts_stops <- data.frame(start = which(split_nodes$breaks == 1), stop = which(split_nodes$breaks == 2))
 
-  starts_stops <- dplyr::distinct(cbind(split_nodes[,c("fID", "split_fID")][starts_stops[["start"]], ], starts_stops))
+  starts_stops <- dplyr::distinct(cbind(split_nodes[, c("fID", "split_fID")][starts_stops[["start"]], ], starts_stops))
 
-  if(nrow(split_points) != nrow(starts_stops)) {
-   stop(paste("After splitting, some fIDs were lost. Can't continue.",
+  if (nrow(split_points) != nrow(starts_stops)) {
+    stop(paste("After splitting, some fIDs were lost. Can't continue.",
                "Not enough nodes? missing:",
                paste(split_points$split_fID[which(!split_points$split_fID %in%
-                                              starts_stops$split_fID)], collapse = ", "),
+                                                    starts_stops$split_fID)], collapse = ", "),
                "from output",
                "split_points has", nrow(split_points), "rows",
                "starts_stops has", nrow(starts_stops), "rows"))

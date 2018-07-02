@@ -17,5 +17,6 @@ reconcile_collapsed_flowlines(flines, geom = NULL, id = "COMID")
 reconciled flines
 }
 \description{
-Reconciles output of collapse_flowlines giving a unique ID to each new unit and providing a mapping to NHDPlus COMIDs.
+Reconciles output of collapse_flowlines giving a unique ID to each new unit and
+providing a mapping to NHDPlus COMIDs.
 }

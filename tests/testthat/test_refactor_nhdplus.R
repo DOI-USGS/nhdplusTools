@@ -1,18 +1,16 @@
 context("three pass")
 
-test_that("refactor_nhdplus works as expected with three pass mode",{
+test_that("refactor_nhdplus works as expected with three pass mode", {
 
-  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+  if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = "package:lwgeom", mode = "function")) {
 
   library(dplyr)
   library(sf)
   nhdplus_flines <- sf::st_zm(readRDS("data/north_network.rds"))
 
-  # st_write(nhdplus_flines, "north_network.gpkg")
-
   split_flines_meters <- 2000
   split_flines_cores <- 3
-  collapse_flines_meters <- collapse_flines_mainstem_meters <- 1000
+  collapse_flines_meters <- collapse_flines_main_meters <- 1000
   out_collapsed <- "nhdplus_collapsed.gpkg"
   out_reconciled <- "nhdplus_reconciled.gpkg"
 
@@ -25,32 +23,23 @@ test_that("refactor_nhdplus works as expected with three pass mode",{
     split_flowlines(split_flines_meters, split_flines_cores))
 
     collapsed_flines <- collapse_flowlines(st_set_geometry(flines, NULL),
-                                           (0.25*collapse_flines_meters/1000),
+                                           (0.25 * collapse_flines_meters / 1000),
                                            TRUE,
-                                           (0.25*collapse_flines_mainstem_meters/1000))
+                                           (0.25 * collapse_flines_main_meters / 1000))
 
     collapsed_flines <- suppressWarnings(collapse_flowlines(collapsed_flines,
-                                           (0.5*collapse_flines_meters/1000),
+                                           (0.5 * collapse_flines_meters / 1000),
                                            TRUE,
-                                           (0.5*collapse_flines_mainstem_meters/1000)))
+                                           (0.5 * collapse_flines_main_meters / 1000)))
 
     collapsed_flines <- suppressWarnings(collapse_flowlines(collapsed_flines,
-                                           (collapse_flines_meters/1000),
+                                           (collapse_flines_meters / 1000),
                                            TRUE,
-                                           (collapse_flines_mainstem_meters/1000)))
-
-  # collapsed_flines %>%
-  #   inner_join(select(flines,
-  #                     COMID), by = "COMID") %>%
-  #   st_as_sf() %>%
-  #   st_transform(4326) %>%
-  #   st_write(out_collapsed, layer_options = "OVERWRITE=YES", quiet = T)
+                                           (collapse_flines_main_meters / 1000)))
 
   collapsed <- reconcile_collapsed_flowlines(collapsed_flines, select(flines, COMID), id = "COMID")
 
   collapsed$member_COMID <- unlist(lapply(collapsed$member_COMID, function(x) paste(x, collapse = ",")))
-
-  # st_write(st_transform(collapsed, 4326), out_reconciled, layer_options = "OVERWRITE=YES", quiet = T)
 
   expect(collapsed$toID[which(collapsed$ID == 29)] == 11)
 
@@ -61,13 +50,13 @@ test_that("refactor_nhdplus works as expected with three pass mode",{
 })
 
 test_that("The nhdplus_refactor function runs as expected", {
-  if(suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = 'package:lwgeom', mode = "function")) {
+  if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = "package:lwgeom", mode = "function")) {
 
   nhdplus_flowlines <- sf::st_zm(readRDS("data/north_network.rds"))
   suppressWarnings( # Known warnings -- just check for errors.
     nhdplus_refactor(nhdplus_flines = nhdplus_flowlines,
                    split_flines_meters = 2000, split_flines_cores = 3,
-                   collapse_flines_meters = 500, collapse_flines_mainstem_meters = 500,
+                   collapse_flines_meters = 500, collapse_flines_main_meters = 500,
                    out_collapsed = "temp.gpkg",
                    out_reconciled = "temp_rec.gpkg",
                    three_pass = TRUE)

@@ -13,11 +13,11 @@ get_UT <- function(network, comid, distance = NULL) {
   # Grab the submitted comids
   main <- filter(network, COMID %in% comid)
 
-  if(!is.null(distance)) {
+  if (!is.null(distance)) {
     stop_pathlength <- main$Pathlength - main$LENGTHKM + distance
 
-    if(length(main$LENGTHKM) == 1) {
-      if(main$LENGTHKM > distance) return(main$COMID)
+    if (length(main$LENGTHKM) == 1) {
+      if (main$LENGTHKM > distance) return(main$COMID)
     }
   } else {
     stop_pathlength <- NULL
@@ -31,20 +31,20 @@ private_get_UT <- function(network, comid, distance = NULL, stop_pathlength = NU
   # Grab the submitted comids
   main <- filter(network, COMID %in% comid)
 
-  if(!is.null(distance)) {
+  if (!is.null(distance)) {
 
     ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
-                         (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)) &
+                                   (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)) &
                          Pathlength < stop_pathlength)$COMID
 
   } else {
 
     ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
-                         (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)))$COMID
+                                   (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)))$COMID
 
   }
 
-  if(length(ut_comid) > 0) {
+  if (length(ut_comid) > 0) {
     return(c(main$COMID, private_get_UT(network, ut_comid, distance, stop_pathlength)))
   } else {
     return(main$COMID)
@@ -69,10 +69,10 @@ get_UM <- function(network, comid, distance = NULL) {
                       Hydroseq >= main$Hydroseq)[c("COMID", "Hydroseq",
                                                    "Pathlength", "LENGTHKM")]
 
-  if(!is.null(distance)) {
+  if (!is.null(distance)) {
 
-    if(length(main$LENGTHKM) == 1) {
-      if(main$LENGTHKM > distance) return(main$COMID)
+    if (length(main$LENGTHKM) == 1) {
+      if (main$LENGTHKM > distance) return(main$COMID)
     }
 
     stop_pathlength <- main$Pathlength - main$LENGTHKM + distance
@@ -105,13 +105,13 @@ private_get_DM <- function(network, comid, distance = NULL, run_distance = NULL)
   ds_comid <- filter(network,
                      Hydroseq %in% main$DnHydroseq)$COMID
 
-  if(!is.null(distance)) {
+  if (!is.null(distance)) {
     accum_distance <- run_distance + main$LENGTHKM
   }
 
-  if(length(ds_comid) > 0) {
-    if(!is.null(distance)) {
-      if(accum_distance < distance) {
+  if (length(ds_comid) > 0) {
+    if (!is.null(distance)) {
+      if (accum_distance < distance) {
         c(main$COMID, private_get_DM(network, ds_comid, distance, accum_distance))
       } else {
         return(main$COMID)
@@ -150,14 +150,14 @@ private_get_DD <- function(network, comid, distance = NULL, run_distance = NULL)
   ds_comid <- filter(network,
                      Hydroseq %in% main$DnHydroseq | Hydroseq %in% main$DnMinorHyd)$COMID
 
-  if(!is.null(distance)) {
+  if (!is.null(distance)) {
     # This is a bit problematic. Uses the longest of the many at a fork.
     accum_distance <- run_distance + max(main$LENGTHKM)
   }
 
-  if(length(ds_comid) > 0) {
-    if(!is.null(distance)) {
-      if(accum_distance < distance) {
+  if (length(ds_comid) > 0) {
+    if (!is.null(distance)) {
+      if (accum_distance < distance) {
         unique(c(main$COMID, private_get_DD(network, ds_comid, distance, accum_distance)))
       } else {
         return(main$COMID)

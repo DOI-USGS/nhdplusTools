@@ -10,11 +10,11 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
   removed_tracker <- c()
   count <- 0
   rfl <- remove_fun(flines)
-  while(any(rfl, na.rm = T)) {
+  while (any(rfl, na.rm = T)) {
 
     flines$ds_num_upstream <- get_ds_num_upstream(flines)
 
-    if(remove_problem_headwaters) {
+    if (remove_problem_headwaters) {
       flines$ds_joined_fromCOMID <- get_ds_joined_fromCOMID(flines)
 
       # problem headwaters
@@ -45,22 +45,25 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
     flines[["LENGTHKM"]][rfl_index] <- 0
     flines[["toCOMID"]][rfl_index] <- NA
 
-    if(count > 0) {
+    if (count > 0) {
       # look for instances of COMID that are about to get skipped over -- fix them.
       flines <- left_join(flines,
-                          filter(select(flines, COMID, new_joined_toCOMID = joined_toCOMID), !is.na(new_joined_toCOMID)),
+                          filter(select(flines, COMID,
+                                        new_joined_toCOMID = joined_toCOMID),
+                                 !is.na(new_joined_toCOMID)),
                           by = c("joined_toCOMID" = "COMID"))
 
-      flines <- mutate(flines, joined_toCOMID = ifelse((!is.na(new_joined_toCOMID) & !new_joined_toCOMID == -9999),
-                                                       new_joined_toCOMID,
-                                                       joined_toCOMID))
+      flines <- mutate(flines, joined_toCOMID = ifelse( (!is.na(new_joined_toCOMID) &
+                                                           !new_joined_toCOMID == -9999),
+                                                        new_joined_toCOMID,
+                                                        joined_toCOMID))
       flines <- select(flines, -new_joined_toCOMID)
     }
 
     removed_tracker <- c(removed_tracker, flines[["COMID"]][rfl_index])
 
     count <- count + 1
-    if(count > 100) {
+    if (count > 100) {
       stop("stuck in headwaters while loop")
     }
 

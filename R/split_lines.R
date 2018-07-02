@@ -150,7 +150,7 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
   split_points <- mutate(split_points, split_fID = row.names(split_points)) %>%
     select(-geom_len, -pieces) %>%
     group_by(fID) %>%
-    mutate(ideal_len = cumsum(piece_len)) %>%
+    mutate(ideal_len = round(cumsum(piece_len), digits = 4)) %>%
     mutate(start = dplyr::lag(ideal_len, default = 0, order_by = split_fID)) %>%
     ungroup()
 
@@ -221,7 +221,7 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
   starts_stops <- dplyr::distinct(cbind(split_nodes[,c("fID", "split_fID")][starts_stops[["start"]], ], starts_stops))
 
   if(nrow(split_points) != nrow(starts_stops)) {
-    warning(paste("After splitting, some fIDs were lost. Can't continue.",
+   stop(paste("After splitting, some fIDs were lost. Can't continue.",
                "Not enough nodes? missing:",
                paste(split_points$split_fID[which(!split_points$split_fID %in%
                                               starts_stops$split_fID)], collapse = ", "),

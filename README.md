@@ -20,7 +20,7 @@ devtools::install_github("dblodgett-usgs/nhdplusTools")
 
 ### Data:
 
-The most convenient way to get the NHDPlus is via the [geopackage hosted here.](Nhttps://www.epa.gov/waterdata/nhdplus-national-data) [(direct link to download)](https://s3.amazonaws.com/nhdplus/NHDPlusV21/Data/NationalData/NHDPlusV21_NationalData_CONUS_Seamless_Geopackage_05.7z) You will need [7z](https://www.7-zip.org/) or the [`archive` package](https://github.com/jimhester/archive) to extract it.
+The most convenient way to get the NHDPlus is via the [geopackage hosted here.](https://www.epa.gov/waterdata/nhdplus-national-data) [(direct link to download)](https://s3.amazonaws.com/nhdplus/NHDPlusV21/Data/NationalData/NHDPlusV21_NationalData_CONUS_Seamless_Geopackage_05.7z) You will need [7z](https://www.7-zip.org/) or the [`archive` package](https://github.com/jimhester/archive) to extract it.
 
 ## Package Vision
 

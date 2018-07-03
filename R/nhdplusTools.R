@@ -17,6 +17,15 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <- DnMinorHyd <- FTYPE <- FromNode 
     collapse = "\n"))
 }
 
+#' Sample flowlines from the Petapsco River.
+#'
+#' A sample set of flowlines.
+#'
+#' @format An sf data.frame
+#'
+#' @source \url{https://www.epa.gov/waterdata/nhdplus-national-data}
+"sample_flines"
+
 get_dsLENGTHKM <- function(flines) {
   # This gets all the next-downstream flowlines and finds the length of the next downstream
   flines$dsLENGTHKM <- flines[["LENGTHKM"]][match(flines$toCOMID, flines$COMID)]

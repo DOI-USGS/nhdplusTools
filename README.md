@@ -26,14 +26,14 @@ The most convenient way to get the NHDPlus is via the [geopackage hosted here.](
 
 The `nhdplusTools` package is intended to provide a reusable set of tools to
 subset, relate data to, and refactor NHDPlus data. It implements a data model
-consistent with both the [NHDPlus)https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus
+consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
 and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
 aims to provide a simple set of tools with minimal dependencies that can be used
 to build sophisticated workflows using NHDPlus data.
 
-*This vision is intended as a guide to contributors -- conveying what kinds of
+**This vision is intended as a guide to contributors -- conveying what kinds of
 contributions are of interest to the package's long term vision. It is a
-reflection of the current thinking and is open to discussion and modification.*
+reflection of the current thinking and is open to discussion and modification.**
 
 ### Functional Vision
 The following describe a vision for the functionality that should be included
@@ -57,9 +57,12 @@ linear and catchment indexing.
 ##### Refactoring
 The `nhdplusTools` package was started based on a set of tools to refactor the
 NHDPlusV2 network. The concept of refactoring as intended here includes:
+
 1) aggregating catchments into groups based on existing network topology,
-2) modifying catchment topology to eliminate small catchments, 3) splitting
-large or long catchments to create a more uniform catchment size distribution.
+2) modifying catchment topology to eliminate small catchments,
+3) splitting large or long catchments to create a more uniform catchment size
+distribution.
+
 This type of functionality is especially relevant to modeling applications that
 need specific modeling unit characteristics but wish to preserve the network as
 much as possible for interoperability with other applications that use the
@@ -128,11 +131,11 @@ to install system libraries. `dplyr`, and `sf` are the primary dependencies that
 should be used if at all possible.
 
 
-## Related similar packages:
-https://github.com/mbtyers/riverdist
-https://github.com/jsta/nhdR
-https://github.com/lawinslow/hydrolinks
-https://github.com/mikejohnson51/HydroData
+### Related similar packages:
+https://github.com/mbtyers/riverdist  
+https://github.com/jsta/nhdR  
+https://github.com/lawinslow/hydrolinks  
+https://github.com/mikejohnson51/HydroData  
 ... others -- please suggest additions?
 
 ### Contributing:

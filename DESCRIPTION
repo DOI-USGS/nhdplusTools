@@ -8,7 +8,7 @@ Description: A grab bag of tools for traversing and
     working with NHDPlus data.
 URL: https://github.com/dblodgett-usgs/nhdplusTools#readme
 BugReports: https://github.com/dblodgett-usgs/nhdplusTools/issues
-Imports: dplyr, sf, lwgeom, snow
+Imports: dplyr, sf, lwgeom, snow, RANN, units
 Remotes: r-spatial/lwgeom
 Suggests: testthat
 License: CC0

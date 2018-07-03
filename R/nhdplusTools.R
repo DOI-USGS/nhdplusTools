@@ -8,7 +8,7 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <- DnMinorHyd <- FTYPE <- FromNode 
   removed_COMID <- split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <- len <- nID <- new_index <-
   piece_len <- setNames <- start <- FromMeas <- REACHCODE <- REACH_meas <- ToMeas <-
-  index <- measure <- nn.idx <- NULL
+  index <- measure <- nn.idx <- precision_index <- NULL
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(

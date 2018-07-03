@@ -4,7 +4,7 @@
 \alias{get_flowline_index}
 \title{get flowline index}
 \usage{
-get_flowline_index(flines, points, search_radius = 0.1)
+get_flowline_index(flines, points, search_radius = 0.1, precision = NA)
 }
 \arguments{
 \item{flines}{sf data.frame of type LINESTRING or MULTILINESTRING including
@@ -14,6 +14,8 @@ COMID, reachcode, ToMeas, and FromMeas}
 
 \item{search_radius}{numeric the distance for the nearest neighbor search to extend.
 See RANN nn2 documentation for more details.}
+
+\item{precision}{numeric the resolution of measure precision in the output.}
 }
 \value{
 data.frame with three columns, COMID, reachcode, and REACH_meas.
@@ -25,6 +27,13 @@ given an sf point geometry collumn, return COMID, reachcode, and measure for eac
 Note 1: that inputs are cast into LINESTRINGS. Because of this, the measure output
 of inputs that are true multipart lines may be in error.
 
-Note 2: This version of this function only resolves to the nearest geometry node. This can
-cause problems if there are not enough nodes on a given flowline.
+Note 2: This algorithm finds the nearest node in the input flowlines to identify which
+catchment the point should belong to. As a second pass, it can calculate the measure
+to greater precision than the nearest flowline geometry node.
+}
+\examples{
+flines <- sf::st_read(system.file("extdata/petapsco_flowlines.geojson", package = "nhdplusTools"))
+point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
+get_flowline_index(flines, point)
+
 }

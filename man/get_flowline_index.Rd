@@ -32,7 +32,7 @@ catchment the point should belong to. As a second pass, it can calculate the mea
 to greater precision than the nearest flowline geometry node.
 }
 \examples{
-flines <- sf::st_read(system.file("extdata/petapsco_flowlines.geojson", package = "nhdplusTools"))
+flines <- readRDS(system.file("extdata/petapsco_flowlines.rds", package = "nhdplusTools"))
 point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
 get_flowline_index(flines, point)
 

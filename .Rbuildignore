@@ -4,3 +4,4 @@ LICENSE
 .travis.yml
 .lintr
 inst/doc/*.html
+docs

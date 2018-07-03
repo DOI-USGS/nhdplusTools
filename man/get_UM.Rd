@@ -28,7 +28,7 @@ plot(dplyr::filter(sample_flines, COMID \%in\% UM_COMIDs)$geometry,
      col = "red", add = TRUE, lwd = 3)
 
 UM_COMIDs <- get_UM(sample_flines, start_COMID, distance = 50)
-plot(dplyr::filter(sample_flines, COMID \%in\% UM_COMIDs),
+plot(dplyr::filter(sample_flines, COMID \%in\% UM_COMIDs)$geometry,
      col = "blue", add = TRUE, lwd = 2)
 
 }

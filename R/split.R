@@ -56,6 +56,7 @@ split_flowlines <- function(flines, max_length, para = 0) {
 #' @param para how many cores to use
 #' @return only the split lines.
 #' @importFrom dplyr group_by ungroup filter select mutate
+#' @noRd
 #'
 split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
   if (max_length < 50) warning("short max length detected, do you have your units right?")
@@ -122,6 +123,7 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
 #' @return only the split lines.
 #' @importFrom dplyr group_by ungroup filter select mutate
 #' @importFrom stats setNames
+#' @noRd
 #'
 # Non lwgeom method
 split_lines_2 <- function(input_lines, max_length, id = "ID") {

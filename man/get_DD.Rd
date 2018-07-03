@@ -22,3 +22,14 @@ integer vector of all COMIDs downstream of the starting catchment along the main
 \description{
 Traverse NHDPlus network downstream main stem
 }
+\examples{
+start_COMID <- 11688818
+DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
+plot(dplyr::filter(sample_flines, COMID \%in\% DD_COMIDs)$geometry,
+     col = "red", lwd = 2)
+
+DM_COMIDs <- get_DM(sample_flines, start_COMID, distance = 4)
+plot(dplyr::filter(sample_flines, COMID \%in\% DM_COMIDs)$geometry,
+     col = "blue", add = TRUE, lwd = 2)
+
+}

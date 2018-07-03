@@ -18,9 +18,10 @@
 #' @importFrom RANN nn2
 #' @export
 #' @examples
-#' flines <- readRDS(system.file("extdata/petapsco_flowlines.rds", package = "nhdplusTools"))
-#' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
-#' get_flowline_index(flines, point)
+#' get_flowline_index(sample_flines,
+#'                    sf::st_sfc(sf::st_point(c(-76.87479,
+#'                                              39.48233)),
+#'                               crs = 4326))
 #'
 
 get_flowline_index <- function(flines, points, search_radius = 0.1, precision = NA) {

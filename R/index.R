@@ -2,11 +2,11 @@
 #' @description given an sf point geometry collumn, return COMID, reachcode, and measure for each.
 #' @param points sfc of type POINT
 #' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
-#' COMID, reachcode, ToMeas, and FromMeas
+#' COMID, REACHCODE, ToMeas, and FromMeas
 #' @param search_radius numeric the distance for the nearest neighbor search to extend.
 #' See RANN nn2 documentation for more details.
 #' @param precision numeric the resolution of measure precision in the output.
-#' @return data.frame with three columns, COMID, reachcode, and REACH_meas.
+#' @return data.frame with three columns, COMID, REACHCODE, and REACH_meas.
 #' @details Note 1: that inputs are cast into LINESTRINGS. Because of this, the measure output
 #' of inputs that are true multipart lines may be in error.
 #'

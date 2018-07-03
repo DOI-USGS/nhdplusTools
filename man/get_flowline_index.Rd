@@ -8,7 +8,7 @@ get_flowline_index(flines, points, search_radius = 0.1, precision = NA)
 }
 \arguments{
 \item{flines}{sf data.frame of type LINESTRING or MULTILINESTRING including
-COMID, reachcode, ToMeas, and FromMeas}
+COMID, REACHCODE, ToMeas, and FromMeas}
 
 \item{points}{sfc of type POINT}
 
@@ -18,7 +18,7 @@ See RANN nn2 documentation for more details.}
 \item{precision}{numeric the resolution of measure precision in the output.}
 }
 \value{
-data.frame with three columns, COMID, reachcode, and REACH_meas.
+data.frame with three columns, COMID, REACHCODE, and REACH_meas.
 }
 \description{
 given an sf point geometry collumn, return COMID, reachcode, and measure for each.

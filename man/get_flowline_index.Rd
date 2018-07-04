@@ -12,7 +12,8 @@ COMID, REACHCODE, ToMeas, and FromMeas}
 
 \item{points}{sfc of type POINT}
 
-\item{search_radius}{numeric the distance for the nearest neighbor search to extend.
+\item{search_radius}{numeric the distance for the nearest neighbor search
+to extend.
 See RANN nn2 documentation for more details.}
 
 \item{precision}{numeric the resolution of measure precision in the output.}
@@ -21,15 +22,18 @@ See RANN nn2 documentation for more details.}
 data.frame with three columns, COMID, REACHCODE, and REACH_meas.
 }
 \description{
-given an sf point geometry collumn, return COMID, reachcode, and measure for each.
+given an sf point geometry collumn, return COMID, reachcode,
+and measure for each.
 }
 \details{
-Note 1: that inputs are cast into LINESTRINGS. Because of this, the measure output
+Note 1: that inputs are cast into LINESTRINGS. Because of this,
+the measure output
 of inputs that are true multipart lines may be in error.
 
-Note 2: This algorithm finds the nearest node in the input flowlines to identify which
-catchment the point should belong to. As a second pass, it can calculate the measure
-to greater precision than the nearest flowline geometry node.
+Note 2: This algorithm finds the nearest node in the input flowlines to
+identify which catchment the point should belong to. As a second pass,
+it can calculate the measure to greater precision than the nearest flowline
+geometry node.
 }
 \examples{
 get_flowline_index(sample_flines,

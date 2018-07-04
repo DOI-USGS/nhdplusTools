@@ -1,18 +1,22 @@
 #' @title get flowline index
-#' @description given an sf point geometry collumn, return COMID, reachcode, and measure for each.
+#' @description given an sf point geometry collumn, return COMID, reachcode,
+#' and measure for each.
 #' @param points sfc of type POINT
 #' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
 #' COMID, REACHCODE, ToMeas, and FromMeas
-#' @param search_radius numeric the distance for the nearest neighbor search to extend.
+#' @param search_radius numeric the distance for the nearest neighbor search
+#' to extend.
 #' See RANN nn2 documentation for more details.
 #' @param precision numeric the resolution of measure precision in the output.
 #' @return data.frame with three columns, COMID, REACHCODE, and REACH_meas.
-#' @details Note 1: that inputs are cast into LINESTRINGS. Because of this, the measure output
+#' @details Note 1: that inputs are cast into LINESTRINGS. Because of this,
+#' the measure output
 #' of inputs that are true multipart lines may be in error.
 #'
-#' Note 2: This algorithm finds the nearest node in the input flowlines to identify which
-#' catchment the point should belong to. As a second pass, it can calculate the measure
-#' to greater precision than the nearest flowline geometry node.
+#' Note 2: This algorithm finds the nearest node in the input flowlines to
+#' identify which catchment the point should belong to. As a second pass,
+#' it can calculate the measure to greater precision than the nearest flowline
+#' geometry node.
 #'
 #' @importFrom dplyr filter select mutate right_join left_join
 #' @importFrom dplyr group_by summarise distinct desc lag n
@@ -26,16 +30,21 @@
 #'                               crs = 4326))
 #'
 
-get_flowline_index <- function(flines, points, search_radius = 0.1, precision = NA) {
+get_flowline_index <- function(flines, points,
+                               search_radius = 0.1,
+                               precision = NA) {
 
   in_crs <- sf::st_crs(flines)
   if (sf::st_crs(points) != in_crs) {
-    warning("crs of lines and points don't match. attempting st_transform of points")
+    warning(paste("crs of lines and points don't match.",
+                  "attempting st_transform of points"))
     points <- sf::st_transform(points, sf::st_crs(flines))
   }
 
-  if (!all(c("COMID", "REACHCODE", "FromMeas", "ToMeas") %in% names(flines))) {
-    stop("Need: 'COMID', 'REACHCODE', 'FromMeas', 'ToMeas' columns in flines input.")
+  if (!all(c("COMID", "REACHCODE",
+             "FromMeas", "ToMeas") %in% names(flines))) {
+    stop(paste("Need: 'COMID', 'REACHCODE', 'FromMeas',",
+               "'ToMeas' columns in flines input."))
   }
 
   points <- sf::st_coordinates(points)
@@ -79,7 +88,8 @@ get_flowline_index <- function(flines, points, search_radius = 0.1, precision = 
     flines <- sf::st_coordinates(flines)
 
     matched <- matcher(flines, points, search_radius) %>%
-      left_join(select(fline_atts, COMID, precision_index), by = c("L1" = "precision_index"))
+      left_join(select(fline_atts, COMID, precision_index),
+                by = c("L1" = "precision_index"))
   }
 
   flines <- as.data.frame(flines) %>%

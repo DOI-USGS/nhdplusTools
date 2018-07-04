@@ -12,10 +12,12 @@ Pathlength, LevelPathI, UsHydroseq, and HydroSeq.}
 
 \item{comid}{integer identifier to start navigating from.}
 
-\item{distance}{numeric distance in km to limit how many COMIDs are returned. The COMID that exceeds the distance specified is returned.}
+\item{distance}{numeric distance in km to limit how many COMIDs are
+returned. The COMID that exceeds the distance specified is returned.}
 }
 \value{
-integer vector of all COMIDs upstream of the starting catchment along the mainstem.
+integer vector of all COMIDs upstream of the starting catchment
+along the mainstem.
 }
 \description{
 Traverse NHDPlus network upstream main stem

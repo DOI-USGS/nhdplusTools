@@ -12,7 +12,8 @@ test_that("discover nhdplus id errors", {
                "Must provide point or nldi_feature input.")
 
   point <- sf::st_sfc(sf::st_point(c(-76.89303, 39.57934)), crs = 4269)
-  expect_warning(discover_nhdplus_id(point), "point too close to edge of catchment.")
+  expect_warning(discover_nhdplus_id(point),
+                 "point too close to edge of catchment.")
 })
 
 test_that("discover nhdplus id works as expected", {

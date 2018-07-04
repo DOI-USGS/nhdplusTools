@@ -1,13 +1,19 @@
-COMID <- COMID.y <- Divergence <- DnHydroseq <- DnMinorHyd <- FTYPE <- FromNode <-
-  Hydroseq <- ID <- LENGTHKM <- LevelPathI <- Pathlength <- StartFlag <- StreamCalc <-
-  StreamOrde <- TerminalFl <- TerminalPa <- ToNode <- TotDASqKM <- becomes <- dsLENGTHKM <-
-  ds_joined_fromCOMID <- ds_num_upstream <- fID <- fromCOMID <- fromLENGTHKM <-
-  fromTotDASqKM <- geom_len <- geometry <- join_category <- joined_fromCOMID <-
-  joined_fromCOMID_new <- joined_toCOMID <- member_COMID <- new_joined_fromCOMID <-
-  new_joined_toCOMID <- new_toCOMID <- num_upstream <- part <- piece <- pieces <-
-  removed_COMID <- split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
-  . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <- len <- nID <- new_index <-
-  piece_len <- setNames <- start <- FromMeas <- REACHCODE <- REACH_meas <- ToMeas <-
+COMID <- COMID.y <- Divergence <- DnHydroseq <-
+  DnMinorHyd <- FTYPE <- FromNode <-
+  Hydroseq <- ID <- LENGTHKM <- LevelPathI <-
+  Pathlength <- StartFlag <- StreamCalc <-
+  StreamOrde <- TerminalFl <- TerminalPa <-
+  ToNode <- TotDASqKM <- becomes <- dsLENGTHKM <-
+  ds_joined_fromCOMID <- ds_num_upstream <- fID <-
+  fromCOMID <- fromLENGTHKM <- fromTotDASqKM <- geom_len <-
+  geometry <- join_category <- joined_fromCOMID <-
+  joined_fromCOMID_new <- joined_toCOMID <- member_COMID <-
+  new_joined_fromCOMID <- new_joined_toCOMID <- new_toCOMID <-
+  num_upstream <- part <- piece <- pieces <- removed_COMID <-
+  split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
+  . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
+  len <- nID <- new_index <- piece_len <- setNames <- start <-
+  FromMeas <- REACHCODE <- REACH_meas <- ToMeas <-
   index <- measure <- nn.idx <- precision_index <- NULL
 
 .onAttach <- function(libname, pkgname) {
@@ -76,8 +82,8 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 
   } else if (!is.null(nldi_feature)) {
 
-    nldi <- query_nldi(nldi_feature$featureSource,
-                       nldi_feature$featureID)
+    nldi <- query_nldi(nldi_feature[["featureSource"]],
+                       nldi_feature[["featureID"]])
 
     return(as.integer(nldi$features$properties$comid))
 
@@ -89,8 +95,10 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 }
 
 get_dsLENGTHKM <- function(flines) {
-  # This gets all the next-downstream flowlines and finds the length of the next downstream
-  flines$dsLENGTHKM <- flines[["LENGTHKM"]][match(flines$toCOMID, flines$COMID)]
+  # This gets all the next-downstream flowlines and finds the
+  # length of the next downstream
+  flines$dsLENGTHKM <-
+    flines[["LENGTHKM"]][match(flines$toCOMID, flines$COMID)]
   # already removed comids get NA dsLength -- ok to set them to 0.
   flines[["dsLENGTHKM"]][is.na(flines$dsLENGTHKM)] <- 0
   flines[["dsLENGTHKM"]]
@@ -100,12 +108,6 @@ get_upstream <- function(flines) {
   left_join(select(flines, COMID), select(flines, COMID, toCOMID),
             by = c("COMID" = "toCOMID")) %>%
     rename(fromCOMID = COMID.y)
-}
-
-get_upstream_length <- function(flines) {
-  left_join(select(flines, COMID), select(flines, toCOMID, LENGTHKM),
-            by = c("COMID" = "toCOMID")) %>%
-    rename(usLENGTHKM = LENGTHKM)
 }
 
 get_num_upstream <- function(flines) {
@@ -137,20 +139,16 @@ query_nldi <- function(f_source, f_id, tier = "prod") {
 
   c <- rawToChar(httr::GET(url)$content)
 
-  if(nchar(c)==0) {
+  if (nchar(c) == 0) {
     NULL
   } else {
-    try(jsonlite::fromJSON(c), silent = F)
+    try(jsonlite::fromJSON(c), silent = FALSE)
   }
 }
 
 #' @noRd
 get_nldi_url <- function(tier = "prod") {
-  if(tier=="prod") {
+  if (tier == "prod") {
     "https://cida.usgs.gov/nldi"
-  } else if(tier=="test") {
-    "https://cida-test.er.usgs.gov/nldi"
-  } else if(tier=="local") {
-    "http://localhost:8080/nldi"
   }
 }

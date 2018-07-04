@@ -2,7 +2,9 @@ context("split_lines")
 
 test_that("split lines works", {
 
-  if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = "package:lwgeom", mode = "function")) {
+  if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring",
+                                                 where = "package:lwgeom",
+                                                 mode = "function")) {
 
 
   library(sf)
@@ -14,11 +16,13 @@ test_that("split lines works", {
   flines <- collapse_flowlines(flines, 1, F, 1)
   flines <- reconcile_collapsed_flowlines(flines)
 
-  flines <- st_as_sf(inner_join(flines, select(flines_in, COMID), by = c("member_COMID" = "COMID"))) %>%
+  flines <- st_as_sf(inner_join(flines, select(flines_in, COMID),
+                                by = c("member_COMID" = "COMID"))) %>%
     select(-member_COMID) %>%
     distinct() %>%
     group_by(ID) %>%
-    summarise(toID = toID[1], LENGTHKM = LENGTHKM[1], TotDASqKM = TotDASqKM[1]) %>%
+    summarise(toID = toID[1], LENGTHKM = LENGTHKM[1],
+              TotDASqKM = TotDASqKM[1]) %>%
     st_cast("MULTILINESTRING") %>%
     ungroup() %>%
     st_line_merge()
@@ -33,7 +37,9 @@ test_that("split lines works", {
 
 test_that("split lines works", {
 
-  if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = "package:lwgeom", mode = "function")) {
+  if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring",
+                                                 where = "package:lwgeom",
+                                                 mode = "function")) {
 
 
   library(sf)
@@ -58,7 +64,9 @@ test_that("split lines works", {
 
 test_that("split_lines_2 works the same as split_lines", {
 
-  if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = "package:lwgeom", mode = "function")) {
+  if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring",
+                                                 where = "package:lwgeom",
+                                                 mode = "function")) {
 
   library(sf)
   library(dplyr)
@@ -73,10 +81,12 @@ test_that("split_lines_2 works the same as split_lines", {
       sf::st_cast("LINESTRING") %>%
       sf::st_transform(5070))
 
-  flines <- nhdplusTools:::split_lines(flines_in, 2000, id = "COMID", para = 3)
+  flines <- nhdplusTools:::split_lines(flines_in, 2000,
+                                       id = "COMID", para = 3)
 
-  expect_warning(flines_2 <- nhdplusTools:::split_lines_2(flines_in, 2000, id = "COMID"),
-                 "Found 139 geometries without very many vertices. Densifying")
+  expect_warning(flines_2 <- nhdplusTools:::split_lines_2(flines_in, 2000,
+                                                          id = "COMID"),
+   "Found 139 geometries without very many vertices. Densifying")
 
   expect_equal(nrow(flines), nrow(flines_2))
 

@@ -58,8 +58,8 @@ linear and catchment indexing.
 The `nhdplusTools` package was started based on a set of tools to refactor the
 NHDPlusV2 network. The concept of refactoring as intended here includes:
 
-1) aggregating catchments into groups based on existing network topology,
-2) modifying catchment topology to eliminate small catchments,
+1) aggregating catchments into groups based on existing network topology,  
+2) modifying catchment topology to eliminate small catchments,  
 3) splitting large or long catchments to create a more uniform catchment size
 distribution.
 
@@ -68,7 +68,7 @@ need specific modeling unit characteristics but wish to preserve the network as
 much as possible for interoperability with other applications that use the
 NHDPlus network.
 
-### Data Model Dimensions
+### Data Model
 Given that `nhdplusTools` is focused on working with NHDPlus data, the NHDPlus
 data model will largely govern the data model the package is designed to work
 with. That said, much of the package functionality also uses concepts from
@@ -143,11 +143,11 @@ https://github.com/mikejohnson51/HydroData
 First, thanks for considering a contribution! I hope to make this package a community created resource
 for us all to gain from and won't be able to do that without your help!
 
-1) Contributions should be thoroughly tested with [testthat](https://testthat.r-lib.org/).
-2) Code style should attempt to follow the [tidyverse style guide.](http://style.tidyverse.org/)
-3) Please attempt to describe what you want to do prior to contributing by submitting an issue.
-4) Please follow the typical github [fork - pull-request workflow.](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
-5) Make sure you use roxygen and run Check before contributing. More on this front as the package matures.
+1) Contributions should be thoroughly tested with [testthat](https://testthat.r-lib.org/).  
+2) Code style should attempt to follow the [tidyverse style guide.](http://style.tidyverse.org/)  
+3) Please attempt to describe what you want to do prior to contributing by submitting an issue.  
+4) Please follow the typical github [fork - pull-request workflow.](https://gist.github.com/Chaser324/ce0505fbed06b947d962)  
+5) Make sure you use roxygen and run Check before contributing. More on this front as the package matures. 
 
 Other notes:
 - lintr runs in the tests so... write good code.

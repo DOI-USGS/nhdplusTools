@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>nhdplus refactor — nhdplus_refactor • nhdplusTools</title>
+<title>nhdplus refactor — refactor_nhdplus • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="nhdplus refactor — nhdplus_refactor" />
+<meta property="og:title" content="nhdplus refactor — refactor_nhdplus" />
 
-<meta property="og:description" content="refactors nhdplud flowlines" />
+<meta property="og:description" content="refactors nhdplus flowlines" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -99,18 +99,19 @@
     <div class="page-header">
     <h1>nhdplus refactor</h1>
     <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/nhdplus_refactor.R'><code>R/nhdplus_refactor.R</code></a></small>
-    <div class="hidden name"><code>nhdplus_refactor.Rd</code></div>
+    <div class="hidden name"><code>refactor_nhdplus.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>refactors nhdplud flowlines</p>
+    <p>refactors nhdplus flowlines</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>nhdplus_refactor</span>(<span class='no'>nhdplus_flines</span>, <span class='no'>split_flines_meters</span>, <span class='no'>split_flines_cores</span>,
+    <pre class="usage"><span class='fu'>refactor_nhdplus</span>(<span class='no'>nhdplus_flines</span>, <span class='no'>split_flines_meters</span>, <span class='no'>split_flines_cores</span>,
   <span class='no'>collapse_flines_meters</span>, <span class='no'>collapse_flines_main_meters</span>, <span class='no'>out_collapsed</span>,
-  <span class='no'>out_reconciled</span>, <span class='kw'>three_pass</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='no'>out_reconciled</span>, <span class='kw'>three_pass</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,15 +148,42 @@
       <th>three_pass</th>
       <td><p>boolean perform three collapse passes or just one</p></td>
     </tr>
+    <tr>
+      <th>purge_non_dendritic</th>
+      <td><p>boolean passed on to prepare_nhdplus</p></td>
+    </tr>
+    <tr>
+      <th>warn</th>
+      <td><p>boolean controls whether warning an status messages are printed</p></td>
+    </tr>
     </table>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>nhdplus_flowlines</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st_zm'>st_zm</a></span>(<span class='no'>sample_flines</span>)
+<span class='fu'>refactor_nhdplus</span>(<span class='kw'>nhdplus_flines</span> <span class='kw'>=</span> <span class='no'>nhdplus_flowlines</span>,
+                 <span class='kw'>split_flines_meters</span> <span class='kw'>=</span> <span class='fl'>2000</span>,
+                 <span class='kw'>split_flines_cores</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+                 <span class='kw'>collapse_flines_meters</span> <span class='kw'>=</span> <span class='fl'>500</span>,
+                 <span class='kw'>collapse_flines_main_meters</span> <span class='kw'>=</span> <span class='fl'>500</span>,
+                 <span class='kw'>out_collapsed</span> <span class='kw'>=</span> <span class='st'>"temp.gpkg"</span>,
+                 <span class='kw'>out_reconciled</span> <span class='kw'>=</span> <span class='st'>"temp_rec.gpkg"</span>,
+                 <span class='kw'>three_pass</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+                 <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+                 <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; Writing layer `temp' to data source `temp.gpkg' using driver `GPKG'
+#&gt; options:        OVERWRITE=YES 
+#&gt; features:       1031
+#&gt; fields:         7
+#&gt; geometry type:  Line String</div><div class='input'><span class='fu'>unlink</span>(<span class='st'>"temp.gpkg"</span>)
+<span class='fu'>unlink</span>(<span class='st'>"temp_rec.gpkg"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

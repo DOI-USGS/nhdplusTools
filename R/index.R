@@ -14,8 +14,10 @@
 #' catchment the point should belong to. As a second pass, it can calculate the measure
 #' to greater precision than the nearest flowline geometry node.
 #'
-#' @importFrom dplyr filter select mutate
+#' @importFrom dplyr filter select mutate right_join left_join
+#' @importFrom dplyr group_by summarise distinct desc lag n
 #' @importFrom RANN nn2
+#' @importFrom magrittr "%>%"
 #' @export
 #' @examples
 #' get_flowline_index(sample_flines,

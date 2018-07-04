@@ -6,7 +6,7 @@
 #' @param id character id collumn name.
 #' @return reconciled flines
 #' @importFrom dplyr group_by ungroup filter left_join select rename mutate distinct summarise
-#' @export
+#' @noRd
 #'
 reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 
@@ -22,7 +22,8 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 
   new_flines <- left_join(new_flines,
                           data.frame(becomes = unique(new_flines$becomes),
-                                     ID = 1:length(unique(new_flines$becomes)), stringsAsFactors = FALSE),
+                                     ID = 1:length(unique(new_flines$becomes)),
+                                     stringsAsFactors = FALSE),
                           by = "becomes")
 
   tocomid_updater <- filter(select(new_flines, becomes, toCOMID), !is.na(toCOMID))
@@ -59,13 +60,13 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 #' @param remove_fun a function that will return boolean indicating which flines should be removed
 #' @param remove_problem_headwaters whether to mark headwaters upstream of confluences as unable to remove
 #' @return flines data.frame with short flowlines merged downstream
-#' @export
+#' @noRd
 #'
 reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters = FALSE) {
   removed_tracker <- c()
   count <- 0
   rfl <- remove_fun(flines)
-  while (any(rfl, na.rm = T)) {
+  while (any(rfl, na.rm = TRUE)) {
 
     flines$ds_num_upstream <- get_ds_num_upstream(flines)
 
@@ -138,7 +139,7 @@ reconcile_downstream <- function(flines, remove_fun, remove_problem_headwaters =
 #' @param normalize_mainstems boolean ...
 #' @return reconciled flines
 #' @importFrom dplyr filter left_join select rename mutate arrange distinct
-#' @export
+#' @noRd
 #'
 reconcile_removed_flowlines <- function(flines, reroute_set, removed,
                                         original_fline_atts, normalize_mainstems = FALSE) {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_network.R
 \name{get_DD}
 \alias{get_DD}
-\title{Get all downstream mainstem COMIDs}
+\title{Get all downstream COMIDs including diversions}
 \usage{
 get_DD(network, comid, distance = NULL)
 }
@@ -17,12 +17,13 @@ The COMID that exceeds the distance specified is returned.
 The longest of the diverted paths is used for limiting distance.}
 }
 \value{
-integer vector of all COMIDs downstream of the starting catchment along the mainstem.
+integer vector of all COMIDs downstream of the starting catchment
 }
 \description{
-Traverse NHDPlus network downstream main stem
+Traverse NHDPlus network downstream with diversions
 }
 \examples{
+library(sf)
 start_COMID <- 11688818
 DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
 plot(dplyr::filter(sample_flines, COMID \%in\% DD_COMIDs)$geometry,

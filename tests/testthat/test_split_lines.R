@@ -42,7 +42,7 @@ test_that("split lines works", {
   flines_in <- readRDS("data/guadalupe_network_geom.rds")
 
   flines <- suppressWarnings(
-    st_set_geometry(flines_in, NULL) %>%
+    sf::st_set_geometry(flines_in, NULL) %>%
     prepare_nhdplus(0, 0) %>%
     inner_join(select(flines_in, COMID), by = "COMID") %>%
     sf::st_as_sf() %>%
@@ -66,7 +66,7 @@ test_that("split_lines_2 works the same as split_lines", {
   flines_in <- readRDS("data/oswego_network.rds")
 
   flines_in <- suppressWarnings(
-    st_set_geometry(flines_in, NULL) %>%
+    sf::st_set_geometry(flines_in, NULL) %>%
       prepare_nhdplus(0, 0) %>%
       inner_join(select(flines_in, COMID), by = "COMID") %>%
       sf::st_as_sf() %>%

@@ -71,11 +71,11 @@ plot(flow_length_high, main = "Number of flowlines longer than ...", xlab = "km"
 grid(col="black")
 ```
 
-## nhdplus_refactor function
+## refactor_nhdplus function
 The complete refactor workflow has been packaged into a single function that can be called as shown below. For the purposes of demonstration this function is not used and individual package functions called by it are shown.
 ```{r demo, eval=FALSE, echo=TRUE}
 ## Not Run ##
-nhdplus_refactor(nhdplus_flines = nhdplus_flowlines,
+refactor_nhdplus(nhdplus_flines = nhdplus_flowlines,
                  split_flines_meters = 2000, split_flines_cores = 3,
                  collapse_flines_meters = 500, collapse_flines_mainstem_meters = 500,
                  out_collapsed = "nhdplus_collapsed.gpkg",

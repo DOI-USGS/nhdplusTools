@@ -5,7 +5,7 @@
 \title{Prep NHDPlus Data for Refactor}
 \usage{
 prepare_nhdplus(flines, min_network_size, min_path_length,
-  purge_non_dendritic = TRUE)
+  purge_non_dendritic = TRUE, warn = TRUE)
 }
 \arguments{
 \item{flines}{data.frame NHDPlus flowlines including at a minimum: COMID, LENGTHKM,
@@ -17,6 +17,8 @@ StreamCalc, TerminalPa, and Pathlength variables.}
 \item{min_path_length}{numeric Minimum length (km) of terminal level path of a network.}
 
 \item{purge_non_dendritic}{boolean Should non dendritic paths be removed or not.}
+
+\item{warn}{boolean controls whether warning an status messages are printed}
 }
 \value{
 data.frame ready to be used with the refactor_flowlines function.

@@ -1,5 +1,5 @@
 #' @title nhdplus refactor
-#' @description refactors nhdplud flowlines
+#' @description refactors nhdplus flowlines
 #' @param nhdplus_flines data.frame nhdplus flowloines
 #' @param split_flines_meters numeric split threshold in meters
 #' @param split_flines_cores numeric number of cores to use for split function
@@ -8,38 +8,57 @@
 #' @param out_collapsed character geopackage path to write collapsed to (one layer per gpkg)
 #' @param out_reconciled character geopackage path to write reconciled to (one layer per gpkg)
 #' @param three_pass boolean perform three collapse passes or just one
+#' @param purge_non_dendritic boolean passed on to prepare_nhdplus
+#' @param warn boolean controls whether warning an status messages are printed
 #' @importFrom dplyr inner_join
-#' @import sf
 #' @export
+#' @examples
+#' nhdplus_flowlines <- sf::st_zm(sample_flines)
+#' refactor_nhdplus(nhdplus_flines = nhdplus_flowlines,
+#'                  split_flines_meters = 2000,
+#'                  split_flines_cores = 3,
+#'                  collapse_flines_meters = 500,
+#'                  collapse_flines_main_meters = 500,
+#'                  out_collapsed = "temp.gpkg",
+#'                  out_reconciled = "temp_rec.gpkg",
+#'                  three_pass = TRUE,
+#'                  purge_non_dendritic = FALSE,
+#'                  warn = FALSE)
+#' unlink("temp.gpkg")
+#' unlink("temp_rec.gpkg")
 #'
 
-nhdplus_refactor <- function(nhdplus_flines,
+refactor_nhdplus <- function(nhdplus_flines,
                              split_flines_meters,
                              split_flines_cores,
                              collapse_flines_meters,
                              collapse_flines_main_meters,
                              out_collapsed,
                              out_reconciled,
-                             three_pass = FALSE) {
+                             three_pass = FALSE,
+                             purge_non_dendritic = TRUE,
+                             warn = TRUE) {
 
   if ("FTYPE" %in% names(nhdplus_flines)) {
-    nhdplus_flines <- st_set_geometry(nhdplus_flines, NULL) %>%
-      prepare_nhdplus(0, 0) %>%
+    nhdplus_flines <- sf::st_set_geometry(nhdplus_flines, NULL) %>%
+      prepare_nhdplus(0, 0, purge_non_dendritic, warn = warn) %>%
       inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
-      st_as_sf()
+      sf::st_as_sf()
   }
 
   flines <- nhdplus_flines %>%
-    st_cast("LINESTRING") %>%
-    st_transform(5070) %>%
+    sf::st_cast("LINESTRING", warn = warn) %>%
+    sf::st_transform(5070) %>%
     split_flowlines(split_flines_meters, split_flines_cores)
 
   rm(nhdplus_flines)
 
-  message("flowlines split complete, collapsing")
+  if (warn) {
+    message("flowlines split complete, collapsing")
+  }
 
   if (three_pass) {
-    collapsed_flines <- collapse_flowlines(st_set_geometry(flines, NULL),
+    collapsed_flines <- collapse_flowlines(sf::st_set_geometry(flines, NULL),
                                            (0.25 * collapse_flines_meters / 1000),
                                            TRUE,
                                            (0.25 * collapse_flines_main_meters / 1000))
@@ -47,14 +66,16 @@ nhdplus_refactor <- function(nhdplus_flines,
     collapsed_flines <- collapse_flowlines(collapsed_flines,
                                            (0.5 * collapse_flines_meters / 1000),
                                            TRUE,
-                                           (0.5 * collapse_flines_main_meters / 1000))
+                                           (0.5 * collapse_flines_main_meters / 1000),
+                                           warn = FALSE)
 
     collapsed_flines <- collapse_flowlines(collapsed_flines,
                                            (collapse_flines_meters / 1000),
                                            TRUE,
-                                           (collapse_flines_main_meters / 1000))
+                                           (collapse_flines_main_meters / 1000),
+                                           warn = FALSE)
   } else {
-    collapsed_flines <- collapse_flowlines(st_set_geometry(flines, NULL),
+    collapsed_flines <- collapse_flowlines(sf::st_set_geometry(flines, NULL),
                                            (collapse_flines_meters / 1000),
                                            TRUE,
                                            (collapse_flines_main_meters / 1000))
@@ -62,17 +83,22 @@ nhdplus_refactor <- function(nhdplus_flines,
 
   collapsed_flines %>%
     inner_join(select(flines, COMID), by = "COMID") %>%
-    st_as_sf() %>%
-    st_transform(4326) %>%
-    st_write(out_collapsed, layer_options = "OVERWRITE=YES", quiet = TRUE)
+    sf::st_as_sf() %>%
+    sf::st_transform(4326) %>%
+    sf::st_write(out_collapsed, layer_options = "OVERWRITE=YES", quiet = warn)
 
-  message("collapse complete, out collapse written to disk, reconciling")
+  if (warn) {
+    message("collapse complete, out collapse written to disk, reconciling")
+  }
 
   collapsed <- reconcile_collapsed_flowlines(collapsed_flines, select(flines, COMID), id = "COMID")
 
   collapsed$member_COMID <- unlist(lapply(collapsed$member_COMID, function(x) paste(x, collapse = ",")))
 
-  st_write(st_transform(collapsed, 4326), out_reconciled, layer_options = "OVERWRITE=YES", quiet = TRUE)
+  sf::st_write(sf::st_transform(collapsed, 4326),
+               out_reconciled,
+               layer_options = "OVERWRITE=YES",
+               quiet = TRUE)
 }
 
 
@@ -84,13 +110,18 @@ nhdplus_refactor <- function(nhdplus_flines,
 #' @param min_network_size numeric Minimum size (sqkm) of drainage network to include in output.
 #' @param  min_path_length numeric Minimum length (km) of terminal level path of a network.
 #' @param purge_non_dendritic boolean Should non dendritic paths be removed or not.
+#' @param warn boolean controls whether warning an status messages are printed
 #' @return data.frame ready to be used with the refactor_flowlines function.
-#' @import dplyr
 #' @importFrom dplyr select filter left_join
 #' @export
 #'
-prepare_nhdplus <- function(flines, min_network_size, min_path_length, purge_non_dendritic = TRUE) {
-  if ("sf" %in% class(flines)) {
+prepare_nhdplus <- function(flines,
+                            min_network_size,
+                            min_path_length,
+                            purge_non_dendritic = TRUE,
+                            warn = TRUE) {
+
+  if ("sf" %in% class(flines) & warn) {
     warning("removing geometry")
     flines <- sf::st_set_geometry(flines, NULL)
   }
@@ -118,11 +149,12 @@ prepare_nhdplus <- function(flines, min_network_size, min_path_length, purge_non
 
     flines <- filter(flines, !flines$TerminalPa %in% unique(tiny_networks$TerminalPa))
   }
-
-  warning(paste("Removed", orig_rows - nrow(flines), "flowlines that don't apply.\n",
-                "Includes: Coastlines, non-dendritic paths, \nand networks",
-                "with drainage area less than",
-                min_network_size, "sqkm"))
+  if (warn) {
+    warning(paste("Removed", orig_rows - nrow(flines), "flowlines that don't apply.\n",
+                  "Includes: Coastlines, non-dendritic paths, \nand networks",
+                  "with drainage area less than",
+                  min_network_size, "sqkm"))
+  }
 
   # Join ToNode and FromNode along with COMID and Length to get downstream attributes.
   flines <- left_join(flines, select(flines, toCOMID = COMID, FromNode), by = c("ToNode" = "FromNode"))

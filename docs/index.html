@@ -107,13 +107,15 @@ devtools::install_github("dblodgett-usgs/nhdplusTools")</code></pre>
 <h5 class="hasAnchor">
 <a href="#refactoring" class="anchor"></a>Refactoring</h5>
 <p>The <code>nhdplusTools</code> package was started based on a set of tools to refactor the NHDPlusV2 network. The concept of refactoring as intended here includes:</p>
-<p>1) aggregating catchments into groups based on existing network topology, 2) modifying catchment topology to eliminate small catchments, 3) splitting large or long catchments to create a more uniform catchment size distribution.</p>
+<p>1) aggregating catchments into groups based on existing network topology,<br>
+2) modifying catchment topology to eliminate small catchments,<br>
+3) splitting large or long catchments to create a more uniform catchment size distribution.</p>
 <p>This type of functionality is especially relevant to modeling applications that need specific modeling unit characteristics but wish to preserve the network as much as possible for interoperability with other applications that use the NHDPlus network.</p>
 </div>
 </div>
-<div id="data-model-dimensions" class="section level3">
+<div id="data-model" class="section level3">
 <h3 class="hasAnchor">
-<a href="#data-model-dimensions" class="anchor"></a>Data Model Dimensions</h3>
+<a href="#data-model" class="anchor"></a>Data Model</h3>
 <p>Given that <code>nhdplusTools</code> is focused on working with NHDPlus data, the NHDPlus data model will largely govern the data model the package is designed to work with. That said, much of the package functionality also uses concepts from the HY_Features standard.</p>
 <p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a wholistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can only be fully characterized through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as a wholistic identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a wholistic collection of data that together fully describe an NHDPlus catchment.</p>
 <p>Below is a description of the expected scope of data to be used by the <code>nhdplusTools</code> package. While other data and attributes may come into scope, it should only be done as a naive pass-through, as in data subsetting, or with considerable deliberation.</p>
@@ -163,7 +165,11 @@ devtools::install_github("dblodgett-usgs/nhdplusTools")</code></pre>
 <h3 class="hasAnchor">
 <a href="#contributing" class="anchor"></a>Contributing:</h3>
 <p>First, thanks for considering a contribution! I hope to make this package a community created resource for us all to gain from and won’t be able to do that without your help!</p>
-<p>1) Contributions should be thoroughly tested with <a href="https://testthat.r-lib.org/">testthat</a>. 2) Code style should attempt to follow the <a href="http://style.tidyverse.org/">tidyverse style guide.</a> 3) Please attempt to describe what you want to do prior to contributing by submitting an issue. 4) Please follow the typical github <a href="https://gist.github.com/Chaser324/ce0505fbed06b947d962">fork - pull-request workflow.</a> 5) Make sure you use roxygen and run Check before contributing. More on this front as the package matures.</p>
+<p>1) Contributions should be thoroughly tested with <a href="https://testthat.r-lib.org/">testthat</a>.<br>
+2) Code style should attempt to follow the <a href="http://style.tidyverse.org/">tidyverse style guide.</a><br>
+3) Please attempt to describe what you want to do prior to contributing by submitting an issue.<br>
+4) Please follow the typical github <a href="https://gist.github.com/Chaser324/ce0505fbed06b947d962">fork - pull-request workflow.</a><br>
+5) Make sure you use roxygen and run Check before contributing. More on this front as the package matures.</p>
 <p>Other notes:</p>
 <ul>
 <li>lintr runs in the tests so… write good code.</li>

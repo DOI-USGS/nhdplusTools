@@ -21,6 +21,7 @@ integer vector of all COMIDs downstream of the starting catchment along the main
 Traverse NHDPlus network downstream main stem
 }
 \examples{
+library(sf)
 plot(sample_flines$geometry)
 start_COMID <- 11690092
 DM_COMIDs <- get_DM(sample_flines, start_COMID)

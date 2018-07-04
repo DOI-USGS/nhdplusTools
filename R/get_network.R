@@ -8,6 +8,7 @@
 #' @importFrom dplyr filter
 #' @export
 #' @examples
+#' library(sf)
 #' plot(sample_flines$geometry)
 #' start_COMID <- 11690196
 #' UT_COMIDs <- get_UT(sample_flines, start_COMID)
@@ -71,6 +72,7 @@ private_get_UT <- function(network, comid, distance = NULL, stop_pathlength = NU
 #' @importFrom dplyr filter
 #' @export
 #' @examples
+#' library(sf)
 #' plot(sample_flines$geometry)
 #' start_COMID <- 11690196
 #' UM_COMIDs <- get_UM(sample_flines, start_COMID)
@@ -112,6 +114,7 @@ get_UM <- function(network, comid, distance = NULL) {
 #' @importFrom dplyr filter
 #' @export
 #' @examples
+#' library(sf)
 #' plot(sample_flines$geometry)
 #' start_COMID <- 11690092
 #' DM_COMIDs <- get_DM(sample_flines, start_COMID)
@@ -156,18 +159,19 @@ private_get_DM <- function(network, comid, distance = NULL, run_distance = NULL)
 }
 
 
-#' @title Get all downstream mainstem COMIDs
-#' @description Traverse NHDPlus network downstream main stem
+#' @title Get all downstream COMIDs including diversions
+#' @description Traverse NHDPlus network downstream with diversions
 #' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
 #' DnMinorHyd, DnHydroseq, and HydroSeq.
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are returned.
 #' The COMID that exceeds the distance specified is returned.
 #' The longest of the diverted paths is used for limiting distance.
-#' @return integer vector of all COMIDs downstream of the starting catchment along the mainstem.
+#' @return integer vector of all COMIDs downstream of the starting catchment
 #' @importFrom dplyr filter
 #' @export
 #' @examples
+#' library(sf)
 #' start_COMID <- 11688818
 #' DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
 #' plot(dplyr::filter(sample_flines, COMID %in% DD_COMIDs)$geometry,
@@ -183,12 +187,16 @@ get_DD <- function(network, comid, distance = NULL) {
 
 }
 
-private_get_DD <- function(network, comid, distance = NULL, run_distance = NULL) {
+private_get_DD <- function(network,
+                           comid,
+                           distance = NULL,
+                           run_distance = NULL) {
 
-  main <- filter(network, COMID %in% comid)
+  main <- dplyr::filter(network, COMID %in% comid)
 
-  ds_comid <- filter(network,
-                     Hydroseq %in% main$DnHydroseq | Hydroseq %in% main$DnMinorHyd)$COMID
+  ds_comid <- dplyr::filter(network,
+                     Hydroseq %in% main$DnHydroseq |
+                       Hydroseq %in% main$DnMinorHyd)$COMID
 
   if (!is.null(distance)) {
     # This is a bit problematic. Uses the longest of the many at a fork.
@@ -198,7 +206,9 @@ private_get_DD <- function(network, comid, distance = NULL, run_distance = NULL)
   if (length(ds_comid) > 0) {
     if (!is.null(distance)) {
       if (accum_distance < distance) {
-        unique(c(main$COMID, private_get_DD(network, ds_comid, distance, accum_distance)))
+        unique(c(main$COMID,
+                 private_get_DD(network, ds_comid,
+                                distance, accum_distance)))
       } else {
         return(main$COMID)
       }

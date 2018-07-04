@@ -28,7 +28,7 @@ test_that("collapse works on a double pass", {
 
   if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = "package:lwgeom", mode = "function")) {
 
-  flines <- suppressWarnings(st_set_geometry(nhdplus_flines, NULL) %>%
+  flines <- suppressWarnings(sf::st_set_geometry(nhdplus_flines, NULL) %>%
     prepare_nhdplus(0, 0) %>%
     inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
     sf::st_as_sf() %>%
@@ -36,7 +36,7 @@ test_that("collapse works on a double pass", {
     sf::st_transform(5070) %>%
     split_flowlines(split_flines_meters, split_flines_cores))
 
-  collapsed_flines <- collapse_flowlines(st_set_geometry(flines, NULL),
+  collapsed_flines <- collapse_flowlines(sf::st_set_geometry(flines, NULL),
                                          (0.25 * collapse_flines_meters / 1000),
                                          TRUE,
                                          (0.25 * collapse_flines_main_meters / 1000))

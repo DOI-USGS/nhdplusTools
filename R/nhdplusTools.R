@@ -16,11 +16,48 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <-
   FromMeas <- REACHCODE <- REACH_meas <- ToMeas <-
   index <- measure <- nn.idx <- precision_index <- NULL
 
+nhdplusTools_env <- new.env()
+
+default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdp"
+
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(
     "USGS Research Package:
     https://owi.usgs.gov/R/packages.html#research"),
     collapse = "\n"))
+  temp <- nhdplus_path(default_nhdplus_path, warn = FALSE)
+}
+
+#' @title NHDPlus Data Path
+#' @description Allows specification of a custom path to a source dataset.
+#' Typically this will be the national seamless dataset in geodatabase or geopackage format.
+#' @param path character path ending in .gdb or .gpkg
+#' @return 1 if set successfully, the path if no input.
+#' @export
+#' @examples
+#' nhdplus_path("/data/NHDPlusV21_National_Seamless.gdb")
+#'
+#' nhdplus_path("/data/NHDPlusV21_National_Seamless.gdb", warn=FALSE)
+#'
+#' nhdplus_path()
+#'
+nhdplus_path <- function(path = NULL, warn = FALSE) {
+  if (!is.null(path)) {
+
+    assign("nhdplus_data_path", path, envir = nhdplusTools_env)
+
+    if(warn) {
+      warning("Path does not exist.")
+    }
+
+    if(nhdplus_path() == path) {
+      return(1)
+    } else {
+      stop("Path not set successfully.")
+    }
+  } else {
+      return(get("nhdplus_data_path", envir = nhdplusTools_env))
+  }
 }
 
 #' Sample flowlines from the Petapsco River.

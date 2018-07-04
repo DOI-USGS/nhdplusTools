@@ -1,9 +1,23 @@
+context("lint")
+
 if (requireNamespace("lintr", quietly = TRUE)) {
   context("lints")
   test_that("Package Style", {
     lintr::expect_lint_free()
   })
 }
+
+context("package setup")
+
+test_that("nhdplus_data_path sets and gets right", {
+  expect_equal(nhdplus_path(), "../NHDPlusV21_National_Seamless.gdp")
+
+  expect_equal(nhdplus_path("test", warn = FALSE), 1)
+
+  expect_equal(nhdplus_path(), "test")
+
+  expect_warning(nhdplus_path("test", warn = TRUE), "Path does not exist.")
+})
 
 context("discover nhdplus id")
 

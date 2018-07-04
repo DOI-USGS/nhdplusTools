@@ -4,7 +4,7 @@
 \alias{discover_nhdplus_id}
 \title{Discover NHDPlus Catchment/Flowline ID}
 \usage{
-discover_nhdplus_id(point = NULL, nldi_feature = NULL, warn = TRUE)
+discover_nhdplus_id(point = NULL, nldi_feature = NULL)
 }
 \arguments{
 \item{point}{An sf POINT including crs as created by:
@@ -14,8 +14,6 @@ sf::st_sf(sf::st_point(..,..), crs)}
 `featureSource` is derived from the
 \href{https://cida.usgs.gov/nldi/}{list here.} and the `featureSource` is
 a known identifier from the specified `featureSource`.}
-
-\item{warn}{boolean controls whether warning an status messages are printed}
 }
 \value{
 integer of catchment identifier COMID
@@ -26,5 +24,11 @@ Mutlipurpose function to find a COMID of interest.
 \examples{
 point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
 discover_nhdplus_id(point)
+
+nldi_huc12 <- list(featureSource = "huc12pp", featureID = "070700051701")
+discover_nhdplus_id(nldi_feature = nldi_huc12)
+
+nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
+discover_nhdplus_id(nldi_feature = nldi_nwis)
 
 }

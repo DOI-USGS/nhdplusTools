@@ -34,16 +34,20 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <- DnMinorHyd <- FTYPE <- FromNode 
 #' `featureSource` is derived from the
 #' \href{https://cida.usgs.gov/nldi/}{list here.} and the `featureSource` is
 #' a known identifier from the specified `featureSource`.
-#' @param warn boolean controls whether warning an status messages are printed
 #' @return integer of catchment identifier COMID
 #' @export
 #' @examples
 #' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
 #' discover_nhdplus_id(point)
 #'
-discover_nhdplus_id <- function(point = NULL,
-                           nldi_feature = NULL,
-                           warn = TRUE) {
+#' nldi_huc12 <- list(featureSource = "huc12pp", featureID = "070700051701")
+#' discover_nhdplus_id(nldi_feature = nldi_huc12)
+#'
+#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
+#' discover_nhdplus_id(nldi_feature = nldi_nwis)
+#'
+discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
+
   if (!is.null(point)) {
 
     url_base <- paste0("https://cida.usgs.gov/nwc/geoserver/nhdplus/ows",
@@ -68,11 +72,14 @@ discover_nhdplus_id <- function(point = NULL,
       warning("point too close to edge of catchment found multiple.")
     }
 
-    return(catchment$featureid)
+    return(as.integer(catchment$featureid))
 
   } else if (!is.null(nldi_feature)) {
 
-    warning("not implemented")
+    nldi <- query_nldi(nldi_feature$featureSource,
+                       nldi_feature$featureID)
+
+    return(as.integer(nldi$features$properties$comid))
 
   } else {
 
@@ -117,4 +124,33 @@ get_ds_num_upstream <- function(flines) {
 get_ds_joined_fromCOMID <- function(flines) {
   flines <- mutate(flines, ds_joined_fromCOMID = joined_fromCOMID)
   flines[["ds_joined_fromCOMID"]][match(flines$toCOMID, flines$COMID)]
+}
+
+#' @importFrom httr GET
+#' @importFrom jsonlite fromJSON
+#' @noRd
+query_nldi <- function(f_source, f_id, tier = "prod") {
+  nldi_base_url <- get_nldi_url(tier)
+
+  url <- paste(nldi_base_url, f_source, f_id,
+               sep = "/")
+
+  c <- rawToChar(httr::GET(url)$content)
+
+  if(nchar(c)==0) {
+    NULL
+  } else {
+    try(jsonlite::fromJSON(c), silent = F)
+  }
+}
+
+#' @noRd
+get_nldi_url <- function(tier = "prod") {
+  if(tier=="prod") {
+    "https://cida.usgs.gov/nldi"
+  } else if(tier=="test") {
+    "https://cida-test.er.usgs.gov/nldi"
+  } else if(tier=="local") {
+    "http://localhost:8080/nldi"
+  }
 }

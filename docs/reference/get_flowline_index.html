@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="get flowline index — get_flowline_index" />
 
-<meta property="og:description" content="given an sf point geometry collumn, return COMID, reachcode, and measure for each." />
+<meta property="og:description" content="given an sf point geometry collumn, return COMID, reachcode,
+and measure for each." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -104,7 +105,8 @@
 
     <div class="ref-description">
     
-    <p>given an sf point geometry collumn, return COMID, reachcode, and measure for each.</p>
+    <p>given an sf point geometry collumn, return COMID, reachcode,
+and measure for each.</p>
     
     </div>
 
@@ -124,7 +126,8 @@ COMID, REACHCODE, ToMeas, and FromMeas</p></td>
     </tr>
     <tr>
       <th>search_radius</th>
-      <td><p>numeric the distance for the nearest neighbor search to extend.
+      <td><p>numeric the distance for the nearest neighbor search
+to extend.
 See RANN nn2 documentation for more details.</p></td>
     </tr>
     <tr>
@@ -139,11 +142,13 @@ See RANN nn2 documentation for more details.</p></td>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Note 1: that inputs are cast into LINESTRINGS. Because of this, the measure output
+    <p>Note 1: that inputs are cast into LINESTRINGS. Because of this,
+the measure output
 of inputs that are true multipart lines may be in error.</p>
-<p>Note 2: This algorithm finds the nearest node in the input flowlines to identify which
-catchment the point should belong to. As a second pass, it can calculate the measure
-to greater precision than the nearest flowline geometry node.</p>
+<p>Note 2: This algorithm finds the nearest node in the input flowlines to
+identify which catchment the point should belong to. As a second pass,
+it can calculate the measure to greater precision than the nearest flowline
+geometry node.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

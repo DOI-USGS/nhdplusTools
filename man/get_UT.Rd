@@ -7,15 +7,17 @@
 get_UT(network, comid, distance = NULL)
 }
 \arguments{
-\item{network}{data.frame NHDPlus flowlines including at a minimum: COMID,
-Pathlength, LENGTHKM, and HydroSeq.}
+\item{network}{data.frame NHDPlus flowlines including at a minimum:
+COMID, Pathlength, LENGTHKM, and HydroSeq.}
 
 \item{comid}{integer Identifier to start navigating from.}
 
-\item{distance}{numeric distance in km to limit how many COMIDs are returned. The COMID that exceeds the distance specified is returned.}
+\item{distance}{numeric distance in km to limit how many COMIDs are
+returned. The COMID that exceeds the distance specified is returned.}
 }
 \value{
-integer vector of all COMIDs upstream with tributaries of the starting catchment.
+integer vector of all COMIDs upstream with tributaries of the
+starting catchment.
 }
 \description{
 Traverse NHDPlus network upstream with tributaries

@@ -24,18 +24,21 @@ test_that("get_DM works upstream of diversion", {
 })
 
 test_that("get_DM with distance 0 returns 1 comid", {
-  result <- get_DM(readRDS("data/petapsco_network.rds"), 11688810, distance = 0)
+  result <- get_DM(readRDS("data/petapsco_network.rds"),
+                   11688810, distance = 0)
   expect_equal(length(result), 1)
 })
 
 test_that("get_DM with distance 2 returns specific COMIDs", {
-  result <- get_DM(readRDS("data/petapsco_network.rds"), 11688810, distance = 2)
+  result <- get_DM(readRDS("data/petapsco_network.rds"),
+                   11688810, distance = 2)
   expect_equal(length(result), 3)
   expect(all(c(11688810, 11688826, 11688884) %in% result))
 })
 
 test_that("get_DM with distance big returns specific same as no distance", {
-  result <- get_DM(readRDS("data/petapsco_network.rds"), 11688810, distance = 100000)
+  result <- get_DM(readRDS("data/petapsco_network.rds"),
+                   11688810, distance = 100000)
   result2 <- get_DM(readRDS("data/petapsco_network.rds"), 11688810)
   expect_equal(result,  result2)
 })
@@ -60,12 +63,14 @@ test_that("get_UM works long", {
 })
 
 test_that("get_UM returns 1 for distance 0", {
-  result <- get_UM(readRDS("data/petapsco_network.rds"), 11690570, distance = 0)
+  result <- get_UM(readRDS("data/petapsco_network.rds"),
+                   11690570, distance = 0)
   expect_equal(length(result), 1)
 })
 
 test_that("get_UM returns a certain length for given distance", {
-  result <- get_UM(readRDS("data/petapsco_network.rds"), 11690570, distance = 10)
+  result <- get_UM(readRDS("data/petapsco_network.rds"),
+                   11690570, distance = 10)
   expect_equal(length(result), 12)
 })
 
@@ -79,9 +84,11 @@ test_that("get_UT works", {
 })
 
 test_that("get_UT works with distance", {
-  result <- get_UT(readRDS("data/petapsco_network.rds"), 11689276, distance = 0)
+  result <- get_UT(readRDS("data/petapsco_network.rds"),
+                   11689276, distance = 0)
   expect_equal(result, 11689276)
-  result <- get_UT(readRDS("data/petapsco_network.rds"), 11689276, distance = 3)
+  result <- get_UT(readRDS("data/petapsco_network.rds"),
+                   11689276, distance = 3)
   expect_equal(length(result), 6)
 })
 
@@ -107,12 +114,14 @@ test_that("get_DD works upstream of diversion", {
 })
 
 test_that("get_DD with distance 0.2 returns 3", {
-  result <- get_DD(readRDS("data/petapsco_network.rds"), 11688810, distance = 0.2)
+  result <- get_DD(readRDS("data/petapsco_network.rds"),
+                   11688810, distance = 0.2)
   expect_equal(length(result), 3)
 })
 
 test_that("get_DD with distance 2 returns 4 specific", {
-  result <- get_DD(readRDS("data/petapsco_network.rds"), 11688810, distance = 2)
+  result <- get_DD(readRDS("data/petapsco_network.rds"),
+                   11688810, distance = 2)
   expect_equal(length(result), 4)
   expect(all(c(11688810, 11688826, 11688828, 11688884) %in% result))
 })

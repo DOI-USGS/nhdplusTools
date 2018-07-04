@@ -1,10 +1,12 @@
 #' @title Get all upstream with tributaries COMIDs
 #' @description Traverse NHDPlus network upstream with tributaries
-#' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
-#' Pathlength, LENGTHKM, and HydroSeq.
+#' @param network data.frame NHDPlus flowlines including at a minimum:
+#' COMID, Pathlength, LENGTHKM, and HydroSeq.
 #' @param comid integer Identifier to start navigating from.
-#' @param distance numeric distance in km to limit how many COMIDs are returned. The COMID that exceeds the distance specified is returned.
-#' @return integer vector of all COMIDs upstream with tributaries of the starting catchment.
+#' @param distance numeric distance in km to limit how many COMIDs are
+#' returned. The COMID that exceeds the distance specified is returned.
+#' @return integer vector of all COMIDs upstream with tributaries of the
+#' starting catchment.
 #' @importFrom dplyr filter
 #' @export
 #' @examples
@@ -37,7 +39,9 @@ get_UT <- function(network, comid, distance = NULL) {
   return(private_get_UT(network, comid, distance, stop_pathlength))
 }
 
-private_get_UT <- function(network, comid, distance = NULL, stop_pathlength = NULL) {
+private_get_UT <- function(network, comid,
+                           distance = NULL,
+                           stop_pathlength = NULL) {
 
   # Grab the submitted comids
   main <- filter(network, COMID %in% comid)
@@ -45,18 +49,21 @@ private_get_UT <- function(network, comid, distance = NULL, stop_pathlength = NU
   if (!is.null(distance)) {
 
     ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
-                                   (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)) &
+                                   (DnMinorHyd != 0 &
+                                      DnMinorHyd %in% main$Hydroseq)) &
                          Pathlength < stop_pathlength)$COMID
 
   } else {
 
     ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
-                                   (DnMinorHyd != 0 & DnMinorHyd %in% main$Hydroseq)))$COMID
+                                   (DnMinorHyd != 0 &
+                                      DnMinorHyd %in% main$Hydroseq)))$COMID
 
   }
 
   if (length(ut_comid) > 0) {
-    return(c(main$COMID, private_get_UT(network, ut_comid, distance, stop_pathlength)))
+    return(c(main$COMID, private_get_UT(network, ut_comid,
+                                        distance, stop_pathlength)))
   } else {
     return(main$COMID)
   }
@@ -67,8 +74,10 @@ private_get_UT <- function(network, comid, distance = NULL, stop_pathlength = NU
 #' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
 #' Pathlength, LevelPathI, UsHydroseq, and HydroSeq.
 #' @param comid integer identifier to start navigating from.
-#' @param distance numeric distance in km to limit how many COMIDs are returned. The COMID that exceeds the distance specified is returned.
-#' @return integer vector of all COMIDs upstream of the starting catchment along the mainstem.
+#' @param distance numeric distance in km to limit how many COMIDs are
+#' returned. The COMID that exceeds the distance specified is returned.
+#' @return integer vector of all COMIDs upstream of the starting catchment
+#' along the mainstem.
 #' @importFrom dplyr filter
 #' @export
 #' @examples
@@ -109,8 +118,10 @@ get_UM <- function(network, comid, distance = NULL) {
 #' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
 #' LevelPathI, DnHydroseq, and HydroSeq.
 #' @param comid integer identifier to start navigating from.
-#' @param distance numeric distance in km to limit how many COMIDs are returned. The COMID that exceeds the distance specified is returned.
-#' @return integer vector of all COMIDs downstream of the starting catchment along the mainstem.
+#' @param distance numeric distance in km to limit how many COMIDs are
+#' returned. The COMID that exceeds the distance specified is returned.
+#' @return integer vector of all COMIDs downstream of the starting catchment
+#' along the mainstem.
 #' @importFrom dplyr filter
 #' @export
 #' @examples
@@ -132,7 +143,8 @@ get_DM <- function(network, comid, distance = NULL) {
 
 }
 
-private_get_DM <- function(network, comid, distance = NULL, run_distance = NULL) {
+private_get_DM <- function(network, comid, distance = NULL,
+                           run_distance = NULL) {
 
   main <- filter(network, COMID %in% comid)
 
@@ -146,7 +158,8 @@ private_get_DM <- function(network, comid, distance = NULL, run_distance = NULL)
   if (length(ds_comid) > 0) {
     if (!is.null(distance)) {
       if (accum_distance < distance) {
-        c(main$COMID, private_get_DM(network, ds_comid, distance, accum_distance))
+        c(main$COMID, private_get_DM(network, ds_comid,
+                                     distance, accum_distance))
       } else {
         return(main$COMID)
       }
@@ -161,10 +174,11 @@ private_get_DM <- function(network, comid, distance = NULL, run_distance = NULL)
 
 #' @title Get all downstream COMIDs including diversions
 #' @description Traverse NHDPlus network downstream with diversions
-#' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
-#' DnMinorHyd, DnHydroseq, and HydroSeq.
+#' @param network data.frame NHDPlus flowlines including at a minimum:
+#' COMID, DnMinorHyd, DnHydroseq, and HydroSeq.
 #' @param comid integer identifier to start navigating from.
-#' @param distance numeric distance in km to limit how many COMIDs are returned.
+#' @param distance numeric distance in km to limit how many
+#' COMIDs are returned.
 #' The COMID that exceeds the distance specified is returned.
 #' The longest of the diverted paths is used for limiting distance.
 #' @return integer vector of all COMIDs downstream of the starting catchment

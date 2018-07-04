@@ -19,7 +19,7 @@ a known identifier from the specified `featureSource`.}
 integer of catchment identifier COMID
 }
 \description{
-Mutlipurpose function to find a COMID of interest.
+Multipurpose function to find a COMID of interest.
 }
 \examples{
 point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)

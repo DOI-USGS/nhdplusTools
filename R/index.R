@@ -1,5 +1,5 @@
 #' @title get flowline index
-#' @description given an sf point geometry collumn, return COMID, reachcode,
+#' @description given an sf point geometry column, return COMID, reachcode,
 #' and measure for each.
 #' @param points sfc of type POINT
 #' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including

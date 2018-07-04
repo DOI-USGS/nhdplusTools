@@ -33,7 +33,7 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <-
 "sample_flines"
 
 #' @title Discover NHDPlus Catchment/Flowline ID
-#' @description Mutlipurpose function to find a COMID of interest.
+#' @description Multipurpose function to find a COMID of interest.
 #' @param point An sf POINT including crs as created by:
 #' sf::st_sf(sf::st_point(..,..), crs)
 #' @param  nldi_feature list with names `featureSource` and `featureID` where

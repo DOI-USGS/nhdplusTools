@@ -26,6 +26,61 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <- DnMinorHyd <- FTYPE <- FromNode 
 #' @source \url{https://www.epa.gov/waterdata/nhdplus-national-data}
 "sample_flines"
 
+#' @title Discover NHDPlus Catchment/Flowline ID
+#' @description Mutlipurpose function to find a COMID of interest.
+#' @param point An sf POINT including crs as created by:
+#' sf::st_sf(sf::st_point(..,..), crs)
+#' @param  nldi_feature list with names `featureSource` and `featureID` where
+#' `featureSource` is derived from the
+#' \href{https://cida.usgs.gov/nldi/}{list here.} and the `featureSource` is
+#' a known identifier from the specified `featureSource`.
+#' @param warn boolean controls whether warning an status messages are printed
+#' @return integer of catchment identifier COMID
+#' @export
+#' @examples
+#' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
+#' discover_nhdplus_id(point)
+#'
+discover_nhdplus_id <- function(point = NULL,
+                           nldi_feature = NULL,
+                           warn = TRUE) {
+  if (!is.null(point)) {
+
+    url_base <- paste0("https://cida.usgs.gov/nwc/geoserver/nhdplus/ows",
+                       "?service=WFS",
+                       "&version=1.0.0",
+                       "&request=GetFeature",
+                       "&typeName=nhdplus:catchmentsp",
+                       "&outputFormat=application%2Fjson",
+                       "&srsName=EPSG:4269")
+    # "&bbox=40,-90.001,40.001,-90,urn:ogc:def:crs:EPSG:4269",
+
+    p_crd <- sf::st_coordinates(sf::st_transform(point, 4269))
+
+    url <- paste0(url_base, "&bbox=",
+                  paste(p_crd[2], p_crd[1],
+                        p_crd[2] + 0.00001, p_crd[1] + 0.00001,
+                        "urn:ogc:def:crs:EPSG:4269", sep = ","))
+
+    catchment <- sf::read_sf(url)
+
+    if (nrow(catchment) > 1) {
+      warning("point too close to edge of catchment found multiple.")
+    }
+
+    return(catchment$featureid)
+
+  } else if (!is.null(nldi_feature)) {
+
+    warning("not implemented")
+
+  } else {
+
+    stop("Must provide point or nldi_feature input.")
+
+  }
+}
+
 get_dsLENGTHKM <- function(flines) {
   # This gets all the next-downstream flowlines and finds the length of the next downstream
   flines$dsLENGTHKM <- flines[["LENGTHKM"]][match(flines$toCOMID, flines$COMID)]

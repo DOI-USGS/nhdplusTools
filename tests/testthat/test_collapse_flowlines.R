@@ -163,11 +163,11 @@ test_that("collapse flowlines works as expected with mainstem thresh", {
 })
 
 test_that("repeat collapse doesn't leave orphans", {
-  library(sf)
+
   nhdplus_flines <- readRDS("data/oswego_network.rds")
   flines <- suppressWarnings(sf::st_set_geometry(nhdplus_flines, NULL) %>%
     prepare_nhdplus(0, 0) %>%
-    inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
+    dplyr::inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
     sf::st_as_sf() %>%
     sf::st_cast("LINESTRING") %>%
     sf::st_transform(5070))

@@ -6,25 +6,21 @@ test_that("split lines works", {
                                                  where = "package:lwgeom",
                                                  mode = "function")) {
 
-
-  library(sf)
-  library(dplyr)
-
   flines_in <- st_read("data/walker_network.geojson", quiet = TRUE)
 
   flines <- suppressWarnings(prepare_nhdplus(flines_in, 0, 0))
   flines <- collapse_flowlines(flines, 1, F, 1)
   flines <- reconcile_collapsed_flowlines(flines)
 
-  flines <- st_as_sf(inner_join(flines, select(flines_in, COMID),
+  flines <- st_as_sf(dplyr::inner_join(flines, select(flines_in, COMID),
                                 by = c("member_COMID" = "COMID"))) %>%
-    select(-member_COMID) %>%
-    distinct() %>%
-    group_by(ID) %>%
-    summarise(toID = toID[1], LENGTHKM = LENGTHKM[1],
+    dplyr::select(-member_COMID) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(ID) %>%
+    dplyr::summarise(toID = toID[1], LENGTHKM = LENGTHKM[1],
               TotDASqKM = TotDASqKM[1]) %>%
     st_cast("MULTILINESTRING") %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     st_line_merge()
 
   split <- split_lines(st_transform(select(flines, ID), 5070), 250, id = "ID")
@@ -41,16 +37,12 @@ test_that("split lines works", {
                                                  where = "package:lwgeom",
                                                  mode = "function")) {
 
-
-  library(sf)
-  library(dplyr)
-
   flines_in <- readRDS("data/guadalupe_network_geom.rds")
 
   flines <- suppressWarnings(
     sf::st_set_geometry(flines_in, NULL) %>%
     prepare_nhdplus(0, 0) %>%
-    inner_join(select(flines_in, COMID), by = "COMID") %>%
+    dplyr::inner_join(select(flines_in, COMID), by = "COMID") %>%
     sf::st_as_sf() %>%
     sf::st_cast("LINESTRING") %>%
     sf::st_transform(5070) %>%
@@ -68,15 +60,12 @@ test_that("split_lines_2 works the same as split_lines", {
                                                  where = "package:lwgeom",
                                                  mode = "function")) {
 
-  library(sf)
-  library(dplyr)
-
   flines_in <- readRDS("data/oswego_network.rds")
 
   flines_in <- suppressWarnings(
     sf::st_set_geometry(flines_in, NULL) %>%
       prepare_nhdplus(0, 0) %>%
-      inner_join(select(flines_in, COMID), by = "COMID") %>%
+      dplyr::inner_join(select(flines_in, COMID), by = "COMID") %>%
       sf::st_as_sf() %>%
       sf::st_cast("LINESTRING") %>%
       sf::st_transform(5070))

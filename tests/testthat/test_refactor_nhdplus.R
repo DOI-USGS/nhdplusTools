@@ -1,11 +1,9 @@
-context("three pass")
+context("refactor wrapper")
 
 test_that("refactor_nhdplus works as expected with three pass mode", {
 
   if (suppressWarnings(require(lwgeom)) & exists("st_linesubstring", where = "package:lwgeom", mode = "function")) {
 
-  library(dplyr)
-  library(sf)
   nhdplus_flines <- sf::st_zm(readRDS("data/north_network.rds"))
 
   split_flines_meters <- 2000
@@ -16,10 +14,10 @@ test_that("refactor_nhdplus works as expected with three pass mode", {
 
   flines <- suppressWarnings(sf::st_set_geometry(nhdplus_flines, NULL) %>%
     prepare_nhdplus(0, 0) %>%
-    inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
-    st_as_sf() %>%
-    st_cast("LINESTRING") %>%
-    st_transform(5070) %>%
+    dplyr::inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
+    sf::st_as_sf() %>%
+      sf::st_cast("LINESTRING") %>%
+      sf::st_transform(5070) %>%
     split_flowlines(split_flines_meters, split_flines_cores))
 
     collapsed_flines <- collapse_flowlines(sf::st_set_geometry(flines, NULL),
@@ -60,7 +58,8 @@ test_that("The refactor_nhdplus function runs as expected", {
                    collapse_flines_meters = 500, collapse_flines_main_meters = 500,
                    out_collapsed = "temp.gpkg",
                    out_reconciled = "temp_rec.gpkg",
-                   three_pass = TRUE)
+                   three_pass = TRUE,
+                   warn = FALSE)
     )
 
   expect(file.exists("temp.gpkg"))

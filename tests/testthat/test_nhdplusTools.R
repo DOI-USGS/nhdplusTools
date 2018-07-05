@@ -21,7 +21,7 @@ test_that("nhdplus_data_path sets and gets right", {
 })
 
 test_that("prep_nhdplus runs as expected", {
-  if(!dir.exists("data/temp")) dir.create("data/temp")
+  if (!dir.exists("data/temp")) dir.create("data/temp")
 
   expect_error(suppressWarnings(prep_national_data()),
                  paste("Didn't find NHDPlus national data in default",

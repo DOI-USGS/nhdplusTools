@@ -85,7 +85,7 @@ refactor_nhdplus <- function(nhdplus_flines,
     inner_join(select(flines, COMID), by = "COMID") %>%
     sf::st_as_sf() %>%
     sf::st_transform(4326) %>%
-    sf::st_write(out_collapsed, layer_options = "OVERWRITE=YES", quiet = warn)
+    sf::st_write(out_collapsed, layer_options = "OVERWRITE=YES", quiet = !warn)
 
   if (warn) {
     message("collapse complete, out collapse written to disk, reconciling")
@@ -98,7 +98,7 @@ refactor_nhdplus <- function(nhdplus_flines,
   sf::st_write(sf::st_transform(collapsed, 4326),
                out_reconciled,
                layer_options = "OVERWRITE=YES",
-               quiet = TRUE)
+               quiet = !warn)
 }
 
 
@@ -121,8 +121,8 @@ prepare_nhdplus <- function(flines,
                             purge_non_dendritic = TRUE,
                             warn = TRUE) {
 
-  if ("sf" %in% class(flines) & warn) {
-    warning("removing geometry")
+  if ("sf" %in% class(flines)) {
+    if (warn) warning("removing geometry")
     flines <- sf::st_set_geometry(flines, NULL)
   }
 
@@ -160,8 +160,8 @@ prepare_nhdplus <- function(flines,
   flines <- left_join(flines, select(flines, toCOMID = COMID, FromNode), by = c("ToNode" = "FromNode"))
 
   if (!all(flines[["TerminalFl"]][which(is.na(flines$toCOMID))] == 1)) {
-    stop("FromNode - ToNode imply terminal flowlines that are not\n flagged terminal.",
-         "Can't assume NA toCOMIDs go to the ocean.")
+    stop(paste("FromNode - ToNode imply terminal flowlines that are not\n",
+               "flagged terminal. Can't assume NA toCOMIDs go to the ocean."))
   }
 
   select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,

@@ -8,6 +8,8 @@ nhdplus_path(path = NULL, warn = FALSE)
 }
 \arguments{
 \item{path}{character path ending in .gdb or .gpkg}
+
+\item{warn}{boolean controls whether warning an status messages are printed}
 }
 \value{
 1 if set successfully, the path if no input.

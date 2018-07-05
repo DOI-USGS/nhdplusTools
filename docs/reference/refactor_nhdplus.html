@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>nhdplus refactor — refactor_nhdplus • nhdplusTools</title>
+<title>refactor nhdplus — refactor_nhdplus • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="nhdplus refactor — refactor_nhdplus" />
+<meta property="og:title" content="refactor nhdplus — refactor_nhdplus" />
 
-<meta property="og:description" content="refactors nhdplus flowlines" />
+<meta property="og:description" content="A complete network refactor workflow has been packaged
+into this function. See details and vignettes for more information." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -76,6 +77,18 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
+    </li>
+  </ul>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -97,14 +110,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>nhdplus refactor</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/nhdplus_refactor.R'><code>R/nhdplus_refactor.R</code></a></small>
+    <h1>refactor nhdplus</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/refactor_nhdplus.R'><code>R/refactor_nhdplus.R</code></a></small>
     <div class="hidden name"><code>refactor_nhdplus.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>refactors nhdplus flowlines</p>
+    <p>A complete network refactor workflow has been packaged
+into this function. See details and vignettes for more information.</p>
     
     </div>
 
@@ -118,35 +132,43 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>nhdplus_flines</th>
-      <td><p>data.frame nhdplus flowloines</p></td>
+      <td><p>data.frame raw nhdplus flowline features as
+derived from the national seamless geodatabase.</p></td>
     </tr>
     <tr>
       <th>split_flines_meters</th>
-      <td><p>numeric split threshold in meters</p></td>
+      <td><p>numeric the maximum length flowline desired
+in the output.</p></td>
     </tr>
     <tr>
       <th>split_flines_cores</th>
-      <td><p>numeric number of cores to use for split function</p></td>
+      <td><p>numeric the number of processing cores to use
+while splitting flowlines.</p></td>
     </tr>
     <tr>
       <th>collapse_flines_meters</th>
-      <td><p>numeric collapse threshold in meters</p></td>
+      <td><p>numeric the minimum length of
+inter-confluence flowline desired in the output.</p></td>
     </tr>
     <tr>
       <th>collapse_flines_main_meters</th>
-      <td><p>numeric collapse threshold for mainstems in meters</p></td>
+      <td><p>numeric the minimum length of
+between-confluence flowlines.</p></td>
     </tr>
     <tr>
       <th>out_collapsed</th>
-      <td><p>character geopackage path to write collapsed to (one layer per gpkg)</p></td>
+      <td><p>character where to write a geopackage containing
+the split and collapsed flowlines.</p></td>
     </tr>
     <tr>
       <th>out_reconciled</th>
-      <td><p>character geopackage path to write reconciled to (one layer per gpkg)</p></td>
+      <td><p>character where to write a geopackage containing
+the reconciled flowlines.</p></td>
     </tr>
     <tr>
       <th>three_pass</th>
-      <td><p>boolean perform three collapse passes or just one</p></td>
+      <td><p>boolean whether to perform a three pass collapse or
+single pass.</p></td>
     </tr>
     <tr>
       <th>purge_non_dendritic</th>
@@ -157,6 +179,22 @@
       <td><p>boolean controls whether warning an status messages are printed</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This is a convenient wrapper function that implements three phases
+of the network refactor workflow: split, collapse, reconcile. See the
+NHDPlus Refactor vignette for details of these three steps by running:
+<code><a href='../articles/refactor_nhdplus.html'>vignette("refactor_nhdplus", package = "nhdplusTools")</a></code></p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>The following four functions are used in the `refactor_nhdplus` workflow.</p><ol>
+<li><p><code><a href='prepare_nhdplus.html'>prepare_nhdplus</a></code></p></li>
+<li><p><code><a href='split_flowlines.html'>split_flowlines</a></code></p></li>
+<li><p><code><a href='collapse_flowlines.html'>collapse_flowlines</a></code></p></li>
+<li><p><code><a href='reconcile_collapsed_flowlines.html'>reconcile_collapsed_flowlines</a></code></p></li>
+</ol></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -170,18 +208,19 @@
                  <span class='kw'>out_reconciled</span> <span class='kw'>=</span> <span class='st'>"temp_rec.gpkg"</span>,
                  <span class='kw'>three_pass</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
                  <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-                 <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; Writing layer `temp' to data source `temp.gpkg' using driver `GPKG'
-#&gt; options:        OVERWRITE=YES 
-#&gt; features:       1031
-#&gt; fields:         7
-#&gt; geometry type:  Line String</div><div class='input'><span class='fu'>unlink</span>(<span class='st'>"temp.gpkg"</span>)
+                 <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>unlink</span>(<span class='st'>"temp.gpkg"</span>)
 <span class='fu'>unlink</span>(<span class='st'>"temp_rec.gpkg"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

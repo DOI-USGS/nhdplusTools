@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get all downstream COMIDs including diversions — get_DD • nhdplusTools</title>
+<title>Reconcile collapsed flowlines — reconcile_collapsed_flowlines • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Get all downstream COMIDs including diversions — get_DD" />
+<meta property="og:title" content="Reconcile collapsed flowlines — reconcile_collapsed_flowlines" />
 
-<meta property="og:description" content="Traverse NHDPlus network downstream with diversions" />
+<meta property="og:description" content="Reconciles output of collapse_flowlines giving a unique ID to
+ each new unit and providing a mapping to NHDPlus COMIDs." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -109,54 +110,48 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get all downstream COMIDs including diversions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/get_network.R'><code>R/get_network.R</code></a></small>
-    <div class="hidden name"><code>get_DD.Rd</code></div>
+    <h1>Reconcile collapsed flowlines</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/reconcile.R'><code>R/reconcile.R</code></a></small>
+    <div class="hidden name"><code>reconcile_collapsed_flowlines.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Traverse NHDPlus network downstream with diversions</p>
+    <p>Reconciles output of collapse_flowlines giving a unique ID to
+ each new unit and providing a mapping to NHDPlus COMIDs.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_DD</span>(<span class='no'>network</span>, <span class='no'>comid</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>reconcile_collapsed_flowlines</span>(<span class='no'>flines</span>, <span class='kw'>geom</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>network</th>
-      <td><p>data.frame NHDPlus flowlines including at a minimum:
-COMID, DnMinorHyd, DnHydroseq, and HydroSeq.</p></td>
+      <th>flines</th>
+      <td><p>data.frame with COMID, toCOMID, LENGTHKM,
+and TotDASqKM columns</p></td>
     </tr>
     <tr>
-      <th>comid</th>
-      <td><p>integer identifier to start navigating from.</p></td>
+      <th>geom</th>
+      <td><p>sf data.frame for flines</p></td>
     </tr>
     <tr>
-      <th>distance</th>
-      <td><p>numeric distance in km to limit how many
-COMIDs are returned.
-The COMID that exceeds the distance specified is returned.
-The longest of the diverted paths is used for limiting distance.</p></td>
+      <th>id</th>
+      <td><p>character id collumn name.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>integer vector of all COMIDs downstream of the starting catchment</p>
+    <p>reconciled flines</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>The <code><a href='refactor_nhdplus.html'>refactor_nhdplus</a></code> function implements a complete
+workflow using `reconcile_collapsed_flowlines()`.</p></div>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>sf</span>)</div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.6.1, GDAL 2.1.3, proj.4 4.9.3</span></div><div class='input'><span class='no'>start_COMID</span> <span class='kw'>&lt;-</span> <span class='fl'>11688818</span>
-<span class='no'>DD_COMIDs</span> <span class='kw'>&lt;-</span> <span class='fu'>get_DD</span>(<span class='no'>sample_flines</span>, <span class='no'>start_COMID</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='fl'>4</span>)
-<span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>DD_COMIDs</span>)$<span class='no'>geometry</span>,
-     <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='input'>
-<span class='no'>DM_COMIDs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_DM.html'>get_DM</a></span>(<span class='no'>sample_flines</span>, <span class='no'>start_COMID</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='fl'>4</span>)
-<span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>DM_COMIDs</span>)$<span class='no'>geometry</span>,
-     <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='img'><img src='get_DD-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -164,9 +159,9 @@ The longest of the diverted paths is used for limiting distance.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+
+      <li><a href="#see-also">See also</a></li>
+          </ul>
 
   </div>
 </div>

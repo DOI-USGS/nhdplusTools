@@ -76,6 +76,18 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
+    </li>
+  </ul>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -98,7 +110,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Prep NHDPlus Data for Refactor</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/nhdplus_refactor.R'><code>R/nhdplus_refactor.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/refactor_nhdplus.R'><code>R/refactor_nhdplus.R</code></a></small>
     <div class="hidden name"><code>prepare_nhdplus.Rd</code></div>
     </div>
 
@@ -116,21 +128,24 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>flines</th>
-      <td><p>data.frame NHDPlus flowlines including at a minimum: COMID, LENGTHKM,
-FTYPE, TerminalFl, FromNode, ToNode, TotDASqKM, StartFlag, StreamOrde,
-StreamCalc, TerminalPa, and Pathlength variables.</p></td>
+      <td><p>data.frame NHDPlus flowlines including at a minimum:
+COMID, LENGTHKM, FTYPE, TerminalFl, FromNode, ToNode, TotDASqKM,
+StartFlag, StreamOrde, StreamCalc, TerminalPa, and Pathlength variables.</p></td>
     </tr>
     <tr>
       <th>min_network_size</th>
-      <td><p>numeric Minimum size (sqkm) of drainage network to include in output.</p></td>
+      <td><p>numeric Minimum size (sqkm) of drainage network
+to include in output.</p></td>
     </tr>
     <tr>
       <th>min_path_length</th>
-      <td><p>numeric Minimum length (km) of terminal level path of a network.</p></td>
+      <td><p>numeric Minimum length (km) of terminal level
+path of a network.</p></td>
     </tr>
     <tr>
       <th>purge_non_dendritic</th>
-      <td><p>boolean Should non dendritic paths be removed or not.</p></td>
+      <td><p>boolean Should non dendritic paths be removed
+or not.</p></td>
     </tr>
     <tr>
       <th>warn</th>

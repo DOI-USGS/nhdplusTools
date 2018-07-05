@@ -73,6 +73,18 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
+    </li>
+  </ul>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -108,8 +120,8 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
+          <h2 id="section-discovery-and-subsetting" class="hasAnchor"><a href="#section-discovery-and-subsetting" class="anchor"></a>Discovery and Subsetting</h2>
+          <p class="section-desc"><p>Functions for finding and saving the part of the NHDPlus you are interested in working with.</p></p>
         </th>
       </tr>
       <tr>
@@ -118,6 +130,12 @@
           <p><code><a href="discover_nhdplus_id.html">discover_nhdplus_id()</a></code> </p>
         </td>
         <td><p>Discover NHDPlus Catchment/Flowline ID</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="prep_national_data.html">prep_national_data()</a></code> </p>
+        </td>
+        <td><p>Prepare NHDPlus National Data</p></td>
       </tr><tr>
         
         <td>
@@ -142,24 +160,34 @@
           <p><code><a href="get_UT.html">get_UT()</a></code> </p>
         </td>
         <td><p>Get all upstream with tributaries COMIDs</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-indexing" class="hasAnchor"><a href="#section-indexing" class="anchor"></a>Indexing</h2>
+          <p class="section-desc"><p>Functions to figure out where other data you have is on the NHDPlus network.</p></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="get_flowline_index.html">get_flowline_index()</a></code> </p>
         </td>
         <td><p>get flowline index</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-refactoring" class="hasAnchor"><a href="#section-refactoring" class="anchor"></a>Refactoring</h2>
+          <p class="section-desc"><p>Functions that help modify the network to make it fit your needs while maintaining as much of the original network as possible.</p></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
-          <p><code><a href="nhdplus_path.html">nhdplus_path()</a></code> </p>
+          <p><code><a href="refactor_nhdplus.html">refactor_nhdplus()</a></code> </p>
         </td>
-        <td><p>NHDPlus Data Path</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="prep_national_data.html">prep_national_data()</a></code> </p>
-        </td>
-        <td><p>Prepare NHDPlus National Data</p></td>
+        <td><p>refactor nhdplus</p></td>
       </tr><tr>
         
         <td>
@@ -169,21 +197,41 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="refactor_nhdplus.html">refactor_nhdplus()</a></code> </p>
+          <p><code><a href="split_flowlines.html">split_flowlines()</a></code> </p>
         </td>
-        <td><p>nhdplus refactor</p></td>
+        <td><p>split flowlines</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="collapse_flowlines.html">collapse_flowlines()</a></code> </p>
+        </td>
+        <td><p>Collapse NHDPlus Network</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="reconcile_collapsed_flowlines.html">reconcile_collapsed_flowlines()</a></code> </p>
+        </td>
+        <td><p>Reconcile collapsed flowlines</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-data-and-package-helpers" class="hasAnchor"><a href="#section-data-and-package-helpers" class="anchor"></a>Data and Package Helpers</h2>
+          <p class="section-desc"><p>Sample data and functions that make the package better to work with.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="nhdplus_path.html">nhdplus_path()</a></code> </p>
+        </td>
+        <td><p>NHDPlus Data Path</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="sample_flines.html">sample_flines</a></code> </p>
         </td>
         <td><p>Sample flowlines from the Petapsco River.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="split_flowlines.html">split_flowlines()</a></code> </p>
-        </td>
-        <td><p>split flowlines</p></td>
       </tr>
     </tbody>
     </table>
@@ -192,7 +240,10 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-discovery-and-subsetting">Discovery and Subsetting</a></li>
+      <li><a href="#section-indexing">Indexing</a></li>
+      <li><a href="#section-refactoring">Refactoring</a></li>
+      <li><a href="#section-data-and-package-helpers">Data and Package Helpers</a></li>
     </ul>
   </div>
 </div>

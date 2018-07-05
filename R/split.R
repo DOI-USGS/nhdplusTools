@@ -5,6 +5,8 @@
 #' @param para numeric how many threads to use in parallel computation
 #' @return All the flowlines with some split apart.
 #' @importFrom dplyr group_by ungroup filter select mutate lead n
+#' @seealso The \code{\link{refactor_nhdplus}} function implements a complete
+#' workflow using `split_flowlines()`.
 #' @export
 #'
 split_flowlines <- function(flines, max_length, para = 0) {

@@ -1,16 +1,37 @@
-#' @title nhdplus refactor
-#' @description refactors nhdplus flowlines
-#' @param nhdplus_flines data.frame nhdplus flowloines
-#' @param split_flines_meters numeric split threshold in meters
-#' @param split_flines_cores numeric number of cores to use for split function
-#' @param collapse_flines_meters numeric collapse threshold in meters
-#' @param collapse_flines_main_meters numeric collapse threshold for mainstems in meters
-#' @param out_collapsed character geopackage path to write collapsed to (one layer per gpkg)
-#' @param out_reconciled character geopackage path to write reconciled to (one layer per gpkg)
-#' @param three_pass boolean perform three collapse passes or just one
+#' @title refactor nhdplus
+#' @description A complete network refactor workflow has been packaged
+#' into this function. See details and vignettes for more information.
+#' @param nhdplus_flines data.frame raw nhdplus flowline features as
+#' derived from the national seamless geodatabase.
+#' @param split_flines_meters numeric the maximum length flowline desired
+#' in the output.
+#' @param split_flines_cores numeric the number of processing cores to use
+#' while splitting flowlines.
+#' @param collapse_flines_meters numeric the minimum length of
+#' inter-confluence flowline desired in the output.
+#' @param collapse_flines_main_meters numeric the minimum length of
+#' between-confluence flowlines.
+#' @param out_collapsed character where to write a geopackage containing
+#' the split and collapsed flowlines.
+#' @param out_reconciled character where to write a geopackage containing
+#' the reconciled flowlines.
+#' @param three_pass boolean whether to perform a three pass collapse or
+#' single pass.
 #' @param purge_non_dendritic boolean passed on to prepare_nhdplus
 #' @param warn boolean controls whether warning an status messages are printed
-#' @importFrom dplyr inner_join
+#' @details This is a convenient wrapper function that implements three phases
+#' of the network refactor workflow: split, collapse, reconcile. See the
+#' NHDPlus Refactor vignette for details of these three steps by running:
+#' \code{vignette("refactor_nhdplus", package = "nhdplusTools")}
+#' @seealso
+#' The following four functions are used in the `refactor_nhdplus` workflow.
+#' \enumerate{
+#'   \item \code{\link{prepare_nhdplus}}
+#'   \item \code{\link{split_flowlines}}
+#'   \item \code{\link{collapse_flowlines}}
+#'   \item \code{\link{reconcile_collapsed_flowlines}}
+#' }
+#'
 #' @export
 #' @examples
 #' nhdplus_flowlines <- sf::st_zm(sample_flines)
@@ -42,7 +63,7 @@ refactor_nhdplus <- function(nhdplus_flines,
   if ("FTYPE" %in% names(nhdplus_flines)) {
     nhdplus_flines <- sf::st_set_geometry(nhdplus_flines, NULL) %>%
       prepare_nhdplus(0, 0, purge_non_dendritic, warn = warn) %>%
-      inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
+      dplyr::inner_join(select(nhdplus_flines, COMID), by = "COMID") %>%
       sf::st_as_sf()
   }
 
@@ -82,7 +103,7 @@ refactor_nhdplus <- function(nhdplus_flines,
   }
 
   collapsed_flines %>%
-    inner_join(select(flines, COMID), by = "COMID") %>%
+    dplyr::inner_join(select(flines, COMID), by = "COMID") %>%
     sf::st_as_sf() %>%
     sf::st_transform(4326) %>%
     sf::st_write(out_collapsed, layer_options = "OVERWRITE=YES", quiet = !warn)
@@ -113,6 +134,7 @@ refactor_nhdplus <- function(nhdplus_flines,
 #' @param warn boolean controls whether warning an status messages are printed
 #' @return data.frame ready to be used with the refactor_flowlines function.
 #' @importFrom dplyr select filter left_join
+#' @family refactor functions
 #' @export
 #'
 prepare_nhdplus <- function(flines,

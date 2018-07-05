@@ -22,7 +22,7 @@ See RANN nn2 documentation for more details.}
 data.frame with three columns, COMID, REACHCODE, and REACH_meas.
 }
 \description{
-given an sf point geometry collumn, return COMID, reachcode,
+given an sf point geometry column, return COMID, reachcode,
 and measure for each.
 }
 \details{

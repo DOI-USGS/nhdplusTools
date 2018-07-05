@@ -16,11 +16,151 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <-
   FromMeas <- REACHCODE <- REACH_meas <- ToMeas <-
   index <- measure <- nn.idx <- precision_index <- NULL
 
+nhdplusTools_env <- new.env()
+
+default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
+
+assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
+
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(
     "USGS Research Package:
     https://owi.usgs.gov/R/packages.html#research"),
     collapse = "\n"))
+  nhdplus_path(default_nhdplus_path, warn = FALSE)
+}
+
+#' @title NHDPlus Data Path
+#' @description Allows specification of a custom path to a source dataset.
+#' Typically this will be the national seamless dataset in geodatabase or geopackage format.
+#' @param path character path ending in .gdb or .gpkg
+#' @param warn boolean controls whether warning an status messages are printed
+#' @return 1 if set successfully, the path if no input.
+#' @export
+#' @examples
+#' nhdplus_path("/data/NHDPlusV21_National_Seamless.gdb")
+#'
+#' nhdplus_path("/data/NHDPlusV21_National_Seamless.gdb", warn=FALSE)
+#'
+#' nhdplus_path()
+#'
+nhdplus_path <- function(path = NULL, warn = FALSE) {
+  if (!is.null(path)) {
+
+    assign("nhdplus_data_path", path, envir = nhdplusTools_env)
+
+    if (warn) {
+      warning("Path does not exist.")
+    }
+
+    if (nhdplus_path() == path) {
+      return(1)
+    } else {
+      stop("Path not set successfully.")
+    }
+  } else {
+      return(get("nhdplus_data_path", envir = nhdplusTools_env))
+  }
+}
+
+
+#' @title Prepare NHDPlus National Data
+#' @description Breaks down the national geo database into a collection
+#' of quick to access R binary files.
+#' @param include character vector containing one or more of:
+#' "attributes", "flowline", "catchment".
+#' @param output_path character path to save the output to defaults
+#' to the directory of the nhdplus_data_path.
+#' @param nhdplus_data_path character path to the .gpkg or .gdb containing the
+#' national seamless dataset. Not required if \code{\link{nhdplus_path}} has been set.
+#' @details "attributes" will save `NHDFlowline_Network` attributes as a seperate
+#' data.frame without the geometry. The others will save the `NHDFlowline_Network`
+#' and `CatchmentSP` as sf data.frames with superfluous Z information dropped.
+#'
+#' The returned list of paths is also added to the nhdplusTools_env as "national_data".
+#'
+#' @return list containing paths to the .rds files.
+#' @export
+#' @examples
+#' \dontrun{
+#' prep_national_data()
+#'
+#' prep_national_data(include = c("attributes", "flowlines","catchments"))
+#' }
+#'
+prep_national_data <- function(include = c("attribute", "flowline", "catchment"),
+                               output_path = NULL, nhdplus_data_path = NULL) {
+
+  if (is.null(output_path)) {
+    output_path <- dirname(nhdplus_path())
+    warning(paste("No output path provided, using:", output_path))
+  }
+
+  if (is.null(nhdplus_data_path)) {
+    nhdplus_data_path <- nhdplus_path()
+
+    if (nhdplus_data_path == get("default_nhdplus_path", envir = nhdplusTools_env) &
+        !file.exists(nhdplus_data_path)) {
+          stop(paste("Didn't find NHDPlus national data in default location:",
+                     nhdplus_data_path))
+    } else if (!file.exists(nhdplus_data_path)) {
+      stop(paste("Didn't find NHDPlus national data in user specified location:",
+                 nhdplus_data_path))
+    }
+  }
+
+  allow_include <- c("attribute", "flowline", "catchment")
+
+  if (!all(include %in% allow_include)) {
+    stop(paste0("Got invalid include entries. Expect one or more of: ",
+               paste(allow_include, collapse = ", "), "."))
+  }
+
+  outlist <- list()
+
+  if (any(c("attribute", "flowline") %in% include)) {
+
+    out_path_attributes <- file.path(output_path, "nhdplus_flowline_attributes.rds")
+    out_path_flines <- file.path(output_path, "nhdplus_flowline.rds")
+
+    if (!(file.exists(out_path_flines) | file.exists(out_path_attributes))) {
+      fline <- sf::st_zm(sf::read_sf(nhdplus_data_path, "NHDFlowline_Network"))
+    }
+
+    if ("attribute" %in% include) {
+      if (file.exists(out_path_attributes)) {
+        warning("attributes file exists")
+      } else {
+        saveRDS(sf::st_set_geometry(fline, NULL), out_path_attributes)
+      }
+      outlist["attributes"] <- out_path_attributes
+    }
+
+    if ("flowline" %in% include) {
+      if (file.exists(out_path_flines)) {
+        warning("flowline file exists")
+      } else {
+        saveRDS(fline, out_path_flines)
+      }
+      outlist["flowline"] <- out_path_flines
+    }
+  }
+
+  if (exists("fline")) rm(fline)
+
+  if ("catchment" %in% include) {
+    out_path_catchments <- file.path(output_path, "nhdplus_catchment.rds")
+    if (file.exists(out_path_catchments)) {
+      warning("catchment already exists.")
+    } else {
+      saveRDS(sf::st_zm(sf::read_sf(nhdplus_data_path, "CatchmentSP")),
+              out_path_catchments)
+    }
+    outlist["catchment"] <- out_path_catchments
+  }
+  assign("national_data", outlist, envir = nhdplusTools_env)
+
+  return(outlist)
 }
 
 #' Sample flowlines from the Petapsco River.
@@ -33,10 +173,10 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <-
 "sample_flines"
 
 #' @title Discover NHDPlus Catchment/Flowline ID
-#' @description Mutlipurpose function to find a COMID of interest.
+#' @description Multipurpose function to find a COMID of interest.
 #' @param point An sf POINT including crs as created by:
 #' sf::st_sf(sf::st_point(..,..), crs)
-#' @param  nldi_feature list with names `featureSource` and `featureID` where
+#' @param nldi_feature list with names `featureSource` and `featureID` where
 #' `featureSource` is derived from the
 #' \href{https://cida.usgs.gov/nldi/}{list here.} and the `featureSource` is
 #' a known identifier from the specified `featureSource`.

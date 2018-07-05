@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>get flowline index — get_flowline_index • nhdplusTools</title>
+<title>NHDPlus Data Path — nhdplus_path • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="get flowline index — get_flowline_index" />
+<meta property="og:title" content="NHDPlus Data Path — nhdplus_path" />
 
-<meta property="og:description" content="given an sf point geometry column, return COMID, reachcode,
-and measure for each." />
+<meta property="og:description" content="Allows specification of a custom path to a source dataset.
+Typically this will be the national seamless dataset in geodatabase or geopackage format." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -98,65 +98,42 @@ and measure for each." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>get flowline index</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/index.R'><code>R/index.R</code></a></small>
-    <div class="hidden name"><code>get_flowline_index.Rd</code></div>
+    <h1>NHDPlus Data Path</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
+    <div class="hidden name"><code>nhdplus_path.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>given an sf point geometry column, return COMID, reachcode,
-and measure for each.</p>
+    <p>Allows specification of a custom path to a source dataset.
+Typically this will be the national seamless dataset in geodatabase or geopackage format.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_flowline_index</span>(<span class='no'>flines</span>, <span class='no'>points</span>, <span class='kw'>search_radius</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>nhdplus_path</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>flines</th>
-      <td><p>sf data.frame of type LINESTRING or MULTILINESTRING including
-COMID, REACHCODE, ToMeas, and FromMeas</p></td>
+      <th>path</th>
+      <td><p>character path ending in .gdb or .gpkg</p></td>
     </tr>
     <tr>
-      <th>points</th>
-      <td><p>sfc of type POINT</p></td>
-    </tr>
-    <tr>
-      <th>search_radius</th>
-      <td><p>numeric the distance for the nearest neighbor search
-to extend.
-See RANN nn2 documentation for more details.</p></td>
-    </tr>
-    <tr>
-      <th>precision</th>
-      <td><p>numeric the resolution of measure precision in the output.</p></td>
+      <th>warn</th>
+      <td><p>boolean controls whether warning an status messages are printed</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data.frame with three columns, COMID, REACHCODE, and REACH_meas.</p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Note 1: that inputs are cast into LINESTRINGS. Because of this,
-the measure output
-of inputs that are true multipart lines may be in error.</p>
-<p>Note 2: This algorithm finds the nearest node in the input flowlines to
-identify which catchment the point should belong to. As a second pass,
-it can calculate the measure to greater precision than the nearest flowline
-geometry node.</p>
+    <p>1 if set successfully, the path if no input.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
-                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/sfc'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st'>st_point</a></span>(<span class='fu'>c</span>(-<span class='fl'>76.87479</span>,
-                                             <span class='fl'>39.48233</span>)),
-                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt;      COMID      REACHCODE REACH_meas
-#&gt; 1 11689978 02060003001472   51.50201</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>nhdplus_path</span>(<span class='st'>"/data/NHDPlusV21_National_Seamless.gdb"</span>)</div><div class='output co'>#&gt; [1] 1</div><div class='input'>
+<span class='fu'>nhdplus_path</span>(<span class='st'>"/data/NHDPlusV21_National_Seamless.gdb"</span>, <span class='kw'>warn</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; [1] 1</div><div class='input'>
+<span class='fu'>nhdplus_path</span>()</div><div class='output co'>#&gt; [1] "/data/NHDPlusV21_National_Seamless.gdb"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -165,8 +142,6 @@ geometry node.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

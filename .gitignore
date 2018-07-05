@@ -4,3 +4,4 @@
 .Ruserdata
 .DS_Store
 tests/testthat/data/temp/*
+inst/doc

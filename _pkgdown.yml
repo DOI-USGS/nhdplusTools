@@ -1,0 +1,34 @@
+reference:
+  - title: Discovery and Subsetting
+    desc: >
+      Functions for finding and saving the part of the NHDPlus you are
+      interested in working with.
+    contents:
+      - '`discover_nhdplus_id`'
+      - '`prep_national_data`'
+      - '`get_DD`'
+      - '`get_DM`'
+      - '`get_UM`'
+      - '`get_UT`'
+  - title: Indexing
+    desc: >
+      Functions to figure out where other data you have is on the NHDPlus
+      network.
+    contents:
+      - '`get_flowline_index`'
+  - title: Refactoring
+    desc: >
+      Functions that help modify the network to make it fit your needs
+      while maintaining as much of the original network as possible.
+    contents:
+      - '`refactor_nhdplus`'
+      - '`prepare_nhdplus`'
+      - '`split_flowlines`'
+      - '`collapse_flowlines`'
+      - '`reconcile_collapsed_flowlines`'
+  - title: Data and Package Helpers
+    desc: >
+      Sample data and functions that make the package better to work with.
+    contents:
+      - '`nhdplus_path`'
+      - '`sample_flines`'

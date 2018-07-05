@@ -45,17 +45,19 @@ test_that("collapse works on a double pass", {
                          TRUE,
                          (0.25 * collapse_flines_main_meters / 1000))
 
-    collapsed_flines <- suppressWarnings(
+    collapsed_flines <-
       collapse_flowlines(collapsed_flines,
                          (0.5 * collapse_flines_meters / 1000),
                          TRUE,
-                         (0.5 * collapse_flines_main_meters / 1000)))
+                         (0.5 * collapse_flines_main_meters / 1000),
+                         warn = FALSE)
 
-    collapsed_flines <- suppressWarnings(
+    collapsed_flines <-
       collapse_flowlines(collapsed_flines,
                          (collapse_flines_meters / 1000),
                          TRUE,
-                         (collapse_flines_main_meters / 1000)))
+                         (collapse_flines_main_meters / 1000),
+                         warn = FALSE)
 
     # Old Tests:
     expect_equal(collapsed_flines$joined_toCOMID[

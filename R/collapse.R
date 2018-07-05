@@ -276,9 +276,11 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE, mainstem_th
 #'
 collapse_outlets <- function(flines, thresh, original_fline_atts, warn = TRUE) {
 
-  if (warn & ("joined_toCOMID" %in% names(flines) | "joined_fromCOMID" %in% names(flines))) {
-    warning("collapse outllets must be used with un modified flines. \n",
-            "returning unmodified flines from collapse outlets. \n")
+  if ( ("joined_toCOMID" %in% names(flines) | "joined_fromCOMID" %in% names(flines))) {
+    if (warn) {
+      warning("collapse outllets must be used with un modified flines. \n",
+              "returning unmodified flines from collapse outlets. \n")
+    }
     return(list(flines = flines, short_outlets_tracker = c()))
   }
 

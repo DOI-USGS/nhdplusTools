@@ -1,6 +1,8 @@
 context("subset")
 
 test_that("prep_nhdplus runs as expected", {
+  unlink("data/temp/*")
+
   sample_data <- "data/sample_natseamless.gpkg"
 
   nhdplus_path(sample_data)
@@ -67,6 +69,8 @@ test_that("prep_nhdplus runs as expected", {
   })
 
 test_that("prep_nhdplus runs as expected", {
+  unlink("data/temp/*")
+
   if (!dir.exists("data/temp")) dir.create("data/temp")
 
   expect_error(suppressWarnings(stage_national_data()),

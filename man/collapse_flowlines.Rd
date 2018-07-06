@@ -10,11 +10,14 @@ collapse_flowlines(flines, thresh, add_category = FALSE,
 \arguments{
 \item{flines}{data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns}
 
-\item{thresh}{numeric a length threshold (km). Flowlines shorter than this will be eliminated}
+\item{thresh}{numeric a length threshold (km). Flowlines shorter than this
+will be eliminated}
 
-\item{add_category}{boolean if combination category is desired in output, set to TRUE}
+\item{add_category}{boolean if combination category is desired in output, set
+to TRUE}
 
-\item{mainstem_thresh}{numeric threshold for combining inter-confluence mainstems}
+\item{mainstem_thresh}{numeric threshold for combining inter-confluence
+mainstems}
 
 \item{warn}{boolean controls whether warning an status messages are printed}
 }
@@ -22,7 +25,8 @@ collapse_flowlines(flines, thresh, add_category = FALSE,
 A refactored network with merged up and down flowlines.
 }
 \description{
-Refactors the NHDPlus flowline network, eliminating short and non-cconfluence flowlines.
+Refactors the NHDPlus flowline network, eliminating short and
+non-cconfluence flowlines.
 }
 \seealso{
 The \code{\link{refactor_nhdplus}} function implements a complete

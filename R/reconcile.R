@@ -14,6 +14,8 @@
 #'
 reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 
+  check_names(names(flines), "reconcile_collapsed_flowlines")
+
   new_flines <-
     mutate(flines,
            becomes =
@@ -27,13 +29,15 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 
   new_flines <- ungroup(new_flines)
 
-  new_flines <- left_join(new_flines,
-                          data.frame(becomes = unique(new_flines$becomes),
-                                     ID = 1:length(unique(new_flines$becomes)),
-                                     stringsAsFactors = FALSE),
-                          by = "becomes")
+  new_flines <-
+    left_join(new_flines,
+              data.frame(becomes = unique(new_flines$becomes),
+                         ID = seq_len(length(unique(new_flines$becomes))),
+                         stringsAsFactors = FALSE),
+              by = "becomes")
 
-  tocomid_updater <- filter(select(new_flines, becomes, toCOMID), !is.na(toCOMID))
+  tocomid_updater <- filter(select(new_flines, becomes, toCOMID),
+                            !is.na(toCOMID))
 
   new_flines <- distinct(left_join(select(new_flines, -toCOMID),
                                    tocomid_updater, by = "becomes"))
@@ -54,7 +58,9 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
                             by = c("member_COMID" = "COMID")) %>%
       sf::st_as_sf() %>%
       group_by(ID) %>%
-      summarise(toID = toID[1], LENGTHKM = LENGTHKM[1], TotDASqKM = TotDASqKM[1],
+      summarise(toID = toID[1],
+                LENGTHKM = LENGTHKM[1],
+                TotDASqKM = TotDASqKM[1],
                 member_COMID = list(unique(member_COMID))) %>%
       sf::st_cast("MULTILINESTRING") %>%
       ungroup() %>%

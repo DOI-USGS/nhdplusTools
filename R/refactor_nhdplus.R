@@ -131,12 +131,12 @@ refactor_nhdplus <- function(nhdplus_flines,
                quiet = !warn)
 }
 
-
 #' @title Prep NHDPlus Data for Refactor
 #' @description Function to prep NHDPlus data for network refactoring
-#' @param flines data.frame NHDPlus flowlines including at a minimum:
+#' @param flines data.frame NHDPlus flowlines including:
 #' COMID, LENGTHKM, FTYPE, TerminalFl, FromNode, ToNode, TotDASqKM,
-#' StartFlag, StreamOrde, StreamCalc, TerminalPa, and Pathlength variables.
+#' StartFlag, StreamOrde, StreamCalc, TerminalPa, Pathlength,
+#' and Divergence variables.
 #' @param min_network_size numeric Minimum size (sqkm) of drainage network
 #' to include in output.
 #' @param  min_path_length numeric Minimum length (km) of terminal level
@@ -155,6 +155,8 @@ prepare_nhdplus <- function(flines,
                             purge_non_dendritic = TRUE,
                             warn = TRUE) {
 
+  check_names(names(flines), "prepare_nhdplus")
+
   if ("sf" %in% class(flines)) {
     if (warn) warning("removing geometry")
     flines <- sf::st_set_geometry(flines, NULL)
@@ -164,7 +166,8 @@ prepare_nhdplus <- function(flines,
 
   flines <- select(flines, COMID, LENGTHKM, FTYPE, TerminalFl,
                    FromNode, ToNode, TotDASqKM, StartFlag,
-                   StreamOrde, StreamCalc, TerminalPa, Pathlength, Divergence)
+                   StreamOrde, StreamCalc, TerminalPa, Pathlength,
+                   Divergence)
 
   if (purge_non_dendritic) {
     flines <- filter(flines, FTYPE != "Coastline" &

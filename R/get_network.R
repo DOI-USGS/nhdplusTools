@@ -1,7 +1,7 @@
 #' @title Get all upstream with tributaries COMIDs
 #' @description Traverse NHDPlus network upstream with tributaries
 #' @param network data.frame NHDPlus flowlines including at a minimum:
-#' COMID, Pathlength, LENGTHKM, and HydroSeq.
+#' COMID, Pathlength, LENGTHKM, and Hydroseq.
 #' @param comid integer Identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' returned. The COMID that exceeds the distance specified is returned.
@@ -22,6 +22,8 @@
 #'      col = "blue", add = TRUE)
 #'
 get_UT <- function(network, comid, distance = NULL) {
+
+  check_names(names(network), "get_UT")
 
   # Grab the submitted comids
   main <- filter(network, COMID %in% comid)
@@ -71,8 +73,8 @@ private_get_UT <- function(network, comid,
 
 #' @title Get all upstream mainstem COMIDs
 #' @description Traverse NHDPlus network upstream main stem
-#' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
-#' Pathlength, LevelPathI, UsHydroseq, and HydroSeq.
+#' @param network data.frame NHDPlus flowlines including at a minimum:
+#' COMID,Pathlength, LevelPathI, UpHydroseq, and Hydroseq.
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' returned. The COMID that exceeds the distance specified is returned.
@@ -93,6 +95,8 @@ private_get_UT <- function(network, comid,
 #'      col = "blue", add = TRUE, lwd = 2)
 #'
 get_UM <- function(network, comid, distance = NULL) {
+
+  check_names(names(network), "get_UM")
 
   main <- filter(network, COMID %in% comid)
 
@@ -115,8 +119,8 @@ get_UM <- function(network, comid, distance = NULL) {
 
 #' @title Get all downstream mainstem COMIDs
 #' @description Traverse NHDPlus network downstream main stem
-#' @param network data.frame NHDPlus flowlines including at a minimum: COMID,
-#' LevelPathI, DnHydroseq, and HydroSeq.
+#' @param network data.frame NHDPlus flowlines including at a minimum:
+#' COMID, LENGTHKM, DnHydroseq, and Hydroseq.
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' returned. The COMID that exceeds the distance specified is returned.
@@ -138,6 +142,8 @@ get_UM <- function(network, comid, distance = NULL) {
 #'
 #'
 get_DM <- function(network, comid, distance = NULL) {
+
+  check_names(names(network), "get_DM")
 
   private_get_DM(network, comid, distance, run_distance = 0)
 
@@ -175,7 +181,7 @@ private_get_DM <- function(network, comid, distance = NULL,
 #' @title Get all downstream COMIDs including diversions
 #' @description Traverse NHDPlus network downstream with diversions
 #' @param network data.frame NHDPlus flowlines including at a minimum:
-#' COMID, DnMinorHyd, DnHydroseq, and HydroSeq.
+#' COMID, DnMinorHyd, DnHydroseq, and Hydroseq.
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many
 #' COMIDs are returned.
@@ -196,6 +202,8 @@ private_get_DM <- function(network, comid, distance = NULL,
 #'      col = "blue", add = TRUE, lwd = 2)
 #'
 get_DD <- function(network, comid, distance = NULL) {
+
+  check_names(names(network), "get_DD")
 
   private_get_DD(network, comid, distance, run_distance = 0)
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Prepare NHDPlus National Data — prep_national_data • nhdplusTools</title>
+<title>Stage NHDPlus National Data — stage_national_data • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Prepare NHDPlus National Data — prep_national_data" />
+<meta property="og:title" content="Stage NHDPlus National Data — stage_national_data" />
 
 <meta property="og:description" content="Breaks down the national geo database into a collection
 of quick to access R binary files." />
@@ -110,9 +110,9 @@ of quick to access R binary files." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Prepare NHDPlus National Data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
-    <div class="hidden name"><code>prep_national_data.Rd</code></div>
+    <h1>Stage NHDPlus National Data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/subset.R'><code>R/subset.R</code></a></small>
+    <div class="hidden name"><code>stage_national_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -122,7 +122,7 @@ of quick to access R binary files.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>prep_national_data</span>(<span class='kw'>include</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"attribute"</span>, <span class='st'>"flowline"</span>, <span class='st'>"catchment"</span>),
+    <pre class="usage"><span class='fu'>stage_national_data</span>(<span class='kw'>include</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"attribute"</span>, <span class='st'>"flowline"</span>, <span class='st'>"catchment"</span>),
   <span class='kw'>output_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nhdplus_data_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -140,8 +140,9 @@ to the directory of the nhdplus_data_path.</p></td>
     </tr>
     <tr>
       <th>nhdplus_data_path</th>
-      <td><p>character path to the .gpkg or .gdb containing the
-national seamless dataset. Not required if <code><a href='nhdplus_path.html'>nhdplus_path</a></code> has been set.</p></td>
+      <td><p>character path to the .gpkg or .gdb
+containing the national seamless dataset. Not required if
+<code><a href='nhdplus_path.html'>nhdplus_path</a></code> has been set.</p></td>
     </tr>
     </table>
     
@@ -151,17 +152,19 @@ national seamless dataset. Not required if <code><a href='nhdplus_path.html'>nhd
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>"attributes" will save `NHDFlowline_Network` attributes as a seperate
-data.frame without the geometry. The others will save the `NHDFlowline_Network`
-and `CatchmentSP` as sf data.frames with superfluous Z information dropped.</p>
-<p>The returned list of paths is also added to the nhdplusTools_env as "national_data".</p>
+    <p>"attributes" will save `NHDFlowline_Network` attributes
+as a seperate data.frame without the geometry. The others will save
+the `NHDFlowline_Network` and `CatchmentSP` as sf data.frames with
+superfluous Z information dropped.</p>
+<p>The returned list of paths is also added to the nhdplusTools_env
+as "national_data".</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>prep_national_data</span>()
+<span class='fu'>stage_national_data</span>()
 
-<span class='fu'>prep_national_data</span>(<span class='kw'>include</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"attributes"</span>, <span class='st'>"flowlines"</span>,<span class='st'>"catchments"</span>))
+<span class='fu'>stage_national_data</span>(<span class='kw'>include</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"attributes"</span>, <span class='st'>"flowlines"</span>,<span class='st'>"catchments"</span>))
 <span class='co'># }</span><div class='input'>
 </div></pre>
   </div>

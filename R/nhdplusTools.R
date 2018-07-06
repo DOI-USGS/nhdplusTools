@@ -14,7 +14,7 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
   FromMeas <- REACHCODE <- REACH_meas <- ToMeas <-
-  index <- measure <- nn.idx <- precision_index <- NULL
+  index <- measure <- nn.idx <- precision_index <- FEATUREID <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -70,106 +70,6 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
   } else {
       return(get("nhdplus_data_path", envir = nhdplusTools_env))
   }
-}
-
-
-#' @title Prepare NHDPlus National Data
-#' @description Breaks down the national geo database into a collection
-#' of quick to access R binary files.
-#' @param include character vector containing one or more of:
-#' "attributes", "flowline", "catchment".
-#' @param output_path character path to save the output to defaults
-#' to the directory of the nhdplus_data_path.
-#' @param nhdplus_data_path character path to the .gpkg or .gdb containing the
-#' national seamless dataset. Not required if \code{\link{nhdplus_path}} has been set.
-#' @details "attributes" will save `NHDFlowline_Network` attributes as a seperate
-#' data.frame without the geometry. The others will save the `NHDFlowline_Network`
-#' and `CatchmentSP` as sf data.frames with superfluous Z information dropped.
-#'
-#' The returned list of paths is also added to the nhdplusTools_env as "national_data".
-#'
-#' @return list containing paths to the .rds files.
-#' @export
-#' @examples
-#' \dontrun{
-#' prep_national_data()
-#'
-#' prep_national_data(include = c("attributes", "flowlines","catchments"))
-#' }
-#'
-prep_national_data <- function(include = c("attribute", "flowline", "catchment"),
-                               output_path = NULL, nhdplus_data_path = NULL) {
-
-  if (is.null(output_path)) {
-    output_path <- dirname(nhdplus_path())
-    warning(paste("No output path provided, using:", output_path))
-  }
-
-  if (is.null(nhdplus_data_path)) {
-    nhdplus_data_path <- nhdplus_path()
-
-    if (nhdplus_data_path == get("default_nhdplus_path", envir = nhdplusTools_env) &
-        !file.exists(nhdplus_data_path)) {
-          stop(paste("Didn't find NHDPlus national data in default location:",
-                     nhdplus_data_path))
-    } else if (!file.exists(nhdplus_data_path)) {
-      stop(paste("Didn't find NHDPlus national data in user specified location:",
-                 nhdplus_data_path))
-    }
-  }
-
-  allow_include <- c("attribute", "flowline", "catchment")
-
-  if (!all(include %in% allow_include)) {
-    stop(paste0("Got invalid include entries. Expect one or more of: ",
-               paste(allow_include, collapse = ", "), "."))
-  }
-
-  outlist <- list()
-
-  if (any(c("attribute", "flowline") %in% include)) {
-
-    out_path_attributes <- file.path(output_path, "nhdplus_flowline_attributes.rds")
-    out_path_flines <- file.path(output_path, "nhdplus_flowline.rds")
-
-    if (!(file.exists(out_path_flines) | file.exists(out_path_attributes))) {
-      fline <- sf::st_zm(sf::read_sf(nhdplus_data_path, "NHDFlowline_Network"))
-    }
-
-    if ("attribute" %in% include) {
-      if (file.exists(out_path_attributes)) {
-        warning("attributes file exists")
-      } else {
-        saveRDS(sf::st_set_geometry(fline, NULL), out_path_attributes)
-      }
-      outlist["attributes"] <- out_path_attributes
-    }
-
-    if ("flowline" %in% include) {
-      if (file.exists(out_path_flines)) {
-        warning("flowline file exists")
-      } else {
-        saveRDS(fline, out_path_flines)
-      }
-      outlist["flowline"] <- out_path_flines
-    }
-  }
-
-  if (exists("fline")) rm(fline)
-
-  if ("catchment" %in% include) {
-    out_path_catchments <- file.path(output_path, "nhdplus_catchment.rds")
-    if (file.exists(out_path_catchments)) {
-      warning("catchment already exists.")
-    } else {
-      saveRDS(sf::st_zm(sf::read_sf(nhdplus_data_path, "CatchmentSP")),
-              out_path_catchments)
-    }
-    outlist["catchment"] <- out_path_catchments
-  }
-  assign("national_data", outlist, envir = nhdplusTools_env)
-
-  return(outlist)
 }
 
 #' Sample flowlines from the Petapsco River.

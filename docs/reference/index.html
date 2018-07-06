@@ -71,6 +71,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/nhdplusTools.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -80,6 +83,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
+    </li>
     <li>
       <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
     </li>
@@ -120,6 +126,32 @@
     <tbody>
       <tr>
         <th colspan="2">
+          <h2 id="section-data-and-package-helpers" class="hasAnchor"><a href="#section-data-and-package-helpers" class="anchor"></a>Data and Package Helpers</h2>
+          <p class="section-desc"><p>Sample data and functions that make the package better to work with.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="nhdplus_path.html">nhdplus_path()</a></code> </p>
+        </td>
+        <td><p>NHDPlus Data Path</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="stage_national_data.html">stage_national_data()</a></code> </p>
+        </td>
+        <td><p>Stage NHDPlus National Data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_flines.html">sample_flines</a></code> </p>
+        </td>
+        <td><p>Sample flowlines from the Petapsco River.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
           <h2 id="section-discovery-and-subsetting" class="hasAnchor"><a href="#section-discovery-and-subsetting" class="anchor"></a>Discovery and Subsetting</h2>
           <p class="section-desc"><p>Functions for finding and saving the part of the NHDPlus you are interested in working with.</p></p>
         </th>
@@ -130,12 +162,6 @@
           <p><code><a href="discover_nhdplus_id.html">discover_nhdplus_id()</a></code> </p>
         </td>
         <td><p>Discover NHDPlus Catchment/Flowline ID</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="stage_national_data.html">stage_national_data()</a></code> </p>
-        </td>
-        <td><p>Stage NHDPlus National Data</p></td>
       </tr><tr>
         
         <td>
@@ -219,26 +245,6 @@
         </td>
         <td><p>Reconcile collapsed flowlines</p></td>
       </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-data-and-package-helpers" class="hasAnchor"><a href="#section-data-and-package-helpers" class="anchor"></a>Data and Package Helpers</h2>
-          <p class="section-desc"><p>Sample data and functions that make the package better to work with.</p></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="nhdplus_path.html">nhdplus_path()</a></code> </p>
-        </td>
-        <td><p>NHDPlus Data Path</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sample_flines.html">sample_flines</a></code> </p>
-        </td>
-        <td><p>Sample flowlines from the Petapsco River.</p></td>
-      </tr>
     </tbody>
     </table>
   </div>
@@ -246,10 +252,10 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#section-data-and-package-helpers">Data and Package Helpers</a></li>
       <li><a href="#section-discovery-and-subsetting">Discovery and Subsetting</a></li>
       <li><a href="#section-indexing">Indexing</a></li>
       <li><a href="#section-refactoring">Refactoring</a></li>
-      <li><a href="#section-data-and-package-helpers">Data and Package Helpers</a></li>
     </ul>
   </div>
 </div>

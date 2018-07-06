@@ -75,6 +75,9 @@ specified collection of catchments." />
   </a>
 </li>
 <li>
+  <a href="../articles/nhdplusTools.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -84,6 +87,9 @@ specified collection of catchments." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
+    </li>
     <li>
       <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
     </li>
@@ -175,7 +181,8 @@ It can be downloaded
     <pre class="examples"><div class='input'><span class='no'>sample_data</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"extdata/sample_natseamless.gpkg"</span>,
 <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>)
 
-<span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span>(<span class='no'>sample_data</span>)</div><div class='output co'>#&gt; [1] 1</div><div class='input'>
+<span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span>(<span class='no'>sample_data</span>)
+
 <span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='st'>"./"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: attributes file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: flowline file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: catchment already exists.</span></div><div class='input'>
 <span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'>readRDS</span>(<span class='no'>staged_nhdplus</span>$<span class='no'>flowline</span>)
 

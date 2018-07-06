@@ -14,6 +14,8 @@
 #'
 reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 
+  check_names(names(flines), "reconcile_collapsed_flowlines")
+
   new_flines <-
     mutate(flines,
            becomes =

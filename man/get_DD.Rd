@@ -8,7 +8,7 @@ get_DD(network, comid, distance = NULL)
 }
 \arguments{
 \item{network}{data.frame NHDPlus flowlines including at a minimum:
-COMID, DnMinorHyd, DnHydroseq, and HydroSeq.}
+COMID, DnMinorHyd, DnHydroseq, and Hydroseq.}
 
 \item{comid}{integer identifier to start navigating from.}
 

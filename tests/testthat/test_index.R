@@ -23,7 +23,9 @@ test_that("point indexing to nearest existing node works as expected", {
 
     names(flines_in)[1] <- "broken"
     expect_error(get_flowline_index(flines_in, point, search_radius = 0.1),
-  "Need: 'COMID', 'REACHCODE', 'FromMeas', 'ToMeas' columns in flines input.")
+                 paste("Missing some required attributes in call to:",
+                       "get_flowline_index. Expected all of: COMID,",
+                       "REACHCODE, ToMeas, FromMeas."))
 
 })
 

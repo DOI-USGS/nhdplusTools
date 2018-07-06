@@ -1,6 +1,7 @@
 #' @title split flowlines
 #' @description A wrapper for split_lines that works on nhdplus attributes
-#' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM and LINESTRING sf column in "meters" projection
+#' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM
+#' and LINESTRING sf column in "meters" projection
 #' @param max_length maximum segment length to return
 #' @param para numeric how many threads to use in parallel computation
 #' @return All the flowlines with some split apart.
@@ -10,6 +11,8 @@
 #' @export
 #'
 split_flowlines <- function(flines, max_length, para = 0) {
+  check_names(names(flines), "split_flowlines")
+
   split <- split_lines(flines, max_length, id = "COMID", para = para)
 
   split <- left_join(split, sf::st_set_geometry(flines, NULL), by = "COMID")

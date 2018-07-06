@@ -34,17 +34,14 @@ get_flowline_index <- function(flines, points,
                                search_radius = 0.1,
                                precision = NA) {
 
+  check_names(names(flines), "get_flowline_index")
+
   in_crs <- sf::st_crs(flines)
+
   if (sf::st_crs(points) != in_crs) {
     warning(paste("crs of lines and points don't match.",
                   "attempting st_transform of points"))
     points <- sf::st_transform(points, sf::st_crs(flines))
-  }
-
-  if (!all(c("COMID", "REACHCODE",
-             "FromMeas", "ToMeas") %in% names(flines))) {
-    stop(paste("Need: 'COMID', 'REACHCODE', 'FromMeas',",
-               "'ToMeas' columns in flines input."))
   }
 
   points <- sf::st_coordinates(points)

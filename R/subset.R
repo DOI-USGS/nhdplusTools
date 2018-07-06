@@ -196,7 +196,8 @@ intersection_write <- function(layer_name, data_path, envelope,
 stage_national_data <- function(include = c("attribute",
                                             "flowline",
                                             "catchment"),
-                                output_path = NULL, nhdplus_data_path = NULL) {
+                                output_path = NULL,
+                                nhdplus_data_path = NULL) {
 
   if (is.null(output_path)) {
     output_path <- dirname(nhdplus_path())

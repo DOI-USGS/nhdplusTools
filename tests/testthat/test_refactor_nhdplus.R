@@ -120,6 +120,18 @@ test_that("prep_nhdplus_works and errors as expected", {
   expect_equal(
     flines,
     readRDS("data/petapsco_prepared.rds"))
+
+  expect_error(
+    flines <- prepare_nhdplus(
+      dplyr::rename(flines_in, LENGTH = LENGTHKM),
+                              min_network_size = 10,
+                              min_path_length = 1,
+                              warn = FALSE),
+    paste("Missing some required attributes in call to:",
+          "prepare_nhdplus. Expected all of: COMID, LENGTHKM,",
+          "FTYPE, TerminalFl, FromNode, ToNode, TotDASqKM,",
+          "StartFlag, StreamOrde, StreamCalc, TerminalPa, Pathlength,",
+          "Divergence."))
 })
 
 test_that("prep_nhdplus leaves non-dendritic", {

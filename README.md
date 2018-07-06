@@ -29,7 +29,7 @@ subset, relate data to, and refactor NHDPlus data. It implements a data model
 consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
 and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
 aims to provide a simple set of tools with minimal dependencies that can be used
-to build sophisticated workflows using NHDPlus data.
+to build workflows using NHDPlus data.
 
 **This vision is intended as a guide to contributors -- conveying what kinds of
 contributions are of interest to the package's long term vision. It is a

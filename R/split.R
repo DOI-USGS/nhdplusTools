@@ -1,6 +1,7 @@
 #' @title split flowlines
 #' @description A wrapper for split_lines that works on nhdplus attributes
-#' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM and LINESTRING sf column in "meters" projection
+#' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM
+#' and LINESTRING sf column in "meters" projection
 #' @param max_length maximum segment length to return
 #' @param para numeric how many threads to use in parallel computation
 #' @return All the flowlines with some split apart.
@@ -10,6 +11,8 @@
 #' @export
 #'
 split_flowlines <- function(flines, max_length, para = 0) {
+  check_names(names(flines), "split_flowlines")
+
   split <- split_lines(flines, max_length, id = "COMID", para = para)
 
   split <- left_join(split, sf::st_set_geometry(flines, NULL), by = "COMID")
@@ -88,7 +91,7 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
 
   too_long <- mutate(too_long,
                      pieces = ceiling(geom_len / max_length),
-                     fID = 1:nrow(too_long)) %>%
+                     fID = seq_len(nrow(too_long))) %>%
     select(-geom_len)
 
   split_points <-
@@ -172,7 +175,7 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
   too_long <- mutate(too_long,
                      pieces = ceiling(geom_len / max_length),
                      piece_len = (geom_len / pieces),
-                     fID = 1:nrow(too_long))
+                     fID = seq_len(nrow(too_long)))
 
   split_points <-
     sf::st_set_geometry(too_long, NULL)[rep(seq_len(nrow(too_long)),
@@ -190,7 +193,7 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
   get_coords <- function(too_long) {
     coords <- data.frame(sf::st_coordinates(too_long[[geom_column]]))
 
-    rename(coords, fID = L1) %>% mutate(nID = 1:nrow(coords))
+    rename(coords, fID = L1) %>% mutate(nID = seq_len(nrow(coords)))
   }
 
   coords <- get_coords(too_long)

@@ -1,11 +1,16 @@
-COMID <- COMID.y <- Divergence <- DnHydroseq <-
-  DnMinorHyd <- FTYPE <- FromNode <-
-  Hydroseq <- ID <- LENGTHKM <- LevelPathI <-
-  Pathlength <- StartFlag <- StreamCalc <-
-  StreamOrde <- TerminalFl <- TerminalPa <-
-  ToNode <- TotDASqKM <- becomes <- dsLENGTHKM <-
-  ds_joined_fromCOMID <- ds_num_upstream <- fID <-
-  fromCOMID <- fromLENGTHKM <- fromTotDASqKM <- geom_len <-
+# NHDPlus Attributes
+COMID <- FEATUREID <-
+  Hydroseq <- DnHydroseq <- DnMinorHyd <- LevelPathI <-
+  ToNode <- FromNode <-
+  TotDASqKM <- LENGTHKM <-
+  Pathlength <- StreamCalc <- StreamOrde <- TerminalFl <-
+  Divergence <- TerminalPa <- StartFlag <- FTYPE <-
+  FromMeas <- ToMeas <- REACHCODE <- REACH_meas <- NULL
+
+  # Package Attribute Names
+COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
+  dsLENGTHKM <- ds_joined_fromCOMID <- fromCOMID <-
+  fromLENGTHKM <- fromTotDASqKM <- geom_len <-
   geometry <- join_category <- joined_fromCOMID <-
   joined_fromCOMID_new <- joined_toCOMID <- member_COMID <-
   new_joined_fromCOMID <- new_joined_toCOMID <- new_toCOMID <-
@@ -13,35 +18,78 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <-
   split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
-  FromMeas <- REACHCODE <- REACH_meas <- ToMeas <-
-  index <- measure <- nn.idx <- precision_index <- FEATUREID <- NULL
+  index <- measure <- nn.idx <- precision_index <- NULL
 
 nhdplusTools_env <- new.env()
 
 default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
 
+assign("prepare_nhdplus_attributes",
+       c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
+         "FromNode", "ToNode", "TotDASqKM",
+         "StartFlag", "StreamOrde", "StreamCalc",
+         "TerminalPa", "Pathlength", "Divergence"),
+       envir = nhdplusTools_env)
+
+assign("split_flowlines_attributes",
+       c("COMID", "toCOMID", "LENGTHKM", "TotDASqKM"),
+       envir = nhdplusTools_env)
+
+assign("collapse_flowlines_attributes",
+       c("COMID", "toCOMID", "LENGTHKM", "TotDASqKM"),
+       envir = nhdplusTools_env)
+
+assign("reconcile_collapsed_flowlines_attributes",
+       c("COMID", "toCOMID", "LENGTHKM", "TotDASqKM"),
+       envir = nhdplusTools_env)
+
+assign("get_UT_attributes",
+       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq"),
+       envir = nhdplusTools_env)
+
+assign("get_UM_attributes",
+       c("COMID", "Pathlength", "LevelPathI",
+         "UpHydroseq", "Hydroseq"),
+       envir = nhdplusTools_env)
+
+assign("get_DM_attributes",
+       c("COMID", "LENGTHKM", "DnHydroseq", "Hydroseq"),
+       envir = nhdplusTools_env)
+
+assign("get_DD_attributes",
+       c("COMID", "DnMinorHyd", "DnHydroseq", "Hydroseq"),
+       envir = nhdplusTools_env)
+
+assign("get_flowline_index_attributes",
+       c("COMID", "REACHCODE", "ToMeas", "FromMeas"),
+       envir = nhdplusTools_env)
+
+
+check_names <- function(names_flines, function_name) {
+  expect_names <- get(paste0(function_name, "_attributes"),
+                      envir = nhdplusTools_env)
+  if ( !all(expect_names %in% names_flines)) {
+    stop(paste0("Missing some required attributes in call to: ",
+                function_name, ". Expected: ",
+                paste(expect_names[which(!(expect_names %in% names_flines))],
+                      collapse = ", "), "."))
+  }
+}
+
 assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(
-    "This information is preliminary or provisional
-    and is subject to revision. It is being provided
-    to meet the need for timely best science. The
-    information has not received final approval by the
-    U.S. Geological Survey (USGS) and is provided on the
-    condition that neither the USGS nor the U.S. Government
-    shall be held liable for any damages resulting from the
-    authorized or unauthorized use of the information.
-
-    USGS Research Package:
-    https://owi.usgs.gov/R/packages.html#research"),
+    "USGS Support Package:
+    https://owi.usgs.gov/R/packages.html#support"),
     collapse = "\n"))
   nhdplus_path(default_nhdplus_path, warn = FALSE)
 }
 
 #' @title NHDPlus Data Path
 #' @description Allows specification of a custom path to a source dataset.
-#' Typically this will be the national seamless dataset in geodatabase or geopackage format.
+#' Typically this will be the national seamless dataset in
+#' geodatabase or geopackage format.
 #' @param path character path ending in .gdb or .gpkg
 #' @param warn boolean controls whether warning an status messages are printed
 #' @return 1 if set successfully, the path if no input.
@@ -63,7 +111,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
     }
 
     if (nhdplus_path() == path) {
-      return(1)
+      invisible(0)
     } else {
       stop("Path not set successfully.")
     }

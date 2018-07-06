@@ -128,10 +128,7 @@ test_that("prep_nhdplus_works and errors as expected", {
                               min_path_length = 1,
                               warn = FALSE),
     paste("Missing some required attributes in call to:",
-          "prepare_nhdplus. Expected all of: COMID, LENGTHKM,",
-          "FTYPE, TerminalFl, FromNode, ToNode, TotDASqKM,",
-          "StartFlag, StreamOrde, StreamCalc, TerminalPa, Pathlength,",
-          "Divergence."))
+          "prepare_nhdplus. Expected: LENGTHKM."))
 })
 
 test_that("prep_nhdplus leaves non-dendritic", {

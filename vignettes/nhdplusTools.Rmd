@@ -1,0 +1,185 @@
+---
+title: "Introduction to nhdplusTools"
+author: "dblodgett@usgs.gov"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkgdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=6, 
+  fig.height=4
+)
+options(scipen = 9999)
+```
+
+The `nhdplusTools` package is intended to provide a reusable set of tools to
+subset, relate data to, and refactor NHDPlus data. It implements a data model
+consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
+and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
+aims to provide a simple set of tools with minimal dependencies that can be used
+to build workflows using NHDPlus data.  
+
+The package has three types of functionality:
+
+1. [Discovery and Subsetting](#discovery_subsetting)
+1. [Indexing or Referencing](#indexing)
+1. [Generalization and Refactoring](#refactoring)
+
+This introduction gives an overview of the basic package setup and an brief demonstration of the three types of functionality. Detailed documentation of all the package functions can be found at the [Referece page](https://dblodgett-usgs.github.io/nhdplusTools/reference/)
+
+## Installation
+
+The easiest way to install `nhdplusTools` is with the `devtools` packagelike this:
+```{r install, echo = TRUE, eval = FALSE}
+install.packages("devtools")
+devtools::install_github(dblodgett-usgs/nhdplusTools)
+```
+Then you can load up nhdplusTools:
+```{r load}
+library(nhdplusTools)
+```
+
+## Data and Package Basics
+
+The first thing you are going to need to do is go get some data to work with. You can download the [National Seamless database at this web page.](https://www.epa.gov/waterdata/nhdplus-national-data) You will need [7z](https://www.7-zip.org/) or the [`archive` package](https://github.com/jimhester/archive) to extract it. 
+
+Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the `nhdplus_path()` function.
+
+```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
+dir.create("./data_dir")
+
+file.copy(system.file("extdata/sample_natseamless.gpkg", 
+                      package = "nhdplusTools"),
+          "./data_dir/natseamless.gpkg")
+```
+```{r nhdplus_path, echo=TRUE}
+nhdplus_path("data_dir/natseamless.gpkg")
+
+nhdplus_path()
+```
+
+If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatadly, the `stage_national_data()` function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won't overwrite and just return the paths to your staged files.
+
+```{r stage_national_data}
+staged_data <- stage_national_data()
+
+str(staged_data)
+```
+As you can see, `stage_national_data()` assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are [`sf`](https://r-spatial.github.io/sf/) `data.frame`s and attributes is a plain `data.frame` with the attributes from `flowline`. Note that this introduction uses a small subset of the national seamless database as shown in the plot. 
+
+```{r staged_data}
+flowline <- readRDS(staged_data$flowline)
+names(flowline)[1:10]
+
+library(sf)
+plot(flowline[[attr(flowline, "sf_column")]])
+```
+<a id="discovery_subsetting"></a>
+
+## Discovery and Subsetting
+
+One of the primary workflows `nhdplusTools` is designed to accomplish can be described in three steps:
+
+1. what NHDPlus catchment is at the outlet of a watershed, 
+2. figure out what catchments are up or downstream of that catchment, and 
+3. create a stand alone subset for that collection of catchments.
+
+Say we want to get a subset of the NHDPlus upstream of a given location. We can start with `discover_nhdplus_id()` First, let's look at a given point location. Then see where it is relative to our flowlines.
+
+```{r point}
+lon <- -89.362239
+lat <- 43.090266
+
+start_point <- sf::st_sfc(sf::st_point(c(lon, lat)),
+                          crs = 4269)
+
+geom_col <- attr(flowline, "sf_column")
+plot(flowline[[geom_col]])
+plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
+```
+
+OK, so we have a point location near a river and we want to figure out what catchment is out outlet. We can use the `discover_nhdplus_id()` function which calls out to a web service and returns an NHDPlus catchment identifier, commonly called a COMID.
+
+```{r discover_nhdplus_id}
+start_comid <- discover_nhdplus_id(start_point)
+start_comid
+```
+
+With that starting COMID, we can use one of the network navigation functions, `get_UM`, `get_UT`, `get_DM`, or `get_DD` to retrieve a collection of comids along the upstream mainstaem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we'll use upstream with tributaries.
+
+```{r get_UT}
+UT_comids <- get_UT(flowline, start_comid)
+UT_comids
+```
+
+If you are familiar with the NHDPlus, you will recognize that now that we have this list of COMIDs, we could go off and do all sorts of things with the various flowline attribtues. For now, let's just use the COMID list to filter our `fline` `sf` `data.frame` and plot it with our other layers.
+
+```{r plot_fline_subset}
+plot(flowline[[geom_col]])
+plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
+plot(dplyr::filter(flowline, COMID %in% UT_comids)[[geom_col]],
+     add=TRUE, col = "red", lwd = 2)
+```
+
+Say you want to save the network subset for later use in R or in some other GIS. The `subset_nhdplus() function is your friend.
+
+```{r subset_nhdplus}
+output_file <- "./data_dir/subset.gpkg"
+
+output_file <-subset_nhdplus(comids = UT_comids,
+                             output_file = output_file,
+                             nhdplus_data_path = nhdplus_path(),
+                             intersection_crs = sf::st_crs("+init=epsg:5070"))
+
+sf::st_layers(output_file)
+```
+
+Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other laters as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.
+
+```{r plot_result}
+catchment <- sf::read_sf(output_file, "CatchmentSP")
+waterbody <- sf::read_sf(output_file, "NHDWaterbody")
+
+plot(flowline[[geom_col]])
+plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
+plot(dplyr::filter(flowline, COMID %in% UT_comids)[[geom_col]],
+     add=TRUE, col = "red", lwd = 2)
+plot(catchment[[geom_col]], add = TRUE)
+plot(waterbody[[geom_col]], col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
+```
+<a id="indexing"></a>
+
+## Indexing
+
+Expect more in this space as `nhdplustTools` progresses. Right now, one indexing method has been implemented. Using the data above, we can use the `get_flowline_index()` function to get the comid, reachcode, and measure of our starting point like this.
+
+```{r indexing}
+get_flowline_index(flowline, start_point)
+```
+
+`get_flowline_index()` will work with a list of points too. For demonstration purposes, we can use the gages in our subset from above.
+
+```{r index_list}
+gage <- sf::read_sf(output_file, "Gage")
+
+geom_col <- attr(gage, "sf_column")
+get_flowline_index(flowline, gage[[geom_col]], precision = 10)
+```
+
+For more info about `get_flowline_index()` see the article `vignette("point_indexing")` about it or the reference page that describes it.
+
+<a id="refactoring"></a>
+
+## Refactoring
+
+The refactoring functionality is described in full in the article `vignette("refactor_nhdplus")` about it. 
+
+```{r cleanup, echo = FALSE} 
+unlink("data_dir", recursive = T)
+```

@@ -70,8 +70,9 @@ check_names <- function(names_flines, function_name) {
                       envir = nhdplusTools_env)
   if ( !all(expect_names %in% names_flines)) {
     stop(paste0("Missing some required attributes in call to: ",
-                function_name, ". Expected all of: ",
-                paste(expect_names, collapse = ", "), "."))
+                function_name, ". Expected: ",
+                paste(expect_names[which(!(expect_names %in% names_flines))],
+                      collapse = ", "), "."))
   }
 }
 
@@ -79,17 +80,8 @@ assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(
-    "This information is preliminary or provisional
-    and is subject to revision. It is being provided
-    to meet the need for timely best science. The
-    information has not received final approval by the
-    U.S. Geological Survey (USGS) and is provided on the
-    condition that neither the USGS nor the U.S. Government
-    shall be held liable for any damages resulting from the
-    authorized or unauthorized use of the information.
-
-    USGS Research Package:
-    https://owi.usgs.gov/R/packages.html#research"),
+    "USGS Support Package:
+    https://owi.usgs.gov/R/packages.html#support"),
     collapse = "\n"))
   nhdplus_path(default_nhdplus_path, warn = FALSE)
 }
@@ -119,7 +111,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
     }
 
     if (nhdplus_path() == path) {
-      return(1)
+      invisible(0)
     } else {
       stop("Path not set successfully.")
     }

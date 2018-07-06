@@ -1,11 +1,17 @@
 reference:
+  - title: Data and Package Helpers
+    desc: >
+      Sample data and functions that make the package better to work with.
+    contents:
+      - '`nhdplus_path`'
+      - '`stage_national_data`'
+      - '`sample_flines`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are
       interested in working with.
     contents:
       - '`discover_nhdplus_id`'
-      - '`stage_national_data`'
       - '`subset_nhdplus`'
       - '`get_DD`'
       - '`get_DM`'
@@ -27,9 +33,3 @@ reference:
       - '`split_flowlines`'
       - '`collapse_flowlines`'
       - '`reconcile_collapsed_flowlines`'
-  - title: Data and Package Helpers
-    desc: >
-      Sample data and functions that make the package better to work with.
-    contents:
-      - '`nhdplus_path`'
-      - '`sample_flines`'

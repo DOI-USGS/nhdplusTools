@@ -87,7 +87,7 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data_path = NULL,
 
   staged_data <- try(get("national_data",
                          envir = nhdplusTools_env),
-                     silent = T)
+                     silent = TRUE)
 
   if (is.list(staged_data) &
       all(c("flowline", "catchment") %in% names(staged_data)) &

@@ -1,11 +1,16 @@
-COMID <- COMID.y <- Divergence <- DnHydroseq <-
-  DnMinorHyd <- FTYPE <- FromNode <-
-  Hydroseq <- ID <- LENGTHKM <- LevelPathI <-
-  Pathlength <- StartFlag <- StreamCalc <-
-  StreamOrde <- TerminalFl <- TerminalPa <-
-  ToNode <- TotDASqKM <- becomes <- dsLENGTHKM <-
-  ds_joined_fromCOMID <- ds_num_upstream <- fID <-
-  fromCOMID <- fromLENGTHKM <- fromTotDASqKM <- geom_len <-
+# NHDPlus Attributes
+COMID <- FEATUREID <-
+  Hydroseq <- DnHydroseq <- DnMinorHyd <- LevelPathI <-
+  ToNode <- FromNode <-
+  TotDASqKM <- LENGTHKM <-
+  Pathlength <- StreamCalc <- StreamOrde <- TerminalFl <-
+  Divergence <- TerminalPa <- StartFlag <- FTYPE <-
+  FromMeas <- ToMeas <- REACHCODE <- REACH_meas <- NULL
+
+  # Package Attribute Names
+COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
+  dsLENGTHKM <- ds_joined_fromCOMID <- fromCOMID <-
+  fromLENGTHKM <- fromTotDASqKM <- geom_len <-
   geometry <- join_category <- joined_fromCOMID <-
   joined_fromCOMID_new <- joined_toCOMID <- member_COMID <-
   new_joined_fromCOMID <- new_joined_toCOMID <- new_toCOMID <-
@@ -13,8 +18,7 @@ COMID <- COMID.y <- Divergence <- DnHydroseq <-
   split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
-  FromMeas <- REACHCODE <- REACH_meas <- ToMeas <-
-  index <- measure <- nn.idx <- precision_index <- FEATUREID <- NULL
+  index <- measure <- nn.idx <- precision_index <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -41,7 +45,8 @@ assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
 #' @title NHDPlus Data Path
 #' @description Allows specification of a custom path to a source dataset.
-#' Typically this will be the national seamless dataset in geodatabase or geopackage format.
+#' Typically this will be the national seamless dataset in
+#' geodatabase or geopackage format.
 #' @param path character path ending in .gdb or .gpkg
 #' @param warn boolean controls whether warning an status messages are printed
 #' @return 1 if set successfully, the path if no input.

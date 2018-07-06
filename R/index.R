@@ -50,7 +50,7 @@ get_flowline_index <- function(flines, points,
   points <- sf::st_coordinates(points)
 
   flines <- select(flines, COMID, REACHCODE, FromMeas, ToMeas) %>%
-    mutate(index = 1:nrow(flines))
+    mutate(index = seq_len(nrow(flines)))
 
   fline_atts <- sf::st_set_geometry(flines, NULL)
 
@@ -75,7 +75,7 @@ get_flowline_index <- function(flines, points,
                    crs = in_crs) %>%
       group_by(L1) %>%
       summarise(do_union = FALSE) %>%
-      mutate(index = 1:nrow(.)) %>%
+      mutate(index = seq_len(nrow(.))) %>%
       sf::st_cast("LINESTRING", warn = FALSE) %>%
       sf::st_segmentize(dfMaxLength = units::as_units(precision, "m"))
 
@@ -93,7 +93,7 @@ get_flowline_index <- function(flines, points,
   }
 
   flines <- as.data.frame(flines) %>%
-    mutate(index = 1:nrow(flines)) %>%
+    mutate(index = seq_len(nrow(flines))) %>%
     filter(L1 %in% matched$L1) %>%
     group_by(L1) %>%
     mutate(len  = sqrt( ( (X - (lag(X))) ^ 2) + ( ( (Y - (lag(Y))) ^ 2)))) %>%
@@ -122,6 +122,6 @@ matcher <- function(coords, points, search_radius) {
                  radius = search_radius) %>%
     data.frame(stringsAsFactors = FALSE) %>%
     left_join(mutate(select(as.data.frame(coords), L1),
-                     index = 1:nrow(coords)),
+                     index = seq_len(nrow(coords))),
               by = c("nn.idx" = "index"))
 }

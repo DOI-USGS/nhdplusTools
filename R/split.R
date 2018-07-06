@@ -88,7 +88,7 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
 
   too_long <- mutate(too_long,
                      pieces = ceiling(geom_len / max_length),
-                     fID = 1:nrow(too_long)) %>%
+                     fID = seq_len(nrow(too_long))) %>%
     select(-geom_len)
 
   split_points <-
@@ -172,7 +172,7 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
   too_long <- mutate(too_long,
                      pieces = ceiling(geom_len / max_length),
                      piece_len = (geom_len / pieces),
-                     fID = 1:nrow(too_long))
+                     fID = seq_len(nrow(too_long)))
 
   split_points <-
     sf::st_set_geometry(too_long, NULL)[rep(seq_len(nrow(too_long)),
@@ -190,7 +190,7 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
   get_coords <- function(too_long) {
     coords <- data.frame(sf::st_coordinates(too_long[[geom_column]]))
 
-    rename(coords, fID = L1) %>% mutate(nID = 1:nrow(coords))
+    rename(coords, fID = L1) %>% mutate(nID = seq_len(nrow(coords)))
   }
 
   coords <- get_coords(too_long)

@@ -16,7 +16,8 @@ nhdplus_path(path = NULL, warn = FALSE)
 }
 \description{
 Allows specification of a custom path to a source dataset.
-Typically this will be the national seamless dataset in geodatabase or geopackage format.
+Typically this will be the national seamless dataset in
+geodatabase or geopackage format.
 }
 \examples{
 nhdplus_path("/data/NHDPlusV21_National_Seamless.gdb")

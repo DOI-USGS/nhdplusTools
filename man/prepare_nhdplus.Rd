@@ -8,9 +8,10 @@ prepare_nhdplus(flines, min_network_size, min_path_length,
   purge_non_dendritic = TRUE, warn = TRUE)
 }
 \arguments{
-\item{flines}{data.frame NHDPlus flowlines including at a minimum:
+\item{flines}{data.frame NHDPlus flowlines including:
 COMID, LENGTHKM, FTYPE, TerminalFl, FromNode, ToNode, TotDASqKM,
-StartFlag, StreamOrde, StreamCalc, TerminalPa, and Pathlength variables.}
+StartFlag, StreamOrde, StreamCalc, TerminalPa, Pathlength,
+and Divergence variables.}
 
 \item{min_network_size}{numeric Minimum size (sqkm) of drainage network
 to include in output.}

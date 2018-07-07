@@ -7,7 +7,7 @@
 #' returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs upstream with tributaries of the
 #' starting catchment.
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter select
 #' @export
 #' @examples
 #' library(sf)
@@ -25,49 +25,59 @@ get_UT <- function(network, comid, distance = NULL) {
 
   check_names(names(network), "get_UT")
 
-  # Grab the submitted comids
-  main <- filter(network, COMID %in% comid)
+  network <- dplyr::select(network, COMID, Pathlength, LENGTHKM,
+                           LevelPathI, DnLevelPat,
+                           Hydroseq, DnMinorHyd, DnHydroseq)
 
-  if (!is.null(distance)) {
-    stop_pathlength <- main$Pathlength - main$LENGTHKM + distance
+  if("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
 
-    if (length(main$LENGTHKM) == 1) {
-      if (main$LENGTHKM > distance) return(main$COMID)
-    }
-  } else {
-    stop_pathlength <- NULL
+  start_comid <- filter(network, COMID == comid)
+
+  if(!is.null(distance)) {
+    if(distance < start_comid$LENGTHKM) return(comid)
   }
 
-  return(private_get_UT(network, comid, distance, stop_pathlength))
+  all <- private_get_UT(network, comid)
+
+  if(!is.null(distance)) {
+    stop_pathlength <- start_comid$Pathlength -
+      start_comid$LENGTHKM +
+      distance
+
+    network <- filter(network, COMID %in% all)
+
+    return(filter(network, Pathlength <= stop_pathlength)$COMID)
+  } else {
+    return(all)
+  }
 }
 
-private_get_UT <- function(network, comid,
-                           distance = NULL,
-                           stop_pathlength = NULL) {
+private_get_UT <- function(network, comid) {
 
-  # Grab the submitted comids
   main <- filter(network, COMID %in% comid)
 
-  if (!is.null(distance)) {
+  if(length(main$Hydroseq) == 1) {
 
-    ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
-                                   (DnMinorHyd != 0 &
-                                      DnMinorHyd %in% main$Hydroseq)) &
-                         Pathlength < stop_pathlength)$COMID
+    full_main <- filter(network,
+                         LevelPathI %in% main$LevelPathI &
+                           Hydroseq >= main$Hydroseq)
 
+    trib_lpid <- filter(network, DnHydroseq %in% full_main$Hydroseq &
+                          !LevelPathI %in% main$LevelPathI  &
+                          Hydroseq >= main$Hydroseq)$LevelPathI
   } else {
+    full_main <- filter(network, LevelPathI %in% main$LevelPathI)
 
-    ut_comid <- filter(network, (DnHydroseq %in% main$Hydroseq |
-                                   (DnMinorHyd != 0 &
-                                      DnMinorHyd %in% main$Hydroseq)))$COMID
-
+    trib_lpid <- filter(network, DnHydroseq %in% full_main$Hydroseq &
+                          !LevelPathI %in% main$LevelPathI)$LevelPathI
   }
 
-  if (length(ut_comid) > 0) {
-    return(c(main$COMID, private_get_UT(network, ut_comid,
-                                        distance, stop_pathlength)))
+  trib_comid <- filter(network, LevelPathI %in% trib_lpid)$COMID
+
+  if (length(trib_comid) > 0) {
+    return(c(full_main$COMID, private_get_UT(network, trib_comid)))
   } else {
-    return(main$COMID)
+    return(full_main$COMID)
   }
 }
 

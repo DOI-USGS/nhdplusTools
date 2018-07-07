@@ -97,6 +97,13 @@ test_that("get_UT works with distance specific", {
   expect_equal(length(result), 3)
 })
 
+test_that("get_UT returns diverted paths.", {
+  result <- get_UT(readRDS("data/petapsco_network.rds"), 11690184)
+  expect(all(c(11689276, 11690200) %in% result),
+         "missing a diverted or main path")
+})
+
+
 context("get_DD")
 
 test_that("get_DD works", {

@@ -20,7 +20,7 @@ options(scipen = 9999)
 First we'll load up some data. In this case, we use flowlines from the NHDPlus subset that's included in the package and a set of points to index. We'll use the NHDPlus Gages layer for this example. The data in this example is big. The R session needs a lot of memory to hold the whole NHDPlus flowline layer and run the calculations. 
 
 ```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 dir.create("./data_dir")
 
 file.copy(system.file("extdata/sample_natseamless.gpkg", 

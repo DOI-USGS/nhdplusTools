@@ -1,6 +1,6 @@
 # NHDPlus Attributes
 COMID <- FEATUREID <-
-  Hydroseq <- DnHydroseq <- DnMinorHyd <- LevelPathI <-
+  Hydroseq <- DnHydroseq <- DnMinorHyd <- LevelPathI <- DnLevelPat <-
   ToNode <- FromNode <-
   TotDASqKM <- LENGTHKM <-
   Pathlength <- StreamCalc <- StreamOrde <- TerminalFl <-
@@ -18,7 +18,7 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
-  index <- measure <- nn.idx <- precision_index <- NULL
+  index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-NULL
 
 nhdplusTools_env <- new.env()
 
@@ -44,7 +44,8 @@ assign("reconcile_collapsed_flowlines_attributes",
        envir = nhdplusTools_env)
 
 assign("get_UT_attributes",
-       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq"),
+       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq",
+         "LevelPathI", "DnHydroseq"),
        envir = nhdplusTools_env)
 
 assign("get_UM_attributes",
@@ -53,11 +54,15 @@ assign("get_UM_attributes",
        envir = nhdplusTools_env)
 
 assign("get_DM_attributes",
-       c("COMID", "LENGTHKM", "DnHydroseq", "Hydroseq"),
+       c("COMID", "Pathlength", "LENGTHKM",
+         "LevelPathI", "DnLevelPat",
+         "DnHydroseq", "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("get_DD_attributes",
-       c("COMID", "DnMinorHyd", "DnHydroseq", "Hydroseq"),
+       c("COMID", "Pathlength", "LENGTHKM",
+         "LevelPathI", "DnLevelPat",
+         "DnHydroseq", "Hydroseq", "DnMinorHyd"),
        envir = nhdplusTools_env)
 
 assign("get_flowline_index_attributes",
@@ -71,7 +76,8 @@ check_names <- function(names_flines, function_name) {
   if ( !all(expect_names %in% names_flines)) {
     stop(paste0("Missing some required attributes in call to: ",
                 function_name, ". Expected: ",
-                paste(expect_names[which(!(expect_names %in% names_flines))],
+                paste(expect_names[which(!(expect_names %in%
+                                             names_flines))],
                       collapse = ", "), "."))
   }
 }
@@ -178,6 +184,16 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
     return(as.integer(catchment$featureid))
 
   } else if (!is.null(nldi_feature)) {
+
+    expect_names <- c("featureSource", "featureID")
+    if (!all(expect_names %in%
+            names(nldi_feature))) {
+      stop(paste0("Missing some required input for NLDI. ",
+                  "Expected: ",
+                  paste(expect_names[which(!(expect_names %in%
+                                               names(nldi_feature)))],
+                        collapse = ", ")))
+    }
 
     nldi <- query_nldi(nldi_feature[["featureSource"]],
                        nldi_feature[["featureID"]])

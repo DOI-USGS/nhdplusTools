@@ -13,6 +13,8 @@
 split_flowlines <- function(flines, max_length, para = 0) {
   check_names(names(flines), "split_flowlines")
 
+  geom_col <- attr(flines, "sf_column")
+
   split <- split_lines(flines, max_length, id = "COMID", para = para)
 
   split <- left_join(split, sf::st_set_geometry(flines, NULL), by = "COMID")
@@ -32,7 +34,7 @@ split_flowlines <- function(flines, max_length, para = 0) {
                                                  lead(part), sep = "."))))
 
   split <- mutate(split, COMID = paste(COMID, part, sep = "."),
-                  LENGTHKM = sf::st_length(geometry) / 1000,
+                  LENGTHKM = sf::st_length(split[[geom_col]]) / 1000,
                   TotDASqKM = TotDASqKM) # THIS IS WRONG BUT CAN'T BE NA!!!
 
   split <- sf::st_as_sf(select(split, -part, -split_fID))
@@ -133,8 +135,11 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
   rm(too_long)
 
   split_lines <- sf::st_sf(split_points[c(id, "split_fID")],
-                           geometry = sf::st_sfc(split_lines,
+                           split_geometry = sf::st_sfc(split_lines,
                                                  crs = input_crs))
+
+  names(split_lines)[which(names(split_lines) == "split_geometry")] <- geom_column
+  attr(split_lines, "sf_column") <- geom_column
 
   return(split_lines)
 }
@@ -209,8 +214,8 @@ split_lines_2 <- function(input_lines, max_length, id = "ID") {
     warning(paste("Found", length(which(problem_geoms)),
                   "geometries without very many vertices. Densifying"))
     for (g in which(problem_geoms)) {
-      too_long$geometry[g] <-
-        sf::st_segmentize(too_long$geometry[g],
+      too_long[[geom_column]][g] <-
+        sf::st_segmentize(too_long[[geom_column]][g],
                           max_length / (5 * too_long$pieces[g]))
     }
     coords <- get_coords(too_long)

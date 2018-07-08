@@ -2,7 +2,7 @@
 % Please edit documentation in R/refactor_nhdplus.R
 \name{refactor_nhdplus}
 \alias{refactor_nhdplus}
-\title{refactor nhdplus}
+\title{Refactor NHDPlus}
 \usage{
 refactor_nhdplus(nhdplus_flines, split_flines_meters, split_flines_cores,
   collapse_flines_meters, collapse_flines_main_meters, out_collapsed,

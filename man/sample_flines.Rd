@@ -3,7 +3,7 @@
 \docType{data}
 \name{sample_flines}
 \alias{sample_flines}
-\title{Sample flowlines from the Petapsco River.}
+\title{Sample Flowlines from the Petapsco River.}
 \format{An sf data.frame}
 \source{
 \url{https://www.epa.gov/waterdata/nhdplus-national-data}

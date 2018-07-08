@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_network.R
 \name{get_UT}
 \alias{get_UT}
-\title{Get all upstream with tributaries COMIDs}
+\title{Navigate Upstream with Tributaries}
 \usage{
 get_UT(network, comid, distance = NULL)
 }

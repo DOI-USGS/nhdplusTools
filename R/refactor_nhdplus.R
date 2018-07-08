@@ -1,4 +1,4 @@
-#' @title refactor nhdplus
+#' @title Refactor NHDPlus
 #' @description A complete network refactor workflow has been packaged
 #' into this function. See details and vignettes for more information.
 #' @param nhdplus_flines data.frame raw nhdplus flowline features as

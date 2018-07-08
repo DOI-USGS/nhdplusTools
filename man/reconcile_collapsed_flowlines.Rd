@@ -2,7 +2,7 @@
 % Please edit documentation in R/reconcile.R
 \name{reconcile_collapsed_flowlines}
 \alias{reconcile_collapsed_flowlines}
-\title{Reconcile collapsed flowlines}
+\title{Reconcile Collapsed Flowlines}
 \usage{
 reconcile_collapsed_flowlines(flines, geom = NULL, id = "COMID")
 }

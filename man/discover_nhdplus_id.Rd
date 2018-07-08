@@ -2,7 +2,7 @@
 % Please edit documentation in R/nhdplusTools.R
 \name{discover_nhdplus_id}
 \alias{discover_nhdplus_id}
-\title{Discover NHDPlus Catchment/Flowline ID}
+\title{Discover NHDPlus ID}
 \usage{
 discover_nhdplus_id(point = NULL, nldi_feature = NULL)
 }

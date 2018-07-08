@@ -136,7 +136,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <span class="co">#&gt;  [6] "LENGTHKM"   "REACHCODE"  "FLOWDIR"    "WBAREACOMI" "FTYPE"</span>
 
 <span class="kw">library</span>(sf)
-<span class="co">#&gt; Linking to GEOS 3.6.1, GDAL 2.1.3, proj.4 4.9.3</span>
+<span class="co">#&gt; Linking to GEOS 3.6.2, GDAL 2.2.3, proj.4 4.9.3</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(flowline[[<span class="kw">attr</span>(flowline, <span class="st">"sf_column"</span>)]])</code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/staged_data-1.png" width="576"><a id="discovery_subsetting"></a></p>
 </div>
@@ -167,32 +167,30 @@ start_comid
 <p>With that starting COMID, we can use one of the network navigation functions, <code>get_UM</code>, <code>get_UT</code>, <code>get_DM</code>, or <code>get_DD</code> to retrieve a collection of comids along the upstream mainstaem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we’ll use upstream with tributaries.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">UT_comids &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_UT.html">get_UT</a></span>(flowline, start_comid)
 UT_comids
-<span class="co">#&gt;   [1]  13293750  13294312  13294308  13294310  13293634  13294304  13294314</span>
-<span class="co">#&gt;   [8]  13293696  13294368  13294298  13294300  13293690  13293694  13294290</span>
-<span class="co">#&gt;  [15]  13294292  13294294  13294296  13294306  13294264  13293692  13294176</span>
-<span class="co">#&gt;  [22]  13294166  13293588  13293576  13294184  13293676  13293678  13294174</span>
-<span class="co">#&gt;  [29]  13294168  13293548  13293554  13293572  13293574  13294288  13293620</span>
-<span class="co">#&gt;  [36]  13293624  13293688  13293672  13294178  13293578  13293600  13293590</span>
-<span class="co">#&gt;  [43]  13294282  13293568  13293552  13293550  13293570  13294286  13294284</span>
-<span class="co">#&gt;  [50]  13293612  13293614  13293674  13293646  13293562  13293564  13293540</span>
-<span class="co">#&gt;  [57]  13293556  13293558  13294158  13294280  13293584  13293586  13293520</span>
-<span class="co">#&gt;  [64]  13293518  13293556  13294154  13293506  13294152  13293504  13293480</span>
-<span class="co">#&gt;  [71]  13293472  13293508  13294150  13293542  13294134  13293478  13294132</span>
-<span class="co">#&gt;  [78]  13293514  13293532  13294148  13294138  13293536  13293494  13294130</span>
-<span class="co">#&gt;  [85]  13294128  13293476  13294120  13293530  13294144  13294150  13293524</span>
-<span class="co">#&gt;  [92]  13293516  13293496  13293502  13293492 937090091  13294394  13293450</span>
-<span class="co">#&gt;  [99]  13293448  13293522  13293526  13293532  13294140  13293488  13293486</span>
-<span class="co">#&gt; [106]  13294382 937090090  13293454  13293442  13294116  13293524  13293516</span>
-<span class="co">#&gt; [113]  13293484  13293498  13294274  13293456  13294124  13293430  13294140</span>
-<span class="co">#&gt; [120]  13293458  13293432  13293452  13293462  13293464  13294384  13293424</span>
-<span class="co">#&gt; [127]  13293422  13293452  13294114  13293428  13293438  13293444  13294276</span>
-<span class="co">#&gt; [134]  13302588  13294110  13293512  13293416  13293418  13293420  13294270</span>
-<span class="co">#&gt; [141]  13294272  13294386  13293398  13293474  13293460  13293400  13293410</span>
-<span class="co">#&gt; [148]  13293412  13294278  13302590  13293392  13294118  13294122  13293394</span>
-<span class="co">#&gt; [155]  13293404  13293490  13293446  13293388  13293440  13293468  13293390</span>
-<span class="co">#&gt; [162]  13293396  13294268  13293436  13293434  13293384  13293426  13294112</span>
-<span class="co">#&gt; [169]  13293386  13293406  13293404  13293380  13293382  13293378  13293376</span>
-<span class="co">#&gt; [176]  13294268  13294366  13293406  13294366</span></code></pre></div>
+<span class="co">#&gt;   [1]  13293750  13293504  13294134  13294128  13294394  13293454  13293430</span>
+<span class="co">#&gt;   [8]  13293424  13294110  13293398  13293392  13293388  13293384  13293380</span>
+<span class="co">#&gt;  [15]  13293576  13294288  13294284  13293506  13294280  13294290  13294298</span>
+<span class="co">#&gt;  [22]  13294304  13294310  13294312  13293696  13293694  13294264  13293676</span>
+<span class="co">#&gt;  [29]  13293620  13293612  13293584  13294166  13293554  13293540  13294282</span>
+<span class="co">#&gt;  [36]  13293520  13293480  13294132  13293588  13293550  13293574  13293508</span>
+<span class="co">#&gt;  [43]  13293530  13293526  13293524  13294138  13293496  13293488  13293484</span>
+<span class="co">#&gt;  [50]  13293474  13294118  13293440  13293426  13293458  13294382  13294274</span>
+<span class="co">#&gt;  [57]  13293422  13293416  13293390  13293382  13293386  13293376  13293396</span>
+<span class="co">#&gt;  [64]  13293394  13293406  13293404  13294268  13294366  13293400  13293432</span>
+<span class="co">#&gt;  [71]  13293452  13293456  13293492  13294158  13294286  13293634  13294368</span>
+<span class="co">#&gt;  [78]  13294124 937090090 937090091  13293464  13293444  13293446  13293434</span>
+<span class="co">#&gt;  [85]  13293542  13294154  13293536  13294292  13294294  13294300  13294308</span>
+<span class="co">#&gt;  [92]  13294314  13294272  13294276  13294384  13294278  13294386  13293494</span>
+<span class="co">#&gt;  [99]  13294130  13294306  13294184  13293690  13293692  13293586  13293614</span>
+<span class="co">#&gt; [106]  13293624  13293678  13293672  13293674  13294176  13294168  13293578</span>
+<span class="co">#&gt; [113]  13293564  13293548  13293478  13293476  13293450  13293442  13293518</span>
+<span class="co">#&gt; [120]  13293472  13293572  13293568  13293556  13293558  13293552  13293514</span>
+<span class="co">#&gt; [127]  13293522  13294144  13293532  13294150  13294148  13294140  13293516</span>
+<span class="co">#&gt; [134]  13293502  13293498  13293460  13294122  13293468  13294112  13293512</span>
+<span class="co">#&gt; [141]  13293486  13293378  13293462  13293428  13293420  13293412  13293438</span>
+<span class="co">#&gt; [148]  13293490  13293436  13294152  13294296  13294270  13302588  13302590</span>
+<span class="co">#&gt; [155]  13293688  13293646  13294174  13294178  13293562  13293600  13293448</span>
+<span class="co">#&gt; [162]  13294116  13294120  13293570  13294114  13293418  13293410  13293590</span></code></pre></div>
 <p>If you are familiar with the NHDPlus, you will recognize that now that we have this list of COMIDs, we could go off and do all sorts of things with the various flowline attribtues. For now, let’s just use the COMID list to filter our <code>fline</code> <code>sf</code> <code>data.frame</code> and plot it with our other layers.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(flowline[[geom_col]])
 <span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(start_point, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)

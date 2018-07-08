@@ -1,4 +1,4 @@
-#' @title get flowline index
+#' @title Get Flowline Index
 #' @description given an sf point geometry column, return COMID, reachcode,
 #' and measure for each.
 #' @param points sfc of type POINT

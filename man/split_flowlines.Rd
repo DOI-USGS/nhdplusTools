@@ -2,7 +2,7 @@
 % Please edit documentation in R/split.R
 \name{split_flowlines}
 \alias{split_flowlines}
-\title{split flowlines}
+\title{Split Flowlines}
 \usage{
 split_flowlines(flines, max_length, para = 0)
 }

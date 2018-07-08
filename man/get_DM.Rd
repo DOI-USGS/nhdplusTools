@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_network.R
 \name{get_DM}
 \alias{get_DM}
-\title{Get all downstream mainstem COMIDs}
+\title{Navigate Downstream Mainstem}
 \usage{
 get_DM(network, comid, distance = NULL)
 }

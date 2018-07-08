@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_network.R
 \name{get_UM}
 \alias{get_UM}
-\title{Get all upstream mainstem COMIDs}
+\title{Navigate Upstream Mainstem}
 \usage{
 get_UM(network, comid, distance = NULL)
 }

@@ -126,7 +126,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
   }
 }
 
-#' Sample flowlines from the Petapsco River.
+#' Sample Flowlines from the Petapsco River.
 #'
 #' A sample set of flowlines.
 #'
@@ -135,7 +135,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' @source \url{https://www.epa.gov/waterdata/nhdplus-national-data}
 "sample_flines"
 
-#' @title Discover NHDPlus Catchment/Flowline ID
+#' @title Discover NHDPlus ID
 #' @description Multipurpose function to find a COMID of interest.
 #' @param point An sf POINT including crs as created by:
 #' sf::st_sf(sf::st_point(..,..), crs)

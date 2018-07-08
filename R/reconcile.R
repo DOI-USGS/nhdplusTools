@@ -1,4 +1,4 @@
-#' @title Reconcile collapsed flowlines
+#' @title Reconcile Collapsed Flowlines
 #' @description Reconciles output of collapse_flowlines giving a unique ID to
 #'  each new unit and providing a mapping to NHDPlus COMIDs.
 #' @param flines data.frame with COMID, toCOMID, LENGTHKM,

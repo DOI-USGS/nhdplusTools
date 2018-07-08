@@ -2,7 +2,7 @@
 % Please edit documentation in R/index.R
 \name{get_flowline_index}
 \alias{get_flowline_index}
-\title{get flowline index}
+\title{Get Flowline Index}
 \usage{
 get_flowline_index(flines, points, search_radius = 0.1, precision = NA)
 }

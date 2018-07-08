@@ -1,4 +1,4 @@
-#' @title split flowlines
+#' @title Split Flowlines
 #' @description A wrapper for split_lines that works on nhdplus attributes
 #' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM
 #' and LINESTRING sf column in "meters" projection

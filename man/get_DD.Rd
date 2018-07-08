@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_network.R
 \name{get_DD}
 \alias{get_DD}
-\title{Get all downstream COMIDs including diversions}
+\title{Navigate Downstream with Diversions}
 \usage{
 get_DD(network, comid, distance = NULL)
 }

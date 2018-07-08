@@ -1,4 +1,4 @@
-#' @title Get all upstream with tributaries COMIDs
+#' @title Navigate Upstream with Tributaries
 #' @description Traverse NHDPlus network upstream with tributaries
 #' @param network data.frame NHDPlus flowlines including at a minimum:
 #' COMID, Pathlength, LENGTHKM, and Hydroseq.
@@ -79,7 +79,7 @@ private_get_UT <- function(network, comid) {
   }
 }
 
-#' @title Get all upstream mainstem COMIDs
+#' @title Navigate Upstream Mainstem
 #' @description Traverse NHDPlus network upstream main stem
 #' @param network data.frame NHDPlus flowlines including at a minimum:
 #' COMID,Pathlength, LevelPathI, UpHydroseq, and Hydroseq.
@@ -125,7 +125,7 @@ get_UM <- function(network, comid, distance = NULL) {
   return(main_us$COMID)
 }
 
-#' @title Get all downstream mainstem COMIDs
+#' @title Navigate Downstream Mainstem
 #' @description Traverse NHDPlus network downstream main stem
 #' @param network data.frame NHDPlus flowlines including at a minimum:
 #' COMID, LENGTHKM, DnHydroseq, and Hydroseq.
@@ -205,7 +205,7 @@ private_get_DM <- function(network, comid) {
 }
 
 
-#' @title Get all downstream COMIDs including diversions
+#' @title Navigate Downstream with Diversions
 #' @description Traverse NHDPlus network downstream with diversions
 #' NOTE: This algorithm may not scale well in large watersheds.
 #' For reference, the lower Mississippi will take over a minute.

@@ -18,7 +18,7 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
-  index <- measure <- nn.idx <- precision_index <- NULL
+  index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-NULL
 
 nhdplusTools_env <- new.env()
 
@@ -60,7 +60,9 @@ assign("get_DM_attributes",
        envir = nhdplusTools_env)
 
 assign("get_DD_attributes",
-       c("COMID", "DnMinorHyd", "DnHydroseq", "Hydroseq"),
+       c("COMID", "Pathlength", "LENGTHKM",
+         "LevelPathI", "DnLevelPat",
+         "DnHydroseq", "Hydroseq", "DnMinorHyd"),
        envir = nhdplusTools_env)
 
 assign("get_flowline_index_attributes",

@@ -182,14 +182,12 @@ get_DM <- function(network, comid, distance = NULL) {
 
 private_get_DM <- function(network, comid) {
 
-  main <- filter(network, COMID %in% comid)
+  main <- ds_main <- filter(network, COMID %in% comid)
 
   if (length(main$Hydroseq) == 1) {
     ds_main <- filter(network,
                       LevelPathI %in% main$LevelPathI &
                         Hydroseq <= main$Hydroseq)
-  } else {
-    ds_main <- main
   }
 
   ds_hs <- filter(ds_main, !DnLevelPat %in% main$LevelPathI)$DnHydroseq
@@ -209,6 +207,8 @@ private_get_DM <- function(network, comid) {
 
 #' @title Get all downstream COMIDs including diversions
 #' @description Traverse NHDPlus network downstream with diversions
+#' NOTE: This algorithm may not scale well in large watersheds.
+#' For reference, the lower Mississippi will take over a minute.
 #' @param network data.frame NHDPlus flowlines including at a minimum:
 #' COMID, DnMinorHyd, DnHydroseq, and Hydroseq.
 #' @param comid integer identifier to start navigating from.
@@ -234,39 +234,70 @@ get_DD <- function(network, comid, distance = NULL) {
 
   check_names(names(network), "get_DD")
 
-  private_get_DD(network, comid, distance, run_distance = 0)
+  network <- dplyr::select(network, get("get_DD_attributes",
+                                        nhdplusTools_env))
 
-}
+  if ("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
 
-private_get_DD <- function(network,
-                           comid,
-                           distance = NULL,
-                           run_distance = NULL) {
+  start_comid <- filter(network, COMID == comid)
 
-  main <- dplyr::filter(network, COMID %in% comid)
-
-  ds_comid <- dplyr::filter(network,
-                     Hydroseq %in% main$DnHydroseq |
-                       Hydroseq %in% main$DnMinorHyd)$COMID
+  stop_pathlength <- 0
 
   if (!is.null(distance)) {
-    # This is a bit problematic. Uses the longest of the many at a fork.
-    accum_distance <- run_distance + max(main$LENGTHKM)
+    if (distance < start_comid$LENGTHKM) return(comid)
+
+    stop_pathlength <- start_comid$Pathlength +
+      start_comid$LENGTHKM -
+      distance
+  }
+  all <- private_get_DD(network, comid, stop_pathlength)
+
+  if (!is.null(distance)) {
+    network <- filter(network, COMID %in% unique(all))
+
+    return(filter(network, (Pathlength + LENGTHKM) >= stop_pathlength)$COMID)
+  } else {
+    return(unique(all))
+  }
+}
+
+private_get_DD <- function(network, comid, stop_pathlength = 0) {
+
+  main <- ds_main <- filter(network, COMID %in% comid)
+
+  if (length(main$Hydroseq) == 1) {
+    ds_main <- filter(network,
+                      LevelPathI %in% main$LevelPathI &
+                        Hydroseq <= main$Hydroseq)
   }
 
-  if (length(ds_comid) > 0) {
-    if (!is.null(distance)) {
-      if (accum_distance < distance) {
-        unique(c(main$COMID,
-                 private_get_DD(network, ds_comid,
-                                distance, accum_distance)))
-      } else {
-        return(main$COMID)
-      }
+  ds_hs <- c(filter(ds_main, !DnLevelPat %in% main$LevelPathI)$DnHydroseq,
+             filter(ds_main, !DnMinorHyd == 0)$DnMinorHyd)
+
+  ds_lpid <- filter(network, Hydroseq %in% ds_hs)$LevelPathI
+
+  if (length(ds_lpid) > 0) {
+    if (length(ds_hs) == 1) {
+      # Same as DM
+      ds_comid <- filter(network,
+                         LevelPathI %in% ds_lpid &
+                           Hydroseq <= ds_hs)$COMID
     } else {
-      unique(c(main$COMID, private_get_DD(network, ds_comid)))
+      # Works for divergent paths.
+      ds_hs <- filter(network, Hydroseq %in% ds_hs)
+      ds_comid <- filter(network, LevelPathI %in% ds_lpid) %>%
+        dplyr::left_join(select(ds_hs, LevelPathI, max_Hydroseq = Hydroseq),
+                  by = "LevelPathI") %>%
+        filter(Hydroseq <= max_Hydroseq)
+      ds_comid <- ds_comid$COMID
     }
+
+    # This allows this algorithm to work for short distances
+    # in a reasonable time in large systems.
+    if (all(ds_main$Pathlength <= stop_pathlength)) return(ds_main$COMID)
+
+    c(ds_main$COMID, private_get_DD(network, ds_comid, stop_pathlength))
   } else {
-    return(main$COMID)
+    return(ds_main$COMID)
   }
 }

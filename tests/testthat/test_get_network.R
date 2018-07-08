@@ -106,6 +106,12 @@ test_that("get_UT returns diverted paths.", {
 
 context("get_DD")
 
+test_that("get_DD works with two divergences", {
+  result <- get_DD(readRDS("data/petapsco_network.rds"), 11689316)
+  expect(all(c(11689294, 11690224, 11689268, 11689758, 11689276) %in% result))
+
+})
+
 test_that("get_DD works", {
   result <- get_DD(readRDS("data/petapsco_network.rds"), 11688810)
   expect(11688810 %in% result)
@@ -122,7 +128,7 @@ test_that("get_DD works upstream of diversion", {
 
 test_that("get_DD with distance 0.2 returns 3", {
   result <- get_DD(readRDS("data/petapsco_network.rds"),
-                   11688810, distance = 0.2)
+                   11688810, distance = 0.5)
   expect_equal(length(result), 3)
 })
 

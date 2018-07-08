@@ -22,6 +22,8 @@ integer vector of all COMIDs downstream of the starting catchment
 }
 \description{
 Traverse NHDPlus network downstream with diversions
+NOTE: This algorithm may not scale well in large watersheds.
+For reference, the lower Mississippi will take over a minute.
 }
 \examples{
 library(sf)

@@ -25,21 +25,20 @@ get_UT <- function(network, comid, distance = NULL) {
 
   check_names(names(network), "get_UT")
 
-  network <- dplyr::select(network, COMID, Pathlength, LENGTHKM,
-                           LevelPathI, DnLevelPat,
-                           Hydroseq, DnMinorHyd, DnHydroseq)
+  network <- dplyr::select(network, get("get_UT_attributes",
+                                        nhdplusTools_env))
 
-  if("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
+  if ("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
 
   start_comid <- filter(network, COMID == comid)
 
-  if(!is.null(distance)) {
-    if(distance < start_comid$LENGTHKM) return(comid)
+  if (!is.null(distance)) {
+    if (distance < start_comid$LENGTHKM) return(comid)
   }
 
   all <- private_get_UT(network, comid)
 
-  if(!is.null(distance)) {
+  if (!is.null(distance)) {
     stop_pathlength <- start_comid$Pathlength -
       start_comid$LENGTHKM +
       distance
@@ -56,8 +55,7 @@ private_get_UT <- function(network, comid) {
 
   main <- filter(network, COMID %in% comid)
 
-  if(length(main$Hydroseq) == 1) {
-
+  if (length(main$Hydroseq) == 1) {
     full_main <- filter(network,
                          LevelPathI %in% main$LevelPathI &
                            Hydroseq >= main$Hydroseq)
@@ -155,35 +153,56 @@ get_DM <- function(network, comid, distance = NULL) {
 
   check_names(names(network), "get_DM")
 
-  private_get_DM(network, comid, distance, run_distance = 0)
+  network <- dplyr::select(network, get("get_DM_attributes",
+                                        nhdplusTools_env))
+
+  if ("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
+
+  start_comid <- filter(network, COMID == comid)
+
+  if (!is.null(distance)) {
+    if (distance < start_comid$LENGTHKM) return(comid)
+  }
+
+  all <- private_get_DM(network, comid)
+
+  if (!is.null(distance)) {
+    stop_pathlength <- start_comid$Pathlength +
+      start_comid$LENGTHKM -
+      distance
+
+    network <- filter(network, COMID %in% all)
+
+    return(filter(network, (Pathlength + LENGTHKM) >= stop_pathlength)$COMID)
+  } else {
+    return(all)
+  }
 
 }
 
-private_get_DM <- function(network, comid, distance = NULL,
-                           run_distance = NULL) {
+private_get_DM <- function(network, comid) {
 
   main <- filter(network, COMID %in% comid)
 
-  ds_comid <- filter(network,
-                     Hydroseq %in% main$DnHydroseq)$COMID
-
-  if (!is.null(distance)) {
-    accum_distance <- run_distance + main$LENGTHKM
+  if (length(main$Hydroseq) == 1) {
+    ds_main <- filter(network,
+                      LevelPathI %in% main$LevelPathI &
+                        Hydroseq <= main$Hydroseq)
+  } else {
+    ds_main <- main
   }
 
-  if (length(ds_comid) > 0) {
-    if (!is.null(distance)) {
-      if (accum_distance < distance) {
-        c(main$COMID, private_get_DM(network, ds_comid,
-                                     distance, accum_distance))
-      } else {
-        return(main$COMID)
-      }
-    } else {
-      c(main$COMID, private_get_DM(network, ds_comid))
-    }
+  ds_hs <- filter(ds_main, !DnLevelPat %in% main$LevelPathI)$DnHydroseq
+
+  ds_lpid <- filter(network, Hydroseq == ds_hs)$LevelPathI
+
+  if (length(ds_lpid) > 0) {
+    ds_comid <- filter(network,
+                       LevelPathI == ds_lpid &
+                         Hydroseq <= ds_hs)$COMID
+    c(ds_main$COMID, private_get_DM(network, ds_comid))
   } else {
-    return(main$COMID)
+    return(ds_main$COMID)
   }
 }
 

@@ -1,6 +1,6 @@
 # NHDPlus Attributes
 COMID <- FEATUREID <-
-  Hydroseq <- DnHydroseq <- DnMinorHyd <- LevelPathI <-
+  Hydroseq <- DnHydroseq <- DnMinorHyd <- LevelPathI <- DnLevelPat <-
   ToNode <- FromNode <-
   TotDASqKM <- LENGTHKM <-
   Pathlength <- StreamCalc <- StreamOrde <- TerminalFl <-
@@ -54,7 +54,9 @@ assign("get_UM_attributes",
        envir = nhdplusTools_env)
 
 assign("get_DM_attributes",
-       c("COMID", "LENGTHKM", "DnHydroseq", "Hydroseq"),
+       c("COMID", "Pathlength", "LENGTHKM",
+         "LevelPathI", "DnLevelPat",
+         "DnHydroseq", "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("get_DD_attributes",

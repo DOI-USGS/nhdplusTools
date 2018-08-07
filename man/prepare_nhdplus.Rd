@@ -30,3 +30,4 @@ data.frame ready to be used with the refactor_flowlines function.
 \description{
 Function to prep NHDPlus data for network refactoring
 }
+\concept{refactor functions}

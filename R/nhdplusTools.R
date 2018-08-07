@@ -18,7 +18,7 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
-  index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-NULL
+  index <- measure <- nn.idx <- precision_index <- max_Hydroseq <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -140,14 +140,16 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' @param point An sf POINT including crs as created by:
 #' sf::st_sf(sf::st_point(..,..), crs)
 #' @param nldi_feature list with names `featureSource` and `featureID` where
-#' `featureSource` is derived from the
-#' \href{https://cida.usgs.gov/nldi/}{list here.} and the `featureSource` is
-#' a known identifier from the specified `featureSource`.
+#' `featureSource` is derived from the "source" column of  the response of
+#' discover_nldi_sources() and the `featureSource` is a known identifier
+#' from the specified `featureSource`.
 #' @return integer of catchment identifier COMID
 #' @export
 #' @examples
 #' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
 #' discover_nhdplus_id(point)
+#'
+#' discover_nldi_sources()
 #'
 #' nldi_huc12 <- list(featureSource = "huc12pp", featureID = "070700051701")
 #' discover_nhdplus_id(nldi_feature = nldi_huc12)
@@ -195,8 +197,11 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
                         collapse = ", ")))
     }
 
-    nldi <- query_nldi(nldi_feature[["featureSource"]],
-                       nldi_feature[["featureID"]])
+    if (is.null(nldi_feature[["tier"]])) nldi_feature[["tier"]] <- "prod"
+
+    nldi <- get_nldi_feature(nldi_feature[["featureSource"]],
+                             nldi_feature[["featureID"]],
+                             nldi_feature[["tier"]])
 
     return(as.integer(nldi$features$properties$comid))
 
@@ -239,29 +244,4 @@ get_ds_num_upstream <- function(flines) {
 get_ds_joined_fromCOMID <- function(flines) {
   flines <- mutate(flines, ds_joined_fromCOMID = joined_fromCOMID)
   flines[["ds_joined_fromCOMID"]][match(flines$toCOMID, flines$COMID)]
-}
-
-#' @importFrom httr GET
-#' @importFrom jsonlite fromJSON
-#' @noRd
-query_nldi <- function(f_source, f_id, tier = "prod") {
-  nldi_base_url <- get_nldi_url(tier)
-
-  url <- paste(nldi_base_url, f_source, f_id,
-               sep = "/")
-
-  c <- rawToChar(httr::GET(url)$content)
-
-  if (nchar(c) == 0) {
-    NULL
-  } else {
-    try(jsonlite::fromJSON(c), silent = FALSE)
-  }
-}
-
-#' @noRd
-get_nldi_url <- function(tier = "prod") {
-  if (tier == "prod") {
-    "https://cida.usgs.gov/nldi"
-  }
 }

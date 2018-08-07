@@ -2,6 +2,7 @@
 
 export(collapse_flowlines)
 export(discover_nhdplus_id)
+export(discover_nldi_sources)
 export(get_DD)
 export(get_DM)
 export(get_UM)

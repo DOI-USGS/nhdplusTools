@@ -1,4 +1,4 @@
-context("discover nhdplus id")
+context("nldi tests")
 
 test_that("nldi basics work", {
 
@@ -36,4 +36,16 @@ test_that("navigation works", {
                        distance_km = 50)
 
   expect(nrow(nav) > nrow(nav2))
+})
+
+test_that("basin works", {
+
+  nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
+
+  nav <- get_nldi_basin(nldi_feature = nldi_nwis)
+
+  expect("sf" %in% class(nav), "expected an sf data.frame")
+
+  expect("sfc_POLYGON" %in% class(sf::st_geometry(nav)),
+         "expected polygon response")
 })

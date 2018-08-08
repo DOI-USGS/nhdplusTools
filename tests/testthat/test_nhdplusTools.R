@@ -8,7 +8,7 @@ if (requireNamespace("lintr", quietly = TRUE)) {
 
 context("package setup")
 
-test_that("nhdplus_data_path sets and gets right", {
+test_that("nhdplus_data path sets and gets right", {
   expect_equal(nhdplus_path(), "../NHDPlusV21_National_Seamless.gdb")
 
   expect_equal(nhdplus_path("test", warn = FALSE), 0)

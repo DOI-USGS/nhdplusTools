@@ -1,6 +1,7 @@
 context("subset")
 
-test_that("prep_nhdplus runs as expected", {
+
+test_that("subset runs as expected", {
   unlink("data/temp/*")
 
   sample_data <- "data/sample_natseamless.gpkg"
@@ -21,7 +22,7 @@ test_that("prep_nhdplus runs as expected", {
 
   fi <- subset_nhdplus(comids = comids,
                  output_file = out_file,
-                 nhdplus_data_path = sample_data,
+                 nhdplus_data = sample_data,
                  status = FALSE)
 
   expect_equal(fi, out_file)
@@ -29,7 +30,7 @@ test_that("prep_nhdplus runs as expected", {
   expect_error(
     subset_nhdplus(comids = comids,
                    output_file = out_file,
-                   nhdplus_data_path = sample_data,
+                   nhdplus_data = sample_data,
                    overwrite = FALSE,
                    status = FALSE),
     "output_file exists and overwrite is false.")
@@ -57,7 +58,7 @@ test_that("prep_nhdplus runs as expected", {
 
   fi <- subset_nhdplus(comids = comids,
                        output_file = out_file,
-                       nhdplus_data_path = sample_data,
+                       nhdplus_data = sample_data,
                        overwrite = FALSE,
                        status = FALSE)
 
@@ -66,6 +67,15 @@ test_that("prep_nhdplus runs as expected", {
   unlink("data/temp/*")
 
   nhdplus_path("../NHDPlusV21_National_Seamless.gdb")
+
+  fi <- subset_nhdplus(comids = comids,
+                       output_file = out_file,
+                       nhdplus_data = "download",
+                       overwrite = FALSE,
+                       status = FALSE)
+
+  check_layers()
+
   })
 
 test_that("prep_nhdplus runs as expected", {

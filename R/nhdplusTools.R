@@ -110,7 +110,7 @@ assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 nhdplus_path <- function(path = NULL, warn = FALSE) {
   if (!is.null(path)) {
 
-    assign("nhdplus_data_path", path, envir = nhdplusTools_env)
+    assign("nhdplus_data", path, envir = nhdplusTools_env)
 
     if (warn) {
       warning("Path does not exist.")
@@ -122,7 +122,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
       stop("Path not set successfully.")
     }
   } else {
-      return(get("nhdplus_data_path", envir = nhdplusTools_env))
+      return(get("nhdplus_data", envir = nhdplusTools_env))
   }
 }
 

@@ -4,18 +4,19 @@
 \alias{subset_nhdplus}
 \title{Subset NHDPlus National Data}
 \usage{
-subset_nhdplus(comids, output_file, nhdplus_data_path = NULL,
+subset_nhdplus(comids, output_file, nhdplus_data = NULL,
   overwrite = FALSE, status = TRUE, intersection_crs = 5070)
 }
 \arguments{
 \item{comids}{integer vector of COMIDs to include.}
 
 \item{output_file}{character path to save the output to defaults
-to the directory of the nhdplus_data_path.}
+to the directory of the nhdplus_data.}
 
-\item{nhdplus_data_path}{character path to the .gpkg or .gdb containing
-the national seamless dataset. Not required if \code{\link{nhdplus_path}}
-has been set or the default has been adopted. See details for more.}
+\item{nhdplus_data}{character path to the .gpkg or .gdb containing
+the national seamless dataset or "download" to use web service.
+Not required if \code{\link{nhdplus_path}} has been set or the default
+has been adopted. See details for more.}
 
 \item{overwrite}{boolean should the output file be overwritten}
 
@@ -38,6 +39,10 @@ session, this function will use the staged national data automatically.
 This function relies on the National Seamless Geodatabase or Geopackage.
 It can be downloaded
 \href{https://www.epa.gov/waterdata/nhdplus-national-data}{here.}
+
+The "download" option of this function should be considered preliminary
+and subject to revision. It does not include as many layers and may not
+be available permenantly.
 }
 \examples{
 sample_data <- system.file("extdata/sample_natseamless.gpkg",
@@ -70,7 +75,7 @@ output_file <- "./demo_subset.gpkg"
 
 subset_nhdplus(comids = comids,
                output_file = output_file,
-               nhdplus_data_path = sample_data,
+               nhdplus_data = sample_data,
                overwrite = TRUE,
                status = TRUE,
                intersection_crs = sf::st_crs("+init=epsg:5070"))

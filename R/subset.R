@@ -3,10 +3,11 @@
 #' specified collection of catchments.
 #' @param comids integer vector of COMIDs to include.
 #' @param output_file character path to save the output to defaults
-#' to the directory of the nhdplus_data_path.
-#' @param nhdplus_data_path character path to the .gpkg or .gdb containing
-#' the national seamless dataset. Not required if \code{\link{nhdplus_path}}
-#' has been set or the default has been adopted. See details for more.
+#' to the directory of the nhdplus_data.
+#' @param nhdplus_data character path to the .gpkg or .gdb containing
+#' the national seamless dataset or "download" to use web service.
+#' Not required if \code{\link{nhdplus_path}} has been set or the default
+#' has been adopted. See details for more.
 #' @param overwrite boolean should the output file be overwritten
 #' @param status boolean should the function print status messages
 #' @param intersection_crs sf crs object or object that can be coerced to a
@@ -17,6 +18,10 @@
 #' This function relies on the National Seamless Geodatabase or Geopackage.
 #' It can be downloaded
 #' \href{https://www.epa.gov/waterdata/nhdplus-national-data}{here.}
+#'
+#' The "download" option of this function should be considered preliminary
+#' and subject to revision. It does not include as many layers and may not
+#' be available permenantly.
 #'
 #' @return path to the saved subset geopackage
 #' @export
@@ -51,7 +56,7 @@
 #'
 #' subset_nhdplus(comids = comids,
 #'                output_file = output_file,
-#'                nhdplus_data_path = sample_data,
+#'                nhdplus_data = sample_data,
 #'                overwrite = TRUE,
 #'                status = TRUE,
 #'                intersection_crs = sf::st_crs("+init=epsg:5070"))
@@ -67,7 +72,16 @@
 #' plot(waterbody[[attr(waterbody, "sf_column")]],
 #'      col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 #'
-subset_nhdplus <- function(comids, output_file, nhdplus_data_path = NULL,
+#' # Download Option:
+#' subset_nhdplus(comids = comids,
+#'                output_file = output_file,
+#'                nhdplus_data = "download",
+#'                overwrite = TRUE,
+#'                status = TRUE)
+#'
+#' sf::st_layers(output_file)
+#'
+subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
                            overwrite = FALSE, status = TRUE,
                            intersection_crs = 5070) {
 
@@ -81,9 +95,16 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data_path = NULL,
     unlink(output_file)
   }
 
-  if (is.null(nhdplus_data_path)) {
-    nhdplus_data_path <- nhdplus_path()
+  if (is.null(nhdplus_data)) {
+    nhdplus_data <- nhdplus_path()
   }
+
+  layer_name <- "NHDFlowline_Network"
+  if (status) message(paste("Reading", layer_name))
+
+  if (nhdplus_data == "download") {
+    fline <- get_nhdplus_byid(comids, tolower(layer_name))
+  } else {
 
   staged_data <- try(get("national_data",
                          envir = nhdplusTools_env),
@@ -96,12 +117,9 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data_path = NULL,
     fline_path <- staged_data$flowline
     catchment_path <- staged_data$catchment
   } else {
-    fline_path <- nhdplus_data_path
-    catchment_path <- nhdplus_data_path
+    fline_path <- nhdplus_data
+    catchment_path <- nhdplus_data
   }
-
-  layer_name <- "NHDFlowline_Network"
-  if (status) message(paste("Reading", layer_name))
 
   if (grepl("*.rds$", fline_path)) {
     fline <- readRDS(fline_path)
@@ -109,9 +127,11 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data_path = NULL,
     fline <- sf::read_sf(fline_path, layer_name)
   }
 
-  if (status) message(paste("Writing", layer_name))
-
   fline <- dplyr::filter(fline, COMID %in% comids)
+
+  }
+
+  if (status) message(paste("Writing", layer_name))
 
   sf::write_sf(fline, output_file, layer_name)
 
@@ -120,15 +140,21 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data_path = NULL,
   layer_name <- "CatchmentSP"
   if (status) message(paste("Reading", layer_name))
 
+  if (nhdplus_data == "download") {
+    catchment <- get_nhdplus_byid(comids, tolower(layer_name))
+  } else {
+
   if (grepl("*.rds$", catchment_path)) {
     catchment <- readRDS(catchment_path)
   } else {
     catchment <- sf::read_sf(catchment_path, layer_name)
   }
 
-  if (status) message(paste("Writing", layer_name))
-
   catchment <- dplyr::filter(catchment, FEATUREID %in% comids)
+
+  }
+
+  if (status) message(paste("Writing", layer_name))
 
   sf::write_sf(catchment, output_file, layer_name)
 
@@ -137,15 +163,28 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data_path = NULL,
 
   rm(catchment)
 
+  if (nhdplus_data == "download") {
+    layer_names <- c("NHDArea","NHDWaterbody")
+
+    for(layer_name in layer_names) {
+      sf::st_transform(envelope, 4326) %>%
+        get_nhdplus_bybox(layer = tolower(layer_name)) %>%
+        sf::write_sf(output_file, layer_name)
+    }
+
+  } else {
+
   intersection_names <- c("Gage", "Sink", "NHDArea",
                           "NHDWaterbody", "NHDFlowline_NonNetwork")
 
   invisible(lapply(intersection_names, intersection_write,
-                   data_path = nhdplus_data_path,
+                   data_path = nhdplus_data,
                    envelope = envelope,
                    output_file = output_file,
                    intersection_crs = intersection_crs,
                    status))
+
+  }
 
   return(output_file)
 }
@@ -172,8 +211,8 @@ intersection_write <- function(layer_name, data_path, envelope,
 #' @param include character vector containing one or more of:
 #' "attributes", "flowline", "catchment".
 #' @param output_path character path to save the output to defaults
-#' to the directory of the nhdplus_data_path.
-#' @param nhdplus_data_path character path to the .gpkg or .gdb
+#' to the directory of the nhdplus_data.
+#' @param nhdplus_data character path to the .gpkg or .gdb
 #' containing the national seamless dataset. Not required if
 #' \code{\link{nhdplus_path}} has been set.
 #' @details "attributes" will save `NHDFlowline_Network` attributes
@@ -197,25 +236,25 @@ stage_national_data <- function(include = c("attribute",
                                             "flowline",
                                             "catchment"),
                                 output_path = NULL,
-                                nhdplus_data_path = NULL) {
+                                nhdplus_data = NULL) {
 
   if (is.null(output_path)) {
     output_path <- dirname(nhdplus_path())
     warning(paste("No output path provided, using:", output_path))
   }
 
-  if (is.null(nhdplus_data_path)) {
-    nhdplus_data_path <- nhdplus_path()
+  if (is.null(nhdplus_data)) {
+    nhdplus_data <- nhdplus_path()
 
-    if (nhdplus_data_path == get("default_nhdplus_path",
+    if (nhdplus_data == get("default_nhdplus_path",
                                  envir = nhdplusTools_env) &
-        !file.exists(nhdplus_data_path)) {
+        !file.exists(nhdplus_data)) {
       stop(paste("Didn't find NHDPlus national data in default location:",
-                 nhdplus_data_path))
-    } else if (!file.exists(nhdplus_data_path)) {
+                 nhdplus_data))
+    } else if (!file.exists(nhdplus_data)) {
       stop(paste("Didn't find NHDPlus national data",
                  "in user specified location:",
-                 nhdplus_data_path))
+                 nhdplus_data))
     }
   }
 
@@ -235,7 +274,7 @@ stage_national_data <- function(include = c("attribute",
     out_path_flines <- file.path(output_path, "nhdplus_flowline.rds")
 
     if (!(file.exists(out_path_flines) | file.exists(out_path_attributes))) {
-      fline <- sf::st_zm(sf::read_sf(nhdplus_data_path,
+      fline <- sf::st_zm(sf::read_sf(nhdplus_data,
                                      "NHDFlowline_Network"))
     }
 
@@ -265,7 +304,7 @@ stage_national_data <- function(include = c("attribute",
     if (file.exists(out_path_catchments)) {
       warning("catchment already exists.")
     } else {
-      saveRDS(sf::st_zm(sf::read_sf(nhdplus_data_path, "CatchmentSP")),
+      saveRDS(sf::st_zm(sf::read_sf(nhdplus_data, "CatchmentSP")),
               out_path_catchments)
     }
     outlist["catchment"] <- out_path_catchments

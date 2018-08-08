@@ -5,16 +5,16 @@
 \title{Stage NHDPlus National Data}
 \usage{
 stage_national_data(include = c("attribute", "flowline", "catchment"),
-  output_path = NULL, nhdplus_data_path = NULL)
+  output_path = NULL, nhdplus_data = NULL)
 }
 \arguments{
 \item{include}{character vector containing one or more of:
 "attributes", "flowline", "catchment".}
 
 \item{output_path}{character path to save the output to defaults
-to the directory of the nhdplus_data_path.}
+to the directory of the nhdplus_data.}
 
-\item{nhdplus_data_path}{character path to the .gpkg or .gdb
+\item{nhdplus_data}{character path to the .gpkg or .gdb
 containing the national seamless dataset. Not required if
 \code{\link{nhdplus_path}} has been set.}
 }

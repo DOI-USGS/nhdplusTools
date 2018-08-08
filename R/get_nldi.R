@@ -134,9 +134,51 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
     query <- paste0(query, "?distance=", distance_km)
   }
 
-  sf::read_sf(query_nldi(query, tier = tier, parse_json = FALSE))
+  return(sf::read_sf(query_nldi(query, tier = tier, parse_json = FALSE)))
 
 }
+
+#' @title Get NLDI Basin Boundary
+#' @description Get a basin boundary for a given NLDI feature.
+#' @details Only resolves to the nearest NHDPlus catchment. See:
+#' https://owi.usgs.gov/blog/nldi-intro/ for more info on the nldi.
+#' @param nldi_feature list with names `featureSource` and `featureID` where
+#' `featureSource` is derived from the "source" column of  the response of
+#' discover_nldi_sources() and the `featureSource` is a known identifier
+#' from the specified `featureSource`.
+#' @param tier character optional "prod" or "test"
+#' @return sf data.frame with result basin boundary
+#' @export
+#' @examples
+#'
+#' library(sf)
+#' library(dplyr)
+#'
+#' discover_nldi_sources()
+#'
+#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
+#'
+#' basin <- get_nldi_basin(nldi_feature = nldi_nwis)
+#'
+#' basin %>%
+#'  st_geometry() %>%
+#'  plot()
+#'
+#'  basin
+#'
+get_nldi_basin <- function(nldi_feature,
+                          tier = "prod") {
+
+  query <- paste(nldi_feature[["featureSource"]],
+                 nldi_feature[["featureID"]],
+                 "basin",
+                 sep = "/")
+
+  return(sf::read_sf(query_nldi(query, tier = tier, parse_json = FALSE)))
+
+}
+
+
 
 #' @noRd
 get_nldi_feature <- function(f_source, f_id, tier = "prod") {

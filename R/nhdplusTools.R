@@ -187,15 +187,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 
   } else if (!is.null(nldi_feature)) {
 
-    expect_names <- c("featureSource", "featureID")
-    if (!all(expect_names %in%
-            names(nldi_feature))) {
-      stop(paste0("Missing some required input for NLDI. ",
-                  "Expected: ",
-                  paste(expect_names[which(!(expect_names %in%
-                                               names(nldi_feature)))],
-                        collapse = ", ")))
-    }
+    check_nldi_feature(nldi_feature)
 
     if (is.null(nldi_feature[["tier"]])) nldi_feature[["tier"]] <- "prod"
 

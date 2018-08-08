@@ -138,7 +138,8 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
                            split_geometry = sf::st_sfc(split_lines,
                                                  crs = input_crs))
 
-  names(split_lines)[which(names(split_lines) == "split_geometry")] <- geom_column
+  names(split_lines)[which(names(split_lines) ==
+                             "split_geometry")] <- geom_column
   attr(split_lines, "sf_column") <- geom_column
 
   return(split_lines)

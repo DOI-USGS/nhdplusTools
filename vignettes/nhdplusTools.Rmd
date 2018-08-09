@@ -118,7 +118,7 @@ UT_comids <- get_UT(flowline, start_comid)
 UT_comids
 ```
 
-If you are familiar with the NHDPlus, you will recognize that now that we have this list of COMIDs, we could go off and do all sorts of things with the various flowline attribtues. For now, let's just use the COMID list to filter our `fline` `sf` `data.frame` and plot it with our other layers.
+If you are familiar with the NHDPlus, you will recognize that now that we have this list of COMIDs, we could go off and do all sorts of things with the various flowline attributes. For now, let's just use the COMID list to filter our `fline` `sf` `data.frame` and plot it with our other layers.
 
 ```{r plot_fline_subset}
 plot(flowline[[geom_col]])
@@ -127,15 +127,14 @@ plot(dplyr::filter(flowline, COMID %in% UT_comids)[[geom_col]],
      add=TRUE, col = "red", lwd = 2)
 ```
 
-Say you want to save the network subset for later use in R or in some other GIS. The `subset_nhdplus() function is your friend.
+Say you want to save the network subset for later use in R or in some other GIS. The `subset_nhdplus() function is your friend. If you have the whole national seamless database downloaded, you can pull out large subsets of it like shown below. If you don't have the whole national seamless, look at the second example in this section.
 
 ```{r subset_nhdplus}
 output_file <- "./data_dir/subset.gpkg"
 
 output_file <-subset_nhdplus(comids = UT_comids,
                              output_file = output_file,
-                             nhdplus_data = nhdplus_path(),
-                             intersection_crs = sf::st_crs("+init=epsg:5070"))
+                             nhdplus_data = nhdplus_path())
 
 sf::st_layers(output_file)
 ```
@@ -153,6 +152,21 @@ plot(dplyr::filter(flowline, COMID %in% UT_comids)[[geom_col]],
 plot(catchment[[geom_col]], add = TRUE)
 plot(waterbody[[geom_col]], col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 ```
+
+If you only need a few thousand or less catchments, we can set the `nhdplus_data` input of `subset_nhdplus` to "download" to try and download the data from a web feature service.
+
+```{r subset_nhdplus_download}
+output_file_download <- "./data_dir/subset_download.gpkg"
+
+output_file_download <-subset_nhdplus(comids = UT_comids,
+                             output_file = output_file_download,
+                             nhdplus_data = "download")
+
+sf::st_layers(output_file_download)
+```
+
+Notice that this only has four layers where the subset above has a few more. This functionality should be considered beta in nature, but may be useful for some applications so has been included.
+
 <a id="indexing"></a>
 
 ## Indexing

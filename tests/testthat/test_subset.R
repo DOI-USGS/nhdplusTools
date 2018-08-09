@@ -2,6 +2,13 @@ context("subset")
 
 
 test_that("subset runs as expected", {
+
+  nhdplus_path("borked")
+
+  expect_error(subset_nhdplus(1234567,
+                              output_file = "borked.gpkg"),
+               "couldn't find nhdplus data")
+
   unlink("data/temp/*")
 
   sample_data <- "data/sample_natseamless.gpkg"
@@ -41,7 +48,7 @@ test_that("subset runs as expected", {
                          overwrite = TRUE,
                          status = TRUE))
 
-  expect_equal(length(messages), 14)
+  expect_equal(length(messages), 15)
 
   check_layers <- function() {
     expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 167)

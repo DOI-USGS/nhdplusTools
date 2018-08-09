@@ -28,7 +28,7 @@ test_that("get_nhdplus_bybox", {
 
   layers <- c("nhdarea", "nhdwaterbody")
 
-  for(layer in layers) {
+  for (layer in layers) {
     l <- get_nhdplus_bybox(bbox, layer)
     expect(nrow(l) > 1, "expected to get data")
     expect("sf" %in% class(l))

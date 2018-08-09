@@ -5,7 +5,7 @@
 \title{Subset NHDPlus National Data}
 \usage{
 subset_nhdplus(comids, output_file, nhdplus_data = NULL,
-  overwrite = FALSE, status = TRUE, intersection_crs = 5070)
+  overwrite = FALSE, status = TRUE)
 }
 \arguments{
 \item{comids}{integer vector of COMIDs to include.}
@@ -21,9 +21,6 @@ has been adopted. See details for more.}
 \item{overwrite}{boolean should the output file be overwritten}
 
 \item{status}{boolean should the function print status messages}
-
-\item{intersection_crs}{sf crs object or object that can be coerced to a
-crs object by sf::st_crs()}
 }
 \value{
 path to the saved subset geopackage
@@ -77,8 +74,7 @@ subset_nhdplus(comids = comids,
                output_file = output_file,
                nhdplus_data = sample_data,
                overwrite = TRUE,
-               status = TRUE,
-               intersection_crs = sf::st_crs("+init=epsg:5070"))
+               status = TRUE)
 
 sf::st_layers(output_file)
 
@@ -90,5 +86,14 @@ waterbody <- sf::read_sf(output_file, "NHDWaterbody")
 
 plot(waterbody[[attr(waterbody, "sf_column")]],
      col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
+
+# Download Option:
+subset_nhdplus(comids = comids,
+               output_file = output_file,
+               nhdplus_data = "download",
+               overwrite = TRUE,
+               status = TRUE)
+
+sf::st_layers(output_file)
 
 }

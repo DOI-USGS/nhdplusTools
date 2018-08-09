@@ -10,8 +10,6 @@
 #' has been adopted. See details for more.
 #' @param overwrite boolean should the output file be overwritten
 #' @param status boolean should the function print status messages
-#' @param intersection_crs sf crs object or object that can be coerced to a
-#' crs object by sf::st_crs()
 #' @details If \code{\link{stage_national_data}} has been run in the current
 #' session, this function will use the staged national data automatically.
 #'
@@ -58,8 +56,7 @@
 #'                output_file = output_file,
 #'                nhdplus_data = sample_data,
 #'                overwrite = TRUE,
-#'                status = TRUE,
-#'                intersection_crs = sf::st_crs("+init=epsg:5070"))
+#'                status = TRUE)
 #'
 #' sf::st_layers(output_file)
 #'
@@ -82,8 +79,9 @@
 #' sf::st_layers(output_file)
 #'
 subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
-                           overwrite = FALSE, status = TRUE,
-                           intersection_crs = 5070) {
+                           overwrite = FALSE, status = TRUE) {
+
+  if (status) message("All intersections performed in latitude/longitude.")
 
   if (!grepl("*.gpkg$", output_file)) {
     stop("output_file must end in '.gpkg'")
@@ -103,6 +101,11 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
   if (status) message(paste("Reading", layer_name))
 
   if (nhdplus_data == "download") {
+
+    if(length(comids) > 3000) {
+      warning("Download functionality not tested for this many comids")
+    }
+
     fline <- get_nhdplus_byid(comids, tolower(layer_name))
   } else {
 
@@ -110,15 +113,18 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
                          envir = nhdplusTools_env),
                      silent = TRUE)
 
-  if (is.list(staged_data) &
-      all(c("flowline", "catchment") %in% names(staged_data)) &
-      file.exists(staged_data$flowline) &
-      file.exists(staged_data$catchment)) {
-    fline_path <- staged_data$flowline
-    catchment_path <- staged_data$catchment
+  if (is.list(staged_data)) {
+    if (all(c("flowline", "catchment") %in% names(staged_data)) &
+        file.exists(staged_data$flowline) &
+        file.exists(staged_data$catchment)) {
+      fline_path <- staged_data$flowline
+      catchment_path <- staged_data$catchment
+    } else {
+      fline_path <- nhdplus_data
+      catchment_path <- nhdplus_data
+    }
   } else {
-    fline_path <- nhdplus_data
-    catchment_path <- nhdplus_data
+    stop("couldn't find nhdplus data")
   }
 
   if (grepl("*.rds$", fline_path)) {
@@ -159,14 +165,14 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
   sf::write_sf(catchment, output_file, layer_name)
 
   envelope <- sf::st_transform(sf::st_as_sfc(sf::st_bbox(catchment)),
-                               intersection_crs)
+                               4326)
 
   rm(catchment)
 
   if (nhdplus_data == "download") {
-    layer_names <- c("NHDArea","NHDWaterbody")
+    layer_names <- c("NHDArea", "NHDWaterbody")
 
-    for(layer_name in layer_names) {
+    for (layer_name in layer_names) {
       sf::st_transform(envelope, 4326) %>%
         get_nhdplus_bybox(layer = tolower(layer_name)) %>%
         sf::write_sf(output_file, layer_name)
@@ -181,7 +187,6 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
                    data_path = nhdplus_data,
                    envelope = envelope,
                    output_file = output_file,
-                   intersection_crs = intersection_crs,
                    status))
 
   }
@@ -190,16 +195,14 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
 }
 
 intersection_write <- function(layer_name, data_path, envelope,
-                               output_file, intersection_crs,
-                               status) {
+                               output_file, status) {
 
   if (status) message(paste("Reading", layer_name))
   layer <- sf::st_zm(sf::read_sf(data_path, layer_name))
 
   if (status) message(paste("Writing", layer_name))
-  intersection_test <- sf::st_intersects(sf::st_transform(layer,
-                                                          intersection_crs),
-                                         envelope)
+  intersection_test <- suppressMessages(sf::st_intersects(
+    sf::st_transform(layer, 4326), envelope))
 
   sf::write_sf(dplyr::filter(layer, lengths(intersection_test) > 0),
                output_file, layer_name)

@@ -3,13 +3,15 @@ get_nhdplus_byid <- function(comids, layer) {
 
   id_name <- list(catchmentsp = "featureid", nhdflowline_network = "comid")
 
-  if(!any(names(id_name) %in% layer)) {
+  if (!any(names(id_name) %in% layer)) {
     stop(paste("Layer must be one of",
                paste(names(id_name),
                      collapse = ", ")))
   }
 
   post_url <- "https://cida.usgs.gov/nwc/geoserver/nhdplus/ows"
+
+  # nolint start
 
   filter_1 <- paste0('<?xml version="1.0"?>',
                      '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
@@ -40,6 +42,8 @@ get_nhdplus_byid <- function(comids, layer) {
 
   filter_xml <- paste0(filter_1, paste0(comids, collapse = filter_2), filter_3)
 
+  # nolint end
+
   c <- httr::POST(post_url, body = filter_xml)
 
   return(sf::read_sf(rawToChar(c$content)))
@@ -58,9 +62,11 @@ get_nhdplus_bybox <- function(box, layer) {
 
   bbox <- sf::st_bbox(sf::st_transform(box, 4326))
 
-  postURL <- "https://cida.usgs.gov/nwc/geoserver/nhdplus/ows"
+  post_url <- "https://cida.usgs.gov/nwc/geoserver/nhdplus/ows"
 
-  filterXML <- paste0('<?xml version="1.0"?>',
+  # nolint start
+
+  filter_xml <- paste0('<?xml version="1.0"?>',
                       '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
                       '<wfs:Query xmlns:feature="http://gov.usgs.cida/nhdplus" typeName="feature:',
                       layer, '" srsName="EPSG:4326">',
@@ -76,7 +82,9 @@ get_nhdplus_bybox <- function(box, layer) {
                       '</wfs:Query>',
                       '</wfs:GetFeature>')
 
-  c <- httr::POST(postURL, body = filterXML)
+  # nolint end
+
+  c <- httr::POST(post_url, body = filter_xml)
 
   return(sf::read_sf(rawToChar(c$content)))
 

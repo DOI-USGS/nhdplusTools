@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Discover NHDPlus ID — discover_nhdplus_id • nhdplusTools</title>
+<title>Get NLDI Basin Boundary — get_nldi_basin • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Discover NHDPlus ID — discover_nhdplus_id" />
+<meta property="og:title" content="Get NLDI Basin Boundary — get_nldi_basin" />
 
-<meta property="og:description" content="Multipurpose function to find a COMID of interest." />
+<meta property="og:description" content="Get a basin boundary for a given NLDI feature." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -118,27 +118,22 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Discover NHDPlus ID</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
-    <div class="hidden name"><code>discover_nhdplus_id.Rd</code></div>
+    <h1>Get NLDI Basin Boundary</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/get_nldi.R'><code>R/get_nldi.R</code></a></small>
+    <div class="hidden name"><code>get_nldi_basin.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Multipurpose function to find a COMID of interest.</p>
+    <p>Get a basin boundary for a given NLDI feature.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>discover_nhdplus_id</span>(<span class='kw'>point</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>get_nldi_basin</span>(<span class='no'>nldi_feature</span>, <span class='kw'>tier</span> <span class='kw'>=</span> <span class='st'>"prod"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>point</th>
-      <td><p>An sf POINT including crs as created by:
-sf::st_sf(sf::st_point(..,..), crs)</p></td>
-    </tr>
     <tr>
       <th>nldi_feature</th>
       <td><p>list with names `featureSource` and `featureID` where
@@ -146,16 +141,31 @@ sf::st_sf(sf::st_point(..,..), crs)</p></td>
 discover_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.</p></td>
     </tr>
+    <tr>
+      <th>tier</th>
+      <td><p>character optional "prod" or "test"</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>integer of catchment identifier COMID</p>
+    <p>sf data.frame with result basin boundary</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Only resolves to the nearest NHDPlus catchment. See:
+https://owi.usgs.gov/blog/nldi-intro/ for more info on the nldi.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>point</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/sfc'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st'>st_point</a></span>(<span class='fu'>c</span>(-<span class='fl'>76.87479</span>, <span class='fl'>39.48233</span>)), <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
-<span class='fu'>discover_nhdplus_id</span>(<span class='no'>point</span>)</div><div class='output co'>#&gt; [1] 11689978</div><div class='input'>
+    <pre class="examples"><div class='input'>
+<span class='fu'>library</span>(<span class='no'>sf</span>)
+<span class='fu'>library</span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'>
 <span class='fu'><a href='discover_nldi_sources.html'>discover_nldi_sources</a></span>()</div><div class='output co'>#&gt;      source
 #&gt; 1     comid
 #&gt; 2   huc12pp
@@ -174,10 +184,21 @@ from the specified `featureSource`.</p></td>
 #&gt; 3 https://cida.usgs.gov/nldi/npdes_rad
 #&gt; 4  https://cida.usgs.gov/nldi/nwissite
 #&gt; 5       https://cida.usgs.gov/nldi/wqp</div><div class='input'>
-<span class='no'>nldi_huc12</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"huc12pp"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"070700051701"</span>)
-<span class='fu'>discover_nhdplus_id</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_huc12</span>)</div><div class='output co'>#&gt; [1] 13637491</div><div class='input'>
 <span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-08279500"</span>)
-<span class='fu'>discover_nhdplus_id</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>)</div><div class='output co'>#&gt; [1] 17864756</div><div class='input'>
+
+<span class='no'>basin</span> <span class='kw'>&lt;-</span> <span class='fu'>get_nldi_basin</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>)
+
+<span class='no'>basin</span> <span class='kw'>%&gt;%</span>
+ <span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
+ <span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>()</div><div class='img'><img src='get_nldi_basin-1.png' alt='' width='700' height='433' /></div><div class='input'>
+ <span class='no'>basin</span></div><div class='output co'>#&gt; Simple feature collection with 1 feature and 0 fields
+#&gt; geometry type:  POLYGON
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: -107.5595 ymin: 35.97227 xmax: -105.1297 ymax: 37.9747
+#&gt; epsg (SRID):    4326
+#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs
+#&gt;                         geometry
+#&gt; 1 POLYGON ((-105.9964 36.1905...</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -186,6 +207,8 @@ from the specified `featureSource`.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

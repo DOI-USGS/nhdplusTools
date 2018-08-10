@@ -1,8 +1,11 @@
 ---
 title: "Plotting with nhdplusTools"
 author: "dblodgett@usgs.gov"
-date: "8/9/2018"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkgdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}

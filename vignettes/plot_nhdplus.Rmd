@@ -133,6 +133,8 @@ prettymapr::prettymap({
 }, drawarrow = TRUE)
 ``` 
 
+## Plotting with ggplot2
+
 Below is a very similar example using [`ggmap`](https://github.com/dkahle/ggmap) and [`ggplot2` `geom_sf`](https://ggplot2.tidyverse.org/reference/ggsf.html). Note that ggmap takes case of projections for us, which should either make you happy because it _just works_ or very nervous because it _just works_. 
 
 ```{r ggmap}

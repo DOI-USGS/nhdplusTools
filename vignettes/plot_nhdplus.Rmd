@@ -1,0 +1,169 @@
+---
+title: "Plotting with nhdplusTools"
+author: "dblodgett@usgs.gov"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkgdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=6, 
+  fig.height=4
+)
+options(scipen = 9999)
+```
+```{r data_dir_setup, echo=FALSE, include=FALSE}
+dir.create("./data_dir")
+```
+
+# Plotting with nhdplusTools
+
+The goal of this vignette is to demonstrate a simple and lightweight approach to building maps with NHDPlus data. 
+
+## Getting Data
+
+For this example, we'll start from an outlet NWIS Site. Note that other options are possible with `discover_nhdplus_id` and `discover_nldi_sources`.
+
+```{r get data}
+library(sf)
+library(nhdplusTools)
+nwissite <- list(featureSource = "nwissite", 
+                     featureID = "USGS-05428500")
+
+flowline <- navigate_nldi(nwissite, 
+                          mode = "upstreamTributaries", 
+                          data_source = "")
+
+nhdplus <- subset_nhdplus(comids = flowline$nhdplus_comid,
+                          output_file = "./data_dir/nhdplus.gpkg",
+                          nhdplus_data = "download",
+                          overwrite = TRUE)
+
+flowline <- read_sf(nhdplus, "NHDFlowline_Network")
+
+upstream_nwis <- navigate_nldi(nwissite,
+                               mode = "upstreamTributaries",
+                               data_source = "nwissite")
+
+basin <- get_nldi_basin(nwissite)
+```
+
+Now we have a file at the path held in the variable `nhdplus` and three `sf` `data.frame`s with contents that look like:
+
+```{r introspect} 
+st_layers(nhdplus)
+names(flowline)
+names(upstream_nwis)
+names(basin)
+class(st_geometry(flowline))
+class(st_geometry(upstream_nwis))
+class(st_geometry(basin))
+```
+
+Our file has four layers: network flowlines, simplified catchments, nhd area features, and nhd waterbody features. 
+
+The flowlines have a large set of attributes from the NHDPlus dataset. And the nwis sites have a few attributes that came from the NLDI. Attributes for NWIS sites can be found using the [dataRetrieval package.](https://owi.usgs.gov/R/dataRetrieval.html)
+
+See the NHDPlus user guide [linked here](https://www.epa.gov/waterdata/learn-more#Documentation) for more on what these layers are and what the flowline attributes entail.
+
+# Bounding Boxes
+
+First, a side note on bounding boxes. With the ongoing transition from the `sp` package to the `sf` package, there are a few stumbling blocks. Bounding boxes are one of them. As shown below, the `sf` bbox format is a named vector of class "bbox". The `sp` bbox format is a matrix with named dimensions. Many packages expect the sp format. the `ggmap` package expects yet another bbox format, much like `sf` but with different names. 
+
+```{r bbox, message=FALSE}
+sf_bbox <- st_bbox(basin)
+sf_bbox
+class(sf_bbox)
+
+sp_bbox <- sp::bbox(sf::as_Spatial(basin))
+sp_bbox
+class(sp_bbox)
+
+# Or without the sp::bbox
+sp_bbox <- matrix(sf_bbox, 
+                  byrow = FALSE, 
+                  ncol = 2, 
+                  dimnames = list(c("x", "y"), 
+                                  c("min", "max")))
+sp_bbox
+
+ggmap_bbox <- setNames(sf_bbox, c("left", "bottom", "right", "top"))
+ggmap_bbox
+```
+
+## Base R Plotting 
+
+In order to maximize flexibility and make sure we understand what's going on with coordinate reference systems, the demonstration below shows how to use base R plotting with the package `prettymappr` and `rosm`. 
+
+In this example, we have to plot just the geometry, extracted with `st_geometry` and we need to project the geometry into the plotting coordinate reference system, [EPSG:3857 also known as "web mercator"](https://en.wikipedia.org/wiki/Web_Mercator). The reason we have to make this transformation is that practically all basemap tiles are in this projection and reprojection of pre-rendered tiles doesn't look good. We do this with a simple `prep_layer` function.
+
+The `prettymapr::prettymap()` function isn't strictly necessary, but it gives us nice margins, a scale bar, and a north arrow. The `rosm::osm.plot` and base `plot` commands put data onto the R plotting device so the first to be plotted is on the bottom. A couple hints here. `lwd` is line width. `pch` is point style. `cex` is an expansion factor. Colors shown below are [basic R colors.](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) the `rgb` function is handy for creating colors with transparency if that's of interest.
+
+```{r plot}
+prep_layer <- function(x) st_geometry(st_transform(x, 3857))
+
+prettymapr::prettymap({
+  rosm::osm.plot(sp_bbox, type = "stamenwatercolor", quiet = TRUE)
+  
+  plot(prep_layer(basin), 
+       lwd = 2, add = TRUE)
+  
+  plot(prep_layer(flowline), 
+       lwd = 1.5, col = "deepskyblue", add = TRUE)
+  
+  plot(prep_layer(dplyr::filter(flowline, streamorde > 2)), 
+       lwd = 3, col = "darkblue", add = TRUE)
+  
+  us_nwis_layer <- prep_layer(upstream_nwis)
+  
+  plot(us_nwis_layer, 
+       pch = 17, cex = 1.5, col = "yellow", add = TRUE)
+  
+  label_pos <- st_coordinates(us_nwis_layer)
+  
+  text(label_pos[,1],label_pos[,2], 
+       upstream_nwis$identifier, 
+       adj = c(-0.2, 0.5), cex = 0.7)
+  
+}, drawarrow = TRUE)
+``` 
+
+Below is a very similar example using [`ggmap`](https://github.com/dkahle/ggmap) and [`ggplot2` `geom_sf`](https://ggplot2.tidyverse.org/reference/ggsf.html). Note that ggmap takes case of projections for us, which should either make you happy because it _just works_ or very nervous because it _just works_. 
+
+```{r ggmap}
+library(ggmap)
+library(ggplot2)
+
+upstream_nwis[c("lon", "lat")] <- sf::st_coordinates(upstream_nwis)
+
+basemap_streets <- get_map(maptype = "roadmap", location = ggmap_bbox, zoom = 11)
+basemap_satellite <- get_map(maptype = "satellite", location = ggmap_bbox, zoom = 11)
+street_map <- ggmap(basemap_streets)
+satellite_map <- ggmap(basemap_satellite)
+
+street_map
+
+satellite_map + geom_sf(data = basin,
+                        inherit.aes = FALSE,
+                        color = "white", fill = NA) + 
+  geom_sf(data = flowline,
+          inherit.aes = FALSE,
+          color = "deepskyblue") +
+  geom_sf(data = dplyr::filter(flowline, streamorde > 2),
+          inherit.aes = FALSE,
+          color = "darkblue") +
+  geom_sf(data = upstream_nwis, inherit.aes = FALSE, color = "red") + 
+  geom_text(data = upstream_nwis, aes(label = identifier, x = lon, y = lat),
+            hjust = 0, size=2.5, nudge_x = 0.02, col = "yellow")
+```
+
+Hopefully these examples give a good head start to plotting NHDPlus data. Please submit questions via github issues for more!! Pull requests on this vignette are more than welcome if you have additions or suggestions.
+
+```{r cleanup, echo = FALSE} 
+unlink("data_dir", recursive = T)
+```

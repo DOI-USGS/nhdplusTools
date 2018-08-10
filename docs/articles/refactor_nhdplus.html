@@ -55,6 +55,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
+    </li>
+    <li>
       <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
     </li>
     <li>
@@ -83,9 +86,8 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>NHDPlus Refactor</h1>
-                        <h4 class="author">David Blodgett</h4>
+                        <h4 class="author"><a href="mailto:dblodgett@usgs.gov">dblodgett@usgs.gov</a></h4>
             
-            <h4 class="date">2018-07-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/vignettes/refactor_nhdplus.Rmd"><code>vignettes/refactor_nhdplus.Rmd</code></a></small>
       <div class="hidden name"><code>refactor_nhdplus.Rmd</code></div>
@@ -104,30 +106,30 @@
 <h2 class="hasAnchor">
 <a href="#network-preparation" class="anchor"></a>Network Preparation</h2>
 <p>Prior to summarizing the network, some NHDPlus conditioning can be performed. The following function removes coastal and non-dendritic flowlines. It can also remove networks with an outlet drainage area under a threshold or a longest path length under a threshold, but those inputs are set to 0 such that all networks are included here. Note that this is especially important when running the whole country – little change is applied to network subsets that follow the network upstream with tributaries.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nhdplus_flines &lt;-<span class="st"> </span>nhdplusTools<span class="op">::</span>sample_flines
-min_network_size &lt;-<span class="st"> </span><span class="dv">0</span>
-min_path_length &lt;-<span class="st"> </span><span class="dv">0</span>
-flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare_nhdplus.html">prepare_nhdplus</a></span>(<span class="kw">st_set_geometry</span>(nhdplus_flines, <span class="ot">NULL</span>), 
-                          min_network_size, 
-                          min_path_length)
-<span class="co">#&gt; Warning in prepare_nhdplus(st_set_geometry(nhdplus_flines, NULL), min_network_size, : Removed 10 flowlines that don't apply.</span>
-<span class="co">#&gt;  Includes: Coastlines, non-dendritic paths, </span>
-<span class="co">#&gt; and networks with drainage area less than 0 sqkm</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">nhdplus_flines &lt;-<span class="st"> </span>nhdplusTools<span class="op">::</span>sample_flines</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">min_network_size &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">min_path_length &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare_nhdplus.html">prepare_nhdplus</a></span>(<span class="kw">st_set_geometry</span>(nhdplus_flines, <span class="ot">NULL</span>), </a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">                          min_network_size, </a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">                          min_path_length)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; Warning in prepare_nhdplus(st_set_geometry(nhdplus_flines, NULL), min_network_size, : Removed 10 flowlines that don't apply.</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt;  Includes: Coastlines, non-dendritic paths, </span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt; and networks with drainage area less than 0 sqkm</span></a></code></pre></div>
 <p>The following histograms and plots show characteristics of the NHDPlusV2 network flowline lengths. <img src="refactor_nhdplus_files/figure-html/nhdplus-1.png" width="576"><img src="refactor_nhdplus_files/figure-html/nhdplus-2.png" width="576"><img src="refactor_nhdplus_files/figure-html/nhdplus-3.png" width="576"><img src="refactor_nhdplus_files/figure-html/nhdplus-4.png" width="576"><img src="refactor_nhdplus_files/figure-html/nhdplus-5.png" width="576"></p>
 </div>
 <div id="refactor_nhdplus-function" class="section level2">
 <h2 class="hasAnchor">
 <a href="#refactor_nhdplus-function" class="anchor"></a>refactor_nhdplus function</h2>
 <p>The complete refactor workflow has been packaged into a single function that can be called as shown below. For the purposes of demonstration this function is not used and individual package functions called by it are shown.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Not Run ##
-<span class="kw"><a href="../reference/refactor_nhdplus.html">refactor_nhdplus</a></span>(<span class="dt">nhdplus_flines =</span> nhdplus_flines,
-                 <span class="dt">split_flines_meters =</span> <span class="dv">2000</span>, 
-                 <span class="dt">split_flines_cores =</span> <span class="dv">3</span>,
-                 <span class="dt">collapse_flines_meters =</span> <span class="dv">500</span>, 
-                 <span class="dt">collapse_flines_main_meters =</span> <span class="dv">500</span>,
-                 <span class="dt">out_collapsed =</span> <span class="st">"nhdplus_collapsed.gpkg"</span>,
-                 <span class="dt">out_reconciled =</span> <span class="st">"nhdplus_reconciled.gpkg"</span>,
-                 <span class="dt">three_pass =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">## Not Run ##</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="../reference/refactor_nhdplus.html">refactor_nhdplus</a></span>(<span class="dt">nhdplus_flines =</span> nhdplus_flines,</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">                 <span class="dt">split_flines_meters =</span> <span class="dv">2000</span>, </a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">                 <span class="dt">split_flines_cores =</span> <span class="dv">3</span>,</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">                 <span class="dt">collapse_flines_meters =</span> <span class="dv">500</span>, </a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">                 <span class="dt">collapse_flines_main_meters =</span> <span class="dv">500</span>,</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">                 <span class="dt">out_collapsed =</span> <span class="st">"nhdplus_collapsed.gpkg"</span>,</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">                 <span class="dt">out_reconciled =</span> <span class="st">"nhdplus_reconciled.gpkg"</span>,</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">                 <span class="dt">three_pass =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>The inputs to this are:</p>
 <ul>
 <li>nhdplus_flines: raw nhdplus flowline features as derived from the national seamless geodatabase.</li>
@@ -144,16 +146,16 @@ flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prep
 <h2 class="hasAnchor">
 <a href="#split-flowlines" class="anchor"></a>Split flowlines</h2>
 <p>The split_flowlines feature requires flowlines with geometry but for performance reasons, the prep_nhdplus function works with attributes only. The code below, joins the geometry back, coerces it to the required geometry type, and projects it to a projection suited to distance measurement at the contental scale of NHDPlus. It then executes the split_flowlines function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flines &lt;-<span class="st"> </span><span class="kw">inner_join</span>(flines, <span class="kw">select</span>(nhdplus_flines, COMID), <span class="dt">by =</span> <span class="st">"COMID"</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">st_cast</span>(<span class="st">"LINESTRING"</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">st_transform</span>(<span class="dv">5070</span>)
-<span class="co">#&gt; Warning in st_cast.sf(., "LINESTRING"): repeating attributes for all sub-</span>
-<span class="co">#&gt; geometries for which they may not be constant</span>
-
-flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/split_flowlines.html">split_flowlines</a></span>(flines, 
-                          <span class="dt">max_length =</span> <span class="dv">2000</span>, 
-                          <span class="dt">para =</span> <span class="dv">3</span>)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">flines &lt;-<span class="st"> </span><span class="kw">inner_join</span>(flines, <span class="kw">select</span>(nhdplus_flines, COMID), <span class="dt">by =</span> <span class="st">"COMID"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">    </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">    </span><span class="kw">st_cast</span>(<span class="st">"LINESTRING"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">    </span><span class="kw">st_transform</span>(<span class="dv">5070</span>)</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt; Warning in st_cast.sf(., "LINESTRING"): repeating attributes for all sub-</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt; geometries for which they may not be constant</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/split_flowlines.html">split_flowlines</a></span>(flines, </a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">                          <span class="dt">max_length =</span> <span class="dv">2000</span>, </a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">                          <span class="dt">para =</span> <span class="dv">3</span>)</a></code></pre></div>
 <p><img src="refactor_nhdplus_files/figure-html/split_plots-1.png" width="576"></p>
 <p>As can be seen here, <code>split_flowlines</code> breaks long flowlines into equal length pieces, which results in the new distribution of flowline lengths shown.</p>
 </div>
@@ -161,60 +163,60 @@ flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/spli
 <h2 class="hasAnchor">
 <a href="#collapse-flowlines" class="anchor"></a>Collapse Flowlines</h2>
 <p>Now we can collapse very short flowlines.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">collapse_flines_meters &lt;-<span class="st"> </span><span class="dv">500</span>
-collapse_flines_main_meters &lt;-<span class="st"> </span><span class="dv">500</span>
-collapsed_flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/collapse_flowlines.html">collapse_flowlines</a></span>(<span class="kw">st_set_geometry</span>(flines, <span class="ot">NULL</span>),
-                                           (<span class="fl">0.25</span><span class="op">*</span>collapse_flines_meters<span class="op">/</span><span class="dv">1000</span>),
-                                           <span class="ot">TRUE</span>,
-                                           (<span class="fl">0.25</span><span class="op">*</span>collapse_flines_main_meters<span class="op">/</span><span class="dv">1000</span>))</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">collapse_flines_meters &lt;-<span class="st"> </span><span class="dv">500</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">collapse_flines_main_meters &lt;-<span class="st"> </span><span class="dv">500</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">collapsed_flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/collapse_flowlines.html">collapse_flowlines</a></span>(<span class="kw">st_set_geometry</span>(flines, <span class="ot">NULL</span>),</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">                                           (<span class="fl">0.25</span><span class="op">*</span>collapse_flines_meters<span class="op">/</span><span class="dv">1000</span>),</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">                                           <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">                                           (<span class="fl">0.25</span><span class="op">*</span>collapse_flines_main_meters<span class="op">/</span><span class="dv">1000</span>))</a></code></pre></div>
 <p><img src="refactor_nhdplus_files/figure-html/collapse1_secret-1.png" width="576"> As can be seen here, some collapsed flowlines extend the split flowlines. This is a result of chains of very short flowlines being combined together. This problem is more or less unavoidable but is improved by running the collapse step a few times with small to large input thresholds as is done next.</p>
 </div>
 <div id="collapse-step-two-and-three" class="section level2">
 <h2 class="hasAnchor">
 <a href="#collapse-step-two-and-three" class="anchor"></a>Collapse step two and three</h2>
 <p>Now we can collapse twice more</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">collapsed_flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/collapse_flowlines.html">collapse_flowlines</a></span>(collapsed_flines,
-                                       (<span class="fl">0.5</span><span class="op">*</span>collapse_flines_meters<span class="op">/</span><span class="dv">1000</span>),
-                                       <span class="ot">TRUE</span>,
-                                       (<span class="fl">0.5</span><span class="op">*</span>collapse_flines_main_meters<span class="op">/</span><span class="dv">1000</span>),
-                                       <span class="dt">warn =</span> <span class="ot">FALSE</span>)
-
-collapsed_flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/collapse_flowlines.html">collapse_flowlines</a></span>(collapsed_flines,
-                                       (collapse_flines_meters<span class="op">/</span><span class="dv">1000</span>),
-                                       <span class="ot">TRUE</span>,
-                                       (collapse_flines_main_meters<span class="op">/</span><span class="dv">1000</span>),
-                                       <span class="dt">warn =</span> <span class="ot">FALSE</span>)
-
-<span class="co"># Now we can save the output</span>
-collapsed_flines <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">inner_join</span>(<span class="kw">select</span>(flines, COMID), <span class="dt">by =</span> <span class="st">"COMID"</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">st_transform</span>(<span class="dv">4326</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">st_write</span>(<span class="st">"nhdplus_collapsed.gpkg"</span>, <span class="dt">layer_options =</span> <span class="st">"OVERWRITE=YES"</span>, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">collapsed_flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/collapse_flowlines.html">collapse_flowlines</a></span>(collapsed_flines,</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">                                       (<span class="fl">0.5</span><span class="op">*</span>collapse_flines_meters<span class="op">/</span><span class="dv">1000</span>),</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">                                       <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">                                       (<span class="fl">0.5</span><span class="op">*</span>collapse_flines_main_meters<span class="op">/</span><span class="dv">1000</span>),</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">                                       <span class="dt">warn =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">collapsed_flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/collapse_flowlines.html">collapse_flowlines</a></span>(collapsed_flines,</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">                                       (collapse_flines_meters<span class="op">/</span><span class="dv">1000</span>),</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">                                       <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">                                       (collapse_flines_main_meters<span class="op">/</span><span class="dv">1000</span>),</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">                                       <span class="dt">warn =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co"># Now we can save the output</span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14">collapsed_flines <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="st">    </span><span class="kw">inner_join</span>(<span class="kw">select</span>(flines, COMID), <span class="dt">by =</span> <span class="st">"COMID"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="st">    </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17"><span class="st">    </span><span class="kw">st_transform</span>(<span class="dv">4326</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="st">    </span><span class="kw">st_write</span>(<span class="st">"nhdplus_collapsed.gpkg"</span>, <span class="dt">layer_options =</span> <span class="st">"OVERWRITE=YES"</span>, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p><img src="refactor_nhdplus_files/figure-html/collapse2_secret-1.png" width="576"> As shown here, the distribution of flowline lengths is much tighter now but very small headwaters and long chains of collapsed flowlines remain out of the desired range. For the sake of completness,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">collapsed_flines_one_pass &lt;-<span class="st"> </span><span class="kw"><a href="../reference/collapse_flowlines.html">collapse_flowlines</a></span>(<span class="kw">st_set_geometry</span>(flines, <span class="ot">NULL</span>),
-                                                (collapse_flines_meters<span class="op">/</span><span class="dv">1000</span>),
-                                                <span class="ot">TRUE</span>,
-                                                (collapse_flines_main_meters<span class="op">/</span><span class="dv">1000</span>))</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">collapsed_flines_one_pass &lt;-<span class="st"> </span><span class="kw"><a href="../reference/collapse_flowlines.html">collapse_flowlines</a></span>(<span class="kw">st_set_geometry</span>(flines, <span class="ot">NULL</span>),</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">                                                (collapse_flines_meters<span class="op">/</span><span class="dv">1000</span>),</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">                                                <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">                                                (collapse_flines_main_meters<span class="op">/</span><span class="dv">1000</span>))</a></code></pre></div>
 <p><img src="refactor_nhdplus_files/figure-html/collapseonepass_secret-1.png" width="576"> As shown in this historigram, the problem of long chains of collapsed flowlines is much worse when the collapse is run only once.</p>
 </div>
 <div id="reconcile-collapsed-flowlines" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reconcile-collapsed-flowlines" class="anchor"></a>Reconcile collapsed flowlines</h2>
 <p>Now that we have our flowlines collapsed, we need to reconcile the results into merged geometries with updated ids. The reconcile_collapsed_flowlines function does this including a column that contains a comma seperated list of catchment ids that were merged together to form each new flowline.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">collapsed &lt;-<span class="st"> </span><span class="kw"><a href="../reference/reconcile_collapsed_flowlines.html">reconcile_collapsed_flowlines</a></span>(collapsed_flines, 
-                                           <span class="dt">geom =</span> <span class="kw">select</span>(flines, COMID), 
-                                           <span class="dt">id =</span> <span class="st">"COMID"</span>)
-
-collapsed<span class="op">$</span>member_COMID &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">lapply</span>(collapsed<span class="op">$</span>member_COMID, 
-                                        <span class="cf">function</span>(x) <span class="kw">paste</span>(x, <span class="dt">collapse =</span> <span class="st">","</span>)))
-
-<span class="kw">st_write</span>(<span class="kw">st_transform</span>(collapsed, <span class="dv">4326</span>), <span class="st">"nhdplus_reconciled.gpkg"</span>, <span class="dt">layer_options =</span> <span class="st">"OVERWRITE=YES"</span>)
-<span class="co">#&gt; Writing layer `nhdplus_reconciled' to data source `nhdplus_reconciled.gpkg' using driver `GPKG'</span>
-<span class="co">#&gt; options:        OVERWRITE=YES </span>
-<span class="co">#&gt; features:       877</span>
-<span class="co">#&gt; fields:         5</span>
-<span class="co">#&gt; geometry type:  Unknown (any)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">collapsed &lt;-<span class="st"> </span><span class="kw"><a href="../reference/reconcile_collapsed_flowlines.html">reconcile_collapsed_flowlines</a></span>(collapsed_flines, </a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">                                           <span class="dt">geom =</span> <span class="kw">select</span>(flines, COMID), </a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">                                           <span class="dt">id =</span> <span class="st">"COMID"</span>)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">collapsed<span class="op">$</span>member_COMID &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">lapply</span>(collapsed<span class="op">$</span>member_COMID, </a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">                                        <span class="cf">function</span>(x) <span class="kw">paste</span>(x, <span class="dt">collapse =</span> <span class="st">","</span>)))</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="kw">st_write</span>(<span class="kw">st_transform</span>(collapsed, <span class="dv">4326</span>), <span class="st">"nhdplus_reconciled.gpkg"</span>, <span class="dt">layer_options =</span> <span class="st">"OVERWRITE=YES"</span>)</a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; Writing layer `nhdplus_reconciled' to data source `nhdplus_reconciled.gpkg' using driver `GPKG'</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; options:        OVERWRITE=YES </span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; features:       877</span></a>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; fields:         5</span></a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; geometry type:  Unknown (any)</span></a></code></pre></div>
 <p><img src="refactor_nhdplus_files/figure-html/reconcile_secret-1.png" width="576"></p>
 </div>
 <div id="examples" class="section level2">

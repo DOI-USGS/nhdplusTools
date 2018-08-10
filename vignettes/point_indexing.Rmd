@@ -1,8 +1,11 @@
 ---
 title: "NHDPlus Indexing"
 author: "dblodgett@usgs.gov"
-date: "7/3/2018"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkgdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}

@@ -35,7 +35,7 @@ This introduction gives an overview of the basic package setup and an brief demo
 
 ## Installation
 
-The easiest way to install `nhdplusTools` is with the `devtools` packagelike this:
+The easiest way to install `nhdplusTools` is with the `devtools` package like this:
 ```{r install, echo = TRUE, eval = FALSE}
 install.packages("devtools")
 devtools::install_github(dblodgett-usgs/nhdplusTools)
@@ -47,9 +47,9 @@ library(nhdplusTools)
 
 ## Data and Package Basics
 
-The first thing you are going to need to do is go get some data to work with. You can download the [National Seamless database at this web page.](https://www.epa.gov/waterdata/nhdplus-national-data) You will need [7z](https://www.7-zip.org/) or the [`archive` package](https://github.com/jimhester/archive) to extract it. 
+The first thing you are going to need to do is go get some data to work with. `nhdplusTools` provides the ability to download small subsets of the NHDPlus as described in the [Discovery and Subsetting](#discovery_subsetting) section. For large subsets, greater than a few thousand square kilometers, you can download the [National Seamless database at this web page.](https://www.epa.gov/waterdata/nhdplus-national-data) You will need [7z](https://www.7-zip.org/) or the [`archive` package](https://github.com/jimhester/archive) to extract it. 
 
-Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the `nhdplus_path()` function.
+If you are working with the whole National Seamless database, `nhdplusTools` has some convenience functions you should be aware of. Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the `nhdplus_path()` function.
 
 ```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
 dir.create("./data_dir")
@@ -78,7 +78,7 @@ flowline <- readRDS(staged_data$flowline)
 names(flowline)[1:10]
 
 library(sf)
-plot(flowline[[attr(flowline, "sf_column")]])
+plot(sf::st_geometry(flowline))
 ```
 <a id="discovery_subsetting"></a>
 
@@ -99,19 +99,101 @@ lat <- 43.090266
 start_point <- sf::st_sfc(sf::st_point(c(lon, lat)),
                           crs = 4269)
 
-geom_col <- attr(flowline, "sf_column")
-plot(flowline[[geom_col]])
+plot(sf::st_geometry(flowline))
 plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
 ```
 
-OK, so we have a point location near a river and we want to figure out what catchment is out outlet. We can use the `discover_nhdplus_id()` function which calls out to a web service and returns an NHDPlus catchment identifier, commonly called a COMID.
+OK, so we have a point location near a river and we want to figure out what catchment is at its outlet. We can use the `discover_nhdplus_id()` function which calls out to a web service and returns an NHDPlus catchment identifier, typically called a COMID.
 
 ```{r discover_nhdplus_id}
 start_comid <- discover_nhdplus_id(start_point)
 start_comid
 ```
 
-With that starting COMID, we can use one of the network navigation functions, `get_UM`, `get_UT`, `get_DM`, or `get_DD` to retrieve a collection of comids along the upstream mainstaem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we'll use upstream with tributaries.
+**If you have the whole National Seamless database and want to work at regional to national scales, skip down the the Local Data Subsetting section.**
+
+### Web Service Data Subsetting
+
+`nhdplusTools` supports discovery and data subsetting using web services made available through the [Network Linked Data Index](https://owi.usgs.gov/blog/nldi-intro/) (NLDI) and the [National Water Census Geoserver.](https://cida.usgs.gov/nwc/geoserver) The code below shows how to use the NLDI functions to build a dataset upstream of our `start_comid` that we found above.
+
+The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these "featureSources". We can query the NLDI for an identifier of a given feature from any of its "featureSources" and find out what our navigation options are as shown below.
+```{r discover_nldi}
+discover_nldi_sources()$source
+
+nldi_feature <- list(featureSource = "comid", featureID = start_comid)
+discover_nldi_navigation(nldi_feature)
+```
+
+The `discover_nldi_navigation` function is a handy way to make sure the featureID is available for the chosen "featureSource" as well as find valid navigation modes to be used with `navigate_nldi`. Now that we know the NLDI has our comid, we can use the "upstreamTributaries" navigation option to get all the flowlines upstream or all the features from any of the "featureSources" as shown below. 
+
+```{r navigate_nldi}
+
+flowline_nldi <- navigate_nldi(nldi_feature, 
+                               mode = "upstreamTributaries", 
+                               data_source = "")
+
+plot(sf::st_geometry(flowline), lwd = 3, col = "black")
+plot(sf::st_geometry(flowline_nldi), lwd = 1, col = "red", add = TRUE)
+```
+
+What is not shown here is that the NLDI only provided geometry and a comid for each of the flowlines. The `subset_nhdplus` function has a "download" option that allows us to download four layers and all attributes as shown below. 
+
+```{r subset_nhdplus_download}
+output_file_download <- "./data_dir/subset_download.gpkg"
+
+output_file_download <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
+                             output_file = output_file_download,
+                             nhdplus_data = "download")
+
+sf::st_layers(output_file_download)
+
+flowline_download <- sf::read_sf("data_dir/subset_download.gpkg", 
+                                 "NHDFlowline_Network")
+
+plot(sf::st_geometry(dplyr::filter(flowline_download, 
+                                   streamorde > 2)), 
+     lwd = 7, col = "darkgrey")
+plot(sf::st_geometry(flowline_nldi), 
+     lwd = 3, col = "red", add = TRUE)
+```
+
+This plot illustrates the kind of thing that's possible (filtering to specific stream orders) using the attributes that are downloaded.
+
+Notice that the data downloaded above only has four layers where the subset we build below has more. This functionality should be considered beta in nature, but may be useful for some applications so has been included.
+
+Before moving on, one more demonstration of what can be done using the NLDI. Say we knew the USGS gage ID that we want NHDPlus data upstream of. We can use the NLDI to navigate from the gage the same as we did our comid. We can also get back all the nwis sites the NLDI knows about upstream of the one we chose!
+
+```{r nldi_nwissite}
+nldi_feature <- list(featureSource = "nwissite", featureID = "USGS-05428500")
+
+flowline_nldi <- navigate_nldi(nldi_feature, 
+                               mode = "upstreamTributaries", 
+                               data_source = "")
+
+output_file_nwis <- "./data_dir/subset_download_nwis.gpkg"
+
+output_file_nwis <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
+                                  output_file = output_file_nwis,
+                                  nhdplus_data = "download")
+
+sf::st_layers(output_file_download)
+
+flowline_nwis <- sf::read_sf(output_file_nwis, 
+                                 "NHDFlowline_Network")
+
+upstream_nwis <- navigate_nldi(nldi_feature,
+                               mode = "upstreamTributaries",
+                               data_source = "nwissite")
+
+plot(sf::st_geometry(flowline_nwis), 
+     lwd = 3, col = "blue")
+plot(sf::st_geometry(upstream_nwis), 
+     cex = 1, lwd = 2, col = "red", add = TRUE)
+```
+
+### Local Data Subsetting
+
+With the starting COMID we found with `discover_nhdplus_id` above, we can use one of the network navigation functions, `get_UM`, `get_UT`, `get_DM`, or `get_DD` to retrieve a collection of comids along the upstream mainstaem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we'll use upstream with tributaries.
 
 ```{r get_UT}
 UT_comids <- get_UT(flowline, start_comid)
@@ -121,9 +203,9 @@ UT_comids
 If you are familiar with the NHDPlus, you will recognize that now that we have this list of COMIDs, we could go off and do all sorts of things with the various flowline attributes. For now, let's just use the COMID list to filter our `fline` `sf` `data.frame` and plot it with our other layers.
 
 ```{r plot_fline_subset}
-plot(flowline[[geom_col]])
+plot(sf::st_geometry(flowline))
 plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
-plot(dplyr::filter(flowline, COMID %in% UT_comids)[[geom_col]],
+plot(sf::st_geometry(dplyr::filter(flowline, COMID %in% UT_comids)),
      add=TRUE, col = "red", lwd = 2)
 ```
 
@@ -145,27 +227,13 @@ Now we have an output geopackage that can be used later. It contains the network
 catchment <- sf::read_sf(output_file, "CatchmentSP")
 waterbody <- sf::read_sf(output_file, "NHDWaterbody")
 
-plot(flowline[[geom_col]])
+plot(sf::st_geometry(flowline))
 plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
-plot(dplyr::filter(flowline, COMID %in% UT_comids)[[geom_col]],
+plot(sf::st_geometry(dplyr::filter(flowline, COMID %in% UT_comids)),
      add=TRUE, col = "red", lwd = 2)
-plot(catchment[[geom_col]], add = TRUE)
-plot(waterbody[[geom_col]], col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
+plot(sf::st_geometry(catchment), add = TRUE)
+plot(sf::st_geometry(waterbody), col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 ```
-
-If you only need a few thousand or less catchments, we can set the `nhdplus_data` input of `subset_nhdplus` to "download" to try and download the data from a web feature service.
-
-```{r subset_nhdplus_download}
-output_file_download <- "./data_dir/subset_download.gpkg"
-
-output_file_download <-subset_nhdplus(comids = UT_comids,
-                             output_file = output_file_download,
-                             nhdplus_data = "download")
-
-sf::st_layers(output_file_download)
-```
-
-Notice that this only has four layers where the subset above has a few more. This functionality should be considered beta in nature, but may be useful for some applications so has been included.
 
 <a id="indexing"></a>
 
@@ -182,8 +250,7 @@ get_flowline_index(flowline, start_point)
 ```{r index_list}
 gage <- sf::read_sf(output_file, "Gage")
 
-geom_col <- attr(gage, "sf_column")
-get_flowline_index(flowline, gage[[geom_col]], precision = 10)
+get_flowline_index(flowline, sf::st_geometry(gage), precision = 10)
 ```
 
 For more info about `get_flowline_index()` see the article `vignette("point_indexing")` about it or the reference page that describes it.

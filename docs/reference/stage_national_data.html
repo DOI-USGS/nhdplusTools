@@ -88,6 +88,9 @@ of quick to access R binary files." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
+    </li>
+    <li>
       <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
     </li>
     <li>
@@ -129,7 +132,7 @@ of quick to access R binary files.</p>
     </div>
 
     <pre class="usage"><span class='fu'>stage_national_data</span>(<span class='kw'>include</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"attribute"</span>, <span class='st'>"flowline"</span>, <span class='st'>"catchment"</span>),
-  <span class='kw'>output_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nhdplus_data_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>output_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,10 +145,10 @@ of quick to access R binary files.</p>
     <tr>
       <th>output_path</th>
       <td><p>character path to save the output to defaults
-to the directory of the nhdplus_data_path.</p></td>
+to the directory of the nhdplus_data.</p></td>
     </tr>
     <tr>
-      <th>nhdplus_data_path</th>
+      <th>nhdplus_data</th>
       <td><p>character path to the .gpkg or .gdb
 containing the national seamless dataset. Not required if
 <code><a href='nhdplus_path.html'>nhdplus_path</a></code> has been set.</p></td>

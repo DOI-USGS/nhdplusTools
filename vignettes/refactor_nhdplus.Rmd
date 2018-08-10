@@ -1,10 +1,9 @@
 ---
 title: "NHDPlus Refactor"
-author: "David Blodgett"
-date: "`r Sys.Date()`"
+author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{NHDPlus Refactor}
+  %\VignetteIndexEntry{pkgdown}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

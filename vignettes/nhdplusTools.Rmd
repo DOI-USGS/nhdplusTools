@@ -147,7 +147,7 @@ output_file_download <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
 
 sf::st_layers(output_file_download)
 
-flowline_download <- sf::st_read("data_dir/subset_download.gpkg", 
+flowline_download <- sf::read_sf("data_dir/subset_download.gpkg", 
                                  "NHDFlowline_Network")
 
 plot(sf::st_geometry(dplyr::filter(flowline_download, 
@@ -178,7 +178,7 @@ output_file_nwis <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
 
 sf::st_layers(output_file_download)
 
-flowline_nwis <- sf::st_read(output_file_nwis, 
+flowline_nwis <- sf::read_sf(output_file_nwis, 
                                  "NHDFlowline_Network")
 
 upstream_nwis <- navigate_nldi(nldi_feature,

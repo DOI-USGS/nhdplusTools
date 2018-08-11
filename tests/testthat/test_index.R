@@ -50,7 +50,7 @@ test_that("point indexing to for multiple points works", {
                           offset = c(0.00006026811,
                                      0.00056414104,
                                      0.00031029699),
-                          stringsAsFactors = F), tolerance = 0.0001)
+                          stringsAsFactors = F), tolerance = 1e-2)
 
   expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1,
                                   precision = 30),
@@ -62,6 +62,6 @@ test_that("point indexing to for multiple points works", {
                           offset = c(0.0000602681,
                                      0.0002523808,
                                      0.0001566810),
-                          stringsAsFactors = F), tolerance = 0.0001)
+                          stringsAsFactors = F), tolerance = 1e-2)
 
 })

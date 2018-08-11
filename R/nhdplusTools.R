@@ -18,7 +18,8 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
-  index <- measure <- nn.idx <- precision_index <- max_Hydroseq <- NULL
+  index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-
+  nn.dists <- offset <- NULL
 
 nhdplusTools_env <- new.env()
 

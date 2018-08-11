@@ -19,14 +19,14 @@ See RANN nn2 documentation for more details.}
 \item{precision}{numeric the resolution of measure precision in the output.}
 }
 \value{
-data.frame with three columns, COMID, REACHCODE, and REACH_meas.
+data.frame with four columns, COMID, REACHCODE, REACH_meas, and offset.
 }
 \description{
 given an sf point geometry column, return COMID, reachcode,
 and measure for each.
 }
 \details{
-Note 1: that inputs are cast into LINESTRINGS. Because of this,
+Note 1: Inputs are cast into LINESTRINGS. Because of this,
 the measure output
 of inputs that are true multipart lines may be in error.
 
@@ -34,6 +34,9 @@ Note 2: This algorithm finds the nearest node in the input flowlines to
 identify which catchment the point should belong to. As a second pass,
 it can calculate the measure to greater precision than the nearest flowline
 geometry node.
+
+Note 3: Offset is returned in units consistant with the projection of
+the flowlines.
 }
 \examples{
 get_flowline_index(sample_flines,

@@ -76,6 +76,8 @@ See the NHDPlus user guide [linked here](https://www.epa.gov/waterdata/learn-mor
 First, a side note on bounding boxes. With the ongoing transition from the `sp` package to the `sf` package, there are a few stumbling blocks. Bounding boxes are one of them. As shown below, the `sf` bbox format is a named vector of class "bbox". The `sp` bbox format is a matrix with named dimensions. Many packages expect the sp format. the `ggmap` package expects yet another bbox format, much like `sf` but with different names. 
 
 ```{r bbox, message=FALSE}
+library(sp)
+
 sf_bbox <- st_bbox(basin)
 sf_bbox
 class(sf_bbox)

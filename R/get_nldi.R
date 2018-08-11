@@ -196,7 +196,7 @@ query_nldi <- function(query, tier = "prod", parse_json = TRUE) {
   url <- paste(nldi_base_url, query,
                sep = "/")
 
-  c <- rawToChar(httr::GET(url)$content)
+  c <- rawToChar(httr::RETRY("GET", url, times = 10, pause_cap = 240)$content)
 
   if (nchar(c) == 0) {
     NULL

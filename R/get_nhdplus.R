@@ -44,7 +44,7 @@ get_nhdplus_byid <- function(comids, layer) {
 
   # nolint end
 
-  c <- httr::POST(post_url, body = filter_xml)
+  c <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
 
   return(sf::read_sf(rawToChar(c$content)))
 }
@@ -84,7 +84,7 @@ get_nhdplus_bybox <- function(box, layer) {
 
   # nolint end
 
-  c <- httr::POST(post_url, body = filter_xml)
+  c <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
 
   return(sf::read_sf(rawToChar(c$content)))
 

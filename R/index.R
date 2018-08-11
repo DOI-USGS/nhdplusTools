@@ -8,8 +8,8 @@
 #' to extend.
 #' See RANN nn2 documentation for more details.
 #' @param precision numeric the resolution of measure precision in the output.
-#' @return data.frame with three columns, COMID, REACHCODE, and REACH_meas.
-#' @details Note 1: that inputs are cast into LINESTRINGS. Because of this,
+#' @return data.frame with four columns, COMID, REACHCODE, REACH_meas, and offset.
+#' @details Note 1: Inputs are cast into LINESTRINGS. Because of this,
 #' the measure output
 #' of inputs that are true multipart lines may be in error.
 #'
@@ -17,6 +17,9 @@
 #' identify which catchment the point should belong to. As a second pass,
 #' it can calculate the measure to greater precision than the nearest flowline
 #' geometry node.
+#'
+#' Note 3: Offset is returned in units consistant with the projection of
+#' the flowlines.
 #'
 #' @importFrom dplyr filter select mutate right_join left_join
 #' @importFrom dplyr group_by summarise distinct desc lag n
@@ -102,11 +105,11 @@ get_flowline_index <- function(flines, points,
     mutate(REACH_meas = ToMeas + (FromMeas - ToMeas) * (measure)) %>%
     ungroup() %>% distinct()
 
-  matched <- select(matched, node = nn.idx, COMID)
+  matched <- select(matched, node = nn.idx, offset = nn.dists, COMID)
 
   matched <- left_join(matched, select(flines, index, REACHCODE, REACH_meas),
                         by = c("node" = "index")) %>%
-    select(COMID, REACHCODE, REACH_meas)
+    select(COMID, REACHCODE, REACH_meas, offset)
 
   return(matched)
 }

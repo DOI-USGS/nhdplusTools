@@ -62,7 +62,7 @@ and measure for each." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
       </span>
     </div>
 
@@ -159,25 +159,27 @@ See RANN nn2 documentation for more details.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data.frame with three columns, COMID, REACHCODE, and REACH_meas.</p>
+    <p>data.frame with four columns, COMID, REACHCODE, REACH_meas, and offset.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Note 1: that inputs are cast into LINESTRINGS. Because of this,
+    <p>Note 1: Inputs are cast into LINESTRINGS. Because of this,
 the measure output
 of inputs that are true multipart lines may be in error.</p>
 <p>Note 2: This algorithm finds the nearest node in the input flowlines to
 identify which catchment the point should belong to. As a second pass,
 it can calculate the measure to greater precision than the nearest flowline
 geometry node.</p>
+<p>Note 3: Offset is returned in units consistant with the projection of
+the flowlines.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
                    <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/sfc'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st'>st_point</a></span>(<span class='fu'>c</span>(-<span class='fl'>76.87479</span>,
                                              <span class='fl'>39.48233</span>)),
-                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt;      COMID      REACHCODE REACH_meas
-#&gt; 1 11689978 02060003001472   51.50201</div><div class='input'>
+                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt;      COMID      REACHCODE REACH_meas       offset
+#&gt; 1 11689978 02060003001472   51.50201 0.0003010502</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

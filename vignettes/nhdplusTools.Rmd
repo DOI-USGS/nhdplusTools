@@ -18,6 +18,41 @@ knitr::opts_chunk$set(
 options(scipen = 9999)
 ```
 
+## TL;DR
+
+First, pick an outlet location and download some data.
+```{r tldr}
+devtools::install_github("dblodgett-usgs/nhdplusTools")
+
+library(nhdplusTools)
+library(sf)
+
+start_point <- st_sfc(st_point(c(-89.362239, 43.090266)), crs = 4269)
+start_comid <- discover_nhdplus_id(start_point)
+
+flowline <- navigate_nldi(list(featureSource = "comid", 
+                               featureID = start_comid), 
+                          mode = "upstreamTributaries", 
+                          data_source = "")
+
+subset_gpkg <-subset_nhdplus(comids = flowline$nhdplus_comid,
+                             output_file = tempfile(fileext = ".gpkg"),
+                             nhdplus_data = "download")
+
+flowline <- sf::read_sf(subset_gpkg, "NHDFlowline_Network")
+catchment <- sf::read_sf(subset_gpkg, "CatchmentSP")
+waterbody <- sf::read_sf(subset_gpkg, "NHDWaterbody")
+
+plot(sf::st_geometry(flowline), col = "blue")
+plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
+plot(sf::st_geometry(catchment), add = TRUE)
+plot(sf::st_geometry(waterbody), col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
+```
+
+Read on to see how NHDPlusTools will help you index data to the network you just retrieved and refactor the catchments in a different discritization. Please consider registering [issues and feature suggestions on github](https://github.com/dblodgett-usgs/nhdplusTools/issues).
+
+## Introduction
+
 The `nhdplusTools` package is intended to provide a reusable set of tools to
 subset, relate data to, and refactor NHDPlus data. It implements a data model
 consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
@@ -38,7 +73,7 @@ This introduction gives an overview of the basic package setup and an brief demo
 The easiest way to install `nhdplusTools` is with the `devtools` package like this:
 ```{r install, echo = TRUE, eval = FALSE}
 install.packages("devtools")
-devtools::install_github(dblodgett-usgs/nhdplusTools)
+devtools::install_github("dblodgett-usgs/nhdplusTools")
 ```
 Then you can load up nhdplusTools:
 ```{r load}

@@ -102,7 +102,7 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
 
   if (nhdplus_data == "download") {
 
-    if(length(comids) > 3000) {
+    if (length(comids) > 3000) {
       warning("Download functionality not tested for this many comids")
     }
 

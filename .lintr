@@ -1,2 +1,2 @@
 linters: with_defaults(line_length_linter(120))
-exclusions: list("tests/testthat/data/prep_test_data.R", "inst/doc/refactor_nhdplus.R", "inst/doc/refactor_nhdplus.Rmd", "inst/doc/nhdplusTools.R", "inst/doc/nhdplusTools.Rmd")
+exclusions: list("tests/testthat/data/prep_test_data.R", "inst/doc/refactor_nhdplus.R", "inst/doc/refactor_nhdplus.Rmd", "inst/doc/nhdplusTools.R", "inst/doc/nhdplusTools.Rmd", "inst/doc/plot_nhdplus.R", "inst/doc/plot_nhdplus.Rmd")

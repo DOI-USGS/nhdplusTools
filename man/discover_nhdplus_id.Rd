@@ -8,7 +8,7 @@ discover_nhdplus_id(point = NULL, nldi_feature = NULL)
 }
 \arguments{
 \item{point}{An sf POINT including crs as created by:
-sf::st_sf(sf::st_point(..,..), crs)}
+sf::st_sfc(sf::st_point(..,..), crs)}
 
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of

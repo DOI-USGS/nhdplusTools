@@ -167,7 +167,17 @@ prepare_nhdplus <- function(flines,
   flines <- select(flines, COMID, LENGTHKM, FTYPE, TerminalFl,
                    FromNode, ToNode, TotDASqKM, StartFlag,
                    StreamOrde, StreamCalc, TerminalPa, Pathlength,
-                   Divergence)
+                   Divergence, Hydroseq)
+
+  if (!any(flines$TerminalFl == 1)) {
+    warning("Got NHDPlus data without a Terminal catchment. Attempting to find it.")
+    if (all(flines$TerminalPa == flines$TerminalPa[1])) {
+      out_ind <- which(flines$Hydroseq == min(flines$Hydroseq))
+      flines$TerminalFl[out_ind] <- 1
+    } else {
+      stop("Multiple networks without terminal flags found. Can't proceed.")
+    }
+  }
 
   if (purge_non_dendritic) {
     flines <- filter(flines, FTYPE != "Coastline" &
@@ -211,5 +221,5 @@ prepare_nhdplus <- function(flines,
 
   select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
          -StreamOrde, -StreamCalc, -TerminalPa,
-         -FTYPE, -Pathlength, -Divergence)
+         -FTYPE, -Pathlength, -Divergence, -Hydroseq)
 }

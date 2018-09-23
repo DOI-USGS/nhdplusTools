@@ -29,7 +29,7 @@ assign("prepare_nhdplus_attributes",
        c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
          "FromNode", "ToNode", "TotDASqKM",
          "StartFlag", "StreamOrde", "StreamCalc",
-         "TerminalPa", "Pathlength", "Divergence"),
+         "TerminalPa", "Pathlength", "Divergence", "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",
@@ -139,7 +139,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' @title Discover NHDPlus ID
 #' @description Multipurpose function to find a COMID of interest.
 #' @param point An sf POINT including crs as created by:
-#' sf::st_sf(sf::st_point(..,..), crs)
+#' sf::st_sfc(sf::st_point(..,..), crs)
 #' @param nldi_feature list with names `featureSource` and `featureID` where
 #' `featureSource` is derived from the "source" column of  the response of
 #' discover_nldi_sources() and the `featureSource` is a known identifier

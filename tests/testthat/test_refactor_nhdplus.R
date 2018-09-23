@@ -166,3 +166,12 @@ test_that("prep_nhdplus removes tiny networks", {
           "with drainage area less than 10 sqkm"))
   expect_equal(nrow(flines), 0)
 })
+
+test_that("prep_nhdplus works with inland network", {
+  flines_in <- readRDS("data/petapsco_network.rds")
+
+  flines <- dplyr::filter(flines_in, COMID %in% get_UT(flines_in, 11690564))
+  flines <- sf::st_set_geometry(flines, NULL)
+  expect_warning(prepare_nhdplus(flines, 0, 0, FALSE, FALSE),
+                 "Got NHDPlus data without a Terminal catchment. Attempting to find it.")
+})

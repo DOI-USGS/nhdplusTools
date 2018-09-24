@@ -143,10 +143,11 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
 
   rm(fline)
 
-  layer_name <- "CatchmentSP"
+  layer_name <- "Catchment"
   if (status) message(paste("Reading", layer_name))
 
   if (nhdplus_data == "download") {
+    layer_name <- "CatchmentSP" # Need to handle SP and regular better!!
     catchment <- get_nhdplus_byid(comids, tolower(layer_name))
   } else {
 
@@ -220,7 +221,7 @@ intersection_write <- function(layer_name, data_path, envelope,
 #' \code{\link{nhdplus_path}} has been set.
 #' @details "attributes" will save `NHDFlowline_Network` attributes
 #' as a seperate data.frame without the geometry. The others will save
-#' the `NHDFlowline_Network` and `CatchmentSP` as sf data.frames with
+#' the `NHDFlowline_Network` and `Catchment` as sf data.frames with
 #' superfluous Z information dropped.
 #'
 #' The returned list of paths is also added to the nhdplusTools_env
@@ -307,7 +308,7 @@ stage_national_data <- function(include = c("attribute",
     if (file.exists(out_path_catchments)) {
       warning("catchment already exists.")
     } else {
-      saveRDS(sf::st_zm(sf::read_sf(nhdplus_data, "CatchmentSP")),
+      saveRDS(sf::st_zm(sf::read_sf(nhdplus_data, "Catchment")),
               out_path_catchments)
     }
     outlist["catchment"] <- out_path_catchments

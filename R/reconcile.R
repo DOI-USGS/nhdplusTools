@@ -68,3 +68,76 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
   }
   return(new_flines)
 }
+
+#' @title Reconcile Catchments
+#' @description Reconciles catchments according to the output of
+#' \code{\link{reconcile_collapsed_flowlines}} and \code{\link{refactor_nhdplus}}
+#' @param fline_ref sf data.frame flowlines as returned by
+#' \code{\link{refactor_nhdplus}}
+#' @param catchment sf data.frame NHDPlus Catchment or CatchmentSP for included COMIDs
+#' @param fdr raster D8 flow direction
+#' @param fac raster flow accumulation
+#' @param para integer numer of cores to use for parallel execution
+#' @return Catchments that have been split and collapsed according to input flowlines
+#' @seealso The \code{\link{refactor_nhdplus}} function implements a complete
+#' workflow using `reconcile_collapsed_flowlines()` and can be used in prep
+#' for this function.
+#' @details Note that all inputs must be passed in the same projection.
+#' @export
+#'
+reconcile_catchments <- function(catchment, fline_ref, fdr, fac, para = 2) {
+
+  check_proj(catchment, fline_ref, fdr)
+
+  to_split_bool <- as.numeric(fline_ref$COMID) !=
+    as.integer(fline_ref$COMID)
+
+  to_split_ids <- fline_ref$COMID[which(to_split_bool)]
+
+  to_split_featureids <- unique(as.integer(to_split_ids))
+
+  out <- sf::st_sf(ID = integer(),
+               member_FEATUREID  = character(),
+               geom = sf::st_sfc(crs = st_crs(catchment)))
+
+  par_split_cat <- function(fid, to_split_ids, fline_ref, catchment, fdr, fac) {
+    # nolint start
+    library(nhdplusTools)
+    # nolint end
+    split_set <- to_split_ids[which(grepl(as.character(fid), to_split_ids))]
+    to_split_flines <- dplyr::filter(fline_ref, COMID %in% split_set)
+    to_split_cat <- dplyr::filter(catchment, FEATUREID == fid)
+
+    split_cats <- nhdplusTools::split_catchment(catchment = to_split_cat,
+                                                fline = to_split_flines,
+                                                fdr = fdr,
+                                                fac = fac)
+
+    split_cats <- sf::st_sfc(split_cats, crs = sf::st_crs(to_split_cat))
+
+    sf::st_sf(FEATUREID = to_split_flines$COMID,
+              geom = split_cats)
+  }
+
+  cl <- parallel::makeCluster(rep("localhost", para), type = "SOCK")
+
+  split_cats <- parallel::parLapply(cl, to_split_featureids, par_split_cat,
+                                    to_split_ids = to_split_ids,
+                                    fline_ref = fline_ref,
+                                    catchment = catchment,
+                                    fdr = fdr, fac = fac)
+
+  split_cats <- do.call(rbind, split_cats)
+
+  parallel::stopCluster(cl)
+
+  dplyr::filter(catchment,
+                       !catchment$FEATUREID %in% to_split_featureids) %>%
+    dplyr::select(FEATUREID, geom) %>%
+    dplyr::mutate(FEATUREID = as.character(FEATUREID)) %>%
+    dplyr::left_join(dplyr::select(sf::st_set_geometry(fline_ref, NULL),
+                                   FEATUREID = COMID),
+                     by = "FEATUREID") %>%
+    dplyr::select(FEATUREID, geom) %>%
+    rbind(split_cats)
+}

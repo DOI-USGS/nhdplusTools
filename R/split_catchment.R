@@ -77,12 +77,7 @@ recurse_upstream <- function(row_col, fdr_matrix) {
 #'
 split_catchment <- function(catchment, fline, fdr, fac) {
 
-  proj <- as.character(raster::crs(fdr))
-  if (sf::st_crs(catchment)$proj4string != proj |
-      sf::st_crs(fline)$proj4string != proj |
-      sf::st_crs(fline)$proj4string != sf::st_crs(catchment)$proj4string) {
-    stop("All inputs must have the same projection.")
-  }
+  check_proj(catchment, fline, fdr)
 
   outlets <- st_coordinates(fline) %>%
     data.frame() %>%
@@ -148,15 +143,27 @@ split_catchment <- function(catchment, fline, fdr, fac) {
       st_simplify(dTolerance = 40) %>%
       st_snap(st_geometry(catchment), tolerance = snap_distance)
 
-    ds_catchment <-
+    retry_cat_fun <- function(catchment, ds_catchment, smaller_than_one_pixel) {
       st_difference(st_geometry(catchment), ds_catchment) %>%
-      st_cast("POLYGON") %>%
-      st_sf() %>%
-      mutate(area = st_area(.)) %>%
-      filter(area > smaller_than_one_pixel) %>%
-      st_combine()
+        st_cast("POLYGON") %>%
+        st_sf() %>%
+        mutate(area = st_area(.)) %>%
+        filter(area > smaller_than_one_pixel) %>%
+        st_combine()
+    }
 
-    us_catchment <- st_difference(st_geometry(catchment), ds_catchment)
+    ds_catchment <- tryCatch(retry_cat_fun(catchment,
+                                           ds_catchment,
+                                           smaller_than_one_pixel),
+                             error = function(e)
+                               retry_cat_fun(lwgeom::st_make_valid(catchment),
+                                             lwgeom::st_make_valid(ds_catchment),
+                                             smaller_than_one_pixel))
+
+    us_catchment <- tryCatch(st_difference(st_geometry(catchment), ds_catchment),
+                             error = function(e)
+                               st_difference(st_geometry(lwgeom::st_make_valid(catchment)),
+                                             lwgeom::st_make_valid(ds_catchment)))
 
     catchment <- ds_catchment
 
@@ -166,4 +173,14 @@ split_catchment <- function(catchment, fline, fdr, fac) {
   return_cats <- c(return_cats, st_geometry(catchment))
 
   return(return_cats)
+}
+
+check_proj <- function(catchment, fline, fdr) {
+  proj <- as.character(raster::crs(fdr))
+  if (sf::st_crs(catchment)$proj4string != proj |
+      sf::st_crs(fline)$proj4string != proj |
+      sf::st_crs(fline)$proj4string != sf::st_crs(catchment)$proj4string) {
+    stop("All inputs must have the same projection.")
+  }
+  return(invisible(1))
 }

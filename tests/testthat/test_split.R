@@ -121,15 +121,15 @@ test_that("split_catchments works", {
                                purge_non_dendritic = FALSE,
                                warn = FALSE)
 
-  flines <- sf::read_sf("data/temp/subset_reconcile.gpkg") %>%
-    dplyr::arrange(member_COMID)
+  flines <- sf::read_sf("data/temp/subset_refactor.gpkg") %>%
+    dplyr::arrange(COMID)
 
   proj <- as.character(raster::crs(fdr))
-  test_flines <- dplyr::filter(flines, member_COMID %in% c(5329435.1,
-                                                           5329435.2,
-                                                           5329435.3,
-                                                           5329435.4,
-                                                           5329435.5)) %>%
+  test_flines <- dplyr::filter(flines, COMID %in% c(5329435.1,
+                                                    5329435.2,
+                                                    5329435.3,
+                                                    5329435.4,
+                                                    5329435.5)) %>%
     sf::st_transform(proj)
 
 
@@ -143,5 +143,14 @@ test_that("split_catchments works", {
          "Got wrong class for polygon with pixel dribble out the bottom")
   expect(all(c("XY", "POLYGON", "sfg") %in% class(split_cat[[2]])),
          "Got wrong class for polygon with one ring")
+
+  flines <- st_transform(flines, as.character(raster::crs(fdr)))[1:9, ]
+  catchments <- st_transform(catchments, as.character(raster::crs(fdr))) %>%
+    dplyr::filter(FEATUREID %in% unique(as.character(as.integer(flines$COMID))))
+
+  reconciled_cats <- reconcile_catchments(catchments, flines, fdr, fac)
+
+  expect(nrow(reconciled_cats) == nrow(flines), "got the wrong number of split catchments")
+  expect(all(reconciled_cats$FEATUREID %in% flines$COMID))
   unlink("data/temp/*")
 })

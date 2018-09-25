@@ -1,4 +1,6 @@
-context("split_lines")
+context("split_lines and split_catchments")
+library(sf)
+library(dplyr)
 
 test_that("split lines works", {
 
@@ -23,7 +25,7 @@ test_that("split lines works", {
     dplyr::ungroup() %>%
     st_line_merge()
 
-  split <- split_lines(st_transform(select(flines, ID), 5070), 250, id = "ID")
+  split <- nhdplusTools:::split_lines(st_transform(select(flines, ID), 5070), 250, id = "ID")
 
   expect(nrow(split) == 574)
 
@@ -81,4 +83,64 @@ test_that("split_lines_2 works the same as split_lines", {
 
   }
 
+})
+
+test_that("split_catchments works", {
+
+  flines_in <- sf::read_sf("data/walker.gpkg", "NHDFlowline_Network")
+  catchments <- sf::read_sf("data/walker.gpkg", "CatchmentSP")
+
+  # nolint start
+  # r <- fasterize::raster("NHDPlusCA/fdr.tif")
+  #
+  # cropper <- catchments %>%
+  #   st_transform(as.character(raster::crs(r))) %>%
+  #   st_union() %>%
+  #   st_buffer(1000) %>%
+  #   as_Spatial()
+  #
+  # fac <- fasterize::raster("NHDPlusCA/fac.tif")
+  # sub_fac <- raster::crop(fac, cropper)
+  # sub_r <- raster::crop(r, cropper)
+  # raster::writeRaster(sub_fac, "data/walker_fac.tif", overwrite = TRUE)
+  # raster::writeRaster(sub_r, "data/walker_fdr.tif", overwrite = TRUE)
+  # nolint end
+
+  fdr <- raster::raster("data/walker_fdr.tif")
+  fac <- raster::raster("data/walker_fac.tif")
+
+  refactor <- refactor_nhdplus(nhdplus_flines = flines_in,
+                               split_flines_meters = 2000,
+                               collapse_flines_meters = 1,
+                               collapse_flines_main_meters = 1,
+                               split_flines_cores = 2,
+                               out_collapsed = "data/temp/subset_refactor.gpkg",
+                               out_reconciled = "data/temp/subset_reconcile.gpkg",
+                               three_pass = TRUE,
+                               purge_non_dendritic = FALSE,
+                               warn = FALSE)
+
+  flines <- read_sf("data/temp/subset_reconcile.gpkg") %>%
+    dplyr::arrange(member_COMID)
+
+  proj <- as.character(raster::crs(fdr))
+  test_flines <- dplyr::filter(flines, member_COMID %in% c(5329435.1,
+                                                           5329435.2,
+                                                           5329435.3,
+                                                           5329435.4,
+                                                           5329435.5)) %>%
+    st_transform(proj)
+
+
+  test_cat <- dplyr::filter(catchments, FEATUREID == 5329435) %>%
+    st_transform(proj)
+
+  split_cat <- split_catchment(test_cat, test_flines, fdr, fac)
+
+  expect(length(split_cat) == 5, "Got the wrong number of cathment split polygons")
+  expect(all(c("XY", "MULTIPOLYGON", "sfg") %in% class(split_cat[[5]])),
+         "Got wrong class for polygon with pixel dribble out the bottom")
+  expect(all(c("XY", "POLYGON", "sfg") %in% class(split_cat[[2]])),
+         "Got wrong class for polygon with one ring")
+  unlink("data/temp/*")
 })

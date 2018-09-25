@@ -64,16 +64,15 @@ recurse_upstream <- function(row_col, fdr_matrix) {
 #' @description A catchment splitting algorithm that works with a D8
 #' flow direction grid and the output of nhdplus_refactor.
 #' @param catchment sf data.frame with one catchment
-#' @param flines sf data.frame with two or more flowline segments in
+#' @param fline sf data.frame with two or more flowline segments in
 #' upstream downstream order.
 #' @param fdr raster a flow direction raster that fully covers the catchment
 #' @param fac raster a flow accumulation raster that fuller covers the catchment
 #' @return Split catchments as an sf data.frame
 #' @importFrom raster raster crs crop mask rowColFromCell cellFromXY rasterToPolygons as.matrix
 #' @importFrom dplyr group_by ungroup filter select mutate lead n
-#' @importFrom sf st_crs st_coordinates as_Spatial st_buffer
-#' @seealso The \code{\link{refactor_nhdplus}} function implements a complete
-#' workflow using `split_flowlines()`.
+#' @importFrom sf st_crs st_coordinates as_Spatial st_buffer st_combine
+#' st_as_sf st_geometry st_simplify st_snap st_difference st_cast st_sf st_area
 #' @export
 #'
 split_catchment <- function(catchment, fline, fdr, fac) {
@@ -93,12 +92,12 @@ split_catchment <- function(catchment, fline, fdr, fac) {
 
   sp_cat_buffer <- as_Spatial(st_buffer(catchment, 200))
 
-  fdr <- crop(fdr, sp_cat_buffer,
+  fdr <- raster::crop(fdr, sp_cat_buffer,
                       snap = "out")
-  fdr <- mask(fdr, sp_cat_buffer)
-  fac <- crop(fac, sp_cat_buffer,
+  fdr <- raster::mask(fdr, sp_cat_buffer)
+  fac <- raster::crop(fac, sp_cat_buffer,
                   snap = "out")
-  fac <- mask(fac, sp_cat_buffer)
+  fac <- raster::mask(fac, sp_cat_buffer)
 
   return_cats <- list()
 
@@ -132,7 +131,7 @@ split_catchment <- function(catchment, fline, fdr, fac) {
 
     out[us_cells] <- 1
 
-    out <- raster(out, template = fdr)
+    out <- raster::raster(out, template = fdr)
 
     raster_function <- function(x) x == 1
 

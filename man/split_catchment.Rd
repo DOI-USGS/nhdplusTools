@@ -9,12 +9,12 @@ split_catchment(catchment, fline, fdr, fac)
 \arguments{
 \item{catchment}{sf data.frame with one catchment}
 
+\item{fline}{sf data.frame with two or more flowline segments in
+upstream downstream order.}
+
 \item{fdr}{raster a flow direction raster that fully covers the catchment}
 
 \item{fac}{raster a flow accumulation raster that fuller covers the catchment}
-
-\item{flines}{sf data.frame with two or more flowline segments in
-upstream downstream order.}
 }
 \value{
 Split catchments as an sf data.frame
@@ -22,8 +22,4 @@ Split catchments as an sf data.frame
 \description{
 A catchment splitting algorithm that works with a D8
 flow direction grid and the output of nhdplus_refactor.
-}
-\seealso{
-The \code{\link{refactor_nhdplus}} function implements a complete
-workflow using `split_flowlines()`.
 }

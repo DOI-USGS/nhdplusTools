@@ -1,6 +1,5 @@
 context("split_lines and split_catchments")
-library(sf)
-library(dplyr)
+library(magrittr)
 
 test_that("split lines works", {
 
@@ -87,6 +86,8 @@ test_that("split_lines_2 works the same as split_lines", {
 
 test_that("split_catchments works", {
 
+  dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
+
   flines_in <- sf::read_sf("data/walker.gpkg", "NHDFlowline_Network")
   catchments <- sf::read_sf("data/walker.gpkg", "CatchmentSP")
 
@@ -120,7 +121,7 @@ test_that("split_catchments works", {
                                purge_non_dendritic = FALSE,
                                warn = FALSE)
 
-  flines <- read_sf("data/temp/subset_reconcile.gpkg") %>%
+  flines <- sf::read_sf("data/temp/subset_reconcile.gpkg") %>%
     dplyr::arrange(member_COMID)
 
   proj <- as.character(raster::crs(fdr))
@@ -129,11 +130,11 @@ test_that("split_catchments works", {
                                                            5329435.3,
                                                            5329435.4,
                                                            5329435.5)) %>%
-    st_transform(proj)
+    sf::st_transform(proj)
 
 
   test_cat <- dplyr::filter(catchments, FEATUREID == 5329435) %>%
-    st_transform(proj)
+    sf::st_transform(proj)
 
   split_cat <- split_catchment(test_cat, test_flines, fdr, fac)
 

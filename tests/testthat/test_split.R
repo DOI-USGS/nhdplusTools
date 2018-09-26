@@ -88,13 +88,20 @@ test_that("split_catchments works", {
 
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
-  flines_in <- sf::read_sf("data/walker.gpkg", "NHDFlowline_Network")
-  catchments <- sf::read_sf("data/walker.gpkg", "CatchmentSP")
+  fdr <- raster::raster("data/walker_fdr.tif")
+  fac <- raster::raster("data/walker_fac.tif")
+
+  proj <- as.character(raster::crs(fdr))
+
+  flines_in <- sf::read_sf("data/walker.gpkg", "NHDFlowline_Network") %>%
+    st_transform(proj)
+  catchment <- sf::read_sf("data/walker.gpkg", "CatchmentSP") %>%
+    st_transform(proj)
 
   # nolint start
   # r <- fasterize::raster("NHDPlusCA/fdr.tif")
   #
-  # cropper <- catchments %>%
+  # cropper <- catchment %>%
   #   st_transform(as.character(raster::crs(r))) %>%
   #   st_union() %>%
   #   st_buffer(1000) %>%
@@ -107,9 +114,6 @@ test_that("split_catchments works", {
   # raster::writeRaster(sub_r, "data/walker_fdr.tif", overwrite = TRUE)
   # nolint end
 
-  fdr <- raster::raster("data/walker_fdr.tif")
-  fac <- raster::raster("data/walker_fac.tif")
-
   refactor <- refactor_nhdplus(nhdplus_flines = flines_in,
                                split_flines_meters = 2000,
                                collapse_flines_meters = 1,
@@ -121,19 +125,20 @@ test_that("split_catchments works", {
                                purge_non_dendritic = FALSE,
                                warn = FALSE)
 
-  flines <- sf::read_sf("data/temp/subset_refactor.gpkg") %>%
-    dplyr::arrange(COMID)
+  fline_ref <- sf::read_sf("data/temp/subset_refactor.gpkg") %>%
+    dplyr::arrange(COMID) %>%
+    st_transform(proj)
+  fline_rec <- sf::read_sf("data/temp/subset_reconcile.gpkg") %>%
+    st_transform(proj)
 
-  proj <- as.character(raster::crs(fdr))
-  test_flines <- dplyr::filter(flines, COMID %in% c(5329435.1,
+  test_flines <- dplyr::filter(fline_ref, COMID %in% c(5329435.1,
                                                     5329435.2,
                                                     5329435.3,
                                                     5329435.4,
-                                                    5329435.5)) %>%
-    sf::st_transform(proj)
+                                                    5329435.5))
 
 
-  test_cat <- dplyr::filter(catchments, FEATUREID == 5329435) %>%
+  test_cat <- dplyr::filter(catchment, FEATUREID == 5329435) %>%
     sf::st_transform(proj)
 
   split_cat <- split_catchment(test_cat, test_flines, fdr, fac)
@@ -144,13 +149,70 @@ test_that("split_catchments works", {
   expect(all(c("XY", "POLYGON", "sfg") %in% class(split_cat[[2]])),
          "Got wrong class for polygon with one ring")
 
-  flines <- st_transform(flines, as.character(raster::crs(fdr)))[1:9, ]
-  catchments <- st_transform(catchments, as.character(raster::crs(fdr))) %>%
-    dplyr::filter(FEATUREID %in% unique(as.character(as.integer(flines$COMID))))
+  test_fline_ref <- fline_ref[1:9, ] # this sucks, but works.
+  test_fline_rec <- dplyr::filter(fline_rec,
+                              member_COMID %in% as.character(test_fline_ref$COMID))
 
-  reconciled_cats <- reconcile_catchments(catchments, flines, fdr, fac)
+  test_cat <- dplyr::filter(catchment,
+                  FEATUREID %in% unique(as.character(as.integer(test_fline_ref$COMID))))
 
-  expect(nrow(reconciled_cats) == nrow(flines), "got the wrong number of split catchments")
-  expect(all(reconciled_cats$FEATUREID %in% flines$COMID))
+  reconciled_cats <- reconcile_catchments(test_cat, test_fline_ref, test_fline_rec, fdr, fac)
+
+  expect(nrow(reconciled_cats) == nrow(test_fline_ref), "got the wrong number of split catchments")
+  expect(all(reconciled_cats$member_COMID %in% test_fline_ref$COMID))
+
+  unlink("data/temp/*")
+})
+
+test_that("split and combine works", {
+
+  dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
+
+  fdr <- raster::raster("data/walker_fdr.tif")
+  fac <- raster::raster("data/walker_fac.tif")
+
+  proj <- as.character(raster::crs(fdr))
+
+  flines_in <- sf::read_sf("data/walker.gpkg", "NHDFlowline_Network") %>%
+    st_transform(proj)
+  catchment <- sf::read_sf("data/walker.gpkg", "CatchmentSP") %>%
+    st_transform(proj)
+
+  refactor <- refactor_nhdplus(nhdplus_flines = flines_in,
+                               split_flines_meters = 2000,
+                               collapse_flines_meters = 1000,
+                               collapse_flines_main_meters = 1000,
+                               split_flines_cores = 2,
+                               out_collapsed = "data/temp/subset_refactor.gpkg",
+                               out_reconciled = "data/temp/subset_reconcile.gpkg",
+                               three_pass = TRUE,
+                               purge_non_dendritic = FALSE,
+                               warn = FALSE)
+
+  fline_ref <- sf::read_sf("data/temp/subset_refactor.gpkg") %>%
+    dplyr::arrange(COMID) %>%
+    st_transform(proj)
+  fline_rec <- sf::read_sf("data/temp/subset_reconcile.gpkg") %>%
+    st_transform(proj)
+
+  test_cat_1 <- fline_rec$member_COMID[which(nchar(fline_rec$member_COMID) ==
+                                              max(nchar(fline_rec$member_COMID)))]
+  test_cat_2 <- fline_rec$member_COMID[which(fline_rec$ID == 2)]
+
+  test_cat_list <- c(unlist(strsplit(test_cat_1, ",")), unlist(strsplit(test_cat_2, ",")))
+
+  test_cat <- dplyr::filter(catchment, FEATUREID %in% as.integer(test_cat_list))
+
+  test_fline_ref <- dplyr::filter(fline_ref, as.integer(COMID) %in%
+                                    as.integer(test_cat_list))
+
+  test_fline_rec <- dplyr::filter(fline_rec, member_COMID %in%
+                                     c(test_cat_1, test_cat_2))
+
+  reconciled_cats <- reconcile_catchments(test_cat, test_fline_ref, test_fline_rec, fdr, fac)
+
+  expect(nrow(reconciled_cats) == nrow(test_fline_rec))
+  expect(all(reconciled_cats$member_COMID %in% test_fline_rec$member_COMID))
+
   unlink("data/temp/*")
 })

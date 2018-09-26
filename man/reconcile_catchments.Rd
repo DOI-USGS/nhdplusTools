@@ -4,13 +4,17 @@
 \alias{reconcile_catchments}
 \title{Reconcile Catchments}
 \usage{
-reconcile_catchments(catchment, fline_ref, fdr, fac, para = 2)
+reconcile_catchments(catchment, fline_ref, fline_rec, fdr, fac, para = 2)
 }
 \arguments{
 \item{catchment}{sf data.frame NHDPlus Catchment or CatchmentSP for included COMIDs}
 
 \item{fline_ref}{sf data.frame flowlines as returned by
-\code{\link{refactor_nhdplus}}}
+\code{\link{refactor_nhdplus}} and \code{\link{reconcile_collapsed_flowlines}}}
+
+\item{fline_rec}{sf data.frame flowlines as returned by
+\code{\link{reconcile_collapsed_flowlines}} and
+\code{\link{reconcile_collapsed_flowlines}}}
 
 \item{fdr}{raster D8 flow direction}
 

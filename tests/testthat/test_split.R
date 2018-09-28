@@ -132,10 +132,10 @@ test_that("split_catchments works", {
     st_transform(proj)
 
   test_flines <- dplyr::filter(fline_ref, COMID %in% c(5329435.1,
-                                                    5329435.2,
-                                                    5329435.3,
-                                                    5329435.4,
-                                                    5329435.5))
+                                                       5329435.2,
+                                                       5329435.3,
+                                                       5329435.4,
+                                                       5329435.5))
 
 
   test_cat <- dplyr::filter(catchment, FEATUREID == 5329435) %>%
@@ -216,3 +216,29 @@ test_that("split and combine works", {
 
   unlink("data/temp/*")
 })
+
+
+test_that("split and combine works with combine from splt", {
+
+  # "166755072,8866562.2"
+  # "8833300.1", "8833300.2"
+
+  fdr <- raster::raster("data/reconcile_test_fdr.tif")
+  fac <- raster::raster("data/reconcile_test_fac.tif")
+  test_fline_ref <- sf::read_sf("data/reconcile_test.gpkg", "fline_ref")
+  test_fline_rec <- sf::read_sf("data/reconcile_test.gpkg", "fline_rec")
+  test_cat <- sf::read_sf("data/reconcile_test.gpkg", "catchment")
+
+  reconciled_cats <- reconcile_catchments(test_cat, test_fline_ref, test_fline_rec, fdr, fac)
+
+  expect(nrow(reconciled_cats) == nrow(test_fline_rec) - 1,
+         "Got the wrong number of reconciled catchments")
+
+  expect(all(reconciled_cats$member_COMID %in% test_fline_rec$member_COMID))
+
+  expect(reconciled_cats[which(reconciled_cats$ID == 7912),
+                         ]$member_COMID == "8833300.1")
+  expect(reconciled_cats[which(reconciled_cats$ID == 3108),
+                         ]$member_COMID == "166755072,8866562.2")
+})
+

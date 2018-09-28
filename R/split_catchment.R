@@ -91,7 +91,7 @@ split_catchment <- function(catchment, fline, fdr, fac) {
                       snap = "out")
   fdr <- raster::mask(fdr, sp_cat_buffer)
   fac <- raster::crop(fac, sp_cat_buffer,
-                  snap = "out")
+                      snap = "out")
   fac <- raster::mask(fac, sp_cat_buffer)
 
   return_cats <- list()
@@ -104,70 +104,78 @@ split_catchment <- function(catchment, fline, fdr, fac) {
   }
 
   for (cat in seq_len(nrow(outlets) - 1)) {
-    cell <- raster::cellFromXY(fdr, c(outlets$X[cat], outlets$Y[cat]))
-    row_col <- raster::rowColFromCell(fdr, cell)
+    if (sf::st_within(sf::st_sfc(sf::st_point(c(outlets$X[cat],
+                                               outlets$Y[cat])),
+                            crs = sf::st_crs(fline)),
+                     catchment)[[1]] == 1) {
 
-    neighbors <- get_neighbor_df(row_col[1], row_col[2],
-                                 nrow(fac_matrix), ncol(fac_matrix))
-    neighbor_fac <- fac_matrix[cbind(neighbors$row, neighbors$col)]
+      cell <- raster::cellFromXY(fdr, c(outlets$X[cat], outlets$Y[cat]))
+      row_col <- raster::rowColFromCell(fdr, cell)
 
-    # Some flowline outlets don't hit the right raster cell.
-    # This grabs a neighbor that is more than twice the flow accumulation
-    # to avoid just going 1 cell in the downstream direction.
-    if (any(neighbor_fac > (fac_matrix[row_col[1], row_col[2]]) * 2)) {
-      new_rc <- neighbors[which(neighbor_fac == max(neighbor_fac)), 1:2]
-      row_col[1] <- new_rc$row
-      row_col[2] <- new_rc$col
+      neighbors <- get_neighbor_df(row_col[1], row_col[2],
+                                   nrow(fac_matrix), ncol(fac_matrix))
+      neighbor_fac <- fac_matrix[cbind(neighbors$row, neighbors$col)]
+
+      # Some flowline outlets don't hit the right raster cell.
+      # This grabs a neighbor that is more than twice the flow accumulation
+      # to avoid just going 1 cell in the downstream direction.
+      if (any(neighbor_fac > (fac_matrix[row_col[1], row_col[2]]) * 2)) {
+        new_rc <- neighbors[which(neighbor_fac == max(neighbor_fac)), 1:2]
+        row_col[1] <- new_rc$row
+        row_col[2] <- new_rc$col
+      }
+
+      us_cells <- recurse_upstream(row_col, fdr_matrix)
+
+      out <- matrix(0, nrow = nrow(fdr_matrix), ncol = ncol(fdr_matrix))
+
+      out[us_cells] <- 1
+
+      out <- raster::raster(out, template = fdr)
+
+      raster_function <- function(x) x == 1
+
+      out <- st_as_sf(
+        raster::rasterToPolygons(out,
+                                 fun = raster_function,
+                                 dissolve = TRUE))
+
+
+      smaller_than_one_pixel <- units::set_units(800, "m^2")
+      snap_distance <- units::set_units(100, "m")
+
+      ds_catchment <- st_geometry(out) %>%
+        st_simplify(dTolerance = 40) %>%
+        st_snap(st_geometry(catchment), tolerance = snap_distance)
+
+      retry_cat_fun <- function(catchment, ds_catchment, smaller_than_one_pixel) {
+        st_difference(st_geometry(catchment), ds_catchment) %>%
+          st_cast("POLYGON") %>%
+          st_sf() %>%
+          mutate(area = st_area(.)) %>%
+          filter(area > smaller_than_one_pixel) %>%
+          st_combine()
+      }
+
+      ds_catchment <- tryCatch(retry_cat_fun(catchment,
+                                             ds_catchment,
+                                             smaller_than_one_pixel),
+                               error = function(e)
+                                 retry_cat_fun(lwgeom::st_make_valid(catchment),
+                                               lwgeom::st_make_valid(ds_catchment),
+                                               smaller_than_one_pixel))
+
+      us_catchment <- tryCatch(st_difference(st_geometry(catchment), ds_catchment),
+                               error = function(e)
+                                 st_difference(st_geometry(lwgeom::st_make_valid(catchment)),
+                                               lwgeom::st_make_valid(ds_catchment)))
+
+      catchment <- ds_catchment
+
+      return_cats <- c(return_cats, us_catchment)
+    } else {
+      browser()
     }
-
-    us_cells <- recurse_upstream(row_col, fdr_matrix)
-
-    out <- matrix(0, nrow = nrow(fdr_matrix), ncol = ncol(fdr_matrix))
-
-    out[us_cells] <- 1
-
-    out <- raster::raster(out, template = fdr)
-
-    raster_function <- function(x) x == 1
-
-    out <- st_as_sf(
-      raster::rasterToPolygons(out,
-                               fun = raster_function,
-                               dissolve = TRUE))
-
-
-    smaller_than_one_pixel <- units::set_units(800, "m^2")
-    snap_distance <- units::set_units(100, "m")
-
-    ds_catchment <- st_geometry(out) %>%
-      st_simplify(dTolerance = 40) %>%
-      st_snap(st_geometry(catchment), tolerance = snap_distance)
-
-    retry_cat_fun <- function(catchment, ds_catchment, smaller_than_one_pixel) {
-      st_difference(st_geometry(catchment), ds_catchment) %>%
-        st_cast("POLYGON") %>%
-        st_sf() %>%
-        mutate(area = st_area(.)) %>%
-        filter(area > smaller_than_one_pixel) %>%
-        st_combine()
-    }
-
-    ds_catchment <- tryCatch(retry_cat_fun(catchment,
-                                           ds_catchment,
-                                           smaller_than_one_pixel),
-                             error = function(e)
-                               retry_cat_fun(lwgeom::st_make_valid(catchment),
-                                             lwgeom::st_make_valid(ds_catchment),
-                                             smaller_than_one_pixel))
-
-    us_catchment <- tryCatch(st_difference(st_geometry(catchment), ds_catchment),
-                             error = function(e)
-                               st_difference(st_geometry(lwgeom::st_make_valid(catchment)),
-                                             lwgeom::st_make_valid(ds_catchment)))
-
-    catchment <- ds_catchment
-
-    return_cats <- c(return_cats, us_catchment)
   }
 
   return_cats <- c(return_cats, st_geometry(catchment))

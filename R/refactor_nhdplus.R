@@ -67,6 +67,8 @@ refactor_nhdplus <- function(nhdplus_flines,
       sf::st_as_sf()
   }
 
+  in_proj <- sf::st_crs(nhdplus_flines)
+
   flines <- nhdplus_flines %>%
     sf::st_cast("LINESTRING", warn = warn) %>%
     sf::st_transform(5070) %>%
@@ -109,7 +111,7 @@ refactor_nhdplus <- function(nhdplus_flines,
   collapsed_flines %>%
     dplyr::inner_join(select(flines, COMID), by = "COMID") %>%
     sf::st_as_sf() %>%
-    sf::st_transform(4326) %>%
+    sf::st_transform(in_proj) %>%
     sf::st_write(out_collapsed, layer_options = "OVERWRITE=YES",
                  quiet = !warn)
 
@@ -125,7 +127,7 @@ refactor_nhdplus <- function(nhdplus_flines,
     unlist(lapply(collapsed$member_COMID,
                   function(x) paste(x, collapse = ",")))
 
-  sf::st_write(sf::st_transform(collapsed, 4326),
+  sf::st_write(sf::st_transform(collapsed, in_proj),
                out_reconciled,
                layer_options = "OVERWRITE=YES",
                quiet = !warn)

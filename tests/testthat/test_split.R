@@ -88,17 +88,15 @@ test_that("split_catchments works", {
 
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
-  fdr <- raster::raster("data/walker_fdr.tif")
-  fac <- raster::raster("data/walker_fac.tif")
+  data <- nhdplusTools:::get_test_data()
 
-  proj <- as.character(raster::crs(fdr))
-
-  flines_in <- sf::read_sf("data/walker.gpkg", "NHDFlowline_Network") %>%
-    st_transform(proj)
-  catchment <- sf::read_sf("data/walker.gpkg", "CatchmentSP") %>%
-    st_transform(proj)
+  fdr <- data$fdr
+  fac <- data$fac
+  flines_in <- data$flowline
+  catchment <- data$catchment
 
   # nolint start
+  # This is how the raster data was created.
   # r <- fasterize::raster("NHDPlusCA/fdr.tif")
   #
   # cropper <- catchment %>%
@@ -126,20 +124,12 @@ test_that("split_catchments works", {
                                warn = FALSE)
 
   fline_ref <- sf::read_sf("data/temp/subset_refactor.gpkg") %>%
-    dplyr::arrange(COMID) %>%
-    st_transform(proj)
-  fline_rec <- sf::read_sf("data/temp/subset_reconcile.gpkg") %>%
-    st_transform(proj)
+    dplyr::arrange(COMID)
+  fline_rec <- sf::read_sf("data/temp/subset_reconcile.gpkg")
 
-  test_flines <- dplyr::filter(fline_ref, COMID %in% c(5329435.1,
-                                                       5329435.2,
-                                                       5329435.3,
-                                                       5329435.4,
-                                                       5329435.5))
+  test_flines <- dplyr::filter(fline_ref, as.integer(COMID) == 5329435)
 
-
-  test_cat <- dplyr::filter(catchment, FEATUREID == 5329435) %>%
-    sf::st_transform(proj)
+  test_cat <- dplyr::filter(catchment, FEATUREID == 5329435)
 
   split_cat <- split_catchment(test_cat, test_flines, fdr, fac)
 
@@ -154,7 +144,7 @@ test_that("split_catchments works", {
                               member_COMID %in% as.character(test_fline_ref$COMID))
 
   test_cat <- dplyr::filter(catchment,
-                  FEATUREID %in% unique(as.character(as.integer(test_fline_ref$COMID))))
+                  FEATUREID %in% unique(as.integer(test_fline_ref$COMID)))
 
   reconciled_cats <- reconcile_catchments(test_cat, test_fline_ref, test_fline_rec, fdr, fac)
 
@@ -168,15 +158,12 @@ test_that("split and combine works", {
 
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
-  fdr <- raster::raster("data/walker_fdr.tif")
-  fac <- raster::raster("data/walker_fac.tif")
+  data <- nhdplusTools:::get_test_data()
 
-  proj <- as.character(raster::crs(fdr))
-
-  flines_in <- sf::read_sf("data/walker.gpkg", "NHDFlowline_Network") %>%
-    st_transform(proj)
-  catchment <- sf::read_sf("data/walker.gpkg", "CatchmentSP") %>%
-    st_transform(proj)
+  fdr <- data$fdr
+  fac <- data$fac
+  flines_in <- data$flowline
+  catchment <- data$catchment
 
   refactor <- refactor_nhdplus(nhdplus_flines = flines_in,
                                split_flines_meters = 2000,
@@ -190,10 +177,8 @@ test_that("split and combine works", {
                                warn = FALSE)
 
   fline_ref <- sf::read_sf("data/temp/subset_refactor.gpkg") %>%
-    dplyr::arrange(COMID) %>%
-    st_transform(proj)
-  fline_rec <- sf::read_sf("data/temp/subset_reconcile.gpkg") %>%
-    st_transform(proj)
+    dplyr::arrange(COMID)
+  fline_rec <- sf::read_sf("data/temp/subset_reconcile.gpkg")
 
   test_cat_1 <- fline_rec$member_COMID[which(nchar(fline_rec$member_COMID) ==
                                               max(nchar(fline_rec$member_COMID)))]
@@ -218,7 +203,7 @@ test_that("split and combine works", {
 })
 
 
-test_that("split and combine works with combine from splt", {
+test_that("split and combine works with combine from split", {
 
   # "166755072,8866562.2"
   # "8833300.1", "8833300.2"
@@ -241,4 +226,3 @@ test_that("split and combine works with combine from splt", {
   expect(reconciled_cats[which(reconciled_cats$ID == 3108),
                          ]$member_COMID == "166755072,8866562.2")
 })
-

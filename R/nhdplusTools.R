@@ -238,3 +238,25 @@ get_ds_joined_fromCOMID <- function(flines) {
   flines <- mutate(flines, ds_joined_fromCOMID = joined_fromCOMID)
   flines[["ds_joined_fromCOMID"]][match(flines$toCOMID, flines$COMID)]
 }
+
+get_test_data <- function() {
+  fac <- system.file("extdata/walker_fac.tif",
+                     package = "nhdplusTools") %>%
+    raster::raster()
+  fdr <- system.file("extdata/walker_fdr.tif",
+                     package = "nhdplusTools") %>%
+    raster::raster()
+
+  proj <- as.character(raster::crs(fdr))
+
+  nhdplus <- system.file("extdata/walker.gpkg",
+                         package = "nhdplusTools")
+
+  flowline <- read_sf(nhdplus, "NHDFlowline_Network") %>%
+    st_transform(proj)
+
+  catchment <- read_sf(nhdplus, "CatchmentSP") %>%
+    st_transform(proj)
+
+  return(list(fdr = fdr, fac = fac, flowline = flowline, catchment = catchment))
+}

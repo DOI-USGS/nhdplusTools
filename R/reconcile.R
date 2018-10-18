@@ -137,8 +137,6 @@ reconcile_catchments <- function(catchment, fline_ref, fline_rec, fdr, fac, para
                                                   fdr = fdr,
                                                   fac = fac)
 
-      split_cats <- sf::st_sfc(split_cats, crs = sf::st_crs(to_split_cat))
-
       out <- sf::st_sf(FEATUREID = to_split_flines$COMID,
                        geom = split_cats, stringsAsFactors = FALSE)
     }
@@ -197,7 +195,7 @@ reconcile_catchments <- function(catchment, fline_ref, fline_rec, fdr, fac, para
     replace_cat <- dplyr::select(catchment, member_COMID = FEATUREID) %>%
       dplyr::filter(member_COMID %in% unique(as.integer(out$member_COMID[missing]))) %>%
       mutate(member_COMID = paste0(member_COMID, ".1")) %>%
-      mutate(ID = out$ID[which(grepl(member_COMID, out$member_COMID))]) %>%
+      mutate(ID = out$ID[match(member_COMID, out$member_COMID)]) %>%
       dplyr::select(ID, member_COMID)
 
     out <- filter(out, !missing) %>%

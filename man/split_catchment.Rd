@@ -17,9 +17,10 @@ upstream downstream order.}
 \item{fac}{raster a flow accumulation raster that fuller covers the catchment}
 }
 \value{
-Split catchments as an sf data.frame
+Split catchments as an sfc geometry.
 }
 \description{
 A catchment splitting algorithm that works with a D8
-flow direction grid and the output of nhdplus_refactor.
+flow direction grid and the output of nhdplus_refactor. See Vignette
+for examples.
 }

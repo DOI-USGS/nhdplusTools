@@ -88,14 +88,24 @@ test_that("split_catchments works", {
 
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
-  data <- nhdplusTools:::get_test_data()
+  fac <- raster::raster("data/walker_fac.tif")
 
-  fdr <- data$fdr
-  fac <- data$fac
-  flines_in <- data$flowline
-  catchment <- data$catchment
+  fdr <- raster::raster("data/walker_fdr.tif")
+
+  proj <- as.character(raster::crs(fdr))
+
+  flowline <- sf::read_sf("data/walker.gpkg", "NHDFlowline_Network") %>%
+    sf::st_transform(proj)
+
+  catchment <- sf::read_sf("data/walker.gpkg", "CatchmentSP") %>%
+    sf::st_transform(proj)
 
   # nolint start
+  # fac_sample <- fac
+  # fdr_samople <- fdr
+  # catchment_sample <- catchment
+  # flowline_sample <- flowline
+  # devtools::use_data(fac, fdr, flowline, catchment, pkg = "../../.")
   # This is how the raster data was created.
   # r <- fasterize::raster("NHDPlusCA/fdr.tif")
   #
@@ -112,7 +122,7 @@ test_that("split_catchments works", {
   # raster::writeRaster(sub_r, "data/walker_fdr.tif", overwrite = TRUE)
   # nolint end
 
-  refactor <- refactor_nhdplus(nhdplus_flines = flines_in,
+  refactor <- refactor_nhdplus(nhdplus_flines = flowline,
                                split_flines_meters = 2000,
                                collapse_flines_meters = 1,
                                collapse_flines_main_meters = 1,
@@ -158,14 +168,12 @@ test_that("split and combine works", {
 
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
-  data <- nhdplusTools:::get_test_data()
+  fdr <- fdr_sample
+  fac <- fac_sample
+  flowline <- flowline_sample
+  catchment <- catchment_sample
 
-  fdr <- data$fdr
-  fac <- data$fac
-  flines_in <- data$flowline
-  catchment <- data$catchment
-
-  refactor <- refactor_nhdplus(nhdplus_flines = flines_in,
+  refactor <- refactor_nhdplus(nhdplus_flines = flowline,
                                split_flines_meters = 2000,
                                collapse_flines_meters = 1000,
                                collapse_flines_main_meters = 1000,

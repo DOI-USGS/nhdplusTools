@@ -25,59 +25,19 @@ dir.create("./data_dir")
 
 ## Load Network and Refactor
 
-First, we need to load up some data to be refactored. For this example, we will use some data available from the nhdplusTools package for testing and examples.
+For this example, we will use some data available from the nhdplusTools package for testing and examples. `fac_sample`, `fdr_sample`, `flowline_sample`, `catchment_sample` are all included as sample data in `nhdplusTools`.
 
-```{r get_data_func, echo=FALSE, message=FALSE} 
-# This function doesn't want to work while building vignettes, so hacking it for now.
-get_test_data <- function() {
-  library(magrittr)
-  fac <- system.file("extdata", "walker_fac.tif",
-                     package = "nhdplusTools") %>%
-    raster::raster()
-  
-  fdr <- system.file("extdata", "walker_fdr.tif",
-                     package = "nhdplusTools") %>%
-    raster::raster()
-
-  proj <- as.character(raster::crs(fdr))
-
-  nhdplus <- system.file("extdata", "walker.gpkg",
-                         package = "nhdplusTools")
-
-  flowline <- sf::read_sf(nhdplus, "NHDFlowline_Network") %>%
-    sf::st_transform(proj)
-
-  catchment <- sf::read_sf(nhdplus, "CatchmentSP") %>%
-    sf::st_transform(proj)
-
-  return(list(fdr = fdr, fac = fac, flowline = flowline, catchment = catchment))
-}
-library(sf)
-library(nhdplusTools)
-
-data <- get_test_data()
-
-fdr <- data$fdr
-fac <- data$fac
-flowline <- data$flowline
-catchment <- data$catchment
-```
-
-```{r get_data, eval = FALSE}
-library(sf)
-library(nhdplusTools)
-
-data <- nhdplusTools:::get_test_data()
-
-fdr <- data$fdr
-fac <- data$fac
-flowline <- data$flowline
-catchment <- data$catchment
-```
-
-Before we can do anything with the catchments, we need to run the NHDPlus Refactor workflow documented over in vignette("refactor_nhdplus").
+Before we can do anything with the catchments, we need to run the NHDPlus Refactor workflow documented over in `vignette("refactor_nhdplus")`.
 
 ```{r refactor}
+library(sf)
+library(nhdplusTools)
+
+fdr <- fdr_sample
+fac <- fac_sample
+flowline <- flowline_sample
+catchment <- catchment_sample
+
 refactor_nhdplus(nhdplus_flines = flowline,
                  split_flines_meters = 2000,
                  collapse_flines_meters = 1,

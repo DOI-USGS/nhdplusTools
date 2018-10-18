@@ -5,5 +5,6 @@ articles:
   nhdplusTools: nhdplusTools.html
   plot_nhdplus: plot_nhdplus.html
   point_indexing: point_indexing.html
+  refactor_catchment: refactor_catchment.html
   refactor_nhdplus: refactor_nhdplus.html
 

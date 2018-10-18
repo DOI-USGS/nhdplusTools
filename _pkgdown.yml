@@ -35,5 +35,7 @@ reference:
       - '`refactor_nhdplus`'
       - '`prepare_nhdplus`'
       - '`split_flowlines`'
+      - '`split_catchment`'
       - '`collapse_flowlines`'
       - '`reconcile_collapsed_flowlines`'
+      - '`reconcile_catchments`'

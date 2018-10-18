@@ -240,16 +240,16 @@ get_ds_joined_fromCOMID <- function(flines) {
 }
 
 get_test_data <- function() {
-  fac <- system.file("extdata/walker_fac.tif",
+  fac <- system.file("extdata", "walker_fac.tif",
                      package = "nhdplusTools") %>%
     raster::raster()
-  fdr <- system.file("extdata/walker_fdr.tif",
+  fdr <- system.file("extdata", "walker_fdr.tif",
                      package = "nhdplusTools") %>%
     raster::raster()
 
   proj <- as.character(raster::crs(fdr))
 
-  nhdplus <- system.file("extdata/walker.gpkg",
+  nhdplus <- system.file("extdata", "walker.gpkg",
                          package = "nhdplusTools")
 
   flowline <- sf::read_sf(nhdplus, "NHDFlowline_Network") %>%

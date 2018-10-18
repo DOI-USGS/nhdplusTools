@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Split Flowlines — split_flowlines • nhdplusTools</title>
+<title>Reconcile Catchments — reconcile_catchments • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Split Flowlines — split_flowlines" />
+<meta property="og:title" content="Reconcile Catchments — reconcile_catchments" />
 
-<meta property="og:description" content="A wrapper for split_lines that works on nhdplus attributes" />
+<meta property="og:description" content="Reconciles catchments according to the output of
+reconcile_collapsed_flowlines and refactor_nhdplus" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -121,45 +122,65 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Split Flowlines</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/split.R'><code>R/split.R</code></a></small>
-    <div class="hidden name"><code>split_flowlines.Rd</code></div>
+    <h1>Reconcile Catchments</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/reconcile.R'><code>R/reconcile.R</code></a></small>
+    <div class="hidden name"><code>reconcile_catchments.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>A wrapper for split_lines that works on nhdplus attributes</p>
+    <p>Reconciles catchments according to the output of
+<code><a href='reconcile_collapsed_flowlines.html'>reconcile_collapsed_flowlines</a></code> and <code><a href='refactor_nhdplus.html'>refactor_nhdplus</a></code></p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>split_flowlines</span>(<span class='no'>flines</span>, <span class='no'>max_length</span>, <span class='kw'>para</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
+    <pre class="usage"><span class='fu'>reconcile_catchments</span>(<span class='no'>catchment</span>, <span class='no'>fline_ref</span>, <span class='no'>fline_rec</span>, <span class='no'>fdr</span>, <span class='no'>fac</span>, <span class='kw'>para</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>flines</th>
-      <td><p>data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM
-and LINESTRING sf column in "meters" projection</p></td>
+      <th>catchment</th>
+      <td><p>sf data.frame NHDPlus Catchment or CatchmentSP for included COMIDs</p></td>
     </tr>
     <tr>
-      <th>max_length</th>
-      <td><p>maximum segment length to return</p></td>
+      <th>fline_ref</th>
+      <td><p>sf data.frame flowlines as returned by
+<code><a href='refactor_nhdplus.html'>refactor_nhdplus</a></code> and <code><a href='reconcile_collapsed_flowlines.html'>reconcile_collapsed_flowlines</a></code></p></td>
+    </tr>
+    <tr>
+      <th>fline_rec</th>
+      <td><p>sf data.frame flowlines as returned by
+<code><a href='reconcile_collapsed_flowlines.html'>reconcile_collapsed_flowlines</a></code> and
+<code><a href='reconcile_collapsed_flowlines.html'>reconcile_collapsed_flowlines</a></code></p></td>
+    </tr>
+    <tr>
+      <th>fdr</th>
+      <td><p>raster D8 flow direction</p></td>
+    </tr>
+    <tr>
+      <th>fac</th>
+      <td><p>raster flow accumulation</p></td>
     </tr>
     <tr>
       <th>para</th>
-      <td><p>numeric how many threads to use in parallel computation</p></td>
+      <td><p>integer numer of cores to use for parallel execution</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>All the flowlines with some split apart.</p>
+    <p>Catchments that have been split and collapsed according to input flowlines</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Note that all inputs must be passed in the same projection.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>The <code><a href='refactor_nhdplus.html'>refactor_nhdplus</a></code> function implements a complete
-workflow using `split_flowlines()`.</p></div>
+workflow using `reconcile_collapsed_flowlines()` and can be used in prep
+for this function.</p></div>
     
 
   </div>
@@ -169,6 +190,8 @@ workflow using `split_flowlines()`.</p></div>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
           </ul>

@@ -1,5 +1,5 @@
 ---
-title: "Refactor Catchments with nhdplusTools"
+title: "Refactor Catchments"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
@@ -27,7 +27,43 @@ dir.create("./data_dir")
 
 First, we need to load up some data to be refactored. For this example, we will use some data available from the nhdplusTools package for testing and examples.
 
-```{r get_data}
+```{r get_data_func, echo=FALSE, message=FALSE} 
+# This function doesn't want to work while building vignettes, so hacking it for now.
+get_test_data <- function() {
+  library(magrittr)
+  fac <- system.file("extdata", "walker_fac.tif",
+                     package = "nhdplusTools") %>%
+    raster::raster()
+  
+  fdr <- system.file("extdata", "walker_fdr.tif",
+                     package = "nhdplusTools") %>%
+    raster::raster()
+
+  proj <- as.character(raster::crs(fdr))
+
+  nhdplus <- system.file("extdata", "walker.gpkg",
+                         package = "nhdplusTools")
+
+  flowline <- sf::read_sf(nhdplus, "NHDFlowline_Network") %>%
+    sf::st_transform(proj)
+
+  catchment <- sf::read_sf(nhdplus, "CatchmentSP") %>%
+    sf::st_transform(proj)
+
+  return(list(fdr = fdr, fac = fac, flowline = flowline, catchment = catchment))
+}
+library(sf)
+library(nhdplusTools)
+
+data <- get_test_data()
+
+fdr <- data$fdr
+fac <- data$fac
+flowline <- data$flowline
+catchment <- data$catchment
+```
+
+```{r get_data, eval = FALSE}
 library(sf)
 library(nhdplusTools)
 

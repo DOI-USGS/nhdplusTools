@@ -94,6 +94,9 @@ specified collection of catchments." />
       <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
     </li>
     <li>
+      <a href="../articles/refactor_catchment.html">Refactor Catchments with nhdplusTools</a>
+    </li>
+    <li>
       <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
     </li>
   </ul>
@@ -132,7 +135,7 @@ specified collection of catchments.</p>
     </div>
 
     <pre class="usage"><span class='fu'>subset_nhdplus</span>(<span class='no'>comids</span>, <span class='no'>output_file</span>, <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>simplified</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,6 +155,11 @@ to the directory of the nhdplus_data.</p></td>
 the national seamless dataset or "download" to use web service.
 Not required if <code><a href='nhdplus_path.html'>nhdplus_path</a></code> has been set or the default
 has been adopted. See details for more.</p></td>
+    </tr>
+    <tr>
+      <th>simplified</th>
+      <td><p>boolean if TRUE (the default) the CatchmentSP layer
+will be included. Not relevant to the "download" option.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>

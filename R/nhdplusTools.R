@@ -252,11 +252,11 @@ get_test_data <- function() {
   nhdplus <- system.file("extdata/walker.gpkg",
                          package = "nhdplusTools")
 
-  flowline <- read_sf(nhdplus, "NHDFlowline_Network") %>%
-    st_transform(proj)
+  flowline <- sf::read_sf(nhdplus, "NHDFlowline_Network") %>%
+    sf::st_transform(proj)
 
-  catchment <- read_sf(nhdplus, "CatchmentSP") %>%
-    st_transform(proj)
+  catchment <- sf::read_sf(nhdplus, "CatchmentSP") %>%
+    sf::st_transform(proj)
 
   return(list(fdr = fdr, fac = fac, flowline = flowline, catchment = catchment))
 }

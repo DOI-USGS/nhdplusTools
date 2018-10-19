@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
       </span>
     </div>
 
@@ -111,25 +111,27 @@
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; Linking to GEOS 3.6.1, GDAL 2.1.3, proj.4 4.9.3</span></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">library</span>(nhdplusTools)</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">#&gt; USGS Support Package: https://owi.usgs.gov/R/packages.html#support</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">fdr &lt;-<span class="st"> </span>fdr_sample</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">fac &lt;-<span class="st"> </span>fac_sample</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">flowline &lt;-<span class="st"> </span>flowline_sample</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">catchment &lt;-<span class="st"> </span>catchment_sample</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="kw"><a href="../reference/refactor_nhdplus.html">refactor_nhdplus</a></span>(<span class="dt">nhdplus_flines =</span> flowline,</a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">                 <span class="dt">split_flines_meters =</span> <span class="dv">2000</span>,</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">                 <span class="dt">collapse_flines_meters =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">                 <span class="dt">collapse_flines_main_meters =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">                 <span class="dt">split_flines_cores =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16">                 <span class="dt">out_collapsed =</span> <span class="st">"data_dir/refactor.gpkg"</span>,</a>
-<a class="sourceLine" id="cb1-17" data-line-number="17">                 <span class="dt">out_reconciled =</span> <span class="st">"data_dir/reconcile.gpkg"</span>,</a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">                 <span class="dt">three_pass =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb1-19" data-line-number="19">                 <span class="dt">purge_non_dendritic =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb1-20" data-line-number="20">                 <span class="dt">warn =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb1-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb1-22" data-line-number="22">flowline_ref &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="st">"data_dir/refactor.gpkg"</span>)</a>
-<a class="sourceLine" id="cb1-23" data-line-number="23">flowline_rec &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="st">"data_dir/reconcile.gpkg"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">library</span>(raster)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; Loading required package: sp</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">flowline &lt;-<span class="st"> </span>walker_flowline</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">catchment &lt;-<span class="st"> </span>walker_catchment</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">fdr &lt;-<span class="st"> </span>walker_fdr</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">fac &lt;-<span class="st"> </span>walker_fac</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="kw"><a href="../reference/refactor_nhdplus.html">refactor_nhdplus</a></span>(<span class="dt">nhdplus_flines =</span> flowline,</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">                 <span class="dt">split_flines_meters =</span> <span class="dv">2000</span>,</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">                 <span class="dt">collapse_flines_meters =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">                 <span class="dt">collapse_flines_main_meters =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">                 <span class="dt">split_flines_cores =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">                 <span class="dt">out_collapsed =</span> <span class="st">"data_dir/refactor.gpkg"</span>,</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">                 <span class="dt">out_reconciled =</span> <span class="st">"data_dir/reconcile.gpkg"</span>,</a>
+<a class="sourceLine" id="cb1-20" data-line-number="20">                 <span class="dt">three_pass =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb1-21" data-line-number="21">                 <span class="dt">purge_non_dendritic =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb1-22" data-line-number="22">                 <span class="dt">warn =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">flowline_ref &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="st">"data_dir/refactor.gpkg"</span>)</a>
+<a class="sourceLine" id="cb1-25" data-line-number="25">flowline_rec &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="st">"data_dir/reconcile.gpkg"</span>)</a></code></pre></div>
 <p>Let’s start by looking at a single sample catchment. In the first plot, you can see the input is a single polygon and a set of catchment flowlines. For reference, the Flow Direction Raster (FDR) and Flow Accumulation Raster (FAC) are also plotted.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">sample_catchment &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(catchment, FEATUREID <span class="op">==</span><span class="st"> </span><span class="dv">5329435</span>)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"></a>

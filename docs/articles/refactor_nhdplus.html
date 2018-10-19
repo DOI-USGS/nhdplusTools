@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
       </span>
     </div>
 
@@ -110,7 +110,7 @@
 <h2 class="hasAnchor">
 <a href="#network-preparation" class="anchor"></a>Network Preparation</h2>
 <p>Prior to summarizing the network, some NHDPlus conditioning can be performed. The following function removes coastal and non-dendritic flowlines. It can also remove networks with an outlet drainage area under a threshold or a longest path length under a threshold, but those inputs are set to 0 such that all networks are included here. Note that this is especially important when running the whole country – little change is applied to network subsets that follow the network upstream with tributaries.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">nhdplus_flines &lt;-<span class="st"> </span>nhdplusTools<span class="op">::</span>sample_flines</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">nhdplus_flines &lt;-<span class="st"> </span>sample_flines</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">min_network_size &lt;-<span class="st"> </span><span class="dv">0</span></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">min_path_length &lt;-<span class="st"> </span><span class="dv">0</span></a>
 <a class="sourceLine" id="cb1-4" data-line-number="4">flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare_nhdplus.html">prepare_nhdplus</a></span>(<span class="kw">st_set_geometry</span>(nhdplus_flines, <span class="ot">NULL</span>), </a>

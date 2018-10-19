@@ -20,11 +20,11 @@ test_that("subset runs as expected", {
 
   staged_nhdplus <- stage_national_data(output_path = "data/temp/")
 
-  start_comid <- 13293750
+  start_comid <- 13293392
 
   sample_flines <- readRDS(staged_nhdplus$flowline)
 
-  comids <- get_UT(sample_flines, start_comid)
+  comids <- get_UM(sample_flines, start_comid)
 
   out_file <- "./data/temp/demo_subset.gpkg"
 
@@ -52,8 +52,8 @@ test_that("subset runs as expected", {
   expect_equal(length(messages), 15)
 
   check_layers <- function() {
-    expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 167)
-    expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 90)
+    expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
+    expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 1)
   }
 
   check_layers()

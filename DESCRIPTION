@@ -9,7 +9,6 @@ BugReports: https://github.com/dblodgett-usgs/nhdplusTools/issues
 Depends:
     R (>= 3.0)
 Imports: dplyr, sf, lwgeom, snow, RANN, units, magrittr, jsonlite, httr, raster
-Remotes: r-spatial/lwgeom
 Suggests: testthat, knitr, rmarkdown, rosm, prettymapr, ggmap, ggplot2, sp, devtools
 License: CC0
 Encoding: UTF-8

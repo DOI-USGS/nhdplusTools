@@ -1,11 +1,3 @@
-
-if (requireNamespace("lintr", quietly = TRUE)) {
-  context("lints")
-  test_that("Package Style", {
-    lintr::expect_lint_free()
-  })
-}
-
 context("package setup")
 
 test_that("nhdplus_data path sets and gets right", {

@@ -127,51 +127,6 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
   }
 }
 
-#' Sample Flowlines from the Petapsco River.
-#'
-#' A sample set of flowlines.
-#'
-#' @format An sf data.frame
-#'
-#' @source \url{https://www.epa.gov/waterdata/nhdplus-national-data}
-"sample_flines"
-
-#' Sample Catchments Walker River
-#'
-#' Sample Catchments
-#'
-#' @format An sf data.frame
-#'
-#' @source \url{https://www.epa.gov/waterdata/nhdplus-national-data}
-"catchment_sample"
-
-#' Sample Flowlines Walker River
-#'
-#' Sample Flowlines
-#'
-#' @format An sf data.frame
-#'
-#' @source \url{https://www.epa.gov/waterdata/nhdplus-national-data}
-"flowline_sample"
-
-#' Sample Flow Accumulation Raster
-#'
-#' Sample Flow Accumulation
-#'
-#' @format A raster object
-#'
-#' @source \url{https://www.epa.gov/waterdata/nhdplus-national-data}
-"fac_sample"
-
-#' Sample Flow Direction Raster
-#'
-#' Sample Flow Direction
-#'
-#' @format A raster object
-#'
-#' @source \url{https://www.epa.gov/waterdata/nhdplus-national-data}
-"fdr_sample"
-
 #' @title Discover NHDPlus ID
 #' @description Multipurpose function to find a COMID of interest.
 #' @param point An sf POINT including crs as created by:

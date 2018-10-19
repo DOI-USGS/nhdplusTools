@@ -7,24 +7,25 @@ test_that("split lines works", {
                                                  where = "package:lwgeom",
                                                  mode = "function")) {
 
-  flines_in <- st_read("data/walker_network.geojson", quiet = TRUE)
+  flines_in <- walker_flowline
 
   flines <- suppressWarnings(prepare_nhdplus(flines_in, 0, 0))
   flines <- collapse_flowlines(flines, 1, F, 1)
   flines <- reconcile_collapsed_flowlines(flines)
 
-  flines <- st_as_sf(dplyr::inner_join(flines, select(flines_in, COMID),
+  flines <- sf::st_as_sf(dplyr::inner_join(flines, dplyr::select(flines_in, COMID),
                                 by = c("member_COMID" = "COMID"))) %>%
     dplyr::select(-member_COMID) %>%
     dplyr::distinct() %>%
     dplyr::group_by(ID) %>%
     dplyr::summarise(toID = toID[1], LENGTHKM = LENGTHKM[1],
               TotDASqKM = TotDASqKM[1]) %>%
-    st_cast("MULTILINESTRING") %>%
+    sf::st_cast("MULTILINESTRING") %>%
     dplyr::ungroup() %>%
-    st_line_merge()
+    sf::st_line_merge()
 
-  split <- nhdplusTools:::split_lines(st_transform(select(flines, ID), 5070), 250, id = "ID")
+  split <- nhdplusTools:::split_lines(sf::st_transform(dplyr::select(flines, ID),
+                                                       5070), 250, id = "ID")
 
   expect(nrow(split) == 574)
 
@@ -43,7 +44,7 @@ test_that("split lines works", {
   flines <- suppressWarnings(
     sf::st_set_geometry(flines_in, NULL) %>%
     prepare_nhdplus(0, 0) %>%
-    dplyr::inner_join(select(flines_in, COMID), by = "COMID") %>%
+    dplyr::inner_join(dplyr::select(flines_in, COMID), by = "COMID") %>%
     sf::st_as_sf() %>%
     sf::st_cast("LINESTRING") %>%
     sf::st_transform(5070) %>%
@@ -66,7 +67,7 @@ test_that("split_lines_2 works the same as split_lines", {
   flines_in <- suppressWarnings(
     sf::st_set_geometry(flines_in, NULL) %>%
       prepare_nhdplus(0, 0) %>%
-      dplyr::inner_join(select(flines_in, COMID), by = "COMID") %>%
+      dplyr::inner_join(dplyr::select(flines_in, COMID), by = "COMID") %>%
       sf::st_as_sf() %>%
       sf::st_cast("LINESTRING") %>%
       sf::st_transform(5070))
@@ -88,39 +89,10 @@ test_that("split_catchments works", {
 
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
-  fac <- raster::raster("data/walker_fac.tif")
-
-  fdr <- raster::raster("data/walker_fdr.tif")
-
-  proj <- as.character(raster::crs(fdr))
-
-  flowline <- sf::read_sf("data/walker.gpkg", "NHDFlowline_Network") %>%
-    sf::st_transform(proj)
-
-  catchment <- sf::read_sf("data/walker.gpkg", "CatchmentSP") %>%
-    sf::st_transform(proj)
-
-  # nolint start
-  # fac_sample <- fac
-  # fdr_samople <- fdr
-  # catchment_sample <- catchment
-  # flowline_sample <- flowline
-  # devtools::use_data(fac, fdr, flowline, catchment, pkg = "../../.")
-  # This is how the raster data was created.
-  # r <- fasterize::raster("NHDPlusCA/fdr.tif")
-  #
-  # cropper <- catchment %>%
-  #   st_transform(as.character(raster::crs(r))) %>%
-  #   st_union() %>%
-  #   st_buffer(1000) %>%
-  #   as_Spatial()
-  #
-  # fac <- fasterize::raster("NHDPlusCA/fac.tif")
-  # sub_fac <- raster::crop(fac, cropper)
-  # sub_r <- raster::crop(r, cropper)
-  # raster::writeRaster(sub_fac, "data/walker_fac.tif", overwrite = TRUE)
-  # raster::writeRaster(sub_r, "data/walker_fdr.tif", overwrite = TRUE)
-  # nolint end
+  fac <- walker_fac
+  fdr <- walker_fdr
+  flowline <- walker_flowline
+  catchment <- walker_catchment
 
   refactor <- refactor_nhdplus(nhdplus_flines = flowline,
                                split_flines_meters = 2000,
@@ -168,10 +140,10 @@ test_that("split and combine works", {
 
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
-  fdr <- fdr_sample
-  fac <- fac_sample
-  flowline <- flowline_sample
-  catchment <- catchment_sample
+  fac <- walker_fac
+  fdr <- walker_fdr
+  flowline <- walker_flowline
+  catchment <- walker_catchment
 
   refactor <- refactor_nhdplus(nhdplus_flines = flowline,
                                split_flines_meters = 2000,

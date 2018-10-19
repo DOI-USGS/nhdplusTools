@@ -11,7 +11,8 @@ test_that("subset runs as expected", {
 
   unlink("data/temp/*")
 
-  sample_data <- "data/sample_natseamless.gpkg"
+  sample_data <- system.file("extdata/sample_natseamless.gpkg",
+                             package = "nhdplusTools")
 
   nhdplus_path(sample_data)
 
@@ -88,13 +89,18 @@ test_that("subset runs as expected", {
 test_that("prep_nhdplus runs as expected", {
   unlink("data/temp/*")
 
-  if (!dir.exists("data/temp")) dir.create("data/temp")
+  temp_dir <- "data/temp"
+
+  if (!dir.exists(temp_dir)) dir.create(temp_dir)
 
   expect_error(suppressWarnings(stage_national_data()),
                paste("Didn't find NHDPlus national data in default",
                      "location: ../NHDPlusV21_National_Seamless.gdb"))
 
-  sample_gpkg <- "data/sample_natseamless.gpkg"
+  sample_gpkg <- file.path(temp_dir, "sample_natseamless.gpkg")
+
+  file.copy(system.file("extdata/sample_natseamless.gpkg",
+                        package = "nhdplusTools"), sample_gpkg)
 
   nhdplus_path(sample_gpkg)
 

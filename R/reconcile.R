@@ -132,7 +132,7 @@ reconcile_catchments <- function(catchment, fline_ref, fline_rec, fdr, fac, para
       to_split_flines <- dplyr::filter(fline_ref, COMID %in% split_set)
       to_split_cat <- dplyr::filter(catchment, FEATUREID == fid)
 
-      split_cats <- nhdplusTools::split_catchment(catchment = to_split_cat,
+      split_cats <- split_catchment(catchment = to_split_cat,
                                                   fline = to_split_flines,
                                                   fdr = fdr,
                                                   fac = fac)

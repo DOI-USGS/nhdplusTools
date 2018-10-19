@@ -32,7 +32,7 @@ The first section describes the network as it exists without modification. Follo
 Prior to summarizing the network, some NHDPlus conditioning can be performed. The following function removes coastal and non-dendritic flowlines. It can also remove networks with an outlet drainage area under a threshold or a longest path length under a threshold, but those inputs are set to 0 such that all networks are included here. Note that this is especially important when running the whole country -- little change is applied to network subsets that follow the network upstream with tributaries.
 
 ```{r prep_flowlines}
-nhdplus_flines <- nhdplusTools::sample_flines
+nhdplus_flines <- sample_flines
 min_network_size <- 0
 min_path_length <- 0
 flines <- prepare_nhdplus(st_set_geometry(nhdplus_flines, NULL), 

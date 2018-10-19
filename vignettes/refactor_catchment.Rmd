@@ -32,11 +32,12 @@ Before we can do anything with the catchments, we need to run the NHDPlus Refact
 ```{r refactor}
 library(sf)
 library(nhdplusTools)
+library(raster)
 
-fdr <- nhdplusTools::fdr_sample
-fac <- nhdplusTools::fac_sample
-flowline <- nhdplusTools::flowline_sample
-catchment <- nhdplusTools::catchment_sample
+flowline <- walker_flowline
+catchment <- walker_catchment
+fdr <- walker_fdr
+fac <- walker_fac
 
 refactor_nhdplus(nhdplus_flines = flowline,
                  split_flines_meters = 2000,

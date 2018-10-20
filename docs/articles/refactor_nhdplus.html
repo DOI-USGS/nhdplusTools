@@ -110,15 +110,17 @@
 <h2 class="hasAnchor">
 <a href="#network-preparation" class="anchor"></a>Network Preparation</h2>
 <p>Prior to summarizing the network, some NHDPlus conditioning can be performed. The following function removes coastal and non-dendritic flowlines. It can also remove networks with an outlet drainage area under a threshold or a longest path length under a threshold, but those inputs are set to 0 such that all networks are included here. Note that this is especially important when running the whole country – little change is applied to network subsets that follow the network upstream with tributaries.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">nhdplus_flines &lt;-<span class="st"> </span>sample_flines</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">min_network_size &lt;-<span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">min_path_length &lt;-<span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare_nhdplus.html">prepare_nhdplus</a></span>(<span class="kw">st_set_geometry</span>(nhdplus_flines, <span class="ot">NULL</span>), </a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">                          min_network_size, </a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">                          min_path_length)</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; Warning in prepare_nhdplus(st_set_geometry(nhdplus_flines, NULL), min_network_size, : Removed 10 flowlines that don't apply.</span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt;  Includes: Coastlines, non-dendritic paths, </span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt; and networks with drainage area less than 0 sqkm</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">nhdplus_flines &lt;-<span class="st"> </span><span class="kw">read_sf</span>(<span class="kw">system.file</span>(<span class="st">"extdata"</span>,</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">                                    <span class="st">"petapsco_flowlines.gpkg"</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">                                    <span class="dt">package =</span> <span class="st">"nhdplusTools"</span>))</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">min_network_size &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">min_path_length &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">flines &lt;-<span class="st"> </span><span class="kw"><a href="../reference/prepare_nhdplus.html">prepare_nhdplus</a></span>(<span class="kw">st_set_geometry</span>(nhdplus_flines, <span class="ot">NULL</span>), </a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">                          min_network_size, </a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">                          min_path_length)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt; Warning in prepare_nhdplus(st_set_geometry(nhdplus_flines, NULL), min_network_size, : Removed 10 flowlines that don't apply.</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt;  Includes: Coastlines, non-dendritic paths, </span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt; and networks with drainage area less than 0 sqkm</span></a></code></pre></div>
 <p>The following histograms and plots show characteristics of the NHDPlusV2 network flowline lengths. <img src="refactor_nhdplus_files/figure-html/nhdplus-1.png" width="576"><img src="refactor_nhdplus_files/figure-html/nhdplus-2.png" width="576"><img src="refactor_nhdplus_files/figure-html/nhdplus-3.png" width="576"><img src="refactor_nhdplus_files/figure-html/nhdplus-4.png" width="576"><img src="refactor_nhdplus_files/figure-html/nhdplus-5.png" width="576"></p>
 </div>
 <div id="refactor_nhdplus-function" class="section level2">

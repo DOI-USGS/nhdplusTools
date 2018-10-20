@@ -114,26 +114,23 @@
 <a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">library</span>(raster)</a>
 <a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; Loading required package: sp</span></a>
 <a class="sourceLine" id="cb1-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">flowline &lt;-<span class="st"> </span>walker_flowline</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">catchment &lt;-<span class="st"> </span>walker_catchment</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">fdr &lt;-<span class="st"> </span>walker_fdr</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11">fac &lt;-<span class="st"> </span>walker_fac</a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="kw"><a href="../reference/refactor_nhdplus.html">refactor_nhdplus</a></span>(<span class="dt">nhdplus_flines =</span> flowline,</a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">                 <span class="dt">split_flines_meters =</span> <span class="dv">2000</span>,</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">                 <span class="dt">collapse_flines_meters =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16">                 <span class="dt">collapse_flines_main_meters =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb1-17" data-line-number="17">                 <span class="dt">split_flines_cores =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">                 <span class="dt">out_collapsed =</span> <span class="st">"data_dir/refactor.gpkg"</span>,</a>
-<a class="sourceLine" id="cb1-19" data-line-number="19">                 <span class="dt">out_reconciled =</span> <span class="st">"data_dir/reconcile.gpkg"</span>,</a>
-<a class="sourceLine" id="cb1-20" data-line-number="20">                 <span class="dt">three_pass =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">                 <span class="dt">purge_non_dendritic =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb1-22" data-line-number="22">                 <span class="dt">warn =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb1-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb1-24" data-line-number="24">flowline_ref &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="st">"data_dir/refactor.gpkg"</span>)</a>
-<a class="sourceLine" id="cb1-25" data-line-number="25">flowline_rec &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="st">"data_dir/reconcile.gpkg"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="kw">source</span>(<span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"walker_data.R"</span>, <span class="dt">package =</span> <span class="st">"nhdplusTools"</span>))</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="kw"><a href="../reference/refactor_nhdplus.html">refactor_nhdplus</a></span>(<span class="dt">nhdplus_flines =</span> walker_flowline,</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">                 <span class="dt">split_flines_meters =</span> <span class="dv">2000</span>,</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">                 <span class="dt">collapse_flines_meters =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">                 <span class="dt">collapse_flines_main_meters =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">                 <span class="dt">split_flines_cores =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">                 <span class="dt">out_collapsed =</span> <span class="st">"data_dir/refactor.gpkg"</span>,</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">                 <span class="dt">out_reconciled =</span> <span class="st">"data_dir/reconcile.gpkg"</span>,</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">                 <span class="dt">three_pass =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">                 <span class="dt">purge_non_dendritic =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">                 <span class="dt">warn =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21">flowline_ref &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="st">"data_dir/refactor.gpkg"</span>)</a>
+<a class="sourceLine" id="cb1-22" data-line-number="22">flowline_rec &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="st">"data_dir/reconcile.gpkg"</span>)</a></code></pre></div>
 <p>Let’s start by looking at a single sample catchment. In the first plot, you can see the input is a single polygon and a set of catchment flowlines. For reference, the Flow Direction Raster (FDR) and Flow Accumulation Raster (FAC) are also plotted.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">sample_catchment &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(catchment, FEATUREID <span class="op">==</span><span class="st"> </span><span class="dv">5329435</span>)</a>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">sample_catchment &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(walker_catchment, FEATUREID <span class="op">==</span><span class="st"> </span><span class="dv">5329435</span>)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb2-3" data-line-number="3">sample_flowline &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline_ref, <span class="kw">as.integer</span>(COMID) <span class="op">==</span><span class="st"> </span><span class="dv">5329435</span>)</a>
 <a class="sourceLine" id="cb2-4" data-line-number="4"></a>
@@ -141,12 +138,12 @@
 <a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(sample_flowline[<span class="st">"COMID"</span>], <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p><img src="refactor_catchment_files/figure-html/single_plots-1.png" width="576"></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">raster<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/raster/topics/plot">plot</a></span>(fdr)</a></code></pre></div>
+<a class="sourceLine" id="cb3-2" data-line-number="2">raster<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/raster/topics/plot">plot</a></span>(walker_fdr)</a></code></pre></div>
 <p><img src="refactor_catchment_files/figure-html/single_plots-2.png" width="576"></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">raster<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/raster/topics/plot">plot</a></span>(fac)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">raster<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/raster/topics/plot">plot</a></span>( walker_fac)</a></code></pre></div>
 <p><img src="refactor_catchment_files/figure-html/single_plots-3.png" width="576"></p>
 <p>Now we can run the <code><a href="../reference/split_catchment.html">split_catchment()</a></code> function which is designed to take one catchment and its associated (split) flowlines. The split flowlines are the “refactored” but not “reconciled” output of the <code>nhdplus_refactor()</code> function we ran above. Here we run the <code><a href="../reference/split_catchment.html">split_catchment()</a></code> function and plot up the resulting data to show what it did.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">split_cat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/split_catchment.html">split_catchment</a></span>(sample_catchment, sample_flowline, fdr, fac)</a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">split_cat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/split_catchment.html">split_catchment</a></span>(sample_catchment, sample_flowline, walker_fdr,  walker_fac)</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Loading required namespace: rgeos</span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb5-4" data-line-number="4"><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(split_cat), <span class="dt">col =</span> <span class="ot">NA</span>, <span class="dt">border =</span> <span class="st">"red"</span>)</a>
@@ -155,17 +152,17 @@
 <p><img src="refactor_catchment_files/figure-html/single_split-1.png" width="576"></p>
 <p>As you can see, the flowline in question was split into five pieces by <code>nhdplus_refactor()</code> and the cooresponding catchment (black) was similarly broken up into 5 sub-catchments (red).</p>
 <p>The <code><a href="../reference/split_catchment.html">split_catchment()</a></code> function can be run against a set of catchments using the <code><a href="../reference/reconcile_catchments.html">reconcile_catchments()</a></code> function. This functiona can call <code><a href="../reference/split_catchment.html">split_catchment()</a></code> in parallel, combines catchments according to the output of <code>nhdplus_refactor()</code>, and assembles the results back into an <code>sf</code> <code>data.frame</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">split_cats &lt;-<span class="st"> </span><span class="kw"><a href="../reference/reconcile_catchments.html">reconcile_catchments</a></span>(catchment, </a>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">split_cats &lt;-<span class="st"> </span><span class="kw"><a href="../reference/reconcile_catchments.html">reconcile_catchments</a></span>(walker_catchment, </a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">                                  flowline_ref, </a>
 <a class="sourceLine" id="cb6-3" data-line-number="3">                                  flowline_rec, </a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">                                  fdr, fac, <span class="dt">para =</span> <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">                                  walker_fdr,  walker_fac, <span class="dt">para =</span> <span class="dv">4</span>)</a>
 <a class="sourceLine" id="cb6-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb6-6" data-line-number="6"><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(split_cats), <span class="dt">col =</span> <span class="ot">NA</span>, <span class="dt">border =</span> <span class="st">"red"</span>)</a></code></pre></div>
 <p><img src="refactor_catchment_files/figure-html/cat_set-1.png" width="576"></p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(catchment), <span class="dt">col =</span> <span class="ot">NA</span>, <span class="dt">border =</span> <span class="st">"black"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(walker_catchment), <span class="dt">col =</span> <span class="ot">NA</span>, <span class="dt">border =</span> <span class="st">"black"</span>)</a></code></pre></div>
 <p><img src="refactor_catchment_files/figure-html/cat_set-2.png" width="576"></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(split_cats), <span class="dt">col =</span> <span class="ot">NA</span>, <span class="dt">border =</span> <span class="st">"red"</span>)</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(catchment), <span class="dt">col =</span> <span class="ot">NA</span>, <span class="dt">border =</span> <span class="st">"black"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(walker_catchment), <span class="dt">col =</span> <span class="ot">NA</span>, <span class="dt">border =</span> <span class="st">"black"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p><img src="refactor_catchment_files/figure-html/cat_set-3.png" width="576"></p>
 <p>Ta Da!! Have fun and <a href="https://github.com/dblodgett-usgs/nhdplusTools/issues">report bugs here</a>.</p>
 </div>

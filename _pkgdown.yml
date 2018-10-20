@@ -5,7 +5,6 @@ reference:
     contents:
       - '`nhdplus_path`'
       - '`stage_national_data`'
-      - '`sample_flines`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are

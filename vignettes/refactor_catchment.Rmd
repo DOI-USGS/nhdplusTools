@@ -34,12 +34,9 @@ library(sf)
 library(nhdplusTools)
 library(raster)
 
-flowline <- walker_flowline
-catchment <- walker_catchment
-fdr <- walker_fdr
-fac <- walker_fac
+source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
-refactor_nhdplus(nhdplus_flines = flowline,
+refactor_nhdplus(nhdplus_flines = walker_flowline,
                  split_flines_meters = 2000,
                  collapse_flines_meters = 1,
                  collapse_flines_main_meters = 1,
@@ -57,21 +54,21 @@ flowline_rec <- read_sf("data_dir/reconcile.gpkg")
 Let's start by looking at a single sample catchment. In the first plot, you can see the input is a single polygon and a set of catchment flowlines. For reference, the Flow Direction Raster (FDR) and Flow Accumulation Raster (FAC) are also plotted.
 
 ```{r single_plots}
-sample_catchment <- dplyr::filter(catchment, FEATUREID == 5329435)
+sample_catchment <- dplyr::filter(walker_catchment, FEATUREID == 5329435)
 
 sample_flowline <- dplyr::filter(flowline_ref, as.integer(COMID) == 5329435)
 
 plot(st_geometry(sample_catchment))
 plot(sample_flowline["COMID"], add = TRUE)
 
-raster::plot(fdr)
-raster::plot(fac)
+raster::plot(walker_fdr)
+raster::plot( walker_fac)
 ```
 
 Now we can run the `split_catchment()` function which is designed to take one catchment and its associated (split) flowlines. The split flowlines are the "refactored" but not "reconciled" output of the `nhdplus_refactor()` function we ran above. Here we run the `split_catchment()` function and plot up the resulting data to show what it did.
 
 ```{r single_split}
-split_cat <- split_catchment(sample_catchment, sample_flowline, fdr, fac)
+split_cat <- split_catchment(sample_catchment, sample_flowline, walker_fdr,  walker_fac)
 
 plot(st_geometry(split_cat), col = NA, border = "red")
 plot(st_geometry(sample_catchment), add = TRUE)
@@ -83,15 +80,15 @@ As you can see, the flowline in question was split into five pieces by `nhdplus_
 The `split_catchment()` function can be run against a set of catchments using the `reconcile_catchments()` function. This functiona can call `split_catchment()` in parallel, combines catchments according to the output of `nhdplus_refactor()`, and assembles the results back into an `sf` `data.frame`.
 
 ```{r cat_set}
-split_cats <- reconcile_catchments(catchment, 
+split_cats <- reconcile_catchments(walker_catchment, 
                                   flowline_ref, 
                                   flowline_rec, 
-                                  fdr, fac, para = 4)
+                                  walker_fdr,  walker_fac, para = 4)
 
 plot(st_geometry(split_cats), col = NA, border = "red")
-plot(st_geometry(catchment), col = NA, border = "black")
+plot(st_geometry(walker_catchment), col = NA, border = "black")
 plot(st_geometry(split_cats), col = NA, border = "red")
-plot(st_geometry(catchment), col = NA, border = "black", add = TRUE)
+plot(st_geometry(walker_catchment), col = NA, border = "black", add = TRUE)
 ```
 
 Ta Da!! Have fun and [report bugs here](https://github.com/dblodgett-usgs/nhdplusTools/issues). 

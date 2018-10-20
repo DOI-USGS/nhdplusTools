@@ -46,7 +46,7 @@ be available permenantly.
 }
 \examples{
 sample_data <- system.file("extdata/sample_natseamless.gpkg",
-package = "nhdplusTools")
+                           package = "nhdplusTools")
 
 nhdplus_path(sample_data)
 

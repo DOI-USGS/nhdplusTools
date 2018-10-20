@@ -24,14 +24,17 @@ Traverse NHDPlus network upstream main stem
 }
 \examples{
 library(sf)
-plot(sample_flines$geometry)
+sample_flines <- read_sf(system.file("extdata",
+                                     "petapsco_flowlines.gpkg",
+                                     package = "nhdplusTools"))
+plot(sample_flines$geom)
 start_COMID <- 11690196
 UM_COMIDs <- get_UM(sample_flines, start_COMID)
-plot(dplyr::filter(sample_flines, COMID \%in\% UM_COMIDs)$geometry,
+plot(dplyr::filter(sample_flines, COMID \%in\% UM_COMIDs)$geom,
      col = "red", add = TRUE, lwd = 3)
 
 UM_COMIDs <- get_UM(sample_flines, start_COMID, distance = 50)
-plot(dplyr::filter(sample_flines, COMID \%in\% UM_COMIDs)$geometry,
+plot(dplyr::filter(sample_flines, COMID \%in\% UM_COMIDs)$geom,
      col = "blue", add = TRUE, lwd = 2)
 
 }

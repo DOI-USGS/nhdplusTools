@@ -1,12 +1,11 @@
-walker_fac <- raster::raster("data-raw/walker_fac.tif")
-walker_fdr <- raster::raster("data-raw/walker_fdr.tif")
+extdata <- system.file("extdata", package = "nhdplusTools")
+walker_fac <- raster::raster(file.path(extdata, "walker_fac.tif"))
+walker_fdr <- raster::raster(file.path(extdata, "walker_fdr.tif"))
 proj <- as.character(raster::crs(walker_fdr))
-walker_catchment <- sf::read_sf("data-raw/walker.gpkg", "CatchmentSP")
+walker_catchment <- sf::read_sf(file.path(extdata, "walker.gpkg"), "CatchmentSP")
 walker_catchment <- sf::st_transform(walker_catchment, proj)
-walker_flowline <- sf::read_sf("data-raw/walker.gpkg", "NHDFlowline_Network")
+walker_flowline <- sf::read_sf(file.path(extdata, "walker.gpkg"), "NHDFlowline_Network")
 walker_flowline <- sf::st_transform(walker_flowline, proj)
-
-devtools::use_data(walker_catchment, walker_flowline, walker_fdr, walker_fac, pkg = ".")
 
 # This is how the raster data was created.
 # r <- fasterize::raster("NHDPlusCA/fdr.tif")

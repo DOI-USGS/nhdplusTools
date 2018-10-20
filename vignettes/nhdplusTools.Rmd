@@ -22,7 +22,8 @@ options(scipen = 9999)
 
 First, pick an outlet location and download some data.
 ```{r tldr}
-devtools::install_github("dblodgett-usgs/nhdplusTools")
+# Uncomment to install!
+# devtools::install_github("dblodgett-usgs/nhdplusTools")
 
 library(nhdplusTools)
 library(sf)

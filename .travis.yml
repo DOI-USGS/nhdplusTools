@@ -33,11 +33,6 @@ r_github_packages:
   - jimhester/covr
   - r-spatial/lwgeom
 
-script:
-  - |
-    R CMD build .
-    travis_wait 20 R CMD check nhdplusTools*tar.gz
-
 after_success:
   - if [[ "${R_CODECOV}" ]]; then R -e 'covr::coveralls()'; fi
 

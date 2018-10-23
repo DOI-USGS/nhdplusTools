@@ -86,7 +86,7 @@ test_that("split_lines_2 works the same as split_lines", {
 })
 
 test_that("split_catchments works", {
-
+  unlink("data/temp/*")
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
@@ -109,6 +109,8 @@ test_that("split_catchments works", {
   test_flines <- dplyr::filter(fline_ref, as.integer(COMID) == 5329435)
 
   test_cat <- dplyr::filter(walker_catchment, FEATUREID == 5329435)
+
+  expect(nrow(test_flines) == 5, "got wrong number of test_flines")
 
   split_cat <- split_catchment(test_cat, test_flines, walker_fdr, walker_fac)
 
@@ -135,7 +137,7 @@ test_that("split_catchments works", {
 })
 
 test_that("split and combine works", {
-
+  unlink("data/temp/*")
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
@@ -202,4 +204,32 @@ test_that("split and combine works with combine from split", {
                          ]$member_COMID == "8833300.1")
   expect(reconciled_cats[which(reconciled_cats$ID == 3108),
                          ]$member_COMID == "166755072,8866562.2")
+})
+
+
+test_that("doing nothing does nothing", {
+  unlink("data/temp/*")
+  dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
+
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
+  refactor <- refactor_nhdplus(nhdplus_flines = walker_flowline,
+                               split_flines_meters = 200000,
+                               collapse_flines_meters = 1,
+                               collapse_flines_main_meters = 1,
+                               split_flines_cores = 2,
+                               out_collapsed = "data/temp/subset_refactor.gpkg",
+                               out_reconciled = "data/temp/subset_reconcile.gpkg",
+                               three_pass = TRUE,
+                               purge_non_dendritic = FALSE,
+                               warn = FALSE)
+
+  fline_ref <- sf::read_sf("data/temp/subset_refactor.gpkg") %>%
+    dplyr::arrange(COMID)
+  fline_rec <- sf::read_sf("data/temp/subset_reconcile.gpkg")
+
+  expect(nrow(fline_ref) == nrow(fline_rec))
+  expect(nrow(fline_ref) == nrow(walker_catchment))
+
+  unlink("data/temp/*")
 })

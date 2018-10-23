@@ -1,5 +1,5 @@
 ---
-title: "NHDPlus Indexing"
+title: "Indexing / Referencing"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >

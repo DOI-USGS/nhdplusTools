@@ -1,0 +1,98 @@
+---
+title: "Refactor Catchments"
+author: "dblodgett@usgs.gov"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkgdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+  ```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=6,
+  fig.height=4
+)
+options(scipen = 9999)
+```
+```{r data_dir_setup, echo=FALSE, include=FALSE}
+dir.create("./data_dir")
+```
+
+# Refactoring Catchments with NHDPlusTools
+
+## Load Network and Refactor
+
+For this example, we will use some data available from the nhdplusTools package for testing and examples. `fac_sample`, `fdr_sample`, `flowline_sample`, `catchment_sample` are all included as sample data in `nhdplusTools`.
+
+Before we can do anything with the catchments, we need to run the NHDPlus Refactor workflow documented over in `vignette("refactor_nhdplus")`.
+
+```{r refactor}
+library(sf)
+library(nhdplusTools)
+library(raster)
+
+source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
+refactor_nhdplus(nhdplus_flines = walker_flowline,
+                 split_flines_meters = 2000,
+                 collapse_flines_meters = 1,
+                 collapse_flines_main_meters = 1,
+                 split_flines_cores = 2,
+                 out_collapsed = "data_dir/refactor.gpkg",
+                 out_reconciled = "data_dir/reconcile.gpkg",
+                 three_pass = TRUE,
+                 purge_non_dendritic = FALSE,
+                 warn = FALSE)
+
+flowline_ref <- read_sf("data_dir/refactor.gpkg")
+flowline_rec <- read_sf("data_dir/reconcile.gpkg")
+```
+
+Let's start by looking at a single sample catchment. In the first plot, you can see the input is a single polygon and a set of catchment flowlines. For reference, the Flow Direction Raster (FDR) and Flow Accumulation Raster (FAC) are also plotted.
+
+```{r single_plots}
+sample_catchment <- dplyr::filter(walker_catchment, FEATUREID == 5329435)
+
+sample_flowline <- dplyr::filter(flowline_ref, as.integer(COMID) == 5329435)
+
+plot(st_geometry(sample_catchment))
+plot(sample_flowline["COMID"], add = TRUE)
+
+raster::plot(walker_fdr)
+raster::plot( walker_fac)
+```
+
+Now we can run the `split_catchment()` function which is designed to take one catchment and its associated (split) flowlines. The split flowlines are the "refactored" but not "reconciled" output of the `nhdplus_refactor()` function we ran above. Here we run the `split_catchment()` function and plot up the resulting data to show what it did.
+
+```{r single_split}
+split_cat <- split_catchment(sample_catchment, sample_flowline, walker_fdr,  walker_fac)
+
+plot(st_geometry(split_cat), col = NA, border = "red")
+plot(st_geometry(sample_catchment), add = TRUE)
+plot(sample_flowline["COMID"], lwd = 2, add= TRUE)
+```
+
+As you can see, the flowline in question was split into five pieces by `nhdplus_refactor()` and the cooresponding catchment (black) was similarly broken up into 5 sub-catchments (red).
+
+The `split_catchment()` function can be run against a set of catchments using the `reconcile_catchments()` function. This functiona can call `split_catchment()` in parallel, combines catchments according to the output of `nhdplus_refactor()`, and assembles the results back into an `sf` `data.frame`.
+
+```{r cat_set}
+split_cats <- reconcile_catchments(walker_catchment, 
+                                  flowline_ref, 
+                                  flowline_rec, 
+                                  walker_fdr,  walker_fac, para = 4)
+
+plot(st_geometry(split_cats), col = NA, border = "red")
+plot(st_geometry(walker_catchment), col = NA, border = "black")
+plot(st_geometry(split_cats), col = NA, border = "red")
+plot(st_geometry(walker_catchment), col = NA, border = "black", add = TRUE)
+```
+
+Ta Da!! Have fun and [report bugs here](https://github.com/dblodgett-usgs/nhdplusTools/issues). 
+
+```{r cleanup, echo = FALSE}
+unlink("data_dir", recursive = T)
+```

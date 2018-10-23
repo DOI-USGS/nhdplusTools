@@ -62,7 +62,7 @@ of quick to access R binary files." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
       </span>
     </div>
 
@@ -91,10 +91,13 @@ of quick to access R binary files." />
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
+      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
     </li>
     <li>
-      <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
+      <a href="../articles/refactor_catchment.html">Refactor Catchments</a>
+    </li>
+    <li>
+      <a href="../articles/refactor_nhdplus.html">Refactor Flowlines</a>
     </li>
   </ul>
 </li>
@@ -132,7 +135,7 @@ of quick to access R binary files.</p>
     </div>
 
     <pre class="usage"><span class='fu'>stage_national_data</span>(<span class='kw'>include</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"attribute"</span>, <span class='st'>"flowline"</span>, <span class='st'>"catchment"</span>),
-  <span class='kw'>output_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>output_path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>simplified</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,6 +156,11 @@ to the directory of the nhdplus_data.</p></td>
 containing the national seamless dataset. Not required if
 <code><a href='nhdplus_path.html'>nhdplus_path</a></code> has been set.</p></td>
     </tr>
+    <tr>
+      <th>simplified</th>
+      <td><p>boolean if TRUE (the default) the CatchmentSP layer
+will be included.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -163,7 +171,8 @@ containing the national seamless dataset. Not required if
 
     <p>"attributes" will save `NHDFlowline_Network` attributes
 as a seperate data.frame without the geometry. The others will save
-the `NHDFlowline_Network` and `CatchmentSP` as sf data.frames with
+the `NHDFlowline_Network` and `Catchment` or `CatchmentSP`
+(per the `simplified` parameter) as sf data.frames with
 superfluous Z information dropped.</p>
 <p>The returned list of paths is also added to the nhdplusTools_env
 as "national_data".</p>

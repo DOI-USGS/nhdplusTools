@@ -62,7 +62,7 @@ into this function. See details and vignettes for more information." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
       </span>
     </div>
 
@@ -91,10 +91,13 @@ into this function. See details and vignettes for more information." />
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
+      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
     </li>
     <li>
-      <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
+      <a href="../articles/refactor_catchment.html">Refactor Catchments</a>
+    </li>
+    <li>
+      <a href="../articles/refactor_nhdplus.html">Refactor Flowlines</a>
     </li>
   </ul>
 </li>
@@ -207,7 +210,10 @@ NHDPlus Refactor vignette for details of these three steps by running:
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>nhdplus_flowlines</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st_zm'>st_zm</a></span>(<span class='no'>sample_flines</span>)
+    <pre class="examples"><div class='input'><span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='fu'>system.file</span>(<span class='st'>"extdata"</span>,
+                                          <span class='st'>"petapsco_flowlines.gpkg"</span>,
+                                          <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+<span class='no'>nhdplus_flowlines</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st_zm'>st_zm</a></span>(<span class='no'>sample_flines</span>)
 <span class='fu'>refactor_nhdplus</span>(<span class='kw'>nhdplus_flines</span> <span class='kw'>=</span> <span class='no'>nhdplus_flowlines</span>,
                  <span class='kw'>split_flines_meters</span> <span class='kw'>=</span> <span class='fl'>2000</span>,
                  <span class='kw'>split_flines_cores</span> <span class='kw'>=</span> <span class='fl'>3</span>,

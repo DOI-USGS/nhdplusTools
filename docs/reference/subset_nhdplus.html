@@ -62,7 +62,7 @@ specified collection of catchments." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
       </span>
     </div>
 
@@ -91,10 +91,13 @@ specified collection of catchments." />
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
+      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
     </li>
     <li>
-      <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
+      <a href="../articles/refactor_catchment.html">Refactor Catchments</a>
+    </li>
+    <li>
+      <a href="../articles/refactor_nhdplus.html">Refactor Flowlines</a>
     </li>
   </ul>
 </li>
@@ -132,7 +135,7 @@ specified collection of catchments.</p>
     </div>
 
     <pre class="usage"><span class='fu'>subset_nhdplus</span>(<span class='no'>comids</span>, <span class='no'>output_file</span>, <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>simplified</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,6 +155,11 @@ to the directory of the nhdplus_data.</p></td>
 the national seamless dataset or "download" to use web service.
 Not required if <code><a href='nhdplus_path.html'>nhdplus_path</a></code> has been set or the default
 has been adopted. See details for more.</p></td>
+    </tr>
+    <tr>
+      <th>simplified</th>
+      <td><p>boolean if TRUE (the default) the CatchmentSP layer
+will be included. Not relevant to the "download" option.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>
@@ -181,7 +189,7 @@ be available permenantly.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>sample_data</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"extdata/sample_natseamless.gpkg"</span>,
-<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>)
+                           <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>)
 
 <span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span>(<span class='no'>sample_data</span>)
 

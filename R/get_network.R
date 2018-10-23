@@ -11,14 +11,17 @@
 #' @export
 #' @examples
 #' library(sf)
-#' plot(sample_flines$geometry)
+#' sample_flines <- read_sf(system.file("extdata",
+#'                                      "petapsco_flowlines.gpkg",
+#'                                      package = "nhdplusTools"))
+#' plot(sample_flines$geom)
 #' start_COMID <- 11690196
 #' UT_COMIDs <- get_UT(sample_flines, start_COMID)
-#' plot(dplyr::filter(sample_flines, COMID %in% UT_COMIDs)$geometry,
+#' plot(dplyr::filter(sample_flines, COMID %in% UT_COMIDs)$geom,
 #'      col = "red", add = TRUE)
 #'
 #' UT_COMIDs <- get_UT(sample_flines, start_COMID, distance = 50)
-#' plot(dplyr::filter(sample_flines, COMID %in% UT_COMIDs)$geometry,
+#' plot(dplyr::filter(sample_flines, COMID %in% UT_COMIDs)$geom,
 #'      col = "blue", add = TRUE)
 #'
 get_UT <- function(network, comid, distance = NULL) {
@@ -92,14 +95,17 @@ private_get_UT <- function(network, comid) {
 #' @export
 #' @examples
 #' library(sf)
-#' plot(sample_flines$geometry)
+#' sample_flines <- read_sf(system.file("extdata",
+#'                                      "petapsco_flowlines.gpkg",
+#'                                      package = "nhdplusTools"))
+#' plot(sample_flines$geom)
 #' start_COMID <- 11690196
 #' UM_COMIDs <- get_UM(sample_flines, start_COMID)
-#' plot(dplyr::filter(sample_flines, COMID %in% UM_COMIDs)$geometry,
+#' plot(dplyr::filter(sample_flines, COMID %in% UM_COMIDs)$geom,
 #'      col = "red", add = TRUE, lwd = 3)
 #'
 #' UM_COMIDs <- get_UM(sample_flines, start_COMID, distance = 50)
-#' plot(dplyr::filter(sample_flines, COMID %in% UM_COMIDs)$geometry,
+#' plot(dplyr::filter(sample_flines, COMID %in% UM_COMIDs)$geom,
 #'      col = "blue", add = TRUE, lwd = 2)
 #'
 get_UM <- function(network, comid, distance = NULL) {
@@ -138,14 +144,17 @@ get_UM <- function(network, comid, distance = NULL) {
 #' @export
 #' @examples
 #' library(sf)
-#' plot(sample_flines$geometry)
+#' sample_flines <- read_sf(system.file("extdata",
+#'                                      "petapsco_flowlines.gpkg",
+#'                                      package = "nhdplusTools"))
+#' plot(sample_flines$geom)
 #' start_COMID <- 11690092
 #' DM_COMIDs <- get_DM(sample_flines, start_COMID)
-#' plot(dplyr::filter(sample_flines, COMID %in% DM_COMIDs)$geometry,
+#' plot(dplyr::filter(sample_flines, COMID %in% DM_COMIDs)$geom,
 #'      col = "red", add = TRUE, lwd = 3)
 #'
 #' DM_COMIDs <- get_DM(sample_flines, start_COMID, distance = 40)
-#' plot(dplyr::filter(sample_flines, COMID %in% DM_COMIDs)$geometry,
+#' plot(dplyr::filter(sample_flines, COMID %in% DM_COMIDs)$geom,
 #'      col = "blue", add = TRUE, lwd = 2)
 #'
 #'
@@ -222,12 +231,15 @@ private_get_DM <- function(network, comid) {
 #' @examples
 #' library(sf)
 #' start_COMID <- 11688818
+#' sample_flines <- read_sf(system.file("extdata",
+#'                                      "petapsco_flowlines.gpkg",
+#'                                      package = "nhdplusTools"))
 #' DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
-#' plot(dplyr::filter(sample_flines, COMID %in% DD_COMIDs)$geometry,
+#' plot(dplyr::filter(sample_flines, COMID %in% DD_COMIDs)$geom,
 #'      col = "red", lwd = 2)
 #'
 #' DM_COMIDs <- get_DM(sample_flines, start_COMID, distance = 4)
-#' plot(dplyr::filter(sample_flines, COMID %in% DM_COMIDs)$geometry,
+#' plot(dplyr::filter(sample_flines, COMID %in% DM_COMIDs)$geom,
 #'      col = "blue", add = TRUE, lwd = 2)
 #'
 get_DD <- function(network, comid, distance = NULL) {

@@ -8,6 +8,8 @@
 #' the national seamless dataset or "download" to use web service.
 #' Not required if \code{\link{nhdplus_path}} has been set or the default
 #' has been adopted. See details for more.
+#' @param simplified boolean if TRUE (the default) the CatchmentSP layer
+#' will be included. Not relevant to the "download" option.
 #' @param overwrite boolean should the output file be overwritten
 #' @param status boolean should the function print status messages
 #' @details If \code{\link{stage_national_data}} has been run in the current
@@ -25,7 +27,7 @@
 #' @export
 #' @examples
 #' sample_data <- system.file("extdata/sample_natseamless.gpkg",
-#' package = "nhdplusTools")
+#'                            package = "nhdplusTools")
 #'
 #' nhdplus_path(sample_data)
 #'
@@ -79,7 +81,7 @@
 #' sf::st_layers(output_file)
 #'
 subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
-                           overwrite = FALSE, status = TRUE) {
+                           simplified = TRUE, overwrite = FALSE, status = TRUE) {
 
   if (status) message("All intersections performed in latitude/longitude.")
 
@@ -143,10 +145,16 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
 
   rm(fline)
 
-  layer_name <- "CatchmentSP"
+  if (simplified) {
+    layer_name <- "CatchmentSP"
+  } else {
+    layer_name <- "Catchment"
+  }
+
   if (status) message(paste("Reading", layer_name))
 
   if (nhdplus_data == "download") {
+    layer_name <- "CatchmentSP" # Need to handle SP and regular better!!
     catchment <- get_nhdplus_byid(comids, tolower(layer_name))
   } else {
 
@@ -218,9 +226,12 @@ intersection_write <- function(layer_name, data_path, envelope,
 #' @param nhdplus_data character path to the .gpkg or .gdb
 #' containing the national seamless dataset. Not required if
 #' \code{\link{nhdplus_path}} has been set.
+#' @param simplified boolean if TRUE (the default) the CatchmentSP layer
+#' will be included.
 #' @details "attributes" will save `NHDFlowline_Network` attributes
 #' as a seperate data.frame without the geometry. The others will save
-#' the `NHDFlowline_Network` and `CatchmentSP` as sf data.frames with
+#' the `NHDFlowline_Network` and `Catchment` or `CatchmentSP`
+#' (per the `simplified` parameter) as sf data.frames with
 #' superfluous Z information dropped.
 #'
 #' The returned list of paths is also added to the nhdplusTools_env
@@ -239,7 +250,8 @@ stage_national_data <- function(include = c("attribute",
                                             "flowline",
                                             "catchment"),
                                 output_path = NULL,
-                                nhdplus_data = NULL) {
+                                nhdplus_data = NULL,
+                                simplified = TRUE) {
 
   if (is.null(output_path)) {
     output_path <- dirname(nhdplus_path())
@@ -307,7 +319,12 @@ stage_national_data <- function(include = c("attribute",
     if (file.exists(out_path_catchments)) {
       warning("catchment already exists.")
     } else {
-      saveRDS(sf::st_zm(sf::read_sf(nhdplus_data, "CatchmentSP")),
+      if (simplified) {
+        layer_name <- "CatchmentSP"
+      } else {
+        layer_name <- "Catchment"
+      }
+      saveRDS(sf::st_zm(sf::read_sf(nhdplus_data, layer_name)),
               out_path_catchments)
     }
     outlist["catchment"] <- out_path_catchments

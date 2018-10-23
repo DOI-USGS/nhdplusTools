@@ -1,3 +1,5 @@
+# data moved to extdata
+
 library(nhdplusTools)
 
 # get path from env

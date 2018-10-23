@@ -17,6 +17,8 @@ split_flowlines <- function(flines, max_length, para = 0) {
 
   split <- split_lines(flines, max_length, id = "COMID", para = para)
 
+  if(!is.null(split)) {
+
   split <- left_join(split, sf::st_set_geometry(flines, NULL), by = "COMID")
 
   split <- group_by(split, COMID)
@@ -57,6 +59,10 @@ split_flowlines <- function(flines, max_length, para = 0) {
          toCOMID = ifelse(toCOMID %in% old_tocomid,
                           paste0(toCOMID, ".1"),
                           toCOMID))
+
+  } else {
+    flines
+  }
 }
 
 
@@ -89,6 +95,8 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
   too_long <- filter(select(input_lines, id, geom_column, geom_len),
                      geom_len >= max_length)
 
+  if(nrow(too_long) != 0) {
+
   rm(input_lines) # just to control memory usage in case this is big.
 
   too_long <- mutate(too_long,
@@ -101,8 +109,11 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
                                             too_long[["pieces"]]), ] %>%
     select(-pieces)
 
-  split_points <- mutate(split_points, split_fID = row.names(split_points)) %>%
+  split_points <- split_points %>%
     group_by(fID) %>%
+    mutate(split_fID = ifelse(dplyr::row_number() == 1,
+                              as.character(fID),
+                              paste0(fID, ".", dplyr::row_number()-1))) %>%
     mutate(piece = 1:n()) %>%
     mutate(start = (piece - 1) / n(),
            end = piece / n()) %>%
@@ -141,7 +152,9 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
   names(split_lines)[which(names(split_lines) ==
                              "split_geometry")] <- geom_column
   attr(split_lines, "sf_column") <- geom_column
-
+  } else {
+   split_lines <- NULL
+ }
   return(split_lines)
 }
 

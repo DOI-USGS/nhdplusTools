@@ -62,7 +62,7 @@ and measure for each." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
       </span>
     </div>
 
@@ -91,10 +91,13 @@ and measure for each." />
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
+      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
     </li>
     <li>
-      <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
+      <a href="../articles/refactor_catchment.html">Refactor Catchments</a>
+    </li>
+    <li>
+      <a href="../articles/refactor_nhdplus.html">Refactor Flowlines</a>
     </li>
   </ul>
 </li>
@@ -175,7 +178,10 @@ the flowlines.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
+    <pre class="examples"><div class='input'><span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='fu'>system.file</span>(<span class='st'>"extdata"</span>,
+                                         <span class='st'>"petapsco_flowlines.gpkg"</span>,
+                                         <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+<span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
                    <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/sfc'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st'>st_point</a></span>(<span class='fu'>c</span>(-<span class='fl'>76.87479</span>,
                                              <span class='fl'>39.48233</span>)),
                               <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt;      COMID      REACHCODE REACH_meas       offset

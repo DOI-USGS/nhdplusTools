@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
       </span>
     </div>
 
@@ -90,10 +90,13 @@
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">NHDPlus Indexing</a>
+      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
     </li>
     <li>
-      <a href="../articles/refactor_nhdplus.html">NHDPlus Refactor</a>
+      <a href="../articles/refactor_catchment.html">Refactor Catchments</a>
+    </li>
+    <li>
+      <a href="../articles/refactor_nhdplus.html">Refactor Flowlines</a>
     </li>
   </ul>
 </li>
@@ -158,12 +161,15 @@ starting catchment.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>sf</span>)
-<span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='no'>sample_flines</span>$<span class='no'>geometry</span>)</div><div class='input'><span class='no'>start_COMID</span> <span class='kw'>&lt;-</span> <span class='fl'>11690196</span>
+<span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='fu'>system.file</span>(<span class='st'>"extdata"</span>,
+                                     <span class='st'>"petapsco_flowlines.gpkg"</span>,
+                                     <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+<span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='no'>sample_flines</span>$<span class='no'>geom</span>)</div><div class='input'><span class='no'>start_COMID</span> <span class='kw'>&lt;-</span> <span class='fl'>11690196</span>
 <span class='no'>UT_COMIDs</span> <span class='kw'>&lt;-</span> <span class='fu'>get_UT</span>(<span class='no'>sample_flines</span>, <span class='no'>start_COMID</span>)
-<span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>UT_COMIDs</span>)$<span class='no'>geometry</span>,
+<span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>UT_COMIDs</span>)$<span class='no'>geom</span>,
      <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
 <span class='no'>UT_COMIDs</span> <span class='kw'>&lt;-</span> <span class='fu'>get_UT</span>(<span class='no'>sample_flines</span>, <span class='no'>start_COMID</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='fl'>50</span>)
-<span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>UT_COMIDs</span>)$<span class='no'>geometry</span>,
+<span class='fu'><a href='http://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='http://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>UT_COMIDs</span>)$<span class='no'>geom</span>,
      <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='get_UT-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>

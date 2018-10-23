@@ -21,15 +21,15 @@ addons:
       - libgeos-dev
       - libgdal-dev
 
-env:
-   global:
-     - R_BUILD_ARGS="--no-vignettes --no-manual"
-     - R_CHECK_ARGS="--no-vignettes --no-manual --as-cran"
-     - NOT_CRAN="true"
-     - _R_CHECK_FORCE_SUGGESTS_=false
-     - R_CODECOV=true
+r_build_args: "--no-build-vignettes --no-manual"
+r_check_args: "--no-build-vignettes --no-manual --as-cran"
 
 warnings_are_errors: false
+
+env:
+   global:
+     - _R_CHECK_FORCE_SUGGESTS_=false
+     - R_CODECOV=true
 
 r_github_packages:
   - jimhester/covr

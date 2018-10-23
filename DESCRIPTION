@@ -1,16 +1,16 @@
 Package: nhdplusTools
 Type: Package
 Title: Tools for Using NHDPlus Data
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: person("David", "Blodgett", role = c("aut", "cre"), email = "dblodgett@usgs.gov")
 Description: Tools for traversing and working with NHDPlus data.
 URL: https://github.com/dblodgett-usgs/nhdplusTools#readme
 BugReports: https://github.com/dblodgett-usgs/nhdplusTools/issues
 Depends:
     R (>= 3.0)
-Imports: dplyr, sf, lwgeom, snow, RANN, units, magrittr, jsonlite, httr
+Imports: dplyr, sf, lwgeom, snow, RANN, units, magrittr, jsonlite, httr, raster, rgeos
+Suggests: testthat, knitr, rmarkdown, rosm, prettymapr, ggmap, ggplot2, sp, devtools, codetools
 Remotes: r-spatial/lwgeom
-Suggests: testthat, knitr, rmarkdown, rosm, prettymapr, ggmap, ggplot2, sp, devtools
 License: CC0
 Encoding: UTF-8
 LazyData: true

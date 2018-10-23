@@ -39,6 +39,9 @@ Note 3: Offset is returned in units consistant with the projection of
 the flowlines.
 }
 \examples{
+sample_flines <- sf::read_sf(system.file("extdata",
+                                         "petapsco_flowlines.gpkg",
+                                         package = "nhdplusTools"))
 get_flowline_index(sample_flines,
                    sf::st_sfc(sf::st_point(c(-76.87479,
                                              39.48233)),

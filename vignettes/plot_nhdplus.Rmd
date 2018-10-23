@@ -145,16 +145,16 @@ library(ggplot2)
 
 upstream_nwis[c("lon", "lat")] <- sf::st_coordinates(upstream_nwis)
 
-basemap_streets <- get_map(maptype = "roadmap", location = ggmap_bbox, zoom = 11)
-basemap_satellite <- get_map(maptype = "satellite", location = ggmap_bbox, zoom = 11)
-street_map <- ggmap(basemap_streets)
-satellite_map <- ggmap(basemap_satellite)
+basemap_toner <- get_map(source = "stamen", maptype = "toner", location = ggmap_bbox, zoom = 11)
+basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", location = ggmap_bbox, zoom = 11)
+toner_map <- ggmap(basemap_toner)
+terrain_map <- ggmap(basemap_terrain)
 
-street_map
+toner_map
 
-satellite_map + geom_sf(data = basin,
+terrain_map + geom_sf(data = basin,
                         inherit.aes = FALSE,
-                        color = "white", fill = NA) + 
+                        color = "black", fill = NA) + 
   geom_sf(data = flowline,
           inherit.aes = FALSE,
           color = "deepskyblue") +
@@ -163,7 +163,7 @@ satellite_map + geom_sf(data = basin,
           color = "darkblue") +
   geom_sf(data = upstream_nwis, inherit.aes = FALSE, color = "red") + 
   geom_text(data = upstream_nwis, aes(label = identifier, x = lon, y = lat),
-            hjust = 0, size=2.5, nudge_x = 0.02, col = "yellow")
+            hjust = 0, size=2.5, nudge_x = 0.02, col = "black")
 ```
 
 Hopefully these examples give a good head start to plotting NHDPlus data. Please submit questions via github issues for more!! Pull requests on this vignette are more than welcome if you have additions or suggestions.

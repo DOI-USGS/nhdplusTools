@@ -7,3 +7,4 @@ inst/doc/*.html
 docs
 vignettes/point*
 _pkgdown.yml
+data-raw

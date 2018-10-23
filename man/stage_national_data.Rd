@@ -5,7 +5,7 @@
 \title{Stage NHDPlus National Data}
 \usage{
 stage_national_data(include = c("attribute", "flowline", "catchment"),
-  output_path = NULL, nhdplus_data = NULL)
+  output_path = NULL, nhdplus_data = NULL, simplified = TRUE)
 }
 \arguments{
 \item{include}{character vector containing one or more of:
@@ -17,6 +17,9 @@ to the directory of the nhdplus_data.}
 \item{nhdplus_data}{character path to the .gpkg or .gdb
 containing the national seamless dataset. Not required if
 \code{\link{nhdplus_path}} has been set.}
+
+\item{simplified}{boolean if TRUE (the default) the CatchmentSP layer
+will be included.}
 }
 \value{
 list containing paths to the .rds files.
@@ -28,7 +31,8 @@ of quick to access R binary files.
 \details{
 "attributes" will save `NHDFlowline_Network` attributes
 as a seperate data.frame without the geometry. The others will save
-the `NHDFlowline_Network` and `CatchmentSP` as sf data.frames with
+the `NHDFlowline_Network` and `Catchment` or `CatchmentSP`
+(per the `simplified` parameter) as sf data.frames with
 superfluous Z information dropped.
 
 The returned list of paths is also added to the nhdplusTools_env

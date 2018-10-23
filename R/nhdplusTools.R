@@ -19,7 +19,7 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
   index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-
-  nn.dists <- offset <- NULL
+  nn.dists <- offset <- area <- member_FEATUREID <- geom <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -127,15 +127,6 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
   }
 }
 
-#' Sample Flowlines from the Petapsco River.
-#'
-#' A sample set of flowlines.
-#'
-#' @format An sf data.frame
-#'
-#' @source \url{https://www.epa.gov/waterdata/nhdplus-national-data}
-"sample_flines"
-
 #' @title Discover NHDPlus ID
 #' @description Multipurpose function to find a COMID of interest.
 #' @param point An sf POINT including crs as created by:
@@ -237,4 +228,26 @@ get_ds_num_upstream <- function(flines) {
 get_ds_joined_fromCOMID <- function(flines) {
   flines <- mutate(flines, ds_joined_fromCOMID = joined_fromCOMID)
   flines[["ds_joined_fromCOMID"]][match(flines$toCOMID, flines$COMID)]
+}
+
+get_test_data <- function() {
+  fac <- system.file("extdata", "walker_fac.tif",
+                     package = "nhdplusTools") %>%
+    raster::raster()
+  fdr <- system.file("extdata", "walker_fdr.tif",
+                     package = "nhdplusTools") %>%
+    raster::raster()
+
+  proj <- as.character(raster::crs(fdr))
+
+  nhdplus <- system.file("extdata", "walker.gpkg",
+                         package = "nhdplusTools")
+
+  flowline <- sf::read_sf(nhdplus, "NHDFlowline_Network") %>%
+    sf::st_transform(proj)
+
+  catchment <- sf::read_sf(nhdplus, "CatchmentSP") %>%
+    sf::st_transform(proj)
+
+  return(list(fdr = fdr, fac = fac, flowline = flowline, catchment = catchment))
 }

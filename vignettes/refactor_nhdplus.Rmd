@@ -1,5 +1,5 @@
 ---
-title: "NHDPlus Refactor"
+title: "Refactor Flowlines"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
@@ -22,7 +22,9 @@ options(scipen = 9999)
 ```
 
 ## NHDPlus Network Refactor
-This vignette summarizes the workflow implemented by the `refactor_nhdplus()` function to normalize flowline length in the NHDPlus network by splitting long flow lines and collapsing short flowlines. The code developed for this is parameterizable and this vignette is presented with target lengths of 2km for long flowlines splits and 0.5km for minimum flowlines length. While this workflow can be run on the entire network, for this example, we will use the sample network subset included in the `nhdplusTools` package.
+This vignette summarizes the workflow implemented by the `refactor_nhdplus()` function to normalize flowline length in the NHDPlus network by splitting long flow lines and collapsing short flowlines. After running this, you may want to read `vignette("refactor_catchment")` to see how to apply the refactored network to catchment polygons. 
+
+The code developed for this is parameterizable and this vignette is presented with target lengths of 2km for long flowlines splits and 0.5km for minimum flowlines length. While this workflow can be run on the entire network, for this example, we will use the sample network subset included in the `nhdplusTools` package.
 
 The first section describes the network as it exists without modification. Following that, each processing step is illustrated and final results are summarized.
 
@@ -30,7 +32,9 @@ The first section describes the network as it exists without modification. Follo
 Prior to summarizing the network, some NHDPlus conditioning can be performed. The following function removes coastal and non-dendritic flowlines. It can also remove networks with an outlet drainage area under a threshold or a longest path length under a threshold, but those inputs are set to 0 such that all networks are included here. Note that this is especially important when running the whole country -- little change is applied to network subsets that follow the network upstream with tributaries.
 
 ```{r prep_flowlines}
-nhdplus_flines <- nhdplusTools::sample_flines
+nhdplus_flines <- read_sf(system.file("extdata",
+                                    "petapsco_flowlines.gpkg",
+                                    package = "nhdplusTools"))
 min_network_size <- 0
 min_path_length <- 0
 flines <- prepare_nhdplus(st_set_geometry(nhdplus_flines, NULL), 

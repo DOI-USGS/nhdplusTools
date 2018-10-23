@@ -1,9 +1,10 @@
 context("reconcile_collapse_flowlines")
 
 test_that("reconcile collapse flowlines works as expected", {
-  flines_in <- sf::st_read("data/walker_network.geojson", quiet = TRUE)
 
-  flines <- suppressWarnings(prepare_nhdplus(flines_in, 0, 0))
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
+  flines <- suppressWarnings(prepare_nhdplus(walker_flowline, 0, 0))
   flines <- collapse_flowlines(flines, 1, F, 1)
   flines <- reconcile_collapsed_flowlines(flines)
 

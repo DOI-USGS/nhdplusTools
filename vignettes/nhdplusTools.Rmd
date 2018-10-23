@@ -22,7 +22,8 @@ options(scipen = 9999)
 
 First, pick an outlet location and download some data.
 ```{r tldr}
-devtools::install_github("dblodgett-usgs/nhdplusTools")
+# Uncomment to install!
+# devtools::install_github("dblodgett-usgs/nhdplusTools")
 
 library(nhdplusTools)
 library(sf)
@@ -72,8 +73,8 @@ This introduction gives an overview of the basic package setup and an brief demo
 
 The easiest way to install `nhdplusTools` is with the `devtools` package like this:
 ```{r install, echo = TRUE, eval = FALSE}
-install.packages("devtools")
-devtools::install_github("dblodgett-usgs/nhdplusTools")
+# install.packages("devtools")
+# devtools::install_github("dblodgett-usgs/nhdplusTools")
 ```
 Then you can load up nhdplusTools:
 ```{r load}

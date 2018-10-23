@@ -5,7 +5,7 @@
 \title{Subset NHDPlus National Data}
 \usage{
 subset_nhdplus(comids, output_file, nhdplus_data = NULL,
-  overwrite = FALSE, status = TRUE)
+  simplified = TRUE, overwrite = FALSE, status = TRUE)
 }
 \arguments{
 \item{comids}{integer vector of COMIDs to include.}
@@ -17,6 +17,9 @@ to the directory of the nhdplus_data.}
 the national seamless dataset or "download" to use web service.
 Not required if \code{\link{nhdplus_path}} has been set or the default
 has been adopted. See details for more.}
+
+\item{simplified}{boolean if TRUE (the default) the CatchmentSP layer
+will be included. Not relevant to the "download" option.}
 
 \item{overwrite}{boolean should the output file be overwritten}
 
@@ -43,7 +46,7 @@ be available permenantly.
 }
 \examples{
 sample_data <- system.file("extdata/sample_natseamless.gpkg",
-package = "nhdplusTools")
+                           package = "nhdplusTools")
 
 nhdplus_path(sample_data)
 

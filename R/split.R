@@ -61,7 +61,9 @@ split_flowlines <- function(flines, max_length, para = 0) {
                           toCOMID))
 
   } else {
-    flines
+    flines %>%
+      mutate(COMID = as.character(COMID),
+             toCOMID = as.character(toCOMID))
   }
 }
 

@@ -8,3 +8,4 @@ docs
 vignettes/point*
 _pkgdown.yml
 data-raw
+*.cache

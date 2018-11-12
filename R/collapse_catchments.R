@@ -1,44 +1,97 @@
 #' Collapse Catchment Boundaries
 #' @description Collapses catchments according to a set of input outlet catchments.
 #' @export
-#' @importFrom igraph graph_from_data_frame topo_sort tail_of incident_edges V bfs incident_edges head_of
+#' @importFrom igraph graph_from_data_frame topo_sort incident_edges V bfs head_of
 #' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter mutate left_join select distinct case_when
 #' @examples
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' outlets <- data.frame(ID = c(31, 3, 5, 1, 45),
+#' type = c("o", "o", "o", "t", "i"),
+#' stringsAsFactors = FALSE)
+#
+#' collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets)
+#' plot(collapsed$geom, lwd = 3, border = "red")
+#' plot(walker_catchment_rec$geom, lwd = 1.5, border = "green", col = NA, add = TRUE)
+#' plot(walker_catchment$geom, lwd = 1, add = TRUE)
+#' plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 #'
-collapse_catchments <- function(fline_rec, cat_rec, outlet_cats, inlet_cats = NULL) {
-  fline_rec$toID[is.na(fline_rec$toID)] <- 0
-  suppressWarnings(cat_net <- graph_from_data_frame(fline_rec, directed = TRUE))
-  cat_net_sort_verts <- topo_sort(cat_net)
-  outlet_verts <- tail_of(cat_net, outlet_cats)
-  outlet_edge <- incident_edges(cat_net,
-                                cat_net_sort_verts[cat_net_sort_verts %in% outlet_verts],
-                                mode = "in")
+collapse_catchments <- function(fline_rec, cat_rec, outlets) {
 
-  cat_sets <- data.frame(ID = names(outlet_edge),
-                         set = I(rep(list(list()), length(outlet_cats))),
-                         geom = I(rep(list(list()), length(outlet_cats))),
+  outlets <- mutate(outlets, ID = paste0("cat-", ID))
+  cat_rec <- mutate(cat_rec, ID = paste0("cat-", ID))
+
+
+  # Build catchment and nexus data.frames to preserve sanity
+  catchment <- fline_rec %>%
+    mutate(toID = ifelse(is.na(toID), 0, toID))
+
+  # Join id to toID use ID as from nexus ID since we are assuming dendritic.
+  nexus <- left_join(select(st_set_geometry(catchment, NULL), toID = ID),
+                     select(st_set_geometry(catchment, NULL), fromID = ID, toID),
+                     by = "toID") %>%
+    mutate(nexID = paste0("nex-", toID),
+           fromID = paste0("cat-", fromID),
+           toID = paste0("cat-", toID)) %>%
+    select(nexID, fromID, toID)
+
+  # get fromID and toID straight with "nex-" prefix
+  catchment <- mutate(st_set_geometry(catchment, NULL),
+                      fromID = paste0("nex-", ID),
+                      toID = paste0("nex-", toID),
+                      ID = paste0("cat-", ID)) %>%
+    select(fromID, toID, cat_ID = ID)
+
+  cat_graph <- graph_from_data_frame(d = catchment,
+                                   directed = TRUE)
+
+  cat_graph_sort_verts <- topo_sort(cat_graph)
+
+  outlets <- outlets %>%
+    left_join(select(catchment, nexID_stem = fromID, ID = cat_ID), by = "ID") %>%
+    left_join(select(nexus, nexID_confluence = nexID, ID = toID), by = "ID") %>%
+    left_join(select(catchment, nexID_terminal = toID, ID = cat_ID), by = "ID") %>%
+    mutate(
+      nexID = case_when(
+        type == "o" ~ nexID_stem,
+        type == "i" ~ nexID_confluence,
+        type == "t" ~ nexID_terminal
+      )
+    ) %>%
+    select(ID, type, nexID) %>%
+    distinct()
+
+  outlet_verts <- cat_graph_sort_verts[names(cat_graph_sort_verts) %in% outlets$nexID]
+
+  outlets <- outlets[match(names(outlet_verts), outlets$nexID), ]
+
+  outlet_edges <- incident_edges(cat_graph,
+                                 outlet_verts,
+                                 mode = "in")
+
+  cat_sets <- data.frame(ID = outlets$nexID,
+                         set = I(rep(list(list()), nrow(outlets))),
+                         geom = I(rep(list(list()), nrow(outlets))),
                          stringsAsFactors = FALSE)
 
-  verts <- V(cat_net)
+  verts <- V(cat_graph)
 
   for(cat in seq_len(nrow(cat_sets))) {
-    ut <- bfs(graph = cat_net,
-              root = tail_of(cat_net, cat_sets$ID[cat]),
+    ut <- bfs(graph = cat_graph,
+              root = cat_sets$ID[cat],
               neimode = "in",
               order = TRUE,
               unreachable = FALSE,
               restricted = verts)
-    ut_verts <- ut$order[!is.na(ut$order)]
-    ut_edge <- incident_edges(cat_net, ut_verts, "in")
-    cat_sets$set[[cat]] <- list(as.numeric(names(ut_edge)))
-    remove <- head_of(cat_net, unlist(ut_edge))
+    ut_verts <- ut$order[!is.na(ut$order) & names(ut$order) != cat_sets$ID[cat]]
+    cat_sets$set[[cat]] <- filter(catchment,fromID %in% names(ut_verts))$cat_ID
+    remove <- head_of(cat_graph, unlist(incident_edges(cat_graph, ut_verts, "in")))
     verts <- verts[!verts %in% remove]
     cat_sets$geom[[cat]] <- st_union(st_geometry(filter(cat_rec, ID %in% unlist(cat_sets$set[cat]))))[[1]]
+    cat_sets$set[[cat]] <- as.numeric(gsub("^cat-", "", cat_sets$set[[cat]]))
   }
   cat_sets$geom <- st_cast(st_sfc(cat_sets$geom, crs = st_crs(cat_rec)), "MULTIPOLYGON")
-  return(st_sf(cat_sets))
+  cat_sets <- st_sf(cat_sets)
+  cat_sets$ID <- as.numeric(gsub("^cat-", "", outlets$ID))
+  return(cat_sets)
 }
-# plot(cat_net, edge.arrow.size = 0.1, vertex.size = 2, vertex.label = NA, edge.arrow.size = 2, edge.label = V(cat_net))
-# plot(cat_net, edge.arrow.size = 0.1, vertex.size = 5, edge.arrow.size = 2)
-# http://proceedings.esri.com/library/userconf/proc02/pap1224/p1224.htm

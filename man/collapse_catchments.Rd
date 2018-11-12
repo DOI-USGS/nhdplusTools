@@ -4,11 +4,20 @@
 \alias{collapse_catchments}
 \title{Collapse Catchment Boundaries}
 \usage{
-collapse_catchments(fline_rec, cat_rec, outlet_cats)
+collapse_catchments(fline_rec, cat_rec, outlets)
 }
 \description{
 Collapses catchments according to a set of input outlet catchments.
 }
 \examples{
+source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+outlets <- data.frame(ID = c(31, 3, 5, 1, 45),
+type = c("o", "o", "o", "t", "i"),
+stringsAsFactors = FALSE)
+collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets)
+plot(collapsed$geom, lwd = 3, border = "red")
+plot(walker_catchment_rec$geom, lwd = 1.5, border = "green", col = NA, add = TRUE)
+plot(walker_catchment$geom, lwd = 1, add = TRUE)
+plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 
 }

@@ -11,7 +11,9 @@ outlets <- data.frame(ID = c(31, 3, 5, 1),
 collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets)
 
 expect_equal(collapsed$ID, c(5, 31, 3, 1))
+expect(collapsed$ID[1] %in% collapsed$set[[1]], "outlet ids should be in the result")
 expect(length(collapsed$set[[2]]) == 5, "got the wrong number in catchment set")
+expect(!5 %in% collapsed$set[[2]], "an upstream outlet should not be in another set")
 
 outlets <- data.frame(ID = c(31, 3, 5, 1, 12),
                       type = c("o", "o", "o", "t", "i"),

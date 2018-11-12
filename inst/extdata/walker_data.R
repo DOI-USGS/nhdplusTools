@@ -1,3 +1,4 @@
+# nolint start
 extdata <- system.file("extdata", package = "nhdplusTools")
 walker_fac <- raster::raster(file.path(extdata, "walker_fac.tif"))
 walker_fdr <- raster::raster(file.path(extdata, "walker_fdr.tif"))
@@ -7,6 +8,23 @@ walker_catchment <- sf::st_transform(walker_catchment, proj)
 walker_flowline <- sf::read_sf(file.path(extdata, "walker.gpkg"), "NHDFlowline_Network")
 walker_flowline <- sf::st_transform(walker_flowline, proj)
 
+# walker.gpkg turned into pre-processed sample data.
+# run the above then:
+# refactor <- refactor_nhdplus(nhdplus_flines = walker_flowline,
+#                              split_flines_meters = 2000,
+#                              collapse_flines_meters = 1,
+#                              collapse_flines_main_meters = 1,
+#                              split_flines_cores = 2,
+#                              out_collapsed = "inst/extdata/walker_refactor.gpkg",
+#                              out_reconciled = "inst/extdata/walker_reconcile.gpkg",
+#                              three_pass = TRUE,
+#                              purge_non_dendritic = FALSE,
+#                              warn = FALSE)
+# fline_ref <- sf::read_sf("inst/extdata/subset_refactor.gpkg")
+# fline_rec <- sf::read_sf("inst/extdata/subset_reconcile.gpkg")
+# cat_rec <- reconcile_catchments(walker_catchment, fline_ref,
+#                                 fline_rec, walker_fdr, walker_fac)
+# sf::write_sf(cat_rec, "inst/extdata/walker_cat_rec.gpkg")
 # This is how the raster data was created.
 # r <- fasterize::raster("NHDPlusCA/fdr.tif")
 #

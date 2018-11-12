@@ -17,7 +17,7 @@ split_flowlines <- function(flines, max_length, para = 0) {
 
   split <- split_lines(flines, max_length, id = "COMID", para = para)
 
-  if(!is.null(split)) {
+  if (!is.null(split)) {
 
   split <- left_join(split, sf::st_set_geometry(flines, NULL), by = "COMID")
 
@@ -97,7 +97,7 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
   too_long <- filter(select(input_lines, id, geom_column, geom_len),
                      geom_len >= max_length)
 
-  if(nrow(too_long) != 0) {
+  if (nrow(too_long) != 0) {
 
   rm(input_lines) # just to control memory usage in case this is big.
 
@@ -115,7 +115,7 @@ split_lines <- function(input_lines, max_length, id = "ID", para = 0) {
     group_by(fID) %>%
     mutate(split_fID = ifelse(dplyr::row_number() == 1,
                               as.character(fID),
-                              paste0(fID, ".", dplyr::row_number()-1))) %>%
+                              paste0(fID, ".", dplyr::row_number() - 1))) %>%
     mutate(piece = 1:n()) %>%
     mutate(start = (piece - 1) / n(),
            end = piece / n()) %>%

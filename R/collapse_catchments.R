@@ -14,7 +14,7 @@
 #' time, it is required that they bve specified explicitely.
 #' @export
 #' @importFrom igraph graph_from_data_frame topo_sort incident_edges V bfs head_of
-#' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs
+#' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs st_set_geometry
 #' @importFrom dplyr filter mutate left_join select distinct case_when
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
@@ -88,7 +88,7 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets) {
 
   verts <- V(cat_graph)
 
-  for(cat in seq_len(nrow(cat_sets))) {
+  for (cat in seq_len(nrow(cat_sets))) {
     ut <- bfs(graph = cat_graph,
               root = cat_sets$ID[cat],
               neimode = "in",
@@ -101,7 +101,7 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets) {
     outlet <- filter(outlets, nexID == cat_sets$ID[cat])
     remove <- head_of(cat_graph, unlist(incident_edges(cat_graph, ut_verts, "in")))
     verts <- verts[!verts %in% remove]
-    if(outlet$type == "o") {
+    if (outlet$type == "o") {
       cat_sets$set[[cat]] <- c(cat_sets$set[[cat]], outlet$ID)
       verts <- verts[!names(verts) == outlet$nexID]
     }

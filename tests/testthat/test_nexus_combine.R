@@ -5,8 +5,6 @@ source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 outlets <- data.frame(ID = c(31, 3, 5, 1),
                       type = c("o", "o", "o", "t"),
                       stringsAsFactors = FALSE)
-# fline_rec <- walker_fline_rec
-# cat_rec <- walker_catchment_rec
 
 collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets)
 

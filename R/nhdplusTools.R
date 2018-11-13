@@ -252,3 +252,9 @@ get_test_data <- function() {
 
   return(list(fdr = fdr, fac = fac, flowline = flowline, catchment = catchment))
 }
+
+member_mapper <- function(df, id_col = "ID", list_col = "member_COMID") {
+  df <- select(df, !!c(id_col, list_col))
+  df[[list_col]] <- lapply(df[[list_col]], function(x) as.numeric(strsplit(x, ",")[[1]]))
+  tidyr::unnest(df)
+}

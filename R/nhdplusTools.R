@@ -255,6 +255,6 @@ get_test_data <- function() {
 
 member_mapper <- function(df, id_col = "ID", list_col = "member_COMID") {
   df <- select(df, !!c(id_col, list_col))
-  df[[list_col]] <- lapply(df[[list_col]], function(x) as.numeric(strsplit(x, ",")[[1]]))
+  df[[list_col]] <- lapply(df[[list_col]], function(x) strsplit(x, ",")[[1]])
   tidyr::unnest(df)
 }

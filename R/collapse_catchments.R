@@ -6,6 +6,7 @@
 #' fline and cat data.frames. "type" should be "outlet" (outlet), "inlet" (inlet), or "terminal" (terminal).
 #' "outlet" will include the specified ID. "inlet" will include everything that contributes to the ID.
 #' "terminal" will be treated as a terminal node with nothing downstream.
+#' @param flowline st data.frame with original nhdplus network flowlines.
 #' @details This function operates on the catchment network as a node-edge graph.
 #' The outlet types are required to ensure that graph searches start from the
 #' appropriate nodes and includes the appropriate catchments. Outlets such as gages
@@ -28,7 +29,9 @@
 #' plot(walker_catchment$geom, lwd = 1, add = TRUE)
 #' plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 #'
-collapse_catchments <- function(fline_rec, cat_rec, outlets) {
+collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
+
+  lps <- get_lps(fline_rec, flowline)
 
   outlets <- mutate(outlets, ID = paste0("cat-", ID))
   cat_rec <- mutate(cat_rec, ID = paste0("cat-", ID))
@@ -111,4 +114,30 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets) {
   cat_sets <- st_sf(cat_sets)
   cat_sets$ID <- as.numeric(gsub("^cat-", "", outlets$ID))
   return(cat_sets)
+}
+
+get_lps <- function(fline_rec, flowline) {
+  lp_ids <- unique(flowline$LevelPathI)
+
+  mapper <- nhdplusTools:::member_mapper(st_set_geometry(fline_rec, NULL)) %>%
+    mutate(orig_COMID = as.integer(floor(as.numeric(member_COMID)))) %>%
+    left_join(select(st_set_geometry(walker_flowline, NULL),
+                     COMID, LevelPathI, Hydroseq),
+              by = c("orig_COMID" = "COMID")) %>%
+    group_by(LevelPathI)
+
+  headwaters <- filter(mapper, Hydroseq == max(Hydroseq) &
+                         (member_COMID == as.character(orig_COMID) |
+                            member_COMID == as.character(orig_COMID + 0.1)))
+
+  outlets <- filter(mapper, Hydroseq == min(Hydroseq)) %>%
+    group_by(orig_COMID) %>%
+    filter(as.numeric(member_COMID) == max(as.numeric(member_COMID))) %>%
+    ungroup()
+
+  data.frame(LevelPathID = unique(outlets$LevelPathI)) %>%
+    left_join(select(headwaters, head_ID = ID, LevelPathID = LevelPathI),
+              by = "LevelPathID") %>%
+    left_join(select(outlets, tail_ID = ID, LevelPathID = LevelPathI),
+              by = "LevelPathID")
 }

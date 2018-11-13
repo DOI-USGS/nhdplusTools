@@ -12,9 +12,9 @@ collapse_catchments(fline_rec, cat_rec, outlets)
 \item{cat_rec}{sf data.frame Reconciled catchments as genberated by `reconcile_catchments`}
 
 \item{outlets}{data.frame with "ID" and "type" columns. "ID" must be identifiers from
-fline and cat data.frames. "type" should be "o" (outlet), "i" (inlet), or "t" (terminal).
-"o" will include the specified ID. "i" will include everything that contributes to the ID.
-"t" will be treated as a terminal node with nothing downstream.}
+fline and cat data.frames. "type" should be "outlet" (outlet), "inlet" (inlet), or "terminal" (terminal).
+"outlet" will include the specified ID. "inlet" will include everything that contributes to the ID.
+"terminal" will be treated as a terminal node with nothing downstream.}
 }
 \description{
 Collapses catchments according to a set of outlet catchments.
@@ -23,14 +23,14 @@ Collapses catchments according to a set of outlet catchments.
 This function operates on the catchment network as a node-edge graph.
 The outlet types are required to ensure that graph searches start from the
 appropriate nodes and includes the appropriate catchments. Outlets such as gages
-should be treated as "o" outlets. Confluences should be specified as "i" outlets.
+should be treated as "outlet" outlets. Confluences should be specified as "inlet" outlets.
 While it may be possible for the algorithm to determine terminal outlets, at this
 time, it is required that they bve specified explicitely.
 }
 \examples{
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 outlets <- data.frame(ID = c(31, 3, 5, 1, 45),
-                      type = c("o", "o", "o", "t", "i"),
+                      type = c("outlet", "outlet", "outlet", "terminal", "inlet"),
                       stringsAsFactors = FALSE)
 collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets)
 plot(collapsed$geom, lwd = 3, border = "red")

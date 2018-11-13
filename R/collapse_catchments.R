@@ -14,24 +14,35 @@
 #' While it may be possible for the algorithm to determine terminal outlets, at this
 #' time, it is required that they bve specified explicitely.
 #' @export
-#' @importFrom igraph graph_from_data_frame topo_sort incident_edges V bfs head_of
-#' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs st_set_geometry
+#' @importFrom igraph graph_from_data_frame topo_sort incident_edges V bfs head_of shortest_paths
+#' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs st_set_geometry st_line_merge
 #' @importFrom dplyr filter mutate left_join select distinct case_when
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-#' outlets <- data.frame(ID = c(31, 3, 5, 1, 45),
-#'                       type = c("outlet", "outlet", "outlet", "terminal", "inlet"),
+#' outlets <- data.frame(ID = c(31, 3, 5, 1, 45, 92),
+#'                       type = c("outlet", "outlet", "outlet", "terminal", "inlet", "outlet"),
 #'                       stringsAsFactors = FALSE)
-#
-#' collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets)
-#' plot(collapsed$geom, lwd = 3, border = "red")
+#' collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec,
+#'                                  outlets, walker_flowline)
+#' plot(collapsed$cat_sets$geom, lwd = 3, border = "red")
 #' plot(walker_catchment_rec$geom, lwd = 1.5, border = "green", col = NA, add = TRUE)
 #' plot(walker_catchment$geom, lwd = 1, add = TRUE)
 #' plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 #'
+#' plot(collapsed$cat_sets$geom, lwd = 3, border = "black")
+#' plot(collapsed$fline_sets$geom, lwd = 3, col = "red", add = TRUE)
+#' plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
+#'
+
+# fline_rec <- walker_fline_rec
+# cat_rec <- walker_catchment_rec
+# flowline <- walker_flowline
+
 collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
 
   lps <- get_lps(fline_rec, flowline)
+
+  outlets <- make_outlets_valid(outlets, fline_rec, lps)
 
   outlets <- mutate(outlets, ID = paste0("cat-", ID))
   cat_rec <- mutate(cat_rec, ID = paste0("cat-", ID))
@@ -88,19 +99,75 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
                          geom = I(rep(list(list()), nrow(outlets))),
                          stringsAsFactors = FALSE)
 
+  fline_sets <- data.frame(ID = outlets$nexID,
+                           set = I(rep(list(list()), nrow(outlets))),
+                           geom = I(rep(list(list()), nrow(outlets))),
+                           stringsAsFactors = FALSE)
+
   verts <- V(cat_graph)
 
+  us_verts <- c()
+
   for (cat in seq_len(nrow(cat_sets))) {
+    outlet <- filter(outlets, nexID == cat_sets$ID[cat])
+
     ut <- bfs(graph = cat_graph,
               root = cat_sets$ID[cat],
               neimode = "in",
               order = TRUE,
               unreachable = FALSE,
               restricted = verts)
+
+    um <- c()
+
+    if(length(us_verts) > 0) { # do shortest paths search for um
+      suppressWarnings(paths <- shortest_paths(cat_graph,
+                                               from = cat_sets$ID[cat],
+                                               to = us_verts,
+                                               mode = "in"))
+
+      if(length(paths$vpath) > 1) {
+        browser()
+      }
+
+      um <- names(paths$vpath[[1]])
+
+      vert <- us_verts[1]
+
+      if(!is.null(um)) {
+        us_verts <- us_verts[!us_verts == vert]
+      }
+    }
+
+    if(length(um) == 0) { # then look for headwater.
+      # find head id
+      head_id <- lps$head_ID[which(lps$ID == as.integer(gsub("^cat-", "", outlets$ID[cat])))]
+
+      um <- names(shortest_paths(cat_graph,
+                           from = cat_sets$ID[cat],
+                           to = paste0("nex-", head_id),
+                           mode = "in")$vpath[[1]])
+    }
+
+    if(outlet$type == "inlet") { # don't include outlet.
+      um <- um[!um == cat_sets$ID[cat]]
+    }
+
+    um <- as.numeric(gsub("^nex-", "", um))
+
+    fline_sets$geom[[cat]] <- filter(fline_rec, ID %in% um) %>%
+      st_geometry() %>%
+      st_cast("LINESTRING") %>%
+      st_union() %>%
+      st_line_merge()
+
+    fline_sets$geom[[cat]] <- fline_sets$geom[[cat]][[1]]
+
+    fline_sets$set[[cat]] <- um
+
     # Excludes the search node to avoid grabbing the downstream catchment.
     ut_verts <- ut$order[!is.na(ut$order) & names(ut$order) != cat_sets$ID[cat]]
     cat_sets$set[[cat]] <- filter(catchment, fromID %in% names(ut_verts))$cat_ID
-    outlet <- filter(outlets, nexID == cat_sets$ID[cat])
     remove <- head_of(cat_graph, unlist(incident_edges(cat_graph, ut_verts, "in")))
     verts <- verts[!verts %in% remove]
     if (outlet$type == "outlet") {
@@ -109,22 +176,31 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
     }
     cat_sets$geom[[cat]] <- st_union(st_geometry(filter(cat_rec, ID %in% unlist(cat_sets$set[cat]))))[[1]]
     cat_sets$set[[cat]] <- as.numeric(gsub("^cat-", "", cat_sets$set[[cat]]))
+
+    us_verts <- c(us_verts, cat_sets$ID[cat])
   }
+
   cat_sets$geom <- st_cast(st_sfc(cat_sets$geom, crs = st_crs(cat_rec)), "MULTIPOLYGON")
   cat_sets <- st_sf(cat_sets)
   cat_sets$ID <- as.numeric(gsub("^cat-", "", outlets$ID))
-  return(cat_sets)
+
+  fline_sets$geom <- st_sfc(fline_sets$geom, crs = st_crs(fline_rec))
+  fline_sets <- st_sf(fline_sets)
+  fline_sets$ID <- as.numeric(gsub("^cat-", "", outlets$ID))
+
+  return(list(cat_sets = cat_sets, fline_sets = fline_sets))
 }
 
 get_lps <- function(fline_rec, flowline) {
   lp_ids <- unique(flowline$LevelPathI)
 
-  mapper <- nhdplusTools:::member_mapper(st_set_geometry(fline_rec, NULL)) %>%
+  mapper <- member_mapper(st_set_geometry(fline_rec, NULL)) %>%
     mutate(orig_COMID = as.integer(floor(as.numeric(member_COMID)))) %>%
-    left_join(select(st_set_geometry(walker_flowline, NULL),
-                     COMID, LevelPathI, Hydroseq),
+    left_join(select(st_set_geometry(flowline, NULL),
+                     COMID, LevelPathID = LevelPathI, Hydroseq),
               by = c("orig_COMID" = "COMID")) %>%
-    group_by(LevelPathI)
+    group_by(LevelPathID) %>%
+    filter(LevelPathID == min(LevelPathID)) # This should be verified! Grabs the biggest (min value) level path.
 
   headwaters <- filter(mapper, Hydroseq == max(Hydroseq) &
                          (member_COMID == as.character(orig_COMID) |
@@ -135,9 +211,27 @@ get_lps <- function(fline_rec, flowline) {
     filter(as.numeric(member_COMID) == max(as.numeric(member_COMID))) %>%
     ungroup()
 
-  data.frame(LevelPathID = unique(outlets$LevelPathI)) %>%
-    left_join(select(headwaters, head_ID = ID, LevelPathID = LevelPathI),
+  mapper %>%
+    left_join(select(headwaters, head_ID = ID, LevelPathID),
               by = "LevelPathID") %>%
-    left_join(select(outlets, tail_ID = ID, LevelPathID = LevelPathI),
+    left_join(select(outlets, tail_ID = ID, LevelPathID),
               by = "LevelPathID")
+}
+
+make_outlets_valid <- function(outlets, fline_rec, lps) {
+  get_otl <- function() left_join(outlets, select(lps, ID, LevelPathID, tail_ID), by = "ID")
+  otl <- get_otl()
+  count_while <- 0
+  while(!all(otl$tail_ID %in% otl$ID)) {
+    bad <- which(!otl$tail_ID %in% otl$ID)
+    for(add in seq_along(bad)) {
+      bad_outlet <- otl[bad[add],]
+      add_ids <- filter(fline_rec, toID == filter(fline_rec, ID == bad_outlet$tail_ID)$toID)$ID
+      outlets <- rbind(outlets, data.frame(ID = add_ids, type = rep("outlet", length(add_ids)),
+                                           stringsAsFactors = FALSE))
+    }
+    otl <- get_otl()
+    if(count_while > 1000) stop("Stuck in a while loop trying to fix disconnected outlets.")
+  }
+  return(outlets)
 }

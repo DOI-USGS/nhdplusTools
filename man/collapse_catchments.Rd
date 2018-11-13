@@ -31,13 +31,18 @@ time, it is required that they bve specified explicitely.
 }
 \examples{
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-outlets <- data.frame(ID = c(31, 3, 5, 1, 45),
-                      type = c("outlet", "outlet", "outlet", "terminal", "inlet"),
+outlets <- data.frame(ID = c(31, 3, 5, 1, 45, 92),
+                      type = c("outlet", "outlet", "outlet", "terminal", "inlet", "outlet"),
                       stringsAsFactors = FALSE)
-collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets)
-plot(collapsed$geom, lwd = 3, border = "red")
+collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec,
+                                 outlets, walker_flowline)
+plot(collapsed$cat_sets$geom, lwd = 3, border = "red")
 plot(walker_catchment_rec$geom, lwd = 1.5, border = "green", col = NA, add = TRUE)
 plot(walker_catchment$geom, lwd = 1, add = TRUE)
+plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
+
+plot(collapsed$cat_sets$geom, lwd = 3, border = "black")
+plot(collapsed$fline_sets$geom, lwd = 3, col = "red", add = TRUE)
 plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 
 }

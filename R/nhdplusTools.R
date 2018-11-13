@@ -20,7 +20,8 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
   index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-
   nn.dists <- offset <- area <- member_FEATUREID <- geom <-
-  fromID <- nexID <- cat_ID <- type <- NULL
+  fromID <- nexID <- cat_ID <- type <- LevelPathID <- orig_COMID <-
+  tail_ID <- NULL
 
 nhdplusTools_env <- new.env()
 

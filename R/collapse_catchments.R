@@ -42,7 +42,8 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
 
   lps <- get_lps(fline_rec, flowline)
 
-  outlets <- make_outlets_valid(outlets, fline_rec, lps)
+  outlets <- make_outlets_valid(outlets, fline_rec, lps) %>%
+    distinct()
 
   outlets <- mutate(outlets, ID = paste0("cat-", ID))
   cat_rec <- mutate(cat_rec, ID = paste0("cat-", ID))
@@ -158,8 +159,11 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
     fline_sets$geom[[cat]] <- filter(fline_rec, ID %in% um) %>%
       st_geometry() %>%
       st_cast("LINESTRING") %>%
-      st_union() %>%
-      st_line_merge()
+      st_union()
+
+    if(st_geometry_type(fline_sets$geom[[cat]]) == "MULTILINESTRING") {
+      fline_sets$geom[[cat]] <- st_line_merge(fline_sets$geom[[cat]])
+    }
 
     fline_sets$geom[[cat]] <- fline_sets$geom[[cat]][[1]]
 
@@ -175,6 +179,9 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
       verts <- verts[!names(verts) == outlet$nexID]
     }
     cat_sets$geom[[cat]] <- st_union(st_geometry(filter(cat_rec, ID %in% unlist(cat_sets$set[cat]))))[[1]]
+
+    if(length(cat_sets$geom[[cat]]) == 0) browser()
+
     cat_sets$set[[cat]] <- as.numeric(gsub("^cat-", "", cat_sets$set[[cat]]))
 
     us_verts <- c(us_verts, cat_sets$ID[cat])

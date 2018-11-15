@@ -1,3 +1,5 @@
+development:
+  mode: devel
 reference:
   - title: Data and Package Helpers
     desc: >

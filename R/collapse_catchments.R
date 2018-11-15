@@ -45,6 +45,13 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
   outlets <- make_outlets_valid(outlets, fline_rec, lps) %>%
     distinct()
 
+  remove_flines <- filter(fline_rec, !ID %in% cat_rec$ID)
+  if(any(remove_flines$ID %in% remove_flines$toID))
+    stop("Found some flowlines without catchments that are
+         not headwaters. This validates critical assumptions.")
+
+  fline_rec <- filter(fline_rec, ID %in% cat_rec$ID)
+
   outlets <- mutate(outlets, ID = paste0("cat-", ID))
   cat_rec <- mutate(cat_rec, ID = paste0("cat-", ID))
 

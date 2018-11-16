@@ -15,7 +15,7 @@
 #' time, it is required that they bve specified explicitely.
 #' @export
 #' @importFrom igraph graph_from_data_frame topo_sort incident_edges V bfs head_of shortest_paths
-#' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs st_set_geometry st_line_merge
+#' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs st_set_geometry st_line_merge st_geometry_type
 #' @importFrom dplyr filter mutate left_join select distinct case_when
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
@@ -34,10 +34,6 @@
 #' plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 #'
 
-# fline_rec <- walker_fline_rec
-# cat_rec <- walker_catchment_rec
-# flowline <- walker_flowline
-
 collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
 
   lps <- get_lps(fline_rec, flowline)
@@ -48,14 +44,14 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
   remove_flines <- filter(fline_rec, !ID %in% cat_rec$ID)
   if(any(remove_flines$ID %in% remove_flines$toID))
     stop("Found some flowlines without catchments that are
-         not headwaters. This validates critical assumptions.")
-
+         not headwaters. This breaks critical assumptions.")
+  # Actually remove superfluous flowlines.
   fline_rec <- filter(fline_rec, ID %in% cat_rec$ID)
 
   outlets <- mutate(outlets, ID = paste0("cat-", ID))
   cat_rec <- mutate(cat_rec, ID = paste0("cat-", ID))
 
-  # Build catchment and nexus data.frames to preserve sanity
+  # Build catchment and nexus data.frames to preserve sanity in graph traversal.
   catchment <- fline_rec %>%
     mutate(toID = ifelse(is.na(toID), 0, toID))
 
@@ -75,10 +71,9 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
                       ID = paste0("cat-", ID)) %>%
     select(fromID, toID, cat_ID = ID)
 
+  # Convert the catchment network to a directed graph
   cat_graph <- graph_from_data_frame(d = catchment,
                                    directed = TRUE)
-
-  cat_graph_sort_verts <- topo_sort(cat_graph)
 
   outlets <- outlets %>%
     left_join(select(catchment, nexID_stem = fromID, ID = cat_ID), by = "ID") %>%
@@ -94,13 +89,10 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
     select(ID, type, nexID) %>%
     distinct()
 
+  # sorted version of the graph to re-order outlets in upstream-downstream order.
+  cat_graph_sort_verts <- topo_sort(cat_graph)
   outlet_verts <- cat_graph_sort_verts[names(cat_graph_sort_verts) %in% outlets$nexID]
-
   outlets <- outlets[match(names(outlet_verts), outlets$nexID), ]
-
-  outlet_edges <- incident_edges(cat_graph,
-                                 outlet_verts,
-                                 mode = "in")
 
   cat_sets <- data.frame(ID = outlets$nexID,
                          set = I(rep(list(list()), nrow(outlets))),
@@ -126,40 +118,17 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
               unreachable = FALSE,
               restricted = verts)
 
-    um <- c()
+    outlet_id <- as.integer(gsub("^cat-", "", outlets$ID[cat]))
+    head_id <- lps$head_ID[which(lps$ID == outlet_id)]
+    head_id <- head_id[head_id != outlet_id]
 
-    if(length(us_verts) > 0) { # do shortest paths search for um
-      suppressWarnings(paths <- shortest_paths(cat_graph,
-                                               from = cat_sets$ID[cat],
-                                               to = us_verts,
-                                               mode = "in"))
+    if(length(head_id) == 0) head_id <- outlet_id # Then the outlet is a headwater.
+    um <- find_um(us_verts, cat_graph,
+                  cat_id = cat_sets$ID[cat],
+                  head_id = head_id,
+                  outlet_type = filter(outlets, nexID == cat_sets$ID[cat])$type)
 
-      if(length(paths$vpath) > 1) {
-        browser()
-      }
-
-      um <- names(paths$vpath[[1]])
-
-      vert <- us_verts[1]
-
-      if(!is.null(um)) {
-        us_verts <- us_verts[!us_verts == vert]
-      }
-    }
-
-    if(length(um) == 0) { # then look for headwater.
-      # find head id
-      head_id <- lps$head_ID[which(lps$ID == as.integer(gsub("^cat-", "", outlets$ID[cat])))]
-
-      um <- names(shortest_paths(cat_graph,
-                           from = cat_sets$ID[cat],
-                           to = paste0("nex-", head_id),
-                           mode = "in")$vpath[[1]])
-    }
-
-    if(outlet$type == "inlet") { # don't include outlet.
-      um <- um[!um == cat_sets$ID[cat]]
-    }
+    us_verts <- update_us_verts(us_verts, um)
 
     um <- as.numeric(gsub("^nex-", "", um))
 
@@ -191,6 +160,7 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
 
     cat_sets$set[[cat]] <- as.numeric(gsub("^cat-", "", cat_sets$set[[cat]]))
 
+    # us_verts are where we need to stop while stepping upstream.
     us_verts <- c(us_verts, cat_sets$ID[cat])
   }
 
@@ -213,8 +183,9 @@ get_lps <- function(fline_rec, flowline) {
     left_join(select(st_set_geometry(flowline, NULL),
                      COMID, LevelPathID = LevelPathI, Hydroseq),
               by = c("orig_COMID" = "COMID")) %>%
-    group_by(LevelPathID) %>%
-    filter(LevelPathID == min(LevelPathID)) # This should be verified! Grabs the biggest (min value) level path.
+    group_by(ID) %>%
+    filter(LevelPathID == max(LevelPathID)) %>% # This could be problematic...
+    ungroup() %>% group_by(LevelPathID)
 
   headwaters <- filter(mapper, Hydroseq == max(Hydroseq) &
                          (member_COMID == as.character(orig_COMID) |
@@ -233,7 +204,8 @@ get_lps <- function(fline_rec, flowline) {
 }
 
 make_outlets_valid <- function(outlets, fline_rec, lps) {
-  get_otl <- function() left_join(outlets, select(lps, ID, LevelPathID, tail_ID), by = "ID")
+  get_otl <- function()
+    distinct(left_join(outlets, select(lps, ID, LevelPathID, tail_ID), by = "ID"))
   otl <- get_otl()
   count_while <- 0
   while(!all(otl$tail_ID %in% otl$ID)) {
@@ -248,4 +220,47 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
     if(count_while > 1000) stop("Stuck in a while loop trying to fix disconnected outlets.")
   }
   return(outlets)
+}
+
+find_um <- function(us_verts, cat_graph, cat_id, head_id, outlet_type) {
+  um <- c()
+
+  if(length(us_verts) > 0) {
+    paths <- shortest_paths(cat_graph,
+                            from = cat_id,
+                            to = us_verts,
+                            mode = "in")
+
+    path_lengths <- lengths(sapply(paths$vpath, names))
+
+    if(any(path_lengths > 0)) {
+      um <- names(paths$vpath[[which(path_lengths == max(path_lengths))]])
+    }
+  }
+
+  if(length(um) == 0) { # then look for headwater.
+    um <- names(shortest_paths(cat_graph,
+                               from = cat_id,
+                               to = paste0("nex-", head_id),
+                               mode = "in")$vpath[[1]])
+  }
+
+  if(outlet_type == "inlet") { # don't include outlet.
+    um <- um[!um == cat_id]
+  }
+
+  return(um)
+}
+
+update_us_verts <- function(us_verts, um) {
+  if(length(us_verts) > 0) {
+    vert <- us_verts[which(um %in% us_verts)]
+
+    if(length(vert) == 1) {
+      # Since longest path is used in find_um if multiple paths are found
+      # there is a chance that multiple us verts get consumed in a single step?
+      us_verts <- us_verts[!us_verts %in% vert]
+    }
+  }
+  return(us_verts)
 }

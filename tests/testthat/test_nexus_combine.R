@@ -50,3 +50,31 @@ collapsed_cat <- collapsed$cat_sets
 
 expect(length(collapsed_cat$set[[1]]) == 100, "got the wrong number in catchment set")
 })
+
+test_that("new_hope combine", {
+  source(system.file("extdata", "new_hope_data.R", package = "nhdplusTools"))
+
+  # From manual testing with NHDPlus Gage layer.
+  outlets <- data.frame(ID = c(162L, 153L, 155L, 59L, 17L, 118L, 398L, 399L, 400L, 135L,
+                               268L, 6L, 365L, 366L, 39L, 102L, 35L, 362L, 335L),
+                        type = c("outlet", "outlet", "outlet", "outlet", "outlet",
+                                 "outlet", "outlet", "outlet", "outlet", "outlet", "outlet",
+                                 "outlet", "outlet", "outlet", "outlet", "outlet", "outlet",
+                                 "outlet", "terminal"))
+
+  collapsed <- collapse_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+
+  sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
+  sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
+
+  outlets <- data.frame(ID = c(398L, 399L, 400L, 335L),
+                        type = c("outlet", "outlet", "outlet", "terminal"))
+
+  collapsed <- collapse_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+
+  fline_sets <- collapsed$fline_sets
+  cat_sets <- collapsed$cat_sets
+
+  expect(fline_sets$ID[1] == fline_sets$set[[1]][1],
+         "A small headwater that was a divergence should show up as such")
+})

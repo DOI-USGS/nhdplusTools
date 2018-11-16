@@ -128,7 +128,15 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
                   head_id = head_id,
                   outlet_type = filter(outlets, nexID == cat_sets$ID[cat])$type)
 
-    us_verts <- update_us_verts(us_verts, um)
+    if(length(us_verts) > 0) {
+      vert <- us_verts[which(um %in% us_verts)]
+
+      if(length(vert) == 1) {
+        # Since longest path is used in find_um if multiple paths are found
+        # there is a chance that multiple us verts get consumed in a single step?
+        us_verts <- us_verts[!us_verts %in% vert]
+      }
+    }
 
     um <- as.numeric(gsub("^nex-", "", um))
 
@@ -203,6 +211,13 @@ get_lps <- function(fline_rec, flowline) {
               by = "LevelPathID")
 }
 
+#' @description Given a set of outlets, works downstream adding outlets at the
+#' outlet of each level path. This makes sure catchments get inserted so an upstream
+#' catchment doesn't get orphaned in the middle of a larger catchment.
+#' @param outlets the outlet list of gages, etc.
+#' @param fline_rec the reconciled flowline network
+#' @param lps level paths
+#' @noRd
 make_outlets_valid <- function(outlets, fline_rec, lps) {
   get_otl <- function()
     distinct(left_join(outlets, select(lps, ID, LevelPathID, tail_ID), by = "ID"))
@@ -222,19 +237,33 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
   return(outlets)
 }
 
+#' @description Finds upstream nearest upstream main stem shortest path to
+#' either the list of verticies that might be upstream or the up main headwater.
+#' @param us_verts upstream verticies that should be used as stop points.
+#' @param cat_graph the catchment network to be searched.
+#' @param cat_id the catchment identifier to start at.
+#' @param head_id the upstream mainstem top catchment identifier.
+#' @param outlet_type the type of outlet chosen from "outlet", "inlet", or "terminal".
+#' @noRd
 find_um <- function(us_verts, cat_graph, cat_id, head_id, outlet_type) {
   um <- c()
 
   if(length(us_verts) > 0) {
-    paths <- shortest_paths(cat_graph,
+    suppressWarnings(paths <- shortest_paths(cat_graph,
                             from = cat_id,
                             to = us_verts,
-                            mode = "in")
+                            mode = "in"))
 
-    path_lengths <- lengths(sapply(paths$vpath, names))
+    if(length(paths$vpath) > 1) {
+      path_lengths <- lengths(sapply(paths$vpath, names))
+    } else {
+      path_lengths <- length(names(paths$vpath[[1]]))
+    }
 
     if(any(path_lengths > 0)) {
-      um <- names(paths$vpath[[which(path_lengths == max(path_lengths))]])
+      path_lengths[path_lengths == 0] <- NA
+      um <- names(paths$vpath[which(path_lengths == min(path_lengths, na.rm = TRUE))][[1]])
+      um <- um[!um %in% us_verts] # Path includes the "to" but don't want to include it!
     }
   }
 
@@ -250,17 +279,4 @@ find_um <- function(us_verts, cat_graph, cat_id, head_id, outlet_type) {
   }
 
   return(um)
-}
-
-update_us_verts <- function(us_verts, um) {
-  if(length(us_verts) > 0) {
-    vert <- us_verts[which(um %in% us_verts)]
-
-    if(length(vert) == 1) {
-      # Since longest path is used in find_um if multiple paths are found
-      # there is a chance that multiple us verts get consumed in a single step?
-      us_verts <- us_verts[!us_verts %in% vert]
-    }
-  }
-  return(us_verts)
 }

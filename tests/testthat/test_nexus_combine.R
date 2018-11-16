@@ -64,9 +64,6 @@ test_that("new_hope combine", {
 
   collapsed <- collapse_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
 
-  sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
-  sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
-
   outlets <- data.frame(ID = c(398L, 399L, 400L, 335L),
                         type = c("outlet", "outlet", "outlet", "terminal"))
 
@@ -77,4 +74,18 @@ test_that("new_hope combine", {
 
   expect(fline_sets$ID[1] == fline_sets$set[[1]][1],
          "A small headwater that was a divergence should show up as such")
+
+  expect(all(fline_sets$ID %in% cat_sets$ID), "flines and cats should have the same ids")
+
+  expect(all(!fline_sets$set[fline_sets$ID == 335][[1]] %in% fline_sets$set[fline_sets$ID == 398][[1]]),
+         "a downstream catchment should not contain flowlines from upstream catchments")
+
+  expect(all(!fline_sets$set[fline_sets$ID == 342][[1]] %in% fline_sets$set[fline_sets$ID == 398][[1]]),
+         "a downstream catchment should not contain flowlines from upstream catchments")
+
+  expect(all(!fline_sets$set[fline_sets$ID == 399][[1]] %in% fline_sets$set[fline_sets$ID == 398][[1]]),
+         "a downstream catchment should not contain flowlines from upstream catchments")
+
+  # sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
+  # sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
 })

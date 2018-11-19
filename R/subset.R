@@ -208,12 +208,19 @@ intersection_write <- function(layer_name, data_path, envelope,
   if (status) message(paste("Reading", layer_name))
   layer <- sf::st_zm(sf::read_sf(data_path, layer_name))
 
-  if (status) message(paste("Writing", layer_name))
-  intersection_test <- suppressMessages(sf::st_intersects(
-    sf::st_transform(layer, 4326), envelope))
+  intersection_test <- c()
 
-  sf::write_sf(dplyr::filter(layer, lengths(intersection_test) > 0),
-               output_file, layer_name)
+  try(intersection_test <- suppressMessages(sf::st_intersects(
+    sf::st_transform(layer, 4326), envelope)), silent = TRUE)
+
+  out <- dplyr::filter(layer, lengths(intersection_test) > 0)
+
+  if(nrow(out) > 0) {
+    if (status) message(paste("Writing", layer_name))
+    sf::write_sf(out, output_file, layer_name)
+  } else {
+    if (status) message(paste("No features to write in", layer_name))
+  }
 }
 
 #' @title Stage NHDPlus National Data

@@ -19,7 +19,9 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
   index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-
-  nn.dists <- offset <- area <- member_FEATUREID <- geom <- NULL
+  nn.dists <- offset <- area <- member_FEATUREID <- geom <-
+  fromID <- nexID <- cat_ID <- type <- LevelPathID <- orig_COMID <-
+  tail_ID <- toID_hydroseq <- toID_tail_ID <- toID_fromID <- toID_levelpathID <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -250,4 +252,10 @@ get_test_data <- function() {
     sf::st_transform(proj)
 
   return(list(fdr = fdr, fac = fac, flowline = flowline, catchment = catchment))
+}
+
+member_mapper <- function(df, id_col = "ID", list_col = "member_COMID") {
+  df <- select(df, !!c(id_col, list_col))
+  df[[list_col]] <- lapply(df[[list_col]], function(x) strsplit(x, ",")[[1]])
+  tidyr::unnest(df)
 }

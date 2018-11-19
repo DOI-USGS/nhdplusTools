@@ -6,3 +6,4 @@
 tests/testthat/data/temp/*
 inst/doc
 *.log
+*.cache

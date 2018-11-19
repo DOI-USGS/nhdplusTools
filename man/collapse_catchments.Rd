@@ -12,11 +12,12 @@ collapse_catchments(fline_rec, cat_rec, outlets, flowline)
 \item{cat_rec}{sf data.frame Reconciled catchments as genberated by `reconcile_catchments`}
 
 \item{outlets}{data.frame with "ID" and "type" columns. "ID" must be identifiers from
-fline and cat data.frames. "type" should be "outlet" (outlet), "inlet" (inlet), or "terminal" (terminal).
-"outlet" will include the specified ID. "inlet" will include everything that contributes to the ID.
-"terminal" will be treated as a terminal node with nothing downstream.}
+fline and cat data.frames. "type" should be "outlet", or "terminal".
+"outlet" will include the specified ID.
+"terminal" will be treated as a terminal node with nothing downstream.
+This parameter may change.}
 
-\item{flowline}{st data.frame with original nhdplus network flowlines.}
+\item{flowline}{sf data.frame with original nhdplus network flowlines.}
 }
 \description{
 Collapses catchments according to a set of outlet catchments.
@@ -25,9 +26,9 @@ Collapses catchments according to a set of outlet catchments.
 This function operates on the catchment network as a node-edge graph.
 The outlet types are required to ensure that graph searches start from the
 appropriate nodes and includes the appropriate catchments. Outlets such as gages
-should be treated as "outlet" outlets. Confluences should be specified as "inlet" outlets.
+should be treated as "outlet" outlets.
 While it may be possible for the algorithm to determine terminal outlets, at this
-time, it is required that they be specified explicitely.
+time, it is required that they be specified explicitely as "terminal" outlet types.
 
 The function checks supplied catchment outlets to make sure they connect to downstream
 catchments. This requires the original NHDPlus Flowlines' levelpathID and HydroSequence
@@ -36,11 +37,15 @@ in the supplied outlet set. If the outlet of a levelpath is not in the supplied 
 is added along with other catchments that contribute to the same receiving catchment.
 These checks ensure that all output catchments have one and only one input and output
 nexus and that all catchments are well-connected.
+
+Note that at this time, when a confluence has to be added to enforce network connectivity,
+all tributaries to the confluence are added as catchments. This can lead to several
+catchments being added to the output that may not be desired.
 }
 \examples{
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 outlets <- data.frame(ID = c(31, 3, 5, 1, 45, 92),
-                      type = c("outlet", "outlet", "outlet", "terminal", "inlet", "outlet"),
+                      type = c("outlet", "outlet", "outlet", "terminal", "outlet", "outlet"),
                       stringsAsFactors = FALSE)
 collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec,
                                  outlets, walker_flowline)

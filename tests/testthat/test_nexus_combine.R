@@ -18,17 +18,16 @@ expect(!5 %in% collapsed_cat$set[[2]], "an upstream outlet should not be in anot
 
 expect(length(collapsed_fline$set[[2]] == 3), "got the wrong number of flowlines")
 
-outlets <- data.frame(ID = c(31, 40,  5, 1, 12),
-                      type = c("outlet", "outlet", "outlet", "terminal", "inlet"),
+outlets <- data.frame(ID = c(31, 40,  5, 1, 23),
+                      type = c("outlet", "outlet", "outlet", "terminal", "outlet"),
                       stringsAsFactors = FALSE)
 
 collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
 collapsed_fline <- collapsed$fline_sets
 collapsed_cat <- collapsed$cat_sets
 
-expect_equal(collapsed_cat$ID, c(12, 5, 9, 31, 40,  42, 1))
-expect(length(collapsed_cat$set[[1]]) == 7, "got the wrong number in catchment set")
-expect(!(any(collapsed_cat$set[[1]] == 12)), "shouldn't have inlet catchment in set")
+expect_equal(collapsed_cat$ID, c(23, 5, 9, 31, 40,  42, 1))
+expect(length(collapsed_cat$set[[1]]) == 5, "got the wrong number in catchment set")
 
 outlets <- data.frame(ID = c(14, 1),
                       type = c("outlet", "terminal"),
@@ -41,14 +40,14 @@ collapsed_cat <- collapsed$cat_sets
 expect(!any(collapsed_cat$set[[1]] == 4), "shouldn't have a parallel stem in the set")
 
 outlets <- data.frame(ID = c(2, 1),
-                      type = c("inlet", "terminal"),
+                      type = c("outlet", "terminal"),
                       stringsAsFactors = FALSE)
 
 collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
 collapsed_fline <- collapsed$fline_sets
 collapsed_cat <- collapsed$cat_sets
 
-expect(length(collapsed_cat$set[[1]]) == 100, "got the wrong number in catchment set")
+expect(length(collapsed_cat$set[[1]]) == 101, "got the wrong number in catchment set")
 })
 
 test_that("new_hope combine", {

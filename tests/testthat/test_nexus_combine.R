@@ -89,3 +89,26 @@ test_that("new_hope combine", {
   # sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
   # sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
 })
+
+test_that("new_hope combine", {
+  source(system.file("extdata", "new_hope_data.R", package = "nhdplusTools"))
+
+  # HU12 FPP st_joined to get these
+  outlets <- data.frame(ID = c(336, 447, 342, 39, 332, 384, 444, 335),
+                        type = c("outlet", "outlet", "outlet", "outlet",
+                                 "outlet", "outlet", "outlet", "terminal"),
+                        stringsAsFactors = FALSE)
+
+  collapsed <- collapse_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+
+  fline_sets <- collapsed$fline_sets
+  cat_sets <- collapsed$cat_sets
+
+  expect(length(which(sapply(fline_sets$set, function(x) 17 %in% x))) == 1,
+         "A connector flowpath should be added downstream of an upper hu.")
+
+  # sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
+  # sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
+})
+
+

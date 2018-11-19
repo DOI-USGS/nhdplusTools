@@ -199,6 +199,8 @@ get_lps <- function(fline_rec, flowline) {
                          (member_COMID == as.character(orig_COMID) |
                             member_COMID == as.character(orig_COMID + 0.1)))
 
+  # First filter to get lowest catchment on level paths.
+  # Second filter to get outlet ID of split catchments.
   outlets <- filter(mapper, Hydroseq == min(Hydroseq)) %>%
     group_by(orig_COMID) %>%
     filter(as.numeric(member_COMID) == max(as.numeric(member_COMID))) %>%
@@ -208,7 +210,8 @@ get_lps <- function(fline_rec, flowline) {
     left_join(select(headwaters, head_ID = ID, LevelPathID),
               by = "LevelPathID") %>%
     left_join(select(outlets, tail_ID = ID, LevelPathID),
-              by = "LevelPathID")
+              by = "LevelPathID") %>%
+    ungroup()
 }
 
 #' @description Given a set of outlets, works downstream adding outlets at the
@@ -219,11 +222,12 @@ get_lps <- function(fline_rec, flowline) {
 #' @param lps level paths
 #' @noRd
 make_outlets_valid <- function(outlets, fline_rec, lps) {
-  get_otl <- function()
-    distinct(left_join(outlets, select(lps, ID, LevelPathID, tail_ID), by = "ID"))
+  get_otl <- function() { # Get the levelpath outlet IDs for each of the input outlets.
+    o <- distinct(left_join(outlets, select(lps, ID, LevelPathID, tail_ID), by = "ID"))
+  }
   otl <- get_otl()
   count_while <- 0
-  while(!all(otl$tail_ID %in% otl$ID)) {
+  while(!all(otl$tail_ID %in% otl$ID )) {
     bad <- which(!otl$tail_ID %in% otl$ID)
     for(add in seq_along(bad)) {
       bad_outlet <- otl[bad[add],]
@@ -233,6 +237,25 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
     }
     otl <- get_otl()
     if(count_while > 1000) stop("Stuck in a while loop trying to fix disconnected outlets.")
+  }
+  otl <- otl %>%
+    # Need to check that a "next down tributary" in the outlet set has a break along the
+    # main stem that each outlet contributes to.
+    left_join(select(st_set_geometry(fline_rec, NULL), ID, toID), by = "ID") %>%
+    left_join(select(lps, ID, toID_hydroseq = Hydroseq,
+                     toID_tail_ID = tail_ID, toID_levelpathID = LevelPathID),
+              by = c("toID" = "ID")) %>%
+    group_by(ID) %>% filter(toID_hydroseq == min(toID_hydroseq)) %>% ungroup() %>%
+    group_by(toID_tail_ID) %>%
+    filter(n() > 1) %>% ungroup() %>%
+    # This grabs all the inflows to the nexus that each of these outlets is at.
+    left_join(select(st_set_geometry(fline_rec, NULL), toID_fromID = ID, toID), by = "toID") %>%
+    mutate(type = "add_outlet") %>%
+    select(ID = toID_fromID, type, LevelPathID = toID_levelpathID, tail_ID) %>%
+    distinct()
+  if(any(grepl("add_outlet", otl$type))) {
+    otl$type <- "outlet"
+    outlets <- distinct(bind_rows(outlets, otl[, c("ID", "type")]))
   }
   return(outlets)
 }

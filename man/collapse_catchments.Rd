@@ -27,7 +27,15 @@ The outlet types are required to ensure that graph searches start from the
 appropriate nodes and includes the appropriate catchments. Outlets such as gages
 should be treated as "outlet" outlets. Confluences should be specified as "inlet" outlets.
 While it may be possible for the algorithm to determine terminal outlets, at this
-time, it is required that they bve specified explicitely.
+time, it is required that they be specified explicitely.
+
+The function checks supplied catchment outlets to make sure they connect to downstream
+catchments. This requires the original NHDPlus Flowlines' levelpathID and HydroSequence
+attributes. Checks verify that the outlet of the levelpath of each supplied outlet is
+in the supplied outlet set. If the outlet of a levelpath is not in the supplied set, it
+is added along with other catchments that contribute to the same receiving catchment.
+These checks ensure that all output catchments have one and only one input and output
+nexus and that all catchments are well-connected.
 }
 \examples{
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))

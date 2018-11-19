@@ -220,6 +220,7 @@ get_lps <- function(fline_rec, flowline) {
 #' @param outlets the outlet list of gages, etc.
 #' @param fline_rec the reconciled flowline network
 #' @param lps level paths
+#' @importFrom dplyr filter distinct select left_join group_by mutate
 #' @noRd
 make_outlets_valid <- function(outlets, fline_rec, lps) {
   get_otl <- function() { # Get the levelpath outlet IDs for each of the input outlets.
@@ -255,7 +256,7 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
     distinct()
   if(any(grepl("add_outlet", otl$type))) {
     otl$type <- "outlet"
-    outlets <- distinct(bind_rows(outlets, otl[, c("ID", "type")]))
+    outlets <- distinct(rbind(outlets, otl[, c("ID", "type")]))
   }
   return(outlets)
 }

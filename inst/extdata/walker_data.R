@@ -40,3 +40,6 @@ walker_flowline <- sf::st_transform(walker_flowline, proj)
 # raster::writeRaster(sub_fac, "data-raw/walker_fac.tif", overwrite = TRUE)
 # raster::writeRaster(sub_r, "data-raw/walker_fdr.tif", overwrite = TRUE)
 # nolint end
+walker_fline_ref <- sf::read_sf(file.path(extdata, "walker_refactor.gpkg"))
+walker_fline_rec <- sf::read_sf(file.path(extdata, "walker_reconcile.gpkg"))
+walker_catchment_rec <- sf::read_sf(file.path(extdata, "walker_cat_rec.gpkg"))

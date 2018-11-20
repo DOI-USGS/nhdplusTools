@@ -1,3 +1,5 @@
+development:
+  mode: devel
 reference:
   - title: Data and Package Helpers
     desc: >
@@ -38,3 +40,4 @@ reference:
       - '`collapse_flowlines`'
       - '`reconcile_collapsed_flowlines`'
       - '`reconcile_catchments`'
+      - '`collapse_catchments`'

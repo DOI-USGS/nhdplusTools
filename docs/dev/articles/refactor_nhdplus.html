@@ -176,7 +176,7 @@
 <a class="sourceLine" id="cb4-4" data-line-number="4">                                           (<span class="fl">0.25</span><span class="op">*</span>collapse_flines_meters<span class="op">/</span><span class="dv">1000</span>),</a>
 <a class="sourceLine" id="cb4-5" data-line-number="5">                                           <span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb4-6" data-line-number="6">                                           (<span class="fl">0.25</span><span class="op">*</span>collapse_flines_main_meters<span class="op">/</span><span class="dv">1000</span>))</a></code></pre></div>
-<p><img src="refactor_nhdplus_files/figure-html/collapse1_secret-1.png" width="576"> As can be seen here, some collapsed flowlines extend the split flowlines. This is a result of chains of very short flowlines being combined together. This problem is more or less unavoidable but is improved by running the collapse step a few times with small to large input thresholds as is done next.</p>
+<p><img src="refactor_nhdplus_files/figure-html/collapse1_secret-1.png" width="576"> As can be seen here, some collapsed flowlines extend the split flowlines. This is a result of chains of very short flowlines being collapsed together. This problem is more or less unavoidable but is improved by running the collapse step a few times with small to large input thresholds as is done next.</p>
 </div>
 <div id="collapse-step-two-and-three" class="section level2">
 <h2 class="hasAnchor">
@@ -234,7 +234,7 @@ This image (and those below) show the original NHDPlus network in blue with stre
 <p><img src="images/combination_chain.png"><br>
 This image shows an example of a chain combination. All the small tributaries that intersect the highlighted mainstem are routed to the outlet of the mainstem flowline and have a length attribute that is the distance to that outlet. This problem is especially common where there is a high density of small tributaries meeting a mainstem like in the case shown here. The longest tributary here routed to the oulet of the mainstem is the longest single flowline in the result set (5.5km) shown in the histogram above.</p>
 <p><img src="images/headwater_combo.png"><br>
-This image shows how short headwater flowlines can be combined downstream. The two open blue dots are where three short flowlines were collapsed into one 2km long flowline.</p>
+This image shows how short headwater flowlines can be collapsed downstream. The two open blue dots are where three short flowlines were collapsed into one 2km long flowline.</p>
 <p><img src="images/coastal_zoom_out.png"><br>
 This image shows a coastal system with very long flowlines that have largely been split into many pieces.</p>
 <p><img src="images/coastal_zoom_in.png"><br>

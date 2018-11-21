@@ -36,19 +36,19 @@
 #' outlets <- data.frame(ID = c(31, 3, 5, 1, 45, 92),
 #'                       type = c("outlet", "outlet", "outlet", "terminal", "outlet", "outlet"),
 #'                       stringsAsFactors = FALSE)
-#' collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec,
+#' aggregated <- aggregate_catchments(walker_fline_rec, walker_catchment_rec,
 #'                                  outlets, walker_flowline)
-#' plot(collapsed$cat_sets$geom, lwd = 3, border = "red")
+#' plot(aggregated$cat_sets$geom, lwd = 3, border = "red")
 #' plot(walker_catchment_rec$geom, lwd = 1.5, border = "green", col = NA, add = TRUE)
 #' plot(walker_catchment$geom, lwd = 1, add = TRUE)
 #' plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 #'
-#' plot(collapsed$cat_sets$geom, lwd = 3, border = "black")
-#' plot(collapsed$fline_sets$geom, lwd = 3, col = "red", add = TRUE)
+#' plot(aggregated$cat_sets$geom, lwd = 3, border = "black")
+#' plot(aggregated$fline_sets$geom, lwd = 3, col = "red", add = TRUE)
 #' plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 #'
 
-collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
+aggregate_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
 
   remove_flines <- filter(fline_rec, !ID %in% cat_rec$ID)
   if (any(remove_flines$ID %in% remove_flines$toID))

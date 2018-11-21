@@ -1,56 +1,56 @@
-context("nexus combine")
-test_that("walker combine runs", {
+context("aggregate catchment")
+test_that("walker aggregate runs", {
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
 outlets <- data.frame(ID = c(31, 40, 5, 1),
                       type = c("outlet", "outlet", "outlet", "terminal"),
                       stringsAsFactors = FALSE)
 
-collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
-collapsed_fline <- collapsed$fline_sets
-collapsed_cat <- collapsed$cat_sets
+aggregated <- aggregate_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
+aggregated_fline <- aggregated$fline_sets
+aggregated_cat <- aggregated$cat_sets
 
-expect_equal(collapsed_cat$ID, c(5, 31, 40, 1))
-expect_equal(collapsed_fline$ID, c(5, 31, 40, 1))
-expect(collapsed_cat$ID[1] %in% collapsed_cat$set[[1]], "outlet ids should be in the result")
-expect(length(collapsed_cat$set[[2]]) == 5, "got the wrong number in catchment set")
-expect(!5 %in% collapsed_cat$set[[2]], "an upstream outlet should not be in another set")
+expect_equal(aggregated_cat$ID, c(5, 31, 40, 1))
+expect_equal(aggregated_fline$ID, c(5, 31, 40, 1))
+expect(aggregated_cat$ID[1] %in% aggregated_cat$set[[1]], "outlet ids should be in the result")
+expect(length(aggregated_cat$set[[2]]) == 5, "got the wrong number in catchment set")
+expect(!5 %in% aggregated_cat$set[[2]], "an upstream outlet should not be in another set")
 
-expect(length(collapsed_fline$set[[2]] == 3), "got the wrong number of flowlines")
+expect(length(aggregated_fline$set[[2]] == 3), "got the wrong number of flowlines")
 
 outlets <- data.frame(ID = c(31, 40,  5, 1, 23),
                       type = c("outlet", "outlet", "outlet", "terminal", "outlet"),
                       stringsAsFactors = FALSE)
 
-collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
-collapsed_fline <- collapsed$fline_sets
-collapsed_cat <- collapsed$cat_sets
+aggregated <- aggregate_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
+aggregated_fline <- aggregated$fline_sets
+aggregated_cat <- aggregated$cat_sets
 
-expect_equal(collapsed_cat$ID, c(23, 5, 9, 31, 40,  42, 1))
-expect(length(collapsed_cat$set[[1]]) == 5, "got the wrong number in catchment set")
+expect_equal(aggregated_cat$ID, c(23, 5, 9, 31, 40,  42, 1))
+expect(length(aggregated_cat$set[[1]]) == 5, "got the wrong number in catchment set")
 
 outlets <- data.frame(ID = c(14, 1),
                       type = c("outlet", "terminal"),
                       stringsAsFactors = FALSE)
 
-collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
-collapsed_fline <- collapsed$fline_sets
-collapsed_cat <- collapsed$cat_sets
+aggregated <- aggregate_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
+aggregated_fline <- aggregated$fline_sets
+aggregated_cat <- aggregated$cat_sets
 
-expect(!any(collapsed_cat$set[[1]] == 4), "shouldn't have a parallel stem in the set")
+expect(!any(aggregated_cat$set[[1]] == 4), "shouldn't have a parallel stem in the set")
 
 outlets <- data.frame(ID = c(2, 1),
                       type = c("outlet", "terminal"),
                       stringsAsFactors = FALSE)
 
-collapsed <- collapse_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
-collapsed_fline <- collapsed$fline_sets
-collapsed_cat <- collapsed$cat_sets
+aggregated <- aggregate_catchments(walker_fline_rec, walker_catchment_rec, outlets, walker_flowline)
+aggregated_fline <- aggregated$fline_sets
+aggregated_cat <- aggregated$cat_sets
 
-expect(length(collapsed_cat$set[[1]]) == 101, "got the wrong number in catchment set")
+expect(length(aggregated_cat$set[[1]]) == 101, "got the wrong number in catchment set")
 })
 
-test_that("new_hope combine", {
+test_that("new_hope aggregate", {
   source(system.file("extdata", "new_hope_data.R", package = "nhdplusTools"))
 
   # From manual testing with NHDPlus Gage layer.
@@ -61,15 +61,15 @@ test_that("new_hope combine", {
                                  "outlet", "outlet", "outlet", "outlet", "outlet", "outlet",
                                  "outlet", "terminal"))
 
-  collapsed <- collapse_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+  aggregated <- aggregate_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
 
   outlets <- data.frame(ID = c(398L, 399L, 400L, 335L),
                         type = c("outlet", "outlet", "outlet", "terminal"))
 
-  collapsed <- collapse_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+  aggregated <- aggregate_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
 
-  fline_sets <- collapsed$fline_sets
-  cat_sets <- collapsed$cat_sets
+  fline_sets <- aggregated$fline_sets
+  cat_sets <- aggregated$cat_sets
 
   expect(fline_sets$ID[1] == fline_sets$set[[1]][1],
          "A small headwater that was a divergence should show up as such")
@@ -86,12 +86,12 @@ test_that("new_hope combine", {
          "a downstream catchment should not contain flowlines from upstream catchments")
 
   # nolint start
-  # sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
-  # sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
+  # sf::write_sf(aggregated$cat_sets, "new_hope_collapse.gpkg", "boundary")
+  # sf::write_sf(aggregated$fline_sets, "new_hope_collapse.gpkg", "flowpath")
   # nolint end
 })
 
-test_that("new_hope combine", {
+test_that("new_hope aggregate", {
   source(system.file("extdata", "new_hope_data.R", package = "nhdplusTools"))
 
   # HU12 FPP st_joined to get these
@@ -100,10 +100,10 @@ test_that("new_hope combine", {
                                  "outlet", "outlet", "outlet", "terminal"),
                         stringsAsFactors = FALSE)
 
-  collapsed <- collapse_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+  aggregated <- aggregate_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
 
-  fline_sets <- collapsed$fline_sets
-  cat_sets <- collapsed$cat_sets
+  fline_sets <- aggregated$fline_sets
+  cat_sets <- aggregated$cat_sets
 
   expect(length(which(sapply(fline_sets$set, function(x) 17 %in% x))) == 1,
          "A connector flowpath should be added downstream of an upper hu.")
@@ -112,16 +112,16 @@ test_that("new_hope combine", {
                         type = c("outlet", "terminal"),
                         stringsAsFactors = FALSE)
 
-  collapsed <- collapse_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+  aggregated <- aggregate_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
 
-  expect(342 %in% collapsed$cat_sets$ID,
+  expect(342 %in% aggregated$cat_sets$ID,
          "expect catchment downstream of outlet where levelpath changes to be in output")
-  expect(117 %in% collapsed$cat_sets$ID,
+  expect(117 %in% aggregated$cat_sets$ID,
          "expect contributing to the same nexus as another specified outlet")
 
-  expect(length(collapsed$cat_sets$ID) == 7, "Expect 7 output catchments")
+  expect(length(aggregated$cat_sets$ID) == 7, "Expect 7 output catchments")
   # nolint start
-  # sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
-  # sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
+  # sf::write_sf(aggregated$cat_sets, "new_hope_collapse.gpkg", "boundary")
+  # sf::write_sf(aggregated$fline_sets, "new_hope_collapse.gpkg", "flowpath")
   # nolint end
 })

@@ -169,21 +169,21 @@ reconcile_catchments <- function(catchment, fline_ref, fline_rec, fdr, fac, para
   for (cats in combinations) {
     cats_vec <- unlist(strsplit(cats, ","))
 
-    combine_cats <- filter(split_cats, FEATUREID %in% cats_vec)
+    union_cats <- filter(split_cats, FEATUREID %in% cats_vec)
 
-    if (nrow(combine_cats) != length(cats_vec)) {
+    if (nrow(union_cats) != length(cats_vec)) {
       stop("missing a split catchment for an expected split flowline.")
     }
 
-    combined <- sf::st_sf(FEATUREID = cats, geom = sf::st_cast(sf::st_union(combine_cats), "MULTIPOLYGON"),
+    unioned <- sf::st_sf(FEATUREID = cats, geom = sf::st_cast(sf::st_union(union_cats), "MULTIPOLYGON"),
                           stringsAsFactors = FALSE)
 
-    if (!any(grepl("MULTIPOLYGON", class(st_geometry(combined))))) {
+    if (!any(grepl("MULTIPOLYGON", class(st_geometry(unioned))))) {
       warning("Somthing is wrong with the union of catchments.")
     }
 
     split_cats <- filter(split_cats, !FEATUREID %in% cats_vec) %>%
-      rbind(combined)
+      rbind(unioned)
   }
 
   out <- st_sf(left_join(reconciled, split_cats,

@@ -51,7 +51,7 @@ test_that("split_catchments works", {
   unlink("data/temp/*")
 })
 
-test_that("split and combine works", {
+test_that("split and reconcile works", {
   unlink("data/temp/*")
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
@@ -96,7 +96,7 @@ test_that("split and combine works", {
 })
 
 
-test_that("split and combine works with combine from split", {
+test_that("reconcile catchments works with reconciled flowline from split", {
 
   # "166755072,8866562.2"
   # "8833300.1", "8833300.2"

@@ -77,7 +77,7 @@ plot(sample_flowline["COMID"], lwd = 2, add= TRUE)
 
 As you can see, the flowline in question was split into five pieces by `nhdplus_refactor()` and the cooresponding catchment (black) was similarly broken up into 5 sub-catchments (red).
 
-The `split_catchment()` function can be run against a set of catchments using the `reconcile_catchments()` function. This functiona can call `split_catchment()` in parallel, combines catchments according to the output of `nhdplus_refactor()`, and assembles the results back into an `sf` `data.frame`.
+The `split_catchment()` function can be run against a set of catchments using the `reconcile_catchments()` function. This functiona can call `split_catchment()` in parallel, unions catchments according to the output of `nhdplus_refactor()`, and assembles the results back into an `sf` `data.frame`.
 
 ```{r cat_set}
 split_cats <- reconcile_catchments(walker_catchment, 

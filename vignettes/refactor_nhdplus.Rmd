@@ -144,7 +144,7 @@ hist(collapsed_flines$LENGTHKM[which(collapsed_flines$LENGTHKM > 0)], breaks = 1
                    nrow(collapsed_flines), " removed in collapse."),
      xlab = "flowline length (km)")
 ```
-As can be seen here, some collapsed flowlines extend the split flowlines. This is a result of chains of very short flowlines being combined together. This problem is more or less unavoidable but is improved by running the collapse step a few times with small to large input thresholds as is done next.
+As can be seen here, some collapsed flowlines extend the split flowlines. This is a result of chains of very short flowlines being collapsed together. This problem is more or less unavoidable but is improved by running the collapse step a few times with small to large input thresholds as is done next.
 
 ## Collapse step two and three
 Now we can collapse twice more
@@ -228,7 +228,7 @@ This image (and those below) show the original NHDPlus network in blue with stre
 This image shows an example of a chain combination. All the small tributaries that intersect the highlighted mainstem are routed to the outlet of the mainstem flowline and have a length attribute that is the distance to that outlet. This problem is especially common where there is a high density of small tributaries meeting a mainstem like in the case shown here. The longest tributary here routed to the oulet of the mainstem is the longest single flowline in the result set (5.5km) shown in the histogram above.
 
 ![](images/headwater_combo.png)  
-This image shows how short headwater flowlines can be combined downstream. The two open blue dots are where three short flowlines were collapsed into one 2km long flowline.
+This image shows how short headwater flowlines can be collapsed downstream. The two open blue dots are where three short flowlines were collapsed into one 2km long flowline.
 
 ![](images/coastal_zoom_out.png)  
 This image shows a coastal system with very long flowlines that have largely been split into many pieces.

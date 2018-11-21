@@ -72,7 +72,7 @@ test_that("headwater / top of mainstem collapes works as expected", {
   flines <- readRDS("data/guadalupe_network.rds")
   flines_out <- collapse_flowlines(flines, 0.5, mainstem_thresh = 0.5)
 
-  # small headwater gets combined downstream.
+  # small headwater gets collapsed downstream.
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 24670381)] ==
            3839043)
 
@@ -82,7 +82,7 @@ test_that("headwater / top of mainstem collapes works as expected", {
            (flines$LENGTHKM[which(flines$COMID == 3839043)] +
               flines$LENGTHKM[which(flines$COMID == 24670381)]))
 
-  # Very short top of interconfluence flow path gets combined with
+  # Very short top of interconfluence flow path gets collapsed with
   # next downstream correctly
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 1628129)] ==
            1628527)
@@ -95,7 +95,7 @@ test_that("headwater / top of mainstem collapes works as expected", {
               flines$LENGTHKM[which(flines$COMID == 1628129)]))
 
   # second instance of very short top of interconfluence
-  # flow path gets combined
+  # flow path gets collapsed
   # with next downstream correctly and also has a collapse upstream below it.
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 1629537)] ==
            1629821)
@@ -113,7 +113,7 @@ test_that("headwater / top of mainstem collapes works as expected", {
            (flines$LENGTHKM[which(flines$COMID == 1629821)] +
               flines$LENGTHKM[which(flines$COMID == 1629537)] +
               flines$LENGTHKM[which(flines$COMID == 1629565)]))
-  # This one combined in upstream direction
+  # This one collapsed in upstream direction
 
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 10840906)] ==
            10840550)

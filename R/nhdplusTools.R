@@ -21,7 +21,8 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-
   nn.dists <- offset <- area <- member_FEATUREID <- geom <-
   fromID <- nexID <- cat_ID <- type <- LevelPathID <- orig_COMID <-
-  tail_ID <- toID_hydroseq <- toID_tail_ID <- toID_fromID <- toID_levelpathID <- NULL
+  tail_ID <- toID_hydroseq <- toID_tail_ID <- toID_fromID <-
+  toID_LevelpathID <- NULL
 
 nhdplusTools_env <- new.env()
 

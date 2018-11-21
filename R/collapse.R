@@ -165,7 +165,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE,
                joined_fromCOMID = flines[["COMID"]][reroute_confluence_set],
                stringsAsFactors = FALSE)
 
-  # Need to deduplicate the upstream that removed will get combined with.
+  # Need to deduplicate the upstream that removed will get collapsed into.
   removed_confluence <-
     group_by(left_join(removed_confluence,
                        select(original_fline_atts, COMID,
@@ -360,7 +360,7 @@ collapse_outlets <- function(flines, thresh,
   short_outlets <- function(flines) {
     is.na(flines$toCOMID) & # No toCOMID,
       flines$LENGTHKM < thresh & # too short,
-      is.na(flines$joined_fromCOMID) # and hasn't been combined yet.
+      is.na(flines$joined_fromCOMID) # and hasn't been collapsed yet.
   }
 
   #######################################################
@@ -577,7 +577,7 @@ reconcile_downstream <- function(flines, remove_fun,
       rfl <- rfl & !ph
       ph_index <- which(ph)
 
-      # Set broken ones to -9999 to indicate they can't be combined.
+      # Set broken ones to -9999 to indicate they can't be collapsed.
       flines[["joined_toCOMID"]][ph_index] <- -9999
 
       flines <- select(flines, -ds_joined_fromCOMID)

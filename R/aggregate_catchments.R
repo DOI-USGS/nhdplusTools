@@ -31,6 +31,7 @@
 #' @importFrom igraph graph_from_data_frame topo_sort incident_edges V bfs head_of shortest_paths
 #' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs st_set_geometry st_line_merge st_geometry_type
 #' @importFrom dplyr filter mutate left_join select distinct case_when
+#' @importFrom tidyr unnest
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #' outlets <- data.frame(ID = c(31, 3, 5, 1, 45, 92),
@@ -192,6 +193,23 @@ aggregate_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
   fline_sets <- st_sf(fline_sets)
   fline_sets$ID <- as.numeric(gsub("^cat-", "", outlets$ID))
 
+  # create long form ID to set member list
+  sets <- tidyr::unnest(st_set_geometry(fline_sets, NULL))
+
+  # Figure out what the ID of the downstream catchment is.
+  next_id <- sets %>%
+    left_join(select(st_set_geometry(fline_rec, NULL), ID, toID),
+              by = c("set" = "ID")) %>%
+    # first find the ID downstream of the outlet of each catchment.
+    group_by(ID) %>% filter(!toID %in% set) %>% select(ID, toID) %>%
+    ungroup() %>% distinct() %>%
+    # find the actual id of the catchment the one found above is a member of.
+    left_join(select(sets, set_toID = ID, set), by = c("toID" = "set")) %>%
+    select(ID, toID = set_toID)
+
+  fline_sets <- left_join(fline_sets, next_id, by = "ID")
+  cat_sets <- left_join(cat_sets, next_id, by = "ID")
+
   return(list(cat_sets = cat_sets, fline_sets = fline_sets))
 }
 
@@ -278,9 +296,9 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
     if (count_while > 1000) stop("Stuck in a while loop trying to fix disconnected outlets.")
   }
 
-  otl_2 <- otl %>%
-    # Need to check that a "next down tributary" in the outlet set has a break along the
-    # main stem that each outlet contributes to.
+  # Need to check that a "next down tributary" in the outlet set has a break along the
+  # main stem that each outlet contributes to.
+  otl <- otl %>%
     left_join(select(st_set_geometry(fline_rec, NULL), ID, toID), by = "ID") %>%
     left_join(select(lps, ID, toID_hydroseq = Hydroseq,
                      toID_tail_ID = tail_ID, toID_LevelpathID = LevelPathID),
@@ -297,10 +315,9 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
 
     # Need to verify that all ID == tail_ID instances are connected.
     # They might have been missed above.
-
-  if (any(grepl("add_outlet", otl_2$type))) {
-    otl_2$type <- "outlet"
-    outlets <- distinct(rbind(outlets, otl_2[, c("ID", "type")]))
+  if (any(grepl("add_outlet", otl$type))) {
+    otl$type <- "outlet"
+    outlets <- distinct(rbind(outlets, otl[, c("ID", "type")]))
   }
 
   otl <- get_outlets(outlets, lps)

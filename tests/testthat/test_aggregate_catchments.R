@@ -18,6 +18,10 @@ expect(!5 %in% aggregated_cat$set[[2]], "an upstream outlet should not be in ano
 
 expect(length(aggregated_fline$set[[2]] == 3), "got the wrong number of flowlines")
 
+expect_equal(aggregated_cat$toID, c(31, 40, 1, NA), info = "Expect these toIDs")
+expect(all(aggregated_cat$toID[!is.na(aggregated_cat$toID)] %in% aggregated_cat$ID),
+       "All not NA toIDs should be in IDs")
+
 outlets <- data.frame(ID = c(31, 40,  5, 1, 23),
                       type = c("outlet", "outlet", "outlet", "terminal", "outlet"),
                       stringsAsFactors = FALSE)
@@ -48,6 +52,11 @@ aggregated_fline <- aggregated$fline_sets
 aggregated_cat <- aggregated$cat_sets
 
 expect(length(aggregated_cat$set[[1]]) == 101, "got the wrong number in catchment set")
+
+# nolint start
+# sf::write_sf(aggregated$cat_sets, "walker_collapse.gpkg", "boundary")
+# sf::write_sf(aggregated$fline_sets, "walker_collapse.gpkg", "flowpath")
+# nolint end
 })
 
 test_that("new_hope aggregate", {

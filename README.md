@@ -5,10 +5,10 @@
 ## Tools for Manipulating the NHDPlus Network
 
 This package is a growing collection of tools for manipulation of hydrographic
-data that adheres to the NHDPlus data model. It is being developed as part of
+data built around the NHDPlus data model. It is being developed as part of
 an ongoing collaboration between the National Weather Service and the U.S.
-Geological Survey between January and October 2018. There is no established
-funding or plan to continue development of this package beyond October 2018
+Geological Survey with ongoing support from the USGS. There is no specific
+funding or plan to continue development of this package long term
 but the hope is that this can become a community toolbox for NHDPlus in R.
 
 ### Installation:
@@ -25,10 +25,10 @@ The most convenient way to get the NHDPlus is via the [geopackage hosted here.](
 ## Package Vision
 
 The `nhdplusTools` package is intended to provide a reusable set of tools to
-subset, relate data to, and refactor NHDPlus data. It implements a data model
-consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
+subset, relate data to, and refactor (collapse, split, and aggregate) NHDPlus data. 
+It implements a data model consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
 and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
-aims to provide a simple set of tools with minimal dependencies that can be used
+aims to provide a set of tools with minimal dependencies that can be used
 to build workflows using NHDPlus data.
 
 **This vision is intended as a guide to contributors -- conveying what kinds of
@@ -59,7 +59,7 @@ The `nhdplusTools` package was started based on a set of tools to refactor the
 NHDPlusV2 network. The concept of refactoring as intended here includes:
 
 1) aggregating catchments into groups based on existing network topology,  
-2) modifying catchment topology to eliminate small catchments,  
+2) collapsing catchment topology to eliminate small catchments,  
 3) splitting large or long catchments to create a more uniform catchment size
 distribution.
 
@@ -76,17 +76,18 @@ the HY\_Features standard.
 
 *Note:* The HY\_Features standard is based on the notion that a "catchment" is a
 wholistic feature that can be "realized" (some might say modeled) in a number of
-ways. In other words, a catchment can only be fully characterized through a
+ways. In other words, a catchment can *only* be characterized fully through a
 collection of different conceptual representations. In NHDPlus, the "catchment"
 feature is the polygon feature that describes the drainage divide around the
 hydrologic unit that contributes surface flow to a given flowline. While this
 may seem like a significant difference, in reality, the NHDPlus COMID identifier
 lends itself very well to the HY\_Features catchment concept. The COMID is
-used as a wholistic identifier for the catchment polygon, the flowline that
+used as an identifier for the catchment polygon, the flowline that
 connects the catchment inlet and outlet, and value added attributes that
 describe characteristics of the catchment's interior. In this way, the COMID
-identifier is actually an identifier for a wholistic collection of data that
-together fully describe an NHDPlus catchment.
+identifier is actually an identifier for a collection of data that
+together fully describe an NHDPlus catchment. [See the NHDPlus mapping to
+HY_Features in the HY_Features specification.](http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1)
 
 Below is a description of the expected scope of data to be used by the
 `nhdplusTools` package. While other data and attributes may come into scope,
@@ -116,7 +117,7 @@ relates to handling data and what dependencies are used will be very important.
 Web services will generally be avoided. However, applications that would require
 loading significant amounts of data to perform something that can be
 accomplished with a web service very quickly will be considered. Systems like
-the [Network Linked Data Index](https://owi.usgs.gov/blog/nldi-intro/) may be
+the [Network Linked Data Index](https://owi.usgs.gov/blog/nldi-intro/) are
 used for data discovery.
 
 ##### NHDPlus Version
@@ -129,7 +130,6 @@ If at all possible, dependencies should be available via CRAN, have solid
 expected maintenance, allow national-scale analyses, and not require difficult
 to install system libraries. `dplyr`, and `sf` are the primary dependencies that
 should be used if at all possible.
-
 
 ### Related similar packages:
 https://github.com/mbtyers/riverdist  

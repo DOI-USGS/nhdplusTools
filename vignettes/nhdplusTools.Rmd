@@ -50,16 +50,16 @@ plot(sf::st_geometry(catchment), add = TRUE)
 plot(sf::st_geometry(waterbody), col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 ```
 
-Read on to see how NHDPlusTools will help you index data to the network you just retrieved and refactor the catchments in a different discritization. Please consider registering [issues and feature suggestions on github](https://github.com/dblodgett-usgs/nhdplusTools/issues).
+Read on to see how NHDPlusTools will help you index data to the network you just retrieved and refactor (split, collapse, and aggregate) the catchments into a different set of catchments. Please consider registering [issues and feature suggestions on github](https://github.com/dblodgett-usgs/nhdplusTools/issues).
 
 ## Introduction
 
 The `nhdplusTools` package is intended to provide a reusable set of tools to
-subset, relate data to, and refactor NHDPlus data. It implements a data model
-consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
+subset, relate data to, and refactor (collapse, split, and aggregate) NHDPlus data. 
+It implements a data model consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
 and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
-aims to provide a simple set of tools with minimal dependencies that can be used
-to build workflows using NHDPlus data.  
+aims to provide a set of tools with minimal dependencies that can be used
+to build workflows using NHDPlus data.
 
 The package has three types of functionality:
 

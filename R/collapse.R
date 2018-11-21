@@ -8,6 +8,7 @@
 #' to TRUE
 #' @param mainstem_thresh numeric threshold for combining inter-confluence
 #' mainstems
+#' @param exclude_cats integer vector of COMIDs to be excluded from collapse modifications.
 #' @param warn boolean controls whether warning an status messages are printed
 #' @return A refactored network with merged up and down flowlines.
 #' @importFrom dplyr filter left_join select mutate group_by ungroup summarise
@@ -17,7 +18,8 @@
 #' @export
 #'
 collapse_flowlines <- function(flines, thresh, add_category = FALSE,
-                               mainstem_thresh = NULL, warn = TRUE) {
+                               mainstem_thresh = NULL, exclude_cats = NULL,
+                               warn = TRUE) {
 
   check_names(names(flines), "collapse_flowlines")
 
@@ -40,7 +42,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE,
   # Need to clean up the short outlets first so they don't get broken
   # by the method below.
 
-  flines <- collapse_outlets(flines, thresh, original_fline_atts, warn)
+  flines <- collapse_outlets(flines, thresh, original_fline_atts, exclude_cats, warn)
 
   short_outlets_tracker <- flines[["short_outlets_tracker"]]
   flines <- flines[["flines"]]
@@ -57,6 +59,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE,
   # logic above.
   remove_headwaters <- function(flines) {
     !(flines$COMID %in% flines$toCOMID) & # a headwater (nothing flows to it)
+      !flines$COMID %in% exclude_cats & # Not in exclude list.
       flines$LENGTHKM < thresh & # shorter than threshold
       is.na(flines$joined_fromCOMID) &
       is.na(flines$joined_toCOMID) &
@@ -87,7 +90,8 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE,
       (flines$num_upstream > 1 &
          flines$ds_num_upstream == 1) &
         flines$LENGTHKM < mainstem_thresh_use &
-        !is.na(flines$toCOMID)
+        !is.na(flines$toCOMID) &
+        !flines$COMID %in% exclude_cats
     }
 
     flines <- reconcile_downstream(flines, remove_mainstem_top,
@@ -114,7 +118,8 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE,
                              # is not upstream of a confluence
                              flines$ds_num_upstream == 1 &
                              # is shorter than the mainstem threshold
-                             flines$dsLENGTHKM < mainstem_thresh_use)
+                             flines$dsLENGTHKM < mainstem_thresh_use &
+                             !flines$toCOMID %in% exclude_cats)
 
 
   # This is the set that is going to get skipped in the rerouting.
@@ -155,7 +160,8 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE,
   # flowlines from consideration.
   reroute_confluence_set <- (flines$dsLENGTHKM < thresh &
                                flines$dsLENGTHKM > 0 &
-                               flines$ds_num_upstream > 1)
+                               flines$ds_num_upstream > 1 &
+                               !flines$toCOMID %in% exclude_cats)
 
   flines <- select(flines, -ds_num_upstream)
 
@@ -344,6 +350,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE,
 #'
 collapse_outlets <- function(flines, thresh,
                              original_fline_atts,
+                             exclude_cats = NULL,
                              warn = TRUE) {
 
   if ( ("joined_toCOMID" %in% names(flines) |
@@ -359,6 +366,7 @@ collapse_outlets <- function(flines, thresh,
 
   short_outlets <- function(flines) {
     is.na(flines$toCOMID) & # No toCOMID,
+      !flines$COMID %in% exclude_cats & # Not in exclude list
       flines$LENGTHKM < thresh & # too short,
       is.na(flines$joined_fromCOMID) # and hasn't been collapsed yet.
   }

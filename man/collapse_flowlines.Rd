@@ -5,7 +5,7 @@
 \title{Collapse NHDPlus Network}
 \usage{
 collapse_flowlines(flines, thresh, add_category = FALSE,
-  mainstem_thresh = NULL, warn = TRUE)
+  mainstem_thresh = NULL, exclude_cats = NULL, warn = TRUE)
 }
 \arguments{
 \item{flines}{data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns}
@@ -18,6 +18,8 @@ to TRUE}
 
 \item{mainstem_thresh}{numeric threshold for combining inter-confluence
 mainstems}
+
+\item{exclude_cats}{integer vector of COMIDs to be excluded from collapse modifications.}
 
 \item{warn}{boolean controls whether warning an status messages are printed}
 }

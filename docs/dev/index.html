@@ -95,7 +95,7 @@
 <div id="tools-for-manipulating-the-nhdplus-network" class="section level2">
 <h2 class="hasAnchor">
 <a href="#tools-for-manipulating-the-nhdplus-network" class="anchor"></a>Tools for Manipulating the NHDPlus Network</h2>
-<p>This package is a growing collection of tools for manipulation of hydrographic data that adheres to the NHDPlus data model. It is being developed as part of an ongoing collaboration between the National Weather Service and the U.S. Geological Survey between January and October 2018. There is no established funding or plan to continue development of this package beyond October 2018 but the hope is that this can become a community toolbox for NHDPlus in R.</p>
+<p>This package is a growing collection of tools for manipulation of hydrographic data built around the NHDPlus data model. It is being developed as part of an ongoing collaboration between the National Weather Service and the U.S. Geological Survey with ongoing support from the USGS. There is no specific funding or plan to continue development of this package long term but the hope is that this can become a community toolbox for NHDPlus in R.</p>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation:</h3>
@@ -111,7 +111,7 @@ devtools::install_github("dblodgett-usgs/nhdplusTools")</code></pre>
 <div id="package-vision" class="section level2">
 <h2 class="hasAnchor">
 <a href="#package-vision" class="anchor"></a>Package Vision</h2>
-<p>The <code>nhdplusTools</code> package is intended to provide a reusable set of tools to subset, relate data to, and refactor NHDPlus data. It implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus">NHDPlus</a> and <a href="http://opengeospatial.github.io/HY_Features/">HY_Features</a>. The package aims to provide a simple set of tools with minimal dependencies that can be used to build workflows using NHDPlus data.</p>
+<p>The <code>nhdplusTools</code> package is intended to provide a reusable set of tools to subset, relate data to, and refactor (collapse, split, and aggregate) NHDPlus data. It implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus">NHDPlus</a> and <a href="http://opengeospatial.github.io/HY_Features/">HY_Features</a>. The package aims to provide a set of tools with minimal dependencies that can be used to build workflows using NHDPlus data.</p>
 <p><strong>This vision is intended as a guide to contributors – conveying what kinds of contributions are of interest to the package’s long term vision. It is a reflection of the current thinking and is open to discussion and modification.</strong></p>
 <div id="functional-vision" class="section level3">
 <h3 class="hasAnchor">
@@ -132,7 +132,7 @@ devtools::install_github("dblodgett-usgs/nhdplusTools")</code></pre>
 <a href="#refactoring" class="anchor"></a>Refactoring</h5>
 <p>The <code>nhdplusTools</code> package was started based on a set of tools to refactor the NHDPlusV2 network. The concept of refactoring as intended here includes:</p>
 <p>1) aggregating catchments into groups based on existing network topology,<br>
-2) modifying catchment topology to eliminate small catchments,<br>
+2) collapsing catchment topology to eliminate small catchments,<br>
 3) splitting large or long catchments to create a more uniform catchment size distribution.</p>
 <p>This type of functionality is especially relevant to modeling applications that need specific modeling unit characteristics but wish to preserve the network as much as possible for interoperability with other applications that use the NHDPlus network.</p>
 </div>
@@ -141,7 +141,7 @@ devtools::install_github("dblodgett-usgs/nhdplusTools")</code></pre>
 <h3 class="hasAnchor">
 <a href="#data-model" class="anchor"></a>Data Model</h3>
 <p>Given that <code>nhdplusTools</code> is focused on working with NHDPlus data, the NHDPlus data model will largely govern the data model the package is designed to work with. That said, much of the package functionality also uses concepts from the HY_Features standard.</p>
-<p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a wholistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can only be fully characterized through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as a wholistic identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a wholistic collection of data that together fully describe an NHDPlus catchment.</p>
+<p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a wholistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can <em>only</em> be characterized fully through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as an identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a collection of data that together fully describe an NHDPlus catchment. <a href="http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1">See the NHDPlus mapping to HY_Features in the HY_Features specification.</a></p>
 <p>Below is a description of the expected scope of data to be used by the <code>nhdplusTools</code> package. While other data and attributes may come into scope, it should only be done as a naive pass-through, as in data subsetting, or with considerable deliberation.</p>
 <div id="flowlines-and-waterbodies" class="section level5">
 <h5 class="hasAnchor">
@@ -166,7 +166,7 @@ devtools::install_github("dblodgett-usgs/nhdplusTools")</code></pre>
 <div id="web-vs-local-data" class="section level5">
 <h5 class="hasAnchor">
 <a href="#web-vs-local-data" class="anchor"></a>Web vs Local Data</h5>
-<p>Web services will generally be avoided. However, applications that would require loading significant amounts of data to perform something that can be accomplished with a web service very quickly will be considered. Systems like the <a href="https://owi.usgs.gov/blog/nldi-intro/">Network Linked Data Index</a> may be used for data discovery.</p>
+<p>Web services will generally be avoided. However, applications that would require loading significant amounts of data to perform something that can be accomplished with a web service very quickly will be considered. Systems like the <a href="https://owi.usgs.gov/blog/nldi-intro/">Network Linked Data Index</a> are used for data discovery.</p>
 </div>
 <div id="nhdplus-version" class="section level5">
 <h5 class="hasAnchor">

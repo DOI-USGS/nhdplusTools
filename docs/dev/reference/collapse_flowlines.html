@@ -135,7 +135,7 @@ non-cconfluence flowlines.</p>
     </div>
 
     <pre class="usage"><span class='fu'>collapse_flowlines</span>(<span class='no'>flines</span>, <span class='no'>thresh</span>, <span class='kw'>add_category</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>mainstem_thresh</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>mainstem_thresh</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>exclude_cats</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,6 +158,10 @@ to TRUE</p></td>
       <th>mainstem_thresh</th>
       <td><p>numeric threshold for combining inter-confluence
 mainstems</p></td>
+    </tr>
+    <tr>
+      <th>exclude_cats</th>
+      <td><p>integer vector of COMIDs to be excluded from collapse modifications.</p></td>
     </tr>
     <tr>
       <th>warn</th>

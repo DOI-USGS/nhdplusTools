@@ -5,6 +5,14 @@ test_that("collapse flowlines works as expected", {
   flines <- sf::st_set_geometry(flines, NULL)
   flines <- suppressWarnings(prepare_nhdplus(flines, 20, 1))
   flines_out <- collapse_flowlines(flines, 1)
+  flines_out_exclude <- collapse_flowlines(flines, 1,
+                                           exclude_cats = c(11687206,
+                                                            11690332,
+                                                            11687234,
+                                                            11689928,
+                                                            11690532,
+                                                            11690260, 11690262,
+                                                            11690568, 11690258))
 
   # problem headwater
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11687206)] ==
@@ -12,11 +20,17 @@ test_that("collapse flowlines works as expected", {
   expect(flines_out$toCOMID[which(flines_out$COMID == 11687206)] ==
            flines$toCOMID[which(flines$COMID == 11687206)])
 
+  # problem headwater
+  expect(is.na(flines_out_exclude$joined_toCOMID[which(flines_out_exclude$COMID == 11687206)]))
+
   # Multi combination headwater
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11690332)] ==
            11689092)
   expect(flines_out$joined_toCOMID[which(flines_out$COMID == 11689030)] ==
            11689092)
+
+  expect(is.na(flines_out_exclude$joined_toCOMID[which(flines_out_exclude$COMID == 11690332)]))
+  expect(is.na(flines_out_exclude$joined_toCOMID[which(flines_out_exclude$COMID == 11689030)]))
 
   # confluence join worked
   expect(flines_out$joined_fromCOMID[which(flines_out$COMID == 11687234)] ==
@@ -30,6 +44,8 @@ test_that("collapse flowlines works as expected", {
   expect(flines_out$LENGTHKM[which(flines_out$COMID == 11687226)] ==
            flines$LENGTHKM[which(flines$COMID == 11687226)] +
            flines$LENGTHKM[which(flines$COMID == 11687234)])
+
+  expect(is.na(flines_out_exclude$joined_fromCOMID[which(flines_out_exclude$COMID == 11687234)]))
 
   # mainstem join worked
 
@@ -45,6 +61,9 @@ test_that("collapse flowlines works as expected", {
            (flines$LENGTHKM[which(flines_out$COMID == 11687548)] +
               flines$LENGTHKM[which(flines_out$COMID == 11689928)] +
               flines$LENGTHKM[which(flines_out$COMID == 11690532)]))
+
+  expect(is.na(flines_out_exclude$joined_fromCOMID[which(flines_out_exclude$COMID == 11689928)]) &
+           is.na(flines_out_exclude$joined_fromCOMID[which(flines_out_exclude$COMID == 11690532)]))
 
   # outlet worked
 
@@ -65,6 +84,11 @@ test_that("collapse flowlines works as expected", {
               flines$LENGTHKM[which(flines_out$COMID == 11690262)] +
               flines$LENGTHKM[which(flines_out$COMID == 11690260)] +
               flines$LENGTHKM[which(flines_out$COMID == 11690256)]))
+
+  expect(is.na(flines_out_exclude$joined_fromCOMID[which(flines_out_exclude$COMID == 11690260)]))
+  expect(is.na(flines_out_exclude$joined_fromCOMID[which(flines_out_exclude$COMID == 11690262)]))
+  expect(is.na(flines_out_exclude$joined_fromCOMID[which(flines_out_exclude$COMID == 11690568)]))
+  expect(is.na(flines_out_exclude$joined_fromCOMID[which(flines_out_exclude$COMID == 11690258)]))
 
 })
 

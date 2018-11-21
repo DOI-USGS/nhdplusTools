@@ -137,7 +137,7 @@ into this function. See details and vignettes for more information.</p>
     <pre class="usage"><span class='fu'>refactor_nhdplus</span>(<span class='no'>nhdplus_flines</span>, <span class='no'>split_flines_meters</span>, <span class='no'>split_flines_cores</span>,
   <span class='no'>collapse_flines_meters</span>, <span class='no'>collapse_flines_main_meters</span>, <span class='no'>out_collapsed</span>,
   <span class='no'>out_reconciled</span>, <span class='kw'>three_pass</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>exclude_cats</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,6 +185,10 @@ single pass.</p></td>
     <tr>
       <th>purge_non_dendritic</th>
       <td><p>boolean passed on to prepare_nhdplus</p></td>
+    </tr>
+    <tr>
+      <th>exclude_cats</th>
+      <td><p>integer vector of COMIDs to be excluded from collapse modifications.</p></td>
     </tr>
     <tr>
       <th>warn</th>

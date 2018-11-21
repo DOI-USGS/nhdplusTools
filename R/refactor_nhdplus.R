@@ -18,6 +18,7 @@
 #' @param three_pass boolean whether to perform a three pass collapse or
 #' single pass.
 #' @param purge_non_dendritic boolean passed on to prepare_nhdplus
+#' @param exclude_cats integer vector of COMIDs to be excluded from collapse modifications.
 #' @param warn boolean controls whether warning an status messages are printed
 #' @details This is a convenient wrapper function that implements three phases
 #' of the network refactor workflow: split, collapse, reconcile. See the
@@ -61,6 +62,7 @@ refactor_nhdplus <- function(nhdplus_flines,
                              out_reconciled,
                              three_pass = FALSE,
                              purge_non_dendritic = TRUE,
+                             exclude_cats = NULL,
                              warn = TRUE) {
 
   if ("FTYPE" %in% names(nhdplus_flines)) {
@@ -88,13 +90,15 @@ refactor_nhdplus <- function(nhdplus_flines,
       collapse_flowlines(sf::st_set_geometry(flines, NULL),
                          (0.25 * collapse_flines_meters / 1000),
                          TRUE,
-                         (0.25 * collapse_flines_main_meters / 1000))
+                         (0.25 * collapse_flines_main_meters / 1000),
+                         exclude_cats)
 
     collapsed_flines <-
       collapse_flowlines(collapsed_flines,
                          (0.5 * collapse_flines_meters / 1000),
                          TRUE,
                          (0.5 * collapse_flines_main_meters / 1000),
+                         exclude_cats,
                          warn = FALSE)
 
     collapsed_flines <-
@@ -102,13 +106,15 @@ refactor_nhdplus <- function(nhdplus_flines,
                          (collapse_flines_meters / 1000),
                          TRUE,
                          (collapse_flines_main_meters / 1000),
+                         exclude_cats,
                          warn = FALSE)
   } else {
     collapsed_flines <-
       collapse_flowlines(sf::st_set_geometry(flines, NULL),
                          (collapse_flines_meters / 1000),
                          TRUE,
-                         (collapse_flines_main_meters / 1000))
+                         (collapse_flines_main_meters / 1000),
+                         exclude_cats)
   }
 
   collapsed_flines %>%

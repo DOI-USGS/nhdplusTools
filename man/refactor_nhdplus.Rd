@@ -7,7 +7,7 @@
 refactor_nhdplus(nhdplus_flines, split_flines_meters, split_flines_cores,
   collapse_flines_meters, collapse_flines_main_meters, out_collapsed,
   out_reconciled, three_pass = FALSE, purge_non_dendritic = TRUE,
-  warn = TRUE)
+  exclude_cats = NULL, warn = TRUE)
 }
 \arguments{
 \item{nhdplus_flines}{data.frame raw nhdplus flowline features as
@@ -35,6 +35,8 @@ the reconciled flowlines.}
 single pass.}
 
 \item{purge_non_dendritic}{boolean passed on to prepare_nhdplus}
+
+\item{exclude_cats}{integer vector of COMIDs to be excluded from collapse modifications.}
 
 \item{warn}{boolean controls whether warning an status messages are printed}
 }

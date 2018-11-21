@@ -215,7 +215,7 @@ intersection_write <- function(layer_name, data_path, envelope,
 
   out <- dplyr::filter(layer, lengths(intersection_test) > 0)
 
-  if(nrow(out) > 0) {
+  if (nrow(out) > 0) {
     if (status) message(paste("Writing", layer_name))
     sf::write_sf(out, output_file, layer_name)
   } else {

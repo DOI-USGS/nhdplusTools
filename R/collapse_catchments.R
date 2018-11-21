@@ -51,7 +51,7 @@
 collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
 
   remove_flines <- filter(fline_rec, !ID %in% cat_rec$ID)
-  if(any(remove_flines$ID %in% remove_flines$toID))
+  if (any(remove_flines$ID %in% remove_flines$toID))
     stop("Found some flowlines without catchments that are
          not headwaters. This breaks critical assumptions.")
   # Actually remove superfluous flowlines.
@@ -134,16 +134,16 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
     head_id <- lps$head_ID[which(lps$ID == outlet_id)]
     head_id <- head_id[head_id != outlet_id]
 
-    if(length(head_id) == 0) head_id <- outlet_id # Then the outlet is a headwater.
+    if (length(head_id) == 0) head_id <- outlet_id # Then the outlet is a headwater.
     um <- find_um(us_verts, cat_graph,
                   cat_id = cat_sets$ID[cat],
                   head_id = head_id,
                   outlet_type = filter(outlets, nexID == cat_sets$ID[cat])$type)
 
-    if(length(us_verts) > 0) {
+    if (length(us_verts) > 0) {
       vert <- us_verts[which(um %in% us_verts)]
 
-      if(length(vert) == 1) {
+      if (length(vert) == 1) {
         # Since longest path is used in find_um if multiple paths are found
         # there is a chance that multiple us verts get consumed in a single step?
         us_verts <- us_verts[!us_verts %in% vert]
@@ -157,7 +157,7 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
       st_cast("LINESTRING") %>%
       st_union()
 
-    if(st_geometry_type(fline_sets$geom[[cat]]) == "MULTILINESTRING") {
+    if (st_geometry_type(fline_sets$geom[[cat]]) == "MULTILINESTRING") {
       fline_sets$geom[[cat]] <- st_line_merge(fline_sets$geom[[cat]])
     }
 
@@ -176,7 +176,7 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
     }
     cat_sets$geom[[cat]] <- st_union(st_geometry(filter(cat_rec, ID %in% unlist(cat_sets$set[cat]))))[[1]]
 
-    if(length(cat_sets$geom[[cat]]) == 0) browser()
+    if (length(cat_sets$geom[[cat]]) == 0) browser()
 
     cat_sets$set[[cat]] <- as.numeric(gsub("^cat-", "", cat_sets$set[[cat]]))
 
@@ -196,7 +196,6 @@ collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
 }
 
 get_lps <- function(fline_rec, flowline) {
-  lp_ids <- unique(flowline$LevelPathI)
 
   mapper <- member_mapper(st_set_geometry(fline_rec, NULL)) %>%
     mutate(orig_COMID = as.integer(floor(as.numeric(member_COMID)))) %>%
@@ -268,7 +267,7 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
     bad <- which(!otl$tail_ID %in% otl$ID)
 
     for (add in seq_along(bad)) {
-      bad_outlet <- otl[bad[add],]
+      bad_outlet <- otl[bad[add], ]
 
       outlets <- rbind(outlets,
                        fix_nexus(fline_rec, bad_outlet$tail_ID))
@@ -276,7 +275,7 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
     otl <- get_outlets(outlets, lps)
 
     count_while <- count_while + 1
-    if(count_while > 1000) stop("Stuck in a while loop trying to fix disconnected outlets.")
+    if (count_while > 1000) stop("Stuck in a while loop trying to fix disconnected outlets.")
   }
 
   otl_2 <- otl %>%
@@ -299,7 +298,7 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
     # Need to verify that all ID == tail_ID instances are connected.
     # They might have been missed above.
 
-  if(any(grepl("add_outlet", otl_2$type))) {
+  if (any(grepl("add_outlet", otl_2$type))) {
     otl_2$type <- "outlet"
     outlets <- distinct(rbind(outlets, otl_2[, c("ID", "type")]))
   }
@@ -307,16 +306,16 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
   otl <- get_outlets(outlets, lps)
   tail_outlets <- which(otl$ID == otl$tail_ID & otl$type != "terminal")
 
-  for(check in seq_along(tail_outlets)) {
+  for (check in seq_along(tail_outlets)) {
     outlets <- rbind(outlets,
                      fix_tail(fline_rec, outlets, otl$ID[check]))
 
     connected <- FALSE
-    while(!connected) {
+    while (!connected) {
       toID <- filter(fline_rec, ID == otl$ID[check])$toID
       toID_tail_ID <- filter(lps, ID == toID)$tail_ID
 
-      if(!all(toID_tail_ID %in% otl$tail_ID)) {
+      if (!all(toID_tail_ID %in% otl$tail_ID)) {
         outlets <- rbind(outlets,
                          fix_tail(fline_rec, outlets, unique(toID_tail_ID)))
       } else {
@@ -340,26 +339,27 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
 find_um <- function(us_verts, cat_graph, cat_id, head_id, outlet_type) {
   um <- c()
 
-  if(length(us_verts) > 0) {
+  if (length(us_verts) > 0) {
     suppressWarnings(paths <- shortest_paths(cat_graph,
                             from = cat_id,
                             to = us_verts,
                             mode = "in"))
 
-    if(length(paths$vpath) > 1) {
+    if (length(paths$vpath) > 1) {
       path_lengths <- lengths(sapply(paths$vpath, names))
     } else {
       path_lengths <- length(names(paths$vpath[[1]]))
     }
 
-    if(any(path_lengths > 0)) {
+    if (any(path_lengths > 0)) {
       path_lengths[path_lengths == 0] <- NA
       um <- names(paths$vpath[which(path_lengths == min(path_lengths, na.rm = TRUE))][[1]])
       um <- um[!um %in% us_verts] # Path includes the "to" but don't want to include it!
     }
   }
 
-  if(length(um) == 0) { # then look for headwater.
+  # then look for headwater.
+  if (length(um) == 0) {
     um <- names(shortest_paths(cat_graph,
                                from = cat_id,
                                to = paste0("nex-", head_id),

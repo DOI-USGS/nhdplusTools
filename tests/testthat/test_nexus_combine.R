@@ -85,8 +85,10 @@ test_that("new_hope combine", {
   expect(all(!fline_sets$set[fline_sets$ID == 399][[1]] %in% fline_sets$set[fline_sets$ID == 398][[1]]),
          "a downstream catchment should not contain flowlines from upstream catchments")
 
+  # nolint start
   # sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
   # sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
+  # nolint end
 })
 
 test_that("new_hope combine", {
@@ -118,9 +120,8 @@ test_that("new_hope combine", {
          "expect contributing to the same nexus as another specified outlet")
 
   expect(length(collapsed$cat_sets$ID) == 7, "Expect 7 output catchments")
-
+  # nolint start
   # sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
   # sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
+  # nolint end
 })
-
-

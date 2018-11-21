@@ -106,6 +106,19 @@ test_that("new_hope combine", {
   expect(length(which(sapply(fline_sets$set, function(x) 17 %in% x))) == 1,
          "A connector flowpath should be added downstream of an upper hu.")
 
+  outlets <- data.frame(ID = c(121, 335),
+                        type = c("outlet", "terminal"),
+                        stringsAsFactors = FALSE)
+
+  collapsed <- collapse_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+
+  expect(342 %in% collapsed$cat_sets$ID,
+         "expect catchment downstream of outlet where levelpath changes to be in output")
+  expect(117 %in% collapsed$cat_sets$ID,
+         "expect contributing to the same nexus as another specified outlet")
+
+  expect(length(collapsed$cat_sets$ID) == 7, "Expect 7 output catchments")
+
   # sf::write_sf(collapsed$cat_sets, "new_hope_collapse.gpkg", "boundary")
   # sf::write_sf(collapsed$fline_sets, "new_hope_collapse.gpkg", "flowpath")
 })

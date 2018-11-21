@@ -50,17 +50,17 @@
 
 collapse_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
 
-  lps <- get_lps(fline_rec, flowline)
-
-  outlets <- make_outlets_valid(outlets, fline_rec, lps) %>%
-    distinct()
-
   remove_flines <- filter(fline_rec, !ID %in% cat_rec$ID)
   if(any(remove_flines$ID %in% remove_flines$toID))
     stop("Found some flowlines without catchments that are
          not headwaters. This breaks critical assumptions.")
   # Actually remove superfluous flowlines.
   fline_rec <- filter(fline_rec, ID %in% cat_rec$ID)
+
+  lps <- get_lps(fline_rec, flowline)
+
+  outlets <- make_outlets_valid(outlets, fline_rec, lps) %>%
+    distinct()
 
   outlets <- mutate(outlets, ID = paste0("cat-", ID))
   cat_rec <- mutate(cat_rec, ID = paste0("cat-", ID))
@@ -226,6 +226,30 @@ get_lps <- function(fline_rec, flowline) {
     ungroup()
 }
 
+# Get the levelpath outlet IDs for each of the input outlets.
+get_outlets <- function(outlets, lps) {
+  distinct(left_join(outlets,
+                     select(lps, ID, LevelPathID, tail_ID),
+                     by = "ID"))
+}
+
+# Adds everything that contributes the same recieving catchment as a given tail id.
+fix_nexus <- function(fline_rec, tail_ID) {
+  add_ids <- filter(fline_rec,
+                    toID == filter(fline_rec,
+                                   ID == tail_ID)$toID)$ID
+  data.frame(ID = add_ids,
+             type = rep("outlet",
+                        length(add_ids)),
+             stringsAsFactors = FALSE)
+}
+
+fix_tail <- function(fline_rec, outlets, toID_tail_ID) {
+  potential_add <- fix_nexus(fline_rec, toID_tail_ID)
+  new <- !potential_add$ID %in% outlets$ID
+  potential_add[new, ]
+}
+
 #' @description Given a set of outlets, works downstream adding outlets at the
 #' outlet of each level path. This makes sure catchments get inserted so an upstream
 #' catchment doesn't get orphaned in the middle of a larger catchment.
@@ -235,41 +259,73 @@ get_lps <- function(fline_rec, flowline) {
 #' @importFrom dplyr filter distinct select left_join group_by mutate
 #' @noRd
 make_outlets_valid <- function(outlets, fline_rec, lps) {
-  get_otl <- function() { # Get the levelpath outlet IDs for each of the input outlets.
-    o <- distinct(left_join(outlets, select(lps, ID, LevelPathID, tail_ID), by = "ID"))
-  }
-  otl <- get_otl()
+
+  otl <- get_outlets(outlets, lps)
+
   count_while <- 0
-  while(!all(otl$tail_ID %in% otl$ID )) {
+  while (!all(otl$tail_ID %in% otl$ID)) {
+
     bad <- which(!otl$tail_ID %in% otl$ID)
-    for(add in seq_along(bad)) {
+
+    for (add in seq_along(bad)) {
       bad_outlet <- otl[bad[add],]
-      add_ids <- filter(fline_rec, toID == filter(fline_rec, ID == bad_outlet$tail_ID)$toID)$ID
-      outlets <- rbind(outlets, data.frame(ID = add_ids, type = rep("outlet", length(add_ids)),
-                                           stringsAsFactors = FALSE))
+
+      outlets <- rbind(outlets,
+                       fix_nexus(fline_rec, bad_outlet$tail_ID))
     }
-    otl <- get_otl()
+    otl <- get_outlets(outlets, lps)
+
+    count_while <- count_while + 1
     if(count_while > 1000) stop("Stuck in a while loop trying to fix disconnected outlets.")
   }
-  otl <- otl %>%
+
+  otl_2 <- otl %>%
     # Need to check that a "next down tributary" in the outlet set has a break along the
     # main stem that each outlet contributes to.
     left_join(select(st_set_geometry(fline_rec, NULL), ID, toID), by = "ID") %>%
     left_join(select(lps, ID, toID_hydroseq = Hydroseq,
-                     toID_tail_ID = tail_ID, toID_levelpathID = LevelPathID),
+                     toID_tail_ID = tail_ID, toID_LevelpathID = LevelPathID),
               by = c("toID" = "ID")) %>%
+    # this grabs the most downstream if duplicates were generated.
     group_by(ID) %>% filter(toID_hydroseq == min(toID_hydroseq)) %>% ungroup() %>%
-    group_by(toID_tail_ID) %>%
-    filter(n() > 1) %>% ungroup() %>%
+    # This eliminates groups where only one thing goes to a given tail_ID.
+    group_by(toID_tail_ID) %>% filter(n() > 1) %>% ungroup() %>%
     # This grabs all the inflows to the nexus that each of these outlets is at.
     left_join(select(st_set_geometry(fline_rec, NULL), toID_fromID = ID, toID), by = "toID") %>%
     mutate(type = "add_outlet") %>%
-    select(ID = toID_fromID, type, LevelPathID = toID_levelpathID, tail_ID) %>%
+    select(ID = toID_fromID, type, LevelPathID = toID_LevelpathID, tail_ID) %>%
     distinct()
-  if(any(grepl("add_outlet", otl$type))) {
-    otl$type <- "outlet"
-    outlets <- distinct(rbind(outlets, otl[, c("ID", "type")]))
+
+    # Need to verify that all ID == tail_ID instances are connected.
+    # They might have been missed above.
+
+  if(any(grepl("add_outlet", otl_2$type))) {
+    otl_2$type <- "outlet"
+    outlets <- distinct(rbind(outlets, otl_2[, c("ID", "type")]))
   }
+
+  otl <- get_outlets(outlets, lps)
+  tail_outlets <- which(otl$ID == otl$tail_ID & otl$type != "terminal")
+
+  for(check in seq_along(tail_outlets)) {
+    outlets <- rbind(outlets,
+                     fix_tail(fline_rec, outlets, otl$ID[check]))
+
+    connected <- FALSE
+    while(!connected) {
+      toID <- filter(fline_rec, ID == otl$ID[check])$toID
+      toID_tail_ID <- filter(lps, ID == toID)$tail_ID
+
+      if(!all(toID_tail_ID %in% otl$tail_ID)) {
+        outlets <- rbind(outlets,
+                         fix_tail(fline_rec, outlets, unique(toID_tail_ID)))
+      } else {
+        connected <- TRUE
+      }
+      otl <- get_outlets(outlets, lps)
+    }
+  }
+
   return(outlets)
 }
 

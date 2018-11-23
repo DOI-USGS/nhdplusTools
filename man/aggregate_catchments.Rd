@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregate_catchments.R
 \name{aggregate_catchments}
 \alias{aggregate_catchments}
-\title{Collapse Catchment Boundaries}
+\title{Aggregate Catchments}
 \usage{
 aggregate_catchments(fline_rec, cat_rec, outlets, flowline)
 }
@@ -20,7 +20,7 @@ This parameter may change.}
 \item{flowline}{sf data.frame with original nhdplus network flowlines.}
 }
 \description{
-Collapses catchments according to a set of outlet catchments.
+Aggregates catchments according to a set of outlet catchments.
 }
 \details{
 This function operates on the catchment network as a node-edge graph.

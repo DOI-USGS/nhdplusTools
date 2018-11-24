@@ -221,7 +221,7 @@ get_lps <- function(fline_rec, flowline) {
                      COMID, LevelPathID = LevelPathI, Hydroseq),
               by = c("orig_COMID" = "COMID")) %>%
     group_by(ID) %>%
-    filter(LevelPathID == max(LevelPathID)) %>% # This could be problematic...
+    filter(LevelPathID == max(LevelPathID)) %>% # grab the smallest path of the group.
     ungroup() %>% group_by(LevelPathID)
 
   headwaters <- filter(mapper, Hydroseq == max(Hydroseq) &

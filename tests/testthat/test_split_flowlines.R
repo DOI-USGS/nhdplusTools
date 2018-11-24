@@ -26,7 +26,7 @@ test_that("split lines works", {
   split <- nhdplusTools:::split_lines(sf::st_transform(dplyr::select(flines, ID),
                                                        5070), 250, id = "ID")
 
-  expect(nrow(split) == 574)
+  expect(nrow(split) == 573)
 
   }
 

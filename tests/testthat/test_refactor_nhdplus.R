@@ -50,7 +50,8 @@ test_that("refactor_nhdplus works as expected with three pass mode", {
     unlist(lapply(collapsed$member_COMID,
                   function(x) paste(x, collapse = ",")))
 
-  expect(collapsed$toID[which(collapsed$ID == 29)] == 11)
+  expect(collapsed$toID[which(collapsed$member_COMID == "5876083,5876435")] ==
+           collapsed$ID[which(collapsed$member_COMID == "5875557")])
 
   # Taken care of in clean up! All kinds of wierd around this one in this test.
   expect(collapsed_flines$joined_fromCOMID[

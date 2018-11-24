@@ -10,19 +10,19 @@ COMID <- FEATUREID <-
   # Package Attribute Names
 COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   dsLENGTHKM <- ds_joined_fromCOMID <- fromCOMID <-
-  fromLENGTHKM <- fromTotDASqKM <- geom_len <-
+  fromTotDASqKM <- geom_len <-
   geometry <- join_category <- joined_fromCOMID <-
   joined_fromCOMID_new <- joined_toCOMID <- member_COMID <-
   new_joined_fromCOMID <- new_joined_toCOMID <- new_toCOMID <-
   num_upstream <- part <- piece <- pieces <- removed_COMID <-
-  split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
+  split_fID <- toCOMID <- toID <- usTotDASqKM <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
   index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-
   nn.dists <- offset <- area <- member_FEATUREID <- geom <-
   fromID <- nexID <- cat_ID <- type <- LevelPathID <- orig_COMID <-
   tail_ID <- toID_hydroseq <- toID_tail_ID <- toID_fromID <-
-  toID_LevelpathID <- NULL
+  toID_LevelpathID <- set <- set_toID <- usLevelPathI <- fromLevelPathI <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -32,7 +32,8 @@ assign("prepare_nhdplus_attributes",
        c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
          "FromNode", "ToNode", "TotDASqKM",
          "StartFlag", "StreamOrde", "StreamCalc",
-         "TerminalPa", "Pathlength", "Divergence", "Hydroseq"),
+         "TerminalPa", "Pathlength", "Divergence", "Hydroseq",
+         "LevelPathI"),
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",
@@ -40,7 +41,7 @@ assign("split_flowlines_attributes",
        envir = nhdplusTools_env)
 
 assign("collapse_flowlines_attributes",
-       c("COMID", "toCOMID", "LENGTHKM", "TotDASqKM"),
+       c("COMID", "toCOMID", "LENGTHKM", "LevelPathI", "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("reconcile_collapsed_flowlines_attributes",
@@ -270,6 +271,7 @@ member_mapper <- function(df, id_col = "ID", list_col = "member_COMID") {
 #' @importFrom dplyr select left_join
 #' @export
 #' @examples
+#' library(dplyr)
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #' catchment <- prepare_nhdplus(walker_flowline, 0, 0,
 #'                              purge_non_dendritic = FALSE, warn = FALSE) %>%

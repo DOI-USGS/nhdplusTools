@@ -75,13 +75,19 @@ test_that("collapse works on a double pass", {
                                                select(flines, COMID),
                                                id = "COMID")
 
+    # collapsed$member_COMID <-
+    #   unlist(lapply(collapsed$member_COMID,
+    #                 function(x) paste(x, collapse = ",")))
+    # write_sf(collapsed, "flines.gpkg")
+
     # These tests are dumb but don't know how else to handle.
     # Checking neighborhood of: c(21976315, 21975773,
-    # 21976313, 21975819.1) and 21975817
-    expect(collapsed$toID[which(collapsed$ID == 58)] == 3019)
-    expect(collapsed$toID[which(collapsed$ID == 5805)] == 3019)
-    expect(collapsed$toID[which(collapsed$ID == 59)] == 3022)
-    expect(collapsed$toID[which(collapsed$ID == 3022)] == 58)
+    # 21976313, 21975819.1) and 21975817 Could get real
+    # verbose relative to comids
+    expect(collapsed$toID[which(collapsed$ID == 59)] == 3031)
+    expect(collapsed$toID[which(collapsed$ID == 5810)] == 59)
+    expect(collapsed$toID[which(collapsed$ID == 58)] == 3028)
+    expect(collapsed$toID[which(collapsed$ID == 3031)] == 58)
 
   }
 })

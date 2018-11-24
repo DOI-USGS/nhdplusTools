@@ -17,6 +17,7 @@ Calculates total drainage area given a dendritic
 network and incremental areas.
 }
 \examples{
+library(dplyr)
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 catchment <- prepare_nhdplus(walker_flowline, 0, 0,
                              purge_non_dendritic = FALSE, warn = FALSE) \%>\%

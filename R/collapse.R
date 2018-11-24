@@ -1,7 +1,7 @@
 #' @title Collapse NHDPlus Network
 #' @description Refactors the NHDPlus flowline network, eliminating short and
 #' non-cconfluence flowlines.
-#' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns
+#' @param flines data.frame with COMID, toCOMID, LENGTHKM, Hydroseq, and LevelPathI columns
 #' @param thresh numeric a length threshold (km). Flowlines shorter than this
 #' will be eliminated
 #' @param add_category boolean if combination category is desired in output, set
@@ -176,19 +176,15 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE,
     group_by(left_join(removed_confluence,
                        select(original_fline_atts, COMID,
                               # Get upstream area and length
-                              usTotDASqKM = TotDASqKM,
-                              # by joining fromCOMID to COMID
-                              usLENGTHKM = LENGTHKM),
+                              usLevelPathI = LevelPathI),
                        by = c("joined_fromCOMID" = "COMID")),
              removed_COMID)
 
   removed_confluence <-
-    select(ungroup(filter(filter(removed_confluence,
-                                 # Deduplicate by area first
-                                 usTotDASqKM == max(usTotDASqKM)),
-                          # then length.
-                          usLENGTHKM == max(usLENGTHKM))),
-           -usLENGTHKM, -usTotDASqKM) # clean
+    select(ungroup(filter(removed_confluence,
+                                 # Deduplicate by largest trib path
+                                 usLevelPathI == min(usLevelPathI))),
+           -usLevelPathI) # clean
 
   flines <- reconcile_removed_flowlines(flines,
                                         reroute_confluence_set,
@@ -339,7 +335,7 @@ collapse_flowlines <- function(flines, thresh, add_category = FALSE,
 #' @description Collapses outlet flowlines upstream.
 #' Returns an flines dataframe.
 #' @param flines data.frame with
-#' COMID, toCOMID, LENGTHKM, and TotDASqKM columns
+#' COMID, toCOMID, LENGTHKM, and LevelPathI columns
 #' @param thresh numeric a length threshold (km). Flowlines shorter than
 #' this will be eliminated
 #' @param original_fline_atts data.frame containing original fline attributes.
@@ -403,15 +399,11 @@ collapse_outlets <- function(flines, thresh,
     short_flines <- left_join(short_flines,
                               select(original_fline_atts, toCOMID,
                                      fromCOMID = COMID,
-                                     fromLENGTHKM = LENGTHKM,
-                                     fromTotDASqKM = TotDASqKM),
+                                     fromLevelPathI = LevelPathI),
                               by = c("COMID" = "toCOMID")) %>%
-      group_by(COMID) %>%  # deduplicate with area then length.
+      group_by(COMID) %>%  # deduplicate with level path then length.
       filter(is.na(joined_fromCOMID) | joined_fromCOMID != -9999) %>%
-      filter(fromTotDASqKM == max(fromTotDASqKM)) %>%
-      filter(fromLENGTHKM == max(fromLENGTHKM)) %>%
-      # This is dumb, but happens if DA and Length are equal...
-      filter(fromCOMID == max(fromCOMID)) %>%
+      filter(fromLevelPathI == min(fromLevelPathI)) %>%
       ungroup()
 
     # This is a pointer to the flines rows that need to
@@ -513,9 +505,9 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed,
   # Need to sort removed_COMID by drainage area to get
   # the right "first matches" below.
   removed <- left_join(rbind(removed, already_removed),
-                       select(original_fline_atts, COMID, TotDASqKM),
+                       select(original_fline_atts, COMID, Hydroseq),
                        by = c("removed_COMID" = "COMID")) %>%
-    arrange(desc(TotDASqKM)) %>% select(-TotDASqKM) %>% distinct()
+    arrange(Hydroseq) %>% select(-Hydroseq) %>% distinct()
 
   # This is a pointer to joined_fromCOMID records
   # that point to already removed COMIDs.
@@ -559,7 +551,7 @@ reconcile_removed_flowlines <- function(flines, reroute_set, removed,
 
 #' @title Reconcile removed flowlines in the downstream direction
 #' @description ... TBD ...
-#' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns
+#' @param flines data.frame with COMID, toCOMID, LENGTHKM, Hydroseq, and LevelPathI columns
 #' @param remove_fun a function that will return boolean indicating which flines should be removed
 #' @param remove_problem_headwaters whether to mark headwaters upstream of confluences as unable to remove
 #' @return flines data.frame with short flowlines merged downstream

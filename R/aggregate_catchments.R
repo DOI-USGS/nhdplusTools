@@ -49,7 +49,7 @@
 #' plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 #'
 
-aggregate_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
+aggregate_catchments <- function(fline_rec, cat_rec, outlets) {
 
   remove_flines <- filter(fline_rec, !ID %in% cat_rec$ID)
   if (any(remove_flines$ID %in% remove_flines$toID))
@@ -58,7 +58,7 @@ aggregate_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
   # Actually remove superfluous flowlines.
   fline_rec <- filter(fline_rec, ID %in% cat_rec$ID)
 
-  lps <- get_lps(fline_rec, flowline)
+  lps <- get_lps(fline_rec)
 
   outlets <- make_outlets_valid(outlets, fline_rec, lps) %>%
     distinct()
@@ -213,34 +213,21 @@ aggregate_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
   return(list(cat_sets = cat_sets, fline_sets = fline_sets))
 }
 
-get_lps <- function(fline_rec, flowline) {
+get_lps <- function(fline_rec) {
+  fline_rec <- st_set_geometry(fline_rec, NULL) %>%
+    select(ID, LevelPathID, Hydroseq) %>%
+    group_by(LevelPathID)
 
-  mapper <- member_mapper(st_set_geometry(fline_rec, NULL)) %>%
-    mutate(orig_COMID = as.integer(floor(as.numeric(member_COMID)))) %>%
-    left_join(select(st_set_geometry(flowline, NULL),
-                     COMID, LevelPathID = LevelPathI, Hydroseq),
-              by = c("orig_COMID" = "COMID")) %>%
-    group_by(ID) %>%
-    filter(LevelPathID == max(LevelPathID)) %>% # grab the smallest path of the group.
-    ungroup() %>% group_by(LevelPathID)
-
-  headwaters <- filter(mapper, Hydroseq == max(Hydroseq) &
-                         (member_COMID == as.character(orig_COMID) |
-                            member_COMID == as.character(orig_COMID + 0.1)))
-
-  # First filter to get lowest catchment on level paths.
-  # Second filter to get outlet ID of split catchments.
-  outlets <- filter(mapper, Hydroseq == min(Hydroseq)) %>%
-    group_by(orig_COMID) %>%
-    filter(as.numeric(member_COMID) == max(as.numeric(member_COMID))) %>%
+  headwaters <- filter(fline_rec, Hydroseq == max(Hydroseq)) %>%
     ungroup()
 
-  mapper %>%
-    left_join(select(headwaters, head_ID = ID, LevelPathID),
+  outlets <- filter(fline_rec, Hydroseq == min(Hydroseq)) %>%
+    ungroup()
+
+  left_join(ungroup(fline_rec), select(headwaters, head_ID = ID, LevelPathID),
               by = "LevelPathID") %>%
     left_join(select(outlets, tail_ID = ID, LevelPathID),
-              by = "LevelPathID") %>%
-    ungroup()
+              by = "LevelPathID")
 }
 
 # Get the levelpath outlet IDs for each of the input outlets.
@@ -252,9 +239,13 @@ get_outlets <- function(outlets, lps) {
 
 # Adds everything that contributes the same recieving catchment as a given tail id.
 fix_nexus <- function(fline_rec, tail_ID) {
-  add_ids <- filter(fline_rec,
-                    toID == filter(fline_rec,
-                                   ID == tail_ID)$toID)$ID
+  tail <- filter(fline_rec, ID == tail_ID)
+
+  add <- filter(fline_rec, toID == tail$toID)
+
+  # Can add functionality here to filter which Add IDs to include.
+  add_ids <- add$ID
+
   data.frame(ID = add_ids,
              type = rep("outlet",
                         length(add_ids)),

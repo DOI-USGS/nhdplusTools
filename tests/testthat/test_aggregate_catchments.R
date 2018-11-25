@@ -62,20 +62,21 @@ expect(length(aggregated_cat$set[[1]]) == 101, "got the wrong number in catchmen
 test_that("new_hope aggregate", {
   source(system.file("extdata", "new_hope_data.R", package = "nhdplusTools"))
 
-  # From manual testing with NHDPlus Gage layer.
-  outlets <- data.frame(ID = c(162L, 153L, 155L, 59L, 17L, 118L, 398L, 399L, 400L, 135L,
-                               268L, 6L, 365L, 366L, 39L, 102L, 35L, 362L, 335L),
-                        type = c("outlet", "outlet", "outlet", "outlet", "outlet",
-                                 "outlet", "outlet", "outlet", "outlet", "outlet", "outlet",
-                                 "outlet", "outlet", "outlet", "outlet", "outlet", "outlet",
-                                 "outlet", "terminal"))
-
-  aggregated <- aggregate_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+  # # From manual testing with NHDPlus Gage layer.
+  # outlets <- data.frame(ID = c(162L, 153L, 155L, 59L, 17L, 118L, 398L, 399L, 400L, 135L,
+  #                              268L, 6L, 365L, 366L, 39L, 102L, 35L, 362L, 335L),
+  #                       type = c("outlet", "outlet", "outlet", "outlet", "outlet",
+  #                                "outlet", "outlet", "outlet", "outlet", "outlet", "outlet",
+  #                                "outlet", "outlet", "outlet", "outlet", "outlet", "outlet",
+  #                                "outlet", "terminal"))
+  #
+  # aggregated <- aggregate_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
 
   outlets <- data.frame(ID = c(398L, 399L, 400L, 335L),
-                        type = c("outlet", "outlet", "outlet", "terminal"))
+                        type = c("outlet", "outlet", "outlet", "terminal"),
+                        stringsAsFactors = FALSE)
 
-  aggregated <- aggregate_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets, new_hope_flowline)
+  aggregated <- aggregate_catchments(new_hope_fline_rec, new_hope_catchment_rec, outlets)
 
   fline_sets <- aggregated$fline_sets
   cat_sets <- aggregated$cat_sets

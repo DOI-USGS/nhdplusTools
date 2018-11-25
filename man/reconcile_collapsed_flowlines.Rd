@@ -7,7 +7,7 @@
 reconcile_collapsed_flowlines(flines, geom = NULL, id = "COMID")
 }
 \arguments{
-\item{flines}{data.frame with COMID, toCOMID, LENGTHKM,
+\item{flines}{data.frame with COMID, toCOMID, LENGTHKM, LevelPathI, Hydroseq,
 and TotDASqKM columns}
 
 \item{geom}{sf data.frame for flines}

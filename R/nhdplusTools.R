@@ -22,7 +22,8 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   nn.dists <- offset <- area <- member_FEATUREID <- geom <-
   fromID <- nexID <- cat_ID <- type <- LevelPathID <- orig_COMID <-
   tail_ID <- toID_hydroseq <- toID_tail_ID <- toID_fromID <-
-  toID_LevelpathID <- set <- set_toID <- usLevelPathI <- fromLevelPathI <- NULL
+  toID_LevelpathID <- set <- set_toID <- usLevelPathI <- fromLevelPathI <-
+  ID_Hydroseq <- ID_LevelPath <- LevelPath <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -45,7 +46,7 @@ assign("collapse_flowlines_attributes",
        envir = nhdplusTools_env)
 
 assign("reconcile_collapsed_flowlines_attributes",
-       c("COMID", "toCOMID", "LENGTHKM", "TotDASqKM"),
+       c("COMID", "toCOMID", "LENGTHKM", "LevelPathI", "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("get_UT_attributes",

@@ -16,6 +16,28 @@ test_that("reconcile collapse flowlines works as expected", {
   expect(flines$toID[which(flines$ID == 42)] == 18)
   expect(flines$toID[which(flines$ID == 19)] == 18)
 
+  outlet <- flines[which(flines$member_COMID == "5329303"), ]
+  expect(outlet$LevelPath == outlet$Hydroseq,
+         "Levelpath and hydroseq of outlet should be the same.")
+
+  mainstem_headwater <- flines[which(flines$member_COMID == "5329435"), ]
+  expect(mainstem_headwater$Hydroseq > outlet$Hydroseq,
+         "Hydroseq of headwater should be greater than outlet.")
+  expect(mainstem_headwater$LevelPath == outlet$LevelPath,
+         "Levelpath of outlet and headwater should be the same.")
+
+  mainstem <- arrange(flines[flines$LevelPath == outlet$LevelPath, ], Hydroseq)
+  expect(all(mainstem$toID[!is.na(mainstem$toID)] %in% mainstem$ID),
+         "Expect the mainstem to be well connected.")
+
+  expect(nrow(mainstem) == 18, "Mainstem has 18 COMIDs")
+  expect(tail(mainstem$member_COMID, 1) == "5329435",
+         "Expect this to be the headwater of the mainstem.")
+  expect(head(mainstem$member_COMID, 1) == "5329303",
+         "Expect this to be the outlet of the mainstem.")
+
+  expect(length(unique(walker_flowline$LevelPathI)) == length(unique(flines$LevelPath)),
+         "Expect the same number of level paths in both input and output.")
 })
 
 test_that("collapse works on a double pass", {
@@ -89,5 +111,27 @@ test_that("collapse works on a double pass", {
     expect(collapsed$toID[which(collapsed$ID == 58)] == 3028)
     expect(collapsed$toID[which(collapsed$ID == 3031)] == 58)
 
+    outlet <- collapsed[which(collapsed$member_COMID == "21972746.2"), ]
+    expect(outlet$LevelPath == outlet$Hydroseq,
+           "Levelpath and hydroseq of outlet should be the same.")
+
+    mainstem_headwater <- collapsed[which(collapsed$member_COMID == "21983615.1"), ]
+    expect(mainstem_headwater$Hydroseq > outlet$Hydroseq,
+           "Hydroseq of headwater should be greater than outlet.")
+    expect(mainstem_headwater$LevelPath == outlet$LevelPath,
+           "Levelpath of outlet and headwater should be the same.")
+
+    mainstem <- arrange(collapsed[collapsed$LevelPath == outlet$LevelPath, ], Hydroseq)
+    expect(all(mainstem$toID[!is.na(mainstem$toID)] %in% mainstem$ID),
+           "Expect the mainstem to be well connected.")
+
+    expect(nrow(mainstem) == 166, "Mainstem has 166 COMIDs")
+    expect(tail(mainstem$member_COMID, 1) == "21983615.1",
+           "Expect this to be the headwater of the mainstem.")
+    expect(head(mainstem$member_COMID, 1) == "21972746.2",
+           "Expect this to be the outlet of the mainstem.")
+
+    expect(length(unique(flines$LevelPathI)) == length(unique(collapsed$LevelPath)),
+           "Expect the same number of level paths in both input and output.")
   }
 })

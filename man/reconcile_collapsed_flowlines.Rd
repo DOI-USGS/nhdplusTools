@@ -15,7 +15,7 @@ and TotDASqKM columns}
 \item{id}{character id collumn name.}
 }
 \value{
-reconciled flines
+reconciled flines with new ID, toID, LevelPathID, and Hydroseq identifiers.
 }
 \description{
 Reconciles output of collapse_flowlines giving a unique ID to

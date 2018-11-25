@@ -23,7 +23,7 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   fromID <- nexID <- cat_ID <- type <- LevelPathID <- orig_COMID <-
   tail_ID <- toID_hydroseq <- toID_tail_ID <- toID_fromID <-
   toID_LevelpathID <- set <- set_toID <- usLevelPathI <- fromLevelPathI <-
-  ID_Hydroseq <- ID_LevelPath <- LevelPath <- NULL
+  ID_Hydroseq <- ID_LevelPath <- NULL
 
 nhdplusTools_env <- new.env()
 

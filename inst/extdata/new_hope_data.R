@@ -39,6 +39,7 @@ new_hope_catchment_rec <- sf::read_sf(file.path(extdata, "new_hope_cat_rec.gpkg"
 # raster::writeRaster(sub_fdr, "new_hope_fdr.tif", overwrite = TRUE)
 # #####
 #
+# flowline <- sf::read_sf("new_hope.gpkg", "NHDFlowline_Network")
 # refactor_nhdplus(nhdplus_flines = flowline,
 #                  split_flines_meters = 2000,
 #                  collapse_flines_meters = 1000,
@@ -56,8 +57,8 @@ new_hope_catchment_rec <- sf::read_sf(file.path(extdata, "new_hope_cat_rec.gpkg"
 #   st_transform(proj)
 #
 #
-# cat_rec <- reconcile_catchments(catchment, fline_ref, fline_rec,
-#                                 sub_fdr, sub_fac)
+# cat_rec <- reconcile_catchments(new_hope_catchment, fline_ref, fline_rec,
+#                                 new_hope_fdr, new_hope_fac)
 #
 # sf::write_sf(cat_rec, "new_hope_cat_rec.gpkg")
 # nolint end

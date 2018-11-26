@@ -64,6 +64,12 @@ aggregate_catchments <- function(fline_rec, cat_rec, outlets,
 
   lps <- get_lps(fline_rec)
 
+  if(any(!outlets$ID %in% fline_rec$ID)) stop("Outlet IDs must all be in flowpaths.")
+
+  if(any(!is.na(fline_rec$toID[which(fline_rec$ID %in%
+                                     outlets[outlets$type == "terminal", ]$ID)])))
+    stop("Terminal paths must hace an NA toID")
+
   outlets <- make_outlets_valid(outlets, fline_rec, lps,
                                 da_thresh = da_thresh, only_larger = only_larger) %>%
     distinct()

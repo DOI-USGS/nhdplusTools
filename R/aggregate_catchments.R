@@ -41,8 +41,7 @@
 #' outlets <- data.frame(ID = c(31, 3, 5, 1, 45, 92),
 #'                       type = c("outlet", "outlet", "outlet", "terminal", "outlet", "outlet"),
 #'                       stringsAsFactors = FALSE)
-#' aggregated <- aggregate_catchments(walker_fline_rec, walker_catchment_rec,
-#'                                  outlets, walker_flowline)
+#' aggregated <- aggregate_catchments(walker_fline_rec, walker_catchment_rec, outlets)
 #' plot(aggregated$cat_sets$geom, lwd = 3, border = "red")
 #' plot(walker_catchment_rec$geom, lwd = 1.5, border = "green", col = NA, add = TRUE)
 #' plot(walker_catchment$geom, lwd = 1, add = TRUE)

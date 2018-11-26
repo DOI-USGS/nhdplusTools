@@ -123,6 +123,14 @@ test_that("new_hope aggregate", {
 test_that("new_hope aggregate", {
   source(system.file("extdata", "new_hope_data.R", package = "nhdplusTools"))
 
+  new_hope_catchment_rec$area_sqkm <- as.numeric(st_area(new_hope_catchment_rec)) / (1000^2)
+  new_hope_fline_rec <- dplyr::inner_join(new_hope_fline_rec,
+                                          select(st_set_geometry(new_hope_catchment_rec, NULL),
+                                                 ID, area_sqkm), by = "ID")
+  new_hope_fline_rec$TotDASqKM <-
+    calculate_total_drainage_area(rename(st_set_geometry(new_hope_fline_rec, NULL),
+                                         area = area_sqkm))
+
   # HU12 FPP st_joined to get these
   outlets <- data.frame(ID = c(336, 447, 342, 39, 332, 384, 444, 335),
                         type = c("outlet", "outlet", "outlet", "outlet",

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Collapse NHDPlus Network — collapse_flowlines • nhdplusTools</title>
+<title>Total Drainage Area — calculate_total_drainage_area • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="Collapse NHDPlus Network — collapse_flowlines" />
+<meta property="og:title" content="Total Drainage Area — calculate_total_drainage_area" />
 
-<meta property="og:description" content="Refactors the NHDPlus flowline network, eliminating short and
-non-cconfluence flowlines." />
+<meta property="og:description" content="Calculates total drainage area given a dendritic
+network and incremental areas." />
 <meta name="twitter:card" content="summary" />
 
 <meta name="robots" content="noindex">
@@ -122,63 +122,55 @@ non-cconfluence flowlines." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Collapse NHDPlus Network</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/collapse.R'><code>R/collapse.R</code></a></small>
-    <div class="hidden name"><code>collapse_flowlines.Rd</code></div>
+    <h1>Total Drainage Area</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
+    <div class="hidden name"><code>calculate_total_drainage_area.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Refactors the NHDPlus flowline network, eliminating short and
-non-cconfluence flowlines.</p>
+    <p>Calculates total drainage area given a dendritic
+network and incremental areas.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>collapse_flowlines</span>(<span class='no'>flines</span>, <span class='no'>thresh</span>, <span class='kw'>add_category</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>mainstem_thresh</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>exclude_cats</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>flines</th>
-      <td><p>data.frame with COMID, toCOMID, LENGTHKM, Hydroseq, and LevelPathI columns</p></td>
-    </tr>
-    <tr>
-      <th>thresh</th>
-      <td><p>numeric a length threshold (km). Flowlines shorter than this
-will be eliminated</p></td>
-    </tr>
-    <tr>
-      <th>add_category</th>
-      <td><p>boolean if combination category is desired in output, set
-to TRUE</p></td>
-    </tr>
-    <tr>
-      <th>mainstem_thresh</th>
-      <td><p>numeric threshold for combining inter-confluence
-mainstems</p></td>
-    </tr>
-    <tr>
-      <th>exclude_cats</th>
-      <td><p>integer vector of COMIDs to be excluded from collapse modifications.</p></td>
-    </tr>
-    <tr>
-      <th>warn</th>
-      <td><p>boolean controls whether warning an status messages are printed</p></td>
+      <th>catchment</th>
+      <td><p>data.frame with ID, toID, and area columns.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A refactored network with merged up and down flowlines.</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>The <code><a href='refactor_nhdplus.html'>refactor_nhdplus</a></code> function implements a complete
-workflow using `collapse_flowlines()`.</p></div>
+    <p>numeric with total area.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    matches</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'>source</span>(<span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+<span class='no'>catchment</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
+                             <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='http://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='fu'><a href='http://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>walker_flowline</span>, <span class='no'>COMID</span>, <span class='no'>AreaSqKM</span>), <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='http://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>, <span class='kw'>area</span> <span class='kw'>=</span> <span class='no'>AreaSqKM</span>)
+
+<span class='no'>new_da</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment</span>)
+
+<span class='no'>catchment</span>$<span class='no'>totda</span> <span class='kw'>&lt;-</span> <span class='no'>new_da</span>
+<span class='no'>catchment</span>$<span class='no'>nhdptotda</span> <span class='kw'>&lt;-</span> <span class='no'>walker_flowline</span>$<span class='no'>TotDASqKM</span>
+
+<span class='fu'>mean</span>(<span class='fu'>abs</span>(<span class='no'>catchment</span>$<span class='no'>totda</span> - <span class='no'>catchment</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; [1] 1.633102e-15</div><div class='input'><span class='fu'>max</span>(<span class='fu'>abs</span>(<span class='no'>catchment</span>$<span class='no'>totda</span> - <span class='no'>catchment</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; [1] 2.842171e-14</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -186,9 +178,9 @@ workflow using `collapse_flowlines()`.</p></div>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

@@ -132,7 +132,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>aggregate_catchments</span>(<span class='no'>fline_rec</span>, <span class='no'>cat_rec</span>, <span class='no'>outlets</span>, <span class='no'>flowline</span>)</pre>
+    <pre class="usage"><span class='fu'>aggregate_catchments</span>(<span class='no'>fline_rec</span>, <span class='no'>cat_rec</span>, <span class='no'>outlets</span>, <span class='kw'>da_thresh</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>only_larger</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,8 +155,20 @@ fline and cat data.frames. "type" should be "outlet", or "terminal".
 This parameter may change.</p></td>
     </tr>
     <tr>
-      <th>flowline</th>
-      <td><p>sf data.frame with original nhdplus network flowlines.</p></td>
+      <th>da_thresh</th>
+      <td><p>numeric Defaults to NA. A threshold total drainage area in the units of the TotDASqKM
+field of the fline_rec data.frame. When automatically adding confluences to make
+the network valid, tributary catchments under this threshold will be lumped with
+the larger tributaries rather than being added to the set of output catchments.</p></td>
+    </tr>
+    <tr>
+      <th>only_larger</th>
+      <td><p>boolean Defaults to TRUE. If TRUE when adding confluences to
+make the network valid, only tributaries larger than the one with an upstream
+outlet will be added. e.g. if a tributary is required in the model this will
+add main stems that the tributary contributes to. Note that the NHDPlus treats
+divergences as part of the main stem, so the da_thresh may still be needed to
+eliminate small tributary catchments introduced by divergences near confluences.</p></td>
     </tr>
     </table>
     
@@ -168,15 +181,11 @@ should be treated as "outlet" outlets.
 While it may be possible for the algorithm to determine terminal outlets, at this
 time, it is required that they be specified explicitely as "terminal" outlet types.</p>
 <p>The function checks supplied catchment outlets to make sure they connect to downstream
-catchments. This requires the original NHDPlus Flowlines' levelpathID and HydroSequence
-attributes. Checks verify that the outlet of the levelpath of each supplied outlet is
+catchments. Checks verify that the outlet of the levelpath of each supplied outlet is
 in the supplied outlet set. If the outlet of a levelpath is not in the supplied set, it
 is added along with other catchments that contribute to the same receiving catchment.
 These checks ensure that all output catchments have one and only one input and output
 nexus and that all catchments are well-connected.</p>
-<p>Note that at this time, when a confluence has to be added to enforce network connectivity,
-all tributaries to the confluence are added as catchments. This can lead to several
-catchments being added to the output that may not be desired.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -184,8 +193,7 @@ catchments being added to the output that may not be desired.</p>
 <span class='no'>outlets</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>ID</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>31</span>, <span class='fl'>3</span>, <span class='fl'>5</span>, <span class='fl'>1</span>, <span class='fl'>45</span>, <span class='fl'>92</span>),
                       <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"outlet"</span>, <span class='st'>"outlet"</span>, <span class='st'>"outlet"</span>, <span class='st'>"terminal"</span>, <span class='st'>"outlet"</span>, <span class='st'>"outlet"</span>),
                       <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='no'>aggregated</span> <span class='kw'>&lt;-</span> <span class='fu'>aggregate_catchments</span>(<span class='no'>walker_fline_rec</span>, <span class='no'>walker_catchment_rec</span>,
-                                 <span class='no'>outlets</span>, <span class='no'>walker_flowline</span>)
+<span class='no'>aggregated</span> <span class='kw'>&lt;-</span> <span class='fu'>aggregate_catchments</span>(<span class='no'>walker_fline_rec</span>, <span class='no'>walker_catchment_rec</span>, <span class='no'>outlets</span>)
 <span class='fu'>plot</span>(<span class='no'>aggregated</span>$<span class='no'>cat_sets</span>$<span class='no'>geom</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</div><div class='input'><span class='fu'>plot</span>(<span class='no'>walker_catchment_rec</span>$<span class='no'>geom</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"green"</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'>plot</span>(<span class='no'>walker_catchment</span>$<span class='no'>geom</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'>plot</span>(<span class='no'>walker_flowline</span>$<span class='no'>geom</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>.7</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='aggregate_catchments-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='fu'>plot</span>(<span class='no'>aggregated</span>$<span class='no'>cat_sets</span>$<span class='no'>geom</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>border</span> <span class='kw'>=</span> <span class='st'>"black"</span>)</div><div class='input'><span class='fu'>plot</span>(<span class='no'>aggregated</span>$<span class='no'>fline_sets</span>$<span class='no'>geom</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'>plot</span>(<span class='no'>walker_flowline</span>$<span class='no'>geom</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>.7</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='aggregate_catchments-2.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>

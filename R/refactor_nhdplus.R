@@ -178,7 +178,7 @@ prepare_nhdplus <- function(flines,
   flines <- select(flines, COMID, LENGTHKM, FTYPE, TerminalFl,
                    FromNode, ToNode, TotDASqKM, StartFlag,
                    StreamOrde, StreamCalc, TerminalPa, Pathlength,
-                   Divergence, Hydroseq)
+                   Divergence, Hydroseq, LevelPathI)
 
   if (!any(flines$TerminalFl == 1)) {
     warning("Got NHDPlus data without a Terminal catchment. Attempting to find it.")
@@ -232,5 +232,5 @@ prepare_nhdplus <- function(flines,
 
   select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
          -StreamOrde, -StreamCalc, -TerminalPa,
-         -FTYPE, -Pathlength, -Divergence, -Hydroseq)
+         -FTYPE, -Pathlength, -Divergence)
 }

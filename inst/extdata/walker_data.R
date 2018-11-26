@@ -15,16 +15,16 @@ walker_flowline <- sf::st_transform(walker_flowline, proj)
 #                              collapse_flines_meters = 1,
 #                              collapse_flines_main_meters = 1,
 #                              split_flines_cores = 2,
-#                              out_collapsed = "inst/extdata/walker_refactor.gpkg",
-#                              out_reconciled = "inst/extdata/walker_reconcile.gpkg",
+#                              out_collapsed = "walker_refactor.gpkg",
+#                              out_reconciled = "walker_reconcile.gpkg",
 #                              three_pass = TRUE,
 #                              purge_non_dendritic = FALSE,
 #                              warn = FALSE)
-# fline_ref <- sf::read_sf("inst/extdata/subset_refactor.gpkg")
-# fline_rec <- sf::read_sf("inst/extdata/subset_reconcile.gpkg")
+# fline_ref <- sf::read_sf("walker_refactor.gpkg")
+# fline_rec <- sf::read_sf("walker_reconcile.gpkg")
 # cat_rec <- reconcile_catchments(walker_catchment, fline_ref,
 #                                 fline_rec, walker_fdr, walker_fac)
-# sf::write_sf(cat_rec, "inst/extdata/walker_cat_rec.gpkg")
+# sf::write_sf(cat_rec, "walker_cat_rec.gpkg")
 # This is how the raster data was created.
 # r <- fasterize::raster("NHDPlusCA/fdr.tif")
 #

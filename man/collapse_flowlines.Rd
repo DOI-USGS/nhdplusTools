@@ -8,7 +8,7 @@ collapse_flowlines(flines, thresh, add_category = FALSE,
   mainstem_thresh = NULL, exclude_cats = NULL, warn = TRUE)
 }
 \arguments{
-\item{flines}{data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM columns}
+\item{flines}{data.frame with COMID, toCOMID, LENGTHKM, Hydroseq, and LevelPathI columns}
 
 \item{thresh}{numeric a length threshold (km). Flowlines shorter than this
 will be eliminated}

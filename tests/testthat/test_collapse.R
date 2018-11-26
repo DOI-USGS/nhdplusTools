@@ -93,7 +93,10 @@ test_that("collapse flowlines works as expected", {
 })
 
 test_that("headwater / top of mainstem collapes works as expected", {
-  flines <- readRDS("data/guadalupe_network.rds")
+  flines <- readRDS("data/guadalupe_network_geom.rds")
+  flines <- sf::st_set_geometry(flines, NULL)
+  flines <- suppressWarnings(prepare_nhdplus(flines, 0, 0))
+
   flines_out <- collapse_flowlines(flines, 0.5, mainstem_thresh = 0.5)
 
   # small headwater gets collapsed downstream.
@@ -151,16 +154,18 @@ test_that("headwater / top of mainstem collapes works as expected", {
               flines$LENGTHKM[which(flines$COMID == 10840906)] +
               flines$LENGTHKM[which(flines$COMID == 10840554)]))
 
-  flines <- readRDS("data/petapsco_network.rds")
-  flines <- sf::st_set_geometry(flines, NULL)
-  flines <- suppressWarnings(prepare_nhdplus(flines, 0, 0))
-
-  flines_out <- collapse_flowlines(flines, 0.5, mainstem_thresh = 1)
+  # flines <- readRDS("data/petapsco_network.rds")
+  # flines <- sf::st_set_geometry(flines, NULL)
+  # flines <- suppressWarnings(prepare_nhdplus(flines, 0, 0))
+  #
+  # flines_out <- collapse_flowlines(flines, 0.5, mainstem_thresh = 1)
 
 })
 
 test_that("collapse flowlines works with small networks", {
-  flines <- readRDS("data/smallish_networks.rds")
+  flines <- readRDS("data/small_networks.rds")
+  flines <- suppressWarnings(prepare_nhdplus(flines, 0, 0))
+
   flines_collapse <- collapse_flowlines(flines, 2)
 
   flines <- suppressWarnings(prepare_nhdplus(
@@ -168,14 +173,15 @@ test_that("collapse flowlines works with small networks", {
 
   c1 <- collapse_flowlines(flines, 1000, F, 1000)
 
-  expect(c1$joined_fromCOMID[which(c1$COMID == 5876961)] == -9999)
-  expect(c1$joined_fromCOMID[which(c1$COMID == 5876993)] == 5876961)
+  expect(c1$joined_fromCOMID[which(c1$COMID == 5877003)] == -9999)
+  expect(c1$joined_fromCOMID[which(c1$COMID == 5876965)] == 5877003)
+  expect_equal(c1$LENGTHKM[which(c1$COMID == 5877003)], 1.070)
 
-  expect_equal(c1$LENGTHK[which(c1$COMID == 5876989)], 0.878)
+  expect_equal(c1$LENGTHKM[which(c1$COMID == 5876985)], 1.459)
 
   r1 <- reconcile_collapsed_flowlines(c1)
 
-  expect_equal(length(which(r1$ID == 1)), 7)
+  expect_equal(length(which(r1$ID == 1)), 6)
   expect(all(is.na(r1$toID)))
 
   flines <- suppressWarnings(prepare_nhdplus(
@@ -199,7 +205,7 @@ test_that("collapse flowlines works as expected with add category", {
   flines <- sf::st_set_geometry(flines, NULL)
   flines <- suppressWarnings(prepare_nhdplus(flines, 20, 1))
   flines <- collapse_flowlines(flines, 1, add_category = TRUE)
-  expect_equal(names(flines)[7], "join_category")
+  expect_equal(names(flines)[9], "join_category")
 })
 
 # then go look at problem headwater combinations.

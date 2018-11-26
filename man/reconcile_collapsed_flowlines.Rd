@@ -7,7 +7,7 @@
 reconcile_collapsed_flowlines(flines, geom = NULL, id = "COMID")
 }
 \arguments{
-\item{flines}{data.frame with COMID, toCOMID, LENGTHKM,
+\item{flines}{data.frame with COMID, toCOMID, LENGTHKM, LevelPathI, Hydroseq,
 and TotDASqKM columns}
 
 \item{geom}{sf data.frame for flines}
@@ -15,7 +15,7 @@ and TotDASqKM columns}
 \item{id}{character id collumn name.}
 }
 \value{
-reconciled flines
+reconciled flines with new ID, toID, LevelPathID, and Hydroseq identifiers.
 }
 \description{
 Reconciles output of collapse_flowlines giving a unique ID to

@@ -7,7 +7,16 @@
 #' "outlet" will include the specified ID.
 #' "terminal" will be treated as a terminal node with nothing downstream.
 #' This parameter may change.
-#' @param flowline sf data.frame with original nhdplus network flowlines.
+#' @param da_thresh numeric Defaults to NA. A threshold total drainage area in the units of the TotDASqKM
+#' field of the fline_rec data.frame. When automatically adding confluences to make
+#' the network valid, tributary catchments under this threshold will be lumped with
+#' the larger tributaries rather than being added to the set of output catchments.
+#' @param only_larger boolean Defaults to TRUE. If TRUE when adding confluences to
+#' make the network valid, only tributaries larger than the one with an upstream
+#' outlet will be added. e.g. if a tributary is required in the model this will
+#' add main stems that the tributary contributes to. Note that the NHDPlus treats
+#' divergences as part of the main stem, so the da_thresh may still be needed to
+#' eliminate small tributary catchments introduced by divergences near confluences.
 #' @details This function operates on the catchment network as a node-edge graph.
 #' The outlet types are required to ensure that graph searches start from the
 #' appropriate nodes and includes the appropriate catchments. Outlets such as gages
@@ -16,16 +25,11 @@
 #' time, it is required that they be specified explicitely as "terminal" outlet types.
 #'
 #' The function checks supplied catchment outlets to make sure they connect to downstream
-#' catchments. This requires the original NHDPlus Flowlines' levelpathID and HydroSequence
-#' attributes. Checks verify that the outlet of the levelpath of each supplied outlet is
+#' catchments. Checks verify that the outlet of the levelpath of each supplied outlet is
 #' in the supplied outlet set. If the outlet of a levelpath is not in the supplied set, it
 #' is added along with other catchments that contribute to the same receiving catchment.
 #' These checks ensure that all output catchments have one and only one input and output
 #' nexus and that all catchments are well-connected.
-#'
-#' Note that at this time, when a confluence has to be added to enforce network connectivity,
-#' all tributaries to the confluence are added as catchments. This can lead to several
-#' catchments being added to the output that may not be desired.
 #'
 #' @export
 #' @importFrom igraph graph_from_data_frame topo_sort incident_edges V bfs head_of shortest_paths
@@ -37,8 +41,7 @@
 #' outlets <- data.frame(ID = c(31, 3, 5, 1, 45, 92),
 #'                       type = c("outlet", "outlet", "outlet", "terminal", "outlet", "outlet"),
 #'                       stringsAsFactors = FALSE)
-#' aggregated <- aggregate_catchments(walker_fline_rec, walker_catchment_rec,
-#'                                  outlets, walker_flowline)
+#' aggregated <- aggregate_catchments(walker_fline_rec, walker_catchment_rec, outlets)
 #' plot(aggregated$cat_sets$geom, lwd = 3, border = "red")
 #' plot(walker_catchment_rec$geom, lwd = 1.5, border = "green", col = NA, add = TRUE)
 #' plot(walker_catchment$geom, lwd = 1, add = TRUE)
@@ -49,7 +52,8 @@
 #' plot(walker_flowline$geom, lwd = .7, col = "blue", add = TRUE)
 #'
 
-aggregate_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
+aggregate_catchments <- function(fline_rec, cat_rec, outlets,
+                                 da_thresh = NA, only_larger = FALSE) {
 
   remove_flines <- filter(fline_rec, !ID %in% cat_rec$ID)
   if (any(remove_flines$ID %in% remove_flines$toID))
@@ -58,9 +62,10 @@ aggregate_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
   # Actually remove superfluous flowlines.
   fline_rec <- filter(fline_rec, ID %in% cat_rec$ID)
 
-  lps <- get_lps(fline_rec, flowline)
+  lps <- get_lps(fline_rec)
 
-  outlets <- make_outlets_valid(outlets, fline_rec, lps) %>%
+  outlets <- make_outlets_valid(outlets, fline_rec, lps,
+                                da_thresh = da_thresh, only_larger = only_larger) %>%
     distinct()
 
   outlets <- mutate(outlets, ID = paste0("cat-", ID))
@@ -213,34 +218,21 @@ aggregate_catchments <- function(fline_rec, cat_rec, outlets, flowline) {
   return(list(cat_sets = cat_sets, fline_sets = fline_sets))
 }
 
-get_lps <- function(fline_rec, flowline) {
+get_lps <- function(fline_rec) {
+  fline_rec <- st_set_geometry(fline_rec, NULL) %>%
+    select(ID, LevelPathID, Hydroseq) %>%
+    group_by(LevelPathID)
 
-  mapper <- member_mapper(st_set_geometry(fline_rec, NULL)) %>%
-    mutate(orig_COMID = as.integer(floor(as.numeric(member_COMID)))) %>%
-    left_join(select(st_set_geometry(flowline, NULL),
-                     COMID, LevelPathID = LevelPathI, Hydroseq),
-              by = c("orig_COMID" = "COMID")) %>%
-    group_by(ID) %>%
-    filter(LevelPathID == max(LevelPathID)) %>% # This could be problematic...
-    ungroup() %>% group_by(LevelPathID)
-
-  headwaters <- filter(mapper, Hydroseq == max(Hydroseq) &
-                         (member_COMID == as.character(orig_COMID) |
-                            member_COMID == as.character(orig_COMID + 0.1)))
-
-  # First filter to get lowest catchment on level paths.
-  # Second filter to get outlet ID of split catchments.
-  outlets <- filter(mapper, Hydroseq == min(Hydroseq)) %>%
-    group_by(orig_COMID) %>%
-    filter(as.numeric(member_COMID) == max(as.numeric(member_COMID))) %>%
+  headwaters <- filter(fline_rec, Hydroseq == max(Hydroseq)) %>%
     ungroup()
 
-  mapper %>%
-    left_join(select(headwaters, head_ID = ID, LevelPathID),
+  outlets <- filter(fline_rec, Hydroseq == min(Hydroseq)) %>%
+    ungroup()
+
+  left_join(ungroup(fline_rec), select(headwaters, head_ID = ID, LevelPathID),
               by = "LevelPathID") %>%
     left_join(select(outlets, tail_ID = ID, LevelPathID),
-              by = "LevelPathID") %>%
-    ungroup()
+              by = "LevelPathID")
 }
 
 # Get the levelpath outlet IDs for each of the input outlets.
@@ -251,18 +243,29 @@ get_outlets <- function(outlets, lps) {
 }
 
 # Adds everything that contributes the same recieving catchment as a given tail id.
-fix_nexus <- function(fline_rec, tail_ID) {
-  add_ids <- filter(fline_rec,
-                    toID == filter(fline_rec,
-                                   ID == tail_ID)$toID)$ID
+fix_nexus <- function(fline_rec, tail_ID, da_thresh = NA, only_larger = FALSE) {
+  tail <- filter(fline_rec, ID == tail_ID)
+
+  add <- filter(fline_rec, toID == tail$toID)
+
+  if(only_larger) {
+    add <- filter(add, LevelPathID <= tail$LevelPathID)
+  }
+
+  if(!is.na(da_thresh)) {
+    add <- filter(add, TotDASqKM > da_thresh)
+  }
+  # Can add functionality here to filter which Add IDs to include.
+  add_ids <- add$ID
+
   data.frame(ID = add_ids,
              type = rep("outlet",
                         length(add_ids)),
              stringsAsFactors = FALSE)
 }
 
-fix_tail <- function(fline_rec, outlets, toID_tail_ID) {
-  potential_add <- fix_nexus(fline_rec, toID_tail_ID)
+fix_tail <- function(fline_rec, outlets, toID_tail_ID, da_thresh = NA, only_larger = FALSE) {
+  potential_add <- fix_nexus(fline_rec, toID_tail_ID, da_thresh, only_larger)
   new <- !potential_add$ID %in% outlets$ID
   potential_add[new, ]
 }
@@ -275,7 +278,7 @@ fix_tail <- function(fline_rec, outlets, toID_tail_ID) {
 #' @param lps level paths
 #' @importFrom dplyr filter distinct select left_join group_by mutate
 #' @noRd
-make_outlets_valid <- function(outlets, fline_rec, lps) {
+make_outlets_valid <- function(outlets, fline_rec, lps, da_thresh = NA, only_larger = FALSE) {
 
   otl <- get_outlets(outlets, lps)
 
@@ -288,12 +291,13 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
       bad_outlet <- otl[bad[add], ]
 
       outlets <- rbind(outlets,
-                       fix_nexus(fline_rec, bad_outlet$tail_ID))
+                       fix_nexus(fline_rec, bad_outlet$tail_ID, da_thresh, only_larger))
     }
     otl <- get_outlets(outlets, lps)
 
     count_while <- count_while + 1
-    if (count_while > 1000) stop("Stuck in a while loop trying to fix disconnected outlets.")
+    if (count_while > 1000)
+      stop("Stuck in a while loop trying to fix disconnected outlets. Reduce drainage area threshold?")
   }
 
   # Need to check that a "next down tributary" in the outlet set has a break along the
@@ -309,7 +313,23 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
     group_by(toID_tail_ID) %>% filter(n() > 1) %>% ungroup() %>%
     # This grabs all the inflows to the nexus that each of these outlets is at.
     left_join(select(st_set_geometry(fline_rec, NULL), toID_fromID = ID, toID), by = "toID") %>%
-    mutate(type = "add_outlet") %>%
+    mutate(type = "add_outlet")
+
+    if(!is.na(da_thresh)) {
+      otl <- left_join(otl, select(st_set_geometry(fline_rec, NULL),
+                                    ID, toID_fromID_TotDASqKM = TotDASqKM),
+                        by = c("toID_fromID" = "ID")) %>%
+        filter(toID_fromID_TotDASqKM > da_thresh)
+    }
+
+    if(only_larger) {
+      otl <- left_join(otl, select(st_set_geometry(fline_rec, NULL),
+                                   ID, toID_fromID_lp = LevelPathID),
+                       by = c("toID_fromID" = "ID")) %>%
+        filter(toID_fromID_lp <= toID_LevelpathID)
+    }
+
+    otl <- otl %>%
     select(ID = toID_fromID, type, LevelPathID = toID_LevelpathID, tail_ID) %>%
     distinct()
 
@@ -325,7 +345,8 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
 
   for (check in seq_along(tail_outlets)) {
     outlets <- rbind(outlets,
-                     fix_tail(fline_rec, outlets, otl$ID[check]))
+                     fix_tail(fline_rec, outlets, otl$ID[check],
+                              da_thresh = da_thresh, only_larger = only_larger))
 
     connected <- FALSE
     while (!connected) {
@@ -334,7 +355,8 @@ make_outlets_valid <- function(outlets, fline_rec, lps) {
 
       if (!all(toID_tail_ID %in% otl$tail_ID)) {
         outlets <- rbind(outlets,
-                         fix_tail(fline_rec, outlets, unique(toID_tail_ID)))
+                         fix_tail(fline_rec, outlets, unique(toID_tail_ID),
+                                  da_thresh = da_thresh, only_larger = only_larger))
       } else {
         connected <- TRUE
       }

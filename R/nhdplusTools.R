@@ -10,19 +10,20 @@ COMID <- FEATUREID <-
   # Package Attribute Names
 COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   dsLENGTHKM <- ds_joined_fromCOMID <- fromCOMID <-
-  fromLENGTHKM <- fromTotDASqKM <- geom_len <-
+  fromTotDASqKM <- geom_len <-
   geometry <- join_category <- joined_fromCOMID <-
   joined_fromCOMID_new <- joined_toCOMID <- member_COMID <-
   new_joined_fromCOMID <- new_joined_toCOMID <- new_toCOMID <-
   num_upstream <- part <- piece <- pieces <- removed_COMID <-
-  split_fID <- toCOMID <- toID <- usLENGTHKM <- usTotDASqKM <-
+  split_fID <- toCOMID <- toID <- usTotDASqKM <-
   . <- L1 <- X <- Y <- breaks <- dist_ratio <- ideal_len <-
   len <- nID <- new_index <- piece_len <- setNames <- start <-
   index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-
   nn.dists <- offset <- area <- member_FEATUREID <- geom <-
   fromID <- nexID <- cat_ID <- type <- LevelPathID <- orig_COMID <-
   tail_ID <- toID_hydroseq <- toID_tail_ID <- toID_fromID <-
-  toID_LevelpathID <- NULL
+  toID_LevelpathID <- set <- set_toID <- usLevelPathI <- fromLevelPathI <-
+  ID_Hydroseq <- ID_LevelPath <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -32,7 +33,8 @@ assign("prepare_nhdplus_attributes",
        c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
          "FromNode", "ToNode", "TotDASqKM",
          "StartFlag", "StreamOrde", "StreamCalc",
-         "TerminalPa", "Pathlength", "Divergence", "Hydroseq"),
+         "TerminalPa", "Pathlength", "Divergence", "Hydroseq",
+         "LevelPathI"),
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",
@@ -40,11 +42,11 @@ assign("split_flowlines_attributes",
        envir = nhdplusTools_env)
 
 assign("collapse_flowlines_attributes",
-       c("COMID", "toCOMID", "LENGTHKM", "TotDASqKM"),
+       c("COMID", "toCOMID", "LENGTHKM", "LevelPathI", "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("reconcile_collapsed_flowlines_attributes",
-       c("COMID", "toCOMID", "LENGTHKM", "TotDASqKM"),
+       c("COMID", "toCOMID", "LENGTHKM", "LevelPathI", "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("get_UT_attributes",
@@ -259,4 +261,60 @@ member_mapper <- function(df, id_col = "ID", list_col = "member_COMID") {
   df <- select(df, !!c(id_col, list_col))
   df[[list_col]] <- lapply(df[[list_col]], function(x) strsplit(x, ",")[[1]])
   tidyr::unnest(df)
+}
+
+#' Total Drainage Area
+#' @description Calculates total drainage area given a dendritic
+#' network and incremental areas.
+#' @param catchment data.frame with ID, toID, and area columns.
+#' @return numeric with total area.
+#' @importFrom igraph graph_from_data_frame topo_sort
+#' @importFrom dplyr select left_join
+#' @export
+#' @examples
+#' library(dplyr)
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' catchment <- prepare_nhdplus(walker_flowline, 0, 0,
+#'                              purge_non_dendritic = FALSE, warn = FALSE) %>%
+#'   left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
+#'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
+#'
+#' new_da <- calculate_total_drainage_area(catchment)
+#'
+#' catchment$totda <- new_da
+#' catchment$nhdptotda <- walker_flowline$TotDASqKM
+#'
+#' mean(abs(catchment$totda - catchment$nhdptotda))
+#' max(abs(catchment$totda - catchment$nhdptotda))
+#'
+
+calculate_total_drainage_area <- function(catchment) {
+
+  cat_order <- select(catchment, ID)
+
+  catchment[["toID"]][which(is.na(catchment[["toID"]]))] <- 0
+
+  sorted <- names(topo_sort(graph_from_data_frame(catchment,
+                                                  directed = TRUE),
+                            mode = "out"))
+
+  sorted <- sorted[sorted != 0]
+
+  catchment <- left_join(data.frame(ID = as.integer(sorted[!sorted == "NA"])),
+                         catchment, by = "ID")
+
+  catchment[["toID_row"]] <- match(catchment[["toID"]], catchment[["ID"]])
+
+  area <- catchment[["area"]]
+  toid_row <- catchment[["toID_row"]]
+
+  for(cat in 1:length(area)) {
+    area[toid_row[cat]] <- area[toid_row[cat]] + area[cat]
+  }
+
+  catchment[["area"]] <- area
+
+  catchment <- left_join(cat_order, catchment, by = "ID")
+
+  return(catchment[["area"]])
 }

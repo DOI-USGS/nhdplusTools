@@ -1,13 +1,13 @@
 #' @title Reconcile Collapsed Flowlines
 #' @description Reconciles output of collapse_flowlines giving a unique ID to
 #'  each new unit and providing a mapping to NHDPlus COMIDs.
-#' @param flines data.frame with COMID, toCOMID, LENGTHKM,
+#' @param flines data.frame with COMID, toCOMID, LENGTHKM, LevelPathI, Hydroseq,
 #' and TotDASqKM columns
 #' @param geom sf data.frame for flines
 #' @param id character id collumn name.
-#' @return reconciled flines
+#' @return reconciled flines with new ID, toID, LevelPathID, and Hydroseq identifiers.
 #' @importFrom dplyr group_by ungroup filter left_join select rename
-#' mutate distinct summarise
+#' mutate distinct summarise arrange desc
 #' @seealso The \code{\link{refactor_nhdplus}} function implements a complete
 #' workflow using `reconcile_collapsed_flowlines()`.
 #' @export
@@ -24,10 +24,20 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
                              COMID, joined_toCOMID),
                      joined_fromCOMID)) %>%
     group_by(becomes) %>%
-    mutate(TotDASqKM = max(TotDASqKM), LENGTHKM = max(LENGTHKM)) %>%
+    mutate(TotDASqKM = max(TotDASqKM),
+           LENGTHKM = max(LENGTHKM),
+           Hydroseq = min(Hydroseq),
+           LevelPathI = min(LevelPathI)) %>%
+    ungroup() %>%
+    tidyr::separate(COMID, c("orig_COMID", "part"),
+                    sep = "\\.", remove = FALSE, fill = "right") %>%
+    mutate(new_Hydroseq = ifelse(is.na(part),
+                                 as.character(Hydroseq),
+                                 paste(as.character(Hydroseq),
+                                       part, sep = ".")),
+           part = ifelse(is.na(part), "0", part)) %>%
+    ungroup() %>%
     select(-joined_fromCOMID, -joined_toCOMID)
-
-  new_flines <- ungroup(new_flines)
 
   new_flines <-
     left_join(new_flines,
@@ -44,10 +54,24 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
 
   new_flines <- left_join(new_flines,
                           select(new_flines, becomes, toID = ID),
-                          by = c("toCOMID" = "becomes"))
+                          by = c("toCOMID" = "becomes")) %>%
+    arrange(Hydroseq, desc(part))
 
-  new_flines <- distinct(new_flines) %>%
-    select(ID, toID, LENGTHKM, TotDASqKM, member_COMID = COMID)
+  new_flines <- left_join(new_flines,
+                          data.frame(ID = unique(new_flines$ID),
+                                     ID_Hydroseq = seq_len(length(unique(new_flines$ID)))),
+                          by = "ID")
+
+  new_lp <- group_by(new_flines, LevelPathI) %>%
+    filter(Hydroseq == min(Hydroseq)) %>% # Get the outlet by hydrosequence.
+    ungroup() %>% group_by(Hydroseq) %>%
+    filter(as.integer(part) == max(as.integer(part))) %>% # Get the outlet if the original was split.
+    ungroup() %>%
+    select(ID_LevelPathID = ID_Hydroseq, LevelPathI)
+
+  new_flines <- left_join(distinct(new_flines), distinct(new_lp), by = "LevelPathI") %>%
+    select(ID, toID, LENGTHKM, TotDASqKM, member_COMID = COMID,
+           LevelPathID = ID_LevelPathID, Hydroseq = ID_Hydroseq)
 
   if (!is.null(geom)) {
     geom_column <- attr(geom, "sf_column")
@@ -61,6 +85,8 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
       summarise(toID = toID[1],
                 LENGTHKM = LENGTHKM[1],
                 TotDASqKM = TotDASqKM[1],
+                LevelPathID = LevelPathID[1],
+                Hydroseq = Hydroseq[1],
                 member_COMID = list(unique(member_COMID))) %>%
       sf::st_cast("MULTILINESTRING") %>%
       ungroup() %>%

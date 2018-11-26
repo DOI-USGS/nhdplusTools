@@ -17,7 +17,7 @@ returned. The COMID that exceeds the distance specified is returned.}
 }
 \value{
 integer vector of all COMIDs upstream with tributaries of the
-starting catchment.
+starting COMID.
 }
 \description{
 Traverse NHDPlus network upstream with tributaries

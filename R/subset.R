@@ -1,6 +1,6 @@
 #' @title Subset NHDPlus National Data
 #' @description Saves a subset of the National Seamless database based on a
-#' specified collection of catchments.
+#' specified collection of COMIDs.
 #' @param comids integer vector of COMIDs to include.
 #' @param output_file character path to save the output to defaults
 #' to the directory of the nhdplus_data.
@@ -250,7 +250,7 @@ intersection_write <- function(layer_name, data_path, envelope,
 #' \dontrun{
 #' stage_national_data()
 #'
-#' stage_national_data(include = c("attributes", "flowlines","catchments"))
+#' stage_national_data(include = c("attributes", "flowlines","catchment"))
 #' }
 #'
 stage_national_data <- function(include = c("attribute",

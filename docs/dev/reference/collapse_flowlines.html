@@ -33,7 +33,10 @@
 <meta property="og:title" content="Collapse NHDPlus Network — collapse_flowlines" />
 
 <meta property="og:description" content="Refactors the NHDPlus flowline network, eliminating short and
-non-cconfluence flowlines." />
+non-confluence flowlines. The aim of this function is to create flowpaths
+that describe a network of catchments that combines complex hydrology near
+confluences into upstream catchments and removes very short flowlines along mainstem
+flow-paths." />
 <meta name="twitter:card" content="summary" />
 
 <meta name="robots" content="noindex">
@@ -130,7 +133,10 @@ non-cconfluence flowlines." />
     <div class="ref-description">
     
     <p>Refactors the NHDPlus flowline network, eliminating short and
-non-cconfluence flowlines.</p>
+non-confluence flowlines. The aim of this function is to create flowpaths
+that describe a network of catchments that combines complex hydrology near
+confluences into upstream catchments and removes very short flowlines along mainstem
+flow-paths.</p>
     
     </div>
 
@@ -147,7 +153,7 @@ non-cconfluence flowlines.</p>
     <tr>
       <th>thresh</th>
       <td><p>numeric a length threshold (km). Flowlines shorter than this
-will be eliminated</p></td>
+will be collapsed with up or downstream flowlines.</p></td>
     </tr>
     <tr>
       <th>add_category</th>

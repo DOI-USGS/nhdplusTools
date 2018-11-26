@@ -41,16 +41,16 @@ test_that("discover nhdplus id works as expected", {
 test_that("total drainage area works", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
-  catchment <- prepare_nhdplus(walker_flowline, 0, 0,
+  catchment_area <- prepare_nhdplus(walker_flowline, 0, 0,
                                purge_non_dendritic = FALSE, warn = FALSE) %>%
     left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
     select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
-  new_da <- calculate_total_drainage_area(catchment)
+  new_da <- calculate_total_drainage_area(catchment_area)
 
-  catchment$totda <- new_da
-  catchment$nhdptotda <- walker_flowline$TotDASqKM
+  catchment_area$totda <- new_da
+  catchment_area$nhdptotda <- walker_flowline$TotDASqKM
 
-  expect(mean(abs(catchment$totda - catchment$nhdptotda)) < 1e-3, "drainage area not close enough")
-  expect(max(abs(catchment$totda - catchment$nhdptotda)) < 1e-2, "drainage area not close enough")
+  expect(mean(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-3, "drainage area not close enough")
+  expect(max(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-2, "drainage area not close enough")
 })

@@ -140,7 +140,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 
 #' @title Get NLDI Basin Boundary
 #' @description Get a basin boundary for a given NLDI feature.
-#' @details Only resolves to the nearest NHDPlus catchment. See:
+#' @details Only resolves to the nearest NHDPlus catchment divide. See:
 #' https://owi.usgs.gov/blog/nldi-intro/ for more info on the nldi.
 #' @param nldi_feature list with names `featureSource` and `featureID` where
 #' `featureSource` is derived from the "source" column of  the response of

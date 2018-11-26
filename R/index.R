@@ -14,7 +14,7 @@
 #' of inputs that are true multipart lines may be in error.
 #'
 #' Note 2: This algorithm finds the nearest node in the input flowlines to
-#' identify which catchment the point should belong to. As a second pass,
+#' identify which flowline the point should belong to. As a second pass,
 #' it can calculate the measure to greater precision than the nearest flowline
 #' geometry node.
 #'

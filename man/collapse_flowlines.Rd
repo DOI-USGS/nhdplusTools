@@ -11,7 +11,7 @@ collapse_flowlines(flines, thresh, add_category = FALSE,
 \item{flines}{data.frame with COMID, toCOMID, LENGTHKM, Hydroseq, and LevelPathI columns}
 
 \item{thresh}{numeric a length threshold (km). Flowlines shorter than this
-will be eliminated}
+will be collapsed with up or downstream flowlines.}
 
 \item{add_category}{boolean if combination category is desired in output, set
 to TRUE}
@@ -28,7 +28,10 @@ A refactored network with merged up and down flowlines.
 }
 \description{
 Refactors the NHDPlus flowline network, eliminating short and
-non-cconfluence flowlines.
+non-confluence flowlines. The aim of this function is to create flowpaths
+that describe a network of catchments that combines complex hydrology near
+confluences into upstream catchments and removes very short flowlines along mainstem
+flow-paths.
 }
 \seealso{
 The \code{\link{refactor_nhdplus}} function implements a complete

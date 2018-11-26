@@ -6,7 +6,7 @@
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs upstream with tributaries of the
-#' starting catchment.
+#' starting COMID.
 #' @importFrom dplyr filter select
 #' @export
 #' @examples
@@ -89,7 +89,7 @@ private_get_UT <- function(network, comid) {
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' returned. The COMID that exceeds the distance specified is returned.
-#' @return integer vector of all COMIDs upstream of the starting catchment
+#' @return integer vector of all COMIDs upstream of the starting COMID
 #' along the mainstem.
 #' @importFrom dplyr filter
 #' @export
@@ -138,7 +138,7 @@ get_UM <- function(network, comid, distance = NULL) {
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' returned. The COMID that exceeds the distance specified is returned.
-#' @return integer vector of all COMIDs downstream of the starting catchment
+#' @return integer vector of all COMIDs downstream of the starting COMID
 #' along the mainstem.
 #' @importFrom dplyr filter
 #' @export
@@ -225,7 +225,7 @@ private_get_DM <- function(network, comid) {
 #' COMIDs are returned.
 #' The COMID that exceeds the distance specified is returned.
 #' The longest of the diverted paths is used for limiting distance.
-#' @return integer vector of all COMIDs downstream of the starting catchment
+#' @return integer vector of all COMIDs downstream of the starting COMID
 #' @importFrom dplyr filter
 #' @export
 #' @examples

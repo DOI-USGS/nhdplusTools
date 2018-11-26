@@ -1,11 +1,11 @@
 #' @title Reconcile Collapsed Flowlines
 #' @description Reconciles output of collapse_flowlines giving a unique ID to
-#'  each new unit and providing a mapping to NHDPlus COMIDs.
+#'  each new flowpath and providing a mapping to NHDPlus COMIDs.
 #' @param flines data.frame with COMID, toCOMID, LENGTHKM, LevelPathI, Hydroseq,
 #' and TotDASqKM columns
 #' @param geom sf data.frame for flines
 #' @param id character id collumn name.
-#' @return reconciled flines with new ID, toID, LevelPathID, and Hydroseq identifiers.
+#' @return reconciled flowpaths with new ID, toID, LevelPathID, and Hydroseq identifiers.
 #' @importFrom dplyr group_by ungroup filter left_join select rename
 #' mutate distinct summarise arrange desc
 #' @seealso The \code{\link{refactor_nhdplus}} function implements a complete
@@ -95,26 +95,27 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
   return(new_flines)
 }
 
-#' @title Reconcile Catchments
-#' @description Reconciles catchments according to the output of
+#' @title Reconcile Catchment Divides
+#' @description Reconciles catchment divides according to the output of
 #' \code{\link{reconcile_collapsed_flowlines}} and \code{\link{refactor_nhdplus}}
 #' @param fline_ref sf data.frame flowlines as returned by
 #' \code{\link{refactor_nhdplus}} and \code{\link{reconcile_collapsed_flowlines}}
-#' @param fline_rec sf data.frame flowlines as returned by
-#' \code{\link{reconcile_collapsed_flowlines}} and
+#' @param fline_rec sf data.frame flowpaths as returned by
 #' \code{\link{reconcile_collapsed_flowlines}}
-#' @param catchment sf data.frame NHDPlus Catchment or CatchmentSP for included COMIDs
+#' @param catchment sf data.frame NHDPlus Catchment or CatchmentSP layers for
+#' included COMIDs
 #' @param fdr raster D8 flow direction
 #' @param fac raster flow accumulation
 #' @param para integer numer of cores to use for parallel execution
-#' @return Catchments that have been split and collapsed according to input flowlines
+#' @return Catchment divides that have been split and collapsed according to
+#' input flowpaths
 #' @seealso The \code{\link{refactor_nhdplus}} function implements a complete
 #' workflow using `reconcile_collapsed_flowlines()` and can be used in prep
 #' for this function.
 #' @details Note that all inputs must be passed in the same projection.
 #' @export
 #'
-reconcile_catchments <- function(catchment, fline_ref, fline_rec, fdr, fac, para = 2) {
+reconcile_catchment_divides <- function(catchment, fline_ref, fline_rec, fdr, fac, para = 2) {
 
   check_proj(catchment, fline_ref, fdr)
 
@@ -158,7 +159,7 @@ reconcile_catchments <- function(catchment, fline_ref, fline_rec, fdr, fac, para
       to_split_flines <- dplyr::filter(fline_ref, COMID %in% split_set)
       to_split_cat <- dplyr::filter(catchment, FEATUREID == fid)
 
-      split_cats <- split_catchment(catchment = to_split_cat,
+      split_cats <- split_catchment_divide(catchment = to_split_cat,
                                                   fline = to_split_flines,
                                                   fdr = fdr,
                                                   fac = fac)
@@ -198,7 +199,7 @@ reconcile_catchments <- function(catchment, fline_ref, fline_rec, fdr, fac, para
     union_cats <- filter(split_cats, FEATUREID %in% cats_vec)
 
     if (nrow(union_cats) != length(cats_vec)) {
-      stop("missing a split catchment for an expected split flowline.")
+      stop("missing a split catchment for an expected flowline.")
     }
 
     unioned <- sf::st_sf(FEATUREID = cats, geom = sf::st_cast(sf::st_union(union_cats), "MULTIPOLYGON"),

@@ -15,11 +15,11 @@ and TotDASqKM columns}
 \item{id}{character id collumn name.}
 }
 \value{
-reconciled flines with new ID, toID, LevelPathID, and Hydroseq identifiers.
+reconciled flowpaths with new ID, toID, LevelPathID, and Hydroseq identifiers.
 }
 \description{
 Reconciles output of collapse_flowlines giving a unique ID to
- each new unit and providing a mapping to NHDPlus COMIDs.
+ each new flowpath and providing a mapping to NHDPlus COMIDs.
 }
 \seealso{
 The \code{\link{refactor_nhdplus}} function implements a complete

@@ -1,6 +1,6 @@
-context("split_catchments")
+context("split_catchment_divides")
 
-test_that("split_catchments works", {
+test_that("split_catchment_divides works", {
   unlink("data/temp/*")
   dir.create("data/temp", showWarnings = FALSE, recursive = TRUE)
 
@@ -27,7 +27,7 @@ test_that("split_catchments works", {
 
   expect(nrow(test_flines) == 5, "got wrong number of test_flines")
 
-  split_cat <- split_catchment(test_cat, test_flines, walker_fdr, walker_fac)
+  split_cat <- split_catchment_divide(test_cat, test_flines, walker_fdr, walker_fac)
 
   expect(length(split_cat) == 5, "Got the wrong number of cathment split polygons")
   expect(all(c("XY", "MULTIPOLYGON", "sfg") %in% class(split_cat[[5]])),
@@ -42,7 +42,7 @@ test_that("split_catchments works", {
   test_cat <- dplyr::filter(walker_catchment,
                   FEATUREID %in% unique(as.integer(test_fline_ref$COMID)))
 
-  reconciled_cats <- reconcile_catchments(test_cat, test_fline_ref, test_fline_rec,
+  reconciled_cats <- reconcile_catchment_divides(test_cat, test_fline_ref, test_fline_rec,
                                           walker_fdr, walker_fac)
 
   expect(nrow(reconciled_cats) == nrow(test_fline_ref), "got the wrong number of split catchments")
@@ -86,7 +86,7 @@ test_that("split and reconcile works", {
   test_fline_rec <- dplyr::filter(fline_rec, member_COMID %in%
                                      c(test_cat_1, test_cat_2))
 
-  reconciled_cats <- reconcile_catchments(test_cat, test_fline_ref,
+  reconciled_cats <- reconcile_catchment_divides(test_cat, test_fline_ref,
                                           test_fline_rec, walker_fdr, walker_fac)
 
   expect(nrow(reconciled_cats) == nrow(test_fline_rec))
@@ -107,7 +107,7 @@ test_that("reconcile catchments works with reconciled flowline from split", {
   test_fline_rec <- sf::read_sf("data/reconcile_test.gpkg", "fline_rec")
   test_cat <- sf::read_sf("data/reconcile_test.gpkg", "catchment")
 
-  reconciled_cats <- reconcile_catchments(test_cat, test_fline_ref,
+  reconciled_cats <- reconcile_catchment_divides(test_cat, test_fline_ref,
                                           test_fline_rec, fdr, fac)
 
   expect(nrow(reconciled_cats) == nrow(test_fline_rec) - 1,

@@ -30,7 +30,7 @@ path to the saved subset geopackage
 }
 \description{
 Saves a subset of the National Seamless database based on a
-specified collection of catchments.
+specified collection of COMIDs.
 }
 \details{
 If \code{\link{stage_national_data}} has been run in the current

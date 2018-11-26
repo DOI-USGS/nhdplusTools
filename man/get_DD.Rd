@@ -18,7 +18,7 @@ The COMID that exceeds the distance specified is returned.
 The longest of the diverted paths is used for limiting distance.}
 }
 \value{
-integer vector of all COMIDs downstream of the starting catchment
+integer vector of all COMIDs downstream of the starting COMID
 }
 \description{
 Traverse NHDPlus network downstream with diversions

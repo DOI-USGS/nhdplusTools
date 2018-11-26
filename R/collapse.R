@@ -1,9 +1,12 @@
 #' @title Collapse NHDPlus Network
 #' @description Refactors the NHDPlus flowline network, eliminating short and
-#' non-cconfluence flowlines.
+#' non-confluence flowlines. The aim of this function is to create flowpaths
+#' that describe a network of catchments that combines complex hydrology near
+#' confluences into upstream catchments and removes very short flowlines along mainstem
+#' flow-paths.
 #' @param flines data.frame with COMID, toCOMID, LENGTHKM, Hydroseq, and LevelPathI columns
 #' @param thresh numeric a length threshold (km). Flowlines shorter than this
-#' will be eliminated
+#' will be collapsed with up or downstream flowlines.
 #' @param add_category boolean if combination category is desired in output, set
 #' to TRUE
 #' @param mainstem_thresh numeric threshold for combining inter-confluence

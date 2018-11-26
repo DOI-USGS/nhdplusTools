@@ -65,10 +65,10 @@ raster::plot(walker_fdr)
 raster::plot( walker_fac)
 ```
 
-Now we can run the `split_catchment()` function which is designed to take one catchment and its associated (split) flowlines. The split flowlines are the "refactored" but not "reconciled" output of the `nhdplus_refactor()` function we ran above. Here we run the `split_catchment()` function and plot up the resulting data to show what it did.
+Now we can run the `split_catchment_divide()` function which is designed to take one catchment and its associated (split) flowlines. The split flowlines are the "refactored" but not "reconciled" output of the `nhdplus_refactor()` function we ran above. Here we run the `split_catchment()` function and plot up the resulting data to show what it did.
 
 ```{r single_split}
-split_cat <- split_catchment(sample_catchment, sample_flowline, walker_fdr,  walker_fac)
+split_cat <- split_catchment_divide(sample_catchment, sample_flowline, walker_fdr,  walker_fac)
 
 plot(st_geometry(split_cat), col = NA, border = "red")
 plot(st_geometry(sample_catchment), add = TRUE)
@@ -77,10 +77,10 @@ plot(sample_flowline["COMID"], lwd = 2, add= TRUE)
 
 As you can see, the flowline in question was split into five pieces by `nhdplus_refactor()` and the cooresponding catchment (black) was similarly broken up into 5 sub-catchments (red).
 
-The `split_catchment()` function can be run against a set of catchments using the `reconcile_catchments()` function. This functiona can call `split_catchment()` in parallel, unions catchments according to the output of `nhdplus_refactor()`, and assembles the results back into an `sf` `data.frame`.
+The `split_catchment_divide()` function can be run against a set of catchments using the `reconcile_catchment_divides()` function. This functiona can call `split_catchment()` in parallel, unions catchments according to the output of `nhdplus_refactor()`, and assembles the results back into an `sf` `data.frame`.
 
 ```{r cat_set}
-split_cats <- reconcile_catchments(walker_catchment, 
+split_cats <- reconcile_catchment_divides(walker_catchment, 
                                   flowline_ref, 
                                   flowline_rec, 
                                   walker_fdr,  walker_fac, para = 4)

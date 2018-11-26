@@ -1,20 +1,21 @@
 #' @title Refactor NHDPlus
 #' @description A complete network refactor workflow has been packaged
-#' into this function. See details and vignettes for more information.
+#' into this function. Builds a set of normalized catchment-flowpaths from
+#' input flowline features. See details and vignettes for more information.
 #' @param nhdplus_flines data.frame raw nhdplus flowline features as
 #' derived from the national seamless geodatabase.
-#' @param split_flines_meters numeric the maximum length flowline desired
+#' @param split_flines_meters numeric the maximum length flowpath desired
 #' in the output.
 #' @param split_flines_cores numeric the number of processing cores to use
 #' while splitting flowlines.
 #' @param collapse_flines_meters numeric the minimum length of
-#' inter-confluence flowline desired in the output.
+#' inter-confluence flowpath desired in the output.
 #' @param collapse_flines_main_meters numeric the minimum length of
-#' between-confluence flowlines.
+#' between-confluence flowpaths.
 #' @param out_collapsed character where to write a geopackage containing
 #' the split and collapsed flowlines.
 #' @param out_reconciled character where to write a geopackage containing
-#' the reconciled flowlines.
+#' the reconciled flowpaths.
 #' @param three_pass boolean whether to perform a three pass collapse or
 #' single pass.
 #' @param purge_non_dendritic boolean passed on to prepare_nhdplus

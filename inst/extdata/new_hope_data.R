@@ -57,7 +57,7 @@ new_hope_catchment_rec <- sf::read_sf(file.path(extdata, "new_hope_cat_rec.gpkg"
 #   st_transform(proj)
 #
 #
-# cat_rec <- reconcile_catchments(new_hope_catchment, fline_ref, fline_rec,
+# cat_rec <- reconcile_catchment_divides(new_hope_catchment, fline_ref, fline_rec,
 #                                 new_hope_fdr, new_hope_fac)
 #
 # sf::write_sf(cat_rec, "new_hope_cat_rec.gpkg")

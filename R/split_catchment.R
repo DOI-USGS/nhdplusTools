@@ -60,16 +60,16 @@ recurse_upstream <- function(row_col, fdr_matrix) {
   }
 }
 
-#' @title Split Catchments
-#' @description A catchment splitting algorithm that works with a D8
+#' @title Split Catchment Divides
+#' @description A catchment-divide splitting algorithm that works with a D8
 #' flow direction grid and the output of nhdplus_refactor. See Vignette
 #' for examples.
-#' @param catchment sf data.frame with one catchment
+#' @param catchment sf data.frame with one catchment divide
 #' @param fline sf data.frame with two or more flowline segments in
 #' upstream downstream order.
 #' @param fdr raster a flow direction raster that fully covers the catchment
 #' @param fac raster a flow accumulation raster that fuller covers the catchment
-#' @return Split catchments as an sfc geometry.
+#' @return Split catchment divides as an sfc geometry.
 #' @importFrom raster raster crs crop mask rowColFromCell cellFromXY rasterToPolygons as.matrix
 #' @importFrom dplyr group_by ungroup filter select mutate lead n
 #' @importFrom sf st_crs st_coordinates as_Spatial st_buffer st_combine
@@ -77,7 +77,7 @@ recurse_upstream <- function(row_col, fdr_matrix) {
 #' st_difference st_cast st_sf st_area
 #' @export
 #'
-split_catchment <- function(catchment, fline, fdr, fac) {
+split_catchment_divide <- function(catchment, fline, fdr, fac) {
 
   check_proj(catchment, fline, fdr)
 

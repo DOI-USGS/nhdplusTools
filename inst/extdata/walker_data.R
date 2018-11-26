@@ -22,7 +22,7 @@ walker_flowline <- sf::st_transform(walker_flowline, proj)
 #                              warn = FALSE)
 # fline_ref <- sf::read_sf("walker_refactor.gpkg")
 # fline_rec <- sf::read_sf("walker_reconcile.gpkg")
-# cat_rec <- reconcile_catchments(walker_catchment, fline_ref,
+# cat_rec <- reconcile_catchment_divides(walker_catchment, fline_ref,
 #                                 fline_rec, walker_fdr, walker_fac)
 # sf::write_sf(cat_rec, "walker_cat_rec.gpkg")
 # This is how the raster data was created.

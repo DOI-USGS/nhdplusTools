@@ -21,7 +21,7 @@ sf data.frame with result basin boundary
 Get a basin boundary for a given NLDI feature.
 }
 \details{
-Only resolves to the nearest NHDPlus catchment. See:
+Only resolves to the nearest NHDPlus catchment divide. See:
 https://owi.usgs.gov/blog/nldi-intro/ for more info on the nldi.
 }
 \examples{

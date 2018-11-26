@@ -33,7 +33,7 @@
 <meta property="og:title" content="Subset NHDPlus National Data — subset_nhdplus" />
 
 <meta property="og:description" content="Saves a subset of the National Seamless database based on a
-specified collection of catchments." />
+specified collection of COMIDs." />
 <meta name="twitter:card" content="summary" />
 
 <meta name="robots" content="noindex">
@@ -130,7 +130,7 @@ specified collection of catchments." />
     <div class="ref-description">
     
     <p>Saves a subset of the National Seamless database based on a
-specified collection of catchments.</p>
+specified collection of COMIDs.</p>
     
     </div>
 
@@ -193,8 +193,7 @@ be available permenantly.</p>
 
 <span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span>(<span class='no'>sample_data</span>)
 
-<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='st'>"./"</span>)
-
+<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='st'>"./"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: attributes file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: flowline file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: catchment already exists.</span></div><div class='input'>
 <span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'>readRDS</span>(<span class='no'>staged_nhdplus</span>$<span class='no'>flowline</span>)
 
 <span class='no'>geom_col</span> <span class='kw'>&lt;-</span> <span class='fu'>attr</span>(<span class='no'>sample_flines</span>, <span class='st'>"sf_column"</span>)

@@ -16,7 +16,7 @@ discover_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.}
 }
 \value{
-integer of catchment identifier COMID
+integer COMID
 }
 \description{
 Multipurpose function to find a COMID of interest.

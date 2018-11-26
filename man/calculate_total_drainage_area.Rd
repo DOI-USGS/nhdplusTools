@@ -4,10 +4,10 @@
 \alias{calculate_total_drainage_area}
 \title{Total Drainage Area}
 \usage{
-calculate_total_drainage_area(catchment)
+calculate_total_drainage_area(catchment_area)
 }
 \arguments{
-\item{catchment}{data.frame with ID, toID, and area columns.}
+\item{catchment_area}{data.frame with ID, toID, and area columns.}
 }
 \value{
 numeric with total area.
@@ -19,17 +19,17 @@ network and incremental areas.
 \examples{
 library(dplyr)
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-catchment <- prepare_nhdplus(walker_flowline, 0, 0,
+catchment_area <- prepare_nhdplus(walker_flowline, 0, 0,
                              purge_non_dendritic = FALSE, warn = FALSE) \%>\%
   left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") \%>\%
   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
-new_da <- calculate_total_drainage_area(catchment)
+new_da <- calculate_total_drainage_area(catchment_area)
 
-catchment$totda <- new_da
-catchment$nhdptotda <- walker_flowline$TotDASqKM
+catchment_area$totda <- new_da
+catchment_area$nhdptotda <- walker_flowline$TotDASqKM
 
-mean(abs(catchment$totda - catchment$nhdptotda))
-max(abs(catchment$totda - catchment$nhdptotda))
+mean(abs(catchment_area$totda - catchment_area$nhdptotda))
+max(abs(catchment_area$totda - catchment_area$nhdptotda))
 
 }

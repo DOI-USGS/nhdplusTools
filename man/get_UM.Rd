@@ -16,7 +16,7 @@ COMID,Pathlength, LevelPathI, UpHydroseq, and Hydroseq.}
 returned. The COMID that exceeds the distance specified is returned.}
 }
 \value{
-integer vector of all COMIDs upstream of the starting catchment
+integer vector of all COMIDs upstream of the starting COMID
 along the mainstem.
 }
 \description{

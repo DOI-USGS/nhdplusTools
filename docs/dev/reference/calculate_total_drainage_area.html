@@ -134,13 +134,13 @@ network and incremental areas.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment</span>)</pre>
+    <pre class="usage"><span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment_area</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>catchment</th>
+      <th>catchment_area</th>
       <td><p>data.frame with ID, toID, and area columns.</p></td>
     </tr>
     </table>
@@ -159,17 +159,17 @@ network and incremental areas.</p>
 #&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'>source</span>(<span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
-<span class='no'>catchment</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
+<span class='no'>catchment_area</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
                              <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='http://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='fu'><a href='http://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>walker_flowline</span>, <span class='no'>COMID</span>, <span class='no'>AreaSqKM</span>), <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='http://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>, <span class='kw'>area</span> <span class='kw'>=</span> <span class='no'>AreaSqKM</span>)
 
-<span class='no'>new_da</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment</span>)
+<span class='no'>new_da</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment_area</span>)
 
-<span class='no'>catchment</span>$<span class='no'>totda</span> <span class='kw'>&lt;-</span> <span class='no'>new_da</span>
-<span class='no'>catchment</span>$<span class='no'>nhdptotda</span> <span class='kw'>&lt;-</span> <span class='no'>walker_flowline</span>$<span class='no'>TotDASqKM</span>
+<span class='no'>catchment_area</span>$<span class='no'>totda</span> <span class='kw'>&lt;-</span> <span class='no'>new_da</span>
+<span class='no'>catchment_area</span>$<span class='no'>nhdptotda</span> <span class='kw'>&lt;-</span> <span class='no'>walker_flowline</span>$<span class='no'>TotDASqKM</span>
 
-<span class='fu'>mean</span>(<span class='fu'>abs</span>(<span class='no'>catchment</span>$<span class='no'>totda</span> - <span class='no'>catchment</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; [1] 1.633102e-15</div><div class='input'><span class='fu'>max</span>(<span class='fu'>abs</span>(<span class='no'>catchment</span>$<span class='no'>totda</span> - <span class='no'>catchment</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; [1] 2.842171e-14</div><div class='input'>
+<span class='fu'>mean</span>(<span class='fu'>abs</span>(<span class='no'>catchment_area</span>$<span class='no'>totda</span> - <span class='no'>catchment_area</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; [1] 1.633102e-15</div><div class='input'><span class='fu'>max</span>(<span class='fu'>abs</span>(<span class='no'>catchment_area</span>$<span class='no'>totda</span> - <span class='no'>catchment_area</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; [1] 2.842171e-14</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

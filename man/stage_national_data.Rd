@@ -42,7 +42,7 @@ as "national_data".
 \dontrun{
 stage_national_data()
 
-stage_national_data(include = c("attributes", "flowlines","catchments"))
+stage_national_data(include = c("attributes", "flowlines","catchment"))
 }
 
 }

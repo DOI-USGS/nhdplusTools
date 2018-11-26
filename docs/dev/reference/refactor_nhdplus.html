@@ -33,7 +33,8 @@
 <meta property="og:title" content="Refactor NHDPlus — refactor_nhdplus" />
 
 <meta property="og:description" content="A complete network refactor workflow has been packaged
-into this function. See details and vignettes for more information." />
+into this function. Builds a set of normalized catchment-flowpaths from
+input flowline features. See details and vignettes for more information." />
 <meta name="twitter:card" content="summary" />
 
 <meta name="robots" content="noindex">
@@ -130,7 +131,8 @@ into this function. See details and vignettes for more information." />
     <div class="ref-description">
     
     <p>A complete network refactor workflow has been packaged
-into this function. See details and vignettes for more information.</p>
+into this function. Builds a set of normalized catchment-flowpaths from
+input flowline features. See details and vignettes for more information.</p>
     
     </div>
 
@@ -149,7 +151,7 @@ derived from the national seamless geodatabase.</p></td>
     </tr>
     <tr>
       <th>split_flines_meters</th>
-      <td><p>numeric the maximum length flowline desired
+      <td><p>numeric the maximum length flowpath desired
 in the output.</p></td>
     </tr>
     <tr>
@@ -160,12 +162,12 @@ while splitting flowlines.</p></td>
     <tr>
       <th>collapse_flines_meters</th>
       <td><p>numeric the minimum length of
-inter-confluence flowline desired in the output.</p></td>
+inter-confluence flowpath desired in the output.</p></td>
     </tr>
     <tr>
       <th>collapse_flines_main_meters</th>
       <td><p>numeric the minimum length of
-between-confluence flowlines.</p></td>
+between-confluence flowpaths.</p></td>
     </tr>
     <tr>
       <th>out_collapsed</th>
@@ -175,7 +177,7 @@ the split and collapsed flowlines.</p></td>
     <tr>
       <th>out_reconciled</th>
       <td><p>character where to write a geopackage containing
-the reconciled flowlines.</p></td>
+the reconciled flowpaths.</p></td>
     </tr>
     <tr>
       <th>three_pass</th>

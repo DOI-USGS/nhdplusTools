@@ -13,23 +13,23 @@ refactor_nhdplus(nhdplus_flines, split_flines_meters, split_flines_cores,
 \item{nhdplus_flines}{data.frame raw nhdplus flowline features as
 derived from the national seamless geodatabase.}
 
-\item{split_flines_meters}{numeric the maximum length flowline desired
+\item{split_flines_meters}{numeric the maximum length flowpath desired
 in the output.}
 
 \item{split_flines_cores}{numeric the number of processing cores to use
 while splitting flowlines.}
 
 \item{collapse_flines_meters}{numeric the minimum length of
-inter-confluence flowline desired in the output.}
+inter-confluence flowpath desired in the output.}
 
 \item{collapse_flines_main_meters}{numeric the minimum length of
-between-confluence flowlines.}
+between-confluence flowpaths.}
 
 \item{out_collapsed}{character where to write a geopackage containing
 the split and collapsed flowlines.}
 
 \item{out_reconciled}{character where to write a geopackage containing
-the reconciled flowlines.}
+the reconciled flowpaths.}
 
 \item{three_pass}{boolean whether to perform a three pass collapse or
 single pass.}
@@ -42,7 +42,8 @@ single pass.}
 }
 \description{
 A complete network refactor workflow has been packaged
-into this function. See details and vignettes for more information.
+into this function. Builds a set of normalized catchment-flowpaths from
+input flowline features. See details and vignettes for more information.
 }
 \details{
 This is a convenient wrapper function that implements three phases

@@ -18,6 +18,22 @@ install.packages("devtools")
 devtools::install_github("dblodgett-usgs/nhdplusTools")
 ```
 
+### Terminology: 
+
+The following definitions have been used as much as possible throughout the package.  
+Terms for rivers:  
+**Flowline:** The NHD name for a hydrographic representation of a flowing body of water. Flowline is generally used when referring to geometry.  
+**Flowpath:** The HY_Features name for a hydrologic feature that is the primary path water follows through a catchment; either from headwater to outlet or inlet to outlet. Flowpath is used when describing aspects of the abstract flowpath featuretype, generally in relation to a flowpath's relationship to a catchment.  
+
+Terms used for hydrologic units:  
+**Catchment:** The most abstract unit of hydrology in HY_Features is the catchment. It is a physiographic unit with zero or one inlets and one outlet. It does not inherently have any conceptual realizations. Rather, a given catchment can be realized in a number of ways; flowpath, divide, and networks of flowpaths and divides are the primary realizations.  
+**Catchment divide:** NHD "catchment" polygons are more accurately described as "catchment divide" features. Because of the overlap with the HY_Features abstract "catchment" feature type, "catchment divide" is used for polygon represenations of catchments.  
+
+Terms used to describe network transormations:  
+**Collapse:** Combining complex hydrology typified by very small inter-confluence catchments and splitting very large catchments.
+**Reconcile:** Applying changes to the catchment network that result in a new well connected and valid version of the network.
+**Aggregate:** Combining hydrologic units to create new, larger catchments that resolve to the outlets of a specified set of pre-existing catchments. In this case, "aggregate" is rooted in the HY_Features HY_CatchmentAggregate feature type.
+
 ### Data:
 
 The most convenient way to get the NHDPlus is via the [geopackage hosted here.](https://www.epa.gov/waterdata/nhdplus-national-data) [(direct link to download)](https://s3.amazonaws.com/nhdplus/NHDPlusV21/Data/NationalData/NHDPlusV21_NationalData_CONUS_Seamless_Geopackage_05.7z) You will need [7z](https://www.7-zip.org/) or the [`archive` package](https://github.com/jimhester/archive) to extract it.
@@ -79,7 +95,7 @@ wholistic feature that can be "realized" (some might say modeled) in a number of
 ways. In other words, a catchment can *only* be characterized fully through a
 collection of different conceptual representations. In NHDPlus, the "catchment"
 feature is the polygon feature that describes the drainage divide around the
-hydrologic unit that contributes surface flow to a given flowline. While this
+hydrologic unit that contributes surface flow to a given NHD flowline. While this
 may seem like a significant difference, in reality, the NHDPlus COMID identifier
 lends itself very well to the HY\_Features catchment concept. The COMID is
 used as an identifier for the catchment polygon, the flowline that

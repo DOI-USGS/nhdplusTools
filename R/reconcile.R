@@ -1,11 +1,13 @@
 #' @title Reconcile Collapsed Flowlines
 #' @description Reconciles output of collapse_flowlines giving a unique ID to
-#'  each new flowpath and providing a mapping to NHDPlus COMIDs.
+#' each new flowpath and providing a mapping to NHDPlus COMIDs.
 #' @param flines data.frame with COMID, toCOMID, LENGTHKM, LevelPathI, Hydroseq,
 #' and TotDASqKM columns
 #' @param geom sf data.frame for flines
 #' @param id character id collumn name.
 #' @return reconciled flowpaths with new ID, toID, LevelPathID, and Hydroseq identifiers.
+#' Note that all the identifiers are new integer IDs. LevelPathID and Hydroseq are consistent
+#' with the LevelPathID and Hydroseq from the input NHDPlus flowlines.
 #' @importFrom dplyr group_by ungroup filter left_join select rename
 #' mutate distinct summarise arrange desc
 #' @seealso The \code{\link{refactor_nhdplus}} function implements a complete

@@ -8,13 +8,19 @@ test_that("reconcile collapse flowlines works as expected", {
   flines <- collapse_flowlines(flines, 1, F, 1)
   flines <- reconcile_collapsed_flowlines(flines)
 
-  expect_equal(flines$member_COMID[which(flines$ID == 18)],
+  get_id <- function(mc) {
+    ind <- match(mc, flines$member_COMID)
+    flines$ID[ind]
+  }
+
+  expect_equal(flines$member_COMID[which(flines$ID == get_id(5329323))],
                c(5329323, 5329325, 5329327))
 
-  expect_equal(flines$toID[which(flines$ID == 18)], c(17, 17, 17))
+  expect_equal(flines$toID[which(flines$ID == get_id(5329323))],
+               c(get_id(5329817), get_id(5329817), get_id(5329817)))
 
-  expect(flines$toID[which(flines$ID == 42)] == 18)
-  expect(flines$toID[which(flines$ID == 19)] == 18)
+  expect(flines$toID[which(flines$ID == get_id(5329321))] == get_id(5329323))
+  expect(flines$toID[which(flines$ID == get_id(5329347))] == get_id(5329323))
 
   outlet <- flines[which(flines$member_COMID == "5329303"), ]
   expect(outlet$LevelPathID == outlet$Hydroseq,
@@ -97,19 +103,24 @@ test_that("collapse works on a double pass", {
                                                select(flines, COMID),
                                                id = "COMID")
 
-    # collapsed$member_COMID <-
-    #   unlist(lapply(collapsed$member_COMID,
-    #                 function(x) paste(x, collapse = ",")))
+    collapsed$member_COMID <-
+      unlist(lapply(collapsed$member_COMID,
+                    function(x) paste(x, collapse = ",")))
+
     # write_sf(collapsed, "flines.gpkg")
 
-    # These tests are dumb but don't know how else to handle.
-    # Checking neighborhood of: c(21976315, 21975773,
-    # 21976313, 21975819.1) and 21975817 Could get real
-    # verbose relative to comids
-    expect(collapsed$toID[which(collapsed$ID == 59)] == 3031)
-    expect(collapsed$toID[which(collapsed$ID == 5810)] == 59)
-    expect(collapsed$toID[which(collapsed$ID == 58)] == 3028)
-    expect(collapsed$toID[which(collapsed$ID == 3031)] == 58)
+    get_id <- function(mc) {
+      ind <- match(mc, collapsed$member_COMID)
+      collapsed$ID[ind]
+    }
+
+    expect(collapsed$toID[which(collapsed$ID ==
+                                  get_id("21975819.1,21976315,21975773,21976313"))] ==
+             get_id("21975819.2"))
+    expect(collapsed$toID[which(collapsed$ID == get_id("21975771.2"))] ==
+             get_id("21975819.1,21976315,21975773,21976313"))
+    expect(collapsed$toID[which(collapsed$ID == get_id("21975817"))] == get_id("21976253.1"))
+    expect(collapsed$toID[which(collapsed$ID == get_id("21975819.2"))] == get_id("21975817"))
 
     outlet <- collapsed[which(collapsed$member_COMID == "21972746.2"), ]
     expect(outlet$LevelPathID == outlet$Hydroseq,

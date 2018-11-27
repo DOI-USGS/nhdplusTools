@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: Tools for Using NHDPlus Data
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: person("David", "Blodgett", role = c("aut", "cre"), email = "dblodgett@usgs.gov")
 Description: Tools for traversing and working with NHDPlus data.
 URL: https://github.com/dblodgett-usgs/nhdplusTools#readme

@@ -3,11 +3,13 @@ development:
 reference:
   - title: Data and Package Helpers
     desc: >
-      Sample data and functions that make the package better to work with.
+      Functions that make the package easier to work with.
     contents:
       - '`nhdplus_path`'
       - '`stage_national_data`'
       - '`calculate_total_drainage_area`'
+      - '`calculate_arbolate_sum`'
+      - '`calculate_levelpaths`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are

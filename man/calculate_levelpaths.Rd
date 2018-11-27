@@ -10,7 +10,8 @@ calculate_levelpaths(flowline)
 \item{flowline}{data.frame with ID, toID, nameID, and arbolatesum columns.}
 }
 \value{
-numeric with arbolate sum.
+data.frame with ID, outletID, topo_sort, and levelpath collumns.
+See details for more info.
 }
 \description{
 Calculates level paths using the stream-leveling approach of
@@ -18,7 +19,7 @@ NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
 levelpath outlet identifier is provided in output.
 }
 \details{
-#' \enumerate{
+\enumerate{
   \item levelpath provides an identifier for the collection of flowlines
   that make up the single mainstem flowpath of a total upstream aggregate catchment.
   \item outletID is the catchment ID (COMID in the case of NHDPlus) for the catchment

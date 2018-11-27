@@ -63,7 +63,7 @@ levelpath outlet identifier is provided in output." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.3.2</span>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development package">0.3.3</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@ levelpath outlet identifier is provided in output." />
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/dblodgett-usgs/nhdplusTools#readme">
+  <a href="https://github.com/dblodgett-usgs/nhdplusTools">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -124,7 +124,7 @@ levelpath outlet identifier is provided in output." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculate Level Paths</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools#readme/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
     <div class="hidden name"><code>calculate_levelpaths.Rd</code></div>
     </div>
 
@@ -149,11 +149,12 @@ levelpath outlet identifier is provided in output.</p>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>numeric with arbolate sum.</p>
+    <p>data.frame with ID, outletID, topo_sort, and levelpath collumns.
+See details for more info.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>#'</p><ol>
+    <ol>
 <li><p>levelpath provides an identifier for the collection of flowlines
   that make up the single mainstem flowpath of a total upstream aggregate catchment.</p></li>
 <li><p>outletID is the catchment ID (COMID in the case of NHDPlus) for the catchment

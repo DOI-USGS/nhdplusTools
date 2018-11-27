@@ -368,9 +368,10 @@ accumulate_downstream <- function(dat_fram, var) {
 #' NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
 #' levelpath outlet identifier is provided in output.
 #' @param flowline data.frame with ID, toID, nameID, and arbolatesum columns.
-#' @return numeric with arbolate sum.
+#' @return data.frame with ID, outletID, topo_sort, and levelpath collumns.
+#' See details for more info.
 #' @details
-#' #' \enumerate{
+#' \enumerate{
 #'   \item levelpath provides an identifier for the collection of flowlines
 #'   that make up the single mainstem flowpath of a total upstream aggregate catchment.
 #'   \item outletID is the catchment ID (COMID in the case of NHDPlus) for the catchment

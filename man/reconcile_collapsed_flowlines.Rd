@@ -16,10 +16,12 @@ and TotDASqKM columns}
 }
 \value{
 reconciled flowpaths with new ID, toID, LevelPathID, and Hydroseq identifiers.
+Note that all the identifiers are new integer IDs. LevelPathID and Hydroseq are consistent
+with the LevelPathID and Hydroseq from the input NHDPlus flowlines.
 }
 \description{
 Reconciles output of collapse_flowlines giving a unique ID to
- each new flowpath and providing a mapping to NHDPlus COMIDs.
+each new flowpath and providing a mapping to NHDPlus COMIDs.
 }
 \seealso{
 The \code{\link{refactor_nhdplus}} function implements a complete

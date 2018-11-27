@@ -28,9 +28,9 @@ catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
 arb_sum <- calculate_arbolate_sum(catchment_length)
 
 catchment_length$arb_sum <- arb_sum
-catchment_area$nhd_arb_sum <- walker_flowline$ArbolateSu
+catchment_length$nhd_arb_sum <- walker_flowline$ArbolateSu
 
-mean(abs(catchment_length$arb_sum - catchment_area$nhd_arb_sum))
-max(abs(catchment_length$arb_sum - catchment_area$nhd_arb_sum))
+mean(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum))
+max(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum))
 
 }

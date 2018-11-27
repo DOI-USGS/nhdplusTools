@@ -76,6 +76,9 @@ assign("get_flowline_index_attributes",
        c("COMID", "REACHCODE", "ToMeas", "FromMeas"),
        envir = nhdplusTools_env)
 
+assign("calculate_levelpaths_attributes",
+       c("ID", "toID", "nameID", "arbolatesum"),
+       envir = nhdplusTools_env)
 
 check_names <- function(names_flines, function_name) {
   expect_names <- get(paste0(function_name, "_attributes"),
@@ -358,4 +361,95 @@ accumulate_downstream <- function(dat_fram, var) {
   dat_fram <- left_join(cat_order, dat_fram, by = "ID")
 
   return(dat_fram[[var]])
+}
+
+#' Calculate Level Paths
+#' @description Calculates level paths using the stream-leveling approach of
+#' NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
+#' levelpath outlet identifier is provided in output.
+#' @param flowline data.frame with ID, toID, nameID, and arbolatesum columns.
+#' @return numeric with arbolate sum.
+#' @details
+#' #' \enumerate{
+#'   \item levelpath provides an identifier for the collection of flowlines
+#'   that make up the single mainstem flowpath of a total upstream aggregate catchment.
+#'   \item outletID is the catchment ID (COMID in the case of NHDPlus) for the catchment
+#'   at the outlet of the levelpath the catchment is part of.
+#'   \item topo_sort is similar to Hydroseq in NHDPlus in that large topo_sort values
+#'   are upstream of small topo_sort values. Note that there are many valid topological
+#'   sort orders of a directed graph. The sort order output by this function is generated
+#'   using \code{\link{igraph::topo_sort}}.
+#' }
+#' @export
+#' @examples
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#'
+#' test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
+#'
+#' test_flowline <- data.frame(
+#'   ID = test_flowline$COMID,
+#'   toID = test_flowline$toCOMID,
+#'   nameID = walker_flowline$GNIS_ID,
+#'   arbolatesum = walker_flowline$ArbolateSu,
+#'   stringsAsFactors = FALSE)
+#'
+#' calculate_levelpaths(test_flowline)
+#'
+#'
+calculate_levelpaths <- function(flowline) {
+
+  check_names(names(flowline), "calculate_levelpaths")
+
+  flowline[["toID"]][which(is.na(flowline[["toID"]]))] <- 0
+
+  sorted <- names(topo_sort(graph_from_data_frame(flowline,
+                                                  directed = TRUE),
+                            mode = "out"))
+
+  sorted <- sorted[sorted != 0]
+
+  flowline <- left_join(data.frame(ID = as.integer(sorted[!sorted == "NA"])),
+                        flowline, by = "ID")
+
+  flowline[["topo_sort"]] <- seq(nrow(flowline), 1)
+  flowline[["levelpath"]] <- rep(0, nrow(flowline))
+
+  get_path <- function(flowline, tailID) {
+    from_inds <- which(flowline$toID == tailID)
+    if(length(from_inds) > 1) {
+      ind <- which(flowline$ID == tailID)
+      next_step <- dplyr::filter(flowline[from_inds, ],
+                                 (nameID == flowline$nameID[ind] & nameID != " ") |
+                                   arbolatesum == max(arbolatesum))$ID
+      c(tailID, get_path(flowline, next_step))
+    } else if(length(from_inds) == 1) {
+      c(tailID, get_path(flowline, flowline$ID[from_inds]))
+    } else {
+      return(tailID)
+    }
+  }
+
+  flc <- flowline
+  diff = 1
+
+  while(nrow(flc) > 0) {
+    tail_ind <- which(flc$topo_sort == min(flc$topo_sort))
+    tailID <- flc$ID[tail_ind]
+    sortID <- flowline$topo_sort[tail_ind]
+
+    pathIDs <- get_path(flc, tailID)
+
+    flowline <- mutate(flowline, levelpath = ifelse(flowline$ID %in% pathIDs, sortID, levelpath))
+    flc <- filter(flc, !ID %in% pathIDs)
+  }
+
+  outlets <- flowline %>%
+    group_by(levelpath) %>%
+    filter(topo_sort == min(topo_sort)) %>%
+    ungroup() %>%
+    select(outletID = ID, levelpath)
+
+  flowline <- left_join(flowline, outlets, by = "levelpath")
+
+  return(select(flowline, ID, outletID, topo_sort, levelpath))
 }

@@ -42,7 +42,7 @@ test_that("total drainage area works", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
   catchment_area <- prepare_nhdplus(walker_flowline, 0, 0,
-                               purge_non_dendritic = FALSE, warn = FALSE) %>%
+                                    purge_non_dendritic = FALSE, warn = FALSE) %>%
     left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
     select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
@@ -53,4 +53,20 @@ test_that("total drainage area works", {
 
   expect(mean(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-3, "drainage area not close enough")
   expect(max(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-2, "drainage area not close enough")
+})
+
+test_that("arbolate sum works", {
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
+                                      purge_non_dendritic = FALSE, warn = FALSE) %>%
+    left_join(select(walker_flowline, COMID), by = "COMID") %>%
+    select(ID = COMID, toID = toCOMID, length = LENGTHKM)
+
+  arb_sum <- calculate_arbolate_sum(catchment_length)
+
+  catchment_length$arb_sum <- arb_sum
+  catchment_length$nhd_arb_sum <- walker_flowline$ArbolateSu
+
+  expect(mean(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-3, "arbolate sum not close enough")
+  expect(max(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-2, "arbolate sum not close enough")
 })

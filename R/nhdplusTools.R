@@ -291,31 +291,71 @@ member_mapper <- function(df, id_col = "ID", list_col = "member_COMID") {
 
 calculate_total_drainage_area <- function(catchment_area) {
 
-  cat_order <- select(catchment_area, ID)
+  return(accumulate_downstream(catchment_area, "area"))
 
-  catchment_area[["toID"]][which(is.na(catchment_area[["toID"]]))] <- 0
+}
 
-  sorted <- names(topo_sort(graph_from_data_frame(catchment_area,
+#' Calculate Arbolate Sum
+#' @description Calculates arbolate sum given a dendritic
+#' network and incremental lengths. Arbolate sum is the total length
+#' of all upstream flowlines.
+#' @param catchment_area data.frame with ID, toID, and length columns.
+#' @return numeric with arbolate sum.
+#' @export
+#' @examples
+#' library(dplyr)
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
+#'                              purge_non_dendritic = FALSE, warn = FALSE) %>%
+#'   left_join(select(walker_flowline, COMID), by = "COMID") %>%
+#'   select(ID = COMID, toID = toCOMID, length = LENGTHKM)
+#'
+#' arb_sum <- calculate_arbolate_sum(catchment_length)
+#'
+#' catchment_length$arb_sum <- arb_sum
+#' catchment_length$nhd_arb_sum <- walker_flowline$ArbolateSu
+#'
+#' mean(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum))
+#' max(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum))
+#'
+
+calculate_arbolate_sum <- function(catchment_area) {
+
+  return(accumulate_downstream(catchment_area, "length"))
+
+}
+
+#' @importFrom igraph graph_from_data_frame topo_sort
+#' @importFrom dplyr select left_join
+#' @noRd
+#'
+accumulate_downstream <- function(dat_fram, var) {
+
+  cat_order <- select(dat_fram, ID)
+
+  dat_fram[["toID"]][which(is.na(dat_fram[["toID"]]))] <- 0
+
+  sorted <- names(topo_sort(graph_from_data_frame(dat_fram,
                                                   directed = TRUE),
                             mode = "out"))
 
   sorted <- sorted[sorted != 0]
 
-  catchment_area <- left_join(data.frame(ID = as.integer(sorted[!sorted == "NA"])),
-                         catchment_area, by = "ID")
+  dat_fram <- left_join(data.frame(ID = as.integer(sorted[!sorted == "NA"])),
+                              dat_fram, by = "ID")
 
-  catchment_area[["toID_row"]] <- match(catchment_area[["toID"]], catchment_area[["ID"]])
+  dat_fram[["toID_row"]] <- match(dat_fram[["toID"]], dat_fram[["ID"]])
 
-  area <- catchment_area[["area"]]
-  toid_row <- catchment_area[["toID_row"]]
+  var_out <- dat_fram[[var]]
+  toid_row <- dat_fram[["toID_row"]]
 
-  for(cat in 1:length(area)) {
-    area[toid_row[cat]] <- area[toid_row[cat]] + area[cat]
+  for(cat in 1:length(var_out)) {
+    var_out[toid_row[cat]] <- var_out[toid_row[cat]] + var_out[cat]
   }
 
-  catchment_area[["area"]] <- area
+  dat_fram[[var]] <- var_out
 
-  catchment_area <- left_join(cat_order, catchment_area, by = "ID")
+  dat_fram <- left_join(cat_order, dat_fram, by = "ID")
 
-  return(catchment_area[["area"]])
+  return(dat_fram[[var]])
 }

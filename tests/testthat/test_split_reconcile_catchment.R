@@ -115,10 +115,8 @@ test_that("reconcile catchments works with reconciled flowline from split", {
 
   expect(all(reconciled_cats$member_COMID %in% test_fline_rec$member_COMID))
 
-  expect(reconciled_cats[which(reconciled_cats$ID == 7912),
-                         ]$member_COMID == "8833300.1")
-  expect(reconciled_cats[which(reconciled_cats$ID == 3108),
-                         ]$member_COMID == "166755072,8866562.2")
+  expect("8833300.1" %in% reconciled_cats$member_COMID)
+  expect("166755072,8866562.2" %in% reconciled_cats$member_COMID)
 })
 
 

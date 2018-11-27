@@ -26,7 +26,8 @@
 #' time, it is required that they be specified explicitely as "terminal" outlet types.
 #'
 #' The function checks supplied outlets to make sure they connect downstream. Checks
-#' verify that the outlet of the levelpath of each supplied outlet is
+#' verify that the outlet of the levelpath (main stem of a total catchment) of each
+#' supplied outlet is
 #' in the supplied outlet set. If the outlet of a levelpath is not in the supplied set, it
 #' is added along with other catchments that contribute to the same receiving catchment.
 #' These checks ensure that all output catchments have one and only one input and output

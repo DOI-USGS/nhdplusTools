@@ -38,11 +38,13 @@ test_that("discover nhdplus id works as expected", {
 
 })
 
+context("calculate network attributes")
+
 test_that("total drainage area works", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
   catchment_area <- prepare_nhdplus(walker_flowline, 0, 0,
-                               purge_non_dendritic = FALSE, warn = FALSE) %>%
+                                    purge_non_dendritic = FALSE, warn = FALSE) %>%
     left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
     select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
@@ -53,4 +55,49 @@ test_that("total drainage area works", {
 
   expect(mean(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-3, "drainage area not close enough")
   expect(max(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-2, "drainage area not close enough")
+})
+
+test_that("arbolate sum works", {
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
+                                      purge_non_dendritic = FALSE, warn = FALSE) %>%
+    left_join(select(walker_flowline, COMID), by = "COMID") %>%
+    select(ID = COMID, toID = toCOMID, length = LENGTHKM)
+
+  arb_sum <- calculate_arbolate_sum(catchment_length)
+
+  catchment_length$arb_sum <- arb_sum
+  catchment_length$nhd_arb_sum <- walker_flowline$ArbolateSu
+
+  expect(mean(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-3, "arbolate sum not close enough")
+  expect(max(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-2, "arbolate sum not close enough")
+})
+
+test_that("calculate level path", {
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
+  test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
+
+  test_flowline <- data.frame(
+    ID = test_flowline$COMID,
+    toID = test_flowline$toCOMID,
+    nameID = walker_flowline$GNIS_ID,
+    arbolatesum = walker_flowline$ArbolateSu,
+    stringsAsFactors = FALSE)
+
+  test_flowline <- left_join(test_flowline,
+                             calculate_levelpaths(test_flowline), by = "ID")
+
+  nhdp_lp <- sort(unique(walker_flowline$LevelPathI))
+  nhdt_lp <- sort(unique(test_flowline$levelpath))
+
+  expect(length(nhdp_lp) == length(nhdt_lp))
+
+  for(lp in seq_along(nhdp_lp)) {
+    nhdp <- filter(walker_flowline, LevelPathI == nhdp_lp[lp])
+    outlet_comid <- filter(nhdp, Hydroseq == min(Hydroseq))$COMID
+    nhdt <- filter(test_flowline, outletID == outlet_comid)
+    expect(all(nhdp$COMID %in% nhdt$ID), paste("Mismatch in", nhdp_lp[lp],
+                                               "level path from NHDPlus."))
+  }
 })

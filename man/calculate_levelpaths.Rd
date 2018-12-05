@@ -7,7 +7,7 @@
 calculate_levelpaths(flowline)
 }
 \arguments{
-\item{flowline}{data.frame with ID, toID, nameID, and arbolatesum columns.}
+\item{flowline}{data.frame with ID, toID, nameID, and weight columns.}
 }
 \value{
 data.frame with ID, outletID, topo_sort, and levelpath collumns.
@@ -16,7 +16,9 @@ See details for more info.
 \description{
 Calculates level paths using the stream-leveling approach of
 NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
-levelpath outlet identifier is provided in output.
+levelpath outlet identifier is provided in output. If arbolate sum is provided in
+the weight column, this will match the behavior of NHDPlus. Any numeric value can be
+included in this column and the largest value will be followed when no nameID is available.
 }
 \details{
 \enumerate{
@@ -39,7 +41,7 @@ test_flowline <- data.frame(
   ID = test_flowline$COMID,
   toID = test_flowline$toCOMID,
   nameID = walker_flowline$GNIS_ID,
-  arbolatesum = walker_flowline$ArbolateSu,
+  weight = walker_flowline$ArbolateSu,
   stringsAsFactors = FALSE)
 
 calculate_levelpaths(test_flowline)

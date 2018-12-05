@@ -77,7 +77,7 @@ assign("get_flowline_index_attributes",
        envir = nhdplusTools_env)
 
 assign("calculate_levelpaths_attributes",
-       c("ID", "toID", "nameID", "arbolatesum"),
+       c("ID", "toID", "nameID", "weight"),
        envir = nhdplusTools_env)
 
 check_names <- function(names_flines, function_name) {
@@ -342,7 +342,7 @@ accumulate_downstream <- function(dat_fram, var) {
                                                   directed = TRUE),
                             mode = "out"))
 
-  sorted <- sorted[sorted != 0]
+  sorted <- sorted[sorted != "0" & sorted %in% as.character(cat_order$ID)]
 
   dat_fram <- left_join(data.frame(ID = as.integer(sorted[!sorted == "NA"])),
                               dat_fram, by = "ID")
@@ -366,8 +366,10 @@ accumulate_downstream <- function(dat_fram, var) {
 #' Calculate Level Paths
 #' @description Calculates level paths using the stream-leveling approach of
 #' NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
-#' levelpath outlet identifier is provided in output.
-#' @param flowline data.frame with ID, toID, nameID, and arbolatesum columns.
+#' levelpath outlet identifier is provided in output. If arbolate sum is provided in
+#' the weight column, this will match the behavior of NHDPlus. Any numeric value can be
+#' included in this column and the largest value will be followed when no nameID is available.
+#' @param flowline data.frame with ID, toID, nameID, and weight columns.
 #' @return data.frame with ID, outletID, topo_sort, and levelpath collumns.
 #' See details for more info.
 #' @details
@@ -391,7 +393,7 @@ accumulate_downstream <- function(dat_fram, var) {
 #'   ID = test_flowline$COMID,
 #'   toID = test_flowline$toCOMID,
 #'   nameID = walker_flowline$GNIS_ID,
-#'   arbolatesum = walker_flowline$ArbolateSu,
+#'   weight = walker_flowline$ArbolateSu,
 #'   stringsAsFactors = FALSE)
 #'
 #' calculate_levelpaths(test_flowline)
@@ -421,7 +423,7 @@ calculate_levelpaths <- function(flowline) {
       ind <- which(flowline$ID == tailID)
       next_step <- dplyr::filter(flowline[from_inds, ],
                                  (nameID == flowline$nameID[ind] & nameID != " ") |
-                                   arbolatesum == max(arbolatesum))$ID
+                                   weight == max(weight))$ID
       c(tailID, get_path(flowline, next_step))
     } else if(length(from_inds) == 1) {
       c(tailID, get_path(flowline, flowline$ID[from_inds]))

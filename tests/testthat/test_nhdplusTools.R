@@ -82,7 +82,7 @@ test_that("calculate level path", {
     ID = test_flowline$COMID,
     toID = test_flowline$toCOMID,
     nameID = walker_flowline$GNIS_ID,
-    arbolatesum = walker_flowline$ArbolateSu,
+    weight = walker_flowline$ArbolateSu,
     stringsAsFactors = FALSE)
 
   test_flowline <- left_join(test_flowline,

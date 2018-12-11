@@ -7,7 +7,7 @@
 split_flowlines(flines, max_length, para = 0)
 }
 \arguments{
-\item{flines}{data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM
+\item{flines}{data.frame with COMID, toCOMID, LENGTHKM
 and LINESTRING sf column in "meters" projection}
 
 \item{max_length}{maximum segment length to return}

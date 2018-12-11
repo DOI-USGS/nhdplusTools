@@ -1,6 +1,6 @@
 #' @title Split Flowlines
 #' @description A wrapper for split_lines that works on nhdplus attributes
-#' @param flines data.frame with COMID, toCOMID, LENGTHKM, and TotDASqKM
+#' @param flines data.frame with COMID, toCOMID, LENGTHKM
 #' and LINESTRING sf column in "meters" projection
 #' @param max_length maximum segment length to return
 #' @param para numeric how many threads to use in parallel computation
@@ -36,8 +36,7 @@ split_flowlines <- function(flines, max_length, para = 0) {
                                                  lead(part), sep = "."))))
 
   split <- mutate(split, COMID = paste(COMID, part, sep = "."),
-                  LENGTHKM = sf::st_length(split[[geom_col]]) / 1000,
-                  TotDASqKM = TotDASqKM) # THIS IS WRONG BUT CAN'T BE NA!!!
+                  LENGTHKM = sf::st_length(split[[geom_col]]) / 1000)
 
   split <- sf::st_as_sf(select(split, -part, -split_fID))
 

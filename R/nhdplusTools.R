@@ -39,7 +39,7 @@ assign("prepare_nhdplus_attributes",
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",
-       c("COMID", "toCOMID", "LENGTHKM", "TotDASqKM"),
+       c("COMID", "toCOMID", "LENGTHKM"),
        envir = nhdplusTools_env)
 
 assign("collapse_flowlines_attributes",
@@ -421,9 +421,12 @@ calculate_levelpaths <- function(flowline) {
     from_inds <- which(flowline$toID == tailID)
     if(length(from_inds) > 1) {
       ind <- which(flowline$ID == tailID)
-      next_step <- dplyr::filter(flowline[from_inds, ],
+      tryCatch({next_step <- dplyr::filter(flowline[from_inds, ],
                                  (nameID == flowline$nameID[ind] & nameID != " ") |
-                                   weight == max(weight))$ID
+                                   weight == max(weight))$ID},
+               error = function(e) {
+                 browser()
+               })
       c(tailID, get_path(flowline, next_step))
     } else if(length(from_inds) == 1) {
       c(tailID, get_path(flowline, flowline$ID[from_inds]))

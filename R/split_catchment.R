@@ -109,7 +109,7 @@ split_catchment_divide <- function(catchment, fline, fdr, fac) {
     if (sf::st_within(sf::st_sfc(sf::st_point(c(outlets$X[cat],
                                                outlets$Y[cat])),
                             crs = sf::st_crs(fline)),
-                     catchment)[[1]] == 1) {
+                     catchment, prepared = FALSE)[[1]] == 1) {
 
       cell <- raster::cellFromXY(fdr, c(outlets$X[cat], outlets$Y[cat]))
       row_col <- raster::rowColFromCell(fdr, cell)

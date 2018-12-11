@@ -26,8 +26,7 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
                              COMID, joined_toCOMID),
                      joined_fromCOMID)) %>%
     group_by(becomes) %>%
-    mutate(TotDASqKM = max(TotDASqKM),
-           LENGTHKM = max(LENGTHKM),
+    mutate(LENGTHKM = max(LENGTHKM),
            Hydroseq = min(Hydroseq),
            LevelPathI = min(LevelPathI)) %>%
     ungroup() %>%
@@ -86,7 +85,6 @@ reconcile_collapsed_flowlines <- function(flines, geom = NULL, id = "COMID") {
       group_by(ID) %>%
       summarise(toID = toID[1],
                 LENGTHKM = LENGTHKM[1],
-                TotDASqKM = TotDASqKM[1],
                 LevelPathID = LevelPathID[1],
                 Hydroseq = Hydroseq[1],
                 member_COMID = list(unique(member_COMID))) %>%

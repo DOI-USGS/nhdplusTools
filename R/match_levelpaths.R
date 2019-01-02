@@ -3,6 +3,7 @@
 #' flowline level paths.
 #' @param fline_hu sf data.frame flowlines intersected with hydrologic units
 #' @param start_comid integer COMID to start search from.
+#' @param add_checks boolean if TRUE, checks for toHUC errors are added.
 #' @details ...
 #'
 #' @export
@@ -12,7 +13,7 @@
 #' @examples
 #' #todo
 #'
-match_levelpaths <- function(fline_hu, start_comid) {
+match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
   check <- TRUE
 
   out_comid <- start_comid
@@ -98,27 +99,32 @@ match_levelpaths <- function(fline_hu, start_comid) {
     select(-Hydroseq, -nhd_LevelPath, head_HUC12 = HUC12)
 
   hu <- lp_hu_df %>%
-    left_join(HUC12_TOHUC) %>%
+    right_join(HUC12_TOHUC) %>%
     left_join(head_hu, by = "LevelPathI") %>%
+    mutate(LevelPathI = as.numeric(LevelPathI)) %>%
     group_by(LevelPathI, TOHUC) %>%
-    mutate(ds_check = n()) %>%
     ungroup()
+
+  outlet_hus <- fline_hu_save[which(fline_hu_save$COMID == start_comid),]$TOHUC
+  hu_destructive <- filter(hu, !HUC12 %in% outlet_hus)
 
   hu[["main_LevelPathI"]] <- 0
 
   lps <- sort(unique(hu$LevelPathI))
 
   for(lp in lps) {
+    # print(lp)
     lp <- filter(hu, LevelPathI == lp)
     # could gather_ds levelpath instead of hu but some toHUCs go outside the levelpath intersection!
-    main_stem <- gather_ds(hu, lp$head_HUC12[1])
+    main_stem <- gather_ds(hu_destructive, lp$head_HUC12[1])
     hu <- mutate(hu, main_LevelPathI = ifelse(HUC12 %in% main_stem &
                                                 main_LevelPathI == 0,
                                               lp$LevelPathI[1],
                                               main_LevelPathI))
+    hu_destructive <- filter(hu_destructive, !HUC12 %in% main_stem)
   }
 
-  hu_ <- hu %>%
+  hu_trib <- hu %>%
     left_join(distinct(select(fline_hu_save, HUC12,
                               check_LevelPathI = LevelPathI)),
               by = "HUC12") %>%
@@ -131,13 +137,13 @@ match_levelpaths <- function(fline_hu, start_comid) {
     filter(check_LevelPathI == min(check_LevelPathI))
 
   hu <- hu %>%
-    left_join(select(hu_, HUC12, check_LevelPathI), by = "HUC12") %>%
+    left_join(select(hu_trib, HUC12, check_LevelPathI), by = "HUC12") %>%
     mutate(LevelPathI = as.numeric(ifelse(main_LevelPathI == 0,
                                           check_LevelPathI,
                                           main_LevelPathI))) %>%
     select(-check_LevelPathI)
 
-  hu_ <- left_join(hu, select(fline_hu_save, HUC12,
+  hu_trib2 <- left_join(hu, select(fline_hu_save, HUC12,
                             check_LevelPathI = LevelPathI),
                  by = "HUC12") %>%
     group_by(HUC12) %>%
@@ -149,19 +155,23 @@ match_levelpaths <- function(fline_hu, start_comid) {
     ungroup()
 
   hu <- hu %>%
-    left_join(select(hu_, HUC12, check_LevelPathI), by = "HUC12") %>%
+    left_join(select(hu_trib2, HUC12, check_LevelPathI), by = "HUC12") %>%
     mutate(LevelPathI = as.numeric(ifelse(!is.na(check_LevelPathI),
                                           check_LevelPathI,
                                           LevelPathI))) %>%
     select(HUC12, TOHUC, LevelPathI, head_HUC12)
 
+  if(add_checks) {
+    hu <- mutate(hu, trib_intersect = ifelse(HUC12 %in% hu_trib$HUC12, TRUE, FALSE),
+                 trib_no_intersect = ifelse(HUC12 %in% hu_trib2$HUC12, TRUE, FALSE))
+  }
   return(hu)
 }
 
-gather_ds <- function(lp, huc12) {
-  next_huc12 <- lp[["TOHUC"]][lp[["HUC12"]] == huc12]
+gather_ds <- function(hu_data, huc12) {
+  next_huc12 <- unique(hu_data[["TOHUC"]][hu_data[["HUC12"]] %in% huc12])
   if(length(next_huc12) == 0) {
     return()
   }
-  return(c(huc12, gather_ds(lp, next_huc12)))
+  return(c(huc12, gather_ds(hu_data, next_huc12)))
 }

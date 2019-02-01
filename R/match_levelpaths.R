@@ -91,7 +91,7 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
 
   head_hu <- lp_hu_df %>%
     left_join(select(fline_hu_save, Hydroseq,
-                     nhd_LevelPath = LevelPathI, HUC12)) %>%
+                     nhd_LevelPath = LevelPathI, HUC12), by = "HUC12") %>%
     filter(LevelPathI == nhd_LevelPath) %>%
     group_by(LevelPathI) %>%
     filter(Hydroseq == max(Hydroseq)) %>%
@@ -99,7 +99,7 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
     select(-Hydroseq, -nhd_LevelPath, head_HUC12 = HUC12)
 
   hu <- lp_hu_df %>%
-    right_join(HUC12_TOHUC) %>%
+    right_join(HUC12_TOHUC, by = "HUC12") %>%
     left_join(head_hu, by = "LevelPathI") %>%
     mutate(LevelPathI = as.numeric(LevelPathI)) %>%
     group_by(LevelPathI, TOHUC) %>%

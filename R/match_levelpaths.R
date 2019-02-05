@@ -106,6 +106,9 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
     ungroup()
 
   outlet_hus <- fline_hu_save[which(fline_hu_save$COMID == start_comid),]$TOHUC
+
+  if(length(outlet_hus) > 1) outlet_hus <- sort(outlet_hus, decreasing = FALSE)[1]
+
   hu_destructive <- filter(hu, !HUC12 %in% outlet_hus)
 
   hu[["main_LevelPathI"]] <- 0
@@ -124,6 +127,9 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
     hu_destructive <- filter(hu_destructive, !HUC12 %in% main_stem)
   }
 
+  hu <- mutate(hu, main_LevelPathI = ifelse(HUC12 == outlet_hus,
+                                            LevelPathI,
+                                            main_LevelPathI))
   hu_trib <- hu %>%
     left_join(distinct(select(fline_hu_save, HUC12,
                               check_LevelPathI = LevelPathI)),
@@ -161,9 +167,12 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
                                           LevelPathI))) %>%
     select(HUC12, TOHUC, LevelPathI, head_HUC12)
 
+  hu <- filter(hu, !is.na(LevelPathI))
+
   if(add_checks) {
     hu <- mutate(hu, trib_intersect = ifelse(HUC12 %in% hu_trib$HUC12, TRUE, FALSE),
-                 trib_no_intersect = ifelse(HUC12 %in% hu_trib2$HUC12, TRUE, FALSE))
+                 trib_no_intersect = ifelse(HUC12 %in% hu_trib2$HUC12, TRUE, FALSE),
+                 headwater_error = ifelse(is.na(head_HUC12), TRUE, FALSE))
   }
   return(hu)
 }

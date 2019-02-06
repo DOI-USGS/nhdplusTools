@@ -80,7 +80,6 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
 
     if(length(next_lp) == 0 & length(nlp_tracker) == 0) check <- FALSE
     count <- count + 1
-    # print(length(nlp_tracker))
   }
 
   lp_hu_df <- data.frame(LevelPathI = names(lp_hu),

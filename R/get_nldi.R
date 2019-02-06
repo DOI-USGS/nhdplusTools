@@ -36,7 +36,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
                  nldi_feature[["featureID"]],
                  "navigate", sep = "/")
 
-  query_nldi(query)
+  query_nldi(query, tier)
 }
 
 #' @title Navigate NLDI

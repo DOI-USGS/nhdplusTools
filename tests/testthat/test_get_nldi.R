@@ -14,6 +14,14 @@ test_that("nldi basics work", {
 
   expect_equal(length(discover_nldi_navigation(nldi_nwis)), 4)
 
+  expect_equal(length(discover_nldi_navigation(nldi_nwis, tier = "test")), 4)
+
+  expect_error(discover_nldi_navigation(nldi_nwis, tier = "borked"),
+               "only prod or test allowed.")
+
+  expect_error(discover_nldi_navigation(nldi_nwis[1]),
+                 "Missing some required input for NLDI. Expected: featureID")
+
 })
 
 test_that("navigation works", {

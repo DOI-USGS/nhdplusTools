@@ -128,8 +128,6 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 
     if (nhdplus_path() == path) {
       invisible(0)
-    } else {
-      stop("Path not set successfully.")
     }
   } else {
       return(get("nhdplus_data", envir = nhdplusTools_env))
@@ -237,34 +235,6 @@ get_ds_num_upstream <- function(flines) {
 get_ds_joined_fromCOMID <- function(flines) {
   flines <- mutate(flines, ds_joined_fromCOMID = joined_fromCOMID)
   flines[["ds_joined_fromCOMID"]][match(flines$toCOMID, flines$COMID)]
-}
-
-get_test_data <- function() {
-  fac <- system.file("extdata", "walker_fac.tif",
-                     package = "nhdplusTools") %>%
-    raster::raster()
-  fdr <- system.file("extdata", "walker_fdr.tif",
-                     package = "nhdplusTools") %>%
-    raster::raster()
-
-  proj <- as.character(raster::crs(fdr))
-
-  nhdplus <- system.file("extdata", "walker.gpkg",
-                         package = "nhdplusTools")
-
-  flowline <- sf::read_sf(nhdplus, "NHDFlowline_Network") %>%
-    sf::st_transform(proj)
-
-  catchment <- sf::read_sf(nhdplus, "CatchmentSP") %>%
-    sf::st_transform(proj)
-
-  return(list(fdr = fdr, fac = fac, flowline = flowline, catchment = catchment))
-}
-
-member_mapper <- function(df, id_col = "ID", list_col = "member_COMID") {
-  df <- select(df, !!c(id_col, list_col))
-  df[[list_col]] <- lapply(df[[list_col]], function(x) strsplit(x, ",")[[1]])
-  tidyr::unnest(df)
 }
 
 #' Total Drainage Area
@@ -421,12 +391,9 @@ calculate_levelpaths <- function(flowline) {
     from_inds <- which(flowline$toID == tailID)
     if(length(from_inds) > 1) {
       ind <- which(flowline$ID == tailID)
-      tryCatch({next_step <- dplyr::filter(flowline[from_inds, ],
+      next_step <- dplyr::filter(flowline[from_inds, ],
                                  (nameID == flowline$nameID[ind] & nameID != " ") |
-                                   weight == max(weight))$ID},
-               error = function(e) {
-                 browser()
-               })
+                                   weight == max(weight))$ID
       c(tailID, get_path(flowline, next_step))
     } else if(length(from_inds) == 1) {
       c(tailID, get_path(flowline, flowline$ID[from_inds]))

@@ -113,12 +113,44 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
   hu[["main_LevelPathI"]] <- 0
 
   lps <- sort(unique(hu$LevelPathI))
+  funky_headwaters <- c()
 
   for(lp in lps) {
     # print(lp)
     lp <- filter(hu, LevelPathI == lp)
     # could gather_ds levelpath instead of hu but some toHUCs go outside the levelpath intersection!
     main_stem <- gather_ds(hu_destructive, lp$head_HUC12[1])
+
+    # If the main stem found doesn't follow the expected path at all.
+    # Then something is wrong with the head_HUC12 and we need to try a different one.
+    candidates <- main_stem[!main_stem == lp$head_HUC12[1]]
+    if(!any(candidates %in% lp$HUC12) &
+       length(main_stem) > 1) {
+
+      checker <- filter(fline_hu_save, HUC12 %in% candidates & LevelPathI == lp$LevelPathI[1])
+      if(!any(candidates %in% checker$HUC12)) {
+        # Need to find the actual top HU12 first grab all that intersect this LP.
+        top_cat <- filter(fline_hu_save, LevelPathI == lp$LevelPathI[1]) %>%
+          # In case there is a catchment completely outside the HU
+          # We have to find the one that overlaps the boundary!!
+          group_by(COMID) %>% filter(n() > 1) %>% ungroup() %>%
+          # Now grab the top most row that isn't the one we found above.
+          filter(Hydroseq == max(Hydroseq) & HUC12 != lp$head_HUC12[1])
+
+        # No test for this, but it shouldn't happen so throw error!!
+        if(nrow(top_cat) > 1) stop(paste("something very wrong with headwaters around HUC",
+                                         lp$head_HUC12[1], "and levelpath", lp$LevelPathI[1]))
+
+        # set and rerun.
+        lp$head_HUC12 <- top_cat$HUC12
+        funky_headwaters <- c(funky_headwaters, top_cat$HUC12)
+        main_stem <- gather_ds(hu_destructive, lp$head_HUC12[1])
+
+        # Leaving this for later testing.
+        if(!is.null(main_stem)) browser()
+      }
+    }
+
     hu <- mutate(hu, main_LevelPathI = ifelse(HUC12 %in% main_stem &
                                                 main_LevelPathI == 0,
                                               lp$LevelPathI[1],
@@ -169,9 +201,9 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
   hu <- filter(hu, !is.na(LevelPathI))
 
   if(add_checks) {
-    hu <- mutate(hu, trib_intersect = ifelse(HUC12 %in% hu_trib$HUC12, TRUE, FALSE),
-                 trib_no_intersect = ifelse(HUC12 %in% hu_trib2$HUC12, TRUE, FALSE),
-                 headwater_error = ifelse(is.na(head_HUC12), TRUE, FALSE))
+    hu <- mutate(hu, trib_intersect = HUC12 %in% hu_trib$HUC12,
+                 trib_no_intersect = HUC12 %in% hu_trib2$HUC12,
+                 headwater_error = HUC12 %in% funky_headwaters)
   }
   return(hu)
 }

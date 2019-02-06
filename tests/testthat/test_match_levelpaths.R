@@ -14,7 +14,6 @@ test_that("match levelpaths runs", {
 
   expect_equal(sum(matched$trib_intersect), 20)
   expect_equal(sum(matched$trib_no_intersect), 2)
-  expect_equal(sum(matched$headwater_error), 0)
 })
 
 test_that("match levelpaths multi-overlap-outlet", {
@@ -24,5 +23,7 @@ test_that("match levelpaths multi-overlap-outlet", {
 
 test_that("match levelpaths funky heatwater", {
   matched <- match_levelpaths(readRDS("data/match_levelpaths_4292649.rds"), 4292649, add_checks = TRUE)
-  expect(sum(matched$headwater_error) == 8)
+  expect(!150020702 %in% matched$LevelPathI)
+  expect(nrow(matched) == 152)
+  expect(sum(matched$headwater_error) == 2)
 })

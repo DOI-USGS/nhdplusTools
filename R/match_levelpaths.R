@@ -158,16 +158,19 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
     hu_destructive <- filter(hu_destructive, !HUC12 %in% main_stem)
   }
 
+  hu <- rename(hu, intersected_LevelPathI = LevelPathI)
+
   hu <- mutate(hu, main_LevelPathI = ifelse(HUC12 == outlet_hus,
-                                            LevelPathI,
-                                            main_LevelPathI))
+                                            intersected_LevelPathI,
+                                            main_LevelPathI),
+               corrected_LevelPathI = intersected_LevelPathI)
+
   hu_trib <- hu %>%
-    left_join(distinct(select(fline_hu_save, HUC12,
-                              check_LevelPathI = LevelPathI)),
+    left_join(distinct(select(fline_hu_save, HUC12, check_LevelPathI = LevelPathI)),
               by = "HUC12") %>%
     # only modify ones not found to be on the main path in the loop above
     # and where the LevelPathI assigned is not equal to the original one assigned
-    filter(main_LevelPathI == 0 & LevelPathI != check_LevelPathI) %>%
+    filter(main_LevelPathI == 0 & corrected_LevelPathI != check_LevelPathI) %>%
     group_by(HUC12) %>%
     # This grabs the biggest trib in the HU after filtering out
     # the originally assigned one.
@@ -175,7 +178,7 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
 
   hu <- hu %>%
     left_join(select(hu_trib, HUC12, check_LevelPathI), by = "HUC12") %>%
-    mutate(LevelPathI = as.numeric(ifelse(main_LevelPathI == 0,
+    mutate(corrected_LevelPathI = as.numeric(ifelse(main_LevelPathI == 0,
                                           check_LevelPathI,
                                           main_LevelPathI))) %>%
     select(-check_LevelPathI)
@@ -186,19 +189,19 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
     group_by(HUC12) %>%
     # When nothing in the group was found intersecting the levelpath
     # it should actually me on another level path.
-    filter(!any(LevelPathI == check_LevelPathI) &
+    filter(!any(corrected_LevelPathI == check_LevelPathI) &
              check_LevelPathI == min(check_LevelPathI)) %>%
     distinct() %>%
     ungroup()
 
   hu <- hu %>%
     left_join(select(hu_trib2, HUC12, check_LevelPathI), by = "HUC12") %>%
-    mutate(LevelPathI = as.numeric(ifelse(!is.na(check_LevelPathI),
+    mutate(corrected_LevelPathI = as.numeric(ifelse(!is.na(check_LevelPathI),
                                           check_LevelPathI,
-                                          LevelPathI))) %>%
-    select(HUC12, TOHUC, LevelPathI, head_HUC12)
+                                          corrected_LevelPathI))) %>%
+    select(HUC12, TOHUC, intersected_LevelPathI, corrected_LevelPathI, head_HUC12)
 
-  hu <- filter(hu, !is.na(LevelPathI))
+  hu <- filter(hu, !is.na(intersected_LevelPathI))
 
   if(add_checks) {
     hu <- mutate(hu, trib_intersect = HUC12 %in% hu_trib$HUC12,

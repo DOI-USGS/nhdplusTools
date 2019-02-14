@@ -9,7 +9,7 @@ test_that("match levelpaths runs", {
 
   # This tests for bad toHUC corrections where the intersection doesn't match the
   # TOHUC coding.
-  expect(matched$intersected_LevelPathI[which(matched$HUC12 == "102702020102")] == 550031020)s
+  expect(matched$intersected_LevelPathI[which(matched$HUC12 == "102702020102")] == 550031020)
 
   expect_equal(sum(matched$trib_intersect), 20)
   expect_equal(sum(matched$trib_no_intersect), 2)

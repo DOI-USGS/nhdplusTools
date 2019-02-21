@@ -56,11 +56,27 @@ test_that("match levelpaths ", {
   expect(matched$corrected_LevelPathI[matched$HUC12 == "180901030502"] == 10030198)
 })
 
-# outlet:
-# 4292649
-# look at: 010100030308
+test_that("match levelpaths ", {
+  matched <- match_levelpaths(readRDS("data/match_levelpaths_4292649.rds"), 4292649, add_checks = TRUE)
+  huc12 <- dplyr::select(matched, levelpath = corrected_LevelPathI, head_huc12 = head_HUC12, outlet_huc12 = outlet_HUC12, trib_no_intersect) %>%
+    dplyr::filter(!is.na(outlet_huc12), !trib_no_intersect) %>%
+    dplyr::distinct()
+  expect(length(unique(huc12$levelpath)) == nrow(huc12))
 
-# test_that("match levelpaths ", {
-#   matched <- match_levelpaths(readRDS("data/match_levelpaths_4292649.rds"), 4292649, add_checks = TRUE)
-#
-# })
+  # strange headwater behavior.
+  expect(huc12$outlet_huc12[huc12$levelpath == 150014576] == "010100030308")
+  expect(huc12$head_huc12[huc12$levelpath == 150014576] == "010100030308")
+})
+
+test_that("match levelpaths ", {
+  # headwaters of levelpath 200011667
+  matched <- match_levelpaths(readRDS("data/match_levelpaths_10055266.rds"), 10055266, add_checks = TRUE)
+  expect(all(matched$head_HUC12[matched$corrected_LevelPathI == 200011667] == "020802010601"))
+
+  huc12 <- dplyr::select(matched, levelpath = corrected_LevelPathI, head_huc12 = head_HUC12, outlet_huc12 = outlet_HUC12) %>%
+    dplyr::filter(!is.na(outlet_huc12)) %>%
+    dplyr::distinct()
+
+  expect(length(unique(huc12$levelpath)) == nrow(huc12))
+
+})

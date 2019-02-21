@@ -8,7 +8,7 @@
 #'
 #' @export
 #' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs st_set_geometry st_line_merge st_geometry_type
-#' @importFrom dplyr filter mutate left_join select distinct case_when rename
+#' @importFrom dplyr filter mutate left_join select distinct case_when rename arrange
 #' @importFrom tidyr unnest
 #' @examples
 #' #todo
@@ -177,20 +177,27 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
   # Need to fix head_HUC12 where mainstem outlets were changed above.
   # These are the ones that are part of a tributary so main_LeveLPath got updated above.
   # main_LevelPath == 0 is a different case.
-  fix_bool <- hu$LevelPathI != hu$main_LevelPathI
   correct_heads <- hu %>%
-    filter(!fix_bool & main_LevelPathI != 0) %>%
+    filter(LevelPathI == main_LevelPathI & main_LevelPathI != 0) %>%
     select(main_LevelPathI, correct_head_HUC12 = head_HUC12) %>%
     distinct()
 
   hu <- left_join(hu, correct_heads,
                   by = "main_LevelPathI") %>%
-    mutate(head_HUC12 = ifelse(fix_bool & main_LevelPathI != 0,
+    mutate(head_HUC12 = ifelse(LevelPathI != main_LevelPathI & main_LevelPathI != 0,
                                correct_head_HUC12,
                                head_HUC12)) %>%
-    select(-correct_head_HUC12)
+    select(-correct_head_HUC12) %>%
+    distinct()
 
   hu <- rename(hu, intersected_LevelPathI = LevelPathI)
+
+  # Odd situation where a single headwater catchment intersects two HUs causes duplicate HUC12s
+  hu <- group_by(hu, HUC12) %>%
+    arrange(head_HUC12) %>%
+    filter(dplyr::row_number() == 1) %>%
+    ungroup()
+
   # main_levelpath was found by tracing toHUC downstream.
   # intersected_LevelPath was passed in from spatial intersection
   # Not all "main_levelpaths" got filled in.
@@ -215,14 +222,18 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
 
   hu <- hu %>%
     left_join(select(hu_trib, HUC12, check_LevelPathI), by = "HUC12") %>%
-    # Update the main_levelpath where needed per hu_trib from above.
-    mutate(main_LevelPathI = as.numeric(ifelse(hu$main_LevelPathI == 0,
+    # Kill head_HUC12 which is now wrong.
+    mutate(head_HUC12 = ifelse(main_LevelPathI == 0, "", head_HUC12),
+      # The change to main_LevelPath makes this one an outlet.
+      outlet_HUC12 = ifelse(main_LevelPathI == 0 & !is.na(check_LevelPathI),
+                            HUC12, outlet_HUC12),
+      # Update the main_levelpath where needed per hu_trib from above.
+      main_LevelPathI = as.numeric(ifelse(main_LevelPathI == 0,
                                                check_LevelPathI,
                                                main_LevelPathI)),
-           # Kill head_HUC12 which is now wrong.
-           head_HUC12 = ifelse(hu$main_LevelPathI == 0, "", head_HUC12),
-           # The change to main_LevelPath makes this one an outlet.
-           outlet_HUC12 = ifelse(hu$main_LevelPathI == 0, HUC12, outlet_HUC12)) %>%
+      main_LevelPathI = ifelse(is.na(main_LevelPathI),
+                               intersected_LevelPathI,
+                               main_LevelPathI)) %>%
     select(-check_LevelPathI)
 
   hu_trib2 <- left_join(hu, select(fline_hu_save, HUC12,
@@ -258,6 +269,29 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
                                update_head_HUC12,
                                head_HUC12)) %>%
     select(-update_head_HUC12)
+
+  lp_head <- select(hu, corrected_LevelPathI, head_HUC12) %>%
+    distinct() %>%
+    group_by(corrected_LevelPathI) %>%
+    arrange(head_HUC12) %>%
+    filter(dplyr::row_number() == 1) %>%
+    ungroup()
+
+  hu <- hu %>%
+    left_join(select(lp_head, corrected_LevelPathI, updated_head_HUC12 = head_HUC12),
+              by = "corrected_LevelPathI") %>%
+    select(-head_HUC12) %>% rename(head_HUC12 = updated_head_HUC12)
+
+  if(any(hu$outlet_HUC12 == "")) {
+    lp_outlet <- select(hu, corrected_LevelPathI, outlet_HUC12) %>%
+      filter(outlet_HUC12 != "") %>%
+      distinct()
+    hu <- hu %>%
+      left_join(select(lp_outlet, corrected_LevelPathI, updated_outlet_HUC12 = outlet_HUC12),
+                by = "corrected_LevelPathI") %>%
+      select(-outlet_HUC12) %>% rename(outlet_HUC12 = updated_outlet_HUC12) %>%
+      filter(outlet_HUC12 != "")
+  }
 
   if(add_checks) {
     hu <- mutate(hu, trib_intersect = HUC12 %in% hu_trib$HUC12,

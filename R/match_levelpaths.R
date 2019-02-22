@@ -293,6 +293,18 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
       filter(outlet_HUC12 != "")
   }
 
+  lp_outlet <- select(hu, corrected_LevelPathI, outlet_HUC12) %>%
+    distinct() %>%
+    group_by(corrected_LevelPathI) %>%
+    arrange(dplyr::desc(outlet_HUC12)) %>%
+    filter(dplyr::row_number() == 1) %>%
+    ungroup()
+
+  hu <- hu %>%
+    left_join(select(lp_outlet, corrected_LevelPathI, updated_outlet_HUC12 = outlet_HUC12),
+              by = "corrected_LevelPathI") %>%
+    select(-outlet_HUC12) %>% rename(outlet_HUC12 = updated_outlet_HUC12)
+
   if(add_checks) {
     hu <- mutate(hu, trib_intersect = HUC12 %in% hu_trib$HUC12,
                  trib_no_intersect = HUC12 %in% hu_trib2$HUC12,

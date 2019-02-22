@@ -1,5 +1,14 @@
 context("match levelpaths")
-test_that("match levelpaths runs", {
+clean_huc12 <- function(huc12) {
+  bad_lps <- select(huc12, corrected_LevelPathI, trib_no_intersect, headwater_error) %>%
+    filter(trib_no_intersect | headwater_error)
+
+  huc12 %>%
+    filter(!corrected_LevelPathI %in% bad_lps$corrected_LevelPathI & !is.na(outlet_HUC12)) %>%
+    distinct()
+}
+
+test_that("match levelpaths runs 2279159", {
   start_comid <- 2279159
   net_prep <- readRDS("data/match_levelpaths_2279159.rds")
   matched <- match_levelpaths(net_prep, start_comid, add_checks = TRUE)
@@ -32,12 +41,18 @@ test_that("match levelpaths runs", {
   expect(length(which(duplicated(matched$corrected_LevelPathI))) == 0)
 })
 
-test_that("match levelpaths multi-overlap-outlet", {
+test_that("match levelpaths multi-overlap-outlet 931010009", {
   matched <- match_levelpaths(readRDS("data/match_levelpaths_931010009.rds"), 931010009)
   expect(nrow(matched) == 4)
+
+  huc12 <- dplyr::select(matched, levelpath = corrected_LevelPathI, head_huc12 = head_HUC12, outlet_huc12 = outlet_HUC12) %>%
+    dplyr::filter(!is.na(outlet_huc12)) %>%
+    dplyr::distinct()
+
+  expect(length(unique(huc12$levelpath)) == nrow(huc12))
 })
 
-test_that("match levelpaths funky heatwater", {
+test_that("match levelpaths funky heatwater 4292649", {
   matched <- match_levelpaths(readRDS("data/match_levelpaths_4292649.rds"), 4292649, add_checks = TRUE)
   expect(!150020702 %in% matched$corrected_LevelPathI)
 
@@ -45,9 +60,20 @@ test_that("match levelpaths funky heatwater", {
   # expect(!150067066 %in% matched$corrected_LevelPathI)
   expect(nrow(matched) == 152)
   expect(sum(matched$headwater_error) == 2)
+
+  huc12 <- dplyr::select(clean_huc12(matched), corrected_LevelPathI, head_HUC12, outlet_HUC12) %>%
+    dplyr::filter(!is.na(outlet_HUC12)) %>%
+    dplyr::distinct()
+
+
+  expect(length(unique(huc12$corrected_LevelPathI)) == nrow(huc12))
+
+  # strange headwater behavior.
+  expect(huc12$outlet_HUC12[huc12$corrected_LevelPathI == 150014576] == "010100030308")
+  expect(huc12$head_HUC12[huc12$corrected_LevelPathI == 150014576] == "010100030308")
 })
 
-test_that("match levelpaths ", {
+test_that("match levelpaths 20204804", {
   matched <- match_levelpaths(readRDS("data/match_levelpaths_20204804.rds"), 20204804, add_checks = TRUE)
   expect(sum(matched$trib_no_intersect), 5)
 
@@ -56,19 +82,7 @@ test_that("match levelpaths ", {
   expect(matched$corrected_LevelPathI[matched$HUC12 == "180901030502"] == 10030198)
 })
 
-test_that("match levelpaths ", {
-  matched <- match_levelpaths(readRDS("data/match_levelpaths_4292649.rds"), 4292649, add_checks = TRUE)
-  huc12 <- dplyr::select(matched, levelpath = corrected_LevelPathI, head_huc12 = head_HUC12, outlet_huc12 = outlet_HUC12, trib_no_intersect) %>%
-    dplyr::filter(!is.na(outlet_huc12), !trib_no_intersect) %>%
-    dplyr::distinct()
-  expect(length(unique(huc12$levelpath)) == nrow(huc12))
-
-  # strange headwater behavior.
-  expect(huc12$outlet_huc12[huc12$levelpath == 150014576] == "010100030308")
-  expect(huc12$head_huc12[huc12$levelpath == 150014576] == "010100030308")
-})
-
-test_that("match levelpaths ", {
+test_that("match levelpaths 10055266", {
   # headwaters of levelpath 200011667
   matched <- match_levelpaths(readRDS("data/match_levelpaths_10055266.rds"), 10055266, add_checks = TRUE)
   expect(all(matched$head_HUC12[matched$corrected_LevelPathI == 200011667] == "020802010601"))

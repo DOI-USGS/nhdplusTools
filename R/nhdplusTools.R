@@ -5,7 +5,8 @@ COMID <- FEATUREID <-
   TotDASqKM <- LENGTHKM <-
   Pathlength <- StreamCalc <- StreamOrde <- TerminalFl <-
   Divergence <- TerminalPa <- StartFlag <- FTYPE <-
-  FromMeas <- ToMeas <- REACHCODE <- REACH_meas <- NULL
+  FromMeas <- ToMeas <- REACHCODE <- REACH_meas <-
+  HUC12 <- TOHUC <- NULL
 
   # Package Attribute Names
 COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
@@ -24,7 +25,7 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   tail_ID <- toID_hydroseq <- toID_tail_ID <- toID_fromID <-
   toID_LevelpathID <- set <- set_toID <- usLevelPathI <- fromLevelPathI <-
   ID_Hydroseq <- ID_LevelPath <- ID_LevelPathID <- toID_fromID_TotDASqKM <-
-  toID_fromID_lp <- NULL
+  toID_fromID_lp <- denTotalAreaSqKM <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -78,6 +79,11 @@ assign("get_flowline_index_attributes",
 
 assign("calculate_levelpaths_attributes",
        c("ID", "toID", "nameID", "weight"),
+       envir = nhdplusTools_env)
+
+assign("match_levelpaths_attributes",
+       c("COMID", "Hydroseq", "LevelPathI",
+         "DnLevelPat", "denTotalAreaSqKM", "HUC12", "TOHUC"),
        envir = nhdplusTools_env)
 
 check_names <- function(names_flines, function_name) {

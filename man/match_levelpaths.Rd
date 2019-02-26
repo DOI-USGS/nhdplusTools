@@ -7,15 +7,15 @@
 match_levelpaths(fline_hu, start_comid, add_checks = FALSE)
 }
 \arguments{
-\item{fline_hu}{sf data.frame flowlines intersected with hydrologic units}
+\item{fline_hu}{sf data.frame flowlines intersected with hydrologic units containing
+COMID, Hydroseq, LevelPathI, DnLevelPat, denTotalAreaSqKM, HUC12, TOHUC attributes.}
 
 \item{start_comid}{integer COMID to start search from.}
 
 \item{add_checks}{boolean if TRUE, checks for toHUC errors are added.}
 }
 \description{
-Attempts to match dendritic hydrologic unit networks to NHDPlus
-flowline level paths.
+Attempts to match dendritic hydrologic unit networks to level paths.
 }
 \details{
 ...

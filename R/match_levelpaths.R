@@ -16,112 +16,40 @@
 match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
 
   check_names(names(fline_hu), "match_levelpaths")
-  fline_hu <- fline_hu
 
-  lp_hu_df <- get_lp_hu_df(fline_hu, start_comid)
+  #############################################################################
+  # get_lp_hu gets levelpath / hydrologic unit pairs from the intersection set.
+  #############################################################################
+  hu <- get_lp_hu(fline_hu, start_comid)
 
-  head_hu <- get_head_hu(lp_hu_df, fline_hu)
-
-  hu <- lp_hu_df %>%
-    right_join(distinct(select(fline_hu, HUC12, TOHUC)),
-               by = "HUC12") %>%
-    left_join(head_hu, by = "LevelPathI") %>%
+  hu <- hu %>%
+    right_join(distinct(select(fline_hu, HUC12, TOHUC)), by = "HUC12") %>%
+    left_join(get_head_hu(hu, fline_hu), by = "LevelPathI") %>%
     mutate(LevelPathI = as.numeric(LevelPathI)) %>%
-    group_by(LevelPathI, TOHUC) %>%
-    ungroup()
+    rename(intersected_LevelPathI = LevelPathI)
 
   # In case the outlet flowline spans multiple HUs near the outlet.
   outlet_hu <- sort(fline_hu[which(fline_hu$COMID == start_comid),]$TOHUC,
                      decreasing = FALSE)[1]
 
-  # Make sure we don't have the outlet in scope so the network breaks where we want.
-  hu_destructive <- filter(hu, !HUC12 %in% outlet_hu)
-
-  hu[["main_LevelPathI"]] <- 0
-  hu[["outlet_HUC12"]] <- ""
-
-  lps <- sort(unique(hu$LevelPathI))
-  funky_headwaters <- c()
-  broken_path <- c()
-
-  count <- 0
-  for(lp in lps) {
-    lp <- filter(hu, LevelPathI == lp)
-    # could gather_ds levelpath instead of hu but some toHUCs go outside the levelpath intersection!
-    main_stem <- tryCatch(gather_ds(hu_destructive, lp$head_HUC12[1]),
-                          error = function(e) {
-                            warning(paste("something real bad happened with levelpath",
-                                          lp$LevelPathI[1]))
-                            funky_headwaters <- c(funky_headwaters, lp$head_HUC12[1])})
-
-    # If any of the HUs found are still available to be allocated...
-    if(any(main_stem %in% hu_destructive$HUC12)) {
-      # If the main stem found doesn't follow the expected path at all.
-      # Then something is wrong with the head_HUC12 and we need to try a different one.
-      candidates <- main_stem[!main_stem == lp$head_HUC12[1]]
-      if(!any(candidates %in% lp$HUC12) &
-         length(main_stem) > 1) {
-
-        checker <- filter(fline_hu, HUC12 %in% candidates & LevelPathI == lp$LevelPathI[1])
-        if(!any(candidates %in% checker$HUC12)) {
-          # Need to find the actual top HU12 first grab all that intersect this LP.
-          top_cat <- filter(fline_hu, LevelPathI == lp$LevelPathI[1]) %>%
-            # In case there is a catchment completely outside the HU
-            # We have to find the one that overlaps the boundary!!
-            group_by(COMID) %>% filter(n() > 1) %>% ungroup() %>%
-            # Now grab the top most row that isn't the one we found above.
-            filter(Hydroseq == max(Hydroseq) & HUC12 != lp$head_HUC12[1])
-
-          # No test for this, but it shouldn't happen so throw error!!
-          if(nrow(top_cat) > 1) {
-            warning(paste("something very wrong with headwaters around HUC",
-                          lp$head_HUC12[1], "and levelpath", lp$LevelPathI[1]))
-            funky_headwaters <- c(funky_headwaters, top_cat$HUC12)
-            main_stem <- c()
-          } else if(nrow(top_cat) == 0) {
-            warning(paste("broken path along levelpath", lp$LevelPathI, "passing by."))
-            broken_path <- c(broken_path, lp$head_HUC12)
-          } else {
-            # set and rerun.
-            lp$head_HUC12 <- top_cat$HUC12
-            funky_headwaters <- c(funky_headwaters, top_cat$HUC12)
-            main_stem <- gather_ds(hu_destructive, lp$head_HUC12[1])
-          }
-        }
-      }
-
-      hu <- mutate(hu, main_LevelPathI = ifelse(HUC12 %in% main_stem &
-                                                  main_LevelPathI == 0,
-                                                lp$LevelPathI[1],
-                                                main_LevelPathI),
-                   outlet_HUC12 = ifelse(HUC12 %in% main_stem,
-                                         main_stem[length(main_stem)],
-                                         outlet_HUC12))
-      hu_destructive <- filter(hu_destructive, !HUC12 %in% main_stem)
-    }
-    count <- count + 1
-    if (count %% 100 == 0) {
-      message(paste(count, "of", length(lps), "levelpaths"))
-    }
-  }
+  hu <- trace_hu_network(hu, outlet_hu, fline_hu)
+  funky_headwaters <- hu$funky_headwaters
+  hu <- hu$hu
 
   # Need to fix head_HUC12 where mainstem outlets were changed above.
   # These are the ones that are part of a tributary so main_LeveLPath got updated above.
   # main_LevelPath == 0 is a different case.
   correct_heads <- hu %>%
-    filter(LevelPathI == main_LevelPathI & main_LevelPathI != 0) %>%
+    filter(intersected_LevelPathI == main_LevelPathI & main_LevelPathI != 0) %>%
     select(main_LevelPathI, correct_head_HUC12 = head_HUC12) %>%
     distinct()
 
-  hu <- left_join(hu, correct_heads,
-                  by = "main_LevelPathI") %>%
-    mutate(head_HUC12 = ifelse(LevelPathI != main_LevelPathI & main_LevelPathI != 0,
+  hu <- left_join(hu, correct_heads, by = "main_LevelPathI") %>%
+    mutate(head_HUC12 = ifelse(intersected_LevelPathI != main_LevelPathI & main_LevelPathI != 0,
                                correct_head_HUC12,
                                head_HUC12)) %>%
     select(-correct_head_HUC12) %>%
     distinct()
-
-  hu <- rename(hu, intersected_LevelPathI = LevelPathI)
 
   # Odd situation where a single headwater catchment intersects two HUs causes duplicate HUC12s
   hu <- group_by(hu, HUC12) %>%
@@ -187,18 +115,15 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
 
   hu <- filter(hu, !is.na(intersected_LevelPathI))
 
-  lp_hu_df <- hu %>%
+  head_hu <- hu %>%
     filter(head_HUC12 == "") %>%
-    select(LevelPathI = corrected_LevelPathI, HUC12)
-
-  head_hu <- get_head_hu(lp_hu_df, fline_hu)
+    select(LevelPathI = corrected_LevelPathI, HUC12) %>%
+    get_head_hu(fline_hu) %>%
+    select(LevelPathI, update_head_HUC12 = head_HUC12)
 
   hu <- hu %>%
-    left_join(select(head_hu, LevelPathI, update_head_HUC12 = head_HUC12),
-              by = c("corrected_LevelPathI" = "LevelPathI")) %>%
-    mutate(head_HUC12 = ifelse(head_HUC12 == "",
-                               update_head_HUC12,
-                               head_HUC12)) %>%
+    left_join(head_hu, by = c("corrected_LevelPathI" = "LevelPathI")) %>%
+    mutate(head_HUC12 = ifelse(head_HUC12 == "", update_head_HUC12, head_HUC12)) %>%
     select(-update_head_HUC12)
 
   lp_head <- select(hu, corrected_LevelPathI, head_HUC12) %>%
@@ -253,8 +178,8 @@ gather_ds <- function(hu_data, huc12) {
   return(c(huc12, gather_ds(hu_data, next_huc12)))
 }
 
-get_head_hu <- function(lp_hu_df, fline_hu) {
-  lp_hu_df %>%
+get_head_hu <- function(lp_hu, fline_hu) {
+  lp_hu %>%
     left_join(select(fline_hu, Hydroseq,
                      nhd_LevelPath = LevelPathI, HUC12), by = "HUC12") %>%
     filter(LevelPathI == nhd_LevelPath) %>%
@@ -264,7 +189,7 @@ get_head_hu <- function(lp_hu_df, fline_hu) {
     select(-Hydroseq, -nhd_LevelPath, head_HUC12 = HUC12)
 }
 
-get_lp_hu_df <- function(fline_hu, start_comid) {
+get_lp_hu <- function(fline_hu, start_comid) {
 
   nlp <- unique(filter(fline_hu, COMID == start_comid)[["LevelPathI"]])
 
@@ -334,4 +259,78 @@ get_lp_hu_df <- function(fline_hu, start_comid) {
                     HUC12 = I(lp_hu),
                     stringsAsFactors = FALSE) %>%
            tidyr::unnest())
+}
+
+trace_hu_network <- function(hu, outlet_hu, fline_hu) {
+  # Make sure we don't have the outlet in scope so the network breaks where we want.
+  hu_destructive <- filter(hu, !HUC12 %in% outlet_hu)
+
+  hu[["main_LevelPathI"]] <- 0
+  hu[["outlet_HUC12"]] <- ""
+
+  lps <- sort(unique(hu$intersected_LevelPathI))
+  funky_headwaters <- c()
+  broken_path <- c()
+
+  count <- 0
+  for(lp in lps) {
+    lp <- filter(hu, intersected_LevelPathI == lp)
+    # could gather_ds levelpath instead of hu but some toHUCs go outside the levelpath intersection!
+    main_stem <- tryCatch(gather_ds(hu_destructive, lp$head_HUC12[1]),
+                          error = function(e) {
+                            warning(paste("something real bad happened with levelpath",
+                                          lp$intersected_LevelPathI[1]))
+                            funky_headwaters <- c(funky_headwaters, lp$head_HUC12[1])})
+
+    # If any of the HUs found are still available to be allocated...
+    if(any(main_stem %in% hu_destructive$HUC12)) {
+      # If the main stem found doesn't follow the expected path at all.
+      # Then something is wrong with the head_HUC12 and we need to try a different one.
+      candidates <- main_stem[!main_stem == lp$head_HUC12[1]]
+      if(!any(candidates %in% lp$HUC12) &
+         length(main_stem) > 1) {
+
+        checker <- filter(fline_hu, HUC12 %in% candidates & LevelPathI == lp$intersected_LevelPathI[1])
+        if(!any(candidates %in% checker$HUC12)) {
+          # Need to find the actual top HU12 first grab all that intersect this LP.
+          top_cat <- filter(fline_hu, LevelPathI == lp$intersected_LevelPathI[1]) %>%
+            # In case there is a catchment completely outside the HU
+            # We have to find the one that overlaps the boundary!!
+            group_by(COMID) %>% filter(n() > 1) %>% ungroup() %>%
+            # Now grab the top most row that isn't the one we found above.
+            filter(Hydroseq == max(Hydroseq) & HUC12 != lp$head_HUC12[1])
+
+          # No test for this, but it shouldn't happen so throw error!!
+          if(nrow(top_cat) > 1) {
+            warning(paste("something very wrong with headwaters around HUC",
+                          lp$head_HUC12[1], "and levelpath", lp$intersected_LevelPathI[1]))
+            funky_headwaters <- c(funky_headwaters, top_cat$HUC12)
+            main_stem <- c()
+          } else if(nrow(top_cat) == 0) {
+            warning(paste("broken path along levelpath", lp$intersected_LevelPathI, "passing by."))
+            broken_path <- c(broken_path, lp$head_HUC12)
+          } else {
+            # set and rerun.
+            lp$head_HUC12 <- top_cat$HUC12
+            funky_headwaters <- c(funky_headwaters, top_cat$HUC12)
+            main_stem <- gather_ds(hu_destructive, lp$head_HUC12[1])
+          }
+        }
+      }
+
+      hu <- mutate(hu, main_LevelPathI = ifelse(HUC12 %in% main_stem &
+                                                  main_LevelPathI == 0,
+                                                lp$intersected_LevelPathI[1],
+                                                main_LevelPathI),
+                   outlet_HUC12 = ifelse(HUC12 %in% main_stem,
+                                         main_stem[length(main_stem)],
+                                         outlet_HUC12))
+      hu_destructive <- filter(hu_destructive, !HUC12 %in% main_stem)
+    }
+    count <- count + 1
+    if (count %% 100 == 0) {
+      message(paste(count, "of", length(lps), "levelpaths"))
+    }
+  }
+  return(list(hu = hu, funky_headwaters = funky_headwaters, broken_path = broken_path))
 }

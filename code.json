@@ -1,0 +1,47 @@
+[
+  {
+    "name": "nhdplusTools",
+    "organization": "U.S. Geological Survey",
+    "description": "Tools for Using NHDPlus Data",
+    "version": "0.3.3",
+    "status": "Preliminary",
+
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain, CC0-1.0",
+          "URL": "https://code.usgs.gov/water/nwm_subset/blob/master/LICENSE"
+        }
+        ]
+    },
+
+    "homepageURL": "https://code.usgs.gov/water/nhdplustools/",
+    "downloadURL": "https://code.usgs.gov/water/nhdplustools/-/archive/master/nhdplustools-master.zip",
+    "disclaimerURL": "https://code.usgs.gov/water/nhdplustools/blob/master/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/water/nhdplustools.git",
+    "vcs": "git",
+
+    "laborHours": 500,
+
+    "tags": [
+      "R",
+      "nhdplus",
+      "USGS",
+      "water"
+      ],
+
+    "languages": [
+      "R"
+      ],
+
+    "contact": {
+      "name": "David Blodgett",
+      "email": "dblodgett@usgs.gov"
+    },
+
+    "date": {
+      "metadataLastUpdated": "2019-03-01"
+    }
+  }
+]

@@ -295,8 +295,4 @@ For more info about `get_flowline_index()` see the article `vignette("point_inde
 
 ## Refactoring
 
-The refactoring functionality is described in full in the article `vignette("refactor_nhdplus")` about it. 
-
-```{r cleanup, echo = FALSE} 
-unlink("data_dir", recursive = T)
-```
+The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be found in the network_refactor branch of this repository.

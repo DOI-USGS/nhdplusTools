@@ -18,9 +18,15 @@ COMID, Hydroseq, LevelPathI, DnLevelPat, denTotalAreaSqKM, HUC12, TOHUC attribut
 Attempts to match dendritic hydrologic unit networks to level paths.
 }
 \details{
-...
+Match level paths compares the set of hydrologic units found through
+spatial intersection to the path identified by navigating the TOHUC codes from
+headwater to outlet and attempts of reconcile anomolies found.
+
+This function is preliminary and subject to revision. It has been tested thoroughly
+but complete methods description have not yet been published.
 }
 \examples{
-#todo
+net_prep <- readRDS(system.file("extdata/match_levelpaths_2279159.rds", package = "nhdplusTools"))
+match_levelpaths(net_prep, 2279159, add_checks = TRUE)
 
 }

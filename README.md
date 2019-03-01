@@ -15,7 +15,6 @@ but the hope is that this can become a community toolbox for NHDPlus in R.
 
 ```
 install.packages("devtools")
-install.packages("rgeos", repos="http://R-Forge.R-project.org", type="source")
 devtools::install_github("dblodgett-usgs/nhdplusTools")
 ```
 

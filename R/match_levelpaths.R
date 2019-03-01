@@ -4,14 +4,21 @@
 #' COMID, Hydroseq, LevelPathI, DnLevelPat, denTotalAreaSqKM, HUC12, TOHUC attributes.
 #' @param start_comid integer COMID to start search from.
 #' @param add_checks boolean if TRUE, checks for toHUC errors are added.
-#' @details ...
+#' @details Match level paths compares the set of hydrologic units found through
+#' spatial intersection to the path identified by navigating the TOHUC codes from
+#' headwater to outlet and attempts of reconcile anomolies found.
+#'
+#' This function is preliminary and subject to revision. It has been tested thoroughly
+#' but complete methods description have not yet been published.
 #'
 #' @export
 #' @importFrom sf st_cast st_union st_geometry st_sfc st_sf st_crs st_set_geometry st_line_merge st_geometry_type
-#' @importFrom dplyr filter mutate left_join select distinct case_when rename arrange
+#' @importFrom dplyr filter mutate left_join select distinct case_when rename arrange ungroup
 #' @importFrom tidyr unnest
+#'
 #' @examples
-#' #todo
+#' net_prep <- readRDS(system.file("extdata/match_levelpaths_2279159.rds", package = "nhdplusTools"))
+#' match_levelpaths(net_prep, 2279159, add_checks = TRUE)
 #'
 match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
 

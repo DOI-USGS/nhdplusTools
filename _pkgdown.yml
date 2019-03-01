@@ -10,6 +10,7 @@ reference:
       - '`calculate_total_drainage_area`'
       - '`calculate_arbolate_sum`'
       - '`calculate_levelpaths`'
+      - '`prepare_nhdplus`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are
@@ -27,20 +28,8 @@ reference:
       - '`get_UT`'
   - title: Indexing
     desc: >
-      Functions to figure out where other data you have is on the NHDPlus
-      network.
+      Functions to index and match data to NHDPlus features.
     contents:
       - '`get_flowline_index`'
-  - title: Refactoring
-    desc: >
-      Functions that help modify the network to make it fit your needs
-      while maintaining as much of the original network as possible.
-    contents:
-      - '`refactor_nhdplus`'
-      - '`prepare_nhdplus`'
-      - '`split_flowlines`'
-      - '`split_catchment_divide`'
-      - '`collapse_flowlines`'
-      - '`reconcile_collapsed_flowlines`'
-      - '`reconcile_catchment_divides`'
-      - '`aggregate_catchments`'
+      - '`match_levelpaths`'
+

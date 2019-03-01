@@ -5,11 +5,15 @@
 ## Tools for Manipulating the NHDPlus Network
 
 This package is a growing collection of tools for manipulation of hydrographic
-data built around the NHDPlus data model. It is being developed as part of
-an ongoing collaboration between the National Weather Service and the U.S.
-Geological Survey with ongoing support from the USGS. There is no specific
+data built around the NHDPlus data model. There is no specific
 funding or plan to continue development of this package long term
-but the hope is that this can become a community toolbox for NHDPlus in R.
+but ongoing support is available due to use of the package in project work. 
+The hope is that this can become a community toolbox for NHDPlus in R.
+
+**Note** that preliminary functionality related to refactoring the NHDPlus network
+and catchments that is mentioned in this readme is available in a seperate branch
+of the nhdplusTools repository. It is in development and only available if the
+package is installed directly from that branch.
 
 ### Installation:
 

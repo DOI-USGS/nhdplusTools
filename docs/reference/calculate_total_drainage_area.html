@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NHDPlus Data Path — nhdplus_path • nhdplusTools</title>
+<title>Total Drainage Area — calculate_total_drainage_area • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,14 +30,13 @@
 
 
 
-<meta property="og:title" content="NHDPlus Data Path — nhdplus_path" />
+<meta property="og:title" content="Total Drainage Area — calculate_total_drainage_area" />
 
-<meta property="og:description" content="Allows specification of a custom path to a source dataset.
-Typically this will be the national seamless dataset in
-geodatabase or geopackage format." />
+<meta property="og:description" content="Calculates total drainage area given a dendritic
+network and incremental areas." />
 <meta name="twitter:card" content="summary" />
 
-<meta name="robots" content="noindex">
+
 
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
@@ -65,7 +64,7 @@ geodatabase or geopackage format." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -119,45 +118,48 @@ geodatabase or geopackage format." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>NHDPlus Data Path</h1>
+    <h1>Total Drainage Area</h1>
     <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
-    <div class="hidden name"><code>nhdplus_path.Rd</code></div>
+    <div class="hidden name"><code>calculate_total_drainage_area.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Allows specification of a custom path to a source dataset.
-Typically this will be the national seamless dataset in
-geodatabase or geopackage format.</p>
+    <p>Calculates total drainage area given a dendritic
+network and incremental areas.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>nhdplus_path</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment_area</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path</th>
-      <td><p>character path ending in .gdb or .gpkg</p></td>
-    </tr>
-    <tr>
-      <th>warn</th>
-      <td><p>boolean controls whether warning an status messages are printed</p></td>
+      <th>catchment_area</th>
+      <td><p>data.frame with ID, toID, and area columns.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>1 if set successfully, the path if no input.</p>
+    <p>numeric with total area.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>nhdplus_path</span>(<span class='st'>"/data/NHDPlusV21_National_Seamless.gdb"</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/source'>source</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+<span class='no'>catchment_area</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
+                             <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>walker_flowline</span>, <span class='no'>COMID</span>, <span class='no'>AreaSqKM</span>), <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>, <span class='kw'>area</span> <span class='kw'>=</span> <span class='no'>AreaSqKM</span>)
 
-<span class='fu'>nhdplus_path</span>(<span class='st'>"/data/NHDPlusV21_National_Seamless.gdb"</span>, <span class='kw'>warn</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+<span class='no'>new_da</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment_area</span>)
 
-<span class='fu'>nhdplus_path</span>()</div><div class='output co'>#&gt; [1] "/data/NHDPlusV21_National_Seamless.gdb"</div><div class='input'>
+<span class='no'>catchment_area</span>$<span class='no'>totda</span> <span class='kw'>&lt;-</span> <span class='no'>new_da</span>
+<span class='no'>catchment_area</span>$<span class='no'>nhdptotda</span> <span class='kw'>&lt;-</span> <span class='no'>walker_flowline</span>$<span class='no'>TotDASqKM</span>
+
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/mean'>mean</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>abs</a></span>(<span class='no'>catchment_area</span>$<span class='no'>totda</span> - <span class='no'>catchment_area</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; [1] 1.633102e-15</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Extremes'>max</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>abs</a></span>(<span class='no'>catchment_area</span>$<span class='no'>totda</span> - <span class='no'>catchment_area</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; [1] 2.842171e-14</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

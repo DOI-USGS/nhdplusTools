@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Total Drainage Area — calculate_total_drainage_area • nhdplusTools</title>
+<title>Navigate Upstream Mainstem — get_UM • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,13 +30,12 @@
 
 
 
-<meta property="og:title" content="Total Drainage Area — calculate_total_drainage_area" />
+<meta property="og:title" content="Navigate Upstream Mainstem — get_UM" />
 
-<meta property="og:description" content="Calculates total drainage area given a dendritic
-network and incremental areas." />
+<meta property="og:description" content="Traverse NHDPlus network upstream main stem" />
 <meta name="twitter:card" content="summary" />
 
-<meta name="robots" content="noindex">
+
 
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
@@ -64,7 +63,7 @@ network and incremental areas." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -118,44 +117,56 @@ network and incremental areas." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Total Drainage Area</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
-    <div class="hidden name"><code>calculate_total_drainage_area.Rd</code></div>
+    <h1>Navigate Upstream Mainstem</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools/blob/master/R/get_network.R'><code>R/get_network.R</code></a></small>
+    <div class="hidden name"><code>get_UM.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Calculates total drainage area given a dendritic
-network and incremental areas.</p>
+    <p>Traverse NHDPlus network upstream main stem</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment_area</span>)</pre>
+    <pre class="usage"><span class='fu'>get_UM</span>(<span class='no'>network</span>, <span class='no'>comid</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>catchment_area</th>
-      <td><p>data.frame with ID, toID, and area columns.</p></td>
+      <th>network</th>
+      <td><p>data.frame NHDPlus flowlines including at a minimum:
+COMID,Pathlength, LevelPathI, UpHydroseq, and Hydroseq.</p></td>
+    </tr>
+    <tr>
+      <th>comid</th>
+      <td><p>integer identifier to start navigating from.</p></td>
+    </tr>
+    <tr>
+      <th>distance</th>
+      <td><p>numeric distance in km to limit how many COMIDs are
+returned. The COMID that exceeds the distance specified is returned.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>numeric with total area.</p>
+    <p>integer vector of all COMIDs upstream of the starting COMID
+along the mainstem.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/source'>source</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
-<span class='no'>catchment_area</span> <span class='kw'>&lt;-</span> <span class='fu'>prepare_nhdplus</span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
-                             <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>walker_flowline</span>, <span class='no'>COMID</span>, <span class='no'>AreaSqKM</span>), <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>, <span class='kw'>area</span> <span class='kw'>=</span> <span class='no'>AreaSqKM</span>)</div><div class='output co'>#&gt; <span class='error'>Error in prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE,     warn = FALSE): could not find function "prepare_nhdplus"</span></div><div class='input'>
-<span class='no'>new_da</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_total_drainage_area</span>(<span class='no'>catchment_area</span>)</div><div class='output co'>#&gt; <span class='error'>Error in select(dat_fram, ID): object 'catchment_area' not found</span></div><div class='input'>
-<span class='no'>catchment_area</span>$<span class='no'>totda</span> <span class='kw'>&lt;-</span> <span class='no'>new_da</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'new_da' not found</span></div><div class='input'><span class='no'>catchment_area</span>$<span class='no'>nhdptotda</span> <span class='kw'>&lt;-</span> <span class='no'>walker_flowline</span>$<span class='no'>TotDASqKM</span></div><div class='output co'>#&gt; <span class='error'>Error in catchment_area$nhdptotda &lt;- walker_flowline$TotDASqKM: object 'catchment_area' not found</span></div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/mean'>mean</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>abs</a></span>(<span class='no'>catchment_area</span>$<span class='no'>totda</span> - <span class='no'>catchment_area</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; <span class='error'>Error in mean(abs(catchment_area$totda - catchment_area$nhdptotda)): object 'catchment_area' not found</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Extremes'>max</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>abs</a></span>(<span class='no'>catchment_area</span>$<span class='no'>totda</span> - <span class='no'>catchment_area</span>$<span class='no'>nhdptotda</span>))</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'catchment_area' not found</span></div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)
+<span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>,
+                                     <span class='st'>"petapsco_flowlines.gpkg"</span>,
+                                     <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+<span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='no'>sample_flines</span>$<span class='no'>geom</span>)</div><div class='input'><span class='no'>start_COMID</span> <span class='kw'>&lt;-</span> <span class='fl'>11690196</span>
+<span class='no'>UM_COMIDs</span> <span class='kw'>&lt;-</span> <span class='fu'>get_UM</span>(<span class='no'>sample_flines</span>, <span class='no'>start_COMID</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>UM_COMIDs</span>)$<span class='no'>geom</span>,
+     <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='input'>
+<span class='no'>UM_COMIDs</span> <span class='kw'>&lt;-</span> <span class='fu'>get_UM</span>(<span class='no'>sample_flines</span>, <span class='no'>start_COMID</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='fl'>50</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>UM_COMIDs</span>)$<span class='no'>geom</span>,
+     <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='img'><img src='get_UM-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

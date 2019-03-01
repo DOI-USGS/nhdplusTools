@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Discover NHDPlus ID — discover_nhdplus_id • nhdplusTools</title>
+<title>NHDPlus Data Path — nhdplus_path • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,12 +30,14 @@
 
 
 
-<meta property="og:title" content="Discover NHDPlus ID — discover_nhdplus_id" />
+<meta property="og:title" content="NHDPlus Data Path — nhdplus_path" />
 
-<meta property="og:description" content="Multipurpose function to find a COMID of interest." />
+<meta property="og:description" content="Allows specification of a custom path to a source dataset.
+Typically this will be the national seamless dataset in
+geodatabase or geopackage format." />
 <meta name="twitter:card" content="summary" />
 
-<meta name="robots" content="noindex">
+
 
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
@@ -63,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -117,66 +119,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Discover NHDPlus ID</h1>
+    <h1>NHDPlus Data Path</h1>
     <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
-    <div class="hidden name"><code>discover_nhdplus_id.Rd</code></div>
+    <div class="hidden name"><code>nhdplus_path.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Multipurpose function to find a COMID of interest.</p>
+    <p>Allows specification of a custom path to a source dataset.
+Typically this will be the national seamless dataset in
+geodatabase or geopackage format.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>discover_nhdplus_id</span>(<span class='kw'>point</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>nhdplus_path</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>point</th>
-      <td><p>An sf POINT including crs as created by:
-sf::st_sfc(sf::st_point(..,..), crs)</p></td>
+      <th>path</th>
+      <td><p>character path ending in .gdb or .gpkg</p></td>
     </tr>
     <tr>
-      <th>nldi_feature</th>
-      <td><p>list with names `featureSource` and `featureID` where
-`featureSource` is derived from the "source" column of  the response of
-discover_nldi_sources() and the `featureSource` is a known identifier
-from the specified `featureSource`.</p></td>
+      <th>warn</th>
+      <td><p>boolean controls whether warning an status messages are printed</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>integer COMID</p>
+    <p>1 if set successfully, the path if no input.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>point</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/sfc'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st'>st_point</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(-<span class='fl'>76.87479</span>, <span class='fl'>39.48233</span>)), <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
-<span class='fu'>discover_nhdplus_id</span>(<span class='no'>point</span>)</div><div class='output co'>#&gt; [1] 11689978</div><div class='input'>
-<span class='fu'><a href='discover_nldi_sources.html'>discover_nldi_sources</a></span>()</div><div class='output co'>#&gt;      source
-#&gt; 1     comid
-#&gt; 2   huc12pp
-#&gt; 3 npdes_rad
-#&gt; 4  nwissite
-#&gt; 5       wqp
-#&gt;                                                                             sourceName
-#&gt; 1                                                                        NHDPlus comid
-#&gt; 2                                                                    HUC12 Pour Points
-#&gt; 3 EPA Office of Water (OW): Facilities that Discharge to Water NHDPlus Indexed Dataset
-#&gt; 4                                                                           NWIS Sites
-#&gt; 5                                                                 Water Quality Portal
-#&gt;                               features
-#&gt; 1     https://cida.usgs.gov/nldi/comid
-#&gt; 2   https://cida.usgs.gov/nldi/huc12pp
-#&gt; 3 https://cida.usgs.gov/nldi/npdes_rad
-#&gt; 4  https://cida.usgs.gov/nldi/nwissite
-#&gt; 5       https://cida.usgs.gov/nldi/wqp</div><div class='input'>
-<span class='no'>nldi_huc12</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"huc12pp"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"070700051701"</span>)
-<span class='fu'>discover_nhdplus_id</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_huc12</span>)</div><div class='output co'>#&gt; [1] 13637491</div><div class='input'>
-<span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-08279500"</span>)
-<span class='fu'>discover_nhdplus_id</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>)</div><div class='output co'>#&gt; [1] 17864756</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>nhdplus_path</span>(<span class='st'>"/data/NHDPlusV21_National_Seamless.gdb"</span>)
+
+<span class='fu'>nhdplus_path</span>(<span class='st'>"/data/NHDPlusV21_National_Seamless.gdb"</span>, <span class='kw'>warn</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+
+<span class='fu'>nhdplus_path</span>()</div><div class='output co'>#&gt; [1] "/data/NHDPlusV21_National_Seamless.gdb"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

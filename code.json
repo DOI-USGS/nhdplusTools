@@ -3,7 +3,7 @@
     "name": "nhdplusTools",
     "organization": "U.S. Geological Survey",
     "description": "Tools for Using NHDPlus Data",
-    "version": "0.3.3",
+    "version": "0.3.4",
     "status": "Preliminary",
 
     "permissions": {

@@ -37,7 +37,7 @@ network and incremental lengths. Arbolate sum is the total length
 of all upstream flowlines." />
 <meta name="twitter:card" content="summary" />
 
-<meta name="robots" content="noindex">
+
 
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
@@ -65,7 +65,7 @@ of all upstream flowlines." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -157,13 +157,17 @@ of all upstream flowlines.</p>
 #&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/source'>source</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
-<span class='no'>catchment_length</span> <span class='kw'>&lt;-</span> <span class='fu'>prepare_nhdplus</span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
+<span class='no'>catchment_length</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
                              <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>walker_flowline</span>, <span class='no'>COMID</span>), <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='no'>LENGTHKM</span>)</div><div class='output co'>#&gt; <span class='error'>Error in prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE,     warn = FALSE): could not find function "prepare_nhdplus"</span></div><div class='input'>
-<span class='no'>arb_sum</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_arbolate_sum</span>(<span class='no'>catchment_length</span>)</div><div class='output co'>#&gt; <span class='error'>Error in select(dat_fram, ID): object 'catchment_length' not found</span></div><div class='input'>
-<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> <span class='kw'>&lt;-</span> <span class='no'>arb_sum</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'arb_sum' not found</span></div><div class='input'><span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span> <span class='kw'>&lt;-</span> <span class='no'>walker_flowline</span>$<span class='no'>ArbolateSu</span></div><div class='output co'>#&gt; <span class='error'>Error in catchment_length$nhd_arb_sum &lt;- walker_flowline$ArbolateSu: object 'catchment_length' not found</span></div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/mean'>mean</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>abs</a></span>(<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> - <span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span>))</div><div class='output co'>#&gt; <span class='error'>Error in mean(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)): object 'catchment_length' not found</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Extremes'>max</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>abs</a></span>(<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> - <span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span>))</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'catchment_length' not found</span></div><div class='input'>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='no'>LENGTHKM</span>)
+
+<span class='no'>arb_sum</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_arbolate_sum</span>(<span class='no'>catchment_length</span>)
+
+<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> <span class='kw'>&lt;-</span> <span class='no'>arb_sum</span>
+<span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span> <span class='kw'>&lt;-</span> <span class='no'>walker_flowline</span>$<span class='no'>ArbolateSu</span>
+
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/mean'>mean</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>abs</a></span>(<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> - <span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span>))</div><div class='output co'>#&gt; [1] 2.249097e-15</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Extremes'>max</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>abs</a></span>(<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> - <span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span>))</div><div class='output co'>#&gt; [1] 2.842171e-14</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

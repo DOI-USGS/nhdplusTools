@@ -29,7 +29,7 @@ included in this column and the largest value will be followed when no nameID is
   \item topo_sort is similar to Hydroseq in NHDPlus in that large topo_sort values
   are upstream of small topo_sort values. Note that there are many valid topological
   sort orders of a directed graph. The sort order output by this function is generated
-  using \code{\link{igraph::topo_sort}}.
+  using `igraph::topo_sort`.
 }
 }
 \examples{

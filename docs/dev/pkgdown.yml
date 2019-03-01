@@ -1,10 +1,8 @@
-pandoc: 2.2.2.1
-pkgdown: 1.1.0
+pandoc: '2.5'
+pkgdown: 1.3.0
 pkgdown_sha: ~
 articles:
   nhdplusTools: nhdplusTools.html
   plot_nhdplus: plot_nhdplus.html
   point_indexing: point_indexing.html
-  refactor_catchment: refactor_catchment.html
-  refactor_nhdplus: refactor_nhdplus.html
 

@@ -1,5 +1,8 @@
 context("package setup")
 
+pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
+                                   package = "nhdplusTools"))
+
 test_that("nhdplus_data path sets and gets right", {
   expect_equal(nhdplus_path(), "../NHDPlusV21_National_Seamless.gdb")
 
@@ -105,16 +108,12 @@ test_that("calculate level path", {
 context("prepare_nhdplus")
 
 test_that("prep_nhdplus_works and errors as expected", {
-  flines_in <- readRDS("data/petapsco_network.rds")
+  flines_in <- pt_data
 
   flines <- prepare_nhdplus(flines_in,
                             min_network_size = 10,
                             min_path_length = 1,
                             warn = FALSE)
-
-  expect_equal(
-    flines,
-    readRDS("data/petapsco_prepared.rds"))
 
   expect_error(
     flines <- prepare_nhdplus(
@@ -127,7 +126,7 @@ test_that("prep_nhdplus_works and errors as expected", {
 })
 
 test_that("prep_nhdplus leaves non-dendritic", {
-  flines_in <- readRDS("data/petapsco_network.rds")
+  flines_in <- pt_data
 
   flines <- suppressWarnings(
     prepare_nhdplus(flines_in,
@@ -163,7 +162,7 @@ test_that("prep_nhdplus removes tiny networks", {
 })
 
 test_that("prep_nhdplus works with inland network", {
-  flines_in <- readRDS("data/petapsco_network.rds")
+  flines_in <- pt_data
 
   flines <- dplyr::filter(flines_in, COMID %in% get_UT(flines_in, 11690564))
   flines <- sf::st_set_geometry(flines, NULL)

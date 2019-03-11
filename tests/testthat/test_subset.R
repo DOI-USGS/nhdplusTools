@@ -138,4 +138,6 @@ test_that("prep_nhdplus runs as expected", {
 
   temp_data <- lapply(temp_data, unlink)
 
+  unlink(sample_gpkg)
+
 })

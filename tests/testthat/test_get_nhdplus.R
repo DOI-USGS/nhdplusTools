@@ -1,7 +1,10 @@
 context("get_nhdplus")
 
+pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
+                                   package = "nhdplusTools"))
+
 test_that("get_nhdplus_byid", {
-  comid_set <- get_UT(readRDS("data/petapsco_network.rds"), 11687180)
+  comid_set <- get_UT(pt_data, 11687180)
 
   catchmentsp <- get_nhdplus_byid(comid_set, "catchmentsp")
 
@@ -21,7 +24,7 @@ test_that("get_nhdplus_byid", {
 })
 
 test_that("get_nhdplus_bybox", {
-  bbox <- readRDS("data/petapsco_network.rds") %>%
+  bbox <- pt_data %>%
     sf::st_transform(4326) %>%
     sf::st_bbox() %>%
     sf::st_as_sfc()

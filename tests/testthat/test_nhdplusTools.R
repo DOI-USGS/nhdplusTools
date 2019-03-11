@@ -101,3 +101,73 @@ test_that("calculate level path", {
                                                "level path from NHDPlus."))
   }
 })
+
+context("prepare_nhdplus")
+
+test_that("prep_nhdplus_works and errors as expected", {
+  flines_in <- readRDS("data/petapsco_network.rds")
+
+  flines <- prepare_nhdplus(flines_in,
+                            min_network_size = 10,
+                            min_path_length = 1,
+                            warn = FALSE)
+
+  expect_equal(
+    flines,
+    readRDS("data/petapsco_prepared.rds"))
+
+  expect_error(
+    flines <- prepare_nhdplus(
+      dplyr::rename(flines_in, LENGTH = LENGTHKM),
+      min_network_size = 10,
+      min_path_length = 1,
+      warn = FALSE),
+    paste("Missing some required attributes in call to:",
+          "prepare_nhdplus. Expected: LENGTHKM."))
+})
+
+test_that("prep_nhdplus leaves non-dendritic", {
+  flines_in <- readRDS("data/petapsco_network.rds")
+
+  flines <- suppressWarnings(
+    prepare_nhdplus(flines_in,
+                    min_network_size = 10,
+                    min_path_length = 1,
+                    purge_non_dendritic = FALSE))
+
+  expect_equal(nrow(flines), 707)
+
+  flines_in$ToNode[150] <-
+    flines_in$ToNode[which(!flines_in$ToNode %in% flines_in$FromNode)]
+
+  expect_error(prepare_nhdplus(flines_in,
+                               min_network_size = 10,
+                               min_path_length = 1,
+                               purge_non_dendritic = FALSE,
+                               warn = FALSE),
+               paste("FromNode - ToNode imply terminal flowlines that are not\n",
+                     "flagged terminal. Can't assume NA toCOMIDs go to the ocean."))
+
+})
+
+test_that("prep_nhdplus removes tiny networks", {
+  expect_warning(flines <- prepare_nhdplus(
+    sf::st_set_geometry(readRDS("data/tiny_network.rds"), NULL),
+    min_network_size = 10,
+    min_path_length = 1,
+    purge_non_dendritic = FALSE),
+    paste("Removed 4 flowlines that don't apply.\n",
+          "Includes: Coastlines, non-dendritic paths, \nand networks",
+          "with drainage area less than 10 sqkm"))
+  expect_equal(nrow(flines), 0)
+})
+
+test_that("prep_nhdplus works with inland network", {
+  flines_in <- readRDS("data/petapsco_network.rds")
+
+  flines <- dplyr::filter(flines_in, COMID %in% get_UT(flines_in, 11690564))
+  flines <- sf::st_set_geometry(flines, NULL)
+  expect_warning(prepare_nhdplus(flines, 0, 0, FALSE, FALSE),
+                 "Got NHDPlus data without a Terminal catchment. Attempting to find it.")
+})
+

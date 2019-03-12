@@ -1,6 +1,6 @@
 # nhdplusTools
 
-[![Build Status](https://travis-ci.org/dblodgett-usgs/nhdplusTools.svg?branch=master)](https://travis-ci.org/dblodgett-usgs/nhdplusTools) [![Coverage Status](https://coveralls.io/repos/github/dblodgett-usgs/nhdplusTools/badge.svg?branch=master)](https://coveralls.io/github/dblodgett-usgs/nhdplusTools?branch=master)
+[![Build Status](https://travis-ci.org/USGS-R/nhdplusTools.svg?branch=master)](https://travis-ci.org/USGS-R/nhdplusTools) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/nhdplusTools/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/nhdplusTools?branch=master)
 
 ## Tools for Manipulating the NHDPlus Network
 
@@ -19,7 +19,7 @@ package is installed directly from that branch.
 
 ```
 install.packages("devtools")
-devtools::install_github("dblodgett-usgs/nhdplusTools")
+devtools::install_github("USGS-R/nhdplusTools")
 ```
 
 ### Terminology: 

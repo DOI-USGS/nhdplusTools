@@ -4,7 +4,7 @@
     "organization": "U.S. Geological Survey",
     "description": "Tools for Using NHDPlus Data",
     "version": "0.3.4",
-    "status": "Preliminary",
+    "status": "Beta",
 
     "permissions": {
       "usageType": "openSource",

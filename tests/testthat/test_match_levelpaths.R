@@ -10,7 +10,7 @@ clean_huc12 <- function(huc12) {
 
 test_that("match levelpaths runs 2279159", {
   start_comid <- 2279159
-  net_prep <- readRDS("data/match_levelpaths_2279159.rds")
+  net_prep <- readRDS(system.file("extdata/match_levelpaths_2279159.rds", package = "nhdplusTools"))
   matched <- match_levelpaths(net_prep, start_comid, add_checks = TRUE)
   expect(matched$intersected_LevelPathI[which(matched$HUC12 == "102702020404")] == 550002171)
   expect(matched$intersected_LevelPathI[which(matched$HUC12 == "102702050201")] == 550002171)

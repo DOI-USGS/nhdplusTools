@@ -9,3 +9,5 @@ vignettes/point*
 _pkgdown.yml
 data-raw
 vignettes/rosm.cache
+DISCLAIMER.md
+code.json

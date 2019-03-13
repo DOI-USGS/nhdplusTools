@@ -29,6 +29,11 @@ match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
   #############################################################################
   hu <- get_lp_hu(fline_hu, start_comid)
 
+  if(nrow(hu) == 0) {
+    warning(paste("No matches found for", start_comid))
+    return(NULL)
+  }
+
   #############################################################################
   # create hu with head_hu for each levelpath. label levelpath as "intersected"
   #############################################################################
@@ -122,6 +127,9 @@ get_lp_hu <- function(fline_hu, start_comid) {
   nlp_tracker <- c() # Tracker for levelpaths that need to be descended into later.
   count <- 0 # Stop checker for while loop.
   none_count <- 0 # performance improvement to not check too much stuff.
+
+  # Nothing to do.
+  if(is.na(unique(fline_hu$HUC12[fline_hu$LevelPathI == nlp]))) check <- FALSE
 
   # There's a chance that this search could be done with an artfully crafted
   # grouped filter but I've not been able to wrap my head around getting it

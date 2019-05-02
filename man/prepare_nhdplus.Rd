@@ -5,7 +5,7 @@
 \title{Prep NHDPlus Data}
 \usage{
 prepare_nhdplus(flines, min_network_size, min_path_length,
-  purge_non_dendritic = TRUE, warn = TRUE)
+  min_path_size = 0, purge_non_dendritic = TRUE, warn = TRUE)
 }
 \arguments{
 \item{flines}{data.frame NHDPlus flowlines including:
@@ -18,6 +18,10 @@ to include in output.}
 
 \item{min_path_length}{numeric Minimum length (km) of terminal level
 path of a network.}
+
+\item{min_path_size}{numeric Minimum size (sqkm) of outlet level
+path of a drainage basin. Drainage basins with an outlet drainage area
+smaller than this will be removed.}
 
 \item{purge_non_dendritic}{boolean Should non dendritic paths be removed
 or not.}

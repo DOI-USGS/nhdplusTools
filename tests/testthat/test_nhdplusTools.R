@@ -170,3 +170,14 @@ test_that("prep_nhdplus works with inland network", {
                  "Got NHDPlus data without a Terminal catchment. Attempting to find it.")
 })
 
+test_that("prep_nhdplus removes small drainage basins", {
+  flines_in <- pt_data
+  flines <- prepare_nhdplus(flines_in,
+                            min_network_size = 0,
+                            min_path_length = 0,
+                            min_path_size = 20,
+                            purge_non_dendritic = FALSE,
+                            warn = FALSE)
+  expect_equal(nrow(flines), 303)
+})
+

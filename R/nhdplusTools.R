@@ -448,6 +448,9 @@ calculate_levelpaths <- function(flowline) {
 #' to include in output.
 #' @param  min_path_length numeric Minimum length (km) of terminal level
 #' path of a network.
+#' @param  min_path_size numeric Minimum size (sqkm) of outlet level
+#' path of a drainage basin. Drainage basins with an outlet drainage area
+#' smaller than this will be removed.
 #' @param purge_non_dendritic boolean Should non dendritic paths be removed
 #' or not.
 #' @param warn boolean controls whether warning an status messages are printed
@@ -459,6 +462,7 @@ calculate_levelpaths <- function(flowline) {
 prepare_nhdplus <- function(flines,
                             min_network_size,
                             min_path_length,
+                            min_path_size = 0,
                             purge_non_dendritic = TRUE,
                             warn = TRUE) {
 
@@ -493,6 +497,14 @@ prepare_nhdplus <- function(flines,
     flines <- filter(flines, FTYPE != "Coastline")
     flines[["FromNode"]][which(flines$Divergence == 2)] <- NA
   }
+
+  if(min_path_size > 0) {
+    remove_paths <- group_by(flines, LevelPathI)
+    remove_paths <- filter(remove_paths, Hydroseq == min(Hydroseq))
+    remove_paths <- filter(remove_paths, TotDASqKM < min_path_size)$LevelPathI
+    flines <- filter(flines, !LevelPathI %in% remove_paths)
+  }
+
   terminal_filter <- flines$TerminalFl == 1 &
     flines$TotDASqKM < min_network_size
   start_filter <- flines$StartFlag == 1 &
@@ -511,7 +523,8 @@ prepare_nhdplus <- function(flines,
                   "flowlines that don't apply.\n",
                   "Includes: Coastlines, non-dendritic paths, \nand networks",
                   "with drainage area less than",
-                  min_network_size, "sqkm"))
+                  min_network_size, "sqkm, and drainage basins smaller than",
+                  min_path_size))
   }
 
   # Join ToNode and FromNode along with COMID and Length to

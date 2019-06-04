@@ -6,7 +6,7 @@ test_that("nldi basics work", {
 
   expect_equal(class(nldi_sources), "data.frame")
 
-  expect(all(c("comid", "huc12pp", "nwissite") %in% nldi_sources$source))
+  expect_true(all(c("comid", "huc12pp", "nwissite") %in% nldi_sources$source))
 
   expect_equal(names(nldi_sources), c("source", "sourceName", "features"))
 
@@ -35,7 +35,7 @@ test_that("navigation works", {
 
   expect("sf" %in% class(nav), "expected an sf data.frame")
 
-  expect("sfc_POINT" %in% class(sf::st_geometry(nav)),
+  expect_true("sfc_POINT" %in% class(sf::st_geometry(nav)),
          "expected point response")
 
   nav2 <- navigate_nldi(nldi_feature = nldi_nwis,
@@ -43,7 +43,7 @@ test_that("navigation works", {
                        data_source = "nwissite",
                        distance_km = 100)
 
-  expect(nrow(nav2) > nrow(nav))
+  expect_true(nrow(nav2) > nrow(nav))
 })
 
 test_that("basin works", {
@@ -54,6 +54,6 @@ test_that("basin works", {
 
   expect("sf" %in% class(nav), "expected an sf data.frame")
 
-  expect("sfc_POLYGON" %in% class(sf::st_geometry(nav)),
+  expect_true("sfc_POLYGON" %in% class(sf::st_geometry(nav)),
          "expected polygon response")
 })

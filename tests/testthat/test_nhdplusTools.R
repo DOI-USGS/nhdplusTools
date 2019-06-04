@@ -94,7 +94,7 @@ test_that("calculate level path", {
   nhdp_lp <- sort(unique(walker_flowline$LevelPathI))
   nhdt_lp <- sort(unique(test_flowline$levelpath))
 
-  expect(length(nhdp_lp) == length(nhdt_lp))
+  expect_true(length(nhdp_lp) == length(nhdt_lp))
 
   for(lp in seq_along(nhdp_lp)) {
     nhdp <- filter(walker_flowline, LevelPathI == nhdp_lp[lp])

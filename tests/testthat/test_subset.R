@@ -111,7 +111,7 @@ test_that("prep_nhdplus runs as expected", {
 
   temp_data <- stage_national_data(output_path = "data/temp")
 
-  expect(suppressWarnings(all(lapply(temp_data, file.exists))))
+  expect_true(suppressWarnings(all(lapply(temp_data, file.exists))))
 
   temp_data <- lapply(temp_data, unlink)
 

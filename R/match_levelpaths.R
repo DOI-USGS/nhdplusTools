@@ -336,6 +336,13 @@ correct_hu <- function(hu, fline_hu, funky_headwaters, add_checks) {
     select(-head_HUC12) %>% rename(head_HUC12 = updated_head_HUC12)
 
   ################################################################################
+  # When HUC12 doesn't have anything going to it -- force it to be a head_HUC12
+  ################################################################################
+  broken_head <- !hu$HUC12 %in% hu$TOHUC & !hu$head_HUC12 == hu$HUC12
+  hu <- mutate(hu, head_HUC12 = ifelse(broken_head, HUC12, head_HUC12),
+               corrected_LevelPathI = ifelse(broken_head, "none", corrected_LevelPathI)) # sketchy but should work?
+
+  ################################################################################
   # Fix up outlets that got broken in edge cases above.
   ################################################################################
   if(any(hu$outlet_HUC12 == "")) {
@@ -347,7 +354,8 @@ correct_hu <- function(hu, fline_hu, funky_headwaters, add_checks) {
       left_join(select(lp_outlet, corrected_LevelPathI, updated_outlet_HUC12 = outlet_HUC12),
                 by = "corrected_LevelPathI") %>%
       select(-outlet_HUC12) %>% rename(outlet_HUC12 = updated_outlet_HUC12) %>%
-      filter(outlet_HUC12 != "")
+      filter(outlet_HUC12 != "" | corrected_LevelPathI == "none") %>%
+      mutate(outlet_HUC12 = ifelse(corrected_LevelPathI == "none", HUC12, outlet_HUC12))
   }
 
   lp_outlet <- select(hu, corrected_LevelPathI, outlet_HUC12) %>%

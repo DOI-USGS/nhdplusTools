@@ -35,7 +35,7 @@ test_that("match levelpaths runs 2279159", {
   expect_true(matched$head_HUC12[matched$HUC12 == "102702060404"] == "102702060403")
 
   # If we remove the trib_no_intersect errors this should be unique.
-  matched <- filter(matched, !trib_no_intersect & matched$corrected_LevelPathI != "none") %>%
+  matched <- filter(matched, !trib_no_intersect & matched$corrected_LevelPathI != -1) %>%
     select(corrected_LevelPathI, head_HUC12, outlet_HUC12) %>%
     distinct()
   expect_true(length(which(duplicated(matched$corrected_LevelPathI))) == 0)
@@ -110,11 +110,19 @@ test_that("match levelpaths 10390202", {
 
 })
 
-
 test_that("match levelpaths runs 12228521", {
   start_comid <- 12228521
   net_prep <- readRDS("data/match_levelpaths_12228521.rds")
   matched <- match_levelpaths(net_prep, start_comid, add_checks = TRUE)
 
   expect_true(matched$head_HUC12[matched$HUC12 == "040601040203"] == "040601040203")
+})
+
+test_that("high_res problem oputlet", {
+  start_comid <- 5000200014717
+  net_prep <- readRDS("data/hr_lp_poroblem.rds")
+
+  matched <- match_levelpaths(net_prep, start_comid, add_checks = TRUE)
+
+  expect_true(matched$head_HUC12[matched$HUC12 == "010200051009"] == "010200020201")
 })

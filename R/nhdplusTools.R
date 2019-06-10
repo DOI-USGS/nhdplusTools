@@ -324,7 +324,7 @@ accumulate_downstream <- function(dat_fram, var) {
 
   sorted <- sorted[sorted != "0" & sorted %in% as.character(cat_order$ID)]
 
-  dat_fram <- left_join(data.frame(ID = as.integer(sorted[!sorted == "NA"])),
+  dat_fram <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
                               dat_fram, by = "ID")
 
   dat_fram[["toID_row"]] <- match(dat_fram[["toID"]], dat_fram[["ID"]])
@@ -491,10 +491,10 @@ prepare_nhdplus <- function(flines,
   }
 
   if (purge_non_dendritic) {
-    flines <- filter(flines, FTYPE != "Coastline" &
+    flines <- filter(flines, (FTYPE != "Coastline" | FTYPE != 566) &
                        StreamOrde == StreamCalc)
   } else {
-    flines <- filter(flines, FTYPE != "Coastline")
+    flines <- filter(flines, (FTYPE != "Coastline" | FTYPE != 566))
     flines[["FromNode"]][which(flines$Divergence == 2)] <- NA
   }
 

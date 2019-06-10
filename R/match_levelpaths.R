@@ -127,6 +127,7 @@ get_lp_hu <- function(fline_hu, start_comid) {
   nlp_tracker <- c() # Tracker for levelpaths that need to be descended into later.
   count <- 0 # Stop checker for while loop.
   none_count <- 0 # performance improvement to not check too much stuff.
+  keep_going <- FALSE # Solves an edge case with small paths downstream of large paths.
 
   # Nothing to do.
   if(all(is.na(unique(fline_hu$HUC12[fline_hu$LevelPathI == nlp])))) check <- FALSE
@@ -136,7 +137,7 @@ get_lp_hu <- function(fline_hu, start_comid) {
   # right in all cases.
   while(check == TRUE & count < 100000) {
     # get the HUC12s that intersect the nlp we are looking for.
-    lp_hu_temp <- unique(fline_hu$HUC12[fline_hu$LevelPathI == nlp])
+    lp_hu_temp <- unique(fline_hu$HUC12[which(fline_hu$LevelPathI == nlp)])
 
     if(length(lp_hu_temp) == 1) if(is.na(lp_hu_temp)) lp_hu_temp <- character(0)
 
@@ -151,19 +152,19 @@ get_lp_hu <- function(fline_hu, start_comid) {
       # reset no match counter
       none_count <- 0
     } else {
+      if(any(fline_hu$DnLevelPat == nlp, na.rm = TRUE)) {
+        nlp_tracker <- c(nlp, nlp_tracker)
+        keep_going <- TRUE
+      }
+
       none_count <- none_count + 1
     }
 
-    if(length(next_lp) == 0 | none_count > 5) { # If on the last nlp next_lp will be empty.
-      # Grab all the levelpaths that intersect the one we are on.
-      next_lp <- filter(fline_hu,
-                        fline_hu$DnLevelPat == nlp_tracker[1] &
-                          !LevelPathI == nlp_tracker[1]) %>%
-        group_by(LevelPathI) %>%
-        # Pick only the outlet catchment/flowline
-        filter(Hydroseq == min(Hydroseq)) %>%
-        # Sort from biggest drainage area to smallest.
-        arrange(desc(denTotalAreaSqKM))
+    if(length(next_lp) == 0 | none_count > 5 | keep_going) { # If on the last nlp next_lp will be empty.
+
+      keep_going <- FALSE
+
+      next_lp <- get_next_lp(fline_hu, nlp_tracker)
 
       next_lp <- next_lp[["LevelPathI"]]
 
@@ -182,7 +183,7 @@ get_lp_hu <- function(fline_hu, start_comid) {
       next_lp <- c()
     }
 
-    if(length(next_lp) == 0 & length(nlp_tracker) == 0) check <- FALSE
+    if(length(next_lp) == 0 & length(nlp_tracker) == 0 & (is.null(nlp) | is.na(nlp))) check <- FALSE
     count <- count + 1
   }
 
@@ -190,6 +191,18 @@ get_lp_hu <- function(fline_hu, start_comid) {
                     HUC12 = I(lp_hu),
                     stringsAsFactors = FALSE) %>%
            tidyr::unnest())
+}
+
+get_next_lp <- function(fline_hu, nlp_tracker) {
+  # Grab all the levelpaths that intersect the one we are on.
+  filter(fline_hu,
+                    fline_hu$DnLevelPat == nlp_tracker[1] &
+                      !LevelPathI == nlp_tracker[1]) %>%
+    group_by(LevelPathI) %>%
+    # Pick only the outlet catchment/flowline
+    filter(Hydroseq == min(Hydroseq)) %>%
+    # Sort from biggest drainage area to smallest.
+    arrange(desc(denTotalAreaSqKM))
 }
 
 trace_hu_network <- function(hu, outlet_hu, fline_hu) {
@@ -340,7 +353,7 @@ correct_hu <- function(hu, fline_hu, funky_headwaters, add_checks) {
   ################################################################################
   broken_head <- !hu$HUC12 %in% hu$TOHUC & !hu$head_HUC12 == hu$HUC12
   hu <- mutate(hu, head_HUC12 = ifelse(broken_head, HUC12, head_HUC12),
-               corrected_LevelPathI = ifelse(broken_head, "none", corrected_LevelPathI)) # sketchy but should work?
+               corrected_LevelPathI = ifelse(broken_head, -1, corrected_LevelPathI)) # sketchy but should work?
 
   ################################################################################
   # Fix up outlets that got broken in edge cases above.
@@ -354,8 +367,8 @@ correct_hu <- function(hu, fline_hu, funky_headwaters, add_checks) {
       left_join(select(lp_outlet, corrected_LevelPathI, updated_outlet_HUC12 = outlet_HUC12),
                 by = "corrected_LevelPathI") %>%
       select(-outlet_HUC12) %>% rename(outlet_HUC12 = updated_outlet_HUC12) %>%
-      filter(outlet_HUC12 != "" | corrected_LevelPathI == "none") %>%
-      mutate(outlet_HUC12 = ifelse(corrected_LevelPathI == "none", HUC12, outlet_HUC12))
+      filter(outlet_HUC12 != "" | corrected_LevelPathI == -1) %>%
+      mutate(outlet_HUC12 = ifelse(corrected_LevelPathI == -1, HUC12, outlet_HUC12))
   }
 
   lp_outlet <- select(hu, corrected_LevelPathI, outlet_HUC12) %>%

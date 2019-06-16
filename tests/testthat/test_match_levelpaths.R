@@ -8,6 +8,42 @@ clean_huc12 <- function(huc12) {
     distinct()
 }
 
+test_that("match levelpaths and get_linked_points", {
+  source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+
+  suppressWarnings(net_prep <- prepare_nhdplus(new_hope_flowline,
+                              min_network_size = 20, # sqkm
+                              min_path_length = 0, # sqkm
+                              min_path_size = 10, # sqkm
+                              purge_non_dendritic = TRUE,
+                              warn =  TRUE) %>%
+    left_join(select(new_hope_flowline, COMID, DnLevelPat, AreaSqKM), by = "COMID") %>%
+    st_sf() %>%
+    group_by(LevelPathI) %>%
+    arrange(Hydroseq) %>%
+    mutate(DnLevelPat = DnLevelPat[1]) %>%
+    ungroup())
+
+  net_prep["denTotalAreaSqKM"] <-
+    calculate_total_drainage_area(select(st_set_geometry(net_prep, NULL),
+                                         ID = COMID, toID = toCOMID,
+                                         area = AreaSqKM))
+
+  wbd <- select(new_hope_wbd, HUC12 = HUC_12, TOHUC = HU_12_DS) %>%
+    st_transform(st_crs(net_prep))
+
+  net_prep <- st_join(net_prep, wbd) %>%
+    st_set_geometry(NULL)
+
+  outlet_comid <- 8897784
+
+  hu_lp <- match_levelpaths(net_prep, outlet_comid)
+
+  linked_points <- get_linked_points(hu_lp, new_hope_flowline, wbd, exclude = c())
+
+  expect_equal(nrow(linked_points), 8)
+})
+
 test_that("match levelpaths runs 2279159", {
   start_comid <- 2279159
   net_prep <- readRDS(system.file("extdata/match_levelpaths_2279159.rds", package = "nhdplusTools"))

@@ -29,7 +29,9 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   correct_head_HUC12 <- corrected_LevelPathI <- head_HUC12 <-
   intersected_LevelPathI <- levelpath <- main_LevelPathI <- nameID <-
   nhd_LevelPath <- outletID <- outlet_HUC12 <- update_head_HUC12 <-
-  updated_head_HUC12 <- updated_outlet_HUC12 <- weight<- NULL
+  updated_head_HUC12 <- updated_outlet_HUC12 <- weight <- hu12 <-
+  lp <- L2 <- row_number <- group_size <- row_number <-
+  group_size <- NULL
 
 nhdplusTools_env <- new.env()
 

@@ -44,3 +44,26 @@ test_that("we get urls for nhdplushr", {
 
   expect_equal(length(urls), 11)
 })
+
+test_that("get_nhdplushr runs", {
+  work_dir <- tempdir()
+  temp_file <- file.path(work_dir, "temp.zip")
+  file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
+            temp_file)
+  unzip(temp_file, exdir = work_dir)
+
+  out <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"))
+
+  layers <- st_layers(out)
+  expect_equal(layers$name, c("NHDFlowline", "NHDPlusCatchment"))
+  expect_equal(layers$features, c(2691, 2605))
+
+  out <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"), layers = NULL)
+
+  layers <- st_layers(out)
+
+  expect_equal(length(layers$name), 7)
+  expect_equal(layers$fields[which(layers$name == "NHDFlowline")], 57)
+
+  unlink(c(temp_file, out, file.path(work_dir, "03_sub.gpkg")))
+})

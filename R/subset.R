@@ -1,11 +1,12 @@
-#' @title Subset NHDPlus National Data
-#' @description Saves a subset of the National Seamless database based on a
-#' specified collection of COMIDs.
+#' @title Subset NHDPlus
+#' @description Saves a subset of the National Seamless database or other
+#' nhdplusTools compatible data based on a specified collection of COMIDs.
 #' @param comids integer vector of COMIDs to include.
 #' @param output_file character path to save the output to defaults
 #' to the directory of the nhdplus_data.
 #' @param nhdplus_data character path to the .gpkg or .gdb containing
-#' the national seamless dataset or "download" to use web service.
+#' the national seamless database, a subset of NHDPlusHR,
+#' or "download" to use a web service to download NHDPlusV2.1 data.
 #' Not required if \code{\link{nhdplus_path}} has been set or the default
 #' has been adopted. See details for more.
 #' @param simplified boolean if TRUE (the default) the CatchmentSP layer

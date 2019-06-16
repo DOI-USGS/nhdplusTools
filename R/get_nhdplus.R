@@ -158,16 +158,43 @@ download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' Get NHDPlus HiRes as single geopackage
 #' @param hr_dir character directory with geodatabases
 #' @param out_gpkg character path to write output geopackage
+#' @param layers character vector with desired layers to return.
+#' c("NHDFlowline", "NHDPlusCatchment") is default.
+#' Choose from:
+#' c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine",
+#' "NHDPlusSink", "NHDPlusWall", "NHDPoint", "NHDPlusBurnWaterbody",
+#' "NHDPlusBurnLineEvent", "HYDRO_NET_Junctions",
+#' "WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")
+#'
+#' @details
+#' NHDFlowline is joined to value added attributes prior to being
+#' returned.
+#' Names are not modified from the NHDPlusHR geodatabase.
+#' Set layers to "NULL" to get all layers.
+#'
 #' @importFrom sf st_layers read_sf st_sf
-get_nhdplushr <- function(hr_dir, out_gpkg) {
+#' @export
+#' @examples
+#' \dontrun{
+#' download_dir <- download_nhdhr("./", c("0302", "0303"))
+#' get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
+#' }
+get_nhdplushr <- function(hr_dir, out_gpkg,
+                          layers = c("NHDFlowline", "NHDPlusCatchment")) {
   gdb_files <- list.files(hr_dir, pattern = "GDB.gdb", full.names = TRUE)
 
-  layer_names <- st_layers(gdb_files[1])
+  if(length(gdb_files) == 0) {
+    # For testing.
+    gdb_files <- list.files(hr_dir, pattern = "sub.gpkg", full.names = TRUE)
+  }
+  if(is.null(layers)) {
+    layers <- st_layers(gdb_files[1])
 
-  layer_names <- layer_names$name[!is.na(layer_names$geomtype) & layer_names$features > 0]
+    layers <- layers$name[!is.na(layers$geomtype) & layers$features > 0]
+  }
 
-  for(layer in layer_names) {
-    layer_set <- lapply(gdb_files, read_sf, layer = layer)
+  for(layer in layers) {
+    layer_set <- lapply(gdb_files, get_hr_data, layer = layer)
 
     out <- do.call(rbind, layer_set)
 
@@ -180,11 +207,12 @@ get_nhdplushr <- function(hr_dir, out_gpkg) {
   return(out_gpkg)
 }
 
-get_hr_fline <- function(gdb) {
-  fline <- "NHDFlowline"
-  vaa <- "NHDPlusFlowlineVAA"
-  left_join(
-    read_sf(gdb, fline),
-    suppressWarnings(read_sf(gdb, vaa)),
-    by = "NHDPlusID")
+get_hr_data <- function(gdb, layer = NULL) {
+  if(layer == "NHDFlowline") {
+    vaa <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
+    vaa <- select(vaa, -ReachCode, -VPUID)
+    left_join( read_sf(gdb, layer), vaa, by = "NHDPlusID")
+  } else {
+    read_sf(gdb, layer)
+  }
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/subset.R
 \name{subset_nhdplus}
 \alias{subset_nhdplus}
-\title{Subset NHDPlus National Data}
+\title{Subset NHDPlus}
 \usage{
 subset_nhdplus(comids, output_file, nhdplus_data = NULL,
   simplified = TRUE, overwrite = FALSE, status = TRUE)
@@ -14,7 +14,8 @@ subset_nhdplus(comids, output_file, nhdplus_data = NULL,
 to the directory of the nhdplus_data.}
 
 \item{nhdplus_data}{character path to the .gpkg or .gdb containing
-the national seamless dataset or "download" to use web service.
+the national seamless database, a subset of NHDPlusHR,
+or "download" to use a web service to download NHDPlusV2.1 data.
 Not required if \code{\link{nhdplus_path}} has been set or the default
 has been adopted. See details for more.}
 
@@ -29,8 +30,8 @@ will be included. Not relevant to the "download" option.}
 path to the saved subset geopackage
 }
 \description{
-Saves a subset of the National Seamless database based on a
-specified collection of COMIDs.
+Saves a subset of the National Seamless database or other
+nhdplusTools compatible data based on a specified collection of COMIDs.
 }
 \details{
 If \code{\link{stage_national_data}} has been run in the current

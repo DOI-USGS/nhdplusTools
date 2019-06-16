@@ -4,13 +4,34 @@
 \alias{get_nhdplushr}
 \title{Get NHDPlus HiRes as single geopackage}
 \usage{
-get_nhdplushr(hr_dir, out_gpkg)
+get_nhdplushr(hr_dir, out_gpkg, layers = c("NHDFlowline",
+  "NHDPlusCatchment"))
 }
 \arguments{
 \item{hr_dir}{character directory with geodatabases}
 
 \item{out_gpkg}{character path to write output geopackage}
+
+\item{layers}{character vector with desired layers to return.
+c("NHDFlowline", "NHDPlusCatchment") is default.
+Choose from:
+c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine",
+"NHDPlusSink", "NHDPlusWall", "NHDPoint", "NHDPlusBurnWaterbody",
+"NHDPlusBurnLineEvent", "HYDRO_NET_Junctions",
+"WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")}
 }
 \description{
 Get NHDPlus HiRes as single geopackage
+}
+\details{
+NHDFlowline is joined to value added attributes prior to being
+returned.
+Names are not modified from the NHDPlusHR geodatabase.
+Set layers to "NULL" to get all layers.
+}
+\examples{
+\dontrun{
+download_dir <- download_nhdhr("./", c("0302", "0303"))
+get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
+}
 }

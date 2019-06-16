@@ -29,7 +29,9 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   correct_head_HUC12 <- corrected_LevelPathI <- head_HUC12 <-
   intersected_LevelPathI <- levelpath <- main_LevelPathI <- nameID <-
   nhd_LevelPath <- outletID <- outlet_HUC12 <- update_head_HUC12 <-
-  updated_head_HUC12 <- updated_outlet_HUC12 <- weight<- NULL
+  updated_head_HUC12 <- updated_outlet_HUC12 <- weight <- hu12 <-
+  lp <- L2 <- row_number <- group_size <- row_number <-
+  group_size <- NULL
 
 nhdplusTools_env <- new.env()
 
@@ -324,7 +326,7 @@ accumulate_downstream <- function(dat_fram, var) {
 
   sorted <- sorted[sorted != "0" & sorted %in% as.character(cat_order$ID)]
 
-  dat_fram <- left_join(data.frame(ID = as.integer(sorted[!sorted == "NA"])),
+  dat_fram <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
                               dat_fram, by = "ID")
 
   dat_fram[["toID_row"]] <- match(dat_fram[["toID"]], dat_fram[["ID"]])
@@ -448,6 +450,9 @@ calculate_levelpaths <- function(flowline) {
 #' to include in output.
 #' @param  min_path_length numeric Minimum length (km) of terminal level
 #' path of a network.
+#' @param  min_path_size numeric Minimum size (sqkm) of outlet level
+#' path of a drainage basin. Drainage basins with an outlet drainage area
+#' smaller than this will be removed.
 #' @param purge_non_dendritic boolean Should non dendritic paths be removed
 #' or not.
 #' @param warn boolean controls whether warning an status messages are printed
@@ -459,6 +464,7 @@ calculate_levelpaths <- function(flowline) {
 prepare_nhdplus <- function(flines,
                             min_network_size,
                             min_path_length,
+                            min_path_size = 0,
                             purge_non_dendritic = TRUE,
                             warn = TRUE) {
 
@@ -487,12 +493,20 @@ prepare_nhdplus <- function(flines,
   }
 
   if (purge_non_dendritic) {
-    flines <- filter(flines, FTYPE != "Coastline" &
+    flines <- filter(flines, (FTYPE != "Coastline" | FTYPE != 566) &
                        StreamOrde == StreamCalc)
   } else {
-    flines <- filter(flines, FTYPE != "Coastline")
+    flines <- filter(flines, (FTYPE != "Coastline" | FTYPE != 566))
     flines[["FromNode"]][which(flines$Divergence == 2)] <- NA
   }
+
+  if(min_path_size > 0) {
+    remove_paths <- group_by(flines, LevelPathI)
+    remove_paths <- filter(remove_paths, Hydroseq == min(Hydroseq))
+    remove_paths <- filter(remove_paths, TotDASqKM < min_path_size)$LevelPathI
+    flines <- filter(flines, !LevelPathI %in% remove_paths)
+  }
+
   terminal_filter <- flines$TerminalFl == 1 &
     flines$TotDASqKM < min_network_size
   start_filter <- flines$StartFlag == 1 &
@@ -511,7 +525,8 @@ prepare_nhdplus <- function(flines,
                   "flowlines that don't apply.\n",
                   "Includes: Coastlines, non-dendritic paths, \nand networks",
                   "with drainage area less than",
-                  min_network_size, "sqkm"))
+                  min_network_size, "sqkm, and drainage basins smaller than",
+                  min_path_size))
   }
 
   # Join ToNode and FromNode along with COMID and Length to

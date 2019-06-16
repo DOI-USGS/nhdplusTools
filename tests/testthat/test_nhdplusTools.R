@@ -94,7 +94,7 @@ test_that("calculate level path", {
   nhdp_lp <- sort(unique(walker_flowline$LevelPathI))
   nhdt_lp <- sort(unique(test_flowline$levelpath))
 
-  expect(length(nhdp_lp) == length(nhdt_lp))
+  expect_true(length(nhdp_lp) == length(nhdt_lp))
 
   for(lp in seq_along(nhdp_lp)) {
     nhdp <- filter(walker_flowline, LevelPathI == nhdp_lp[lp])
@@ -168,5 +168,16 @@ test_that("prep_nhdplus works with inland network", {
   flines <- sf::st_set_geometry(flines, NULL)
   expect_warning(prepare_nhdplus(flines, 0, 0, FALSE, FALSE),
                  "Got NHDPlus data without a Terminal catchment. Attempting to find it.")
+})
+
+test_that("prep_nhdplus removes small drainage basins", {
+  flines_in <- pt_data
+  flines <- prepare_nhdplus(flines_in,
+                            min_network_size = 0,
+                            min_path_length = 0,
+                            min_path_size = 20,
+                            purge_non_dendritic = FALSE,
+                            warn = FALSE)
+  expect_equal(nrow(flines), 303)
 })
 

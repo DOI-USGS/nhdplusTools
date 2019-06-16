@@ -3,7 +3,7 @@ title: "Introduction to nhdplusTools"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{pkgdown}
+  %\VignetteIndexEntry{nhdplusTools}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

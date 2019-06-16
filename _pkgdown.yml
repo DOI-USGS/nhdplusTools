@@ -30,4 +30,5 @@ reference:
     contents:
       - '`get_flowline_index`'
       - '`match_levelpaths`'
+      - '`get_linked_points`'
 

@@ -29,7 +29,8 @@ library(sf)
 
 source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
 suppressWarnings(net_prep <- prepare_nhdplus(new_hope_flowline, 20, 0, 10) \%>\%
-                   left_join(select(new_hope_flowline, COMID, DnLevelPat, AreaSqKM), by = "COMID") \%>\%
+                   left_join(select(new_hope_flowline, COMID, DnLevelPat,
+                   AreaSqKM), by = "COMID") \%>\%
                    st_sf() \%>\%
                    group_by(LevelPathI) \%>\%
                    arrange(Hydroseq) \%>\%

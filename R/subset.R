@@ -10,7 +10,7 @@
 #' Not required if \code{\link{nhdplus_path}} has been set or the default
 #' has been adopted. See details for more.
 #' @param simplified boolean if TRUE (the default) the CatchmentSP layer
-#' will be included. Not relevant to the "download" option.
+#' will be included. Not relevant to the "download" option or NHDPlusHR data.
 #' @param overwrite boolean should the output file be overwritten
 #' @param status boolean should the function print status messages
 #' @details If \code{\link{stage_national_data}} has been run in the current
@@ -126,6 +126,9 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
       fline_path <- nhdplus_data
       catchment_path <- nhdplus_data
     }
+  } else if(file.exists(nhdplus_data)) {
+      fline_path <- nhdplus_data
+      catchment_path <- nhdplus_data
   } else {
     stop("couldn't find nhdplus data")
   }
@@ -133,7 +136,11 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
   if (grepl("*.rds$", fline_path)) {
     fline <- readRDS(fline_path)
   } else {
+    if(!layer_name %in% st_layers(fline_path)$name) {
+      layer_name <- "NHDFlowline"
+    }
     fline <- sf::read_sf(fline_path, layer_name)
+    fline <- rename_nhdplus(fline)
   }
 
   fline <- dplyr::filter(fline, COMID %in% comids)
@@ -162,7 +169,11 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
   if (grepl("*.rds$", catchment_path)) {
     catchment <- readRDS(catchment_path)
   } else {
+    if(!layer_name %in% st_layers(fline_path)$name) {
+      layer_name <- "NHDPlusCatchment"
+    }
     catchment <- sf::read_sf(catchment_path, layer_name)
+    catchment <- rename_nhdplus(catchment)
   }
 
   catchment <- dplyr::filter(catchment, FEATUREID %in% comids)
@@ -189,8 +200,13 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
 
   } else {
 
-  intersection_names <- c("Gage", "Sink", "NHDArea",
-                          "NHDWaterbody", "NHDFlowline_NonNetwork")
+  if("Gage" %in% st_layers(nhdplus_data)$name) {
+    intersection_names <- c("Gage", "Sink", "NHDArea",
+                            "NHDWaterbody", "NHDFlowline_NonNetwork")
+  } else {
+    intersection_names <- c("NHDWaterbody", "NHDArea", "NHDPlusSink")
+    intersection_names <- intersection_names[which(intersection_names %in% st_layers(nhdplus_data)$name)]
+  }
 
   invisible(lapply(intersection_names, intersection_write,
                    data_path = nhdplus_data,

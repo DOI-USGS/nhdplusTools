@@ -141,3 +141,26 @@ test_that("prep_nhdplus runs as expected", {
   unlink(sample_gpkg)
 
 })
+
+test_that("subset works with HR", {
+  work_dir <- tempdir()
+  temp_file <- file.path(work_dir, "temp.zip")
+  file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
+            temp_file)
+  unzip(temp_file, exdir = work_dir)
+
+  hr <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"),
+                       layers = c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody",
+                                  "NHDArea", "NHDPlusSink"))
+
+  flowlines <- read_sf(hr, "NHDFlowline")
+
+  up_ids <- get_UT(flowlines, 15000500028335)
+
+  sub <- subset_nhdplus(up_ids, file.path(work_dir, "sub.gpkg"), hr)
+
+  layers <- st_layers(sub)
+
+  expect_equal(length(layers$name), 5)
+  expect_equal(layers$features[which(layers$name == "NHDFlowline")], 1427)
+})

@@ -9,7 +9,9 @@ download_nhdhr(nhd_dir, hu_list, download_files = TRUE)
 \arguments{
 \item{nhd_dir}{character directory to save output into}
 
-\item{hu_list}{character vector of hydrologic region(s) to download
+\item{hu_list}{character vector of hydrologic region(s) to download}
+
+\item{download_files}{boolean if FALSE, only URLs to files will be returned
 can be hu02s and/or hu04s}
 }
 \value{

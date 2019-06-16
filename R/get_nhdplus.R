@@ -93,10 +93,12 @@ get_nhdplus_bybox <- function(box, layer) {
 #' download NHDPlus HiRes
 #' @param nhd_dir character directory to save output into
 #' @param hu_list character vector of hydrologic region(s) to download
+#' @param download_files boolean if FALSE, only URLs to files will be returned
 #' can be hu02s and/or hu04s
 #'
 #' @return Paths to geodatabases created.
 #' @importFrom xml2 read_xml xml_ns_strip xml_find_all xml_text
+#' @importFrom utils download.file unzip
 #' @export
 #' @examples
 #' download_nhdhr("", c("01", "0203"), download_files = FALSE)
@@ -172,7 +174,7 @@ download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' Names are not modified from the NHDPlusHR geodatabase.
 #' Set layers to "NULL" to get all layers.
 #'
-#' @importFrom sf st_layers read_sf st_sf
+#' @importFrom sf st_layers read_sf st_sf write_sf
 #' @export
 #' @examples
 #' \dontrun{

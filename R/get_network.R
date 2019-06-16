@@ -26,7 +26,7 @@
 #'
 get_UT <- function(network, comid, distance = NULL) {
 
-  check_names(names(network), "get_UT")
+  network <- check_names(network, "get_UT")
 
   network <- dplyr::select(network, get("get_UT_attributes",
                                         nhdplusTools_env))
@@ -110,7 +110,7 @@ private_get_UT <- function(network, comid) {
 #'
 get_UM <- function(network, comid, distance = NULL) {
 
-  check_names(names(network), "get_UM")
+  network <- check_names(network, "get_UM")
 
   main <- filter(network, COMID %in% comid)
 
@@ -160,7 +160,7 @@ get_UM <- function(network, comid, distance = NULL) {
 #'
 get_DM <- function(network, comid, distance = NULL) {
 
-  check_names(names(network), "get_DM")
+  network <- check_names(network, "get_DM")
 
   network <- dplyr::select(network, get("get_DM_attributes",
                                         nhdplusTools_env))
@@ -244,7 +244,7 @@ private_get_DM <- function(network, comid) {
 #'
 get_DD <- function(network, comid, distance = NULL) {
 
-  check_names(names(network), "get_DD")
+  network <- check_names(network, "get_DD")
 
   network <- dplyr::select(network, get("get_DD_attributes",
                                         nhdplusTools_env))

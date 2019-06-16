@@ -40,7 +40,7 @@ get_flowline_index <- function(flines, points,
                                search_radius = 0.1,
                                precision = NA) {
 
-  check_names(names(flines), "get_flowline_index")
+  flines <- check_names(flines, "get_flowline_index")
 
   in_crs <- sf::st_crs(flines)
 

@@ -20,7 +20,7 @@ Not required if \code{\link{nhdplus_path}} has been set or the default
 has been adopted. See details for more.}
 
 \item{simplified}{boolean if TRUE (the default) the CatchmentSP layer
-will be included. Not relevant to the "download" option.}
+will be included. Not relevant to the "download" option or NHDPlusHR data.}
 
 \item{overwrite}{boolean should the output file be overwritten}
 

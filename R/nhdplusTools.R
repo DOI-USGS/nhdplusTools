@@ -1,12 +1,59 @@
 # NHDPlus Attributes
-COMID <- FEATUREID <-
-  Hydroseq <- DnHydroseq <- DnMinorHyd <- LevelPathI <- DnLevelPat <-
-  ToNode <- FromNode <-
-  TotDASqKM <- LENGTHKM <-
-  Pathlength <- StreamCalc <- StreamOrde <- TerminalFl <-
-  Divergence <- TerminalPa <- StartFlag <- FTYPE <-
-  FromMeas <- ToMeas <- REACHCODE <- REACH_meas <-
-  HUC12 <- TOHUC <- NULL
+COMID <- "COMID"
+FEATUREID <- "FEATUREID"
+Hydroseq <- "Hydroseq"
+DnHydroseq <- "DnHydroseq"
+DnMinorHyd <- "DnMinorHyd"
+LevelPathI <- "LevelPathI"
+DnLevelPat <- "DnLevelPat"
+ToNode <- "ToNode"
+FromNode <- "FromNode"
+TotDASqKM <- "TotDASqKM"
+AreaSqKM <- "AreaSqKM"
+LENGTHKM <- "LENGTHKM"
+Pathlength <- "Pathlength"
+StreamCalc <- "StreamCalc"
+StreamOrde <- "StreamOrde"
+TerminalFl <- "TerminalFl"
+Divergence <- "Divergence"
+TerminalPa <- "TerminalPa"
+StartFlag <- "StartFlag"
+FTYPE <- "FTYPE"
+FromMeas <- "FromMeas"
+ToMeas <- "ToMeas"
+REACHCODE <- "REACHCODE"
+REACH_meas <- "REACH_meas"
+HUC12 <- "HUC12"
+TOHUC <- "TOHUC"
+
+nhdplus_attributes <- list(
+  COMID = COMID, NHDPlusID = COMID,
+  FEATUREID = FEATUREID,
+  Hydroseq = Hydroseq, HydroSeq = Hydroseq,
+  DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
+  DnMinorHyd = DnMinorHyd,
+  LevelPathI = LevelPathI,
+  DnLevelPat = DnLevelPat,
+  ToNode = ToNode,
+  FromNode = FromNode,
+  TotDASqKM = TotDASqKM, TotDASqKm = TotDASqKM,
+  AreaSqKM = AreaSqKM, AreaSqKm = AreaSqKM,
+  LENGTHKM = LENGTHKM, LengthKM = LENGTHKM,
+  Pathlength = Pathlength, PathLength = Pathlength,
+  StreamCalc = StreamCalc,
+  StreamOrde = StreamOrde,
+  TerminalFl = TerminalFl,
+  Divergence = Divergence,
+  TerminalPa = TerminalPa,
+  StartFlag = StartFlag,
+  FTYPE = FTYPE, FType = FTYPE,
+  FromMeas = FromMeas,
+  ToMeas = ToMeas,
+  REACHCODE = REACHCODE,
+  REACH_meas = REACH_meas,
+  HUC12 = HUC12,
+  TOHUC = TOHUC
+  )
 
   # Package Attribute Names
 COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
@@ -34,8 +81,6 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   group_size <- NULL
 
 nhdplusTools_env <- new.env()
-
-default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
 
 assign("prepare_nhdplus_attributes",
        c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
@@ -104,7 +149,15 @@ check_names <- function(names_flines, function_name) {
   }
 }
 
+default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
+
 assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
+
+nhdhr_bucket <- "https://prd-tnm.s3.amazonaws.com/"
+nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlus/HU4/HighResolution/GDB/"
+
+assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
+assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(

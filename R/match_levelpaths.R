@@ -22,7 +22,7 @@
 #'
 match_levelpaths <- function(fline_hu, start_comid, add_checks = FALSE) {
 
-  check_names(names(fline_hu), "match_levelpaths")
+  flines_hu <- check_names(fline_hu, "match_levelpaths")
 
   #############################################################################
   # get_lp_hu gets levelpath / hydrologic unit pairs from the intersection set.

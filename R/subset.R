@@ -1,15 +1,16 @@
-#' @title Subset NHDPlus National Data
-#' @description Saves a subset of the National Seamless database based on a
-#' specified collection of COMIDs.
+#' @title Subset NHDPlus
+#' @description Saves a subset of the National Seamless database or other
+#' nhdplusTools compatible data based on a specified collection of COMIDs.
 #' @param comids integer vector of COMIDs to include.
 #' @param output_file character path to save the output to defaults
 #' to the directory of the nhdplus_data.
 #' @param nhdplus_data character path to the .gpkg or .gdb containing
-#' the national seamless dataset or "download" to use web service.
+#' the national seamless database, a subset of NHDPlusHR,
+#' or "download" to use a web service to download NHDPlusV2.1 data.
 #' Not required if \code{\link{nhdplus_path}} has been set or the default
 #' has been adopted. See details for more.
 #' @param simplified boolean if TRUE (the default) the CatchmentSP layer
-#' will be included. Not relevant to the "download" option.
+#' will be included. Not relevant to the "download" option or NHDPlusHR data.
 #' @param overwrite boolean should the output file be overwritten
 #' @param status boolean should the function print status messages
 #' @details If \code{\link{stage_national_data}} has been run in the current
@@ -26,6 +27,29 @@
 #' @return path to the saved subset geopackage
 #' @export
 #' @examples
+#' # NHDPlusHR
+#' file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
+#'           "temp.zip")
+#' unzip("temp.zip", exdir = "./")
+#' unlink("temp.zip")
+#'
+#' hr_data <- get_nhdplushr("./",
+#'                          out_gpkg = "nhd_hr.gpkg",
+#'                          layers = NULL)
+#' flowlines <- sf::read_sf(hr_data, "NHDFlowline")
+#'
+#' up_ids <- get_UT(flowlines, 15000500028335)
+#'
+#' sub_nhdhr <- subset_nhdplus(up_ids, "sub.gpkg",
+#'                       hr_data, overwrite = TRUE)
+#'
+#' sf::st_layers(sub_nhdhr)
+#'
+#' sub_flowline <- sf::read_sf(sub_nhdhr, "NHDFlowline")
+#' plot(sf::st_geometry(flowlines), lwd = 0.5)
+#' plot(sf::st_geometry(sub_flowline), lwd = 0.6, col = "red", add = TRUE)
+#' unlink(c("sub.gpkg", "nhd_hr.gpkg", "03_sub.gpkg"))
+#'
 #' sample_data <- system.file("extdata/sample_natseamless.gpkg",
 #'                            package = "nhdplusTools")
 #'
@@ -80,6 +104,7 @@
 #'
 #' sf::st_layers(output_file)
 #'
+
 subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
                            simplified = TRUE, overwrite = FALSE, status = TRUE) {
 
@@ -125,6 +150,9 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
       fline_path <- nhdplus_data
       catchment_path <- nhdplus_data
     }
+  } else if(file.exists(nhdplus_data)) {
+      fline_path <- nhdplus_data
+      catchment_path <- nhdplus_data
   } else {
     stop("couldn't find nhdplus data")
   }
@@ -132,7 +160,11 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
   if (grepl("*.rds$", fline_path)) {
     fline <- readRDS(fline_path)
   } else {
+    if(!layer_name %in% st_layers(fline_path)$name) {
+      layer_name <- "NHDFlowline"
+    }
     fline <- sf::read_sf(fline_path, layer_name)
+    fline <- rename_nhdplus(fline)
   }
 
   fline <- dplyr::filter(fline, COMID %in% comids)
@@ -161,7 +193,11 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
   if (grepl("*.rds$", catchment_path)) {
     catchment <- readRDS(catchment_path)
   } else {
+    if(!layer_name %in% st_layers(fline_path)$name) {
+      layer_name <- "NHDPlusCatchment"
+    }
     catchment <- sf::read_sf(catchment_path, layer_name)
+    catchment <- rename_nhdplus(catchment)
   }
 
   catchment <- dplyr::filter(catchment, FEATUREID %in% comids)
@@ -188,8 +224,13 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
 
   } else {
 
-  intersection_names <- c("Gage", "Sink", "NHDArea",
-                          "NHDWaterbody", "NHDFlowline_NonNetwork")
+  if("Gage" %in% st_layers(nhdplus_data)$name) {
+    intersection_names <- c("Gage", "Sink", "NHDArea",
+                            "NHDWaterbody", "NHDFlowline_NonNetwork")
+  } else {
+    intersection_names <- c("NHDWaterbody", "NHDArea", "NHDPlusSink")
+    intersection_names <- intersection_names[which(intersection_names %in% st_layers(nhdplus_data)$name)]
+  }
 
   invisible(lapply(intersection_names, intersection_write,
                    data_path = nhdplus_data,

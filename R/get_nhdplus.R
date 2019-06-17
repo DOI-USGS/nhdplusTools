@@ -89,3 +89,132 @@ get_nhdplus_bybox <- function(box, layer) {
   return(sf::read_sf(rawToChar(c$content)))
 
 }
+
+#' download NHDPlus HiRes
+#' @param nhd_dir character directory to save output into
+#' @param hu_list character vector of hydrologic region(s) to download
+#' @param download_files boolean if FALSE, only URLs to files will be returned
+#' can be hu02s and/or hu04s
+#'
+#' @return Paths to geodatabases created.
+#' @importFrom xml2 read_xml xml_ns_strip xml_find_all xml_text
+#' @importFrom utils download.file unzip
+#' @export
+#' @examples
+#' download_nhdhr("", c("01", "0203"), download_files = FALSE)
+download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
+
+  nhdhr_bucket <- get("nhdhr_bucket", envir = nhdplusTools_env)
+  nhdhr_file_list <- get("nhdhr_file_list", envir = nhdplusTools_env)
+
+  hu02_list <- unique(substr(hu_list, 1, 2))
+  hu04_list <- hu_list[which(nchar(hu_list) == 4)]
+  subset_hu02 <- sapply(hu02_list, function(x)
+    sapply(x, function(y) any(grepl(y, hu04_list))))
+
+  out <- c()
+
+  for(h in 1:length(hu02_list)) {
+    hu02 <- hu02_list[h]
+
+    if(download_files) {
+      out <- c(out, file.path(nhd_dir, hu02))
+    }
+
+    if(!download_files || !dir.exists(out[length(out)])) {
+
+      if(download_files) {
+        dir.create(out, recursive = TRUE, showWarnings = FALSE)
+      }
+
+      file_list <- read_xml(paste0(nhdhr_bucket, nhdhr_file_list,
+                                   "NHDPLUS_H_", hu02)) %>%
+        xml_ns_strip() %>%
+        xml_find_all(xpath = "//Key") %>%
+        xml_text()
+
+      file_list <- file_list[grepl("_GDB.zip", file_list)]
+
+      if(subset_hu02[h]) {
+        file_list <- file_list[sapply(file_list, function(f)
+          any(sapply(hu04_list, grepl, x = f)))]
+      }
+
+      for(key in file_list) {
+        out_file <- paste0(out, "/", tail(strsplit(key, "/")[[1]], 1))
+        url <- paste0(nhdhr_bucket, key)
+
+        if(download_files) {
+          download.file(url, out_file)
+          unzip(out_file, exdir = out)
+          unlink(out_file)
+        } else {
+          out <- c(out, url)
+        }
+      }
+    }
+  }
+  return(out)
+}
+
+#' Get NHDPlus HiRes as single geopackage
+#' @param hr_dir character directory with geodatabases
+#' @param out_gpkg character path to write output geopackage
+#' @param layers character vector with desired layers to return.
+#' c("NHDFlowline", "NHDPlusCatchment") is default.
+#' Choose from:
+#' c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine",
+#' "NHDPlusSink", "NHDPlusWall", "NHDPoint", "NHDPlusBurnWaterbody",
+#' "NHDPlusBurnLineEvent", "HYDRO_NET_Junctions",
+#' "WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")
+#'
+#' @details
+#' NHDFlowline is joined to value added attributes prior to being
+#' returned.
+#' Names are not modified from the NHDPlusHR geodatabase.
+#' Set layers to "NULL" to get all layers.
+#'
+#' @importFrom sf st_layers read_sf st_sf write_sf
+#' @export
+#' @examples
+#' \dontrun{
+#' download_dir <- download_nhdhr("./", c("0302", "0303"))
+#' get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
+#' }
+get_nhdplushr <- function(hr_dir, out_gpkg,
+                          layers = c("NHDFlowline", "NHDPlusCatchment")) {
+  gdb_files <- list.files(hr_dir, pattern = "GDB.gdb", full.names = TRUE)
+
+  if(length(gdb_files) == 0) {
+    # For testing.
+    gdb_files <- list.files(hr_dir, pattern = "sub.gpkg", full.names = TRUE)
+  }
+  if(is.null(layers)) {
+    layers <- st_layers(gdb_files[1])
+
+    layers <- layers$name[!is.na(layers$geomtype) & layers$features > 0]
+  }
+
+  for(layer in layers) {
+    layer_set <- lapply(gdb_files, get_hr_data, layer = layer)
+
+    out <- do.call(rbind, layer_set)
+
+    out <- st_sf(out)
+
+    write_sf(out, layer = layer, dsn = out_gpkg)
+
+  }
+
+  return(out_gpkg)
+}
+
+get_hr_data <- function(gdb, layer = NULL) {
+  if(layer == "NHDFlowline") {
+    vaa <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
+    vaa <- select(vaa, -ReachCode, -VPUID)
+    left_join( read_sf(gdb, layer), vaa, by = "NHDPlusID")
+  } else {
+    read_sf(gdb, layer)
+  }
+}

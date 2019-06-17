@@ -23,7 +23,7 @@ options(scipen = 9999)
 First, pick an outlet location and download some data.
 ```{r tldr}
 # Uncomment to install!
-# devtools::install_github("dblodgett-usgs/nhdplusTools")
+# devtools::install_github("usgs-r/nhdplusTools")
 
 library(nhdplusTools)
 library(sf)
@@ -74,7 +74,7 @@ This introduction gives an overview of the basic package setup and an brief demo
 The easiest way to install `nhdplusTools` is with the `devtools` package like this:
 ```{r install, echo = TRUE, eval = FALSE}
 # install.packages("devtools")
-# devtools::install_github("dblodgett-usgs/nhdplusTools")
+# devtools::install_github("usgs-r/nhdplusTools")
 ```
 Then you can load up nhdplusTools:
 ```{r load}
@@ -117,6 +117,38 @@ library(sf)
 plot(sf::st_geometry(flowline))
 ```
 <a id="discovery_subsetting"></a>
+
+### NHDPlus HiRes
+
+(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, `nhdplusTools` will have complete support for NHDPlus HiRes. So far, `nhdplusTools` will help download and interface NHDPlus HiRes data with existing `nhdplusTools` functionality. It's important to note that `nhdplusTools` was primarily implemented using NHDPlusV2 and any use of HiRes (which is still "beta data" as of writing this) should be subject to significant scruitiny. Never the less, here's a short summary of how to work with NHDPlus HiRes.
+
+For the demo below, a small sample of HiRes data that has been loaded into `nhdplusTools` is used. The first line shows how you can download additional data (just change `download_files` to `TRUE`).
+
+```{r nhdplushr_secret, echo=FALSE, include=FALSE} 
+  nhd_dir <- tempdir()
+  temp_file <- file.path(nhd_dir, "temp.zip")
+  file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
+            temp_file)
+  unzip(temp_file, exdir = nhd_dir)
+```
+
+```{r nhdplus_hr}
+download_nhdhr(nhd_dir = "download_dir", 
+               hu_list = c("0101"), # can mix hu02 and hu04 codes.
+               download_files = FALSE) # TRUE will download files.
+
+hr_data <- get_nhdplushr(nhd_dir, 
+                         out_gpkg = file.path(nhd_dir, "nhd_hr.gpkg"))
+(layers <- st_layers(hr_data))
+unlink(hr_data)
+
+hr_data <- get_nhdplushr(nhd_dir, 
+                         out_gpkg = file.path(nhd_dir, "nhd_hr.gpkg"), 
+                         layers = NULL)
+(layers <- st_layers(hr_data))
+```
+
+Other functionality in the package, such as the `get_UT/UM/DM/DD` functions, subsetting, indexing, etc. also work now or will soon! Stay tuned for a dedicated NHDPlus HiRes vignette and submit issues as you find them! 
 
 ## Discovery and Subsetting
 

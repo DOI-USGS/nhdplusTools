@@ -198,6 +198,8 @@ run_lp <- function(lp_id, net, hu_lp, wbd) {
   return(out)
 }
 
+#' @noRd
+#' @importFrom dplyr group_size row_number
 par_linker <- function(lp_list) {
   library(nhdplusTools)
   library(dplyr)

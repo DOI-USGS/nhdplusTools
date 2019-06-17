@@ -2,7 +2,7 @@
 % Please edit documentation in R/subset.R
 \name{subset_nhdplus}
 \alias{subset_nhdplus}
-\title{Subset NHDPlus National Data}
+\title{Subset NHDPlus}
 \usage{
 subset_nhdplus(comids, output_file, nhdplus_data = NULL,
   simplified = TRUE, overwrite = FALSE, status = TRUE)
@@ -14,12 +14,13 @@ subset_nhdplus(comids, output_file, nhdplus_data = NULL,
 to the directory of the nhdplus_data.}
 
 \item{nhdplus_data}{character path to the .gpkg or .gdb containing
-the national seamless dataset or "download" to use web service.
+the national seamless database, a subset of NHDPlusHR,
+or "download" to use a web service to download NHDPlusV2.1 data.
 Not required if \code{\link{nhdplus_path}} has been set or the default
 has been adopted. See details for more.}
 
 \item{simplified}{boolean if TRUE (the default) the CatchmentSP layer
-will be included. Not relevant to the "download" option.}
+will be included. Not relevant to the "download" option or NHDPlusHR data.}
 
 \item{overwrite}{boolean should the output file be overwritten}
 
@@ -29,8 +30,8 @@ will be included. Not relevant to the "download" option.}
 path to the saved subset geopackage
 }
 \description{
-Saves a subset of the National Seamless database based on a
-specified collection of COMIDs.
+Saves a subset of the National Seamless database or other
+nhdplusTools compatible data based on a specified collection of COMIDs.
 }
 \details{
 If \code{\link{stage_national_data}} has been run in the current
@@ -45,6 +46,29 @@ and subject to revision. It does not include as many layers and may not
 be available permenantly.
 }
 \examples{
+# NHDPlusHR
+file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
+          "temp.zip")
+unzip("temp.zip", exdir = "./")
+unlink("temp.zip")
+
+hr_data <- get_nhdplushr("./",
+                         out_gpkg = "nhd_hr.gpkg",
+                         layers = NULL)
+flowlines <- sf::read_sf(hr_data, "NHDFlowline")
+
+up_ids <- get_UT(flowlines, 15000500028335)
+
+sub_nhdhr <- subset_nhdplus(up_ids, "sub.gpkg",
+                      hr_data, overwrite = TRUE)
+
+sf::st_layers(sub_nhdhr)
+
+sub_flowline <- sf::read_sf(sub_nhdhr, "NHDFlowline")
+plot(sf::st_geometry(flowlines), lwd = 0.5)
+plot(sf::st_geometry(sub_flowline), lwd = 0.6, col = "red", add = TRUE)
+unlink(c("sub.gpkg", "nhd_hr.gpkg", "03_sub.gpkg"))
+
 sample_data <- system.file("extdata/sample_natseamless.gpkg",
                            package = "nhdplusTools")
 

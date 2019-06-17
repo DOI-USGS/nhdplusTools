@@ -1,12 +1,66 @@
 # NHDPlus Attributes
-COMID <- FEATUREID <-
-  Hydroseq <- DnHydroseq <- DnMinorHyd <- LevelPathI <- DnLevelPat <-
-  ToNode <- FromNode <-
-  TotDASqKM <- LENGTHKM <-
-  Pathlength <- StreamCalc <- StreamOrde <- TerminalFl <-
-  Divergence <- TerminalPa <- StartFlag <- FTYPE <-
-  FromMeas <- ToMeas <- REACHCODE <- REACH_meas <-
-  HUC12 <- TOHUC <- NULL
+COMID <- "COMID"
+FEATUREID <- "FEATUREID"
+Hydroseq <- "Hydroseq"
+DnHydroseq <- "DnHydroseq"
+DnMinorHyd <- "DnMinorHyd"
+LevelPathI <- "LevelPathI"
+DnLevelPat <- "DnLevelPat"
+ToNode <- "ToNode"
+FromNode <- "FromNode"
+TotDASqKM <- "TotDASqKM"
+AreaSqKM <- "AreaSqKM"
+LENGTHKM <- "LENGTHKM"
+Pathlength <- "Pathlength"
+StreamCalc <- "StreamCalc"
+StreamOrde <- "StreamOrde"
+TerminalFl <- "TerminalFl"
+Divergence <- "Divergence"
+TerminalPa <- "TerminalPa"
+StartFlag <- "StartFlag"
+FTYPE <- "FTYPE"
+FromMeas <- "FromMeas"
+ToMeas <- "ToMeas"
+REACHCODE <- "REACHCODE"
+REACH_meas <- "REACH_meas"
+HUC12 <- "HUC12"
+TOHUC <- "TOHUC"
+ReachCode <- "ReachCode"
+VPUID <- "VPUID"
+
+
+# List of input names that should be changed to replacement names
+nhdplus_attributes <- list(
+  COMID = COMID, NHDPlusID = COMID,
+  FEATUREID = FEATUREID,
+  Hydroseq = Hydroseq, HydroSeq = Hydroseq,
+  DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
+  DnMinorHyd = DnMinorHyd,
+  LevelPathI = LevelPathI,
+  DnLevelPat = DnLevelPat,
+  ToNode = ToNode,
+  FromNode = FromNode,
+  TotDASqKM = TotDASqKM, TotDASqKm = TotDASqKM,
+  AreaSqKM = AreaSqKM, AreaSqKm = AreaSqKM,
+  LENGTHKM = LENGTHKM, LengthKM = LENGTHKM,
+  Pathlength = Pathlength, PathLength = Pathlength,
+  StreamCalc = StreamCalc,
+  StreamOrde = StreamOrde,
+  TerminalFl = TerminalFl,
+  Divergence = Divergence,
+  TerminalPa = TerminalPa,
+  StartFlag = StartFlag,
+  FTYPE = FTYPE, FType = FTYPE,
+  FromMeas = FromMeas,
+  ToMeas = ToMeas,
+  REACHCODE = REACHCODE,
+  REACH_meas = REACH_meas,
+  HUC12 = HUC12,
+  TOHUC = TOHUC)
+
+nhdplusTools_env <- new.env()
+
+assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
   # Package Attribute Names
 COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
@@ -30,12 +84,7 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   intersected_LevelPathI <- levelpath <- main_LevelPathI <- nameID <-
   nhd_LevelPath <- outletID <- outlet_HUC12 <- update_head_HUC12 <-
   updated_head_HUC12 <- updated_outlet_HUC12 <- weight <- hu12 <-
-  lp <- L2 <- row_number <- group_size <- row_number <-
-  group_size <- NULL
-
-nhdplusTools_env <- new.env()
-
-default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
+  lp <- L2 <- NULL
 
 assign("prepare_nhdplus_attributes",
        c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
@@ -92,19 +141,49 @@ assign("match_levelpaths_attributes",
          "DnLevelPat", "denTotalAreaSqKM", "HUC12", "TOHUC"),
        envir = nhdplusTools_env)
 
-check_names <- function(names_flines, function_name) {
+check_names <- function(x, function_name) {
+  x <- rename_nhdplus(x)
+  names_x <- names(x)
   expect_names <- get(paste0(function_name, "_attributes"),
                       envir = nhdplusTools_env)
-  if ( !all(expect_names %in% names_flines)) {
+  if ( !all(expect_names %in% names_x)) {
     stop(paste0("Missing some required attributes in call to: ",
                 function_name, ". Expected: ",
                 paste(expect_names[which(!(expect_names %in%
-                                             names_flines))],
-                      collapse = ", "), "."))
+                                             names_x))],
+                      collapse = ", "), " or NHDPlusHR equivalents."))
   }
+  return(x)
 }
 
+#' @noRd
+rename_nhdplus <- function(x) {
+  attribute_names <- get("nhdplus_attributes", envir = nhdplusTools_env)
+
+  old_names <- names(x)
+  new_names <- old_names
+
+  matched <- match(names(x), names(attribute_names))
+  replacement_names <- as.character(attribute_names[matched[which(!is.na(matched))]])
+
+  new_names[which(old_names %in% names(attribute_names))] <- replacement_names
+
+  names(x) <- new_names
+
+  if("GridCode" %in% names(x)) names(x)[which(names(x) == "COMID")] <- "FEATUREID"
+
+  return(x)
+}
+
+default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
+
 assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
+
+nhdhr_bucket <- "https://prd-tnm.s3.amazonaws.com/"
+nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlus/HU4/HighResolution/GDB/"
+
+assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
+assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(
@@ -383,7 +462,7 @@ accumulate_downstream <- function(dat_fram, var) {
 #'
 calculate_levelpaths <- function(flowline) {
 
-  check_names(names(flowline), "calculate_levelpaths")
+  flowline <- check_names(flowline, "calculate_levelpaths")
 
   flowline[["toID"]][which(is.na(flowline[["toID"]]))] <- 0
 
@@ -468,7 +547,7 @@ prepare_nhdplus <- function(flines,
                             purge_non_dendritic = TRUE,
                             warn = TRUE) {
 
-  check_names(names(flines), "prepare_nhdplus")
+  flines <- check_names(flines, "prepare_nhdplus")
 
   if ("sf" %in% class(flines)) {
     if (warn) warning("removing geometry")

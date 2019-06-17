@@ -104,7 +104,7 @@ included in this column and the largest value will be followed when no nameID is
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/dblodgett-usgs/nhdplusTools">
+  <a href="https://github.com/usgs-r/nhdplusTools">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -122,7 +122,7 @@ included in this column and the largest value will be followed when no nameID is
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculate Level Paths</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
     <div class="hidden name"><code>calculate_levelpaths.Rd</code></div>
     </div>
 
@@ -171,7 +171,7 @@ See details for more info.</p>
 
 <span class='no'>test_flowline</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: removing geometry</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 0 flowlines that don't apply.</span>
 #&gt; <span class='warning'> Includes: Coastlines, non-dendritic paths, </span>
-#&gt; <span class='warning'>and networks with drainage area less than 0 sqkm</span></div><div class='input'>
+#&gt; <span class='warning'>and networks with drainage area less than 0 sqkm, and drainage basins smaller than FALSE</span></div><div class='input'>
 <span class='no'>test_flowline</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(
   <span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>test_flowline</span>$<span class='no'>COMID</span>,
   <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>test_flowline</span>$<span class='no'>toCOMID</span>,

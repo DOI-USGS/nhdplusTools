@@ -158,7 +158,7 @@ download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
 }
 
 #' Get NHDPlus HiRes as single geopackage
-#' @param hr_dir character directory with geodatabases
+#' @param hr_dir character directory with geodatabases (gdb search is recursive)
 #' @param out_gpkg character path to write output geopackage
 #' @param layers character vector with desired layers to return.
 #' c("NHDFlowline", "NHDPlusCatchment") is default.
@@ -183,7 +183,8 @@ download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' }
 get_nhdplushr <- function(hr_dir, out_gpkg,
                           layers = c("NHDFlowline", "NHDPlusCatchment")) {
-  gdb_files <- list.files(hr_dir, pattern = "GDB.gdb", full.names = TRUE)
+  gdb_files <- list.files(hr_dir, pattern = ".*GDB.gdb$",
+                          full.names = TRUE, recursive = TRUE, include.dirs = TRUE)
 
   if(length(gdb_files) == 0) {
     # For testing.

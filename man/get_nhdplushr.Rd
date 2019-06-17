@@ -8,7 +8,7 @@ get_nhdplushr(hr_dir, out_gpkg, layers = c("NHDFlowline",
   "NHDPlusCatchment"))
 }
 \arguments{
-\item{hr_dir}{character directory with geodatabases}
+\item{hr_dir}{character directory with geodatabases (gdb search is recursive)}
 
 \item{out_gpkg}{character path to write output geopackage}
 

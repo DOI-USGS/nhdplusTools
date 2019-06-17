@@ -53,7 +53,7 @@ nhdplus_attributes <- list(
   FTYPE = FTYPE, FType = FTYPE,
   FromMeas = FromMeas,
   ToMeas = ToMeas,
-  REACHCODE = REACHCODE,
+  REACHCODE = REACHCODE, ReachCode = REACHCODE,
   REACH_meas = REACH_meas,
   HUC12 = HUC12,
   TOHUC = TOHUC)

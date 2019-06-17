@@ -100,7 +100,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/dblodgett-usgs/nhdplusTools">
+  <a href="https://github.com/usgs-r/nhdplusTools">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -118,7 +118,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get linked points</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dblodgett-usgs/nhdplusTools/blob/master/R/linked_points.R'><code>R/linked_points.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/linked_points.R'><code>R/linked_points.R</code></a></small>
     <div class="hidden name"><code>get_linked_points.Rd</code></div>
     </div>
 
@@ -159,17 +159,13 @@ but complete methods description have not yet been published.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    matches</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)</div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.7.1, GDAL 2.4.0, PROJ 5.2.0</span></div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)
+
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/source'>source</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata/new_hope_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/warning'>suppressWarnings</a></span>(<span class='no'>net_prep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>new_hope_flowline</span>, <span class='fl'>20</span>, <span class='fl'>0</span>, <span class='fl'>10</span>) <span class='kw'>%&gt;%</span>
-                   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>new_hope_flowline</span>, <span class='no'>COMID</span>, <span class='no'>DnLevelPat</span>, <span class='no'>AreaSqKM</span>), <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>) <span class='kw'>%&gt;%</span>
+                   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>new_hope_flowline</span>, <span class='no'>COMID</span>, <span class='no'>DnLevelPat</span>,
+                   <span class='no'>AreaSqKM</span>), <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>) <span class='kw'>%&gt;%</span>
                    <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/sf'>st_sf</a></span>() <span class='kw'>%&gt;%</span>
                    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span>(<span class='no'>LevelPathI</span>) <span class='kw'>%&gt;%</span>
                    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span>(<span class='no'>Hydroseq</span>) <span class='kw'>%&gt;%</span>

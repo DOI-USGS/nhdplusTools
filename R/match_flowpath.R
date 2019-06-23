@@ -1,0 +1,72 @@
+#' @importFrom sf st_sf st_coordinates st_as_sf st_crs
+#' @importFrom dplyr left_join select filter group_by ungroup bind_cols
+mr_hw_cat_out <- function(mr_fline) {
+  mr_fline <- prepare_nhdplus(mr_fline, 0, 0, 0, warn = FALSE) %>%
+    left_join(select(mr_fline, COMID), by = "COMID") %>%
+    st_sf() %>%
+    filter(!COMID %in% toCOMID)
+
+  outlets <-  mr_fline %>%
+    st_coordinates() %>%
+    as.data.frame() %>%
+    group_by(L2) %>%
+    filter(row_number() == round(n()/2)) %>%
+    ungroup() %>%
+    select(X, Y) %>%
+    st_as_sf(coords = c("X", "Y"))
+
+  bind_cols(outlets, select(st_set_geometry(mr_fline, NULL), COMID)) %>%
+    st_sf(crs = st_crs(mr_fline))
+}
+
+#' Match Flowpaths
+#' @export
+#' @importFrom sf st_join st_set_geometry st_within
+#' @importFrom tidyr unnest
+#' @importFrom dplyr select distinct  left_join bind_rows
+match_flowpath <- function(flowline, catchment) {
+  flowline <- rename_nhdplus(flowline)
+  catchment <- rename_nhdplus(catchment)
+
+  ### First find outlet of MR catchments
+  mr_hw_outlets <- mr_hw_cat_out(flowline)
+
+  ### Find HR catchment of outlet of headwater MR catchments
+  hr_pair <- st_join(mr_hw_outlets,
+                     select(catchment, FEATUREID),
+                     join = st_within) %>%
+    st_set_geometry(NULL)
+
+  ### Trace down HR network for each.
+  mr_lps <- lapply(hr_pair$FEATUREID,
+                   function(x, fa) get_DM(fa, x),
+                   fa = st_set_geometry(hr_flowline, NULL))
+
+  # Expand into data.frame
+  lp_df <- data.frame(FEATUREID = hr_pair$FEATUREID)
+  lp_df["members"] <- list(mr_lps)
+
+  lp_df <- unnest(lp_df)
+
+  # Get MR levelpaths for headwater HR ids
+  mr_lp <- distinct(select(st_set_geometry(flowline, NULL), COMID, LevelPathI))
+  hr_pair <- left_join(hr_pair, mr_lp, by = "COMID")
+
+  # Join so we have HR FEATUREID and MR LevelPath
+  lp_df <- left_join(lp_df, select(hr_pair, -COMID), by = "FEATUREID")
+
+  # discriminate which HR headwater belongs with which MR levelpath
+  # Iterate over sorted unique list of MR levelpaths.
+  lps <- sort(unique(lp_df$LevelPathI))
+  lp_list <- setNames(rep(list(list()), length(lps)), lps)
+
+  for(lp in lps) { # destructive loop
+    # Find the HR headwater that has the most downstream members on that levelpath.
+    lp_list[[as.character(lp)]] <- filter(lp_df, LevelPathI == lp)
+    # Remove the match from the set and continue.
+    lp_df <- filter(lp_df, !members %in% lp_list[[as.character(lp)]]$members)
+  }
+
+  return(bind_rows(lp_list))
+
+}

@@ -142,10 +142,9 @@ test_that("get_DD with distance 2 returns 4 specific", {
   expect_true(all(c(11688810, 11688826, 11688828, 11688884) %in% result))
 })
 
-test_that("get_DM works but warns if missing the outlet", {
+test_that("get_DM works if missing the outlet", {
   pt_data_borkd <- dplyr::filter(pt_data, TerminalFl == 0)
-  expect_warning(result <- get_DM(pt_data_borkd, 11688810),
-                 "Incomplete network? Error was: Error: Result must have length 706, not 0")
+  result <- get_DM(pt_data_borkd, 11688810)
   expect_equal(length(result), 34)
 
 })

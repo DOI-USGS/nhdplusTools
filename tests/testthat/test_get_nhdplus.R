@@ -56,7 +56,7 @@ test_that("get_nhdplushr runs", {
 
   layers <- st_layers(out)
   expect_equal(layers$name, c("NHDFlowline", "NHDPlusCatchment"))
-  expect_equal(layers$features, c(2691, 2605))
+  expect_equal(layers$features, c(2691, 2603))
 
   out <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"), layers = NULL)
 

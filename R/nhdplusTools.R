@@ -582,7 +582,7 @@ prepare_nhdplus <- function(flines,
   if(min_path_size > 0) {
     remove_paths <- group_by(flines, LevelPathI)
     remove_paths <- filter(remove_paths, Hydroseq == min(Hydroseq))
-    remove_paths <- filter(remove_paths, TotDASqKM < min_path_size)$LevelPathI
+    remove_paths <- filter(remove_paths, TotDASqKM < min_path_size & TotDASqKM >= 0)$LevelPathI
     flines <- filter(flines, !LevelPathI %in% remove_paths)
   }
 

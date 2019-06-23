@@ -201,13 +201,16 @@ private_get_DM <- function(network, comid) {
 
   ds_hs <- filter(ds_main, !DnLevelPat %in% main$LevelPathI)$DnHydroseq
 
-  ds_lpid <- filter(network, Hydroseq == ds_hs)$LevelPathI
-
-  if (length(ds_lpid) > 0) {
-    ds_comid <- filter(network,
-                       LevelPathI == ds_lpid &
-                         Hydroseq <= ds_hs)$COMID
-    c(ds_main$COMID, private_get_DM(network, ds_comid))
+  if(length(ds_hs) > 0) {
+    ds_lpid <- filter(network, Hydroseq == ds_hs)$LevelPathI
+    if (length(ds_lpid) > 0) {
+      ds_comid <- filter(network,
+                         LevelPathI == ds_lpid &
+                           Hydroseq <= ds_hs)$COMID
+      c(ds_main$COMID, private_get_DM(network, ds_comid))
+    } else {
+      return(ds_main$COMID)
+    }
   } else {
     return(ds_main$COMID)
   }

@@ -141,7 +141,7 @@ assign("match_levelpaths_attributes",
          "DnLevelPat", "denTotalAreaSqKM", "HUC12", "TOHUC"),
        envir = nhdplusTools_env)
 
-assign("match_flowpath_attributes",
+assign("match_flowpaths_attributes",
        c("COMID", "LENGTHKM", "DnHydroseq", "Hydroseq", "LevelPathI"),
        envir = nhdplusTools_env)
 

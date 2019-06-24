@@ -50,7 +50,7 @@ clean_geom <- function(x) {
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 #' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
 #'
-#' lp_df_df <- match_flowpath(source_flowline = new_hope_flowline,
+#' lp_df_df <- match_flowpaths(source_flowline = new_hope_flowline,
 #'                            target_catchment = hr_catchment,
 #'                            target_flowline = hr_flowline)
 #' matched <- left_join(select(hr_flowline, NHDPlusID),
@@ -64,10 +64,10 @@ clean_geom <- function(x) {
 #' plot(mr_lp$geom, col = "red", lwd = 3, add = TRUE)
 #' plot(hr_lp$geom, col = "black", add = TRUE)
 #'
-match_flowpath <- function(source_flowline, target_catchment, target_flowline) {
+match_flowpaths <- function(source_flowline, target_catchment, target_flowline) {
   flowline <- rename_nhdplus(source_flowline)
 
-  check_names(flowline, "match_flowpath")
+  check_names(flowline, "match_flowpaths")
 
   catchment <- rename_nhdplus(target_catchment)
   target_flowline <- clean_geom(target_flowline)

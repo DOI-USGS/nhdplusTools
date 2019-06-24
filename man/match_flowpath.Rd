@@ -4,8 +4,22 @@
 \alias{match_flowpath}
 \title{Match Flowpaths}
 \usage{
-match_flowpath(flowline, catchment)
+match_flowpath(source_flowline, target_catchment, target_flowline)
+}
+\arguments{
+\item{source_flowline}{sf data.frame with source flowlines and flowline attributes:
+COMID, LENGTHKM, DnHydroseq, and Hydroseq, and LevelPathI or NHDPlusHR equivalents.}
+
+\item{target_catchment}{sf data.frame with catchment polygons and FEATUREID or
+NHDPlusHR equivalent.}
+
+\item{target_flowline}{sf data.frame with target flowlines and COMID or NHDPlusHR
+equivalent.}
 }
 \description{
-Match Flowpaths
+Implements a flowpath matching algorithm that traces downstream along
+the target flowline network and determining which levelpath from the source flowlines
+best matches the resulting downstream traces. The algorithm starts from the outlet
+location of the upstream most catchment in the source flowlines to stay away from
+complexity that occurs near drainage divides.
 }

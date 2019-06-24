@@ -141,6 +141,10 @@ assign("match_levelpaths_attributes",
          "DnLevelPat", "denTotalAreaSqKM", "HUC12", "TOHUC"),
        envir = nhdplusTools_env)
 
+assign("match_flowpath_attributes",
+       c("COMID", "LENGTHKM", "DnHydroseq", "Hydroseq", "LevelPathI"),
+       envir = nhdplusTools_env)
+
 check_names <- function(x, function_name) {
   x <- rename_nhdplus(x)
   names_x <- names(x)

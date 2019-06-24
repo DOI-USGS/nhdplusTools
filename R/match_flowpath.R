@@ -19,14 +19,38 @@ mr_hw_cat_out <- function(mr_fline) {
     st_sf(crs = st_crs(mr_fline))
 }
 
+clean_geom <- function(x) {
+  if("sf" %in% class(x)) {
+    st_set_geometry(x, NULL)
+  } else {
+   x
+  }
+}
+
 #' Match Flowpaths
+#' @description Implements a flowpath matching algorithm that traces downstream along
+#' the target flowline network and determining which levelpath from the source flowlines
+#' best matches the resulting downstream traces. The algorithm starts from the outlet
+#' location of the upstream most catchment in the source flowlines to stay away from
+#' complexity that occurs near drainage divides.
+#'
+#' @param source_flowline sf data.frame with source flowlines and flowline attributes:
+#' COMID, LENGTHKM, DnHydroseq, and Hydroseq, and LevelPathI or NHDPlusHR equivalents.
+#' @param target_catchment sf data.frame with catchment polygons and FEATUREID or
+#' NHDPlusHR equivalent.
+#' @param target_flowline sf data.frame with target flowlines and COMID or NHDPlusHR
+#' equivalent.
 #' @export
 #' @importFrom sf st_join st_set_geometry st_within
 #' @importFrom tidyr unnest
 #' @importFrom dplyr select distinct  left_join bind_rows
-match_flowpath <- function(flowline, catchment) {
-  flowline <- rename_nhdplus(flowline)
-  catchment <- rename_nhdplus(catchment)
+match_flowpath <- function(source_flowline, target_catchment, target_flowline) {
+  flowline <- rename_nhdplus(source_flowline)
+
+  check_names(flowline, "match_flowpath")
+
+  catchment <- rename_nhdplus(target_catchment)
+  target_flowline <- clean_geom(target_flowline)
 
   ### First find outlet of MR catchments
   mr_hw_outlets <- mr_hw_cat_out(flowline)
@@ -40,7 +64,7 @@ match_flowpath <- function(flowline, catchment) {
   ### Trace down HR network for each.
   mr_lps <- lapply(hr_pair$FEATUREID,
                    function(x, fa) get_DM(fa, x),
-                   fa = st_set_geometry(hr_flowline, NULL))
+                   fa = target_flowline)
 
   # Expand into data.frame
   lp_df <- data.frame(FEATUREID = hr_pair$FEATUREID)

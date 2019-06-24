@@ -34,7 +34,8 @@ test_that("match flowpaths runs", {
 #   par(mar = c(0, 0, 0, 0))
 #   mr_lp <- filter(new_hope_flowline, LevelPathI <= lp)
 #   hr_lp <- filter(matched, MR_LevelPathI <= lp)
-#   plot(mr_lp$geom, col = "red", lwd = 3)
+#   plot(hr_flowline$geom, col = "blue", lwd = 0.5)
+#   plot(mr_lp$geom, col = "red", lwd = 3, add = TRUE)
 #   plot(hr_lp$geom, col = "black", add = TRUE)
 #   dev.off()
 # }

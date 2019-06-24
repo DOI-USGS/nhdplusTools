@@ -28,8 +28,8 @@ clean_geom <- function(x) {
 }
 
 #' Match Flowpaths
-#' @description Implements a flowpath matching algorithm that traces downstream along
-#' the target flowline network and determining which levelpath from the source flowlines
+#' @description Implements a flowpath-matching algorithm that traces downstream along
+#' the target flowline network and determines which levelpath from the source flowlines
 #' best matches the resulting downstream traces. The algorithm starts from the outlet
 #' location of the upstream most catchment in the source flowlines to stay away from
 #' complexity that occurs near drainage divides.
@@ -44,6 +44,26 @@ clean_geom <- function(x) {
 #' @importFrom sf st_join st_set_geometry st_within
 #' @importFrom tidyr unnest
 #' @importFrom dplyr select distinct  left_join bind_rows
+#' @examples
+#' library(dplyr)
+#' library(sf)
+#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+#'
+#' lp_df_df <- match_flowpath(source_flowline = new_hope_flowline,
+#'                            target_catchment = hr_catchment,
+#'                            target_flowline = hr_flowline)
+#' matched <- left_join(select(hr_flowline, NHDPlusID),
+#'                      select(lp_df_df, NHDPlusID = members,
+#'                             MR_LevelPathI = LevelPathI), by = "NHDPlusID")
+#'
+#' lp <- min(matched$MR_LevelPathI, na.rm = TRUE)
+#' mr_lp <- filter(new_hope_flowline, LevelPathI <= lp)
+#' hr_lp <- filter(matched, MR_LevelPathI <= lp)
+#' plot(st_geometry(matched), col = "blue", lwd = 0.5)
+#' plot(mr_lp$geom, col = "red", lwd = 3, add = TRUE)
+#' plot(hr_lp$geom, col = "black", add = TRUE)
+#'
 match_flowpath <- function(source_flowline, target_catchment, target_flowline) {
   flowline <- rename_nhdplus(source_flowline)
 

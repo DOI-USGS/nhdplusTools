@@ -53,7 +53,7 @@ nhdplus_attributes <- list(
   FTYPE = FTYPE, FType = FTYPE,
   FromMeas = FromMeas,
   ToMeas = ToMeas,
-  REACHCODE = REACHCODE,
+  REACHCODE = REACHCODE, ReachCode = REACHCODE,
   REACH_meas = REACH_meas,
   HUC12 = HUC12,
   TOHUC = TOHUC)
@@ -84,7 +84,7 @@ COMID.y <- ID <- becomes <- ds_num_upstream <- fID <-
   intersected_LevelPathI <- levelpath <- main_LevelPathI <- nameID <-
   nhd_LevelPath <- outletID <- outlet_HUC12 <- update_head_HUC12 <-
   updated_head_HUC12 <- updated_outlet_HUC12 <- weight <- hu12 <-
-  lp <- L2 <- NULL
+  lp <- L2 <- members <- NULL
 
 assign("prepare_nhdplus_attributes",
        c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
@@ -139,6 +139,10 @@ assign("calculate_levelpaths_attributes",
 assign("match_levelpaths_attributes",
        c("COMID", "Hydroseq", "LevelPathI",
          "DnLevelPat", "denTotalAreaSqKM", "HUC12", "TOHUC"),
+       envir = nhdplusTools_env)
+
+assign("match_flowpaths_attributes",
+       c("COMID", "LENGTHKM", "DnHydroseq", "Hydroseq", "LevelPathI"),
        envir = nhdplusTools_env)
 
 check_names <- function(x, function_name) {
@@ -582,7 +586,7 @@ prepare_nhdplus <- function(flines,
   if(min_path_size > 0) {
     remove_paths <- group_by(flines, LevelPathI)
     remove_paths <- filter(remove_paths, Hydroseq == min(Hydroseq))
-    remove_paths <- filter(remove_paths, TotDASqKM < min_path_size)$LevelPathI
+    remove_paths <- filter(remove_paths, TotDASqKM < min_path_size & TotDASqKM >= 0)$LevelPathI
     flines <- filter(flines, !LevelPathI %in% remove_paths)
   }
 

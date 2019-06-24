@@ -161,6 +161,6 @@ test_that("subset works with HR", {
 
   layers <- st_layers(sub)
 
-  expect_equal(length(layers$name), 5)
+  expect_equal(length(layers$name), 4)
   expect_equal(layers$features[which(layers$name == "NHDFlowline")], 1427)
 })

@@ -30,12 +30,12 @@ get_nhdplushr <- function(hr_dir, out_gpkg, layers, ids = NULL) {
   return(out_gpkg)
 }
 
-hr <- get_nhdplushr("03/", "03.gpkg", c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine", "NHDPlusSink", "NHDPoint"))
+hr <- get_nhdplushr("03/", "0303.gpkg", c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine", "NHDPlusSink", "NHDPoint"))
 
 hr_fline <- sf::read_sf(hr, "NHDFlowline")
 hr_vaa <- sf::read_sf(hr, "NHDPlusFlowlineVAA")
 
-hr_fline <- dplyr::left_join(hr_fline, select(hr_vaa, -ReachCode), by = "NHDPlusID")
+hr_fline <- dplyr::left_join(hr_fline, select(hr_vaa, -ReachCode, -VPUID), by = "NHDPlusID")
 
 hr_fline <- dplyr::rename(hr_fline, COMID = NHDPlusID, LENGTHKM = LengthKM, FTYPE = FType,
                            TotDASqKM = TotDASqKm, Hydroseq = HydroSeq, Pathlength = PathLength,
@@ -54,7 +54,7 @@ clipper <- st_bbox(hr_fline) %>%
 
 out <- "03_sub.gpkg"
 
-for(l in st_layers("03.gpkg")$name) {
+for(l in st_layers("0303.gpkg")$name) {
   l_data <- read_sf(hr, l)
   if(l == "NHDFlowline" | l == "NHDPlusCatchment" | l == "NHDPlusFlowlineVAA") {
     l_data <- filter(l_data, NHDPlusID %in% ut)
@@ -67,11 +67,12 @@ for(l in st_layers("03.gpkg")$name) {
     dbWriteTable(con, "NHDPlusFlowlineVAA", l_data)
     dbDisconnect(con)
   } else {
-    l_data <- st_zm(l_data) %>%
-      st_transform(5070) %>%
-      st_simplify(dTolerance = 10) %>%
-      st_transform(st_crs(l_data))
-
+    if(!st_geometry_type(l_data)[1] == "POINT") {
+      l_data <- st_zm(l_data) %>%
+        st_transform(5070) %>%
+        rmapshaper::ms_simplify(keep = 0.5) %>% #  st_simplify(dTolerance = 10)
+        st_transform(st_crs(l_data))
+    }
     write_sf(l_data, out, l)
   }
 }

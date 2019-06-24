@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
       </span>
     </div>
 
@@ -199,7 +199,7 @@
 <a class="sourceLine" id="cb7-10" title="10"><span class="co">#&gt; Available layers:</span></a>
 <a class="sourceLine" id="cb7-11" title="11"><span class="co">#&gt;         layer_name geometry_type features fields</span></a>
 <a class="sourceLine" id="cb7-12" title="12"><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57</span></a>
-<a class="sourceLine" id="cb7-13" title="13"><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2605      7</span></a>
+<a class="sourceLine" id="cb7-13" title="13"><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7</span></a>
 <a class="sourceLine" id="cb7-14" title="14"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlink">unlink</a></span>(hr_data)</a>
 <a class="sourceLine" id="cb7-15" title="15"></a>
 <a class="sourceLine" id="cb7-16" title="16">hr_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(nhd_dir, </a>
@@ -210,12 +210,12 @@
 <a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; Available layers:</span></a>
 <a class="sourceLine" id="cb7-22" title="22"><span class="co">#&gt;         layer_name geometry_type features fields</span></a>
 <a class="sourceLine" id="cb7-23" title="23"><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57</span></a>
-<a class="sourceLine" id="cb7-24" title="24"><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2605      7</span></a>
-<a class="sourceLine" id="cb7-25" title="25"><span class="co">#&gt; 3     NHDWaterbody Multi Polygon     1340     15</span></a>
-<a class="sourceLine" id="cb7-26" title="26"><span class="co">#&gt; 4          NHDArea Multi Polygon       11     14</span></a>
-<a class="sourceLine" id="cb7-27" title="27"><span class="co">#&gt; 5          NHDLine   Line String      213     12</span></a>
-<a class="sourceLine" id="cb7-28" title="28"><span class="co">#&gt; 6      NHDPlusSink         Point        2     10</span></a>
-<a class="sourceLine" id="cb7-29" title="29"><span class="co">#&gt; 7         NHDPoint         Point        8     10</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-24" title="24"><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7</span></a>
+<a class="sourceLine" id="cb7-25" title="25"><span class="co">#&gt; 3     NHDWaterbody       Polygon     1044     15</span></a>
+<a class="sourceLine" id="cb7-26" title="26"><span class="co">#&gt; 4          NHDArea       Polygon       10     14</span></a>
+<a class="sourceLine" id="cb7-27" title="27"><span class="co">#&gt; 5          NHDLine   Line String      142     12</span></a>
+<a class="sourceLine" id="cb7-28" title="28"><span class="co">#&gt; 6      NHDPlusSink         Point        1     10</span></a>
+<a class="sourceLine" id="cb7-29" title="29"><span class="co">#&gt; 7         NHDPoint      3D Point        7     10</span></a></code></pre></div>
 <p>Other functionality in the package, such as the <code>get_UT/UM/DM/DD</code> functions, subsetting, indexing, etc. also work now or will soon! Stay tuned for a dedicated NHDPlus HiRes vignette and submit issues as you find them!</p>
 </div>
 </div>

@@ -34,12 +34,18 @@ clean_geom <- function(x) {
 #' location of the upstream most catchment in the source flowlines to stay away from
 #' complexity that occurs near drainage divides.
 #'
+#' For preformance reasons, network navigation only considers the network of levelpaths.
+#' As a result, the response includes all flowlines along headwater levelpaths,
+#' including those upstream of the outlet of the headwater catchment.
+#'
 #' @param source_flowline sf data.frame with source flowlines and flowline attributes:
 #' COMID, LENGTHKM, DnHydroseq, and Hydroseq, and LevelPathI or NHDPlusHR equivalents.
 #' @param target_catchment sf data.frame with catchment polygons and FEATUREID or
 #' NHDPlusHR equivalent.
 #' @param target_flowline sf data.frame with target flowlines and COMID or NHDPlusHR
 #' equivalent.
+#' @param hr_pair (advanced use) data.frame as output by get_hr_pair internal function.
+#' @param cores Will run search in parallel
 #' @export
 #' @importFrom sf st_join st_set_geometry st_within
 #' @importFrom tidyr unnest
@@ -54,7 +60,7 @@ clean_geom <- function(x) {
 #'                            target_catchment = hr_catchment,
 #'                            target_flowline = hr_flowline)
 #' matched <- left_join(select(hr_flowline, NHDPlusID),
-#'                      select(lp_df_df, NHDPlusID = members,
+#'                      select(lp_df_df, NHDPlusID,
 #'                             MR_LevelPathI = LevelPathI), by = "NHDPlusID")
 #'
 #' lp <- min(matched$MR_LevelPathI, na.rm = TRUE)
@@ -64,53 +70,104 @@ clean_geom <- function(x) {
 #' plot(mr_lp$geom, col = "red", lwd = 3, add = TRUE)
 #' plot(hr_lp$geom, col = "black", add = TRUE)
 #'
-match_flowpaths <- function(source_flowline, target_catchment, target_flowline) {
-  flowline <- rename_nhdplus(source_flowline)
+match_flowpaths <- function(source_flowline, target_catchment, target_flowline,
+                            hr_pair = NULL,
+                            cores = NULL) {
 
-  check_names(flowline, "match_flowpaths")
+  source_flowline <- rename_nhdplus(source_flowline)
+  check_names(source_flowline, "match_flowpaths")
 
-  catchment <- rename_nhdplus(target_catchment)
+  required_terminals <- filter(target_flowline,
+                               NHDPlusID %in% hr_pair$FEATUREID)$TerminalPa %>%
+    unique()
+
+  required_names <- unique(c(get("match_flowpaths_attributes",
+                        nhdplusTools_env),
+                      get("prepare_nhdplus_attributes",
+                          nhdplusTools_env)))
+
+  source_flowline <- select(source_flowline, required_names)
+
   target_flowline <- clean_geom(target_flowline)
 
-  ### First find outlet of MR catchments
-  mr_hw_outlets <- mr_hw_cat_out(flowline)
+  if(is.null(hr_pair)) {
+    target_catchment <- rename_nhdplus(target_catchment)
+    hr_pair <- get_hr_pair(mr_hw_cat_out(source_flowline), target_catchment)
+  }
 
-  ### Find HR catchment of outlet of headwater MR catchments
-  hr_pair <- st_join(mr_hw_outlets,
-                     select(catchment, FEATUREID),
-                     join = st_within) %>%
-    st_set_geometry(NULL)
+  source_flowline <- clean_geom(source_flowline)
+  mr_lp <- distinct(select(source_flowline, COMID, LevelPathI))
+  rm(source_flowline)
 
-  ### Trace down HR network for each.
-  mr_lps <- lapply(hr_pair$FEATUREID,
-                   function(x, fa) get_DM(fa, x),
-                   fa = target_flowline)
+  gc()
+
+  hr_pair <- filter(hr_pair, FEATUREID %in% target_flowline$NHDPlusID) %>%
+    left_join(select(target_flowline, NHDPlusID, LevelPathI),
+              by = c("FEATUREID" = "NHDPlusID"))
+
+  target_fp <- select(target_flowline, "DnLevelPat", "LevelPathI", "HydroSeq") %>%
+    group_by(LevelPathI) %>%
+    filter(HydroSeq == min(HydroSeq)) %>%
+    select(-HydroSeq)
+
+  get_dm_lp <- function(in_lp, fp) {
+    dn_lp <- fp$DnLevelPat[fp$LevelPathI %in% in_lp]
+
+    if(length(dn_lp) > 0 & in_lp != dn_lp) {
+      c(in_lp, get_dm_lp(dn_lp, fp))
+    } else {
+      in_lp
+    }
+  }
+
+  if(is.null(cores)) {
+    ### Trace down HR network for each.
+    mr_lps <- lapply(hr_pair$LevelPathI,
+                     get_dm_lp, fp = target_fp)
+  } else {
+    cl <- parallel::makeCluster(rep("localhost", cores),
+                                type = "SOCK")
+    mr_lps <- parallel::parLapply(cl, hr_pair$FEATUREID,
+                                  function(x, fa) nhdplusTools::get_DM(fa, x),
+                                  fa = target_flowline)
+    parallel::stopCluster(cl)
+  }
 
   # Expand into data.frame
   lp_df <- data.frame(FEATUREID = hr_pair$FEATUREID)
-  lp_df["members"] <- list(mr_lps)
+  lp_df["member_hr_lp"] <- list(mr_lps)
 
   lp_df <- unnest(lp_df)
 
   # Get MR levelpaths for headwater HR ids
-  mr_lp <- distinct(select(st_set_geometry(flowline, NULL), COMID, LevelPathI))
-  hr_pair <- left_join(hr_pair, mr_lp, by = "COMID")
+  hr_pair <- left_join(select(hr_pair, -LevelPathI), mr_lp, by = "COMID")
 
   # Join so we have HR FEATUREID and MR LevelPath
   lp_df <- left_join(lp_df, select(hr_pair, -COMID), by = "FEATUREID")
 
-  # discriminate which HR headwater belongs with which MR levelpath
-  # Iterate over sorted unique list of MR levelpaths.
-  lps <- sort(unique(lp_df$LevelPathI))
-  lp_list <- setNames(rep(list(list()), length(lps)), lps)
+  # # discriminate which HR headwater belongs with which MR levelpath
+  # # Iterate over sorted unique list of MR levelpaths.
+  # lps <- sort(unique(lp_df$LevelPathI))
+  # lp_list <- setNames(rep(list(list()), length(lps)), lps)
+  #
+  # for(lp in as.character(lps)) { # destructive loop
+  #   # Find the HR headwater that has the most downstream members on that levelpath.
+  #   lp_list[[lp]] <- lp_df[lp_df$LevelPathI == lp, ]
+  #   # Remove the match from the set and continue.
+  #   lp_df <- lp_df[!lp_df$members %in% lp_list[[lp]]$members, ]
+  # }
 
-  for(lp in lps) { # destructive loop
-    # Find the HR headwater that has the most downstream members on that levelpath.
-    lp_list[[as.character(lp)]] <- filter(lp_df, LevelPathI == lp)
-    # Remove the match from the set and continue.
-    lp_df <- filter(lp_df, !members %in% lp_list[[as.character(lp)]]$members)
-  }
+  group_by(lp_df, member_hr_lp) %>%
+  filter(LevelPathI == min(LevelPathI)) %>%
+    ungroup() %>%
+    left_join(select(target_flowline, NHDPlusID, LevelPathI),
+                     by = c("member_hr_lp" = "LevelPathI"))
+}
 
-  return(bind_rows(lp_list))
-
+get_hr_pair <- function(mr_hw_outlets, target_catchment) {
+  ### Find HR catchment of outlet of headwater MR catchments
+  hr_pair <- st_join(mr_hw_outlets,
+                     select(target_catchment, FEATUREID),
+                     join = st_within) %>%
+    st_set_geometry(NULL)
 }

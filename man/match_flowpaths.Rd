@@ -4,7 +4,8 @@
 \alias{match_flowpaths}
 \title{Match Flowpaths}
 \usage{
-match_flowpaths(source_flowline, target_catchment, target_flowline)
+match_flowpaths(source_flowline, target_catchment, target_flowline,
+  hr_pair = NULL, cores = NULL)
 }
 \arguments{
 \item{source_flowline}{sf data.frame with source flowlines and flowline attributes:
@@ -15,6 +16,10 @@ NHDPlusHR equivalent.}
 
 \item{target_flowline}{sf data.frame with target flowlines and COMID or NHDPlusHR
 equivalent.}
+
+\item{hr_pair}{(advanced use) data.frame as output by get_hr_pair internal function.}
+
+\item{cores}{Will run search in parallel}
 }
 \description{
 Implements a flowpath-matching algorithm that traces downstream along
@@ -22,6 +27,10 @@ the target flowline network and determines which levelpath from the source flowl
 best matches the resulting downstream traces. The algorithm starts from the outlet
 location of the upstream most catchment in the source flowlines to stay away from
 complexity that occurs near drainage divides.
+
+For preformance reasons, network navigation only considers the network of levelpaths.
+As a result, the response includes all flowlines along headwater levelpaths,
+including those upstream of the outlet of the headwater catchment.
 }
 \examples{
 library(dplyr)
@@ -33,7 +42,7 @@ lp_df_df <- match_flowpaths(source_flowline = new_hope_flowline,
                            target_catchment = hr_catchment,
                            target_flowline = hr_flowline)
 matched <- left_join(select(hr_flowline, NHDPlusID),
-                     select(lp_df_df, NHDPlusID = members,
+                     select(lp_df_df, NHDPlusID,
                             MR_LevelPathI = LevelPathI), by = "NHDPlusID")
 
 lp <- min(matched$MR_LevelPathI, na.rm = TRUE)

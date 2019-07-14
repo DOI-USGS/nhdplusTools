@@ -12,10 +12,10 @@ test_that("match flowpaths runs", {
                                               target_flowline = hr_flowline))
 
   matched <- left_join(select(hr_flowline, NHDPlusID),
-                           select(lp_df_df, NHDPlusID = members,
+                           select(lp_df_df, NHDPlusID,
                                   MR_LevelPathI = LevelPathI), by = "NHDPlusID")
 
-  expect_equal(sum(!is.na(matched$MR_LevelPathI)), 1021)
+  expect_equal(sum(!is.na(matched$MR_LevelPathI)), 1205)
 
   lp <- min(matched$MR_LevelPathI, na.rm = TRUE)
   mr_lp <- filter(new_hope_flowline, LevelPathI <= lp)
@@ -23,7 +23,7 @@ test_that("match flowpaths runs", {
 
   # validated manually
   expect_equal(nrow(mr_lp), 75)
-  expect_equal(nrow(hr_lp), 139)
+  expect_equal(nrow(hr_lp), 146)
 })
 
 # Visualize match

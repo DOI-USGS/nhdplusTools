@@ -4,7 +4,7 @@
 \alias{get_nhdplushr}
 \title{Get NHDPlus HiRes as single geopackage}
 \usage{
-get_nhdplushr(hr_dir, out_gpkg, layers = c("NHDFlowline",
+get_nhdplushr(hr_dir, out_gpkg = NULL, layers = c("NHDFlowline",
   "NHDPlusCatchment"))
 }
 \arguments{

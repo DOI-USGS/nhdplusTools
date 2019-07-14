@@ -67,20 +67,20 @@ get_nhdplus_bybox <- function(box, layer) {
   # nolint start
 
   filter_xml <- paste0('<?xml version="1.0"?>',
-                      '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                      '<wfs:Query xmlns:feature="http://gov.usgs.cida/nhdplus" typeName="feature:',
-                      layer, '" srsName="EPSG:4326">',
-                      '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">',
-                      '<ogc:BBOX>',
-                      '<ogc:PropertyName>the_geom</ogc:PropertyName>',
-                      '<gml:Envelope>',
-                      '<gml:lowerCorner>',bbox[2]," ",bbox[1],'</gml:lowerCorner>',
-                      '<gml:upperCorner>',bbox[4]," ",bbox[3],'</gml:upperCorner>',
-                      '</gml:Envelope>',
-                      '</ogc:BBOX>',
-                      '</ogc:Filter>',
-                      '</wfs:Query>',
-                      '</wfs:GetFeature>')
+                       '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
+                       '<wfs:Query xmlns:feature="http://gov.usgs.cida/nhdplus" typeName="feature:',
+                       layer, '" srsName="EPSG:4326">',
+                       '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">',
+                       '<ogc:BBOX>',
+                       '<ogc:PropertyName>the_geom</ogc:PropertyName>',
+                       '<gml:Envelope>',
+                       '<gml:lowerCorner>',bbox[2]," ",bbox[1],'</gml:lowerCorner>',
+                       '<gml:upperCorner>',bbox[4]," ",bbox[3],'</gml:upperCorner>',
+                       '</gml:Envelope>',
+                       '</ogc:BBOX>',
+                       '</ogc:Filter>',
+                       '</wfs:Query>',
+                       '</wfs:GetFeature>')
 
   # nolint end
 
@@ -121,36 +121,33 @@ download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
       out <- c(out, file.path(nhd_dir, hu02))
     }
 
-    if(!download_files || !dir.exists(out[length(out)])) {
+    if(download_files) {
+      dir.create(out[length(out)], recursive = TRUE, showWarnings = FALSE)
+    }
 
-      if(download_files) {
-        dir.create(out, recursive = TRUE, showWarnings = FALSE)
-      }
+    file_list <- read_xml(paste0(nhdhr_bucket, nhdhr_file_list,
+                                 "NHDPLUS_H_", hu02)) %>%
+      xml_ns_strip() %>%
+      xml_find_all(xpath = "//Key") %>%
+      xml_text()
 
-      file_list <- read_xml(paste0(nhdhr_bucket, nhdhr_file_list,
-                                   "NHDPLUS_H_", hu02)) %>%
-        xml_ns_strip() %>%
-        xml_find_all(xpath = "//Key") %>%
-        xml_text()
+    file_list <- file_list[grepl("_GDB.zip", file_list)]
 
-      file_list <- file_list[grepl("_GDB.zip", file_list)]
+    if(subset_hu02[h]) {
+      file_list <- file_list[sapply(file_list, function(f)
+        any(sapply(hu04_list, grepl, x = f)))]
+    }
 
-      if(subset_hu02[h]) {
-        file_list <- file_list[sapply(file_list, function(f)
-          any(sapply(hu04_list, grepl, x = f)))]
-      }
+    for(key in file_list) {
+      out_file <- paste0(out[length(out)], "/", tail(strsplit(key, "/")[[1]], 1))
+      url <- paste0(nhdhr_bucket, key)
 
-      for(key in file_list) {
-        out_file <- paste0(out, "/", tail(strsplit(key, "/")[[1]], 1))
-        url <- paste0(nhdhr_bucket, key)
-
-        if(download_files) {
-          download.file(url, out_file)
-          unzip(out_file, exdir = out)
-          unlink(out_file)
-        } else {
-          out <- c(out, url)
-        }
+      if(download_files & !dir.exists(gsub(".zip", ".gdb", out_file))) {
+        download.file(url, out_file)
+        unzip(out_file, exdir = out[length(out)])
+        unlink(out_file)
+      } else if(!download_files) {
+        out <- c(out, url)
       }
     }
   }
@@ -181,7 +178,7 @@ download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' download_dir <- download_nhdhr("./", c("0302", "0303"))
 #' get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
 #' }
-get_nhdplushr <- function(hr_dir, out_gpkg,
+get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
                           layers = c("NHDFlowline", "NHDPlusCatchment")) {
   gdb_files <- list.files(hr_dir, pattern = ".*GDB.gdb$",
                           full.names = TRUE, recursive = TRUE, include.dirs = TRUE)
@@ -196,18 +193,26 @@ get_nhdplushr <- function(hr_dir, out_gpkg,
     layers <- layers$name[!is.na(layers$geomtype) & layers$features > 0]
   }
 
+  out_list <- list()
+
   for(layer in layers) {
     layer_set <- lapply(gdb_files, get_hr_data, layer = layer)
 
     out <- do.call(rbind, layer_set)
 
-    out <- st_sf(out)
+    try(out <- st_sf(out))
 
-    write_sf(out, layer = layer, dsn = out_gpkg)
-
+    if(!is.null(out_gpkg)) {
+      write_sf(out, layer = layer, dsn = out_gpkg)
+    } else {
+      out_list[layer] <- list(out)
+    }
   }
-
-  return(out_gpkg)
+  if(!is.null(out_gpkg)) {
+    return(out_gpkg)
+  } else {
+    return(out_list)
+  }
 }
 
 get_hr_data <- function(gdb, layer = NULL) {

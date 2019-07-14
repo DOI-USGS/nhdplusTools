@@ -160,10 +160,17 @@ get_UM <- function(network, comid, distance = NULL) {
 #'
 get_DM <- function(network, comid, distance = NULL) {
 
-  network <- check_names(network, "get_DM")
+  if (!is.null(distance)) {
+    network <- check_names(network, "get_DM")
 
-  network <- dplyr::select(network, get("get_DM_attributes",
-                                        nhdplusTools_env))
+    network <- dplyr::select(network, get("get_DM_attributes",
+                                          nhdplusTools_env))
+  } else {
+    network <- check_names(network, "get_DM_nolength")
+
+    network <- dplyr::select(network, get("get_DM_nolength_attributes",
+                                          nhdplusTools_env))
+  }
 
   if ("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
 

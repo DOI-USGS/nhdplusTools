@@ -122,6 +122,12 @@ assign("get_DM_attributes",
          "DnHydroseq", "Hydroseq"),
        envir = nhdplusTools_env)
 
+assign("get_DM_nolength_attributes",
+       c("COMID",
+         "LevelPathI", "DnLevelPat",
+         "DnHydroseq", "Hydroseq"),
+       envir = nhdplusTools_env)
+
 assign("get_DD_attributes",
        c("COMID", "Pathlength", "LENGTHKM",
          "LevelPathI", "DnLevelPat",

@@ -179,8 +179,9 @@ download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
 #' }
 get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
-                          layers = c("NHDFlowline", "NHDPlusCatchment")) {
-  gdb_files <- list.files(hr_dir, pattern = ".*GDB.gdb$",
+                          layers = c("NHDFlowline", "NHDPlusCatchment"),
+                          pattern = ".*GDB.gdb$") {
+  gdb_files <- list.files(hr_dir, pattern = pattern,
                           full.names = TRUE, recursive = TRUE, include.dirs = TRUE)
 
   if(length(gdb_files) == 0) {

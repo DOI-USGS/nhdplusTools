@@ -7,6 +7,8 @@ test_that("match flowpaths runs", {
 
   rm(list = ls()[!ls() %in% c("new_hope_flowline", "hr_catchment", "hr_flowline")])
 
+  hr_flowline$TerminalPa <- 15000500003272
+
   suppressWarnings(lp_df_df <- match_flowpaths(source_flowline = new_hope_flowline,
                                               target_catchment = hr_catchment,
                                               target_flowline = hr_flowline))

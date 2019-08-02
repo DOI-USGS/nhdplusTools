@@ -1,3 +1,72 @@
+#' @title Discover NHDPlus ID
+#' @description Multipurpose function to find a COMID of interest.
+#' @param point An sf POINT including crs as created by:
+#' sf::st_sfc(sf::st_point(..,..), crs)
+#' @param nldi_feature list with names `featureSource` and `featureID` where
+#' `featureSource` is derived from the "source" column of  the response of
+#' discover_nldi_sources() and the `featureSource` is a known identifier
+#' from the specified `featureSource`.
+#' @return integer COMID
+#' @export
+#' @examples
+#' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
+#' discover_nhdplus_id(point)
+#'
+#' discover_nldi_sources()
+#'
+#' nldi_huc12 <- list(featureSource = "huc12pp", featureID = "070700051701")
+#' discover_nhdplus_id(nldi_feature = nldi_huc12)
+#'
+#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
+#' discover_nhdplus_id(nldi_feature = nldi_nwis)
+#'
+discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
+
+  if (!is.null(point)) {
+
+    url_base <- paste0("https://cida.usgs.gov/nwc/geoserver/nhdplus/ows",
+                       "?service=WFS",
+                       "&version=1.0.0",
+                       "&request=GetFeature",
+                       "&typeName=nhdplus:catchmentsp",
+                       "&outputFormat=application%2Fjson",
+                       "&srsName=EPSG:4269")
+    # "&bbox=40,-90.001,40.001,-90,urn:ogc:def:crs:EPSG:4269",
+
+    p_crd <- sf::st_coordinates(sf::st_transform(point, 4269))
+
+    url <- paste0(url_base, "&bbox=",
+                  paste(p_crd[2], p_crd[1],
+                        p_crd[2] + 0.00001, p_crd[1] + 0.00001,
+                        "urn:ogc:def:crs:EPSG:4269", sep = ","))
+
+    catchment <- sf::read_sf(url)
+
+    if (nrow(catchment) > 1) {
+      warning("point too close to edge of catchment found multiple.")
+    }
+
+    return(as.integer(catchment$featureid))
+
+  } else if (!is.null(nldi_feature)) {
+
+    check_nldi_feature(nldi_feature)
+
+    if (is.null(nldi_feature[["tier"]])) nldi_feature[["tier"]] <- "prod"
+
+    nldi <- get_nldi_feature(nldi_feature[["featureSource"]],
+                             nldi_feature[["featureID"]],
+                             nldi_feature[["tier"]])
+
+    return(as.integer(nldi$features$properties$comid))
+
+  } else {
+
+    stop("Must provide point or nldi_feature input.")
+
+  }
+}
+
 #' @noRd
 get_nhdplus_byid <- function(comids, layer) {
 

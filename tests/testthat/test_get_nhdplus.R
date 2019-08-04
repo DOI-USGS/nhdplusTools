@@ -6,19 +6,19 @@ pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
 test_that("get_nhdplus_byid", {
   comid_set <- get_UT(pt_data, 11687180)
 
-  catchmentsp <- get_nhdplus_byid(comid_set, "catchmentsp")
+  catchmentsp <- nhdplusTools:::get_nhdplus_byid(comid_set, "catchmentsp")
 
   expect("sf" %in% class(catchmentsp), "expected class sf")
 
   expect_equal(nrow(catchmentsp), 5)
 
-  nhdflowline_network <- get_nhdplus_byid(comid_set, "nhdflowline_network")
+  nhdflowline_network <- nhdplusTools:::get_nhdplus_byid(comid_set, "nhdflowline_network")
 
   expect("sf" %in% class(nhdflowline_network), "expected class sf")
 
   expect_equal(nrow(nhdflowline_network), 5)
 
-  expect_error(get_nhdplus_byid(comid_set, "testest"),
+  expect_error(nhdplusTools:::get_nhdplus_byid(comid_set, "testest"),
                "Layer must be one of catchmentsp, nhdflowline_network")
 
 })
@@ -32,10 +32,13 @@ test_that("get_nhdplus_bybox", {
   layers <- c("nhdarea", "nhdwaterbody")
 
   for (layer in layers) {
-    l <- get_nhdplus_bybox(bbox, layer)
+    l <- nhdplusTools:::get_nhdplus_bybox(bbox, layer)
     expect(nrow(l) > 1, "expected to get data")
     expect_true("sf" %in% class(l))
   }
+
+  expect_error(nhdplusTools:::get_nhdplus_bybox(bbox, "borked"),
+               "Layer must be one of nhdarea, nhdwaterbody")
 
 })
 
@@ -54,16 +57,21 @@ test_that("get_nhdplushr runs", {
 
   out <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"))
 
-  layers <- st_layers(out)
+  layers <- sf::st_layers(out)
   expect_equal(layers$name, c("NHDFlowline", "NHDPlusCatchment"))
   expect_equal(layers$features, c(2691, 2603))
 
   out <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"), layers = NULL)
 
-  layers <- st_layers(out)
+  layers <- sf::st_layers(out)
 
   expect_equal(length(layers$name), 7)
   expect_equal(layers$fields[which(layers$name == "NHDFlowline")], 57)
 
+  out <- get_nhdplushr(work_dir, layers = NULL)
+
+  expect(length(names(out)), 7)
+
   unlink(c(temp_file, out, file.path(work_dir, "03_sub.gpkg")))
+
 })

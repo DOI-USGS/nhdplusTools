@@ -4,16 +4,10 @@
 
 ## Tools for Manipulating the NHDPlus Network
 
-This package is a growing collection of tools for manipulation of hydrographic
-data built around the NHDPlus data model. There is no specific
+This package is a growing set of tools for manipulation of hydrographic
+data using the NHDPlus data model. There is no specific
 funding or plan to continue development of this package long term
-but ongoing support is available due to use of the package in project work. 
-The hope is that this can become a community toolbox for NHDPlus in R.
-
-**Note** that preliminary functionality related to refactoring the NHDPlus network
-and catchments that is mentioned in this readme is available in a seperate branch
-of the nhdplusTools repository. It is in development and only available if the
-package is installed directly from that branch.
+but ongoing support is available due to use of the package in project work.
 
 ### Installation:
 
@@ -33,19 +27,16 @@ Terms used for hydrologic units:
 **Catchment:** The most abstract unit of hydrology in HY_Features is the catchment. It is a physiographic unit with zero or one inlets and one outlet. It does not inherently have any conceptual realizations. Rather, a given catchment can be realized in a number of ways; flowpath, divide, and networks of flowpaths and divides are the primary realizations.  
 **Catchment divide:** NHD "catchment" polygons are more accurately described as "catchment divide" features. Because of the overlap with the HY_Features abstract "catchment" feature type, "catchment divide" is used for polygon represenations of catchments.  
 
-Terms used to describe network transormations:  
-**Collapse:** Combining complex hydrology typified by very small inter-confluence catchments and splitting very large catchments.
-**Reconcile:** Applying changes to the catchment network that result in a new well connected and valid version of the network.
-**Aggregate:** Combining hydrologic units to create new, larger catchments that resolve to the outlets of a specified set of pre-existing catchments. In this case, "aggregate" is rooted in the HY_Features HY_CatchmentAggregate feature type.
-
 ### Data:
 
-The most convenient way to get the NHDPlus is via the [geopackage hosted here.](https://www.epa.gov/waterdata/nhdplus-national-data) [(direct link to download)](https://s3.amazonaws.com/nhdplus/NHDPlusV21/Data/NationalData/NHDPlusV21_NationalData_CONUS_Seamless_Geopackage_05.7z) You will need [7z](https://www.7-zip.org/) or the [`archive` package](https://github.com/jimhester/archive) to extract it.
+[A National Dataset of NHDPlusV2.1 is available here.](https://www.epa.gov/waterdata/nhdplus-national-data)  
+Also see: [`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html) and [`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
 
 ## Package Vision
 
 The `nhdplusTools` package is intended to provide a reusable set of tools to
-subset, relate data to, and refactor (collapse, split, and aggregate) NHDPlus data. 
+subset and relate data to NHDPlus data. 
+
 It implements a data model consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
 and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
 aims to provide a set of tools with minimal dependencies that can be used
@@ -73,20 +64,6 @@ for indexing exist, they can be broken into two main categories: linear
 referencing and catchment indexing. Both operate on features represented by
 points, lines, and polygons. `nhdplusTools` should eventually support both
 linear and catchment indexing.
-
-##### Refactoring
-The `nhdplusTools` package was started based on a set of tools to refactor the
-NHDPlusV2 network. The concept of refactoring as intended here includes:
-
-1) aggregating catchments into groups based on existing network topology,  
-2) collapsing catchment topology to eliminate small catchments,  
-3) splitting large or long catchments to create a more uniform catchment size
-distribution.
-
-This type of functionality is especially relevant to modeling applications that
-need specific modeling unit characteristics but wish to preserve the network as
-much as possible for interoperability with other applications that use the
-NHDPlus network.
 
 ### Data Model
 Given that `nhdplusTools` is focused on working with NHDPlus data, the NHDPlus
@@ -141,15 +118,9 @@ the [Network Linked Data Index](https://owi.usgs.gov/blog/nldi-intro/) are
 used for data discovery.
 
 ##### NHDPlus Version
-Initial package development will focus on the [National Seamless NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-data)
-database. [NHDPlus High Resolution](https://nhd.usgs.gov/NHDPlus_HR.html) will
-be a target for support in the medium to long run.
-
-##### Package Dependencies
-If at all possible, dependencies should be available via CRAN, have solid
-expected maintenance, allow national-scale analyses, and not require difficult
-to install system libraries. `dplyr`, and `sf` are the primary dependencies that
-should be used if at all possible.
+Initial package development focused on the [National Seamless NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-data)
+database. [NHDPlus High Resolution](https://nhd.usgs.gov/NHDPlus_HR.html) is
+also supported.
 
 ### Related similar packages:
 https://github.com/mbtyers/riverdist  
@@ -171,7 +142,7 @@ for us all to gain from and won't be able to do that without your help!
 5) Make sure you use roxygen and run Check before contributing. More on this front as the package matures. 
 
 Other notes:
-- lintr runs in the tests so... write good code.
+- consider running `lintr` prior to contributing.
 - consider running `goodpractice::gp()` on the package before contributing.
 - consider running `devtools::spell_check()` if you wrote documentation.
 - this package may end up using pkgdown running `pkgdown::build_site()` will refresh it.

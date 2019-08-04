@@ -10,7 +10,7 @@ reference:
       - '`calculate_levelpaths`'
       - '`subset_nhdplus`'
       - '`prepare_nhdplus`'
-      - '`download_nhdhr`'
+      - '`download_nhdplushr`'
       - '`get_nhdplushr`'
   - title: Discovery and Subsetting
     desc: >

@@ -19,6 +19,8 @@ c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine",
 "NHDPlusSink", "NHDPlusWall", "NHDPoint", "NHDPlusBurnWaterbody",
 "NHDPlusBurnLineEvent", "HYDRO_NET_Junctions",
 "WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")}
+
+\item{pattern}{character optional regex to select certain files in hr_dir}
 }
 \description{
 Get NHDPlus HiRes as single geopackage
@@ -31,7 +33,7 @@ Set layers to "NULL" to get all layers.
 }
 \examples{
 \dontrun{
-download_dir <- download_nhdhr("./", c("0302", "0303"))
+download_dir <- download_nhdplushr("./", c("0302", "0303"))
 get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
 }
 }

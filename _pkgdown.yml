@@ -32,7 +32,4 @@ reference:
       Functions to index and match data to NHDPlus features.
     contents:
       - '`get_flowline_index`'
-      - '`match_levelpaths`'
-      - '`match_flowpaths`'
-      - '`get_linked_points`'
 

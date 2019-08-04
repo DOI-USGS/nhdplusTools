@@ -1,0 +1,222 @@
+get_dsLENGTHKM <- function(flines) {
+  # This gets all the next-downstream flowlines and finds the
+  # length of the next downstream
+  flines$dsLENGTHKM <-
+    flines[["LENGTHKM"]][match(flines$toCOMID, flines$COMID)]
+  # already removed comids get NA dsLength -- ok to set them to 0.
+  flines[["dsLENGTHKM"]][is.na(flines$dsLENGTHKM)] <- 0
+  flines[["dsLENGTHKM"]]
+}
+
+get_upstream <- function(flines) {
+  left_join(select(flines, COMID), select(flines, fromCOMID = COMID, toCOMID),
+            by = c("COMID" = "toCOMID"))
+}
+
+get_num_upstream <- function(flines) {
+  left_join(select(flines, COMID, toCOMID),
+            get_upstream(flines) %>%
+              group_by(COMID) %>%
+              summarise(num_upstream = n()),
+            by = "COMID")[["num_upstream"]]
+}
+
+get_ds_num_upstream <- function(flines) {
+  flines <- mutate(flines, num_upstream = get_num_upstream(flines))
+  flines[["num_upstream"]][match(flines$toCOMID, flines$COMID)]
+}
+
+get_ds_joined_fromCOMID <- function(flines) {
+  flines <- mutate(flines, ds_joined_fromCOMID = joined_fromCOMID)
+  flines[["ds_joined_fromCOMID"]][match(flines$toCOMID, flines$COMID)]
+}
+
+#' Total Drainage Area
+#' @description Calculates total drainage area given a dendritic
+#' network and incremental areas.
+#' @param catchment_area data.frame with ID, toID, and area columns.
+#' @return numeric with total area.
+#' @importFrom igraph graph_from_data_frame topo_sort
+#' @importFrom dplyr select left_join
+#' @export
+#' @examples
+#' library(dplyr)
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' catchment_area <- prepare_nhdplus(walker_flowline, 0, 0,
+#'                              purge_non_dendritic = FALSE, warn = FALSE) %>%
+#'   left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
+#'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
+#'
+#' new_da <- calculate_total_drainage_area(catchment_area)
+#'
+#' catchment_area$totda <- new_da
+#' catchment_area$nhdptotda <- walker_flowline$TotDASqKM
+#'
+#' mean(abs(catchment_area$totda - catchment_area$nhdptotda))
+#' max(abs(catchment_area$totda - catchment_area$nhdptotda))
+#'
+
+calculate_total_drainage_area <- function(catchment_area) {
+
+  return(accumulate_downstream(catchment_area, "area"))
+
+}
+
+#' Calculate Arbolate Sum
+#' @description Calculates arbolate sum given a dendritic
+#' network and incremental lengths. Arbolate sum is the total length
+#' of all upstream flowlines.
+#' @param catchment_area data.frame with ID, toID, and length columns.
+#' @return numeric with arbolate sum.
+#' @export
+#' @examples
+#' library(dplyr)
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
+#'                              purge_non_dendritic = FALSE, warn = FALSE) %>%
+#'   left_join(select(walker_flowline, COMID), by = "COMID") %>%
+#'   select(ID = COMID, toID = toCOMID, length = LENGTHKM)
+#'
+#' arb_sum <- calculate_arbolate_sum(catchment_length)
+#'
+#' catchment_length$arb_sum <- arb_sum
+#' catchment_length$nhd_arb_sum <- walker_flowline$ArbolateSu
+#'
+#' mean(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum))
+#' max(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum))
+#'
+
+calculate_arbolate_sum <- function(catchment_area) {
+
+  return(accumulate_downstream(catchment_area, "length"))
+
+}
+
+#' @importFrom igraph graph_from_data_frame topo_sort
+#' @importFrom dplyr select left_join ungroup
+#' @noRd
+#'
+accumulate_downstream <- function(dat_fram, var) {
+
+  cat_order <- select(dat_fram, ID)
+
+  dat_fram[["toID"]][which(is.na(dat_fram[["toID"]]))] <- 0
+
+  sorted <- names(topo_sort(graph_from_data_frame(dat_fram,
+                                                  directed = TRUE),
+                            mode = "out"))
+
+  sorted <- sorted[sorted != "0" & sorted %in% as.character(cat_order$ID)]
+
+  dat_fram <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
+                        dat_fram, by = "ID")
+
+  dat_fram[["toID_row"]] <- match(dat_fram[["toID"]], dat_fram[["ID"]])
+
+  var_out <- dat_fram[[var]]
+  toid_row <- dat_fram[["toID_row"]]
+
+  for(cat in 1:length(var_out)) {
+    var_out[toid_row[cat]] <- var_out[toid_row[cat]] + var_out[cat]
+  }
+
+  dat_fram[[var]] <- var_out
+
+  dat_fram <- left_join(cat_order, dat_fram, by = "ID")
+
+  return(dat_fram[[var]])
+}
+
+#' Calculate Level Paths
+#' @description Calculates level paths using the stream-leveling approach of
+#' NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
+#' levelpath outlet identifier is provided in output. If arbolate sum is provided in
+#' the weight column, this will match the behavior of NHDPlus. Any numeric value can be
+#' included in this column and the largest value will be followed when no nameID is available.
+#' @param flowline data.frame with ID, toID, nameID, and weight columns.
+#' @return data.frame with ID, outletID, topo_sort, and levelpath collumns.
+#' See details for more info.
+#' @details
+#' \enumerate{
+#'   \item levelpath provides an identifier for the collection of flowlines
+#'   that make up the single mainstem flowpath of a total upstream aggregate catchment.
+#'   \item outletID is the catchment ID (COMID in the case of NHDPlus) for the catchment
+#'   at the outlet of the levelpath the catchment is part of.
+#'   \item topo_sort is similar to Hydroseq in NHDPlus in that large topo_sort values
+#'   are upstream of small topo_sort values. Note that there are many valid topological
+#'   sort orders of a directed graph. The sort order output by this function is generated
+#'   using `igraph::topo_sort`.
+#' }
+#' @export
+#' @examples
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#'
+#' test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
+#'
+#' test_flowline <- data.frame(
+#'   ID = test_flowline$COMID,
+#'   toID = test_flowline$toCOMID,
+#'   nameID = walker_flowline$GNIS_ID,
+#'   weight = walker_flowline$ArbolateSu,
+#'   stringsAsFactors = FALSE)
+#'
+#' calculate_levelpaths(test_flowline)
+#'
+#'
+calculate_levelpaths <- function(flowline) {
+
+  flowline <- check_names(flowline, "calculate_levelpaths")
+
+  flowline[["toID"]][which(is.na(flowline[["toID"]]))] <- 0
+
+  sorted <- names(topo_sort(graph_from_data_frame(flowline,
+                                                  directed = TRUE),
+                            mode = "out"))
+
+  sorted <- sorted[sorted != 0]
+
+  flowline <- left_join(data.frame(ID = as.integer(sorted[!sorted == "NA"])),
+                        flowline, by = "ID")
+
+  flowline[["topo_sort"]] <- seq(nrow(flowline), 1)
+  flowline[["levelpath"]] <- rep(0, nrow(flowline))
+
+  get_path <- function(flowline, tailID) {
+    from_inds <- which(flowline$toID == tailID)
+    if(length(from_inds) > 1) {
+      ind <- which(flowline$ID == tailID)
+      next_step <- dplyr::filter(flowline[from_inds, ],
+                                 (nameID == flowline$nameID[ind] & nameID != " ") |
+                                   weight == max(weight))$ID
+      c(tailID, get_path(flowline, next_step))
+    } else if(length(from_inds) == 1) {
+      c(tailID, get_path(flowline, flowline$ID[from_inds]))
+    } else {
+      return(tailID)
+    }
+  }
+
+  flc <- flowline
+  diff = 1
+
+  while(nrow(flc) > 0) {
+    tail_ind <- which(flc$topo_sort == min(flc$topo_sort))
+    tailID <- flc$ID[tail_ind]
+    sortID <- flowline$topo_sort[tail_ind]
+
+    pathIDs <- get_path(flc, tailID)
+
+    flowline <- mutate(flowline, levelpath = ifelse(flowline$ID %in% pathIDs, sortID, levelpath))
+    flc <- filter(flc, !ID %in% pathIDs)
+  }
+
+  outlets <- flowline %>%
+    group_by(levelpath) %>%
+    filter(topo_sort == min(topo_sort)) %>%
+    ungroup() %>%
+    select(outletID = ID, levelpath)
+
+  flowline <- left_join(flowline, outlets, by = "levelpath")
+
+  return(select(flowline, ID, outletID, topo_sort, levelpath))
+}

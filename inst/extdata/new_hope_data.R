@@ -6,8 +6,8 @@ new_hope_catchment <- sf::read_sf(file.path(extdata, "new_hope.gpkg"), "Catchmen
 new_hope_catchment <- sf::st_transform(new_hope_catchment, proj)
 new_hope_flowline <- sf::read_sf(file.path(extdata, "new_hope.gpkg"), "NHDFlowline_Network")
 new_hope_flowline <- sf::st_transform(new_hope_flowline, proj)
-new_hope_fline_ref <- sf::read_sf(file.path(extdata, "new_hope_refactor.gpkg"))
-new_hope_fline_rec <- sf::read_sf(file.path(extdata, "new_hope_reconcile.gpkg"))
-new_hope_catchment_rec <- sf::read_sf(file.path(extdata, "new_hope_cat_rec.gpkg"))
+# new_hope_fline_ref <- sf::read_sf(file.path(extdata, "new_hope_refactor.gpkg"))
+# new_hope_fline_rec <- sf::read_sf(file.path(extdata, "new_hope_reconcile.gpkg"))
+# new_hope_catchment_rec <- sf::read_sf(file.path(extdata, "new_hope_cat_rec.gpkg"))
 new_hope_wbd <- sf::read_sf(file.path(extdata, "new_hope_wbd.gpkg"), "HUC12")
 # nolint end

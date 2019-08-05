@@ -310,7 +310,7 @@ private_get_DD <- function(network, comid, stop_pathlength = 0) {
       ds_comid <- filter(network, LevelPathI %in% ds_lpid) %>%
         dplyr::left_join(select(ds_hs, LevelPathI, max_Hydroseq = Hydroseq),
                   by = "LevelPathI") %>%
-        filter(Hydroseq <= max_Hydroseq)
+        filter(Hydroseq <= .data$max_Hydroseq)
       ds_comid <- ds_comid$COMID
     }
 

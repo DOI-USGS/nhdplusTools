@@ -65,7 +65,7 @@ calculate_arbolate_sum <- function(catchment_area) {
 #'
 accumulate_downstream <- function(dat_fram, var) {
 
-  cat_order <- select(dat_fram, ID)
+  cat_order <- select(dat_fram, .data$ID)
 
   dat_fram[["toID"]][which(is.na(dat_fram[["toID"]]))] <- 0
 
@@ -152,9 +152,11 @@ calculate_levelpaths <- function(flowline) {
     from_inds <- which(flowline$toID == tailID)
     if(length(from_inds) > 1) {
       ind <- which(flowline$ID == tailID)
-      next_step <- dplyr::filter(flowline[from_inds, ],
-                                 (nameID == flowline$nameID[ind] & nameID != " ") |
-                                   weight == max(weight))$ID
+      next_step <-
+        dplyr::filter(flowline[from_inds, ],
+                      (.data$nameID == flowline$nameID[ind] &
+                         .data$nameID != " ") |
+                        .data$weight == max(.data$weight))$ID
       c(tailID, get_path(flowline, next_step))
     } else if(length(from_inds) == 1) {
       c(tailID, get_path(flowline, flowline$ID[from_inds]))
@@ -173,17 +175,19 @@ calculate_levelpaths <- function(flowline) {
 
     pathIDs <- get_path(flc, tailID)
 
-    flowline <- mutate(flowline, levelpath = ifelse(flowline$ID %in% pathIDs, sortID, levelpath))
-    flc <- filter(flc, !ID %in% pathIDs)
+    flowline <- mutate(flowline,
+                       levelpath = ifelse(.data$ID %in% pathIDs,
+                                          sortID, .data$levelpath))
+    flc <- filter(flc, !.data$ID %in% pathIDs)
   }
 
   outlets <- flowline %>%
-    group_by(levelpath) %>%
+    group_by(.data$levelpath) %>%
     filter(topo_sort == min(topo_sort)) %>%
     ungroup() %>%
-    select(outletID = ID, levelpath)
+    select(outletID = .data$ID, .data$levelpath)
 
   flowline <- left_join(flowline, outlets, by = "levelpath")
 
-  return(select(flowline, ID, outletID, topo_sort, levelpath))
+  return(select(flowline, .data$ID, .data$outletID, .data$topo_sort, .data$levelpath))
 }

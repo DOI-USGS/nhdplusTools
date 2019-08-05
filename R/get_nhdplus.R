@@ -159,7 +159,7 @@ get_nhdplus_bybox <- function(box, layer) {
 
 }
 
-#' download NHDPlus HiRes
+#' Download NHDPlus HiRes
 #' @param nhd_dir character directory to save output into
 #' @param hu_list character vector of hydrologic region(s) to download
 #' @param download_files boolean if FALSE, only URLs to files will be returned
@@ -170,8 +170,8 @@ get_nhdplus_bybox <- function(box, layer) {
 #' @importFrom utils download.file unzip
 #' @export
 #' @examples
-#' download_nhdhr("", c("01", "0203"), download_files = FALSE)
-download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
+#' download_nhdplushr("", c("01", "0203"), download_files = FALSE)
+download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 
   nhdhr_bucket <- get("nhdhr_bucket", envir = nhdplusTools_env)
   nhdhr_file_list <- get("nhdhr_file_list", envir = nhdplusTools_env)
@@ -233,6 +233,7 @@ download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' "NHDPlusSink", "NHDPlusWall", "NHDPoint", "NHDPlusBurnWaterbody",
 #' "NHDPlusBurnLineEvent", "HYDRO_NET_Junctions",
 #' "WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")
+#' @param pattern character optional regex to select certain files in hr_dir
 #'
 #' @details
 #' NHDFlowline is joined to value added attributes prior to being
@@ -244,7 +245,7 @@ download_nhdhr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' @export
 #' @examples
 #' \dontrun{
-#' download_dir <- download_nhdhr("./", c("0302", "0303"))
+#' download_dir <- download_nhdplushr("./", c("0302", "0303"))
 #' get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
 #' }
 get_nhdplushr <- function(hr_dir, out_gpkg = NULL,

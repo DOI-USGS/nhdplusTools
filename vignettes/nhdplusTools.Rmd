@@ -133,9 +133,9 @@ For the demo below, a small sample of HiRes data that has been loaded into `nhdp
 ```
 
 ```{r nhdplus_hr}
-download_nhdhr(nhd_dir = "download_dir", 
-               hu_list = c("0101"), # can mix hu02 and hu04 codes.
-               download_files = FALSE) # TRUE will download files.
+download_nhdplushr(nhd_dir = "download_dir", 
+                   hu_list = c("0101"), # can mix hu02 and hu04 codes.
+                   download_files = FALSE) # TRUE will download files.
 
 hr_data <- get_nhdplushr(nhd_dir, 
                          out_gpkg = file.path(nhd_dir, "nhd_hr.gpkg"))

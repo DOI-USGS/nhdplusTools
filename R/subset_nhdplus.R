@@ -167,7 +167,7 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
     fline <- rename_nhdplus(fline)
   }
 
-  fline <- dplyr::filter(fline, COMID %in% comids)
+  fline <- dplyr::filter(fline, .data$COMID %in% comids)
 
   }
 
@@ -200,7 +200,7 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
     catchment <- rename_nhdplus(catchment)
   }
 
-  catchment <- dplyr::filter(catchment, FEATUREID %in% comids)
+  catchment <- dplyr::filter(catchment, .data$FEATUREID %in% comids)
 
   }
 

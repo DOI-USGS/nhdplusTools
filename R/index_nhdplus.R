@@ -67,7 +67,8 @@ get_flowline_index <- function(flines, points,
   flines <- sf::st_coordinates(flines)
 
   matched <- matcher(flines, points, search_radius) %>%
-    left_join(select(fline_atts, COMID, index), by = c("L1" = "index"))
+    left_join(select(fline_atts, .data$COMID, .data$index),
+              by = c("L1" = "index"))
 
   if (!is.na(precision)) {
     # upstream to downstream order.
@@ -76,7 +77,7 @@ get_flowline_index <- function(flines, points,
     # Geometry nodes are in downstream to upstream order.
     flines <- sf::st_as_sf(flines, coords = c("X", "Y"),
                    crs = in_crs) %>%
-      group_by(L1) %>%
+      group_by(.data$L1) %>%
       summarise(do_union = FALSE) %>%
       mutate(index = seq_len(nrow(.))) %>%
       sf::st_cast("LINESTRING", warn = FALSE) %>%
@@ -84,35 +85,38 @@ get_flowline_index <- function(flines, points,
 
     fline_atts <- right_join(fline_atts,
                          select(sf::st_set_geometry(flines, NULL),
-                                L1, precision_index = index),
+                                .data$L1, precision_index = .data$index),
                          by = c("index" = "L1"))
 
     # downstream to upstream order
     flines <- sf::st_coordinates(flines)
 
     matched <- matcher(flines, points, search_radius) %>%
-      left_join(select(fline_atts, COMID, precision_index),
+      left_join(select(fline_atts, .data$COMID, .data$precision_index),
                 by = c("L1" = "precision_index"))
   }
 
   flines <- as.data.frame(flines) %>%
     mutate(index = seq_len(nrow(flines))) %>%
-    filter(L1 %in% matched$L1) %>%
-    group_by(L1) %>%
-    mutate(len  = sqrt( ( (X - (lag(X))) ^ 2) + ( ( (Y - (lag(Y))) ^ 2)))) %>%
-    mutate(len = ifelse(is.na(len), 0, len)) %>%
-    mutate(len = cumsum(len)) %>%
-    mutate(measure = len / max(len)) %>%
-    left_join(select(matched, L1, COMID), by = "L1") %>%
-    left_join(select(fline_atts, -index), by = "COMID") %>%
-    mutate(REACH_meas = ToMeas + (FromMeas - ToMeas) * (measure)) %>%
+    filter(.data$L1 %in% matched$L1) %>%
+    group_by(.data$L1) %>%
+    mutate(len  = sqrt( ( (.data$X - (lag(.data$X))) ^ 2) +
+                          ( ( (.data$Y - (lag(.data$Y))) ^ 2)))) %>%
+    mutate(len = ifelse(is.na(.data$len), 0, .data$len)) %>%
+    mutate(len = cumsum(.data$len)) %>%
+    mutate(measure = .data$len / max(.data$len)) %>%
+    left_join(select(matched, .data$L1, .data$COMID), by = "L1") %>%
+    left_join(select(fline_atts, -.data$index), by = "COMID") %>%
+    mutate(REACH_meas = .data$ToMeas +
+             (.data$FromMeas - .data$ToMeas) * (.data$measure)) %>%
     ungroup() %>% distinct()
 
-  matched <- select(matched, node = nn.idx, offset = nn.dists, COMID)
+  matched <- select(matched, node = .data$nn.idx, offset = .data$nn.dists, .data$COMID)
 
-  matched <- left_join(matched, select(flines, index, REACHCODE, REACH_meas),
+  matched <- left_join(matched,
+                       select(flines, .data$index, .data$REACHCODE, .data$REACH_meas),
                         by = c("node" = "index")) %>%
-    select(COMID, REACHCODE, REACH_meas, offset)
+    select(.data$COMID, .data$REACHCODE, .data$REACH_meas, .data$offset)
 
   return(matched)
 }
@@ -124,7 +128,7 @@ matcher <- function(coords, points, search_radius) {
                  searchtype = "radius",
                  radius = search_radius) %>%
     data.frame(stringsAsFactors = FALSE) %>%
-    left_join(mutate(select(as.data.frame(coords), L1),
+    left_join(mutate(select(as.data.frame(coords), .data$L1),
                      index = seq_len(nrow(coords))),
               by = c("nn.idx" = "index"))
 }

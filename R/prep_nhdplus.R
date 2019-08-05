@@ -90,8 +90,8 @@ prepare_nhdplus <- function(flines,
   # Join ToNode and FromNode along with COMID and Length to
   # get downstream attributes.
   flines <- left_join(flines, select(flines,
-                                     toCOMID = COMID,
-                                     FromNode),
+                                     toCOMID = .data$COMID,
+                                     .data$FromNode),
                       by = c("ToNode" = "FromNode"))
 
   if (!all(flines[["TerminalFl"]][which(is.na(flines$toCOMID))] == 1)) {

@@ -60,15 +60,9 @@ nhdplus_attributes <- list(
   HUC12 = HUC12,
   TOHUC = TOHUC)
 
-assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
+.data <- . <- NULL
 
-  # Package Attribute Names
-ds_joined_fromCOMID <- fromCOMID <-
-  joined_fromCOMID <- num_upstream  <-
-  toCOMID <- toID <- L1 <- X <- Y <- ID <- nameID <- weight <- levelpath <-
-  . <- len <- outletID <-
-  index <- measure <- nn.idx <- precision_index <- max_Hydroseq <-
-  nn.dists <- offset <- area <- NULL
+assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
 assign("prepare_nhdplus_attributes",
        c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",

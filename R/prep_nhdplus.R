@@ -70,7 +70,7 @@ prepare_nhdplus <- function(flines,
   start_filter <- flines$StartFlag == 1 &
     flines$Pathlength < min_path_length
 
-  if (any(terminal_filter) | any(start_filter)) {
+  if (any(terminal_filter, na.rm = TRUE) | any(start_filter, na.rm = TRUE)) {
 
     tiny_networks <- rbind(filter(flines, terminal_filter),
                            filter(flines, start_filter))

@@ -67,7 +67,7 @@ The package has three types of functionality:
 1. [Indexing or Referencing](#indexing)
 1. [Generalization and Refactoring](#refactoring)
 
-This introduction gives an overview of the basic package setup and an brief demonstration of the three types of functionality. Detailed documentation of all the package functions can be found at the [Referece page](https://dblodgett-usgs.github.io/nhdplusTools/reference/)
+This introduction gives an overview of the basic package setup and an brief demonstration of the three types of functionality. Detailed documentation of all the package functions can be found at the [Referece page](https://usgs-r.github.io/nhdplusTools/reference/)
 
 ## Installation
 

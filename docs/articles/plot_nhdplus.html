@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
       </span>
     </div>
 
@@ -103,7 +103,7 @@
 <a href="#getting-data" class="anchor"></a>Getting Data</h2>
 <p>For this example, we’ll start from an outlet NWIS Site. Note that other options are possible with <code>discover_nhdplus_id</code> and <code>discover_nldi_sources</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(sf)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 6.1.1</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; Linking to GEOS 3.7.2, GDAL 2.4.1, PROJ 5.2.0</span></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(nhdplusTools)</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">#&gt; USGS Support Package: https://owi.usgs.gov/R/packages.html#support</span></a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">nwissite &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">featureSource =</span> <span class="st">"nwissite"</span>, </a>
@@ -114,7 +114,7 @@
 <a class="sourceLine" id="cb1-10" data-line-number="10">                          <span class="dt">data_source =</span> <span class="st">""</span>)</a>
 <a class="sourceLine" id="cb1-11" data-line-number="11"></a>
 <a class="sourceLine" id="cb1-12" data-line-number="12">nhdplus &lt;-<span class="st"> </span><span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline<span class="op">$</span>nhdplus_comid,</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">                          <span class="dt">output_file =</span> <span class="st">"./data_dir/nhdplus.gpkg"</span>,</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">                          <span class="dt">output_file =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(temp_dir, <span class="st">"nhdplus.gpkg"</span>),</a>
 <a class="sourceLine" id="cb1-14" data-line-number="14">                          <span class="dt">nhdplus_data =</span> <span class="st">"download"</span>,</a>
 <a class="sourceLine" id="cb1-15" data-line-number="15">                          <span class="dt">overwrite =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt; All intersections performed in latitude/longitude.</span></a>

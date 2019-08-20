@@ -24,17 +24,19 @@ First we'll load up some data. In this case, we use flowlines from the NHDPlus s
 
 ```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
 library(dplyr, warn.conflicts = FALSE)
-dir.create("./data_dir")
+
+temp_dir <- tempdir()
+dir.create(temp_dir)
 
 file.copy(system.file("extdata/sample_natseamless.gpkg", 
                       package = "nhdplusTools"),
-          "./data_dir/natseamless.gpkg")
+          file.path(temp_dir, "natseamless.gpkg"))
 ```
 
 ```{r nhdplus_path, echo=TRUE}
 library(nhdplusTools)
 
-nhdplus_path("data_dir/natseamless.gpkg")
+nhdplus_path(file.path(temp_dir, "natseamless.gpkg"))
 
 flowlines <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network")
 gages <- sf::read_sf(nhdplus_path(), "Gage")
@@ -109,8 +111,4 @@ hist(matched$REACH_meas_diff, breaks = 100,
 
 round(quantile(matched$REACH_meas_diff, 
                probs = c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)), digits = 2)
-```
-
-```{r cleanup, echo = FALSE} 
-unlink("data_dir", recursive = T)
 ```

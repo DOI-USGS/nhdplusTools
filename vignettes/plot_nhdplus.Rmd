@@ -18,7 +18,8 @@ knitr::opts_chunk$set(
 options(scipen = 9999)
 ```
 ```{r data_dir_setup, echo=FALSE, include=FALSE}
-dir.create("./data_dir")
+temp_dir <- tempdir()
+dir.create(temp_dir)
 ```
 
 # Plotting with nhdplusTools
@@ -40,7 +41,7 @@ flowline <- navigate_nldi(nwissite,
                           data_source = "")
 
 nhdplus <- subset_nhdplus(comids = flowline$nhdplus_comid,
-                          output_file = "./data_dir/nhdplus.gpkg",
+                          output_file = file.path(temp_dir, "nhdplus.gpkg"),
                           nhdplus_data = "download",
                           overwrite = TRUE)
 
@@ -168,6 +169,3 @@ terrain_map + geom_sf(data = basin,
 
 Hopefully these examples give a good head start to plotting NHDPlus data. Please submit questions via github issues for more!! Pull requests on this vignette are more than welcome if you have additions or suggestions.
 
-```{r cleanup, echo = FALSE} 
-unlink("data_dir", recursive = T)
-```

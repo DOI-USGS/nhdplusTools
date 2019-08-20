@@ -71,7 +71,4 @@ test_that("get_nhdplushr runs", {
   out <- get_nhdplushr(work_dir, layers = NULL)
 
   expect(length(names(out)), 7)
-
-  unlink(c(temp_file, out, file.path(work_dir, "03_sub.gpkg")))
-
 })

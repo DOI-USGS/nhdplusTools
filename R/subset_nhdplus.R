@@ -27,20 +27,22 @@
 #' @return path to the saved subset geopackage
 #' @export
 #' @examples
+#' \dontrun{
 #' # NHDPlusHR
+#' temp_dir <- tempdir()
+#' temp_file <- tempfile(fileext = ".zip", tmpdir = temp_dir)
 #' file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
-#'           "temp.zip")
-#' unzip("temp.zip", exdir = "./")
-#' unlink("temp.zip")
+#'           temp_file)
+#' unzip(temp_file, exdir = temp_dir)
 #'
-#' hr_data <- get_nhdplushr("./",
-#'                          out_gpkg = "nhd_hr.gpkg",
+#' hr_data <- get_nhdplushr(temp_dir,
+#'                          out_gpkg = file.path(temp_dir, "nhd_hr.gpkg"),
 #'                          layers = NULL)
 #' flowlines <- sf::read_sf(hr_data, "NHDFlowline")
 #'
 #' up_ids <- get_UT(flowlines, 15000500028335)
 #'
-#' sub_nhdhr <- subset_nhdplus(up_ids, "sub.gpkg",
+#' sub_nhdhr <- subset_nhdplus(up_ids, file.path(temp_dir, "sub.gpkg"),
 #'                       hr_data, overwrite = TRUE)
 #'
 #' sf::st_layers(sub_nhdhr)
@@ -48,7 +50,6 @@
 #' sub_flowline <- sf::read_sf(sub_nhdhr, "NHDFlowline")
 #' plot(sf::st_geometry(flowlines), lwd = 0.5)
 #' plot(sf::st_geometry(sub_flowline), lwd = 0.6, col = "red", add = TRUE)
-#' unlink(c("sub.gpkg", "nhd_hr.gpkg", "03_sub.gpkg"))
 #'
 #' sample_data <- system.file("extdata/sample_natseamless.gpkg",
 #'                            package = "nhdplusTools")
@@ -76,7 +77,7 @@
 #' plot(dplyr::filter(sample_flines, COMID %in% comids)[[geom_col]],
 #'      add=TRUE, col = "red", lwd = 2)
 #'
-#' output_file <- "./demo_subset.gpkg"
+#' output_file <- tempfile(fileext = ".gpkg")
 #'
 #' subset_nhdplus(comids = comids,
 #'                output_file = output_file,
@@ -103,6 +104,7 @@
 #'                status = TRUE)
 #'
 #' sf::st_layers(output_file)
+#' }
 #'
 
 subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,

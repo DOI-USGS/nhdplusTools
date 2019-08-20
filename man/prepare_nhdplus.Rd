@@ -5,7 +5,8 @@
 \title{Prep NHDPlus Data}
 \usage{
 prepare_nhdplus(flines, min_network_size, min_path_length,
-  min_path_size = 0, purge_non_dendritic = TRUE, warn = TRUE)
+  min_path_size = 0, purge_non_dendritic = TRUE, warn = TRUE,
+  error = TRUE)
 }
 \arguments{
 \item{flines}{data.frame NHDPlus flowlines including:
@@ -27,6 +28,8 @@ smaller than this will be removed.}
 or not.}
 
 \item{warn}{boolean controls whether warning an status messages are printed}
+
+\item{error}{boolean controls whether to return potentially invalid data with a warning rather than an error}
 }
 \value{
 data.frame ready to be used with the refactor_flowlines function.

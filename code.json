@@ -3,8 +3,8 @@
     "name": "nhdplusTools",
     "organization": "U.S. Geological Survey",
     "description": "Tools for Using NHDPlus Data",
-    "version": "0.3.4",
-    "status": "Beta",
+    "version": "0.3.7",
+    "status": "Production",
 
     "permissions": {
       "usageType": "openSource",
@@ -41,7 +41,7 @@
     },
 
     "date": {
-      "metadataLastUpdated": "2019-03-01"
+      "metadataLastUpdated": "2019-08-20"
     }
   }
 ]

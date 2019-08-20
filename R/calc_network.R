@@ -136,34 +136,20 @@ calculate_levelpaths <- function(flowline) {
 
   flowline[["toID"]][which(is.na(flowline[["toID"]]))] <- 0
 
+  flowline[["nameID"]][is.na(flowline[["nameID"]])] <- " " # NHDPlusHR uses NA for empty names.
+  flowline[["nameID"]][flowline[["nameID"]] == "-1"] <- " "
+
   sorted <- names(topo_sort(graph_from_data_frame(flowline,
                                                   directed = TRUE),
                             mode = "out"))
 
   sorted <- sorted[sorted != 0]
 
-  flowline <- left_join(data.frame(ID = as.integer(sorted[!sorted == "NA"])),
+  flowline <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
                         flowline, by = "ID")
 
   flowline[["topo_sort"]] <- seq(nrow(flowline), 1)
   flowline[["levelpath"]] <- rep(0, nrow(flowline))
-
-  get_path <- function(flowline, tailID) {
-    from_inds <- which(flowline$toID == tailID)
-    if(length(from_inds) > 1) {
-      ind <- which(flowline$ID == tailID)
-      next_step <-
-        dplyr::filter(flowline[from_inds, ],
-                      (.data$nameID == flowline$nameID[ind] &
-                         .data$nameID != " ") |
-                        .data$weight == max(.data$weight))$ID
-      c(tailID, get_path(flowline, next_step))
-    } else if(length(from_inds) == 1) {
-      c(tailID, get_path(flowline, flowline$ID[from_inds]))
-    } else {
-      return(tailID)
-    }
-  }
 
   flc <- flowline
   diff = 1
@@ -190,4 +176,44 @@ calculate_levelpaths <- function(flowline) {
   flowline <- left_join(flowline, outlets, by = "levelpath")
 
   return(select(flowline, .data$ID, .data$outletID, .data$topo_sort, .data$levelpath))
+}
+
+#' get level path
+#' @noRd
+#' @description Recursively walks up a network following the nameID
+#' or, if no nameID exists, maximum weight column.
+#' @param flowline data.frame with ID, toID, nameID and weight columns.
+#' @param tailID integer or numeric ID of outlet catchment.
+#'
+get_path <- function(flowline, tailID) {
+  # May be more than 1
+  from_inds <- which(flowline$toID == tailID)
+  if(length(from_inds) > 1) { # need to find dominant
+    ind <- which(flowline$ID == tailID)
+    next_tails <- flowline[from_inds, ]
+
+    if(any(next_tails$nameID != " ")) { # If any of the candidates are named.
+      next_tails <- # pick the matching one.
+        filter(next_tails, .data$nameID == flowline$nameID[ind])
+
+      if(nrow(next_tails) > 1) {
+        next_tails <- # pick the named one.
+          filter(next_tails, .data$nameID != " ")
+      }
+    }
+
+    if(nrow(next_tails) != 1) { # If the above didn't result in one row.
+      next_tails <- # use weighting
+        filter(flowline[from_inds, ], .data$weight == max(.data$weight))
+    }
+
+    if(length(next_tails$ID) > 1) {
+      next_tails <- next_tails[1, ]
+    }
+    c(tailID, get_path(flowline, next_tails$ID))
+  } else if(length(from_inds) == 1) {
+    c(tailID, get_path(flowline, flowline$ID[from_inds]))
+  } else {
+    return(tailID)
+  }
 }

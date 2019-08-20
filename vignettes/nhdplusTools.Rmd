@@ -67,7 +67,7 @@ The package has three types of functionality:
 1. [Indexing or Referencing](#indexing)
 1. [Generalization and Refactoring](#refactoring)
 
-This introduction gives an overview of the basic package setup and an brief demonstration of the three types of functionality. Detailed documentation of all the package functions can be found at the [Referece page](https://dblodgett-usgs.github.io/nhdplusTools/reference/)
+This introduction gives an overview of the basic package setup and an brief demonstration of the three types of functionality. Detailed documentation of all the package functions can be found at the [Referece page](https://usgs-r.github.io/nhdplusTools/reference/)
 
 ## Installation
 
@@ -88,14 +88,16 @@ The first thing you are going to need to do is go get some data to work with. `n
 If you are working with the whole National Seamless database, `nhdplusTools` has some convenience functions you should be aware of. Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the `nhdplus_path()` function.
 
 ```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
-dir.create("./data_dir")
+temp_dir <- tempdir()
+
+dir.create(temp_dir)
 
 file.copy(system.file("extdata/sample_natseamless.gpkg", 
                       package = "nhdplusTools"),
-          "./data_dir/natseamless.gpkg")
+          file.path(temp_dir, "natseamless.gpkg"))
 ```
 ```{r nhdplus_path, echo=TRUE}
-nhdplus_path("data_dir/natseamless.gpkg")
+nhdplus_path(file.path(temp_dir, "natseamless.gpkg"))
 
 nhdplus_path()
 ```
@@ -103,7 +105,7 @@ nhdplus_path()
 If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatadly, the `stage_national_data()` function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won't overwrite and just return the paths to your staged files.
 
 ```{r stage_national_data}
-staged_data <- stage_national_data()
+staged_data <- stage_national_data(output_path = tempdir())
 
 str(staged_data)
 ```
@@ -207,7 +209,7 @@ plot(sf::st_geometry(flowline_nldi), lwd = 1, col = "red", add = TRUE)
 What is not shown here is that the NLDI only provided geometry and a comid for each of the flowlines. The `subset_nhdplus` function has a "download" option that allows us to download four layers and all attributes as shown below. 
 
 ```{r subset_nhdplus_download}
-output_file_download <- "./data_dir/subset_download.gpkg"
+output_file_download <- file.path(temp_dir, "subset_download.gpkg")
 
 output_file_download <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
                              output_file = output_file_download,
@@ -215,7 +217,7 @@ output_file_download <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
 
 sf::st_layers(output_file_download)
 
-flowline_download <- sf::read_sf("data_dir/subset_download.gpkg", 
+flowline_download <- sf::read_sf(file.path(temp_dir, "subset_download.gpkg"), 
                                  "NHDFlowline_Network")
 
 plot(sf::st_geometry(dplyr::filter(flowline_download, 
@@ -238,7 +240,7 @@ flowline_nldi <- navigate_nldi(nldi_feature,
                                mode = "upstreamTributaries", 
                                data_source = "")
 
-output_file_nwis <- "./data_dir/subset_download_nwis.gpkg"
+output_file_nwis <- file.path(temp_dir, "subset_download_nwis.gpkg")
 
 output_file_nwis <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
                                   output_file = output_file_nwis,
@@ -280,7 +282,7 @@ plot(sf::st_geometry(dplyr::filter(flowline, COMID %in% UT_comids)),
 Say you want to save the network subset for later use in R or in some other GIS. The `subset_nhdplus() function is your friend. If you have the whole national seamless database downloaded, you can pull out large subsets of it like shown below. If you don't have the whole national seamless, look at the second example in this section.
 
 ```{r subset_nhdplus}
-output_file <- "./data_dir/subset.gpkg"
+output_file <- file.path(temp_dir, "subset.gpkg")
 
 output_file <-subset_nhdplus(comids = UT_comids,
                              output_file = output_file,

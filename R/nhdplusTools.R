@@ -120,15 +120,6 @@ assign("calculate_levelpaths_attributes",
        c("ID", "toID", "nameID", "weight"),
        envir = nhdplusTools_env)
 
-assign("match_levelpaths_attributes",
-       c("COMID", "Hydroseq", "LevelPathI",
-         "DnLevelPat", "denTotalAreaSqKM", "HUC12", "TOHUC"),
-       envir = nhdplusTools_env)
-
-assign("match_flowpaths_attributes",
-       c("COMID", "LENGTHKM", "DnHydroseq", "Hydroseq", "LevelPathI"),
-       envir = nhdplusTools_env)
-
 check_names <- function(x, function_name) {
   x <- rename_nhdplus(x)
   names_x <- names(x)

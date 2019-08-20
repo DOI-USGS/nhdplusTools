@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(nhdplusTools)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#&gt; USGS Support Package: https://owi.usgs.gov/R/packages.html#support</span></a>
 <a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(sf)</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 6.1.1</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; Linking to GEOS 3.7.2, GDAL 2.4.1, PROJ 5.2.0</span></a>
 <a class="sourceLine" id="cb1-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb1-9" data-line-number="9">start_point &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/sfc">st_sfc</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st">st_point</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">89.362239</span>, <span class="fl">43.090266</span>)), <span class="dt">crs =</span> <span class="dv">4269</span>)</a>
 <a class="sourceLine" id="cb1-10" data-line-number="10">start_comid &lt;-<span class="st"> </span><span class="kw"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span>(start_point)</a>
@@ -144,7 +144,7 @@
 <li><a href="#indexing">Indexing or Referencing</a></li>
 <li><a href="#refactoring">Generalization and Refactoring</a></li>
 </ol>
-<p>This introduction gives an overview of the basic package setup and an brief demonstration of the three types of functionality. Detailed documentation of all the package functions can be found at the <a href="https://dblodgett-usgs.github.io/nhdplusTools/reference/">Referece page</a></p>
+<p>This introduction gives an overview of the basic package setup and an brief demonstration of the three types of functionality. Detailed documentation of all the package functions can be found at the <a href="https://usgs-r.github.io/nhdplusTools/reference/">Referece page</a></p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -160,19 +160,18 @@
 <a href="#data-and-package-basics" class="anchor"></a>Data and Package Basics</h2>
 <p>The first thing you are going to need to do is go get some data to work with. <code>nhdplusTools</code> provides the ability to download small subsets of the NHDPlus as described in the <a href="#discovery_subsetting">Discovery and Subsetting</a> section. For large subsets, greater than a few thousand square kilometers, you can download the <a href="https://www.epa.gov/waterdata/nhdplus-national-data">National Seamless database at this web page.</a> You will need <a href="https://www.7-zip.org/">7z</a> or the <a href="https://github.com/jimhester/archive"><code>archive</code> package</a> to extract it.</p>
 <p>If you are working with the whole National Seamless database, <code>nhdplusTools</code> has some convenience functions you should be aware of. Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the <code><a href="../reference/nhdplus_path.html">nhdplus_path()</a></code> function.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(<span class="st">"data_dir/natseamless.gpkg"</span>)</a>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(temp_dir, <span class="st">"natseamless.gpkg"</span>))</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>()</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; [1] "data_dir/natseamless.gpkg"</span></a></code></pre></div>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmp8AFZyy/natseamless.gpkg"</span></a></code></pre></div>
 <p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatadly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">staged_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/stage_national_data.html">stage_national_data</a></span>()</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Warning in stage_national_data(): No output path provided, using: data_dir</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(staged_data)</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; List of 3</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt;  $ attributes: chr "data_dir/nhdplus_flowline_attributes.rds"</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt;  $ flowline  : chr "data_dir/nhdplus_flowline.rds"</span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt;  $ catchment : chr "data_dir/nhdplus_catchment.rds"</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">staged_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/stage_national_data.html">stage_national_data</a></span>(<span class="dt">output_path =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tempfile">tempdir</a></span>())</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(staged_data)</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; List of 3</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt;  $ attributes: chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmp8AFZyy/nhdplus_flowline_attributes.rds"</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt;  $ flowline  : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmp8AFZyy/nhdplus_flowline.rds"</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt;  $ catchment : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmp8AFZyy/nhdplus_catchment.rds"</span></a></code></pre></div>
 <p>As you can see, <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are <a href="https://r-spatial.github.io/sf/"><code>sf</code></a> <code>data.frame</code>s and attributes is a plain <code>data.frame</code> with the attributes from <code>flowline</code>. Note that this introduction uses a small subset of the national seamless database as shown in the plot.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">flowline &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">readRDS</a></span>(staged_data<span class="op">$</span>flowline)</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(flowline)[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
@@ -274,7 +273,7 @@
 <a class="sourceLine" id="cb11-7" data-line-number="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(flowline_nldi), <span class="dt">lwd =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/navigate_nldi-1.png" width="576"></p>
 <p>What is not shown here is that the NLDI only provided geometry and a comid for each of the flowlines. The <code>subset_nhdplus</code> function has a “download” option that allows us to download four layers and all attributes as shown below.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">output_file_download &lt;-<span class="st"> "./data_dir/subset_download.gpkg"</span></a>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">output_file_download &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(temp_dir, <span class="st">"subset_download.gpkg"</span>)</a>
 <a class="sourceLine" id="cb12-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb12-3" data-line-number="3">output_file_download &lt;-<span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline_nldi<span class="op">$</span>nhdplus_comid,</a>
 <a class="sourceLine" id="cb12-4" data-line-number="4">                             <span class="dt">output_file =</span> output_file_download,</a>
@@ -294,7 +293,7 @@
 <a class="sourceLine" id="cb12-18" data-line-number="18"><span class="co">#&gt; 3             NHDArea        Multi Polygon        1     16</span></a>
 <a class="sourceLine" id="cb12-19" data-line-number="19"><span class="co">#&gt; 4        NHDWaterbody        Multi Polygon       90     23</span></a>
 <a class="sourceLine" id="cb12-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb12-21" data-line-number="21">flowline_download &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="st">"data_dir/subset_download.gpkg"</span>, </a>
+<a class="sourceLine" id="cb12-21" data-line-number="21">flowline_download &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_read">read_sf</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(temp_dir, <span class="st">"subset_download.gpkg"</span>), </a>
 <a class="sourceLine" id="cb12-22" data-line-number="22">                                 <span class="st">"NHDFlowline_Network"</span>)</a>
 <a class="sourceLine" id="cb12-23" data-line-number="23"></a>
 <a class="sourceLine" id="cb12-24" data-line-number="24"><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline_download, </a>
@@ -312,7 +311,7 @@
 <a class="sourceLine" id="cb13-4" data-line-number="4">                               <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>, </a>
 <a class="sourceLine" id="cb13-5" data-line-number="5">                               <span class="dt">data_source =</span> <span class="st">""</span>)</a>
 <a class="sourceLine" id="cb13-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb13-7" data-line-number="7">output_file_nwis &lt;-<span class="st"> "./data_dir/subset_download_nwis.gpkg"</span></a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">output_file_nwis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(temp_dir, <span class="st">"subset_download_nwis.gpkg"</span>)</a>
 <a class="sourceLine" id="cb13-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb13-9" data-line-number="9">output_file_nwis &lt;-<span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline_nldi<span class="op">$</span>nhdplus_comid,</a>
 <a class="sourceLine" id="cb13-10" data-line-number="10">                                  <span class="dt">output_file =</span> output_file_nwis,</a>
@@ -382,7 +381,7 @@
 <a class="sourceLine" id="cb15-4" data-line-number="4">     <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)</a></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/plot_fline_subset-1.png" width="576"></p>
 <p>Say you want to save the network subset for later use in R or in some other GIS. The `subset_nhdplus() function is your friend. If you have the whole national seamless database downloaded, you can pull out large subsets of it like shown below. If you don’t have the whole national seamless, look at the second example in this section.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">output_file &lt;-<span class="st"> "./data_dir/subset.gpkg"</span></a>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">output_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(temp_dir, <span class="st">"subset.gpkg"</span>)</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb16-3" data-line-number="3">output_file &lt;-<span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> UT_comids,</a>
 <a class="sourceLine" id="cb16-4" data-line-number="4">                             <span class="dt">output_file =</span> output_file,</a>

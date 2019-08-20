@@ -3,22 +3,22 @@ context("subset")
 
 test_that("subset runs as expected", {
 
-  nhdplus_path("borked")
+  temp_dir <- tempdir()
+
+  nhdplus_path(file.path(temp_dir, "borked"))
 
   expect_error(subset_nhdplus(1234567,
-                              output_file = "borked.gpkg"),
+                              output_file = tempfile(fileext = ".gpkg")),
                "couldn't find nhdplus data")
-
-  unlink("data/temp/*")
 
   sample_data <- system.file("extdata/sample_natseamless.gpkg",
                              package = "nhdplusTools")
 
   nhdplus_path(sample_data)
 
-  if (!dir.exists("data/temp")) dir.create("data/temp")
+  if (!dir.exists(temp_dir)) dir.create(temp_dir)
 
-  staged_nhdplus <- stage_national_data(output_path = "data/temp/")
+  staged_nhdplus <- stage_national_data(output_path = temp_dir)
 
   start_comid <- 13293392
 
@@ -26,7 +26,7 @@ test_that("subset runs as expected", {
 
   comids <- get_UM(sample_flines, start_comid)
 
-  out_file <- "./data/temp/demo_subset.gpkg"
+  out_file <- tempfile(fileext = ".gpkg")
 
   fi <- subset_nhdplus(comids = comids,
                  output_file = out_file,
@@ -62,7 +62,7 @@ test_that("subset runs as expected", {
                               output_file = "test",
                               "output_file must end in '.gpkg'"))
 
-  unlink("data/temp/*")
+  unlink(file.path(temp_dir, "*"))
 
   fi <- subset_nhdplus(comids = comids,
                        output_file = out_file,
@@ -72,7 +72,7 @@ test_that("subset runs as expected", {
 
   check_layers()
 
-  unlink("data/temp/*")
+  unlink(file.path(temp_dir, "*"))
 
   nhdplus_path("../NHDPlusV21_National_Seamless.gdb")
 
@@ -87,9 +87,8 @@ test_that("subset runs as expected", {
   })
 
 test_that("prep_nhdplus runs as expected", {
-  unlink("data/temp/*")
 
-  temp_dir <- "data/temp"
+  temp_dir <- tempdir()
 
   if (!dir.exists(temp_dir)) dir.create(temp_dir)
 
@@ -105,11 +104,11 @@ test_that("prep_nhdplus runs as expected", {
   nhdplus_path(sample_gpkg)
 
   expect_warning(temp_data <- stage_national_data(),
-                 "No output path provided, using: data")
+                 regexp = paste0("No output path provided, using:.*"))
 
   temp_data <- lapply(temp_data, unlink)
 
-  temp_data <- stage_national_data(output_path = "data/temp")
+  temp_data <- stage_national_data(output_path = temp_dir)
 
   expect_true(suppressWarnings(all(lapply(temp_data, file.exists))))
 
@@ -128,11 +127,11 @@ test_that("prep_nhdplus runs as expected", {
                paste("Got invalid include entries. Expect one",
                      "or more of: attribute, flowline, catchment."))
 
-  temp_data <- stage_national_data(output_path = "data/temp")
+  temp_data <- stage_national_data(output_path = temp_dir)
 
   expect_equal(
     capture_warnings(
-      temp_data <- stage_national_data(output_path = "data/temp")),
+      temp_data <- stage_national_data(output_path = temp_dir)),
     c("attributes file exists", "flowline file exists",
       "catchment already exists."))
 
@@ -153,13 +152,13 @@ test_that("subset works with HR", {
                        layers = c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody",
                                   "NHDArea", "NHDPlusSink"))
 
-  flowlines <- read_sf(hr, "NHDFlowline")
+  flowlines <- sf::read_sf(hr, "NHDFlowline")
 
   up_ids <- get_UT(flowlines, 15000500028335)
 
   sub <- subset_nhdplus(up_ids, file.path(work_dir, "sub.gpkg"), hr)
 
-  layers <- st_layers(sub)
+  layers <- sf::st_layers(sub)
 
   expect_equal(length(layers$name), 4)
   expect_equal(layers$features[which(layers$name == "NHDFlowline")], 1427)

@@ -14,6 +14,7 @@
 #' @param purge_non_dendritic boolean Should non dendritic paths be removed
 #' or not.
 #' @param warn boolean controls whether warning an status messages are printed
+#' @param error boolean controls whether to return potentially invalid data with a warning rather than an error
 #' @return data.frame ready to be used with the refactor_flowlines function.
 #' @importFrom dplyr select filter left_join
 #' @family refactor functions
@@ -24,7 +25,8 @@ prepare_nhdplus <- function(flines,
                             min_path_length,
                             min_path_size = 0,
                             purge_non_dendritic = TRUE,
-                            warn = TRUE) {
+                            warn = TRUE,
+                            error = TRUE) {
 
   flines <- check_names(flines, "prepare_nhdplus")
 
@@ -70,7 +72,7 @@ prepare_nhdplus <- function(flines,
   start_filter <- flines$StartFlag == 1 &
     flines$Pathlength < min_path_length
 
-  if (any(terminal_filter) | any(start_filter)) {
+  if (any(terminal_filter, na.rm = TRUE) | any(start_filter, na.rm = TRUE)) {
 
     tiny_networks <- rbind(filter(flines, terminal_filter),
                            filter(flines, start_filter))
@@ -95,8 +97,13 @@ prepare_nhdplus <- function(flines,
                       by = c("ToNode" = "FromNode"))
 
   if (!all(flines[["TerminalFl"]][which(is.na(flines$toCOMID))] == 1)) {
-    stop(paste("FromNode - ToNode imply terminal flowlines that are not\n",
-               "flagged terminal. Can't assume NA toCOMIDs go to the ocean."))
+    warn <- paste("FromNode - ToNode imply terminal flowlines that are not\n",
+                  "flagged terminal. Can't assume NA toCOMIDs go to the ocean.")
+    if(error) {
+      stop(warn)
+    } else {
+      warning(warn)
+    }
   }
 
   select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,

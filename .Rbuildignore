@@ -11,3 +11,5 @@ data-raw
 vignettes/rosm.cache
 DISCLAIMER.md
 code.json
+^doc$
+^Meta$

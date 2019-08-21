@@ -30,7 +30,7 @@ sf data.frame with result
 Navigate the Network Linked Data Index network.
 }
 \examples{
-
+\dontrun{
 library(sf)
 library(dplyr)
 
@@ -82,5 +82,5 @@ st_geometry(nwissite) \%>\%
   plot(col = "green", add = TRUE)
 
 nwissite
-
+}
 }

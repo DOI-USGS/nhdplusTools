@@ -31,8 +31,8 @@
 #' # NHDPlusHR
 #' temp_dir <- tempdir()
 #' temp_file <- tempfile(fileext = ".zip", tmpdir = temp_dir)
-#' file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
-#'           temp_file)
+#' download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
+#'               temp_file)
 #' unzip(temp_file, exdir = temp_dir)
 #'
 #' hr_data <- get_nhdplushr(temp_dir,

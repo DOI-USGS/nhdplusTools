@@ -129,7 +129,7 @@ For the demo below, a small sample of HiRes data that has been loaded into `nhdp
 ```{r nhdplushr_secret, echo=FALSE, include=FALSE} 
   nhd_dir <- tempdir()
   temp_file <- file.path(nhd_dir, "temp.zip")
-  file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
+  download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
             temp_file)
   unzip(temp_file, exdir = nhd_dir)
 ```

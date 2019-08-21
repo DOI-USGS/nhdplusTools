@@ -2,6 +2,8 @@ context("nldi tests")
 
 test_that("nldi basics work", {
 
+  skip_on_cran()
+
   nldi_sources <- discover_nldi_sources()
 
   expect_equal(class(nldi_sources), "data.frame")
@@ -26,6 +28,8 @@ test_that("nldi basics work", {
 
 test_that("navigation works", {
 
+  skip_on_cran()
+
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
   nav <- navigate_nldi(nldi_feature = nldi_nwis,
@@ -47,6 +51,8 @@ test_that("navigation works", {
 })
 
 test_that("basin works", {
+
+  skip_on_cran()
 
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05427880")
 

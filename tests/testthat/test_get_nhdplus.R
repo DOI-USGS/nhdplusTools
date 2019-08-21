@@ -4,6 +4,7 @@ pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
                                    package = "nhdplusTools"))
 
 test_that("get_nhdplus_byid", {
+  skip_on_cran()
   comid_set <- get_UT(pt_data, 11687180)
 
   catchmentsp <- nhdplusTools:::get_nhdplus_byid(comid_set, "catchmentsp")
@@ -24,6 +25,7 @@ test_that("get_nhdplus_byid", {
 })
 
 test_that("get_nhdplus_bybox", {
+  skip_on_cran()
   bbox <- pt_data %>%
     sf::st_transform(4326) %>%
     sf::st_bbox() %>%
@@ -43,17 +45,17 @@ test_that("get_nhdplus_bybox", {
 })
 
 test_that("we get urls for nhdplushr", {
+  skip_on_cran()
   urls <- download_nhdplushr("", c("01", "0203"), download_files = FALSE)
 
   expect_equal(length(urls), 11)
 })
 
 test_that("get_nhdplushr runs", {
+  skip_on_cran()
   work_dir <- tempdir()
-  temp_file <- file.path(work_dir, "temp.zip")
-  file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
-            temp_file)
-  unzip(temp_file, exdir = work_dir)
+
+  get_test_file(work_dir)
 
   out <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"))
 

@@ -34,6 +34,8 @@
 
 <meta property="og:description" content="Saves a subset of the National Seamless database or other
 nhdplusTools compatible data based on a specified collection of COMIDs." />
+
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -185,11 +187,13 @@ be available permenantly.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># NHDPlusHR</span>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># NHDPlusHR</span>
 <span class='no'>temp_dir</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>()
 <span class='no'>temp_file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".zip"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='no'>temp_dir</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/files'>file.copy</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata/03_sub.zip"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>),
-          <span class='no'>temp_file</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/unzip'>unzip</a></span>(<span class='no'>temp_file</span>, <span class='kw'>exdir</span> <span class='kw'>=</span> <span class='no'>temp_dir</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/download.file'>download.file</a></span>(<span class='st'>"https://usgs-r.github.io/nhdplusTools/data/03_sub.zip"</span>,
+              <span class='no'>temp_file</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/unzip'>unzip</a></span>(<span class='no'>temp_file</span>, <span class='kw'>exdir</span> <span class='kw'>=</span> <span class='no'>temp_dir</span>)
 
 <span class='no'>hr_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_nhdplushr.html'>get_nhdplushr</a></span>(<span class='no'>temp_dir</span>,
                          <span class='kw'>out_gpkg</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/file.path'>file.path</a></span>(<span class='no'>temp_dir</span>, <span class='st'>"nhd_hr.gpkg"</span>),
@@ -199,74 +203,68 @@ be available permenantly.</p>
 <span class='no'>up_ids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_UT.html'>get_UT</a></span>(<span class='no'>flowlines</span>, <span class='fl'>15000500028335</span>)
 
 <span class='no'>sub_nhdhr</span> <span class='kw'>&lt;-</span> <span class='fu'>subset_nhdplus</span>(<span class='no'>up_ids</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/file.path'>file.path</a></span>(<span class='no'>temp_dir</span>, <span class='st'>"sub.gpkg"</span>),
-                      <span class='no'>hr_data</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusSink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in NHDPlusSink</span></div><div class='input'>
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_layers'>st_layers</a></span>(<span class='no'>sub_nhdhr</span>)</div><div class='output co'>#&gt; Driver: GPKG 
-#&gt; Available layers:
-#&gt;         layer_name geometry_type features fields
-#&gt; 1      NHDFlowline   Line String     1427     57
-#&gt; 2 NHDPlusCatchment Multi Polygon     1361      7
-#&gt; 3     NHDWaterbody       Polygon      741     15
-#&gt; 4          NHDArea       Polygon        8     14</div><div class='input'>
+                      <span class='no'>hr_data</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_layers'>st_layers</a></span>(<span class='no'>sub_nhdhr</span>)
+
 <span class='no'>sub_flowline</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='no'>sub_nhdhr</span>, <span class='st'>"NHDFlowline"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>(<span class='no'>flowlines</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>(<span class='no'>sub_flowline</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.6</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='subset_nhdplus-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>(<span class='no'>flowlines</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>(<span class='no'>sub_flowline</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.6</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
 <span class='no'>sample_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata/sample_natseamless.gpkg"</span>,
                            <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>)
 
 <span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span>(<span class='no'>sample_data</span>)
 
-<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='st'>"./"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: attributes file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: flowline file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: catchment already exists.</span></div><div class='input'>
+<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='st'>"./"</span>)
+
 <span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/readRDS'>readRDS</a></span>(<span class='no'>staged_nhdplus</span>$<span class='no'>flowline</span>)
 
 <span class='no'>geom_col</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>sample_flines</span>, <span class='st'>"sf_column"</span>)
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sample_flines</span><span class='kw'>[[</span><span class='no'>geom_col</span>]],
-     <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='input'>
+     <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>3</span>)
+
 <span class='no'>start_point</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/sfc'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st'>st_point</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(-<span class='fl'>89.362239</span>, <span class='fl'>43.090266</span>)),
                           <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>start_point</span>, <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>start_point</span>, <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
 <span class='no'>start_comid</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='discover_nhdplus_id.html'>discover_nhdplus_id</a></span>(<span class='no'>start_point</span>)
 
 <span class='no'>comids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_UT.html'>get_UT</a></span>(<span class='no'>sample_flines</span>, <span class='no'>start_comid</span>)
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>comids</span>)<span class='kw'>[[</span><span class='no'>geom_col</span>]],
-     <span class='kw'>add</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='input'>
+     <span class='kw'>add</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+
 <span class='no'>output_file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gpkg"</span>)
 
 <span class='fu'>subset_nhdplus</span>(<span class='kw'>comids</span> <span class='kw'>=</span> <span class='no'>comids</span>,
                <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>output_file</span>,
                <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>sample_data</span>,
                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Reading Gage</span></div><div class='output co'>#&gt; <span class='message'>Writing Gage</span></div><div class='output co'>#&gt; <span class='message'>Reading Sink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in Sink</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpOcTsb5/file56d734edd2fa.gpkg"</div><div class='input'>
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_layers'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
-#&gt; Available layers:
-#&gt;               layer_name     geometry_type features fields
-#&gt; 1    NHDFlowline_Network Multi Line String      168    136
-#&gt; 2            CatchmentSP     Multi Polygon      167      6
-#&gt; 3                   Gage             Point       33     19
-#&gt; 4                NHDArea     Multi Polygon        1     14
-#&gt; 5           NHDWaterbody     Multi Polygon       90     21
-#&gt; 6 NHDFlowline_NonNetwork Multi Line String       45     12</div><div class='input'>
+               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_layers'>st_layers</a></span>(<span class='no'>output_file</span>)
+
 <span class='no'>catchment</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='no'>output_file</span>, <span class='st'>"CatchmentSP"</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>catchment</span><span class='kw'>[[</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>catchment</span>, <span class='st'>"sf_column"</span>)]], <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>catchment</span><span class='kw'>[[</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>catchment</span>, <span class='st'>"sf_column"</span>)]], <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
 <span class='no'>waterbody</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='no'>output_file</span>, <span class='st'>"NHDWaterbody"</span>)
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>waterbody</span><span class='kw'>[[</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>waterbody</span>, <span class='st'>"sf_column"</span>)]],
-     <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/grDevices/topics/rgb'>rgb</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>), <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='subset_nhdplus-2.png' alt='' width='700' height='433' /></div><div class='input'>
+     <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/grDevices/topics/rgb'>rgb</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>), <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
 <span class='co'># Download Option:</span>
 <span class='fu'>subset_nhdplus</span>(<span class='kw'>comids</span> <span class='kw'>=</span> <span class='no'>comids</span>,
                <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>output_file</span>,
                <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='st'>"download"</span>,
                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpOcTsb5/file56d734edd2fa.gpkg"</div><div class='input'>
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_layers'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
-#&gt; Available layers:
-#&gt;            layer_name        geometry_type features fields
-#&gt; 1 NHDFlowline_Network 3D Multi Line String      168     91
-#&gt; 2         CatchmentSP        Multi Polygon      167      8
-#&gt; 3             NHDArea        Multi Polygon        1     16
-#&gt; 4        NHDWaterbody        Multi Polygon       90     23</div><div class='input'>
+               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_layers'>st_layers</a></span>(<span class='no'>output_file</span>)
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

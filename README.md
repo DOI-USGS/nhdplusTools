@@ -1,4 +1,4 @@
-# nhdplusTools
+# nhdplusTools <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 [![Build Status](https://travis-ci.org/USGS-R/nhdplusTools.svg?branch=master)](https://travis-ci.org/USGS-R/nhdplusTools) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/nhdplusTools/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/nhdplusTools?branch=master)
 

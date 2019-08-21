@@ -22,6 +22,7 @@ integer COMID
 Multipurpose function to find a COMID of interest.
 }
 \examples{
+\dontrun{
 point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
 discover_nhdplus_id(point)
 
@@ -32,5 +33,5 @@ discover_nhdplus_id(nldi_feature = nldi_huc12)
 
 nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 discover_nhdplus_id(nldi_feature = nldi_nwis)
-
+}
 }

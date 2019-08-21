@@ -143,10 +143,8 @@ test_that("prep_nhdplus runs as expected", {
 
 test_that("subset works with HR", {
   work_dir <- tempdir()
-  temp_file <- file.path(work_dir, "temp.zip")
-  file.copy(system.file("extdata/03_sub.zip", package = "nhdplusTools"),
-            temp_file)
-  unzip(temp_file, exdir = work_dir)
+
+  get_test_file(work_dir)
 
   hr <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"),
                        layers = c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody",

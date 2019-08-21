@@ -25,7 +25,7 @@ Only resolves to the nearest NHDPlus catchment divide. See:
 https://owi.usgs.gov/blog/nldi-intro/ for more info on the nldi.
 }
 \examples{
-
+\dontrun{
 library(sf)
 library(dplyr)
 
@@ -40,5 +40,6 @@ basin \%>\%
  plot()
 
  basin
+ }
 
 }

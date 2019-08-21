@@ -55,7 +55,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' @export
 #' @importFrom utils tail
 #' @examples
-#'
+#' \dontrun{
 #' library(sf)
 #' library(dplyr)
 #'
@@ -107,7 +107,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #'   plot(col = "green", add = TRUE)
 #'
 #' nwissite
-#'
+#' }
 navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
                           data_source = "comid", distance_km = NULL,
                           tier = "prod") {
@@ -150,7 +150,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' @return sf data.frame with result basin boundary
 #' @export
 #' @examples
-#'
+#' \dontrun{
 #' library(sf)
 #' library(dplyr)
 #'
@@ -165,6 +165,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #'  plot()
 #'
 #'  basin
+#'  }
 #'
 get_nldi_basin <- function(nldi_feature,
                           tier = "prod") {

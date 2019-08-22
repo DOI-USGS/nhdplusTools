@@ -159,24 +159,27 @@ https://owi.usgs.gov/blog/nldi-intro/ for more info on the nldi.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
 
-<span class='fu'><a href='discover_nldi_sources.html'>discover_nldi_sources</a></span>()
-
-<span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-08279500"</span>)
+<span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05428500"</span>)
 
 <span class='no'>basin</span> <span class='kw'>&lt;-</span> <span class='fu'>get_nldi_basin</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>)
 
 <span class='no'>basin</span> <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
- <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>()
-
- <span class='no'>basin</span>
-
-<span class='co'># }</span><div class='input'>
-</div></pre>
+ <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>()</div><div class='img'><img src='get_nldi_basin-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='no'>basin</span></div><div class='output co'>#&gt; Simple feature collection with 1 feature and 0 fields
+#&gt; geometry type:  POLYGON
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: -89.60465 ymin: 43.03507 xmax: -89.20378 ymax: 43.36607
+#&gt; epsg (SRID):    4326
+#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs
+#&gt; <span style='color: #949494;'># A tibble: 1 x 1</span><span>
+#&gt;                                                                         geometry
+#&gt;                                                                    </span><span style='color: #949494;font-style: italic;'>&lt;POLYGON [°]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> ((-89.35859 43.11776, -89.35423 43.11546, -89.35437 43.11067, -89.34997 43.10…</div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

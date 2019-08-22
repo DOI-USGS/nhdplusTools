@@ -170,16 +170,11 @@ of discover_nldi_sources() or empty string for flowline geometry.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
+ <span class='co'># Long running example</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
 
-<span class='fu'><a href='discover_nldi_sources.html'>discover_nldi_sources</a></span>()
-
-<span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-08279500"</span>)
-
-<span class='no'>nav_options</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='discover_nldi_navigation.html'>discover_nldi_navigation</a></span>(<span class='no'>nldi_nwis</span>)
-
-<span class='no'>nav_options</span>
+<span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05428500"</span>)
 
 <span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
               <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"upstreamTributaries"</span>,
@@ -193,25 +188,7 @@ of discover_nldi_sources() or empty string for flowline geometry.</p></td>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
-              <span class='kw'>mode</span> <span class='kw'>=</span> <span class='no'>nav_options</span><span class='kw'>[[</span><span class='st'>"downstreamMain"</span>]],
-              <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>""</span>,
-              <span class='kw'>distance_km</span> <span class='kw'>=</span> <span class='fl'>40</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
-              <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"UM"</span>, <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>,
-              <span class='kw'>distance_km</span> <span class='kw'>=</span> <span class='fl'>0</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
-              <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"UT"</span>,
-              <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>"huc12pp"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/grDevices/topics/rgb'>rgb</a></span>(<span class='fl'>255</span>, <span class='fl'>205</span>, <span class='fl'>205</span>, <span class='fl'>100</span>, <span class='kw'>maxColorValue</span> <span class='kw'>=</span> <span class='fl'>255</span>),
-       <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>18</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='no'>nwissite</span> <span class='kw'>&lt;-</span> <span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
                           <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"UT"</span>,
@@ -221,7 +198,8 @@ of discover_nldi_sources() or empty string for flowline geometry.</p></td>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"green"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='no'>nwissite</span>
-<span class='co'># }</span></pre>
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

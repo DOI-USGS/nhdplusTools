@@ -177,11 +177,18 @@ as "national_data".</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>stage_national_data</span>()
+    <pre class="examples"><div class='input'><span class='no'>sample_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata/sample_natseamless.gpkg"</span>,
+                           <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>)
 
-<span class='fu'>stage_national_data</span>(<span class='kw'>include</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"attributes"</span>, <span class='st'>"flowlines"</span>,<span class='st'>"catchment"</span>))
-<span class='co'># }</span><div class='input'>
+<span class='fu'>stage_national_data</span>(<span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>sample_data</span>, <span class='kw'>output_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>())</div><div class='output co'>#&gt; $attributes
+#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmpa4SFcP/nhdplus_flowline_attributes.rds"
+#&gt; 
+#&gt; $flowline
+#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmpa4SFcP/nhdplus_flowline.rds"
+#&gt; 
+#&gt; $catchment
+#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmpa4SFcP/nhdplus_catchment.rds"
+#&gt; </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

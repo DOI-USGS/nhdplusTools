@@ -55,17 +55,11 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' @export
 #' @importFrom utils tail
 #' @examples
-#' \dontrun{
+#' \dontrun{ # Long running example
 #' library(sf)
 #' library(dplyr)
 #'
-#' discover_nldi_sources()
-#'
-#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
-#'
-#' nav_options <- discover_nldi_navigation(nldi_nwis)
-#'
-#' nav_options
+#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 #'
 #' navigate_nldi(nldi_feature = nldi_nwis,
 #'               mode = "upstreamTributaries",
@@ -79,25 +73,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #'   st_geometry() %>%
 #'   plot(col = "blue", add = TRUE)
 #'
-#' navigate_nldi(nldi_feature = nldi_nwis,
-#'               mode = nav_options[["downstreamMain"]],
-#'               data_source = "",
-#'               distance_km = 40) %>%
-#'   st_geometry() %>%
-#'   plot(col = "red", add = TRUE)
 #'
-#' navigate_nldi(nldi_feature = nldi_nwis,
-#'               mode = "UM", data_source = "nwissite",
-#'               distance_km = 0) %>%
-#'   st_geometry() %>%
-#'   plot(col = "red", add = TRUE)
-#'
-#' navigate_nldi(nldi_feature = nldi_nwis,
-#'               mode = "UT",
-#'               data_source = "huc12pp") %>%
-#'   st_geometry() %>%
-#'   plot(col = rgb(255, 205, 205, 100, maxColorValue = 255),
-#'        pch = 18, add = TRUE)
 #'
 #' nwissite <- navigate_nldi(nldi_feature = nldi_nwis,
 #'                           mode = "UT",
@@ -108,6 +84,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #'
 #' nwissite
 #' }
+#'
 navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
                           data_source = "comid", distance_km = NULL,
                           tier = "prod") {
@@ -150,13 +127,10 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' @return sf data.frame with result basin boundary
 #' @export
 #' @examples
-#' \dontrun{
 #' library(sf)
 #' library(dplyr)
 #'
-#' discover_nldi_sources()
-#'
-#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
+#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 #'
 #' basin <- get_nldi_basin(nldi_feature = nldi_nwis)
 #'
@@ -164,8 +138,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #'  st_geometry() %>%
 #'  plot()
 #'
-#'  basin
-#'  }
+#' basin
 #'
 get_nldi_basin <- function(nldi_feature,
                           tier = "prod") {

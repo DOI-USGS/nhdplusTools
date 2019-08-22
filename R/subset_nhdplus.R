@@ -27,30 +27,7 @@
 #' @return path to the saved subset geopackage
 #' @export
 #' @examples
-#' \dontrun{
-#' # NHDPlusHR
-#' temp_dir <- tempdir()
-#' temp_file <- tempfile(fileext = ".zip", tmpdir = temp_dir)
-#' download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
-#'               temp_file)
-#' unzip(temp_file, exdir = temp_dir)
-#'
-#' hr_data <- get_nhdplushr(temp_dir,
-#'                          out_gpkg = file.path(temp_dir, "nhd_hr.gpkg"),
-#'                          layers = NULL)
-#' flowlines <- sf::read_sf(hr_data, "NHDFlowline")
-#'
-#' up_ids <- get_UT(flowlines, 15000500028335)
-#'
-#' sub_nhdhr <- subset_nhdplus(up_ids, file.path(temp_dir, "sub.gpkg"),
-#'                       hr_data, overwrite = TRUE)
-#'
-#' sf::st_layers(sub_nhdhr)
-#'
-#' sub_flowline <- sf::read_sf(sub_nhdhr, "NHDFlowline")
-#' plot(sf::st_geometry(flowlines), lwd = 0.5)
-#' plot(sf::st_geometry(sub_flowline), lwd = 0.6, col = "red", add = TRUE)
-#'
+#' \dontrun{ # long running example
 #' sample_data <- system.file("extdata/sample_natseamless.gpkg",
 #'                            package = "nhdplusTools")
 #'
@@ -104,6 +81,29 @@
 #'                status = TRUE)
 #'
 #' sf::st_layers(output_file)
+#'
+#' # NHDPlusHR
+#' temp_dir <- tempdir()
+#' temp_file <- tempfile(fileext = ".zip", tmpdir = temp_dir)
+#' download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
+#'               temp_file)
+#' unzip(temp_file, exdir = temp_dir)
+#'
+#' hr_data <- get_nhdplushr(temp_dir,
+#'                          out_gpkg = file.path(temp_dir, "nhd_hr.gpkg"),
+#'                          layers = NULL)
+#' flowlines <- sf::read_sf(hr_data, "NHDFlowline")
+#'
+#' up_ids <- get_UT(flowlines, 15000500028335)
+#'
+#' sub_nhdhr <- subset_nhdplus(up_ids, file.path(temp_dir, "sub.gpkg"),
+#'                       hr_data, overwrite = TRUE)
+#'
+#' sf::st_layers(sub_nhdhr)
+#'
+#' sub_flowline <- sf::read_sf(sub_nhdhr, "NHDFlowline")
+#' plot(sf::st_geometry(flowlines), lwd = 0.5)
+#' plot(sf::st_geometry(sub_flowline), lwd = 0.6, col = "red", add = TRUE)
 #' }
 #'
 
@@ -290,11 +290,10 @@ intersection_write <- function(layer_name, data_path, envelope,
 #' @return list containing paths to the .rds files.
 #' @export
 #' @examples
-#' \dontrun{
-#' stage_national_data()
+#' sample_data <- system.file("extdata/sample_natseamless.gpkg",
+#'                            package = "nhdplusTools")
 #'
-#' stage_national_data(include = c("attributes", "flowlines","catchment"))
-#' }
+#' stage_national_data(nhdplus_data = sample_data, output_path = tempdir())
 #'
 stage_national_data <- function(include = c("attribute",
                                             "flowline",

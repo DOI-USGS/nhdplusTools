@@ -39,10 +39,9 @@ The returned list of paths is also added to the nhdplusTools_env
 as "national_data".
 }
 \examples{
-\dontrun{
-stage_national_data()
+sample_data <- system.file("extdata/sample_natseamless.gpkg",
+                           package = "nhdplusTools")
 
-stage_national_data(include = c("attributes", "flowlines","catchment"))
-}
+stage_national_data(nhdplus_data = sample_data, output_path = tempdir())
 
 }

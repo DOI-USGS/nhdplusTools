@@ -33,6 +33,7 @@ Set layers to "NULL" to get all layers.
 }
 \examples{
 \dontrun{
+# Not run because this will download a lot of data for the user.
 download_dir <- download_nhdplushr("./", c("0302", "0303"))
 get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
 }

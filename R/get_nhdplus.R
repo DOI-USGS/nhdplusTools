@@ -9,18 +9,12 @@
 #' @return integer COMID
 #' @export
 #' @examples
-#' \dontrun{
 #' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
 #' discover_nhdplus_id(point)
 #'
-#' discover_nldi_sources()
-#'
-#' nldi_huc12 <- list(featureSource = "huc12pp", featureID = "070700051701")
-#' discover_nhdplus_id(nldi_feature = nldi_huc12)
-#'
 #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 #' discover_nhdplus_id(nldi_feature = nldi_nwis)
-#' }
+#'
 discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 
   if (!is.null(point)) {
@@ -246,6 +240,7 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' @export
 #' @examples
 #' \dontrun{
+#' # Not run because this will download a lot of data for the user.
 #' download_dir <- download_nhdplushr("./", c("0302", "0303"))
 #' get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
 #' }

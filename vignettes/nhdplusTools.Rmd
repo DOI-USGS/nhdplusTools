@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   fig.width=6, 
   fig.height=4
 )
+oldoption <- options(scipen = 9999)
 options(scipen = 9999)
 ```
 
@@ -330,3 +331,7 @@ For more info about `get_flowline_index()` see the article `vignette("point_inde
 ## Refactoring
 
 The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be found in the network_refactor branch of this repository.
+
+```{r teardown, include=FALSE}
+options(oldoption)
+```

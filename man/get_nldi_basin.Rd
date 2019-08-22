@@ -25,13 +25,10 @@ Only resolves to the nearest NHDPlus catchment divide. See:
 https://owi.usgs.gov/blog/nldi-intro/ for more info on the nldi.
 }
 \examples{
-\dontrun{
 library(sf)
 library(dplyr)
 
-discover_nldi_sources()
-
-nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
+nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 
 basin <- get_nldi_basin(nldi_feature = nldi_nwis)
 
@@ -39,7 +36,6 @@ basin \%>\%
  st_geometry() \%>\%
  plot()
 
- basin
- }
+basin
 
 }

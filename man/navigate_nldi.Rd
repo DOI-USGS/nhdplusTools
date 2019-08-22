@@ -30,17 +30,11 @@ sf data.frame with result
 Navigate the Network Linked Data Index network.
 }
 \examples{
-\dontrun{
+\dontrun{ # Long running example
 library(sf)
 library(dplyr)
 
-discover_nldi_sources()
-
-nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
-
-nav_options <- discover_nldi_navigation(nldi_nwis)
-
-nav_options
+nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 
 navigate_nldi(nldi_feature = nldi_nwis,
               mode = "upstreamTributaries",
@@ -54,25 +48,7 @@ navigate_nldi(nldi_feature = nldi_nwis,
   st_geometry() \%>\%
   plot(col = "blue", add = TRUE)
 
-navigate_nldi(nldi_feature = nldi_nwis,
-              mode = nav_options[["downstreamMain"]],
-              data_source = "",
-              distance_km = 40) \%>\%
-  st_geometry() \%>\%
-  plot(col = "red", add = TRUE)
 
-navigate_nldi(nldi_feature = nldi_nwis,
-              mode = "UM", data_source = "nwissite",
-              distance_km = 0) \%>\%
-  st_geometry() \%>\%
-  plot(col = "red", add = TRUE)
-
-navigate_nldi(nldi_feature = nldi_nwis,
-              mode = "UT",
-              data_source = "huc12pp") \%>\%
-  st_geometry() \%>\%
-  plot(col = rgb(255, 205, 205, 100, maxColorValue = 255),
-       pch = 18, add = TRUE)
 
 nwissite <- navigate_nldi(nldi_feature = nldi_nwis,
                           mode = "UT",
@@ -83,4 +59,5 @@ st_geometry(nwissite) \%>\%
 
 nwissite
 }
+
 }

@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   fig.width=6, 
   fig.height=4
 )
+oldoption <- options(scipen = 9999)
 options(scipen = 9999)
 ```
 
@@ -111,4 +112,8 @@ hist(matched$REACH_meas_diff, breaks = 100,
 
 round(quantile(matched$REACH_meas_diff, 
                probs = c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)), digits = 2)
+```
+
+```{r teardown, include=FALSE}
+options(oldoption)
 ```

@@ -46,7 +46,7 @@ test_that("get_nhdplus_bybox", {
 
 test_that("we get urls for nhdplushr", {
   skip_on_cran()
-  urls <- download_nhdplushr("", c("01", "0203"), download_files = FALSE)
+  urls <- download_nhdplushr(tempdir(), c("01", "0203"), download_files = FALSE)
 
   expect_equal(length(urls), 11)
 })

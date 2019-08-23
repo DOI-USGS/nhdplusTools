@@ -46,13 +46,13 @@ and subject to revision. It does not include as many layers and may not
 be available permenantly.
 }
 \examples{
-\dontrun{ # long running example
+\donttest{
 sample_data <- system.file("extdata/sample_natseamless.gpkg",
                            package = "nhdplusTools")
 
 nhdplus_path(sample_data)
 
-staged_nhdplus <- stage_national_data(output_path = "./")
+staged_nhdplus <- stage_national_data(output_path = tempdir())
 
 sample_flines <- readRDS(staged_nhdplus$flowline)
 

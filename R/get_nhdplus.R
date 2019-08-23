@@ -165,7 +165,7 @@ get_nhdplus_bybox <- function(box, layer) {
 #' @importFrom utils download.file unzip
 #' @export
 #' @examples
-#' download_nhdplushr("", c("01", "0203"), download_files = FALSE)
+#' download_nhdplushr(tempdir(), c("01", "0203"), download_files = FALSE)
 download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 
   nhdhr_bucket <- get("nhdhr_bucket", envir = nhdplusTools_env)
@@ -239,10 +239,9 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' @importFrom sf st_layers read_sf st_sf write_sf
 #' @export
 #' @examples
-#' \dontrun{
-#' # Not run because this will download a lot of data for the user.
-#' download_dir <- download_nhdplushr("./", c("0302", "0303"))
-#' get_nhdplushr(download_dir, "nhdplus_0302-03.gpkg")
+#' \dontrun{ # Not run because this will download a lot of data
+#' download_dir <- download_nhdplushr(tempdir(), c("0302", "0303"))
+#' get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
 #' }
 get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
                           layers = c("NHDFlowline", "NHDPlusCatchment"),

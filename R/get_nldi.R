@@ -55,7 +55,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' @export
 #' @importFrom utils tail
 #' @examples
-#' \dontrun{ # Long running example
+#' \donttest{
 #' library(sf)
 #' library(dplyr)
 #'

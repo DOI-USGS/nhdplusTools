@@ -19,6 +19,13 @@
 #' @importFrom dplyr select filter left_join
 #' @family refactor functions
 #' @export
+#' @examples
+#' pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
+#'                                    package = "nhdplusTools"))
+#' prepare_nhdplus(flines_in,
+#'                 min_network_size = 10,
+#'                 min_path_length = 1,
+#'                 warn = FALSE)
 #'
 prepare_nhdplus <- function(flines,
                             min_network_size,

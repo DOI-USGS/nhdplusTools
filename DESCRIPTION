@@ -1,6 +1,6 @@
 Package: nhdplusTools
 Type: Package
-Title: NHDPlus Tools for R
+Title: NHDPlus Tools
 Version: 0.3.7
 Authors@R: person("David", "Blodgett", role = c("aut", "cre"), email = "dblodgett@usgs.gov")
 Description: Tools for traversing and working with National Hydrography Dataset Plus (NHDPlus) data. All methods implemented in 'nhdplusTools' are available in the NHDPlus documentation available from the US Environmental Protection Agency <https://www.epa.gov/waterdata/basic-information>.

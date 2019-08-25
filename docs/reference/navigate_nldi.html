@@ -169,25 +169,26 @@ of discover_nldi_sources() or empty string for flowline geometry.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
- <span class='co'># Long running example</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)
-
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)</div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.7.2, GDAL 2.4.1, PROJ 5.2.0</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    matches</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'>
 <span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05428500"</span>)
 
 <span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
               <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"upstreamTributaries"</span>,
               <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>""</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>()
-
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>()</div><div class='input'>
 <span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
               <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"UM"</span>,
               <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>""</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
 
 
 <span class='no'>nwissite</span> <span class='kw'>&lt;-</span> <span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
@@ -195,10 +196,30 @@ of discover_nldi_sources() or empty string for flowline geometry.</p></td>
                           <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>)
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>(<span class='no'>nwissite</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"green"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='no'>nwissite</span>
-<span class='co'># }</span><div class='input'>
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"green"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='navigate_nldi-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='no'>nwissite</span></div><div class='output co'>#&gt; Simple feature collection with 13 features and 7 fields
+#&gt; geometry type:  POINT
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: -89.53611 ymin: 43.08944 xmax: -89.3525 ymax: 43.20889
+#&gt; epsg (SRID):    4326
+#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs
+#&gt; <span style='color: #949494;'># A tibble: 13 x 8</span><span>
+#&gt;    source sourceName identifier name  uri   comid navigation
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> nwiss… NWIS Sites USGS-0542… SIXM… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> nwiss… NWIS Sites USGS-0542… YAHA… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> nwiss… NWIS Sites USGS-0542… DORN… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> nwiss… NWIS Sites USGS-0542… DORN… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> nwiss… NWIS Sites USGS-0542… YAHA… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> nwiss… NWIS Sites USGS-0542… PHEA… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> nwiss… NWIS Sites USGS-0542… PHEA… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> nwiss… NWIS Sites USGS-0542… S FO… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> nwiss… NWIS Sites USGS-0542… PHEA… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> nwiss… NWIS Sites USGS-0542… SIXM… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'>11</span><span> nwiss… NWIS Sites USGS-0542… SIXM… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'>12</span><span> nwiss… NWIS Sites USGS-0542… PHEA… http… 1329… https://c…
+#&gt; </span><span style='color: #BCBCBC;'>13</span><span> nwiss… NWIS Sites USGS-0542… YAHA… http… 1329… https://c…
+#&gt; </span><span style='color: #949494;'># … with 1 more variable: geometry </span><span style='color: #949494;font-style: italic;'>&lt;POINT [°]&gt;</span><span></div></span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

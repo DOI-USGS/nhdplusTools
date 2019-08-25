@@ -239,7 +239,9 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' @importFrom sf st_layers read_sf st_sf write_sf
 #' @export
 #' @examples
-#' \dontrun{ # Not run because this will download a lot of data
+#' \donttest{
+#' # Note this will download a lot of data to a temp directory.
+#' # Change 'tempdir()' to your directory of choice.
 #' download_dir <- download_nhdplushr(tempdir(), c("0302", "0303"))
 #' get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
 #' }

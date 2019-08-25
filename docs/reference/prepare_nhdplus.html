@@ -180,6 +180,27 @@ or not.</p></td>
     <p>data.frame ready to be used with the refactor_flowlines function.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>flines_in</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata/petapsco_flowlines.gpkg"</span>,
+                                     <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+<span class='fu'>prepare_nhdplus</span>(<span class='no'>flines_in</span>,
+                <span class='kw'>min_network_size</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+                <span class='kw'>min_path_length</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+                <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 697 x 6</span><span>
+#&gt;       COMID LENGTHKM TotDASqKM  Hydroseq LevelPathI  toCOMID
+#&gt;       </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> 11</span><span style='text-decoration: underline;'>689</span><span>204    0.73      150.  200</span><span style='text-decoration: underline;'>027</span><span>394  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>689</span><span>212
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> 11</span><span style='text-decoration: underline;'>689</span><span>212    0.819     165.  200</span><span style='text-decoration: underline;'>026</span><span>423  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>689</span><span>228
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> 11</span><span style='text-decoration: underline;'>689</span><span>228    2.05      173.  200</span><span style='text-decoration: underline;'>025</span><span>563  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>690</span><span>186
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> 11</span><span style='text-decoration: underline;'>690</span><span>186    2.91      182.  200</span><span style='text-decoration: underline;'>024</span><span>768  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>694</span><span>048
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> 11</span><span style='text-decoration: underline;'>694</span><span>048    0.745     183.  200</span><span style='text-decoration: underline;'>024</span><span>046  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>690</span><span>184
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> 11</span><span style='text-decoration: underline;'>689</span><span>202    4.76      137.  200</span><span style='text-decoration: underline;'>028</span><span>471  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>689</span><span>204
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> 11</span><span style='text-decoration: underline;'>689</span><span>720    4.40      109.  200</span><span style='text-decoration: underline;'>029</span><span>710  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>689</span><span>202
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> 11</span><span style='text-decoration: underline;'>689</span><span>108    1.26       90.4 200</span><span style='text-decoration: underline;'>031</span><span>091  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>689</span><span>720
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> 11</span><span style='text-decoration: underline;'>689</span><span>106    3.51       88.4 200</span><span style='text-decoration: underline;'>032</span><span>655  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>689</span><span>108
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> 11</span><span style='text-decoration: underline;'>689</span><span>700    2.35       82.8 200</span><span style='text-decoration: underline;'>034</span><span>479  200</span><span style='text-decoration: underline;'>024</span><span>046 11</span><span style='text-decoration: underline;'>689</span><span>106
+#&gt; </span><span style='color: #949494;'># … with 687 more rows</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -187,7 +208,9 @@ or not.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

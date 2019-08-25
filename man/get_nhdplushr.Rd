@@ -32,7 +32,9 @@ Names are not modified from the NHDPlusHR geodatabase.
 Set layers to "NULL" to get all layers.
 }
 \examples{
-\dontrun{ # Not run because this will download a lot of data
+\donttest{
+# Note this will download a lot of data to a temp directory.
+# Change 'tempdir()' to your directory of choice.
 download_dir <- download_nhdplushr(tempdir(), c("0302", "0303"))
 get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
 }

@@ -30,7 +30,7 @@ sf data.frame with result
 Navigate the Network Linked Data Index network.
 }
 \examples{
-\dontrun{ # Long running example
+\donttest{
 library(sf)
 library(dplyr)
 

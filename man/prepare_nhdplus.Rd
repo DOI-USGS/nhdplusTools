@@ -37,4 +37,13 @@ data.frame ready to be used with the refactor_flowlines function.
 \description{
 Function to prep NHDPlus data for use by nhdplusTools functions
 }
+\examples{
+flines_in <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
+                                     package = "nhdplusTools"))
+prepare_nhdplus(flines_in,
+                min_network_size = 10,
+                min_path_length = 1,
+                warn = FALSE)
+
+}
 \concept{refactor functions}

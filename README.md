@@ -1,6 +1,6 @@
 # nhdplusTools <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
-[![Build Status](https://travis-ci.org/USGS-R/nhdplusTools.svg?branch=master)](https://travis-ci.org/USGS-R/nhdplusTools) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/nhdplusTools/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/nhdplusTools?branch=master)
+[![Build Status](https://travis-ci.org/USGS-R/nhdplusTools.svg?branch=master)](https://travis-ci.org/USGS-R/nhdplusTools) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/nhdplusTools/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/nhdplusTools?branch=master) [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/web/packages/nhdplusTools/index.html) [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/web/packages/nhdplusTools/index.html)
 
 ## Tools for Manipulating the NHDPlus Network
 
@@ -11,6 +11,11 @@ but ongoing support is available due to use of the package in project work.
 
 ### Installation:
 
+```
+install.packages("nhdplusTools")
+```
+
+For the latest development:
 ```
 install.packages("devtools")
 devtools::install_github("USGS-R/nhdplusTools")

@@ -170,15 +170,20 @@ query_nldi <- function(query, tier = "prod", parse_json = TRUE) {
   url <- paste(nldi_base_url, query,
                sep = "/")
 
-  c <- rawToChar(httr::RETRY("GET", url, times = 10, pause_cap = 240)$content)
+  req_data <- rawToChar(httr::RETRY("GET", url, times = 10, pause_cap = 240)$content)
 
-  if (nchar(c) == 0) {
+  if (nchar(req_data) == 0) {
     NULL
   } else {
     if (parse_json) {
-      try(jsonlite::fromJSON(c, simplifyVector = TRUE), silent = FALSE)
+      tryCatch(jsonlite::fromJSON(req_data, simplifyVector = TRUE),
+               error = function(e) {
+                 message("Something went wrong accessing the NLDI.\n", e)
+               }, warning = function(w) {
+                 message("Something went wrong accessing the NLDI.\n", w)
+               })
     } else {
-      return(c)
+      req_data
     }
   }
 }

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/USGS-R/nhdplusTools.svg?branch=master)](https://travis-ci.org/USGS-R/nhdplusTools) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/nhdplusTools/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/nhdplusTools?branch=master) [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/web/packages/nhdplusTools/index.html) [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/web/packages/nhdplusTools/index.html)
 
-## Tools for Manipulating the NHDPlus Network
+## nhdplusTools: Tools for Accessing and Working with the NHDPlus
 
 This package is a growing set of tools for manipulation of hydrographic
 data using the NHDPlus data model. There is no specific

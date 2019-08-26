@@ -5,7 +5,6 @@ LICENSE
 .lintr
 inst/doc/*.html
 docs
-vignettes/point*
 _pkgdown.yml
 data-raw
 vignettes/rosm.cache

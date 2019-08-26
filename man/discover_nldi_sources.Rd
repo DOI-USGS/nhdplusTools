@@ -18,6 +18,7 @@ Function to retrieve available feature
 and data sources from the Network Linked Data Index.
 }
 \examples{
+\donttest{
 discover_nldi_sources()
-
+}
 }

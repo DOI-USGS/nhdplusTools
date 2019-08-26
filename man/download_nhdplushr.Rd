@@ -21,5 +21,7 @@ Paths to geodatabases created.
 Download NHDPlus HiRes
 }
 \examples{
+\donttest{
 download_nhdplushr(tempdir(), c("01", "0203"), download_files = FALSE)
+}
 }

@@ -6,8 +6,9 @@
 #' and "features"
 #' @export
 #' @examples
+#' \donttest{
 #' discover_nldi_sources()
-#'
+#' }
 discover_nldi_sources <- function(tier = "prod") {
   return(query_nldi(query = "", tier))
 }
@@ -24,12 +25,13 @@ discover_nldi_sources <- function(tier = "prod") {
 #' and "features"
 #' @export
 #' @examples
+#' \donttest{
 #' discover_nldi_sources()
 #'
 #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 #'
 #' discover_nldi_navigation(nldi_nwis)
-#'
+#' }
 discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
   check_nldi_feature(nldi_feature)
   query <- paste(nldi_feature[["featureSource"]],
@@ -127,6 +129,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' @return sf data.frame with result basin boundary
 #' @export
 #' @examples
+#' \donttest{
 #' library(sf)
 #' library(dplyr)
 #'
@@ -139,7 +142,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #'  plot()
 #'
 #' basin
-#'
+#' }
 get_nldi_basin <- function(nldi_feature,
                           tier = "prod") {
 

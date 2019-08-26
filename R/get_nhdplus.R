@@ -168,7 +168,9 @@ get_nhdplus_bybox <- function(box, layer) {
 #' @importFrom utils download.file unzip
 #' @export
 #' @examples
+#' \donttest{
 #' download_nhdplushr(tempdir(), c("01", "0203"), download_files = FALSE)
+#' }
 download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 
   nhdhr_bucket <- get("nhdhr_bucket", envir = nhdplusTools_env)

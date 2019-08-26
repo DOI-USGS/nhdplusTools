@@ -12,3 +12,4 @@ DISCLAIMER.md
 code.json
 ^doc$
 ^Meta$
+.Renviron

@@ -18,6 +18,7 @@ test_that("nhdplus_data path sets and gets right", {
 context("discover nhdplus id")
 
 test_that("discover nhdplus id errors", {
+  skip_on_cran()
   expect_error(discover_nhdplus_id(),
                "Must provide point or nldi_feature input.")
 
@@ -27,7 +28,7 @@ test_that("discover nhdplus id errors", {
 })
 
 test_that("discover nhdplus id works as expected", {
-
+  skip_on_cran()
   point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
   expect_equal(discover_nhdplus_id(point), 11689978)
   expect_equal(discover_nhdplus_id(point = point), 11689978)
@@ -89,7 +90,7 @@ test_that("calculate level path", {
     stringsAsFactors = FALSE)
 
   test_flowline <- left_join(test_flowline,
-                             calculate_levelpaths(test_flowline), by = "ID")
+                             calculate_levelpaths(test_flowline, status = TRUE), by = "ID")
 
   nhdp_lp <- sort(unique(walker_flowline$LevelPathI))
   nhdt_lp <- sort(unique(test_flowline$levelpath))

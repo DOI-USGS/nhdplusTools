@@ -6,8 +6,9 @@
 #' and "features"
 #' @export
 #' @examples
+#' \donttest{
 #' discover_nldi_sources()
-#'
+#' }
 discover_nldi_sources <- function(tier = "prod") {
   return(query_nldi(query = "", tier))
 }
@@ -24,12 +25,13 @@ discover_nldi_sources <- function(tier = "prod") {
 #' and "features"
 #' @export
 #' @examples
+#' \donttest{
 #' discover_nldi_sources()
 #'
 #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 #'
 #' discover_nldi_navigation(nldi_nwis)
-#'
+#' }
 discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
   check_nldi_feature(nldi_feature)
   query <- paste(nldi_feature[["featureSource"]],
@@ -127,6 +129,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' @return sf data.frame with result basin boundary
 #' @export
 #' @examples
+#' \donttest{
 #' library(sf)
 #' library(dplyr)
 #'
@@ -139,7 +142,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #'  plot()
 #'
 #' basin
-#'
+#' }
 get_nldi_basin <- function(nldi_feature,
                           tier = "prod") {
 
@@ -170,15 +173,20 @@ query_nldi <- function(query, tier = "prod", parse_json = TRUE) {
   url <- paste(nldi_base_url, query,
                sep = "/")
 
-  c <- rawToChar(httr::RETRY("GET", url, times = 10, pause_cap = 240)$content)
+  req_data <- rawToChar(httr::RETRY("GET", url, times = 10, pause_cap = 240)$content)
 
-  if (nchar(c) == 0) {
+  if (nchar(req_data) == 0) {
     NULL
   } else {
     if (parse_json) {
-      try(jsonlite::fromJSON(c, simplifyVector = TRUE), silent = FALSE)
+      tryCatch(jsonlite::fromJSON(req_data, simplifyVector = TRUE),
+               error = function(e) {
+                 message("Something went wrong accessing the NLDI.\n", e)
+               }, warning = function(w) {
+                 message("Something went wrong accessing the NLDI.\n", w)
+               })
     } else {
-      return(c)
+      req_data
     }
   }
 }

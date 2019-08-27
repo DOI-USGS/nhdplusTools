@@ -1,5 +1,5 @@
 ---
-title: "Indexing / Referencing"
+title: "Indexing and Referencing"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
@@ -13,7 +13,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width=6, 
-  fig.height=4
+  fig.height=4,
+  eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
 )
 oldoption <- options(scipen = 9999)
 options(scipen = 9999)
@@ -43,7 +44,7 @@ flowlines <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network")
 gages <- sf::read_sf(nhdplus_path(), "Gage")
 ```
 
-Now we can call `nhdplusTools::get_flowline_index()` on the data we just loaded. Note that we are doing our spatial searching in units of degrees. The get_flowline_index has an input, `search_radius` which defaults to 0.1. See the documentation of the [nn2 function from the RANN package](https://cran.r-project.org/web/packages/RANN/) for more information on how the search works.
+Now we can call `nhdplusTools::get_flowline_index()` on the data we just loaded. Note that we are doing our spatial searching in units of degrees. The get_flowline_index has an input, `search_radius` which defaults to 0.1. See the documentation of the [nn2 function from the RANN package](https://cran.r-project.org/package=RANN) for more information on how the search works.
 
 ```{r get_indexes}
 geom_col <- attr(gages, "sf_column")

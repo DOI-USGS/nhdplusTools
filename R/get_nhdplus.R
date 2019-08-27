@@ -9,12 +9,13 @@
 #' @return integer COMID
 #' @export
 #' @examples
+#' \donttest{
 #' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
 #' discover_nhdplus_id(point)
 #'
 #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 #' discover_nhdplus_id(nldi_feature = nldi_nwis)
-#'
+#' }
 discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 
   if (!is.null(point)) {
@@ -35,7 +36,9 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
                         p_crd[2] + 0.00001, p_crd[1] + 0.00001,
                         "urn:ogc:def:crs:EPSG:4269", sep = ","))
 
-    catchment <- sf::read_sf(url)
+    req_data <- httr::RETRY("GET", url, times = 10, pause_cap = 240)
+
+    catchment <- make_web_sf(req_data)
 
     if (nrow(catchment) > 1) {
       warning("point too close to edge of catchment found multiple.")
@@ -108,9 +111,9 @@ get_nhdplus_byid <- function(comids, layer) {
 
   # nolint end
 
-  c <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
+  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
 
-  return(sf::read_sf(rawToChar(c$content)))
+  return(make_web_sf(req_data))
 }
 
 #' @noRd
@@ -148,9 +151,9 @@ get_nhdplus_bybox <- function(box, layer) {
 
   # nolint end
 
-  c <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
+  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
 
-  return(sf::read_sf(rawToChar(c$content)))
+  return(make_web_sf(req_data))
 
 }
 
@@ -165,7 +168,9 @@ get_nhdplus_bybox <- function(box, layer) {
 #' @importFrom utils download.file unzip
 #' @export
 #' @examples
+#' \donttest{
 #' download_nhdplushr(tempdir(), c("01", "0203"), download_files = FALSE)
+#' }
 download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 
   nhdhr_bucket <- get("nhdhr_bucket", envir = nhdplusTools_env)
@@ -290,5 +295,21 @@ get_hr_data <- function(gdb, layer = NULL) {
     left_join( read_sf(gdb, layer), vaa, by = "NHDPlusID")
   } else {
     read_sf(gdb, layer)
+  }
+}
+
+make_web_sf <- function(content) {
+  if(content$status_code == 200) {
+    tryCatch(sf::read_sf(rawToChar(content$content)),
+             error = function(e) {
+               message(paste("Something went wrong with a web request.\n", e))
+             }, warning = function(w) {
+               message(paste("Something went wrong with a web request.\n", w))
+             })
+  } else {
+    message(paste("Something went wrong with a web request.\n", content$url,
+                  "\n", "returned",
+                  content$status_code))
+    data.frame()
   }
 }

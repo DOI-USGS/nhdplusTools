@@ -76,6 +76,7 @@ test_that("subset runs as expected", {
 
   nhdplus_path("../NHDPlusV21_National_Seamless.gdb")
 
+  skip_on_cran()
   fi <- subset_nhdplus(comids = comids,
                        output_file = out_file,
                        nhdplus_data = "download",
@@ -144,6 +145,7 @@ test_that("prep_nhdplus runs as expected", {
 test_that("subset works with HR", {
   work_dir <- tempdir()
 
+  skip_on_cran()
   get_test_file(work_dir)
 
   hr <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"),

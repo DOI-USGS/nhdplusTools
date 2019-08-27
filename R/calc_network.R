@@ -101,6 +101,7 @@ accumulate_downstream <- function(dat_fram, var) {
 #' the weight column, this will match the behavior of NHDPlus. Any numeric value can be
 #' included in this column and the largest value will be followed when no nameID is available.
 #' @param flowline data.frame with ID, toID, nameID, and weight columns.
+#' @param status boolean if status updates should be printed.
 #' @return data.frame with ID, outletID, topo_sort, and levelpath collumns.
 #' See details for more info.
 #' @details
@@ -130,7 +131,7 @@ accumulate_downstream <- function(dat_fram, var) {
 #' calculate_levelpaths(test_flowline)
 #'
 #'
-calculate_levelpaths <- function(flowline) {
+calculate_levelpaths <- function(flowline, status = FALSE) {
 
   flowline <- check_names(flowline, "calculate_levelpaths")
 
@@ -153,8 +154,8 @@ calculate_levelpaths <- function(flowline) {
 
   flc <- flowline
   diff = 1
-
-  while(nrow(flc) > 0) {
+  checker <- 0
+  while(nrow(flc) > 0 & checker < 10000000) {
     tail_ind <- which(flc$topo_sort == min(flc$topo_sort))
     tailID <- flc$ID[tail_ind]
     sortID <- flowline$topo_sort[tail_ind]
@@ -165,6 +166,11 @@ calculate_levelpaths <- function(flowline) {
                        levelpath = ifelse(.data$ID %in% pathIDs,
                                           sortID, .data$levelpath))
     flc <- filter(flc, !.data$ID %in% pathIDs)
+    checker <- checker + 1
+
+    if(status && checker %% 1000 == 0) {
+      message(paste(nrow(flc), "of", nrow(flowline), "remaining."))
+    }
   }
 
   outlets <- flowline %>%

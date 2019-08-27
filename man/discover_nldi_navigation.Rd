@@ -23,10 +23,11 @@ Discover available navigation options for a
 given feature source and id.
 }
 \examples{
+\donttest{
 discover_nldi_sources()
 
 nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
 discover_nldi_navigation(nldi_nwis)
-
+}
 }

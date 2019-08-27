@@ -4,10 +4,12 @@
 \alias{calculate_levelpaths}
 \title{Calculate Level Paths}
 \usage{
-calculate_levelpaths(flowline)
+calculate_levelpaths(flowline, status = FALSE)
 }
 \arguments{
 \item{flowline}{data.frame with ID, toID, nameID, and weight columns.}
+
+\item{status}{boolean if status updates should be printed.}
 }
 \value{
 data.frame with ID, outletID, topo_sort, and levelpath collumns.

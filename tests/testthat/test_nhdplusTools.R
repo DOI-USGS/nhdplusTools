@@ -90,7 +90,7 @@ test_that("calculate level path", {
     stringsAsFactors = FALSE)
 
   test_flowline <- left_join(test_flowline,
-                             calculate_levelpaths(test_flowline), by = "ID")
+                             calculate_levelpaths(test_flowline, status = TRUE), by = "ID")
 
   nhdp_lp <- sort(unique(walker_flowline$LevelPathI))
   nhdt_lp <- sort(unique(test_flowline$levelpath))

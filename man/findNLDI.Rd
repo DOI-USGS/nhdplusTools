@@ -36,7 +36,8 @@ Finally, the 'find' parameter, describes what features should be retunred. The '
 }
 \examples{
 \donttest{
-# Starting at NWIS 05428500, navigate along the upper mainsteam, and upper tributary to find the basin and NWIS sites:
+# Starting at NWIS 05428500, navigate along the upper mainsteam, and upper tributary
+#to find the basin and NWIS sites:
 
  nldi = findNLDI(nwis = "05428500", nav = c("UT", "UM", "DM"), find = c("nwis", "basin"))
 

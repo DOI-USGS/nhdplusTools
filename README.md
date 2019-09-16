@@ -131,8 +131,8 @@ also supported.
 https://github.com/mbtyers/riverdist  
 https://github.com/jsta/nhdR  
 https://github.com/lawinslow/hydrolinks  
-https://github.com/mikejohnson51/HydroData
-https://github.com/ropensci/FedData
+https://github.com/mikejohnson51/HydroData    
+https://github.com/ropensci/FedData    
 ... others -- please suggest additions?
 
 ### Contributing:

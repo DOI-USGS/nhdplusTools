@@ -74,3 +74,16 @@ test_that("get_nhdplushr runs", {
 
   expect(length(names(out)), 7)
 })
+
+test_that("downloaders run", {
+dir <- tempdir()
+out <- download_nhdplusv2(outdir = dir, url = "https://dblodgett-usgs.github.io/nhdplusTools/data/test.7z")
+
+dir <- tempdir()
+out <- download_rf1(outdir = dir, url = "https://dblodgett-usgs.github.io/nhdplusTools/data/test.e00.gz")
+
+dir <- tempdir()
+out <- download_wbd(outdir = dir, url = "https://dblodgett-usgs.github.io/nhdplusTools/data/test.zip")
+})
+
+

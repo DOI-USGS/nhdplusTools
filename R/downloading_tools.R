@@ -21,7 +21,7 @@ download_nhdplusv2 <- function(outdir,
 
   ifelse(any(grepl("gdb", list.dirs(outdir))),
          1,
-         system(paste0("7z -o", outdir, " x ", file), intern = TRUE))
+         system(paste0("7z -o", path.expand(outdir), " x ", file), intern = TRUE))
 
   path <- list.dirs(outdir)[grepl("gdb", list.dirs(outdir))]
   path <- path[grepl("NHDPlus", path)]

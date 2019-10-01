@@ -203,3 +203,75 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
       return(get("nhdplus_data", envir = nhdplusTools_env))
   }
 }
+
+#' @noRd
+#' These are the names that come from the packaged data: "petapsco_flowlines.gpkg"
+#' and thus the assumed names all nhdplusTools functions work on:
+
+good_names = c("COMID", "FDATE", "RESOLUTION",
+               "GNIS_ID", "GNIS_NAME", "LENGTHKM",
+               "REACHCODE", "FLOWDIR", "WBAREACOMI",
+               "FTYPE", "FCODE", "Shape_Length",
+               "StreamLeve", "StreamOrde", "StreamCalc",
+               "FromNode", "ToNode", "Hydroseq",
+               "LevelPathI", "Pathlength", "TerminalPa",
+               "ArbolateSu", "Divergence", "StartFlag",
+               "TerminalFl", "DnLevel", "UpLevelPat",
+               "UpHydroseq", "DnLevelPat", "DnMinorHyd",
+               "DnDrainCou", "DnHydroseq", "FromMeas",
+               "ToMeas", "RtnDiv", "VPUIn",
+               "VPUOut", "AreaSqKM", "TotDASqKM",
+               "DivDASqKM", "Tidal", "TOTMA",
+               "WBAreaType", "HWNodeSqKM", "MAXELEVRAW",
+               "MINELEVRAW", "MAXELEVSMO", "MINELEVSMO",
+               "SLOPE", "ELEVFIXED", "HWTYPE",
+               "SLOPELENKM",
+               "QA_MA", "VA_MA", "QC_MA", "VC_MA", "QE_MA", "VE_MA",
+               "QA_01", "VA_01", "QC_01", "VC_01", "QE_01", "VE_01",
+               "QA_02", "VA_02", "QC_02", "VC_02", "QE_02", "VE_02",
+               "QA_03", "VA_03", "QC_03", "VC_03", "QE_03", "VE_03",
+               "QA_04", "VA_04", "QC_04", "VC_04", "QE_04", "VE_04",
+               "QA_05", "VA_05", "QC_05", "VC_05", "QE_05", "VE_05",
+               "QA_06", "VA_06", "QC_06", "VC_06", "QE_06", "VE_06",
+               "QA_07", "VA_07", "QC_07", "VC_07", "QE_07", "VE_07",
+               "QA_08", "VA_08", "QC_08", "VC_08", "QE_08", "VE_08",
+               "QA_09", "VA_09", "QC_09", "VC_09", "QE_09", "VE_09",
+               "QA_10", "VA_10", "QC_10", "VC_10", "QE_10", "VE_10",
+               "QA_11", "VA_11", "QC_11", "VC_11", "QE_11", "VE_11",
+               "QA_12", "VA_12", "QC_12", "VC_12", "QE_12", "VE_12",
+               "LakeFract", "SurfArea", "RAreaHLoad",
+               "RPUID", "VPUID", "Enabled",
+               "geom")
+
+
+#' @title Align NHD Dataset Names
+#' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.
+#' @param x a \code{sf} object of nhdplus flowlines
+#' @return a renamed \code{sf} object
+#' @export
+#' @examples
+#' \dontrun{
+#' a = AOI::getAOI(list("UCSB", 1, 1))
+#' n = HydroData::findNHD(a)[[2]] %>% align_nhdplus_names()
+#' UM_comids = get_UM(n, n$COMID[3])
+#' }
+
+align_nhdplus_names = function(x){
+
+  old_names <- names(x)
+  new_names <- old_names
+
+  matched <- match(toupper(names(x)), toupper(good_names))
+
+  replacement_names <- as.character(good_names[matched[which(!is.na(matched))]])
+
+  new_names[which(toupper(old_names) %in% toupper(good_names))] <- replacement_names
+  names(x) <- new_names
+  return(x)
+
+}
+
+
+
+
+

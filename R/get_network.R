@@ -91,7 +91,7 @@ private_get_UT <- function(network, comid) {
 #' returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs upstream of the starting COMID
 #' along the mainstem.
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter select arrange
 #' @export
 #' @examples
 #' library(sf)
@@ -108,15 +108,17 @@ private_get_UT <- function(network, comid) {
 #' plot(dplyr::filter(sample_flines, COMID %in% UM_COMIDs)$geom,
 #'      col = "blue", add = TRUE, lwd = 2)
 #'
+
 get_UM <- function(network, comid, distance = NULL) {
 
   network <- check_names(network, "get_UM")
 
-  main <- filter(network, COMID %in% comid)
+  main <- filter(network, COMID %in% comid) %>%
+    select(COMID, LevelPathI, Hydroseq, Pathlength, LENGTHKM)
 
-  main_us <- filter(network, LevelPathI %in% main$LevelPathI &
-                      Hydroseq >= main$Hydroseq)[c("COMID", "Hydroseq",
-                                                   "Pathlength", "LENGTHKM")]
+  main_us <- network %>%
+    filter(LevelPathI %in% main$LevelPathI & Hydroseq >= main$Hydroseq) %>%
+    select(COMID, Hydroseq, Pathlength, LENGTHKM)
 
   if (!is.null(distance)) {
 
@@ -127,7 +129,12 @@ get_UM <- function(network, comid, distance = NULL) {
     stop_pathlength <- main$Pathlength - main$LENGTHKM + distance
 
     main_us <- filter(main_us, Pathlength <= stop_pathlength)
+
   }
+
+  main_us <- arrange(main_us, Pathlength) %>%
+    filter(COMID != comid)
+
   return(main_us$COMID)
 }
 
@@ -140,7 +147,7 @@ get_UM <- function(network, comid, distance = NULL) {
 #' returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs downstream of the starting COMID
 #' along the mainstem.
-#' @importFrom dplyr filter
+#' @importFrom dplyr select filter arrange desc
 #' @export
 #' @examples
 #' library(sf)
@@ -158,6 +165,8 @@ get_UM <- function(network, comid, distance = NULL) {
 #'      col = "blue", add = TRUE, lwd = 2)
 #'
 #'
+
+
 get_DM <- function(network, comid, distance = NULL) {
 
   if (!is.null(distance)) {
@@ -169,10 +178,10 @@ get_DM <- function(network, comid, distance = NULL) {
     network <- check_names(network, "get_DM_nolength")
 
     network <- dplyr::select(network, get("get_DM_nolength_attributes",
-                                          nhdplusTools_env))
+                                          nhdplusTools_env), Pathlength)
   }
 
-  if ("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
+  if ("sf" %in% class(network)) { network <- sf::st_set_geometry(network, NULL) }
 
   start_comid <- filter(network, COMID == comid)
 
@@ -183,15 +192,22 @@ get_DM <- function(network, comid, distance = NULL) {
   all <- private_get_DM(network, comid)
 
   if (!is.null(distance)) {
-    stop_pathlength <- start_comid$Pathlength +
-      start_comid$LENGTHKM -
-      distance
+    stop_pathlength <- start_comid$Pathlength + start_comid$LENGTHKM - distance
 
-    network <- filter(network, COMID %in% all)
+    network <- network %>%
+      filter(COMID %in% all$COMID,
+             (Pathlength + LENGTHKM) >= stop_pathlength,
+             COMID != comid) %>%
+      arrange(desc(Pathlength))
 
-    return(filter(network, (Pathlength + LENGTHKM) >= stop_pathlength)$COMID)
+    return(network$COMID)
+
   } else {
-    return(all)
+
+    all <- all %>%
+      arrange(desc(Pathlength)) %>%
+      filter(COMID != comid)
+    return(all$COMID)
   }
 
 }
@@ -209,17 +225,20 @@ private_get_DM <- function(network, comid) {
   ds_hs <- filter(ds_main, !DnLevelPat %in% main$LevelPathI)$DnHydroseq
 
   if(length(ds_hs) > 0) {
+
     ds_lpid <- filter(network, Hydroseq == ds_hs)$LevelPathI
+
     if (length(ds_lpid) > 0) {
       ds_comid <- filter(network,
                          LevelPathI == ds_lpid &
-                           Hydroseq <= ds_hs)$COMID
-      c(ds_main$COMID, private_get_DM(network, ds_comid))
+                         Hydroseq <= ds_hs)$COMID
+
+      rbind(select(ds_main, COMID, Pathlength), private_get_DM(network, ds_comid))
     } else {
-      return(ds_main$COMID)
+      return(select(ds_main, COMID, Pathlength))
     }
   } else {
-    return(ds_main$COMID)
+    return(select(ds_main, COMID, Pathlength))
   }
 }
 

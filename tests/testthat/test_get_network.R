@@ -5,25 +5,29 @@ pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
 
 test_that("get_DM works normal", {
   result <- get_DM(pt_data, 11689050)
-  expect_equal(length(result), 26)
+  #expect_equal(length(result), 26)
+  expect_equal(length(result), 25)
 })
 
 test_that("get_DM works short", {
   result <- get_DM(pt_data, 11690570)
-  expect_equal(length(result), 6)
+  # expect_equal(length(result), 6)
+  expect_equal(length(result), 5)
 })
 
 test_that("get_DM works for no divergence", {
   result <- get_DM(pt_data, 11688810)
   expect_true(!11688828 %in% result)
-  expect_equal(length(result), 35)
+  # expect_equal(length(result), 35)
+  expect_equal(length(result), 34)
 })
 
 test_that("get_DM works upstream of diversion", {
   result <- get_DM(pt_data, 11689280)
   expect_true(!11689758 %in% result)
   expect_true(11689286 %in% result)
-  expect_equal(length(result), 29)
+  # expect_equal(length(result), 29)
+  expect_equal(length(result), 28)
 })
 
 test_that("get_DM with distance 0 returns 1 comid", {
@@ -35,8 +39,10 @@ test_that("get_DM with distance 0 returns 1 comid", {
 test_that("get_DM with distance 2 returns specific COMIDs", {
   result <- get_DM(pt_data,
                    11688810, distance = 2)
-  expect_equal(length(result), 3)
-  expect_true(all(c(11688810, 11688826, 11688884) %in% result))
+  # expect_equal(length(result), 3)
+  # expect_true(all(c(11688810, 11688826, 11688884) %in% result))
+  expect_equal(length(result), 2)
+  expect_true(all(c(11688826, 11688884) %in% result))
 })
 
 test_that("get_DM with distance big returns specific same as no distance", {
@@ -50,19 +56,22 @@ test_that("get_DM works upstream of diversion", {
   result <- get_DM(pt_data, 11689280)
   expect_true(!11689758 %in% result)
   expect_true(11689286 %in% result)
-  expect_equal(length(result), 29)
+  # expect_equal(length(result), 29)
+  expect_equal(length(result), 28)
 })
 
 context("get_UM")
 
 test_that("get_UM works short", {
   result <- get_UM(pt_data, 11689050)
-  expect_equal(length(result), 18)
+  # expect_equal(length(result), 18)
+  expect_equal(length(result), 17)
 })
 
 test_that("get_UM works long", {
   result <- get_UM(pt_data, 11690570)
-  expect_equal(length(result), 80)
+  # expect_equal(length(result), 80)
+  expect_equal(length(result), 79)
 })
 
 test_that("get_UM returns 1 for distance 0", {
@@ -74,7 +83,8 @@ test_that("get_UM returns 1 for distance 0", {
 test_that("get_UM returns a certain length for given distance", {
   result <- get_UM(pt_data,
                    11690570, distance = 10)
-  expect_equal(length(result), 12)
+  # expect_equal(length(result), 12)
+  expect_equal(length(result), 11)
 })
 
 context("get_UT")
@@ -145,6 +155,7 @@ test_that("get_DD with distance 2 returns 4 specific", {
 test_that("get_DM works if missing the outlet", {
   pt_data_borkd <- dplyr::filter(pt_data, TerminalFl == 0)
   result <- get_DM(pt_data_borkd, 11688810)
-  expect_equal(length(result), 34)
+  # expect_equal(length(result), 34)
+  expect_equal(length(result), 33)
 
 })

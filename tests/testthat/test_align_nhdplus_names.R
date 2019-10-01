@@ -1,6 +1,6 @@
 context("align_nhdplus_names")
 
-cida = sf::st_read('/Users/mikejohnson/Documents/GitHub/nhdplusTools/inst/extdata/cida_flowlines.gpkg')
+cida = sf::read_sf(system.file("extdata", "cida_flowlines.gpkg", package = "nhdplusTools"))
 comid = cida$comid[33]
 
 test_that("cida names dont work with get_UM", {

@@ -21,13 +21,14 @@ download_nhdplusv2 <- function(outdir,
 
   ifelse(any(grepl("gdb", list.dirs(outdir))),
          1,
-         system(paste0("7z -o", outdir, " x ", file), intern = TRUE))
+         system(paste0("7z -o", path.expand(outdir), " x ", file), intern = TRUE))
 
   path <- list.dirs(outdir)[grepl("gdb", list.dirs(outdir))]
   path <- path[grepl("NHDPlus", path)]
 
   message(paste("NHDPlusV2 data extracted to:", path))
 
+  return(invisible(path))
 }
 
 #' @title Download the seamless Watershed Boundary Dataset (WBD)
@@ -56,6 +57,7 @@ download_wbd <- function(outdir,
 
   message(paste("WBD data extracted to:", path))
 
+  return(invisible(path))
 }
 
 #' @title Download the seamless Reach File (RF1) Database
@@ -83,6 +85,8 @@ download_rf1 <- function(outdir,
   path     <- path[grepl("rf1", path)]
 
   message(paste("RF1 data extracted to:", path))
+
+  return(invisible(path))
 
 }
 

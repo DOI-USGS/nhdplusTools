@@ -90,7 +90,7 @@ private_get_UT <- function(network, comid) {
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs upstream of the starting COMID
-#' along the mainstem.
+#' along the mainstem in order of distance from the input COMID (nearest to farthest)
 #' @importFrom dplyr filter select arrange
 #' @export
 #' @examples
@@ -146,7 +146,7 @@ get_UM <- function(network, comid, distance = NULL) {
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs downstream of the starting COMID
-#' along the mainstem.
+#' along the mainstem in order of distance from the input COMID (nearest to farthest)
 #' @importFrom dplyr select filter arrange desc
 #' @export
 #' @examples

@@ -6,7 +6,7 @@ Authors@R: c(person(given = "David",
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
                     email = "dblodgett@usgs.gov"),
-             person(given = "Michael",
+             person(given = "Mike",
                     family = "Johnson",
                     role = "ctb"))
 Description: Tools for traversing and working with National Hydrography Dataset Plus (NHDPlus) data. All methods implemented in 'nhdplusTools' are available in the NHDPlus documentation available from the US Environmental Protection Agency <https://www.epa.gov/waterdata/basic-information>.

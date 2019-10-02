@@ -5,6 +5,7 @@ COMID <- "COMID"
 FEATUREID <- "FEATUREID"
 Hydroseq <- "Hydroseq"
 DnHydroseq <- "DnHydroseq"
+UpHydroseq <- "UpHydroseq"
 DnMinorHyd <- "DnMinorHyd"
 LevelPathI <- "LevelPathI"
 DnLevelPat <- "DnLevelPat"
@@ -37,6 +38,7 @@ nhdplus_attributes <- list(
   FEATUREID = FEATUREID,
   Hydroseq = Hydroseq, HydroSeq = Hydroseq,
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
+  UpHydroseq = UpHydroseq,
   DnMinorHyd = DnMinorHyd,
   LevelPathI = LevelPathI,
   DnLevelPat = DnLevelPat,
@@ -203,3 +205,38 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
       return(get("nhdplus_data", envir = nhdplusTools_env))
   }
 }
+
+
+#' @title Align NHD Dataset Names
+#' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.
+#' @param x a \code{sf} object of nhdplus flowlines
+#' @return a renamed \code{sf} object
+#' @export
+#' @examples
+#' \dontrun{
+#' a = AOI::getAOI(list("UCSB", 1, 1))
+#' n = HydroData::findNHD(a)[[2]] %>% align_nhdplus_names()
+#' UM_comids = get_UM(n, n$COMID[3])
+#' }
+
+align_nhdplus_names = function(x){
+
+  good_names = unique(unlist(do.call(rbind, nhdplus_attributes))[,1])
+
+  old_names <- names(x)
+  new_names <- old_names
+
+  matched <- match(toupper(names(x)), toupper(good_names))
+
+  replacement_names <- as.character(good_names[matched[which(!is.na(matched))]])
+
+  new_names[which(toupper(old_names) %in% toupper(good_names))] <- replacement_names
+  names(x) <- new_names
+  return(x)
+
+}
+
+
+
+
+

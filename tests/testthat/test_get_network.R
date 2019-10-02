@@ -133,8 +133,8 @@ test_that("get_UM sorts (eg returns different order)", {
 
 
 test_that("get_UM sorts correctly", {
-  comid = cida$COMID[33]
-  result <- get_UM(cida, comid, sort = TRUE)
+
+  result <- get_UM(cida, 8585070, sort = TRUE)
   correct_order = c(8585070, 8585022, 8585002, 8584996, 8584888)
   expect_true(sum(result == correct_order) == length(result))
 })

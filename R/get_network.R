@@ -26,12 +26,10 @@
 #'
 get_UT <- function(network, comid, distance = NULL) {
 
-  network <- check_names(network, "get_UT")
-
-  network <- dplyr::select(network, get("get_UT_attributes",
-                                        nhdplusTools_env))
-
   if ("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
+
+  network <- network %>% check_names("get_UT") %>%
+    dplyr::select(get("get_UT_attributes", nhdplusTools_env))
 
   start_comid <- filter(network, COMID == comid)
 
@@ -109,11 +107,12 @@ private_get_UT <- function(network, comid) {
 #'      col = "blue", add = TRUE, lwd = 2)
 #'
 
-get_UM <- function(network, comid, distance = NULL) {
+get_UM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE) {
 
   network <- check_names(network, "get_UM")
 
-  main <- filter(network, COMID %in% comid) %>%
+  main <- network %>%
+    filter(COMID %in% comid) %>%
     select(COMID, LevelPathI, Hydroseq, Pathlength, LENGTHKM)
 
   main_us <- network %>%
@@ -123,7 +122,9 @@ get_UM <- function(network, comid, distance = NULL) {
   if (!is.null(distance)) {
 
     if (length(main$LENGTHKM) == 1) {
-      if (main$LENGTHKM > distance) return(main$COMID)
+      if (main$LENGTHKM > distance) {
+        return(main$COMID)
+      }
     }
 
     stop_pathlength <- main$Pathlength - main$LENGTHKM + distance
@@ -132,8 +133,8 @@ get_UM <- function(network, comid, distance = NULL) {
 
   }
 
-  main_us <- arrange(main_us, Pathlength) %>%
-    filter(COMID != comid)
+  if(sort) { main_us <-  arrange(main_us, Hydroseq) }
+  if(!include) {  main_us = filter(main_us, COMID != comid) }
 
   return(main_us$COMID)
 }
@@ -166,82 +167,75 @@ get_UM <- function(network, comid, distance = NULL) {
 #'
 #'
 
-
-get_DM <- function(network, comid, distance = NULL) {
-
-  if (!is.null(distance)) {
-    network <- check_names(network, "get_DM")
-
-    network <- dplyr::select(network, get("get_DM_attributes",
-                                          nhdplusTools_env))
-  } else {
-    network <- check_names(network, "get_DM_nolength")
-
-    network <- dplyr::select(network, get("get_DM_nolength_attributes",
-                                          nhdplusTools_env), Pathlength)
-  }
+get_DM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE) {
 
   if ("sf" %in% class(network)) { network <- sf::st_set_geometry(network, NULL) }
+
+  type <- ifelse(is.null(distance),  "get_DM_nolength_attributes", "get_DM_attributes")
+
+  network <- network %>%
+    check_names("get_DM") %>%
+    select(get(type, nhdplusTools_env))
 
   start_comid <- filter(network, COMID == comid)
 
   if (!is.null(distance)) {
-    if (distance < start_comid$LENGTHKM) return(comid)
+    if (distance < start_comid$LENGTHKM){
+      return(comid)
+    }
   }
 
-  all <- private_get_DM(network, comid)
+  main_ds <- private_get_DM(network, comid)
 
   if (!is.null(distance)) {
+
     stop_pathlength <- start_comid$Pathlength + start_comid$LENGTHKM - distance
 
-    network <- network %>%
-      filter(COMID %in% all$COMID,
-             (Pathlength + LENGTHKM) >= stop_pathlength,
-             COMID != comid) %>%
-      arrange(desc(Pathlength))
-
-    return(network$COMID)
-
-  } else {
-
-    all <- all %>%
-      arrange(desc(Pathlength)) %>%
-      filter(COMID != comid)
-    return(all$COMID)
+    main_ds <- network %>%
+      filter(COMID %in% main_ds$COMID, (Pathlength + LENGTHKM) >= stop_pathlength)
   }
 
+  if(sort){ main_ds <- arrange(main_ds, desc(Hydroseq)) }
+  if(!include){ main_ds <- filter(main_ds, COMID != comid) }
+
+  return(main_ds$COMID)
 }
+
 
 private_get_DM <- function(network, comid) {
 
   main <- ds_main <- filter(network, COMID %in% comid)
 
   if (length(main$Hydroseq) == 1) {
-    ds_main <- filter(network,
-                      LevelPathI %in% main$LevelPathI &
-                        Hydroseq <= main$Hydroseq)
+    ds_main <- network %>%
+      filter(LevelPathI %in% main$LevelPathI &
+               Hydroseq <= main$Hydroseq)
   }
 
-  ds_hs <- filter(ds_main, !DnLevelPat %in% main$LevelPathI)$DnHydroseq
+  ds_hs <- ds_main %>%
+    filter(!DnLevelPat %in% main$LevelPathI) %>%
+    select(DnHydroseq)
 
-  if(length(ds_hs) > 0) {
+  if (nrow(ds_hs) > 0) {
 
-    ds_lpid <- filter(network, Hydroseq == ds_hs)$LevelPathI
+    ds_lpid <- network %>%
+      filter(Hydroseq == ds_hs$DnHydroseq) %>%
+      select(LevelPathI)
 
-    if (length(ds_lpid) > 0) {
-      ds_comid <- filter(network,
-                         LevelPathI == ds_lpid &
-                         Hydroseq <= ds_hs)$COMID
+    if (nrow(ds_lpid) > 0) {
+      ds_comid <- network %>%
+        filter(LevelPathI == ds_lpid$LevelPathI & Hydroseq <= ds_hs$DnHydroseq) %>%
+        select(COMID)
 
-      rbind(select(ds_main, COMID, Pathlength), private_get_DM(network, ds_comid))
-    } else {
-      return(select(ds_main, COMID, Pathlength))
+      return(rbind(
+        select(ds_main, COMID, Hydroseq),
+        private_get_DM(network, comid = ds_comid$COMID)
+      ))
     }
-  } else {
-    return(select(ds_main, COMID, Pathlength))
   }
-}
 
+  return(select(ds_main, COMID, Hydroseq))
+}
 
 #' @title Navigate Downstream with Diversions
 #' @description Traverse NHDPlus network downstream with diversions
@@ -273,12 +267,10 @@ private_get_DM <- function(network, comid) {
 #'
 get_DD <- function(network, comid, distance = NULL) {
 
-  network <- check_names(network, "get_DD")
-
-  network <- dplyr::select(network, get("get_DD_attributes",
-                                        nhdplusTools_env))
-
   if ("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
+
+  network <- network %>% check_names("get_DD") %>%
+    dplyr::select(get("get_DD_attributes", nhdplusTools_env))
 
   start_comid <- filter(network, COMID == comid)
 

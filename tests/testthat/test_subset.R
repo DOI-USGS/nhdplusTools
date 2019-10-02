@@ -52,8 +52,7 @@ test_that("subset runs as expected", {
   expect_equal(length(messages), 15)
 
   check_layers <- function() {
-    # expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
-    expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 3)
+    expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
     expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 1)
   }
 

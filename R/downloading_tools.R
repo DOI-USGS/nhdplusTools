@@ -106,7 +106,7 @@ download_rf1 <- function(outdir,
 #' @param type the type of data being downloaded
 #' @return the downloaded file path
 #' @importFrom httr GET write_disk progress
-
+#' @noRd
 downloader <- function(dir, url, type){
 
   if (!dir.exists(dir)) {
@@ -137,7 +137,7 @@ downloader <- function(dir, url, type){
 
 #' @title Utility to see in 7z is local
 #' @description Checks if 7z is on system. If not, provides an informative error
-
+#' @noRd
 check7z <- function() {
 
   tryCatch({

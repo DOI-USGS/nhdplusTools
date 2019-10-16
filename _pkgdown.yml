@@ -11,6 +11,9 @@ reference:
       - '`subset_nhdplus`'
       - '`prepare_nhdplus`'
       - '`download_nhdplushr`'
+      - '`download_nhdplusv2`'
+      - '`download_rf1`'
+      - '`download_wbd`'
       - '`get_nhdplushr`'
   - title: Discovery and Subsetting
     desc: >

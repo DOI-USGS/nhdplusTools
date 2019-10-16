@@ -69,7 +69,7 @@ included in this column and the largest value will be followed when no nameID is
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -98,9 +98,12 @@ included in this column and the largest value will be followed when no nameID is
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
+      <a href="../articles/point_indexing.html">Indexing and Referencing</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -138,7 +141,7 @@ included in this column and the largest value will be followed when no nameID is
     
     </div>
 
-    <pre class="usage"><span class='fu'>calculate_levelpaths</span>(<span class='no'>flowline</span>)</pre>
+    <pre class="usage"><span class='fu'>calculate_levelpaths</span>(<span class='no'>flowline</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,6 +149,10 @@ included in this column and the largest value will be followed when no nameID is
     <tr>
       <th>flowline</th>
       <td><p>data.frame with ID, toID, nameID, and weight columns.</p></td>
+    </tr>
+    <tr>
+      <th>status</th>
+      <td><p>boolean if status updates should be printed.</p></td>
     </tr>
     </table>
     

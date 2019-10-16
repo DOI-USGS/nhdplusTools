@@ -60,7 +60,7 @@ calculate_arbolate_sum <- function(catchment_area) {
 }
 
 #' @importFrom igraph graph_from_data_frame topo_sort
-#' @importFrom dplyr select left_join ungroup
+#' @importFrom dplyr select left_join ungroup distinct
 #' @noRd
 #'
 accumulate_downstream <- function(dat_fram, var) {
@@ -89,7 +89,7 @@ accumulate_downstream <- function(dat_fram, var) {
 
   dat_fram[[var]] <- var_out
 
-  dat_fram <- left_join(cat_order, dat_fram, by = "ID")
+  dat_fram <- distinct(left_join(cat_order, dat_fram, by = "ID"))
 
   return(dat_fram[[var]])
 }

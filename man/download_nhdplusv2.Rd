@@ -5,7 +5,9 @@
 \title{Download seamless National Hydrography Dataset Version 2 (NHDPlusV2)}
 \usage{
 download_nhdplusv2(outdir,
-  url = "https://s3.amazonaws.com/nhdplus/NHDPlusV21/Data/NationalData/NHDPlusV21_NationalData_Seamless_Geodatabase_Lower48_07.7z")
+  url = paste0("https://s3.amazonaws.com/nhdplus/NHDPlusV21/",
+  "Data/NationalData/NHDPlusV21_NationalData_Seamless",
+  "_Geodatabase_Lower48_07.7z"))
 }
 \arguments{
 \item{outdir}{The folder path where data should be downloaded and extracted}
@@ -17,7 +19,9 @@ the path to the local geodatabase
 }
 \description{
 This function downloads and decompresses staged seamless NHDPlusV2 data.
-The following requirements are needed: p7zip (MacOS), 7zip (windows)
+The following requirements are needed: p7zip (MacOS), 7zip (windows) Please see:
+https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data
+for more information and metadata about this data.
 }
 \examples{
 \dontrun{

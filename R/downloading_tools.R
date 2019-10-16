@@ -1,6 +1,8 @@
 #' @title Download seamless National Hydrography Dataset Version 2 (NHDPlusV2)
 #' @description This function downloads and decompresses staged seamless NHDPlusV2 data.
-#' The following requirements are needed: p7zip (MacOS), 7zip (windows)
+#' The following requirements are needed: p7zip (MacOS), 7zip (windows) Please see:
+#' https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data
+#' for more information and metadata about this data.
 #' @param outdir The folder path where data should be downloaded and extracted
 #' @param url the location of the online resource
 #' @return the path to the local geodatabase
@@ -11,7 +13,9 @@
 #' }
 
 download_nhdplusv2 <- function(outdir,
-                               url = "https://s3.amazonaws.com/nhdplus/NHDPlusV21/Data/NationalData/NHDPlusV21_NationalData_Seamless_Geodatabase_Lower48_07.7z"){
+                               url = paste0("https://s3.amazonaws.com/nhdplus/NHDPlusV21/",
+                                            "Data/NationalData/NHDPlusV21_NationalData_Seamless",
+                                            "_Geodatabase_Lower48_07.7z")) {
 
   file <- downloader(outdir, url, "nhdplusV2")
 
@@ -33,6 +37,9 @@ download_nhdplusv2 <- function(outdir,
 
 #' @title Download the seamless Watershed Boundary Dataset (WBD)
 #' @description This function downloads and decompresses staged seamless WBD data.
+#' Please see:
+#' https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/WBD/National/GDB/WBD_National_GDB.xml
+#' for metadata.
 #' @param outdir The folder path where data should be downloaded and extracted
 #' @param url the location of the online resource
 #' @return the path to the local geodatabase
@@ -44,7 +51,8 @@ download_nhdplusv2 <- function(outdir,
 #' }
 
 download_wbd <- function(outdir,
-                         url = "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/WBD/National/GDB/WBD_National_GDB.zip"){
+                         url = paste0("https://prd-tnm.s3.amazonaws.com/StagedProducts/",
+                                      "Hydrography/WBD/National/GDB/WBD_National_GDB.zip")) {
 
   file <- downloader(outdir, url, "WBD")
 
@@ -62,6 +70,7 @@ download_wbd <- function(outdir,
 
 #' @title Download the seamless Reach File (RF1) Database
 #' @description This function downloads and decompresses staged RF1 data.
+#' See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.
 #' @param outdir The folder path where data should be downloaded and extracted
 #' @param url the location of the online resource
 #' @return the path to the local e00 file

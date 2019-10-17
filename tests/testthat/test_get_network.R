@@ -3,8 +3,8 @@ context("get_DM")
 pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
                                    package = "nhdplusTools"))
 
-cida <- sf::read_sf(system.file("extdata/cida_flowlines.gpkg",
-                                     package = "nhdplusTools")) %>% align_nhdplus_names()
+cida <- sf::read_sf("data/cida_flowlines.gpkg") %>%
+  align_nhdplus_names()
 
 test_that("get_DM works normal", {
   result <- get_DM(pt_data, 11689050)

@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -94,9 +94,12 @@
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
+      <a href="../articles/point_indexing.html">Indexing and Referencing</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -130,7 +133,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_DM</span>(<span class='no'>network</span>, <span class='no'>comid</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>get_DM</span>(<span class='no'>network</span>, <span class='no'>comid</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>include</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,17 +152,24 @@ COMID, LENGTHKM, DnHydroseq, and Hydroseq.</p></td>
       <td><p>numeric distance in km to limit how many COMIDs are
 returned. The COMID that exceeds the distance specified is returned.</p></td>
     </tr>
+    <tr>
+      <th>sort</th>
+      <td><p>if TRUE, the returned COMID vector witll be sorted in order of distance from the input COMID (nearest to farthest)</p></td>
+    </tr>
+    <tr>
+      <th>include</th>
+      <td><p>if TRUE, the input COMID will be included in the returned COMID vector</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>integer vector of all COMIDs downstream of the starting COMID
-along the mainstem.</p>
+along the mainstem</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)
-<span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>,
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)</div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.7.2, GDAL 2.4.1, PROJ 5.2.0</span></div><div class='input'><span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>,
                                      <span class='st'>"petapsco_flowlines.gpkg"</span>,
                                      <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
 <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='no'>sample_flines</span>$<span class='no'>geom</span>)</div><div class='input'><span class='no'>start_COMID</span> <span class='kw'>&lt;-</span> <span class='fl'>11690092</span>

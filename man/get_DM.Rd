@@ -4,7 +4,7 @@
 \alias{get_DM}
 \title{Navigate Downstream Mainstem}
 \usage{
-get_DM(network, comid, distance = NULL)
+get_DM(network, comid, distance = NULL, sort = FALSE, include = TRUE)
 }
 \arguments{
 \item{network}{data.frame NHDPlus flowlines including at a minimum:
@@ -14,10 +14,14 @@ COMID, LENGTHKM, DnHydroseq, and Hydroseq.}
 
 \item{distance}{numeric distance in km to limit how many COMIDs are
 returned. The COMID that exceeds the distance specified is returned.}
+
+\item{sort}{if TRUE, the returned COMID vector witll be sorted in order of distance from the input COMID (nearest to farthest)}
+
+\item{include}{if TRUE, the input COMID will be included in the returned COMID vector}
 }
 \value{
 integer vector of all COMIDs downstream of the starting COMID
-along the mainstem.
+along the mainstem
 }
 \description{
 Traverse NHDPlus network downstream main stem

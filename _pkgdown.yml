@@ -15,6 +15,7 @@ reference:
       - '`download_rf1`'
       - '`download_wbd`'
       - '`get_nhdplushr`'
+      - '`align_nhdplus_names`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are

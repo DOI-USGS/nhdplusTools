@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.9</span>
       </span>
     </div>
 
@@ -94,9 +94,12 @@
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
+      <a href="../articles/point_indexing.html">Indexing and Referencing</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -130,7 +133,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_UM</span>(<span class='no'>network</span>, <span class='no'>comid</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>get_UM</span>(<span class='no'>network</span>, <span class='no'>comid</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>include</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,7 +149,15 @@ COMID,Pathlength, LevelPathI, UpHydroseq, and Hydroseq.</p></td>
     </tr>
     <tr>
       <th>distance</th>
-      <td><p>numeric distance in km to limit how many COMIDs are
+      <td><p>numeric distance in km to limit how many COMIDs are</p></td>
+    </tr>
+    <tr>
+      <th>sort</th>
+      <td><p>if TRUE, the returned COMID vector witll be sorted in order of distance from the input COMID (nearest to farthest)</p></td>
+    </tr>
+    <tr>
+      <th>include</th>
+      <td><p>if TRUE, the input COMID will be included in the returned COMID vector
 returned. The COMID that exceeds the distance specified is returned.</p></td>
     </tr>
     </table>
@@ -154,7 +165,7 @@ returned. The COMID that exceeds the distance specified is returned.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>integer vector of all COMIDs upstream of the starting COMID
-along the mainstem.</p>
+along the mainstem</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

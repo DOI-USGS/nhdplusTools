@@ -1,3 +1,8 @@
+nhdplusTools 0.3.10
+==========
+* Added name alignment function
+* Added ability to sort response of network navigation
+
 nhdplusTools 0.3.9
 ==========
 * Added downloader functions for more hydrography datasets

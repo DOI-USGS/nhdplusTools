@@ -213,15 +213,19 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' @return a renamed \code{sf} object
 #' @export
 #' @examples
-#' \dontrun{
-#' a = AOI::getAOI(list("UCSB", 1, 1))
-#' n = HydroData::findNHD(a)[[2]] %>% align_nhdplus_names()
-#' UM_comids = get_UM(n, n$COMID[3])
-#' }
-
+#' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+#'
+#' names(new_hope_flowline)
+#'
+#' names(new_hope_flowline) <- tolower(names(new_hope_flowline))
+#'
+#' new_hope_flowline <- align_nhdplus_names(new_hope_flowline)
+#'
+#' names(new_hope_flowline)
+#'
 align_nhdplus_names = function(x){
 
-  good_names = unique(unlist(do.call(rbind, nhdplus_attributes))[,1])
+  good_names <- unique(unlist(do.call(rbind, nhdplus_attributes))[,1])
 
   old_names <- names(x)
   new_names <- old_names

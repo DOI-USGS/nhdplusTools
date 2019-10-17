@@ -4,7 +4,7 @@
 \alias{get_UM}
 \title{Navigate Upstream Mainstem}
 \usage{
-get_UM(network, comid, distance = NULL)
+get_UM(network, comid, distance = NULL, sort = FALSE, include = TRUE)
 }
 \arguments{
 \item{network}{data.frame NHDPlus flowlines including at a minimum:
@@ -12,12 +12,16 @@ COMID,Pathlength, LevelPathI, UpHydroseq, and Hydroseq.}
 
 \item{comid}{integer identifier to start navigating from.}
 
-\item{distance}{numeric distance in km to limit how many COMIDs are
+\item{distance}{numeric distance in km to limit how many COMIDs are}
+
+\item{sort}{if TRUE, the returned COMID vector witll be sorted in order of distance from the input COMID (nearest to farthest)}
+
+\item{include}{if TRUE, the input COMID will be included in the returned COMID vector
 returned. The COMID that exceeds the distance specified is returned.}
 }
 \value{
 integer vector of all COMIDs upstream of the starting COMID
-along the mainstem.
+along the mainstem
 }
 \description{
 Traverse NHDPlus network upstream main stem

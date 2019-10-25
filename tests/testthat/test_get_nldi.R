@@ -48,6 +48,11 @@ test_that("navigation works", {
                        distance_km = 100)
 
   expect_true(nrow(nav2) > nrow(nav))
+
+  expect_equal(navigate_nldi(list(featureSource = "wqp",
+                                  featureID = "TCEQMAIN-16638"),
+                             mode = "upstreamMain",
+                             data_source = "nwissite"), tibble::tibble())
 })
 
 test_that("basin works", {

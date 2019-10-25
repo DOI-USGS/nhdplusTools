@@ -113,7 +113,13 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
     query <- paste0(query, "?distance=", distance_km)
   }
 
-  return(sf::read_sf(query_nldi(query, tier = tier, parse_json = FALSE)))
+  out <- query_nldi(query, tier = tier, parse_json = FALSE)
+
+  if(!is.null(out)) {
+    return(sf::read_sf(out))
+  }
+
+  return(tibble::tibble())
 
 }
 

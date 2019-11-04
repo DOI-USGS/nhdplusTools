@@ -9,3 +9,5 @@ inst/doc
 *.cache
 doc
 Meta
+.drake*
+*slides*

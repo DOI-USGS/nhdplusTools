@@ -161,7 +161,7 @@ default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
 assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
 nhdhr_bucket <- "https://prd-tnm.s3.amazonaws.com/"
-nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlus/HU4/HighResolution/GDB/"
+nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/"
 
 assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)

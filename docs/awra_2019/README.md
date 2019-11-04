@@ -3,7 +3,7 @@
 
 This directory contains R workflow artifacts and associated slides for a presentation given at the AWRA Annual Meeting in November, 2019 in Salt Lake City, Utah.
 
-(AWRA Slides)[https://usgs-r.github.io/nhdplusTools/awra_2019/#/]
+[AWRA Slides](https://usgs-r.github.io/nhdplusTools/awra_2019/#/)
 
 To reproduce this work flow, you should:  
 

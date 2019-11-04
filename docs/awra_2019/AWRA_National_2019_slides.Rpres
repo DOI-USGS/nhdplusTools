@@ -56,7 +56,7 @@ common water resources applications in the R programming
 language. 
 
 A companion workflow to get all the data and perform
-processing operations is <a href = "https://github.com/dblodgett-usgs/static/blob/master/AWRA_National_2019/get_data.R" target = "_blank">available here.</a>
+processing operations is <a href = "https://github.com/USGS-R/nhdplusTools/blob/master/docs/awra_2019/get_data.R" target = "_blank">available here.</a>
 
 ***
   

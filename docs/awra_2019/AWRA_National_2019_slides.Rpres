@@ -117,12 +117,12 @@ left: 30%
 library(EGRET)
 library(drake)
 loadd(eList)
-plot(eList)
+plotConcHist(eList)
 ```
 ***
 <small>Exploration and Graphics for RivEr Trends (<a href="http://usgs-r.github.io/EGRET/" target = "_blank">EGRET</a>): A package for analysis of long-term changes in water quality and streamflow.</small>
 ```{r trend1, echo = FALSE}
-plotConcHist(eList)
+plot(eList)
 ```
 
 ========================================================

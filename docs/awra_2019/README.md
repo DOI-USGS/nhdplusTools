@@ -1,7 +1,11 @@
 # R for Water Resources
 ### Dave Blodgett and Laura DeCicco - 2019 AWRA National Meeting, 11/4/2019
 
-This directory contains R workflow artifacts and associated slides for a presentation given at the AWRA Annual Meeting in November, 2019 in Salt Lake City, Utah. To reproduce this work flow, you should:  
+This directory contains R workflow artifacts and associated slides for a presentation given at the AWRA Annual Meeting in November, 2019 in Salt Lake City, Utah.
+
+[AWRA Slides](https://usgs-r.github.io/nhdplusTools/awra_2019/#/)
+
+To reproduce this work flow, you should:  
 
 1) Clone this repository locally.  
 1) Open the R project in this folder.  

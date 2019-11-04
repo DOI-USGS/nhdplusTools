@@ -4,8 +4,6 @@
   font-size: 1em;
 }
 
-html, body { height:100%; } 
-
 .reveal h1, .reveal h2, .reveal h3 {
   background: #E8E8E880;
 }
@@ -20,7 +18,7 @@ html, body { height:100%; }
 }
 
 .white_black {
-    color: white;
+    color: black;
     background: #E8E8E880;
     text-align:left;
     width:100%;
@@ -34,13 +32,6 @@ html, body { height:100%; }
     background-size: 100% 100%;
 }
 
-questions {
-    background: url(https://upload.wikimedia.org/wikipedia/commons/8/8f/Weber_river_cutt.jpg);
-    background-position: center center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-}
 </style>
 
 R for Water Resources
@@ -55,6 +46,7 @@ Dave Blodgett and Laura DeCicco<br>
 
 <div class="footer"><small>Cutthroat trout caught in the Weber River. (credit: <a href = "https://www.flickr.com/photos/coreyk/334714683/in/set-72157594282816025/" target = "_blank">Corey Kruitbosch</a><br>
 Use arrow keys or click the arrows to advance.</small></div>
+</style>
 
 ========================================================
 **Introduction**
@@ -64,7 +56,7 @@ common water resources applications in the R programming
 language. 
 
 A companion workflow to get all the data and perform
-processing operations is <a href = "https://github.com/USGS-R/nhdplusTools/tree/master/docs/awra_2019" target = "_blank">available here.</a>
+processing operations is <a href = "https://github.com/dblodgett-usgs/static/blob/master/AWRA_National_2019/get_data.R" target = "_blank">available here.</a>
 
 ***
   
@@ -82,6 +74,7 @@ processing operations is <a href = "https://github.com/USGS-R/nhdplusTools/tree/
 ```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
 source("get_data.R")
 ```
+
 ========================================================
 left: 40%
 
@@ -267,6 +260,7 @@ loadd(nhd_basin)
 loadd(nhd_bbox)
 loadd(nwissite)
 loadd(wqpsite)
+loadd(outlet_name)
 lb <- "white" #legend background
 
 streamorder <- nhd_fline$streamorde/2

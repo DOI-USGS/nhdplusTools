@@ -163,3 +163,34 @@ test_that("subset works with HR", {
   expect_equal(length(layers$name), 4)
   expect_equal(layers$features[which(layers$name == "NHDFlowline")], 1427)
 })
+
+test_that("subset by bounding box", {
+  sample_data <- system.file("extdata/sample_natseamless.gpkg",
+                             package = "nhdplusTools")
+
+  bbox <- st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = st_crs(4326))
+
+  out_file <- tempfile(fileext = ".gpkg")
+
+  fi <- subset_nhdplus(bbox = bbox,
+                       output_file = out_file,
+                       nhdplus_data = sample_data,
+                       simplified = TRUE,
+                       status = FALSE)
+
+  check_layers <- function() {
+    expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 66)
+    expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 12)
+  }
+
+  check_layers()
+  unlink(out_file)
+
+  fi <- subset_nhdplus(bbox = as.numeric(bbox),
+                       output_file = out_file,
+                       nhdplus_data = sample_data,
+                       simplified = TRUE,
+                       status = FALSE)
+
+  check_layers()
+})

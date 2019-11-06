@@ -29,6 +29,15 @@ test_that("subset runs as expected", {
   out_file <- tempfile(fileext = ".gpkg")
 
   fi <- subset_nhdplus(comids = comids,
+                       output_file = NULL,
+                       nhdplus_data = sample_data,
+                       status = FALSE)
+
+  expect_equal(names(fi), c("NHDFlowline_Network", "CatchmentSP", "NHDArea",
+                            "NHDWaterbody", "Gage", "Sink",
+                            "NHDFlowline_NonNetwork"))
+
+  fi <- subset_nhdplus(comids = comids,
                  output_file = out_file,
                  nhdplus_data = sample_data,
                  status = FALSE)
@@ -169,6 +178,11 @@ test_that("subset by bounding box", {
                              package = "nhdplusTools")
 
   bbox <- st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = st_crs(4326))
+
+  fi <- subset_nhdplus(bbox = bbox,
+                       nhdplus_data = sample_data,
+                       simplified = TRUE,
+                       status = FALSE)
 
   out_file <- tempfile(fileext = ".gpkg")
 

@@ -52,7 +52,7 @@ test_that("navigation works", {
   expect_equal(navigate_nldi(list(featureSource = "wqp",
                                   featureID = "TCEQMAIN-16638"),
                              mode = "upstreamMain",
-                             data_source = "nwissite"), tibble::tibble())
+                             data_source = "nwissite"), dplyr::tibble())
 })
 
 test_that("basin works", {

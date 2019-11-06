@@ -119,7 +119,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
     return(sf::read_sf(out))
   }
 
-  return(tibble::tibble())
+  return(dplyr::tibble())
 
 }
 

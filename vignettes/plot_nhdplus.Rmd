@@ -113,7 +113,7 @@ The `prettymapr::prettymap()` function isn't strictly necessary, but it gives us
 prep_layer <- function(x) st_geometry(st_transform(x, 3857))
 
 prettymapr::prettymap({
-  rosm::osm.plot(sp_bbox, type = "stamenwatercolor", quiet = TRUE)
+  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, progress = "none")
   
   plot(prep_layer(basin), 
        lwd = 2, add = TRUE)
@@ -142,14 +142,16 @@ prettymapr::prettymap({
 
 Below is a very similar example using [`ggmap`](https://github.com/dkahle/ggmap) and [`ggplot2` `geom_sf`](https://ggplot2.tidyverse.org/reference/ggsf.html). Note that ggmap takes case of projections for us, which should either make you happy because it _just works_ or very nervous because it _just works_. 
 
-```{r ggmap}
+```{r ggmap, message=FALSE, warning=FALSE}
 library(ggmap)
 library(ggplot2)
 
 upstream_nwis[c("lon", "lat")] <- sf::st_coordinates(upstream_nwis)
 
-basemap_toner <- get_map(source = "stamen", maptype = "toner", location = ggmap_bbox, zoom = 11)
-basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", location = ggmap_bbox, zoom = 11)
+basemap_toner <- get_map(source = "stamen", maptype = "toner", 
+                         location = ggmap_bbox, zoom = 11, messaging = FALSE)
+basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", 
+                           location = ggmap_bbox, zoom = 11, messaging = FALSE)
 toner_map <- ggmap(basemap_toner)
 terrain_map <- ggmap(basemap_terrain)
 

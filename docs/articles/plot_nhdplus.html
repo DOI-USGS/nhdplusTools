@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.11</span>
       </span>
     </div>
 
@@ -63,6 +63,9 @@
       <a href="../articles/point_indexing.html">Indexing and Referencing</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -225,7 +228,7 @@
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">prep_layer &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_geometry">st_geometry</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_transform">st_transform</a></span>(x, <span class="dv">3857</span>))</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">prettymapr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/prettymapr/topics/prettymap">prettymap</a></span>({</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">  rosm<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rosm/topics/osm.plot">osm.plot</a></span>(sp_bbox, <span class="dt">type =</span> <span class="st">"stamenwatercolor"</span>, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">  rosm<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rosm/topics/osm.plot">osm.plot</a></span>(sp_bbox, <span class="dt">type =</span> <span class="st">"cartolight"</span>, <span class="dt">quiet =</span> <span class="ot">TRUE</span>, <span class="dt">progress =</span> <span class="st">"none"</span>)</a>
 <a class="sourceLine" id="cb4-5" data-line-number="5">  </a>
 <a class="sourceLine" id="cb4-6" data-line-number="6">  <span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/plot">plot</a></span>(<span class="kw">prep_layer</span>(basin), </a>
 <a class="sourceLine" id="cb4-7" data-line-number="7">       <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
@@ -249,7 +252,7 @@
 <a class="sourceLine" id="cb4-25" data-line-number="25">  </a>
 <a class="sourceLine" id="cb4-26" data-line-number="26">}, <span class="dt">drawarrow =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb4-27" data-line-number="27"><span class="co">#&gt; Zoom: 10</span></a>
-<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="co">#&gt; Visit the Stamen cartography website at http://maps.stamen.com/</span></a>
+<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="co">#&gt; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></a>
 <a class="sourceLine" id="cb4-29" data-line-number="29"><span class="co">#&gt; Audotdetect projection: assuming Google Mercator (epsg 3857)</span></a></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/plot-1.png" width="576"></p>
 </div>
@@ -258,31 +261,18 @@
 <a href="#plotting-with-ggplot2" class="anchor"></a>Plotting with ggplot2</h2>
 <p>Below is a very similar example using <a href="https://github.com/dkahle/ggmap"><code>ggmap</code></a> and <a href="https://ggplot2.tidyverse.org/reference/ggsf.html"><code>ggplot2</code> <code>geom_sf</code></a>. Note that ggmap takes case of projections for us, which should either make you happy because it <em>just works</em> or very nervous because it <em>just works</em>.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggmap)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Loading required package: ggplot2</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Google's Terms of Service: https://cloud.google.com/maps-platform/terms/.</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; Please cite ggmap if you use it! See citation("ggmap") for details.</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">upstream_nwis[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"lon"</span>, <span class="st">"lat"</span>)] &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_coordinates">st_coordinates</a></span>(upstream_nwis)</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">basemap_toner &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggmap/topics/get_map">get_map</a></span>(<span class="dt">source =</span> <span class="st">"stamen"</span>, <span class="dt">maptype =</span> <span class="st">"toner"</span>, <span class="dt">location =</span> ggmap_bbox, <span class="dt">zoom =</span> <span class="dv">11</span>)</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/514/749.png</span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/515/749.png</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/516/749.png</span></a>
-<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/514/750.png</span></a>
-<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/515/750.png</span></a>
-<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/516/750.png</span></a>
-<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/514/751.png</span></a>
-<a class="sourceLine" id="cb5-17" data-line-number="17"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/515/751.png</span></a>
-<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/516/751.png</span></a>
-<a class="sourceLine" id="cb5-19" data-line-number="19"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/514/752.png</span></a>
-<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/515/752.png</span></a>
-<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; Source : http://tile.stamen.com/terrain/11/516/752.png</span></a>
-<a class="sourceLine" id="cb5-22" data-line-number="22">basemap_terrain &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggmap/topics/get_map">get_map</a></span>(<span class="dt">source =</span> <span class="st">"stamen"</span>, <span class="dt">maptype =</span> <span class="st">"terrain-lines"</span>, <span class="dt">location =</span> ggmap_bbox, <span class="dt">zoom =</span> <span class="dv">11</span>)</a>
-<a class="sourceLine" id="cb5-23" data-line-number="23">toner_map &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggmap/topics/ggmap">ggmap</a></span>(basemap_toner)</a>
-<a class="sourceLine" id="cb5-24" data-line-number="24">terrain_map &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggmap/topics/ggmap">ggmap</a></span>(basemap_terrain)</a>
-<a class="sourceLine" id="cb5-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb5-26" data-line-number="26">toner_map</a></code></pre></div>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">upstream_nwis[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"lon"</span>, <span class="st">"lat"</span>)] &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/sf/topics/st_coordinates">st_coordinates</a></span>(upstream_nwis)</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">basemap_toner &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggmap/topics/get_map">get_map</a></span>(<span class="dt">source =</span> <span class="st">"stamen"</span>, <span class="dt">maptype =</span> <span class="st">"toner"</span>, </a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">                         <span class="dt">location =</span> ggmap_bbox, <span class="dt">zoom =</span> <span class="dv">11</span>, <span class="dt">messaging =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">basemap_terrain &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggmap/topics/get_map">get_map</a></span>(<span class="dt">source =</span> <span class="st">"stamen"</span>, <span class="dt">maptype =</span> <span class="st">"terrain-lines"</span>, </a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">                           <span class="dt">location =</span> ggmap_bbox, <span class="dt">zoom =</span> <span class="dv">11</span>, <span class="dt">messaging =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">toner_map &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggmap/topics/ggmap">ggmap</a></span>(basemap_toner)</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">terrain_map &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggmap/topics/ggmap">ggmap</a></span>(basemap_terrain)</a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13">toner_map</a></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/ggmap-1.png" width="576"></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">terrain_map <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> basin,</a>
@@ -296,8 +286,7 @@
 <a class="sourceLine" id="cb6-10" data-line-number="10">          <span class="dt">color =</span> <span class="st">"darkblue"</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb6-11" data-line-number="11"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> upstream_nwis, <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>, <span class="dt">color =</span> <span class="st">"red"</span>) <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb6-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="dt">data =</span> upstream_nwis, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">label =</span> identifier, <span class="dt">x =</span> lon, <span class="dt">y =</span> lat),</a>
-<a class="sourceLine" id="cb6-13" data-line-number="13">            <span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">size=</span><span class="fl">2.5</span>, <span class="dt">nudge_x =</span> <span class="fl">0.02</span>, <span class="dt">col =</span> <span class="st">"black"</span>)</a>
-<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></a></code></pre></div>
+<a class="sourceLine" id="cb6-13" data-line-number="13">            <span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">size=</span><span class="fl">2.5</span>, <span class="dt">nudge_x =</span> <span class="fl">0.02</span>, <span class="dt">col =</span> <span class="st">"black"</span>)</a></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/ggmap-2.png" width="576"></p>
 <p>Hopefully these examples give a good head start to plotting NHDPlus data. Please submit questions via github issues for more!! Pull requests on this vignette are more than welcome if you have additions or suggestions.</p>
 </div>

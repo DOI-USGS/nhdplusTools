@@ -61,7 +61,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' library(sf)
 #' library(dplyr)
 #'
-#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
+  #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 #'
 #' navigate_nldi(nldi_feature = nldi_nwis,
 #'               mode = "upstreamTributaries",
@@ -162,12 +162,22 @@ get_nldi_basin <- function(nldi_feature,
 }
 
 
-
-#' @noRd
-get_nldi_feature <- function(f_source, f_id, tier = "prod") {
-  return(query_nldi(paste(f_source, f_id,
-                          sep = "/"),
-                    tier))
+#' @title Get NLDI Feature
+#' @description Get a single feature from the NLDI
+#' @param nldi_feature list with names `featureSource` and `featureID` where
+#' `featureSource` is derived from the "source" column of  the response of
+#' discover_nldi_sources() and the `featureSource` is a known identifier
+#' from the specified `featureSource`.
+#' @param tier character optional "prod" or "test"
+#' @return sf feature collection with one feature
+#' @examples
+#' get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
+#' @export
+get_nldi_feature <- function(nldi_feature, tier = "prod") {
+  return(sf::read_sf(query_nldi(paste(nldi_feature[["featureSource"]],
+                                      nldi_feature[["featureID"]],
+                                      sep = "/"),
+                                tier, parse_json = FALSE)))
 }
 
 #' @importFrom httr GET

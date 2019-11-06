@@ -68,3 +68,11 @@ test_that("basin works", {
   expect_true("sfc_POLYGON" %in% class(sf::st_geometry(nav)),
          "expected polygon response")
 })
+
+test_that("get feature works", {
+  f <- get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
+
+  expect_equal(nrow(f), 1)
+  expect_equal(ncol(f), 8)
+  expect_equal(f$identifier, "USGS-05428500")
+})

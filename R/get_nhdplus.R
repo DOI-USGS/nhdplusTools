@@ -52,11 +52,10 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 
     if (is.null(nldi_feature[["tier"]])) nldi_feature[["tier"]] <- "prod"
 
-    nldi <- get_nldi_feature(nldi_feature[["featureSource"]],
-                             nldi_feature[["featureID"]],
+    nldi <- get_nldi_feature(nldi_feature,
                              nldi_feature[["tier"]])
 
-    return(as.integer(nldi$features$properties$comid))
+    return(as.integer(nldi$comid))
 
   } else {
 

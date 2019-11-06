@@ -9,6 +9,8 @@
 #' or "download" to use a web service to download NHDPlusV2.1 data.
 #' Not required if \code{\link{nhdplus_path}} has been set or the default
 #' has been adopted. See details for more.
+#' @param bbox object of class "bbox" as returned by sf::st_bbox in Latitude/Longitude.
+#' If no CRS is present, will be assumed to be in WGS84 Latitude Longitude.
 #' @param simplified boolean if TRUE (the default) the CatchmentSP layer
 #' will be included. Not relevant to the "download" option or NHDPlusHR data.
 #' @param overwrite boolean should the output file be overwritten
@@ -107,20 +109,24 @@
 #' }
 #'
 
-subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
+subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NULL, bbox = NULL,
                            simplified = TRUE, overwrite = FALSE, status = TRUE) {
 
   if (status) message("All intersections performed in latitude/longitude.")
 
-  if (!grepl("*.gpkg$", output_file)) {
-    stop("output_file must end in '.gpkg'")
+  if(!is.null(output_file)) {
+    if (!grepl("*.gpkg$", output_file)) {
+      stop("output_file must end in '.gpkg'")
+    }
+
+    if (file.exists(output_file) & !overwrite) {
+      stop("output_file exists and overwrite is false.")
+    } else if (file.exists(output_file) & overwrite) {
+      unlink(output_file)
+    }
   }
 
-  if (file.exists(output_file) & !overwrite) {
-    stop("output_file exists and overwrite is false.")
-  } else if (file.exists(output_file) & overwrite) {
-    unlink(output_file)
-  }
+  out_list <- list()
 
   if (is.null(nhdplus_data)) {
     nhdplus_data <- nhdplus_path()
@@ -175,7 +181,11 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
 
   if (status) message(paste("Writing", layer_name))
 
-  sf::write_sf(fline, output_file, layer_name)
+  if(is.null(output_file)) {
+    out_list[layer_name] <- fline
+  } else {
+    sf::write_sf(fline, output_file, layer_name)
+  }
 
   rm(fline)
 
@@ -208,7 +218,12 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
 
   if (status) message(paste("Writing", layer_name))
 
-  sf::write_sf(catchment, output_file, layer_name)
+  if(is.null(output_file)) {
+    out_list[layer_name] <- catchment
+  } else {
+    sf::write_sf(catchment, output_file, layer_name)
+  }
+
 
   envelope <- sf::st_transform(sf::st_as_sfc(sf::st_bbox(catchment)),
                                4326)
@@ -219,9 +234,13 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
     layer_names <- c("NHDArea", "NHDWaterbody")
 
     for (layer_name in layer_names) {
-      sf::st_transform(envelope, 4326) %>%
-        get_nhdplus_bybox(layer = tolower(layer_name)) %>%
-        sf::write_sf(output_file, layer_name)
+      layer <- sf::st_transform(envelope, 4326) %>%
+        get_nhdplus_bybox(layer = tolower(layer_name))
+      if(is.null(output_file)) {
+        out_list[layer_name] <- layer
+      } else {
+        sf::write_sf(layer, output_file, layer_name)
+      }
     }
 
   } else {
@@ -234,12 +253,12 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
     intersection_names <- intersection_names[which(intersection_names %in% st_layers(nhdplus_data)$name)]
   }
 
-  invisible(lapply(intersection_names, intersection_write,
-                   data_path = nhdplus_data,
-                   envelope = envelope,
-                   output_file = output_file,
-                   status))
-
+  out_list <- c(out_list,
+                lapply(intersection_names, intersection_write,
+                       data_path = nhdplus_data,
+                       envelope = envelope,
+                       output_file = output_file,
+                       status))
   }
 
   return(output_file)
@@ -247,6 +266,7 @@ subset_nhdplus <- function(comids, output_file, nhdplus_data = NULL,
 
 intersection_write <- function(layer_name, data_path, envelope,
                                output_file, status) {
+  out_list <- list()
 
   if (status) message(paste("Reading", layer_name))
   layer <- sf::st_zm(sf::read_sf(data_path, layer_name))
@@ -260,10 +280,15 @@ intersection_write <- function(layer_name, data_path, envelope,
 
   if (nrow(out) > 0) {
     if (status) message(paste("Writing", layer_name))
-    sf::write_sf(out, output_file, layer_name)
+    if(is.null(output_file)) {
+      out_list[layer_name] <- layer
+    } else {
+      sf::write_sf(out, output_file, layer_name)
+    }
   } else {
     if (status) message(paste("No features to write in", layer_name))
   }
+  return(out_list)
 }
 
 #' @title Stage NHDPlus National Data

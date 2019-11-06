@@ -4,8 +4,9 @@
 \alias{subset_nhdplus}
 \title{Subset NHDPlus}
 \usage{
-subset_nhdplus(comids, output_file, nhdplus_data = NULL,
-  simplified = TRUE, overwrite = FALSE, status = TRUE)
+subset_nhdplus(comids = NULL, output_file = NULL,
+  nhdplus_data = NULL, bbox = NULL, simplified = TRUE,
+  overwrite = FALSE, status = TRUE)
 }
 \arguments{
 \item{comids}{integer vector of COMIDs to include.}
@@ -18,6 +19,9 @@ the national seamless database, a subset of NHDPlusHR,
 or "download" to use a web service to download NHDPlusV2.1 data.
 Not required if \code{\link{nhdplus_path}} has been set or the default
 has been adopted. See details for more.}
+
+\item{bbox}{object of class "bbox" as returned by sf::st_bbox in Latitude/Longitude.
+If no CRS is present, will be assumed to be in WGS84 Latitude Longitude.}
 
 \item{simplified}{boolean if TRUE (the default) the CatchmentSP layer
 will be included. Not relevant to the "download" option or NHDPlusHR data.}

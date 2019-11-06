@@ -132,103 +132,17 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     nhdplus_data <- nhdplus_path()
   }
 
-  layer_name <- "NHDFlowline_Network"
-  if (status) message(paste("Reading", layer_name))
+  paths <- get_staged_data(nhdplus_data)
 
-  if (nhdplus_data == "download") {
+  out_list <- c(get_flowline_subset(nhdplus_data, comids,
+                                    output_file, paths$fline_path,
+                                    status),
+                get_catchment_subset(nhdplus_data, comids,
+                                     output_file, simplified,
+                                     paths$catchment_path, status))
 
-    if (length(comids) > 3000) {
-      warning("Download functionality not tested for this many comids")
-    }
-
-    fline <- get_nhdplus_byid(comids, tolower(layer_name))
-  } else {
-
-  staged_data <- try(get("national_data",
-                         envir = nhdplusTools_env),
-                     silent = TRUE)
-
-  if (is.list(staged_data)) {
-    if (all(c("flowline", "catchment") %in% names(staged_data)) &
-        file.exists(staged_data$flowline) &
-        file.exists(staged_data$catchment)) {
-      fline_path <- staged_data$flowline
-      catchment_path <- staged_data$catchment
-    } else {
-      fline_path <- nhdplus_data
-      catchment_path <- nhdplus_data
-    }
-  } else if(file.exists(nhdplus_data)) {
-      fline_path <- nhdplus_data
-      catchment_path <- nhdplus_data
-  } else {
-    stop("couldn't find nhdplus data")
-  }
-
-  if (grepl("*.rds$", fline_path)) {
-    fline <- readRDS(fline_path)
-  } else {
-    if(!layer_name %in% st_layers(fline_path)$name) {
-      layer_name <- "NHDFlowline"
-    }
-    fline <- sf::read_sf(fline_path, layer_name)
-    fline <- rename_nhdplus(fline)
-  }
-
-  fline <- dplyr::filter(fline, .data$COMID %in% comids)
-
-  }
-
-  if (status) message(paste("Writing", layer_name))
-
-  if(is.null(output_file)) {
-    out_list[layer_name] <- fline
-  } else {
-    sf::write_sf(fline, output_file, layer_name)
-  }
-
-  rm(fline)
-
-  if (simplified) {
-    layer_name <- "CatchmentSP"
-  } else {
-    layer_name <- "Catchment"
-  }
-
-  if (status) message(paste("Reading", layer_name))
-
-  if (nhdplus_data == "download") {
-    layer_name <- "CatchmentSP" # Need to handle SP and regular better!!
-    catchment <- get_nhdplus_byid(comids, tolower(layer_name))
-  } else {
-
-  if (grepl("*.rds$", catchment_path)) {
-    catchment <- readRDS(catchment_path)
-  } else {
-    if(!layer_name %in% st_layers(fline_path)$name) {
-      layer_name <- "NHDPlusCatchment"
-    }
-    catchment <- sf::read_sf(catchment_path, layer_name)
-    catchment <- rename_nhdplus(catchment)
-  }
-
-  catchment <- dplyr::filter(catchment, .data$FEATUREID %in% comids)
-
-  }
-
-  if (status) message(paste("Writing", layer_name))
-
-  if(is.null(output_file)) {
-    out_list[layer_name] <- catchment
-  } else {
-    sf::write_sf(catchment, output_file, layer_name)
-  }
-
-
-  envelope <- sf::st_transform(sf::st_as_sfc(sf::st_bbox(catchment)),
+  envelope <- sf::st_transform(sf::st_as_sfc(sf::st_bbox(out_list$catchment)),
                                4326)
-
-  rm(catchment)
 
   if (nhdplus_data == "download") {
     layer_names <- c("NHDArea", "NHDWaterbody")
@@ -406,4 +320,110 @@ stage_national_data <- function(include = c("attribute",
   assign("national_data", outlist, envir = nhdplusTools_env)
 
   return(outlist)
+}
+
+#' @title Try to find staged NHDPlus data
+#' @noRd
+get_staged_data <- function(nhdplus_data) {
+
+  if(nhdplus_data == "download") return(list(fline_path = NULL, catchment_path = NULL))
+
+  staged_data <- try(get("national_data",
+                         envir = nhdplusTools_env),
+                     silent = TRUE)
+
+  if (is.list(staged_data)) {
+    if (all(c("flowline", "catchment") %in% names(staged_data)) &
+        file.exists(staged_data$flowline) &
+        file.exists(staged_data$catchment)) {
+      fline_path <- staged_data$flowline
+      catchment_path <- staged_data$catchment
+    } else {
+      fline_path <- nhdplus_data
+      catchment_path <- nhdplus_data
+    }
+  } else if(file.exists(nhdplus_data)) {
+    fline_path <- nhdplus_data
+    catchment_path <- nhdplus_data
+  } else {
+    stop("couldn't find nhdplus data")
+  }
+  return(list(fline_path = fline_path, catchment_path = catchment_path))
+}
+
+#' @title Get subset of flowline data later.
+#' @noRd
+get_flowline_subset <- function(nhdplus_data, comids, output_file,
+                                fline_path, status) {
+  layer_name <- "NHDFlowline_Network"
+  if (status) message(paste("Reading", layer_name))
+
+  if (nhdplus_data == "download") {
+
+    if (length(comids) > 3000) {
+      warning("Download functionality not tested for this many comids")
+    }
+
+    fline <- get_nhdplus_byid(comids, tolower(layer_name))
+  } else {
+
+    if (grepl("*.rds$", fline_path)) {
+      fline <- readRDS(fline_path)
+    } else {
+      if(!layer_name %in% st_layers(fline_path)$name) {
+        layer_name <- "NHDFlowline"
+      }
+      fline <- sf::read_sf(fline_path, layer_name)
+      fline <- rename_nhdplus(fline)
+    }
+
+    fline <- dplyr::filter(fline, .data$COMID %in% comids)
+  }
+
+  if (status) message(paste("Writing", layer_name))
+
+  if(!is.null(output_file)) {
+    sf::write_sf(fline, output_file, layer_name)
+  }
+  return(list(fline = fline))
+}
+
+#' @title Get subset of catchment data layer.
+#' @noRd
+get_catchment_subset <- function(nhdplus_data, comids, output_file,
+                                 simplified, catchment_path, status) {
+  if (simplified) {
+    layer_name <- "CatchmentSP"
+  } else {
+    layer_name <- "Catchment"
+  }
+
+  if (status) message(paste("Reading", layer_name))
+
+  if (nhdplus_data == "download") {
+    layer_name <- "CatchmentSP" # Need to handle SP and regular better!!
+    catchment <- get_nhdplus_byid(comids, tolower(layer_name))
+
+  } else {
+
+    if (grepl("*.rds$", catchment_path)) {
+      catchment <- readRDS(catchment_path)
+    } else {
+      if(!layer_name %in% st_layers(catchment_path)$name) {
+        layer_name <- "NHDPlusCatchment"
+      }
+      catchment <- sf::read_sf(catchment_path, layer_name)
+      catchment <- rename_nhdplus(catchment)
+    }
+
+    catchment <- dplyr::filter(catchment, .data$FEATUREID %in% comids)
+
+  }
+
+  if (status) message(paste("Writing", layer_name))
+
+  if(!is.null(output_file)) {
+    sf::write_sf(catchment, output_file, layer_name)
+  }
+  return(list(catchment = catchment))
 }

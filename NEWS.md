@@ -1,3 +1,9 @@
+nhdplusTools 0.3.11
+==========
+* Updated link to NHDPlusHR data
+* Empty tibble rather than NULL response from empty NLDI result
+* Slides from AWRA National 2019, link in README
+
 nhdplusTools 0.3.10
 ==========
 * Added name alignment function

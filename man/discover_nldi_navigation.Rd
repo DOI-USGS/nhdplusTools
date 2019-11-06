@@ -7,16 +7,15 @@
 discover_nldi_navigation(nldi_feature, tier = "prod")
 }
 \arguments{
-\item{nldi_feature}{list with names `featureSource` and `featureID` where
-`featureSource` is derived from the "source" column of  the response of
-discover_nldi_sources() and the `featureSource` is a known identifier
-from the specified `featureSource`.}
+\item{nldi_feature}{length 2 list list with optionsal names `featureSource`
+and `featureID` where `featureSource` is derived from the "source" column of
+the response of discover_nldi_sources() and the `featureSource` is a known identifier
+from the specified `featureSource`. e.g. list("nwissite", "USGS-08279500")}
 
 \item{tier}{character optional "prod" or "test"}
 }
 \value{
-data.frame with three columns "source", "sourceName"
-and "features"
+data.frame with three columns "source", "sourceName" and "features"
 }
 \description{
 Discover available navigation options for a
@@ -29,5 +28,7 @@ discover_nldi_sources()
 nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
 discover_nldi_navigation(nldi_nwis)
+
+discover_nldi_navigation("nwissite", "USGS-08279500")
 }
 }

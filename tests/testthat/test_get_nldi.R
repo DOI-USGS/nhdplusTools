@@ -49,6 +49,15 @@ test_that("navigation works", {
 
   expect_true(nrow(nav2) > nrow(nav))
 
+  nldi_nwis <- as.character(nldi_nwis)
+
+  nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
+                        mode = "upstreamMain",
+                        data_source = "flowline",
+                        distance_km = 10)
+
+  expect_is(st_geometry(nav3), "sfc_MULTILINESTRING")
+
   expect_equal(navigate_nldi(list(featureSource = "wqp",
                                   featureID = "TCEQMAIN-16638"),
                              mode = "upstreamMain",
@@ -70,9 +79,18 @@ test_that("basin works", {
 })
 
 test_that("get feature works", {
-  f <- get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
+  skip_on_cran()
+
+  f <- get_nldi_feature(list(featureSource = "nwissite", featureID = "USGS-05428500"))
 
   expect_equal(nrow(f), 1)
   expect_equal(ncol(f), 8)
   expect_equal(f$identifier, "USGS-05428500")
+
+  f <- get_nldi_feature(list("nwissite", "USGS-05428500"))
+
+  expect_equal(nrow(f), 1)
+  expect_equal(ncol(f), 8)
+  expect_equal(f$identifier, "USGS-05428500")
+
 })

@@ -21,6 +21,10 @@ install.packages("devtools")
 devtools::install_github("USGS-R/nhdplusTools")
 ```
 
+### Resources
+See the ["Get Started"](https://usgs-r.github.io/nhdplusTools/articles/nhdplusTools.html) vignette showing the gneral workflow and functionality of nhdplusTools.
+See a set of [slides](https://usgs-r.github.io/nhdplusTools/awra_2019/) illustrating how to use nhdplusTools with other USGS-R packages.
+
 ### Terminology: 
 
 The following definitions have been used as much as possible throughout the package.  

@@ -220,7 +220,7 @@ intersection_write <- function(layer_name, data_path, envelope,
   if (nrow(out) > 0) {
     if (status) message(paste("Writing", layer_name))
     if(is.null(output_file)) {
-      return(layer)
+      return(out)
     } else {
       sf::write_sf(out, output_file, layer_name)
       return(layer_name)
@@ -433,9 +433,6 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
     if (grepl("*.rds$", catchment_path)) {
       catchment <- readRDS(catchment_path)
     } else {
-      if(!layer_name %in% st_layers(catchment_path)$name) {
-        layer_name <- "NHDPlusCatchment"
-      }
       catchment <- sf::read_sf(catchment_path, layer_name)
       catchment <- rename_nhdplus(catchment)
     }

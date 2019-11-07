@@ -5,7 +5,7 @@
 \title{Navigate NLDI}
 \usage{
 navigate_nldi(nldi_feature, mode = "upstreamMain",
-  data_source = "comid", distance_km = NULL, tier = "prod")
+  data_source = "flowline", distance_km = NULL, tier = "prod")
 }
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where

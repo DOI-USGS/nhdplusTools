@@ -22,7 +22,7 @@ test_that("nldi basics work", {
                "only prod or test allowed.")
 
   expect_error(discover_nldi_navigation(nldi_nwis[1]),
-                 "Missing some required input for NLDI. Expected: featureID")
+                 "Missing some required input for NLDI. Expected length 2 character fector with optional names: featureID")
 
 })
 
@@ -56,7 +56,7 @@ test_that("navigation works", {
                         data_source = "flowline",
                         distance_km = 10)
 
-  expect_is(st_geometry(nav3), "sfc_MULTILINESTRING")
+  expect_is(sf::st_geometry(nav3), "sfc_LINESTRING")
 
   expect_equal(navigate_nldi(list(featureSource = "wqp",
                                   featureID = "TCEQMAIN-16638"),

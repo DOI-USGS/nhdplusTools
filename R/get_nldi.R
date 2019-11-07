@@ -182,6 +182,7 @@ get_nldi_basin <- function(nldi_feature,
 #' get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
 #' @export
 get_nldi_feature <- function(nldi_feature, tier = "prod") {
+  nldi_feature <- check_nldi_feature(nldi_feature)
   return(sf::read_sf(query_nldi(paste(nldi_feature[["featureSource"]],
                                       nldi_feature[["featureID"]],
                                       sep = "/"),
@@ -230,7 +231,6 @@ get_nldi_url <- function(tier = "prod") {
 check_nldi_feature <- function(nldi_feature) {
   expect_names <- c("featureSource", "featureID")
   if (!all(expect_names %in% names(nldi_feature))) {
-    names(nldi_feature) <- expect_names
     if(length(nldi_feature) != 2 | !all(sapply(nldi_feature, is.character)))
       stop(paste0("Missing some required input for NLDI. ",
                   "Expected length 2 character fector with optional names: ",
@@ -238,5 +238,6 @@ check_nldi_feature <- function(nldi_feature) {
                                                names(nldi_feature)))],
                         collapse = ", ")))
   }
+  names(nldi_feature) <- expect_names
   return(nldi_feature[expect_names])
 }

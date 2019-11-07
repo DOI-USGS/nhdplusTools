@@ -455,8 +455,18 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
 }
 
 get_catchment_layer_name <- function(simplified, nhdplus_data) {
-  if(nhdplus_data == "download" | simplified) return("CatchmentSP")
-  "Catchment"
+  if(nhdplus_data == "download") { # Only simplified via download
+    layer_name <- "CatchmentSP"
+  } else {
+    if(simplified) { # Can get simplified from local data
+      layer_name <- "CatchmentSP"
+    } else { # Has to be full catchment
+      layer_name <- "Catchment"
+    }
+    if(!layer_name %in% st_layers(nhdplus_data)$name) # unless it's high res.
+      layer_name <- "NHDPlusCatchment"
+  }
+  return(layer_name)
 }
 
 get_flowline_layer_name <- function() "NHDFlowline_Network"

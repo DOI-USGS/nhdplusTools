@@ -136,11 +136,11 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     if(is.null(comids)) stop("must provide comids or bounding box")
 
     out_list <- c(get_flowline_subset(nhdplus_data, comids,
-                                         output_file, paths$fline_path,
-                                         status),
-                     get_catchment_subset(nhdplus_data, comids,
-                                          output_file, simplified,
-                                          paths$catchment_path, status))
+                                      output_file, paths$fline_path,
+                                      status),
+                  get_catchment_subset(nhdplus_data, comids,
+                                       output_file, simplified,
+                                       paths$catchment_path, status))
 
     catch_layer <- get_catchment_layer_name(simplified, nhdplus_data)
 
@@ -160,13 +160,13 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
       if((length(bbox) != 4 | !is.numeric(bbox)) |
          (!(all(bbox >= -180) & all(bbox <= 180)))) stop("invalid bbox entry")
       names(bbox) <- c("xmin", "ymin", "xmax", "ymax")
-      bbox <- sf::st_bbox(bbox, crs = st_crs(4326))
+      bbox <- sf::st_bbox(bbox, crs = sf::st_crs(4326))
       envelope <- sf::st_as_sfc(bbox)
     }
 
     intersection_names <- c(get_catchment_layer_name(simplified, nhdplus_data),
-                             get_flowline_layer_name(),
-                             "NHDArea", "NHDWaterbody")
+                            get_flowline_layer_name(),
+                            "NHDArea", "NHDWaterbody")
   }
 
   if (nhdplus_data == "download") {
@@ -183,19 +183,19 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
   } else {
 
-  if("Gage" %in% st_layers(nhdplus_data)$name) {
-    intersection_names <- c(intersection_names, "Gage", "Sink", "NHDFlowline_NonNetwork")
-  } else {
-    intersection_names <- c(intersection_names, "NHDPlusSink")
-    intersection_names <- intersection_names[which(intersection_names %in% st_layers(nhdplus_data)$name)]
-  }
+    if("Gage" %in% st_layers(nhdplus_data)$name) {
+      intersection_names <- c(intersection_names, "Gage", "Sink", "NHDFlowline_NonNetwork")
+    } else {
+      intersection_names <- c(intersection_names, "NHDPlusSink")
+      intersection_names <- intersection_names[which(intersection_names %in% st_layers(nhdplus_data)$name)]
+    }
 
     out_list <- c(out_list,
-                  setNames(lapply(intersection_names, intersection_write,
-                                  data_path = nhdplus_data,
-                                  envelope = envelope,
-                                  output_file = output_file,
-                                  status), intersection_names))
+                  stats::setNames(lapply(intersection_names, intersection_write,
+                                         data_path = nhdplus_data,
+                                         envelope = envelope,
+                                         output_file = output_file,
+                                         status), intersection_names))
   }
 
   if(is.null(output_file)) return(out_list)
@@ -275,7 +275,7 @@ stage_national_data <- function(include = c("attribute",
     nhdplus_data <- nhdplus_path()
 
     if (nhdplus_data == get("default_nhdplus_path",
-                                 envir = nhdplusTools_env) &
+                            envir = nhdplusTools_env) &
         !file.exists(nhdplus_data)) {
       stop(paste("Didn't find NHDPlus national data in default location:",
                  nhdplus_data))

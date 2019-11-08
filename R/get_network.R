@@ -175,11 +175,11 @@ get_DM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 
   if ("sf" %in% class(network)) { network <- sf::st_set_geometry(network, NULL) }
 
-  type <- ifelse(is.null(distance),  "get_DM_nolength_attributes", "get_DM_attributes")
+  type <- ifelse(is.null(distance),  "get_DM_nolength", "get_DM")
 
   network <- network %>%
-    check_names("get_DM") %>%
-    select(get(type, nhdplusTools_env))
+    check_names(type) %>%
+    select(get(paste0(type, "_attributes"), nhdplusTools_env))
 
   start_comid <- filter(network, COMID == comid)
 

@@ -239,5 +239,5 @@ check_nldi_feature <- function(nldi_feature) {
                         collapse = ", ")))
   }
   names(nldi_feature) <- expect_names
-  return(nldi_feature[expect_names])
+  return(as.list(nldi_feature[expect_names]))
 }

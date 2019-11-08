@@ -460,7 +460,7 @@ get_catchment_layer_name <- function(simplified, nhdplus_data) {
     } else { # Has to be full catchment
       layer_name <- "Catchment"
     }
-    if(!layer_name %in% st_layers(nhdplus_data)$name) # unless it's high res.
+    if(!layer_name %in% sf::st_layers(nhdplus_data)$name) # unless it's high res.
       layer_name <- "NHDPlusCatchment"
   }
   return(layer_name)

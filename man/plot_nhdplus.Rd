@@ -4,8 +4,8 @@
 \alias{plot_nhdplus}
 \title{Plot NHDPlus}
 \usage{
-plot_nhdplus(outlets, bbox = NA, streamorder = NA, nhdplus_data = NA,
-  gpkg = NA)
+plot_nhdplus(nwissite = NA, outlets = NA, bbox = NA,
+  streamorder = NA, nhdplus_data = NA, gpkg = NA)
 }
 \arguments{
 \item{outlets}{character vector of site ids in the format "USGS-01234567"}

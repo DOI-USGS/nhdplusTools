@@ -16,13 +16,12 @@ discover_nldi_sources <- function(tier = "prod") {
 #' @title Discover NLDI Navigation Options
 #' @description Discover available navigation options for a
 #' given feature source and id.
-#' @param nldi_feature list with names `featureSource` and `featureID` where
-#' `featureSource` is derived from the "source" column of  the response of
-#' discover_nldi_sources() and the `featureSource` is a known identifier
-#' from the specified `featureSource`.
+#' @param nldi_feature length 2 list list with optionsal names `featureSource`
+#' and `featureID` where `featureSource` is derived from the "source" column of
+#' the response of discover_nldi_sources() and the `featureSource` is a known identifier
+#' from the specified `featureSource`. e.g. list("nwissite", "USGS-08279500")
 #' @param tier character optional "prod" or "test"
-#' @return data.frame with three columns "source", "sourceName"
-#' and "features"
+#' @return data.frame with three columns "source", "sourceName" and "features"
 #' @export
 #' @examples
 #' \donttest{
@@ -31,9 +30,12 @@ discover_nldi_sources <- function(tier = "prod") {
 #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 #'
 #' discover_nldi_navigation(nldi_nwis)
+#'
+#' discover_nldi_navigation("nwissite", "USGS-08279500")
 #' }
 discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
-  check_nldi_feature(nldi_feature)
+  nldi_feature <- check_nldi_feature(nldi_feature)
+
   query <- paste(nldi_feature[["featureSource"]],
                  nldi_feature[["featureID"]],
                  "navigate", sep = "/")
@@ -61,7 +63,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' library(sf)
 #' library(dplyr)
 #'
-#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
+  #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 #'
 #' navigate_nldi(nldi_feature = nldi_nwis,
 #'               mode = "upstreamTributaries",
@@ -88,8 +90,10 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' }
 #'
 navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
-                          data_source = "comid", distance_km = NULL,
+                          data_source = "flowline", distance_km = NULL,
                           tier = "prod") {
+
+  nldi_feature <- check_nldi_feature(nldi_feature)
 
   nav_lookup <- list(upstreamMain = "UM",
                      upstreamTributaries = "UT",
@@ -103,6 +107,8 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
       mode <- tail(unlist(strsplit(mode, "/")), n = 1)
     }
   }
+
+  if(data_source == "flowline") data_source <- ""
 
   query <- paste(nldi_feature[["featureSource"]],
                  nldi_feature[["featureID"]],
@@ -152,6 +158,8 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 get_nldi_basin <- function(nldi_feature,
                           tier = "prod") {
 
+  nldi_feature <- check_nldi_feature(nldi_feature)
+
   query <- paste(nldi_feature[["featureSource"]],
                  nldi_feature[["featureID"]],
                  "basin",
@@ -162,12 +170,23 @@ get_nldi_basin <- function(nldi_feature,
 }
 
 
-
-#' @noRd
-get_nldi_feature <- function(f_source, f_id, tier = "prod") {
-  return(query_nldi(paste(f_source, f_id,
-                          sep = "/"),
-                    tier))
+#' @title Get NLDI Feature
+#' @description Get a single feature from the NLDI
+#' @param nldi_feature list with names `featureSource` and `featureID` where
+#' `featureSource` is derived from the "source" column of  the response of
+#' discover_nldi_sources() and the `featureSource` is a known identifier
+#' from the specified `featureSource`.
+#' @param tier character optional "prod" or "test"
+#' @return sf feature collection with one feature
+#' @examples
+#' get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
+#' @export
+get_nldi_feature <- function(nldi_feature, tier = "prod") {
+  nldi_feature <- check_nldi_feature(nldi_feature)
+  return(sf::read_sf(query_nldi(paste(nldi_feature[["featureSource"]],
+                                      nldi_feature[["featureID"]],
+                                      sep = "/"),
+                                tier, parse_json = FALSE)))
 }
 
 #' @importFrom httr GET
@@ -211,12 +230,14 @@ get_nldi_url <- function(tier = "prod") {
 #' @noRd
 check_nldi_feature <- function(nldi_feature) {
   expect_names <- c("featureSource", "featureID")
-  if (!all(expect_names %in%
-           names(nldi_feature))) {
-    stop(paste0("Missing some required input for NLDI. ",
-                "Expected: ",
-                paste(expect_names[which(!(expect_names %in%
-                                             names(nldi_feature)))],
-                      collapse = ", ")))
+  if (!all(expect_names %in% names(nldi_feature))) {
+    if(length(nldi_feature) != 2 | !all(sapply(nldi_feature, is.character)))
+      stop(paste0("Missing some required input for NLDI. ",
+                  "Expected length 2 character fector with optional names: ",
+                  paste(expect_names[which(!(expect_names %in%
+                                               names(nldi_feature)))],
+                        collapse = ", ")))
   }
+  names(nldi_feature) <- expect_names
+  return(nldi_feature[expect_names])
 }

@@ -4,10 +4,11 @@
 \alias{plot_nhdplus}
 \title{Plot NHDPlus}
 \usage{
-plot_nhdplus(sites, bbox = NA, streamorder = NA, gpkg = NA)
+plot_nhdplus(outlets, bbox = NA, streamorder = NA, nhdplus_data = NA,
+  gpkg = NA)
 }
 \arguments{
-\item{sites}{character vector of site ids in the format "USGS-01234567"}
+\item{outlets}{character vector of site ids in the format "USGS-01234567"}
 
 \item{bbox}{vector of map limits (xmin, ymin, xmax, ymax) that can be coerced into an object of class bbox.}
 
@@ -16,7 +17,7 @@ plot_nhdplus(sites, bbox = NA, streamorder = NA, gpkg = NA)
 \item{gpkg}{path and file with .gpkg ending. If NA, no file is written.}
 }
 \description{
-Given a list of sites, get their basin boundaries and network and return a plot.
+Given a list of outlets, get their basin boundaries and network and return a plot.
 }
 \examples{
 plot_nhdplus("USGS-05428500")

@@ -4,7 +4,7 @@ test_that("basics work", {
   skip_on_cran()
   site <- "USGS-05428500"
   d <-  nhdplusTools:::get_plot_data(site)
-  expect_equal(names(d), c("plot_bbox", "sites", "flowline", "basin"))
+  expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin"))
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(st_crs(p_ready), st_crs(3857))
@@ -19,4 +19,7 @@ test_that("basics work", {
   dev.off()
 
   expect_true(file.exists(tempf))
+
+  expect_error(plot_nhdplus("USGS-05428500", streamorder = 3),
+               "Streamoder not available without specifying nhdplus_data source. Can't filter.")
 })

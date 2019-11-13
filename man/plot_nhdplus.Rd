@@ -4,19 +4,24 @@
 \alias{plot_nhdplus}
 \title{Plot NHDPlus}
 \usage{
-plot_nhdplus(sites, bbox = NA, streamorder = NA, gpkg = NA)
+plot_nhdplus(nwissite = NA, outlets = NA, bbox = NA,
+  streamorder = NA, nhdplus_data = NA, gpkg = NA)
 }
 \arguments{
-\item{sites}{character vector of site ids in the format "USGS-01234567"}
+\item{nwissite}{character vector of site ids in the format "USGS-01234567" or "01234567"}
+
+\item{outlets}{list of nldi outlets}
 
 \item{bbox}{vector of map limits (xmin, ymin, xmax, ymax) that can be coerced into an object of class bbox.}
 
 \item{streamorder}{integer only streams of order greater than or equal will be returned}
 
+\item{nhdplus_data}{geopackage containing source nhdplus data}
+
 \item{gpkg}{path and file with .gpkg ending. If NA, no file is written.}
 }
 \description{
-Given a list of sites, get their basin boundaries and network and return a plot.
+Given a list of outlets, get their basin boundaries and network and return a plot.
 }
 \examples{
 plot_nhdplus("USGS-05428500")

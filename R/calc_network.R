@@ -59,7 +59,6 @@ calculate_arbolate_sum <- function(catchment_area) {
 
 }
 
-#' @importFrom igraph graph_from_data_frame topo_sort
 #' @importFrom dplyr select left_join ungroup distinct
 #' @noRd
 #'
@@ -69,9 +68,7 @@ accumulate_downstream <- function(dat_fram, var) {
 
   dat_fram[["toID"]][which(is.na(dat_fram[["toID"]]))] <- 0
 
-  sorted <- names(topo_sort(graph_from_data_frame(dat_fram,
-                                                  directed = TRUE),
-                            mode = "out"))
+  sorted <- get_sorted(dat_fram)
 
   sorted <- sorted[sorted != "0" & sorted %in% as.character(cat_order$ID)]
 
@@ -140,9 +137,7 @@ calculate_levelpaths <- function(flowline, status = FALSE) {
   flowline[["nameID"]][is.na(flowline[["nameID"]])] <- " " # NHDPlusHR uses NA for empty names.
   flowline[["nameID"]][flowline[["nameID"]] == "-1"] <- " "
 
-  sorted <- names(topo_sort(graph_from_data_frame(flowline,
-                                                  directed = TRUE),
-                            mode = "out"))
+  sorted <- get_sorted(flowline)
 
   sorted <- sorted[sorted != 0]
 
@@ -222,4 +217,68 @@ get_path <- function(flowline, tailID) {
   } else {
     return(tailID)
   }
+}
+
+#' @title Get Streamorder
+#' @description  Applies a topological sort and calculates strahler stream order.
+#' Algorithm: If more than one upstream flowpath has an order equal to the
+#' maximum upstream order then the downstream flowpath is assigned the maximum
+#' upstream order plus one. Otherwise it is assigned the max upstream order.
+#' @param fl data.frame with dendritic ID and toID columns.
+#' @return data.frame with ID and order columns. Note the output will
+#' likelt NOT be in the same sort order as in the input.
+#' @importFrom dplyr left_join
+#' @export
+#' @examples
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#'
+#' test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
+#'
+#' test_flowline <- data.frame(
+#'   ID = test_flowline$COMID,
+#'   toID = test_flowline$toCOMID)
+#'
+#' (order <- calculate_streamorder(test_flowline))
+#'
+#' walker_flowline <- dplyr::left_join(walker_flowline, order, by = c("COMID" = "ID"))
+#'
+#' plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$order, col = "blue")
+#'
+calculate_streamorder <- function(fl) {
+  fl[["toID"]][which(is.na(fl[["toID"]]))] <- 0
+
+  sorted <- get_sorted(fl)
+
+  fl <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "0"])),
+                  fl, by = "ID")
+
+  ID <- as.numeric(fl$ID)
+  toID <- as.numeric(fl$toID)
+  order <- rep(1, length(ID))
+
+  for(i in seq(1, length(ID))) {
+    from <- toID == ID[i]
+    if(any(from, na.rm = TRUE)) {
+      orders <- order[from]
+
+      m <- max(orders)
+
+      if(length(orders[orders == m]) > 1) {
+        order[i] <- m + 1
+      } else {
+        order[i] <- m
+      }
+    }
+  }
+  data.frame(ID = ID, order = order)
+}
+
+#' @noRd
+#' @param flowline data.frame if an identifier and to identifier in the
+#' first and second columns.
+#' @importFrom igraph topo_sort graph_from_data_frame
+get_sorted <- function(flowline) {
+  names(topo_sort(graph_from_data_frame(flowline,
+                                        directed = TRUE),
+                  mode = "out"))
 }

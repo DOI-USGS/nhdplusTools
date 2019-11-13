@@ -1,8 +1,10 @@
 #' @title Plot NHDPlus
 #' @description Given a list of outlets, get their basin boundaries and network and return a plot.
-#' @param outlets character vector of site ids in the format "USGS-01234567"
+#' @param nwissite character vector of site ids in the format "USGS-01234567" or "01234567"
+#' @param outlets list of nldi outlets
 #' @param bbox vector of map limits (xmin, ymin, xmax, ymax) that can be coerced into an object of class bbox.
 #' @param streamorder integer only streams of order greater than or equal will be returned
+#' @param nhdplus_data geopackage containing source nhdplus data
 #' @param gpkg path and file with .gpkg ending. If NA, no file is written.
 #' @export
 #' @examples

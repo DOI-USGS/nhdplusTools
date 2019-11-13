@@ -7,7 +7,7 @@
 calculate_streamorder(fl)
 }
 \arguments{
-\item{flowline}{data.frame with dendritic ID and toID columns.}
+\item{fl}{data.frame with dendritic ID and toID columns.}
 }
 \value{
 data.frame with ID and order columns. Note the output will
@@ -28,9 +28,9 @@ test_flowline <- data.frame(
   ID = test_flowline$COMID,
   toID = test_flowline$toCOMID)
 
-(order <- get_streamorder(test_flowline))
+(order <- calculate_streamorder(test_flowline))
 
-walker_flowline <- left_join(walker_flowline, order, by = c("COMID" = "ID"))
+walker_flowline <- dplyr::left_join(walker_flowline, order, by = c("COMID" = "ID"))
 
 plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$order, col = "blue")
 

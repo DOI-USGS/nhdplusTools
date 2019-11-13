@@ -224,7 +224,7 @@ get_path <- function(flowline, tailID) {
 #' Algorithm: If more than one upstream flowpath has an order equal to the
 #' maximum upstream order then the downstream flowpath is assigned the maximum
 #' upstream order plus one. Otherwise it is assigned the max upstream order.
-#' @param flowline data.frame with dendritic ID and toID columns.
+#' @param fl data.frame with dendritic ID and toID columns.
 #' @return data.frame with ID and order columns. Note the output will
 #' likelt NOT be in the same sort order as in the input.
 #' @importFrom dplyr left_join
@@ -238,9 +238,9 @@ get_path <- function(flowline, tailID) {
 #'   ID = test_flowline$COMID,
 #'   toID = test_flowline$toCOMID)
 #'
-#' (order <- get_streamorder(test_flowline))
+#' (order <- calculate_streamorder(test_flowline))
 #'
-#' walker_flowline <- left_join(walker_flowline, order, by = c("COMID" = "ID"))
+#' walker_flowline <- dplyr::left_join(walker_flowline, order, by = c("COMID" = "ID"))
 #'
 #' plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$order, col = "blue")
 #'

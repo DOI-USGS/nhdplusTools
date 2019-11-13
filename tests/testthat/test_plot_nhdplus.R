@@ -52,9 +52,40 @@ test_that("local data", {
 
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
   expect_equal(nrow(plot_data$flowline), 57)
+  expect_true("comid" %in% names(plot_data$outlets))
 
-  # plot_nhdplus(outlet, nhdplus_data = sample_data)
+  skip_on_cran()
+  outlet <- c(list(outlet), list(c("nwissite", "USGS-05428500")))
+  plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
+
+  expect_equal(names(plot_data$outlets), c("comid", "geom"))
+  expect_equal(plot_data$outlets$comid, c("13293970", "13293750"))
+
+  expect_s3_class(sf::st_geometry(plot_data$flowline)[[1]], "XY")
+
+  plot_data <- nhdplusTools:::get_plot_data("USGS-05429500", outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
+
+  expect_equal(nrow(plot_data$outlets), 3)
+
+  # plot_nhdplus(outlets = outlet, nhdplus_data = sample_data)
   #
-  # plot_nhdplus(outlet, nhdplus_data = sample_data, streamorder = 3)
+  # plot_nhdplus(outlets = outlet, nhdplus_data = sample_data, streamorder = 3)
 
+  plot_data <- nhdplusTools:::get_plot_data(nwissite = c("05427718", "05427850"),
+                               outlets = list(c("comid", start),
+                                              c("nwissite", "USGS-05428500"),
+                                              c("huc12pp", "070900020603"),
+                                              c("huc12pp", "070900020602")),
+                               nhdplus_data = sample_data, streamorder = 3)
+
+  expect_equal(nrow(plot_data$outlets), 6)
+
+  # Also works with remote data.
+  plot_data <- nhdplusTools:::get_plot_data(nwissite = c("05427718", "05427850"),
+                                            outlets = list(c("comid", start),
+                                                           c("nwissite", "USGS-05428500"),
+                                                           c("huc12pp", "070900020603"),
+                                                           c("huc12pp", "070900020602")))
+  expect_equal(nrow(plot_data$outlets), 6)
+  expect_true("sfc_POINT" %in% class(sf::st_geometry(plot_data$outlets)))
 })

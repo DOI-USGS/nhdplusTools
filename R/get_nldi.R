@@ -31,7 +31,7 @@ discover_nldi_sources <- function(tier = "prod") {
 #'
 #' discover_nldi_navigation(nldi_nwis)
 #'
-#' discover_nldi_navigation("nwissite", "USGS-08279500")
+#' discover_nldi_navigation(list("nwissite", "USGS-08279500"))
 #' }
 discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
   nldi_feature <- check_nldi_feature(nldi_feature)
@@ -63,7 +63,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' library(sf)
 #' library(dplyr)
 #'
-  #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
+#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 #'
 #' navigate_nldi(nldi_feature = nldi_nwis,
 #'               mode = "upstreamTributaries",
@@ -219,9 +219,9 @@ query_nldi <- function(query, tier = "prod", parse_json = TRUE) {
 #' @noRd
 get_nldi_url <- function(tier = "prod") {
   if (tier == "prod") {
-    "https://cida.usgs.gov/nldi"
+    "https://labs.waterdata.usgs.gov/api/nldi/linked-data"
   } else if (tier == "test") {
-    "https://cida-test.er.usgs.gov/nldi"
+    "https://labs.waterdata.usgs.gov/api/nldi/linked-data"
   } else {
     stop("only prod or test allowed.")
   }
@@ -233,7 +233,7 @@ check_nldi_feature <- function(nldi_feature) {
   if (!all(expect_names %in% names(nldi_feature))) {
     if(length(nldi_feature) != 2 | !all(sapply(nldi_feature, is.character)))
       stop(paste0("Missing some required input for NLDI. ",
-                  "Expected length 2 character fector with optional names: ",
+                  "Expected length 2 character vector or list with optional names: ",
                   paste(expect_names[which(!(expect_names %in%
                                                names(nldi_feature)))],
                         collapse = ", ")))

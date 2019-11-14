@@ -22,7 +22,7 @@ test_that("nldi basics work", {
                "only prod or test allowed.")
 
   expect_error(discover_nldi_navigation(nldi_nwis[1]),
-                 "Missing some required input for NLDI. Expected length 2 character fector with optional names: featureID")
+                 "Missing some required input for NLDI. Expected length 2 character vector or list with optional names: featureID")
 
 })
 

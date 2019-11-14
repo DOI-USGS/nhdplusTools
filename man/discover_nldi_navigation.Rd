@@ -29,6 +29,6 @@ nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
 discover_nldi_navigation(nldi_nwis)
 
-discover_nldi_navigation("nwissite", "USGS-08279500")
+discover_nldi_navigation(list("nwissite", "USGS-08279500"))
 }
 }

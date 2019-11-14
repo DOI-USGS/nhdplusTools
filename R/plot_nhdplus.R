@@ -1,18 +1,32 @@
 #' @title Plot NHDPlus
 #' @description Given a list of outlets, get their basin boundaries and network and return a plot.
-#' @param nwissite character vector of site ids in the format "USGS-01234567" or "01234567"
-#' @param outlets list of nldi outlets
+#' @param outlets list of nldi outlets. Other inputs are coerced into nldi outlets, see details.
 #' @param bbox vector of map limits (xmin, ymin, xmax, ymax) that can be coerced into an object of class bbox.
 #' @param streamorder integer only streams of order greater than or equal will be returned
 #' @param nhdplus_data geopackage containing source nhdplus data
 #' @param gpkg path and file with .gpkg ending. If NA, no file is written.
+#' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
+#' is used to convert the outlet formats as described below.
+#' \enumerate{
+#' . \item if outlets is omitted, the bbox input is required and all nhdplus data
+#' in the bounding box is plotted.
+#'   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
+#'   and all upstream tributaries are plotted.
+#'   \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
+#'   that should be plotted.
+#'   \item If outlets is a character vector, it is assumed to be NWIS site ids.
+#'   \item if outlets is a list containing only characters, it is assumed to be a list
+#'   of nldi features and all upstream tributaries are plotted.
+#'   \item if outlets is a data.frame with point geometry, a point in polygon match
+#'   is performed and upstream with tributaries from the identified catchments is plotted.
+#' }
 #' @export
 #' @examples
 #' plot_nhdplus("USGS-05428500")
 #'
-plot_nhdplus <- function(nwissite = NA, outlets = NA, bbox = NA, streamorder = NA, nhdplus_data = NA, gpkg = NA) {
+plot_nhdplus <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_data = NA, gpkg = NA) {
 
-  pd <- get_plot_data(nwissite, outlets, bbox, streamorder, nhdplus_data, gpkg)
+  pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg)
 
   prettymapr::prettymap({
     rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE)
@@ -24,22 +38,19 @@ plot_nhdplus <- function(nwissite = NA, outlets = NA, bbox = NA, streamorder = N
   drawarrow = TRUE)
 }
 
-get_plot_data <- function(nwissite = NA, outlets = NA, bbox = NA, streamorder = NA, nhdplus_data = NA, gpkg = NA) {
 
-  if(!is.na(bbox) | !is.na(gpkg)) {
+
+get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_data = NA, gpkg = NA) {
+
+  if(!is.na(bbox) | !is.na(gpkg) | all(is.na(outlets))) {
+    stop("must submit outlets until bbox is implemented. Data export to gpkg also not implemented yet.")
     # Only outlets and streamorder implemented so far.
   }
 
   if(!is.na(streamorder) && is.na(nhdplus_data))
     stop("Streamoder not available without specifying nhdplus_data source. Can't filter.")
 
-  if(!all(is.na(nwissite))) {
-    if(all(is.na(outlets))) outlets <- list()
-    outlets <- c(outlets, lapply(nwissite, make_nwis_nldi_feature))
-  }
-
-  if(!is.list(outlets)) outlets <- list(outlets)
-  outlets <- lapply(outlets, check_nldi_feature)
+  outlets <- as_outlets(outlets)
 
   if(!is.na(nhdplus_data)) {
     fline_layer = get_flowline_layer_name()
@@ -139,6 +150,61 @@ set_geom_name <- function(x, new_name = "geom") {
 }
 
 make_nwis_nldi_feature <- function(x) {
+  if(length(x) > 1) stop("not and nwis outlet")
   if(!grepl("^USGS-.*", x)) x <- paste0("USGS-", x)
-  list("nwissite", x)
+  if(!grepl("USGS-[0-9][0-9][0-9]", x)) stop("Found invalid NWIS ID trying to intperet outlet.")
+  list(featureSource = "nwissite", featureID = x)
+}
+
+make_comid_nldi_feature <- function(x) {
+  list("comid", as.character(x))
+}
+
+as_outlets <- function(o) {
+  tryCatch({
+    if(all(is.na(o))) return(NA)
+
+    if(!is.list(o) && all_int(o))
+      return(list(subset = o))
+
+    if((is.list(o) && all_int(o)) |
+       is.character(o) |
+       is.list(o) && !"sf" %in% class(o)) {
+      return(tryCatch(lapply(o, individual_outlets),
+                      error = function(e) list(individual_outlets(o))))
+
+    }
+
+    if("sf" %in% class(o)) {
+      out <- c()
+      for(i in seq_len(nrow(o))) {
+        out <- c(out, make_comid_nldi_feature(discover_nhdplus_id(sf::st_geometry(o)[i])))
+      }
+    }
+    return(check_nldi_feature(out))
+  }, error = function(f) {
+    stop(paste0("Error trying to interpret outlet specification. Original error was:\n\n", f))
+  })
+}
+
+# Works on individual outlets rather than sets of them.
+individual_outlets <- function(o) {
+  if(length(o) == 1 && all_int(o))
+    return(make_comid_nldi_feature(o))
+
+  if(is.character(o))
+    o <- tryCatch({
+      return(make_nwis_nldi_feature(o))
+    }, error = function(f) as.list(o))
+
+
+  if(is.list(o) && !"sf" %in% class(o)) {
+    if(length(o) == 2 && !is.list(o[[1]])) o <- as.list(o)
+    return(check_nldi_feature(o))
+  }
+}
+
+all_int <- function(o) {
+  tryCatch(all(sapply(o, function(x) x %% 1) == 0),
+           error = function(f) FALSE)
 }

@@ -63,7 +63,8 @@ test_that("local data", {
 
   expect_s3_class(sf::st_geometry(plot_data$flowline)[[1]], "XY")
 
-  plot_data <- nhdplusTools:::get_plot_data("USGS-05429500", outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
+  plot_data <- nhdplusTools:::get_plot_data(outlets = c(outlet, "USGS-05428500"),
+                                            streamorder = 3, nhdplus_data = sample_data)
 
   expect_equal(nrow(plot_data$outlets), 3)
 
@@ -71,8 +72,9 @@ test_that("local data", {
   #
   # plot_nhdplus(outlets = outlet, nhdplus_data = sample_data, streamorder = 3)
 
-  plot_data <- nhdplusTools:::get_plot_data(nwissite = c("05427718", "05427850"),
-                               outlets = list(c("comid", start),
+  plot_data <- nhdplusTools:::get_plot_data(outlets = list("05427850",
+                                              "05427718",
+                                              c("comid", start),
                                               c("nwissite", "USGS-05428500"),
                                               c("huc12pp", "070900020603"),
                                               c("huc12pp", "070900020602")),
@@ -81,11 +83,80 @@ test_that("local data", {
   expect_equal(nrow(plot_data$outlets), 6)
 
   # Also works with remote data.
-  plot_data <- nhdplusTools:::get_plot_data(nwissite = c("05427718", "05427850"),
-                                            outlets = list(c("comid", start),
+  plot_data <- nhdplusTools:::get_plot_data(outlets = list("05427718",
+                                                           "05427850",
+                                                           c("comid", start),
                                                            c("nwissite", "USGS-05428500"),
                                                            c("huc12pp", "070900020603"),
                                                            c("huc12pp", "070900020602")))
   expect_equal(nrow(plot_data$outlets), 6)
   expect_true("sfc_POINT" %in% class(sf::st_geometry(plot_data$outlets)))
 })
+
+test_that("test_as_outlets", {
+  o <- list(13293970, 13293971)
+
+  expect_equal(nhdplusTools:::as_outlets(o),
+               list(list("comid", "13293970"), list("comid", "13293971")))
+
+  o <- c(13293970, 13293971)
+
+  expect_equal(nhdplusTools:::as_outlets(o),
+               list(subset = c(13293970, 13293971)))
+
+  o <- "USGS-05428500"
+
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "nwissite", featureID = "USGS-05428500")))
+
+  o <- c("USGS-05428500", "USGS-05429500")
+
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "nwissite", featureID = "USGS-05428500"),
+                                                  list(featureSource = "nwissite", featureID = "USGS-05429500")))
+
+  o <- c("comid", 13293970)
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "comid", featureID = "13293970")))
+
+  o <- list("comid", 13293970)
+
+  expect_error(nhdplusTools:::as_outlets(o), regexp = "Error trying to interpret outlet specification.*Expected length 2 character vector or list with optional names: featureSource, featureID.*")
+
+  o <- list("comid", "13293970")
+
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "comid", featureID = "13293970")))
+
+  o <- c(list(o), list(c("nwissite", "USGS-05428500")))
+
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "comid",
+                                        featureID = "13293970"),
+                                   list(featureSource = "nwissite",
+                                        featureID = "USGS-05428500")))
+
+  o <- c(o,
+            list(c("huc12pp", "070900020603")),
+            list(c("huc12pp", "070900020602")))
+
+  expect_equal(nhdplusTools:::as_outlets(o),
+               list(list(featureSource = "comid", featureID = "13293970"),
+                    list(featureSource = "nwissite", featureID = "USGS-05428500"),
+                    list(featureSource = "huc12pp", featureID = "070900020603"),
+                    list(featureSource = "huc12pp", featureID = "070900020602")))
+
+  o <- c("05427718", "05427850")
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "nwissite", featureID = "USGS-05427718"),
+                                                  list(featureSource = "nwissite", featureID = "USGS-05427850")))
+
+  o <- list(c("comid", "13293970"), c("nwissite", "USGS-05428500"))
+
+  expect_equal(nhdplusTools:::as_outlets(o),
+               list(list(featureSource = "comid", featureID = "13293970"),
+                    list(featureSource = "nwissite", featureID = "USGS-05428500")))
+
+  skip_on_cran()
+  o <- sf::st_as_sf(data.frame(x = -122.765037511658,
+                               y = 45.6534111629304),
+                    coords = c("x", "y"), crs = 4326)
+  expect_equal(nhdplusTools:::as_outlets(o), list(featureSource = "comid", featureID = "23735691"))
+
+})
+
+

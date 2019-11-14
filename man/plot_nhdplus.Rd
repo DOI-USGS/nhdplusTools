@@ -4,13 +4,11 @@
 \alias{plot_nhdplus}
 \title{Plot NHDPlus}
 \usage{
-plot_nhdplus(nwissite = NA, outlets = NA, bbox = NA,
-  streamorder = NA, nhdplus_data = NA, gpkg = NA)
+plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
+  nhdplus_data = NA, gpkg = NA)
 }
 \arguments{
-\item{nwissite}{character vector of site ids in the format "USGS-01234567" or "01234567"}
-
-\item{outlets}{list of nldi outlets}
+\item{outlets}{list of nldi outlets. Other inputs are coerced into nldi outlets, see details.}
 
 \item{bbox}{vector of map limits (xmin, ymin, xmax, ymax) that can be coerced into an object of class bbox.}
 
@@ -22,6 +20,23 @@ plot_nhdplus(nwissite = NA, outlets = NA, bbox = NA,
 }
 \description{
 Given a list of outlets, get their basin boundaries and network and return a plot.
+}
+\details{
+plot_nhdplus supports several input specifications. An unexported function "as_outlet"
+is used to convert the outlet formats as described below.
+\enumerate{
+. \item if outlets is omitted, the bbox input is required and all nhdplus data
+in the bounding box is plotted.
+  \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
+  and all upstream tributaries are plotted.
+  \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
+  that should be plotted.
+  \item If outlets is a character vector, it is assumed to be NWIS site ids.
+  \item if outlets is a list containing only characters, it is assumed to be a list
+  of nldi features and all upstream tributaries are plotted.
+  \item if outlets is a data.frame with point geometry, a point in polygon match
+  is performed and upstream with tributaries from the identified catchments is plotted.
+}
 }
 \examples{
 plot_nhdplus("USGS-05428500")

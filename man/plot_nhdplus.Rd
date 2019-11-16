@@ -26,11 +26,11 @@ plot_nhdplus supports several input specifications. An unexported function "as_o
 is used to convert the outlet formats as described below.
 \enumerate{
 . \item if outlets is omitted, the bbox input is required and all nhdplus data
-in the bounding box is plotted.
+in the bounding box is plotted. (not implemented)
   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
   and all upstream tributaries are plotted.
   \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
-  that should be plotted.
+  that should be plotted. (not implemented)
   \item If outlets is a character vector, it is assumed to be NWIS site ids.
   \item if outlets is a list containing only characters, it is assumed to be a list
   of nldi features and all upstream tributaries are plotted.
@@ -39,6 +39,19 @@ in the bounding box is plotted.
 }
 }
 \examples{
-plot_nhdplus("USGS-05428500")
+
+plot_nhdplus("05428500")
+
+plot_nhdplus(list(13293970, 13293750))
+
+sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+plot_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
+
+plot_nhdplus(list(list("comid", "13293970"),
+                  list("nwissite", "USGS-05428500"),
+                  list("huc12pp", "070900020603"),
+                  list("huc12pp", "070900020602")),
+             streamorder = 2,
+             nhdplus_data = sample_data)
 
 }

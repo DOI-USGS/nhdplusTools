@@ -14,11 +14,41 @@ test_that("basics work", {
   tempd <- tempdir()
   dir.create(tempd, recursive = TRUE)
   tempf <- file.path(tempd, "temp.png")
+
   png(file.path(tempd, "temp.png"))
   plot_nhdplus("USGS-05428500")
   dev.off()
 
   expect_true(file.exists(tempf))
+
+  unlink(tempf)
+
+  sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+
+  png(file.path(tempd, "temp.png"))
+  plot_nhdplus(list(list("comid", "13293970"),
+                    list("nwissite", "USGS-05428500"),
+                    list("huc12pp", "070900020603"),
+                    list("huc12pp", "070900020602")),
+               streamorder = 2,
+               nhdplus_data = sample_data)
+  dev.off()
+
+  expect_true(file.exists(tempf))
+
+  unlink(tempf)
+
+  png(file.path(tempd, "temp.png"))
+  plot_nhdplus(sf::st_as_sf(data.frame(x = -89.36083,
+                                       y = 43.08944),
+                            coords = c("x", "y"), crs = 4326),
+               streamorder = 2,
+               nhdplus_data = sample_data)
+  dev.off()
+
+  expect_true(file.exists(tempf))
+
+  unlink(tempf)
 
   expect_error(plot_nhdplus("USGS-05428500", streamorder = 3),
                "Streamoder not available without specifying nhdplus_data source. Can't filter.")
@@ -91,6 +121,13 @@ test_that("local data", {
                                                            c("huc12pp", "070900020602")))
   expect_equal(nrow(plot_data$outlets), 6)
   expect_true("sfc_POINT" %in% class(sf::st_geometry(plot_data$outlets)))
+
+  plot_data <- nhdplusTools:::get_plot_data(sf::st_as_sf(data.frame(x = -89.36083,
+                                                                    y = 43.08944),
+                                                         coords = c("x", "y"), crs = 4326),
+                                            streamorder = 2,
+                                            nhdplus_data = sample_data)
+  expect_equal(nrow(plot_data$outlets), 1)
 })
 
 test_that("test_as_outlets", {
@@ -155,7 +192,7 @@ test_that("test_as_outlets", {
   o <- sf::st_as_sf(data.frame(x = -122.765037511658,
                                y = 45.6534111629304),
                     coords = c("x", "y"), crs = 4326)
-  expect_equal(nhdplusTools:::as_outlets(o), list(featureSource = "comid", featureID = "23735691"))
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "comid", featureID = "23735691")))
 
 })
 

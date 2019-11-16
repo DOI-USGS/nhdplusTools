@@ -9,11 +9,11 @@
 #' is used to convert the outlet formats as described below.
 #' \enumerate{
 #' . \item if outlets is omitted, the bbox input is required and all nhdplus data
-#' in the bounding box is plotted.
+#' in the bounding box is plotted. (not implemented)
 #'   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
 #'   and all upstream tributaries are plotted.
 #'   \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
-#'   that should be plotted.
+#'   that should be plotted. (not implemented)
 #'   \item If outlets is a character vector, it is assumed to be NWIS site ids.
 #'   \item if outlets is a list containing only characters, it is assumed to be a list
 #'   of nldi features and all upstream tributaries are plotted.
@@ -22,8 +22,29 @@
 #' }
 #' @export
 #' @examples
-#' plot_nhdplus("USGS-05428500")
 #'
+#' plot_nhdplus("05428500")
+#'
+#' plot_nhdplus(list(13293970, 13293750))
+#'
+#' sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+#' plot_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
+#'
+#' plot_nhdplus(list(list("comid", "13293970"),
+#'                   list("nwissite", "USGS-05428500"),
+#'                   list("huc12pp", "070900020603"),
+#'                   list("huc12pp", "070900020602")),
+#'              streamorder = 2,
+#'              nhdplus_data = sample_data)
+#'
+#'
+#' plot_nhdplus(sf::st_as_sf(data.frame(x = -89.36083,
+#'                                      y = 43.08944),
+#'                           coords = c("x", "y"), crs = 4326),
+#'              streamorder = 2,
+#'              nhdplus_data = sample_data)
+#'
+
 plot_nhdplus <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_data = NA, gpkg = NA) {
 
   pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg)
@@ -122,8 +143,8 @@ make_basin <- function(x, catchment_layer) {
 }
 
 get_comid_outlets <- function(o, flowline) {
-  if(o$featureSource %in% c("comid", "COMID")) {
-    f <- flowline[flowline$COMID == o$featureID, ][c("COMID", attr(flowline, "sf_column"))]
+  if(o[1] %in% c("comid", "COMID")) {
+    f <- flowline[flowline$COMID == as.integer(o[2]), ][c("COMID", attr(flowline, "sf_column"))]
     names(f)[names(f) == "COMID"] <- "comid"
     return(make_point(f))
   }
@@ -181,7 +202,7 @@ as_outlets <- function(o) {
         out <- c(out, make_comid_nldi_feature(discover_nhdplus_id(sf::st_geometry(o)[i])))
       }
     }
-    return(check_nldi_feature(out))
+    return(list(check_nldi_feature(out)))
   }, error = function(f) {
     stop(paste0("Error trying to interpret outlet specification. Original error was:\n\n", f))
   })

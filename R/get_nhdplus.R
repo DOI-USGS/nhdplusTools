@@ -295,10 +295,11 @@ get_hr_data <- function(gdb, layer = NULL) {
     hr_data <- select(hr_data, -ReachCode, -VPUID)
     hr_data <- left_join( sf::st_zm(read_sf(gdb, layer)), hr_data, by = "NHDPlusID")
 
-    fix <- which(sapply(st_geometry(hr_data), function(x) class(x)[2]) != "MULTILINESTRING")
+    fix <- which(!sapply(sf::st_geometry(hr_data), function(x) class(x)[2]) %in% c("LINESTRING", "MULTILINESTRING"))
 
     for(f in fix) {
-      st_geometry(hr_data)[[f]] <- st_multilinestring(lapply(st_geometry(hr_data)[[f]][[1]], st_cast, to = "LINESTRING"), dim = "XY")
+      sf::st_geometry(hr_data)[[f]] <- st_multilinestring(lapply(sf::st_geometry(hr_data)[[f]][[1]],
+                                                                 sf::st_cast, to = "LINESTRING"), dim = "XY")
     }
 
     return(hr_data)

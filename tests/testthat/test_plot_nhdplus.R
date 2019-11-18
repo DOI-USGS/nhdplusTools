@@ -138,7 +138,8 @@ test_that("test_as_outlets", {
   o <- list(13293970, 13293971)
 
   expect_equal(nhdplusTools:::as_outlets(o),
-               list(list("comid", "13293970"), list("comid", "13293971")))
+               list(list(featureSource = "comid", featureID = "13293970"),
+                    list(featureSource = "comid", featureID = "13293971")))
 
   o <- c(13293970, 13293971)
 

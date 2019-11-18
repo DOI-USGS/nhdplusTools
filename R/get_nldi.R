@@ -221,7 +221,7 @@ get_nldi_url <- function(tier = "prod") {
   if (tier == "prod") {
     "https://labs.waterdata.usgs.gov/api/nldi/linked-data"
   } else if (tier == "test") {
-    "https://labs.waterdata.usgs.gov/api/nldi/linked-data"
+    "https://labs-beta.waterdata.usgs.gov/api/nldi/linked-data"
   } else {
     stop("only prod or test allowed.")
   }

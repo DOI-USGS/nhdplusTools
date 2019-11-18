@@ -10,7 +10,7 @@
 #' is used to convert the outlet formats as described below.
 #' \enumerate{
 #'   \item if outlets is omitted, the bbox input is required and all nhdplus data
-#' in the bounding box is plotted. (not implemented)
+#'   in the bounding box is plotted. (not implemented)
 #'   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
 #'   and all upstream tributaries are plotted.
 #'   \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
@@ -266,7 +266,7 @@ make_nwis_nldi_feature <- function(x) {
 }
 
 make_comid_nldi_feature <- function(x) {
-  list("comid", as.character(x))
+  list(featureSource = "comid", featureID = as.character(x))
 }
 
 as_outlets <- function(o) {

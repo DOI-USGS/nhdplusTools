@@ -5,10 +5,11 @@
 #' @param streamorder integer only streams of order greater than or equal will be returned
 #' @param nhdplus_data geopackage containing source nhdplus data
 #' @param gpkg path and file with .gpkg ending. If NA, no file is written.
+#' @param plot_config list containing plot configuration, see details.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
 #' \enumerate{
-#' . \item if outlets is omitted, the bbox input is required and all nhdplus data
+#'   \item if outlets is omitted, the bbox input is required and all nhdplus data
 #' in the bounding box is plotted. (not implemented)
 #'   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
 #'   and all upstream tributaries are plotted.
@@ -20,6 +21,18 @@
 #'   \item if outlets is a data.frame with point geometry, a point in polygon match
 #'   is performed and upstream with tributaries from the identified catchments is plotted.
 #' }
+#'
+#' The \code{plot_config} parameter is a list with names "basin", "flowline" and "outlets".
+#' The following shows the defaults that can be altered.
+#' \enumerate{
+#'   \item basin list(lwd = 1, col = NA, border = "black")
+#'   \item flowline list(lwd = 1, col = "blue")
+#'   \item outlets list(default = list(col = "black", border = NA, pch = 19, cex = 1),
+#'                      nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
+#'                      huc12pp = list(col = "white", border = "black", pch = 22, cex = 1),
+#'                      wqp = list(col = "red", border = NA, pch = 20, cex = 1))
+#' }
+#'
 #' @export
 #' @examples
 #'
@@ -44,22 +57,94 @@
 #'              streamorder = 2,
 #'              nhdplus_data = sample_data)
 #'
+#' plot_nhdplus(list(list("comid", "13293970"),
+#'                   list("nwissite", "USGS-05428500"),
+#'                   list("huc12pp", "070900020603"),
+#'                   list("huc12pp", "070900020602")),
+#'              streamorder = 2,
+#'              nhdplus_data = sample_data,
+#'              plot_config = list(basin = list(lwd = 2),
+#'                                 outlets = list(huc12pp = list(cex = 1.5),
+#'                                                comid = list(col = "green"))))
+#'
 
-plot_nhdplus <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_data = NA, gpkg = NA) {
+plot_nhdplus <- function(outlets = NA, bbox = NA, streamorder = NA,
+                         nhdplus_data = NA, gpkg = NA, plot_config = NA) {
 
   pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg)
+
+  st <- get_styles(plot_config)
 
   prettymapr::prettymap({
     rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE)
     # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
-    graphics::plot(gt(pd$basin), lwd = 1, col = NA, border = "black", add = TRUE)
-    graphics::plot(gt(pd$flowline), lwd = 1, col = "blue", add = TRUE)
-    graphics::plot(gt(pd$outlets), col = "grey40", pch = 17, add = TRUE)
+    graphics::plot(gt(pd$basin), lwd = st$basin$lwd, col = st$basin$col,
+                   border = st$basin$border, add = TRUE)
+    graphics::plot(gt(pd$flowline), lwd = st$flowline$lwd, col = st$flowline$col,
+                   add = TRUE)
+    for(type in unique(pd$outlets$type)) {
+      st_type <- "default"
+      if(type %in% names(st$outlets)) st_type <- type
+      graphics::plot(gt(pd$outlets[pd$outlets$type == type, ]), col = st$outlets[[st_type]]$col,
+                     pch = st$outlets[[st_type]]$pch, bg = st$outlets[[st_type]]$bg,
+                     cex = st$outlets[[st_type]]$cex, add = TRUE)
+    }
   },
   drawarrow = TRUE)
 }
 
+get_styles <- function(plot_config) {
+  conf <- list(basin = list(lwd = 1, col = NA, border = "black"),
+               flowline = list(lwd = 1, col = "blue"),
+               outlets = list(default = list(col = "black", bg = NA, pch = 19, cex = 1),
+                              nwissite = list(col = "grey40", bg = NA, pch = 17, cex = 1),
+                              huc12pp = list(col = "black", bg = "white", pch = 22, cex = 1),
+                              wqp = list(col = "red", bg = NA, pch = 20, cex = 1)))
 
+  validate_plot_config(plot_config)
+
+  for(x in names(plot_config)) {
+    for(y in names(plot_config[[x]])) {
+      if(!is.list(plot_config[[x]][[y]])) {
+        conf[[x]][[y]] <- plot_config[[x]][[y]]
+      } else {
+        if(!y %in% names(conf[[x]])) conf[[x]][[y]] <- conf[[x]][["default"]]
+        for(z in names(plot_config[[x]][[y]])) {
+          conf[[x]][[y]][[z]] <- plot_config[[x]][[y]][[z]]
+        }
+      }
+    }
+  }
+
+  conf
+
+}
+
+validate_plot_config <- function(plot_config) {
+  if(all(is.na(plot_config))) return(invisible(NA))
+
+  if(!all(names(plot_config) %in% c("basin", "flowline", "outlets")))
+    stop(paste('Expected one or more of "basin", "flowline", or "outlets" in plot_config, got:',
+               plot_config))
+
+  if("basin" %in% names(plot_config)) {
+    if(!all(names(plot_config$basin) %in% c("lwd", "col", "border")))
+      stop('Expected one ore more of "lwd", "col", or "border" in basins plot_config, got:',
+           names(plot_config$basin))
+  }
+
+  if("flowline" %in% names(plot_config)) {
+    if(!all(names(plot_config$flowline) %in% c("lwd", "col")))
+      stop('Expected one ore more of "lwd" and "col" in flowlines plot_config, got:',
+           names(plot_config$flowline))
+  }
+
+  if(any(sapply(plot_config$outlets, function(x) !all(names(x) %in% c("col", "bg", "pch", "cex")))))
+    stop(paste('Expected one or more of "col", "bg", "pch", or "cex" in outlets plot_config, got:',
+               paste(unique(unlist(sapply(plot_config$outlets, names, simplify = TRUE))), collapse = ", ")))
+
+  return(invisible(NA))
+}
 
 get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_data = NA, gpkg = NA) {
 
@@ -72,6 +157,7 @@ get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_dat
     stop("Streamoder not available without specifying nhdplus_data source. Can't filter.")
 
   outlets <- as_outlets(outlets)
+  outlet_type <- sapply(outlets, function(x) x$featureSource)
 
   if(!is.na(nhdplus_data)) {
     fline_layer = get_flowline_layer_name()
@@ -115,6 +201,8 @@ get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_dat
 
     catchment <- NA
   }
+
+  nexus["type"] <- outlet_type
 
   if(is.na(bbox)) {
     bbox <- sp_bbox(sf::st_transform(basin, 4326))

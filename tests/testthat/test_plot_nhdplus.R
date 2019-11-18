@@ -6,6 +6,8 @@ test_that("basics work", {
   d <-  nhdplusTools:::get_plot_data(site)
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
 
+  expect_true(all(c("comid", "type") %in% names(d$outlets)))
+
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
   expect_s3_class(p_ready, "sfc_LINESTRING")
@@ -79,16 +81,17 @@ test_that("local data", {
 
   expect_equal(names(plot_data), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
   expect_equal(nrow(plot_data$flowline), 251)
+  expect_equal(plot_data$outlets$type, "comid")
 
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
   expect_equal(nrow(plot_data$flowline), 57)
-  expect_true("comid" %in% names(plot_data$outlets))
+  expect_true(all(c("comid", "type") %in% names(plot_data$outlets)))
 
   skip_on_cran()
   outlet <- c(list(outlet), list(c("nwissite", "USGS-05428500")))
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
 
-  expect_equal(names(plot_data$outlets), c("comid", "geom"))
+  expect_equal(names(plot_data$outlets), c("comid", "geom", "type"))
   expect_equal(plot_data$outlets$comid, c("13293970", "13293750"))
 
   expect_s3_class(sf::st_geometry(plot_data$flowline)[[1]], "XY")
@@ -97,6 +100,7 @@ test_that("local data", {
                                             streamorder = 3, nhdplus_data = sample_data)
 
   expect_equal(nrow(plot_data$outlets), 3)
+  expect_equal(plot_data$outlets$type, c("comid", "nwissite", "nwissite"))
 
   # plot_nhdplus(outlets = outlet, nhdplus_data = sample_data)
   #
@@ -195,5 +199,37 @@ test_that("test_as_outlets", {
   expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "comid", featureID = "23735691")))
 
 })
+
+test_that("test_styles", {
+  st <- nhdplusTools:::get_styles(NA)
+  expect_named(st, c("basin", "flowline", "outlets"))
+  expect_named(st$outlets, c("default", "nwissite", "huc12pp", "wqp"))
+  expect_named(st$outlets$nwissite, c("col", "bg", "pch", "cex"))
+
+  st <- nhdplusTools:::get_styles(list(basin = c(lwd = 2),
+                                       flowline = c(col = "test"),
+                                       outlets = list(nwissite = list(pch = "."),
+                                                      test = list(pch = 27, cex = 2))))
+
+  expect_equal(st$basin$lwd, 2)
+  expect_equal(st$flowline$col, "test")
+  expect_equal(st$outlets$test, list(col = "black", bg = NA, pch = 27, cex = 2))
+  expect_equal(st$outlets$nwissite$pch, ".")
+
+  expect_error(nhdplusTools:::get_styles(list(basin = c(lwc = 2))),
+               'Expected one ore more of "lwd", "col", or "border" in basins plot_config, got:lwc')
+
+  expect_error(nhdplusTools:::get_styles(list(lowline = c(bol = "test"))),
+               'Expected one or more of "basin", "flowline", or "outlets" in plot_config, got: test')
+
+  expect_error(nhdplusTools:::get_styles(list(outlets = list(nwissite = list(dch = "."),
+                                                             test = list(pch = 27, pex = 2)))),
+               'Expected one or more of "col", "bg", "pch", or "cex" in outlets plot_config, got: dch, pch, pex')
+})
+
+
+
+
+
 
 

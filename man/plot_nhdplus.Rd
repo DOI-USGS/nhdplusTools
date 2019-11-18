@@ -5,7 +5,7 @@
 \title{Plot NHDPlus}
 \usage{
 plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
-  nhdplus_data = NA, gpkg = NA)
+  nhdplus_data = NA, gpkg = NA, plot_config = NA)
 }
 \arguments{
 \item{outlets}{list of nldi outlets. Other inputs are coerced into nldi outlets, see details.}
@@ -17,6 +17,8 @@ plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
 \item{nhdplus_data}{geopackage containing source nhdplus data}
 
 \item{gpkg}{path and file with .gpkg ending. If NA, no file is written.}
+
+\item{plot_config}{list containing plot configuration, see details.}
 }
 \description{
 Given a list of outlets, get their basin boundaries and network and return a plot.
@@ -25,7 +27,7 @@ Given a list of outlets, get their basin boundaries and network and return a plo
 plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 is used to convert the outlet formats as described below.
 \enumerate{
-. \item if outlets is omitted, the bbox input is required and all nhdplus data
+  \item if outlets is omitted, the bbox input is required and all nhdplus data
 in the bounding box is plotted. (not implemented)
   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
   and all upstream tributaries are plotted.
@@ -36,6 +38,17 @@ in the bounding box is plotted. (not implemented)
   of nldi features and all upstream tributaries are plotted.
   \item if outlets is a data.frame with point geometry, a point in polygon match
   is performed and upstream with tributaries from the identified catchments is plotted.
+}
+
+The \code{plot_config} parameter is a list with names "basin", "flowline" and "outlets".
+The following shows the defaults that can be altered.
+\enumerate{
+  \item basin list(lwd = 1, col = NA, border = "black")
+  \item flowline list(lwd = 1, col = "blue")
+  \item outlets list(default = list(col = "black", border = NA, pch = 19, cex = 1),
+                     nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
+                     huc12pp = list(col = "white", border = "black", pch = 22, cex = 1),
+                     wqp = list(col = "red", border = NA, pch = 20, cex = 1))
 }
 }
 \examples{
@@ -60,5 +73,15 @@ plot_nhdplus(sf::st_as_sf(data.frame(x = -89.36083,
                           coords = c("x", "y"), crs = 4326),
              streamorder = 2,
              nhdplus_data = sample_data)
+
+plot_nhdplus(list(list("comid", "13293970"),
+                  list("nwissite", "USGS-05428500"),
+                  list("huc12pp", "070900020603"),
+                  list("huc12pp", "070900020602")),
+             streamorder = 2,
+             nhdplus_data = sample_data,
+             plot_config = list(basin = list(lwd = 2),
+                                outlets = list(huc12pp = list(cex = 1.5),
+                                               comid = list(col = "green"))))
 
 }

@@ -287,11 +287,22 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
   }
 }
 
+#' @noRd
+#' @importFrom sf st_multilinestring
 get_hr_data <- function(gdb, layer = NULL) {
   if(layer == "NHDFlowline") {
-    vaa <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
-    vaa <- select(vaa, -ReachCode, -VPUID)
-    left_join( read_sf(gdb, layer), vaa, by = "NHDPlusID")
+    hr_data <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
+    hr_data <- select(hr_data, -ReachCode, -VPUID)
+    hr_data <- left_join( sf::st_zm(read_sf(gdb, layer)), hr_data, by = "NHDPlusID")
+
+    fix <- which(sapply(st_geometry(hr_data), function(x) class(x)[2]) != "MULTILINESTRING")
+
+    for(f in fix) {
+      st_geometry(hr_data)[[f]] <- st_multilinestring(lapply(st_geometry(hr_data)[[f]][[1]], st_cast, to = "LINESTRING"), dim = "XY")
+    }
+
+    return(hr_data)
+
   } else {
     read_sf(gdb, layer)
   }

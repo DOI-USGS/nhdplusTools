@@ -5,7 +5,7 @@
 \title{Plot NHDPlus}
 \usage{
 plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
-  nhdplus_data = NA, gpkg = NA, plot_config = NA)
+  nhdplus_data = NA, gpkg = NA, plot_config = NA, ...)
 }
 \arguments{
 \item{outlets}{list of nldi outlets. Other inputs are coerced into nldi outlets, see details.}
@@ -19,6 +19,8 @@ plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
 \item{gpkg}{path and file with .gpkg ending. If NA, no file is written.}
 
 \item{plot_config}{list containing plot configuration, see details.}
+
+\item{...}{parameters passed on to rosm.}
 }
 \description{
 Given a list of outlets, get their basin boundaries and network and return a plot.
@@ -43,12 +45,14 @@ is used to convert the outlet formats as described below.
 The \code{plot_config} parameter is a list with names "basin", "flowline" and "outlets".
 The following shows the defaults that can be altered.
 \enumerate{
-  \item basin list(lwd = 1, col = NA, border = "black")
-  \item flowline list(lwd = 1, col = "blue")
-  \item outlets list(default = list(col = "black", border = NA, pch = 19, cex = 1),
-                     nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
-                     huc12pp = list(col = "white", border = "black", pch = 22, cex = 1),
-                     wqp = list(col = "red", border = NA, pch = 20, cex = 1))
+  \item basin \code{list(lwd = 1, col = NA, border = "black")}
+  \item flowline \code{list(lwd = 1, col = "blue")}
+  \item outlets \preformatted{
+   list(default = list(col = "black", border = NA, pch = 19, cex = 1),
+        nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
+        huc12pp = list(col = "white", border = "black", pch = 22, cex = 1),
+        wqp = list(col = "red", border = NA, pch = 20, cex = 1))
+        }
 }
 }
 \examples{

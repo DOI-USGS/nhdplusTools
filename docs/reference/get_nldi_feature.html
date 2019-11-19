@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • nhdplusTools</title>
+<title>Get NLDI Feature — get_nldi_feature • nhdplusTools</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,9 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Get NLDI Feature — get_nldi_feature" />
+
+<meta property="og:description" content="Get a single feature from the NLDI" />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -50,7 +52,7 @@
   </head>
 
   <body>
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -120,71 +122,64 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+    <h1>Get NLDI Feature</h1>
+    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_nldi.R'><code>R/get_nldi.R</code></a></small>
+    <div class="hidden name"><code>get_nldi_feature.Rd</code></div>
     </div>
 
-    <div id="nhdplustools-0-3-11" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-11" class="anchor"></a>nhdplusTools 0.3.11<small> 2019-11-07 </small>
-</h1>
-<ul>
-<li>Updated link to NHDPlusHR data</li>
-<li>Empty tibble rather than NULL response from empty NLDI result</li>
-<li>Slides from AWRA National 2019, link in README</li>
-</ul>
-</div>
-    <div id="nhdplustools-0-3-10" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-10" class="anchor"></a>nhdplusTools 0.3.10<small> 2019-10-17 </small>
-</h1>
-<ul>
-<li>Added name alignment function</li>
-<li>Added ability to sort response of network navigation</li>
-</ul>
-</div>
-    <div id="nhdplustools-0-3-9" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-9" class="anchor"></a>nhdplusTools 0.3.9<small> 2019-10-16 </small>
-</h1>
-<ul>
-<li>Added downloader functions for more hydrography datasets</li>
-<li>Change navigations to exclude requested catchment</li>
-</ul>
-</div>
-    <div id="nhdplustools-0-3-8" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-8" class="anchor"></a>nhdplusTools 0.3.8<small> 2019-08-27 </small>
-</h1>
-<ul>
-<li>Modified vignettes and examples to avoid web-service calls breaking CRAN build.</li>
-<li>Added error handling to some web service requests.</li>
-<li>Added CITATION and NEWS.</li>
-</ul>
-</div>
-    <div id="nhdplustools-0-3-7" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-7" class="anchor"></a>nhdplusTools 0.3.7<small> 2019-08-25 </small>
-</h1>
-<ul>
-<li>First CRAN release!</li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    
+    <p>Get a single feature from the NLDI</p>
+    
+    </div>
 
+    <pre class="usage"><span class='fu'>get_nldi_feature</span>(<span class='no'>nldi_feature</span>, <span class='kw'>tier</span> <span class='kw'>=</span> <span class='st'>"prod"</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>nldi_feature</th>
+      <td><p>list with names `featureSource` and `featureID` where
+`featureSource` is derived from the "source" column of  the response of
+discover_nldi_sources() and the `featureSource` is a known identifier
+from the specified `featureSource`.</p></td>
+    </tr>
+    <tr>
+      <th>tier</th>
+      <td><p>character optional "prod" or "test"</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>sf feature collection with one feature</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>get_nldi_feature</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"featureSource"</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05428500"</span>))</div><div class='output co'>#&gt; Simple feature collection with 1 feature and 7 fields
+#&gt; geometry type:  POINT
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: -89.36083 ymin: 43.08944 xmax: -89.36083 ymax: 43.08944
+#&gt; epsg (SRID):    4326
+#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs
+#&gt; <span style='color: #949494;'># A tibble: 1 x 8</span><span>
+#&gt;   source sourceName identifier name  uri   comid navigation
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> nwiss… NWIS Sites USGS-0542… YAHA… http… 1329… https://l…
+#&gt; </span><span style='color: #949494;'># … with 1 more variable: geometry </span><span style='color: #949494;font-style: italic;'>&lt;POINT [°]&gt;</span><span></div></span></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#nhdplustools-0-3-11">0.3.11</a></li>
-        <li><a href="#nhdplustools-0-3-10">0.3.10</a></li>
-        <li><a href="#nhdplustools-0-3-9">0.3.9</a></li>
-        <li><a href="#nhdplustools-0-3-8">0.3.8</a></li>
-        <li><a href="#nhdplustools-0-3-7">0.3.7</a></li>
-      </ul>
-    </div>
-  </div>
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
+  </div>
 </div>
 
       <footer>

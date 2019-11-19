@@ -6,6 +6,7 @@
 #' @param nhdplus_data geopackage containing source nhdplus data
 #' @param gpkg path and file with .gpkg ending. If NA, no file is written.
 #' @param plot_config list containing plot configuration, see details.
+#' @param ... parameters passed on to rosm.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
 #' \enumerate{
@@ -25,12 +26,14 @@
 #' The \code{plot_config} parameter is a list with names "basin", "flowline" and "outlets".
 #' The following shows the defaults that can be altered.
 #' \enumerate{
-#'   \item basin list(lwd = 1, col = NA, border = "black")
-#'   \item flowline list(lwd = 1, col = "blue")
-#'   \item outlets list(default = list(col = "black", border = NA, pch = 19, cex = 1),
-#'                      nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
-#'                      huc12pp = list(col = "white", border = "black", pch = 22, cex = 1),
-#'                      wqp = list(col = "red", border = NA, pch = 20, cex = 1))
+#'   \item basin \code{list(lwd = 1, col = NA, border = "black")}
+#'   \item flowline \code{list(lwd = 1, col = "blue")}
+#'   \item outlets \preformatted{
+#'    list(default = list(col = "black", border = NA, pch = 19, cex = 1),
+#'         nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
+#'         huc12pp = list(col = "white", border = "black", pch = 22, cex = 1),
+#'         wqp = list(col = "red", border = NA, pch = 20, cex = 1))
+#'         }
 #' }
 #'
 #' @export
@@ -69,14 +72,14 @@
 #'
 
 plot_nhdplus <- function(outlets = NA, bbox = NA, streamorder = NA,
-                         nhdplus_data = NA, gpkg = NA, plot_config = NA) {
+                         nhdplus_data = NA, gpkg = NA, plot_config = NA, ...) {
 
   pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg)
 
   st <- get_styles(plot_config)
 
   prettymapr::prettymap({
-    rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE)
+    rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE, progress = "none", ...)
     # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
     graphics::plot(gt(pd$basin), lwd = st$basin$lwd, col = st$basin$col,
                    border = st$basin$border, add = TRUE)
@@ -125,7 +128,7 @@ validate_plot_config <- function(plot_config) {
 
   if(!all(names(plot_config) %in% c("basin", "flowline", "outlets")))
     stop(paste('Expected one or more of "basin", "flowline", or "outlets" in plot_config, got:',
-               plot_config))
+               names(plot_config)))
 
   if("basin" %in% names(plot_config)) {
     if(!all(names(plot_config$basin) %in% c("lwd", "col", "border")))

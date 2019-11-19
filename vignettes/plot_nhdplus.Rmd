@@ -22,13 +22,67 @@ options(scipen = 9999)
 ```{r data_dir_setup, echo=FALSE, include=FALSE}
 temp_dir <- tempdir()
 dir.create(temp_dir)
+library(nhdplusTools)
 ```
 
 # Plotting with nhdplusTools
 
 The goal of this vignette is to demonstrate a simple and lightweight approach to building maps with NHDPlus data. 
 
+## The `plot_nhdplus` function
+
+**`plot_nhdplus` is a work in progress. Not all inputs in the function have been implemented as of 11/18/2019 and additional functionality will be added later. Please leave feature requests and issues you find in an [issue here](https://github.com/USGS-R/nhdplusTools/pulls).**
+
+`plot_nhdplus` is a function that makes getting a simple plot of NHDPlus data as easy as possible. It works with other functions from `nhdplusTools` for identifying and retrieving watershed outlet locations. See the `plot_nhdplus` documentation for more info.
+
+If we pass `plot_nhdplus` a single NWIS site id, `nhdplusTools` uses web services to get data and we get a plot like this:
+
+```{r nwis_simple1, message=FALSE} 
+plot_nhdplus("05428500")
+```
+
+If we want to add other watersheds, we can use any outlet available from the Network Linked Data Index. See "nldi" functions elsewhere in `nhdplusTools`.
+
+```{r nwis_simple2, message=FALSE} 
+plot_nhdplus(list(list("nwissite", "USGS-05428500"),
+                  list("huc12pp", "070900020602")))
+```
+
+```{r two_outlets, message=FALSE} 
+plot_nhdplus(list(list("nwissite", "USGS-05428500"),
+                  list("huc12pp", "070900020602")))
+```
+
+If we don't know a site id, we can just pass in one or more latitude / longitude locations.
+
+```{r point_location, message=FALSE}
+start_point <- sf::st_as_sf(data.frame(x = -89.36, y = 43.09), 
+                            coords = c("x", "y"), crs = 4326)
+
+plot_nhdplus(start_point)
+```
+
+`plot_nhdplus` also allows modification of streamorder (if you have data available locally) and styles. This plot request shows how to get a subset of data for a plot and the range of options. See documentation for more details.
+
+```{r plot_styles, message=FALSE} 
+sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+plot_nhdplus(list(list("comid", "13293970"),
+                  list("nwissite", "USGS-05428500"),
+                  list("huc12pp", "070900020603"),
+                  list("huc12pp", "070900020602")),
+             streamorder = 2,
+             nhdplus_data = sample_data,
+             plot_config = list(basin = list(lwd = 2),
+                                outlets = list(huc12pp = list(cex = 1.5),
+                                               comid = list(col = "green"))),
+             stoponlargerequest = FALSE)
+```
+
+There's more to come. Stay tuned!
+
 ## Getting Data
+
+What follows shows how to use `nhdplusTools` to create plots without the `plot_nhdplus` function. While super convenient, we all know the "easy button" is never quite right, the description below should help get you started.
 
 For this example, we'll start from an outlet NWIS Site. Note that other options are possible with `discover_nhdplus_id` and `discover_nldi_sources`.
 

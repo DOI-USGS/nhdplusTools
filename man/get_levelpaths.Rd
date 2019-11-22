@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_network.R
 \name{get_levelpaths}
 \alias{get_levelpaths}
-\title{Calculate Level Paths}
+\title{Get Level Paths}
 \usage{
 get_levelpaths(flowline, status = FALSE)
 }

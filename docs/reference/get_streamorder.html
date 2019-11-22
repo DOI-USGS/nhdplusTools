@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • nhdplusTools</title>
+<title>Get Streamorder — get_streamorder • nhdplusTools</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,7 +42,11 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Get Streamorder — get_streamorder" />
+<meta property="og:description" content="Applies a topological sort and calculates strahler stream order.
+Algorithm: If more than one upstream flowpath has an order equal to the
+maximum upstream order then the downstream flowpath is assigned the maximum
+upstream order plus one. Otherwise it is assigned the max upstream order." />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -63,7 +67,7 @@
   </head>
 
   <body>
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -133,71 +137,59 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+    <h1>Get Streamorder</h1>
+    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/calc_network.R'><code>R/calc_network.R</code></a></small>
+    <div class="hidden name"><code>get_streamorder.Rd</code></div>
     </div>
 
-    <div id="nhdplustools-0-3-11" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-11" class="anchor"></a>nhdplusTools 0.3.11<small> 2019-11-07 </small>
-</h1>
-<ul>
-<li>Updated link to NHDPlusHR data</li>
-<li>Empty tibble rather than NULL response from empty NLDI result</li>
-<li>Slides from AWRA National 2019, link in README</li>
-</ul>
-</div>
-    <div id="nhdplustools-0-3-10" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-10" class="anchor"></a>nhdplusTools 0.3.10<small> 2019-10-17 </small>
-</h1>
-<ul>
-<li>Added name alignment function</li>
-<li>Added ability to sort response of network navigation</li>
-</ul>
-</div>
-    <div id="nhdplustools-0-3-9" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-9" class="anchor"></a>nhdplusTools 0.3.9<small> 2019-10-16 </small>
-</h1>
-<ul>
-<li>Added downloader functions for more hydrography datasets</li>
-<li>Change navigations to exclude requested catchment</li>
-</ul>
-</div>
-    <div id="nhdplustools-0-3-8" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-8" class="anchor"></a>nhdplusTools 0.3.8<small> 2019-08-27 </small>
-</h1>
-<ul>
-<li>Modified vignettes and examples to avoid web-service calls breaking CRAN build.</li>
-<li>Added error handling to some web service requests.</li>
-<li>Added CITATION and NEWS.</li>
-</ul>
-</div>
-    <div id="nhdplustools-0-3-7" class="section level1">
-<h1 class="page-header">
-<a href="#nhdplustools-0-3-7" class="anchor"></a>nhdplusTools 0.3.7<small> 2019-08-25 </small>
-</h1>
-<ul>
-<li>First CRAN release!</li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    <p>Applies a topological sort and calculates strahler stream order.
+Algorithm: If more than one upstream flowpath has an order equal to the
+maximum upstream order then the downstream flowpath is assigned the maximum
+upstream order plus one. Otherwise it is assigned the max upstream order.</p>
+    </div>
 
+    <pre class="usage"><span class='fu'>get_streamorder</span>(<span class='no'>fl</span>)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>fl</th>
+      <td><p>data.frame with dendritic ID and toID columns.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>numeric stream order in same order as input</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+
+<span class='no'>test_flowline</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: removing geometry</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 0 flowlines that don't apply.</span>
+#&gt; <span class='warning'> Includes: Coastlines, non-dendritic paths, </span>
+#&gt; <span class='warning'>and networks with drainage area less than 0 sqkm, and drainage basins smaller than FALSE</span></div><div class='input'>
+<span class='no'>test_flowline</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
+  <span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>test_flowline</span>$<span class='no'>COMID</span>,
+  <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>test_flowline</span>$<span class='no'>toCOMID</span>)
+
+(<span class='no'>order</span> <span class='kw'>&lt;-</span> <span class='fu'>get_streamorder</span>(<span class='no'>test_flowline</span>))</div><div class='output co'>#&gt;  [1] 4 4 4 4 4 3 3 3 3 2 2 2 2 2 2 1 3 3 3 3 2 2 1 1 2 2 1 1 1 2 1 2 1 1 1 1 1 2
+#&gt; [39] 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 2</div><div class='input'>
+<span class='no'>walker_flowline</span>$<span class='no'>order</span> <span class='kw'>&lt;-</span> <span class='no'>order</span>
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>walker_flowline</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='no'>walker_flowline</span>$<span class='no'>order</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)</div><div class='img'><img src='get_streamorder-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#nhdplustools-0-3-11">0.3.11</a></li>
-        <li><a href="#nhdplustools-0-3-10">0.3.10</a></li>
-        <li><a href="#nhdplustools-0-3-9">0.3.9</a></li>
-        <li><a href="#nhdplustools-0-3-8">0.3.8</a></li>
-        <li><a href="#nhdplustools-0-3-7">0.3.7</a></li>
-      </ul>
-    </div>
-  </div>
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
+  </div>
 </div>
 
 

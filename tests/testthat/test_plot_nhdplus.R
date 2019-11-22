@@ -1,5 +1,8 @@
 context("plot tests")
 
+sample_data <- system.file("extdata/sample_natseamless.gpkg",
+                           package = "nhdplusTools")
+
 test_that("basics work", {
   skip_on_cran()
   site <- "USGS-05428500"
@@ -24,8 +27,6 @@ test_that("basics work", {
   expect_true(file.exists(tempf))
 
   unlink(tempf)
-
-  sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
 
   png(file.path(tempd, "temp.png"))
   plot_nhdplus(list(list("comid", "13293970"),
@@ -60,9 +61,6 @@ test_that("basics work", {
 })
 
 test_that("local data", {
-
-  sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                             package = "nhdplusTools")
 
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   gage <- sf::read_sf(sample_data, "Gage")
@@ -234,8 +232,23 @@ test_that("test_styles", {
                'Expected one or more of "col", "bg", "pch", or "cex" in outlets plot_config, got: dch, pch, pex')
 })
 
+test_that("bbox", {
+  skip_on_cran()
 
+   bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
+                       crs = "+proj=longlat +datum=WGS84 +no_defs")
 
+   # With downloaded data
+   d <- nhdplusTools:::get_plot_data(bbox = bbox)
+
+   expect_equal(nrow(d$flowline), 183)
+
+   # With Local Data (note this sanple is already subset to a watershed basis)
+   d <- nhdplusTools:::get_plot_data(bbox = bbox, streamorder = 2,
+                                     nhdplus_data = sample_data)
+
+  expect_equal(nrow(d$flowline), 76)
+})
 
 
 

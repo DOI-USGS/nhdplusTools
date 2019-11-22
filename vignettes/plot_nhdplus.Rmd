@@ -78,7 +78,13 @@ plot_nhdplus(list(list("comid", "13293970"),
              stoponlargerequest = FALSE)
 ```
 
-There's more to come. Stay tuned!
+We can also plot NHDPlus data without an outlet at all. 
+
+```{r bbox_plotting, message=FALSE}
+bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
+                    crs = "+proj=longlat +datum=WGS84 +no_defs")
+plot_nhdplus(bbox = bbox)
+```
 
 ## Getting Data
 

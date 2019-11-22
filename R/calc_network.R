@@ -91,7 +91,7 @@ accumulate_downstream <- function(dat_fram, var) {
   return(dat_fram[[var]])
 }
 
-#' Calculate Level Paths
+#' Get Level Paths
 #' @description Calculates level paths using the stream-leveling approach of
 #' NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
 #' levelpath outlet identifier is provided in output. If arbolate sum is provided in

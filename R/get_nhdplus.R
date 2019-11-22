@@ -118,7 +118,7 @@ get_nhdplus_byid <- function(comids, layer) {
 #' @noRd
 get_nhdplus_bybox <- function(box, layer) {
 
-  valid_layers <- c("nhdarea", "nhdwaterbody")
+  valid_layers <- c("nhdarea", "nhdwaterbody", "catchmentsp", "nhdflowline_network")
 
   if (!layer %in% valid_layers) {
     stop(paste("Layer must be one of",

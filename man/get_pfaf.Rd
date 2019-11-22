@@ -9,6 +9,10 @@ get_pfaf(fl, max_level = 2)
 \arguments{
 \item{fl}{sf data.frame with ID, toID, totda, outletID, topo_sort,
 and levelpath attributes.}
+
+\item{max_level}{integer number of pfaf levels to attempt to calculate.
+If the network doesn't have resolution to support the desired level,
+unexpected behavior may occur.}
 }
 \value{
 data.frame with ID and pfaf columns.
@@ -28,8 +32,8 @@ fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = TRUE, warn = FALS
   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
 fl$nameID = ""
-fl$totda <- calculate_total_drainage_area(st_set_geometry(fl, NULL))
-fl <- left_join(fl, get_levelpaths(rename(st_set_geometry(fl, NULL), weight = totda)), by = "ID")
+fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL), weight = totda)), by = "ID")
 
 pfaf <- get_pfaf(fl, max_level = 2)
 
@@ -45,8 +49,8 @@ fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn =
   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
 fl$nameID = ""
-fl$totda <- calculate_total_drainage_area(st_set_geometry(fl, NULL))
-fl <- left_join(fl, get_levelpaths(rename(st_set_geometry(fl, NULL), weight = totda)), by = "ID")
+fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL), weight = totda)), by = "ID")
 
 pfaf <- get_pfaf(fl, max_level = 2)
 

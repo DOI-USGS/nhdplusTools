@@ -10,7 +10,7 @@ test_that("basics work", {
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
-  expect_s3_class(p_ready, "sfc_LINESTRING")
+  expect_s3_class(p_ready, "sfc_MULTILINESTRING")
 
   pdf(NULL)
   tempd <- tempdir()
@@ -37,7 +37,6 @@ test_that("basics work", {
   dev.off()
 
   expect_true(file.exists(tempf))
-
   unlink(tempf)
 
   png(file.path(tempd, "temp.png"))
@@ -49,11 +48,15 @@ test_that("basics work", {
   dev.off()
 
   expect_true(file.exists(tempf))
-
   unlink(tempf)
 
-  expect_error(plot_nhdplus("USGS-05428500", streamorder = 3),
-               "Streamoder not available without specifying nhdplus_data source. Can't filter.")
+  png(file.path(tempd, "temp.png"))
+  plot_nhdplus("USGS-05428500", streamorder = 3)
+  dev.off()
+
+  expect_true(file.exists(tempf))
+  unlink(tempf)
+
 })
 
 test_that("local data", {

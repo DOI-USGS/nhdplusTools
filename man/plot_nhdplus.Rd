@@ -10,13 +10,13 @@ plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
 \arguments{
 \item{outlets}{list of nldi outlets. Other inputs are coerced into nldi outlets, see details.}
 
-\item{bbox}{vector of map limits (xmin, ymin, xmax, ymax) that can be coerced into an object of class bbox.}
+\item{bbox}{object of class bbox with a defined crs. See examples.}
 
 \item{streamorder}{integer only streams of order greater than or equal will be returned}
 
-\item{nhdplus_data}{geopackage containing source nhdplus data}
+\item{nhdplus_data}{geopackage containing source nhdplus data (omit to download)}
 
-\item{gpkg}{path and file with .gpkg ending. If NA, no file is written.}
+\item{gpkg}{path and file with .gpkg ending. If omitted, no file is written. (not implemented)}
 
 \item{plot_config}{list containing plot configuration, see details.}
 
@@ -30,7 +30,7 @@ plot_nhdplus supports several input specifications. An unexported function "as_o
 is used to convert the outlet formats as described below.
 \enumerate{
   \item if outlets is omitted, the bbox input is required and all nhdplus data
-  in the bounding box is plotted. (not implemented)
+  in the bounding box is plotted.
   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
   and all upstream tributaries are plotted.
   \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
@@ -58,6 +58,8 @@ The following shows the defaults that can be altered.
 \examples{
 
 plot_nhdplus("05428500")
+
+plot_nhdplus("05428500", streamorder = 2)
 
 plot_nhdplus(list(13293970, 13293750))
 
@@ -87,5 +89,14 @@ plot_nhdplus(list(list("comid", "13293970"),
              plot_config = list(basin = list(lwd = 2),
                                 outlets = list(huc12pp = list(cex = 1.5),
                                                comid = list(col = "green"))))
+
+bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
+                    crs = "+proj=longlat +datum=WGS84 +no_defs")
+
+# With downloaded data
+plot_nhdplus(bbox = bbox)
+
+# With Local Data (note this sanple is already subset to a watershed basis)
+plot_nhdplus(bbox = bbox, streamorder = 2, nhdplus_data = sample_data)
 
 }

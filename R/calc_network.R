@@ -283,6 +283,9 @@ get_streamorder <- function(fl) {
 #' total drainage area, levelpath, and topo_sort attributes.
 #' @param fl sf data.frame with ID, toID, totda, outletID, topo_sort,
 #' and levelpath attributes.
+#' @param max_level integer number of pfaf levels to attempt to calculate.
+#' If the network doesn't have resolution to support the desired level,
+#' unexpected behavior may occur.
 #' @return data.frame with ID and pfaf columns.
 #' @export
 #' @importFrom tidyr pivot_wider
@@ -298,8 +301,8 @@ get_streamorder <- function(fl) {
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 #'
 #' fl$nameID = ""
-#' fl$totda <- calculate_total_drainage_area(st_set_geometry(fl, NULL))
-#' fl <- left_join(fl, get_levelpaths(rename(st_set_geometry(fl, NULL), weight = totda)), by = "ID")
+#' fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+#' fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL), weight = totda)), by = "ID")
 #'
 #' pfaf <- get_pfaf(fl, max_level = 2)
 #'
@@ -315,8 +318,8 @@ get_streamorder <- function(fl) {
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 #'
 #' fl$nameID = ""
-#' fl$totda <- calculate_total_drainage_area(st_set_geometry(fl, NULL))
-#' fl <- left_join(fl, get_levelpaths(rename(st_set_geometry(fl, NULL), weight = totda)), by = "ID")
+#' fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+#' fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL), weight = totda)), by = "ID")
 #'
 #' pfaf <- get_pfaf(fl, max_level = 2)
 #'
@@ -334,16 +337,17 @@ get_pfaf <- function(fl, max_level = 2) {
   pfaf <- bind_rows(get_pfaf_9(fl, mainstem, max_level))
 
   pfaf$level <- ceiling(log10(pfaf$pfaf))
-  pfaf <- select(pfaf, -p_id, ID = members)
+  pfaf <- select(pfaf, -.data$p_id, ID = .data$members)
 
-  pivot_wider(pfaf, ID,
+  pivot_wider(pfaf, .data$ID,
               names_from = "level", names_prefix = "pf_level_",
-              values_from = pfaf)
+              values_from = .data$pfaf)
 }
 
 #' @noRd
 #' @importFrom dplyr arrange left_join
 #' @importFrom sf st_drop_geometry
+#' @importFrom methods is
 get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
 
   if((pre_pfaf / 10^(max_level-1)) > 1) return()
@@ -353,7 +357,7 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
                    fl$levelpath != mainstem$levelpath[1], ]
 
   # Exclude those that have already been defined as drainage basin outlets
-  if(methods::is(assigned, "data.frame")) {
+  if(is(assigned, "data.frame")) {
     trib_outlets <- trib_outlets[!trib_outlets$ID %in%
                                    assigned$members[(assigned$pfaf %% 2) == 0], ]
   }
@@ -362,7 +366,7 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
   area_filter <- (if(nrow(trib_outlets) >= 4) 4 else nrow(trib_outlets))
   area_filter <- sort(trib_outlets$totda, decreasing = TRUE)[area_filter]
   t4_tribs <- trib_outlets[trib_outlets$totda >= area_filter, ]
-  t4_tribs <- left_join(t4_tribs, select(st_drop_geometry(fl), ID, ms_ts = topo_sort),
+  t4_tribs <- left_join(t4_tribs, select(st_drop_geometry(fl), .data$ID, ms_ts = .data$topo_sort),
                         by = c("toID" = "ID")) %>% arrange(ms_ts)
 
   ms_inter <- lapply(seq_len(5), function(x, ms, ts) {

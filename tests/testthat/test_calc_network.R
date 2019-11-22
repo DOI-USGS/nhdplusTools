@@ -46,7 +46,7 @@ test_that("calculate level path", {
     stringsAsFactors = FALSE)
 
   test_flowline <- left_join(test_flowline,
-                             calculate_levelpaths(test_flowline, status = TRUE), by = "ID")
+                             get_levelpaths(test_flowline, status = TRUE), by = "ID")
 
   nhdp_lp <- sort(unique(walker_flowline$LevelPathI))
   nhdt_lp <- sort(unique(test_flowline$levelpath))
@@ -71,9 +71,9 @@ test_that("calculate level path", {
     ID = test_flowline$COMID,
     toID = test_flowline$toCOMID)
 
-  order <- calculate_streamorder(test_flowline)
+  test_flowline$order <- get_streamorder(test_flowline)
 
-  walker_flowline <- left_join(walker_flowline, order, by = c("COMID" = "ID"))
+  walker_flowline <- left_join(walker_flowline, test_flowline, by = c("COMID" = "ID"))
 
   expect_equal(walker_flowline$order, walker_flowline$StreamOrde)
 
@@ -86,9 +86,49 @@ test_that("calculate level path", {
     ID = test_flowline$COMID,
     toID = test_flowline$toCOMID)
 
-  order <- calculate_streamorder(test_flowline)
+  test_flowline$order <- get_streamorder(test_flowline)
 
-  pt_data <- left_join(filter(pt_data, COMID %in% test_flowline$ID), order, by = c("COMID" = "ID"))
+  pt_data <- left_join(filter(pt_data, COMID %in% test_flowline$ID),
+                       test_flowline, by = c("COMID" = "ID"))
 
   expect_equal(pt_data$order, pt_data$StreamOrde)
+})
+
+test_that("get_pfaf", {
+  suppressMessages(
+  source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
+  hr_flowline <- nhdplusTools:::rename_nhdplus(hr_flowline)
+
+  suppressWarnings(
+  fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = TRUE, warn = FALSE) %>%
+    left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
+    st_sf() %>%
+    select(ID = COMID, toID = toCOMID, area = AreaSqKM))
+
+  fl$nameID = ""
+  fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+  fl <- left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),
+                                                   weight = totda)), by = "ID")
+
+  pfaf <- get_pfaf(fl, max_level = 2)
+
+  expect_equal(pfaf[pfaf$ID == 15000500028335,	], dplyr::tibble(ID = 15000500028335,
+                                                         pf_level_0 = NA_real_,
+                                                         pf_level_1 = 5, pf_level_2 = 51))
+
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
+  fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
+    left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
+    st_sf() %>%
+    select(ID = COMID, toID = toCOMID, area = AreaSqKM)
+
+  fl$nameID = ""
+  fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+  fl <- left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),
+                                                   weight = totda)), by = "ID")
+
+  pfaf <- get_pfaf(fl, max_level = 2)
+
+  expect_equal(nrow(pfaf), 57)
 })

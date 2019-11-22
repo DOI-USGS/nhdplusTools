@@ -1,33 +1,66 @@
 context("plot tests")
 
+sample_data <- system.file("extdata/sample_natseamless.gpkg",
+                           package = "nhdplusTools")
+
 test_that("basics work", {
   skip_on_cran()
   site <- "USGS-05428500"
   d <-  nhdplusTools:::get_plot_data(site)
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
 
+  expect_true(all(c("comid", "type") %in% names(d$outlets)))
+
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
-  expect_s3_class(p_ready, "sfc_LINESTRING")
+  expect_s3_class(p_ready, "sfc_MULTILINESTRING")
 
   pdf(NULL)
   tempd <- tempdir()
   dir.create(tempd, recursive = TRUE)
   tempf <- file.path(tempd, "temp.png")
+
   png(file.path(tempd, "temp.png"))
   plot_nhdplus("USGS-05428500")
   dev.off()
 
   expect_true(file.exists(tempf))
 
-  expect_error(plot_nhdplus("USGS-05428500", streamorder = 3),
-               "Streamoder not available without specifying nhdplus_data source. Can't filter.")
+  unlink(tempf)
+
+  png(file.path(tempd, "temp.png"))
+  plot_nhdplus(list(list("comid", "13293970"),
+                    list("nwissite", "USGS-05428500"),
+                    list("huc12pp", "070900020603"),
+                    list("huc12pp", "070900020602")),
+               streamorder = 2,
+               nhdplus_data = sample_data)
+  dev.off()
+
+  expect_true(file.exists(tempf))
+  unlink(tempf)
+
+  png(file.path(tempd, "temp.png"))
+  plot_nhdplus(sf::st_as_sf(data.frame(x = -89.36083,
+                                       y = 43.08944),
+                            coords = c("x", "y"), crs = 4326),
+               streamorder = 2,
+               nhdplus_data = sample_data)
+  dev.off()
+
+  expect_true(file.exists(tempf))
+  unlink(tempf)
+
+  png(file.path(tempd, "temp.png"))
+  plot_nhdplus("USGS-05428500", streamorder = 3)
+  dev.off()
+
+  expect_true(file.exists(tempf))
+  unlink(tempf)
+
 })
 
 test_that("local data", {
-
-  sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                             package = "nhdplusTools")
 
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   gage <- sf::read_sf(sample_data, "Gage")
@@ -49,30 +82,34 @@ test_that("local data", {
 
   expect_equal(names(plot_data), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
   expect_equal(nrow(plot_data$flowline), 251)
+  expect_equal(plot_data$outlets$type, "comid")
 
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
   expect_equal(nrow(plot_data$flowline), 57)
-  expect_true("comid" %in% names(plot_data$outlets))
+  expect_true(all(c("comid", "type") %in% names(plot_data$outlets)))
 
   skip_on_cran()
   outlet <- c(list(outlet), list(c("nwissite", "USGS-05428500")))
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
 
-  expect_equal(names(plot_data$outlets), c("comid", "geom"))
+  expect_equal(names(plot_data$outlets), c("comid", "geom", "type"))
   expect_equal(plot_data$outlets$comid, c("13293970", "13293750"))
 
   expect_s3_class(sf::st_geometry(plot_data$flowline)[[1]], "XY")
 
-  plot_data <- nhdplusTools:::get_plot_data("USGS-05429500", outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
+  plot_data <- nhdplusTools:::get_plot_data(outlets = c(outlet, "USGS-05428500"),
+                                            streamorder = 3, nhdplus_data = sample_data)
 
   expect_equal(nrow(plot_data$outlets), 3)
+  expect_equal(plot_data$outlets$type, c("comid", "nwissite", "nwissite"))
 
   # plot_nhdplus(outlets = outlet, nhdplus_data = sample_data)
   #
   # plot_nhdplus(outlets = outlet, nhdplus_data = sample_data, streamorder = 3)
 
-  plot_data <- nhdplusTools:::get_plot_data(nwissite = c("05427718", "05427850"),
-                               outlets = list(c("comid", start),
+  plot_data <- nhdplusTools:::get_plot_data(outlets = list("05427850",
+                                              "05427718",
+                                              c("comid", start),
                                               c("nwissite", "USGS-05428500"),
                                               c("huc12pp", "070900020603"),
                                               c("huc12pp", "070900020602")),
@@ -81,11 +118,138 @@ test_that("local data", {
   expect_equal(nrow(plot_data$outlets), 6)
 
   # Also works with remote data.
-  plot_data <- nhdplusTools:::get_plot_data(nwissite = c("05427718", "05427850"),
-                                            outlets = list(c("comid", start),
+  plot_data <- nhdplusTools:::get_plot_data(outlets = list("05427718",
+                                                           "05427850",
+                                                           c("comid", start),
                                                            c("nwissite", "USGS-05428500"),
                                                            c("huc12pp", "070900020603"),
                                                            c("huc12pp", "070900020602")))
   expect_equal(nrow(plot_data$outlets), 6)
   expect_true("sfc_POINT" %in% class(sf::st_geometry(plot_data$outlets)))
+
+  plot_data <- nhdplusTools:::get_plot_data(sf::st_as_sf(data.frame(x = -89.36083,
+                                                                    y = 43.08944),
+                                                         coords = c("x", "y"), crs = 4326),
+                                            streamorder = 2,
+                                            nhdplus_data = sample_data)
+  expect_equal(nrow(plot_data$outlets), 1)
 })
+
+test_that("test_as_outlets", {
+  o <- list(13293970, 13293971)
+
+  expect_equal(nhdplusTools:::as_outlets(o),
+               list(list(featureSource = "comid", featureID = "13293970"),
+                    list(featureSource = "comid", featureID = "13293971")))
+
+  o <- c(13293970, 13293971)
+
+  expect_equal(nhdplusTools:::as_outlets(o),
+               list(subset = c(13293970, 13293971)))
+
+  o <- "USGS-05428500"
+
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "nwissite", featureID = "USGS-05428500")))
+
+  o <- c("USGS-05428500", "USGS-05429500")
+
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "nwissite", featureID = "USGS-05428500"),
+                                                  list(featureSource = "nwissite", featureID = "USGS-05429500")))
+
+  o <- c("comid", 13293970)
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "comid", featureID = "13293970")))
+
+  o <- list("comid", 13293970)
+
+  expect_error(nhdplusTools:::as_outlets(o), regexp = "Error trying to interpret outlet specification.*Expected length 2 character vector or list with optional names: featureSource, featureID.*")
+
+  o <- list("comid", "13293970")
+
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "comid", featureID = "13293970")))
+
+  o <- c(list(o), list(c("nwissite", "USGS-05428500")))
+
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "comid",
+                                        featureID = "13293970"),
+                                   list(featureSource = "nwissite",
+                                        featureID = "USGS-05428500")))
+
+  o <- c(o,
+            list(c("huc12pp", "070900020603")),
+            list(c("huc12pp", "070900020602")))
+
+  expect_equal(nhdplusTools:::as_outlets(o),
+               list(list(featureSource = "comid", featureID = "13293970"),
+                    list(featureSource = "nwissite", featureID = "USGS-05428500"),
+                    list(featureSource = "huc12pp", featureID = "070900020603"),
+                    list(featureSource = "huc12pp", featureID = "070900020602")))
+
+  o <- c("05427718", "05427850")
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "nwissite", featureID = "USGS-05427718"),
+                                                  list(featureSource = "nwissite", featureID = "USGS-05427850")))
+
+  o <- list(c("comid", "13293970"), c("nwissite", "USGS-05428500"))
+
+  expect_equal(nhdplusTools:::as_outlets(o),
+               list(list(featureSource = "comid", featureID = "13293970"),
+                    list(featureSource = "nwissite", featureID = "USGS-05428500")))
+
+  skip_on_cran()
+  o <- sf::st_as_sf(data.frame(x = -122.765037511658,
+                               y = 45.6534111629304),
+                    coords = c("x", "y"), crs = 4326)
+  expect_equal(nhdplusTools:::as_outlets(o), list(list(featureSource = "comid", featureID = "23735691")))
+
+})
+
+test_that("test_styles", {
+  st <- nhdplusTools:::get_styles(NA)
+  expect_named(st, c("basin", "flowline", "outlets"))
+  expect_named(st$outlets, c("default", "nwissite", "huc12pp", "wqp"))
+  expect_named(st$outlets$nwissite, c("col", "bg", "pch", "cex"))
+
+  st <- nhdplusTools:::get_styles(list(basin = c(lwd = 2),
+                                       flowline = c(col = "test"),
+                                       outlets = list(nwissite = list(pch = "."),
+                                                      test = list(pch = 27, cex = 2))))
+
+  expect_equal(st$basin$lwd, 2)
+  expect_equal(st$flowline$col, "test")
+  expect_equal(st$outlets$test, list(col = "black", bg = NA, pch = 27, cex = 2))
+  expect_equal(st$outlets$nwissite$pch, ".")
+
+  expect_error(nhdplusTools:::get_styles(list(basin = c(lwc = 2))),
+               'Expected one ore more of "lwd", "col", or "border" in basins plot_config, got:lwc')
+
+  expect_error(nhdplusTools:::get_styles(list(lowline = c(bol = "test"))),
+               'Expected one or more of "basin", "flowline", or "outlets" in plot_config, got: lowline')
+
+  expect_error(nhdplusTools:::get_styles(list(flowline = c(bol = "test"))),
+               'Expected one ore more of "lwd" and "col" in flowlines plot_config, got:bol')
+
+  expect_error(nhdplusTools:::get_styles(list(outlets = list(nwissite = list(dch = "."),
+                                                             test = list(pch = 27, pex = 2)))),
+               'Expected one or more of "col", "bg", "pch", or "cex" in outlets plot_config, got: dch, pch, pex')
+})
+
+test_that("bbox", {
+  skip_on_cran()
+
+   bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
+                       crs = "+proj=longlat +datum=WGS84 +no_defs")
+
+   # With downloaded data
+   d <- nhdplusTools:::get_plot_data(bbox = bbox)
+
+   expect_equal(nrow(d$flowline), 183)
+
+   # With Local Data (note this sanple is already subset to a watershed basis)
+   d <- nhdplusTools:::get_plot_data(bbox = bbox, streamorder = 2,
+                                     nhdplus_data = sample_data)
+
+  expect_equal(nrow(d$flowline), 76)
+})
+
+
+
+

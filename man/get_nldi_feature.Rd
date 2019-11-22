@@ -21,5 +21,7 @@ sf feature collection with one feature
 Get a single feature from the NLDI
 }
 \examples{
+\donttest{
 get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
+}
 }

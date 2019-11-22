@@ -5,9 +5,7 @@ reference:
     contents:
       - '`nhdplus_path`'
       - '`stage_national_data`'
-      - '`calculate_total_drainage_area`'
-      - '`calculate_arbolate_sum`'
-      - '`calculate_levelpaths`'
+      - '`plot_nhdplus`'
       - '`subset_nhdplus`'
       - '`prepare_nhdplus`'
       - '`download_nhdplushr`'
@@ -16,6 +14,15 @@ reference:
       - '`download_wbd`'
       - '`get_nhdplushr`'
       - '`align_nhdplus_names`'
+  - title: Network Attributes
+    desc: >
+      Functions that generate common river network attributes.
+    contents:
+      - '`calculate_total_drainage_area`'
+      - '`calculate_arbolate_sum`'
+      - '`get_levelpaths`'
+      - '`get_streamorder`'
+      - '`get_pfaf`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are

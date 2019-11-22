@@ -36,7 +36,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
                         p_crd[2] + 0.00001, p_crd[1] + 0.00001,
                         "urn:ogc:def:crs:EPSG:4269", sep = ","))
 
-    req_data <- httr::RETRY("GET", url, times = 10, pause_cap = 240)
+    req_data <- httr::RETRY("GET", url, times = 3, pause_cap = 60)
 
     catchment <- make_web_sf(req_data)
 
@@ -110,7 +110,7 @@ get_nhdplus_byid <- function(comids, layer) {
 
   # nolint end
 
-  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
+  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 3, pause_cap = 60)
 
   return(make_web_sf(req_data))
 }
@@ -118,7 +118,7 @@ get_nhdplus_byid <- function(comids, layer) {
 #' @noRd
 get_nhdplus_bybox <- function(box, layer) {
 
-  valid_layers <- c("nhdarea", "nhdwaterbody")
+  valid_layers <- c("nhdarea", "nhdwaterbody", "catchmentsp", "nhdflowline_network")
 
   if (!layer %in% valid_layers) {
     stop(paste("Layer must be one of",
@@ -150,7 +150,7 @@ get_nhdplus_bybox <- function(box, layer) {
 
   # nolint end
 
-  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
+  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 3, pause_cap = 60)
 
   return(make_web_sf(req_data))
 
@@ -287,11 +287,23 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
   }
 }
 
+#' @noRd
+#' @importFrom sf st_multilinestring
 get_hr_data <- function(gdb, layer = NULL) {
   if(layer == "NHDFlowline") {
-    vaa <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
-    vaa <- select(vaa, -ReachCode, -VPUID)
-    left_join( read_sf(gdb, layer), vaa, by = "NHDPlusID")
+    hr_data <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
+    hr_data <- select(hr_data, -ReachCode, -VPUID)
+    hr_data <- left_join( sf::st_zm(read_sf(gdb, layer)), hr_data, by = "NHDPlusID")
+
+    fix <- which(!sapply(sf::st_geometry(hr_data), function(x) class(x)[2]) %in% c("LINESTRING", "MULTILINESTRING"))
+
+    for(f in fix) {
+      sf::st_geometry(hr_data)[[f]] <- st_multilinestring(lapply(sf::st_geometry(hr_data)[[f]][[1]],
+                                                                 sf::st_cast, to = "LINESTRING"), dim = "XY")
+    }
+
+    return(hr_data)
+
   } else {
     read_sf(gdb, layer)
   }

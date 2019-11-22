@@ -125,12 +125,12 @@ accumulate_downstream <- function(dat_fram, var) {
 #'   weight = walker_flowline$ArbolateSu,
 #'   stringsAsFactors = FALSE)
 #'
-#' calculate_levelpaths(test_flowline)
+#' get_levelpaths(test_flowline)
 #'
 #'
-calculate_levelpaths <- function(flowline, status = FALSE) {
+get_levelpaths <- function(flowline, status = FALSE) {
 
-  flowline <- check_names(flowline, "calculate_levelpaths")
+  flowline <- check_names(flowline, "get_levelpaths")
 
   flowline[["toID"]][which(is.na(flowline[["toID"]]))] <- 0
 
@@ -220,14 +220,13 @@ get_path <- function(flowline, tailID) {
 }
 
 #' @title Get Streamorder
-#' @description  Applies a topological sort and calculates strahler stream order.
+#' @description Applies a topological sort and calculates strahler stream order.
 #' Algorithm: If more than one upstream flowpath has an order equal to the
 #' maximum upstream order then the downstream flowpath is assigned the maximum
 #' upstream order plus one. Otherwise it is assigned the max upstream order.
 #' @param fl data.frame with dendritic ID and toID columns.
-#' @return data.frame with ID and order columns. Note the output will
-#' likelt NOT be in the same sort order as in the input.
-#' @importFrom dplyr left_join
+#' @return numeric stream order in same order as input
+#' @importFrom dplyr left_join select
 #' @export
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
@@ -240,11 +239,15 @@ get_path <- function(flowline, tailID) {
 #'
 #' (order <- calculate_streamorder(test_flowline))
 #'
-#' walker_flowline <- dplyr::left_join(walker_flowline, order, by = c("COMID" = "ID"))
+#' walker_flowline$order <- order
 #'
 #' plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$order, col = "blue")
 #'
-calculate_streamorder <- function(fl) {
+get_streamorder <- function(fl) {
+  check_names(fl, "get_streamorder")
+
+  o_sort <- select(fl, .data$ID)
+
   fl[["toID"]][which(is.na(fl[["toID"]]))] <- 0
 
   sorted <- get_sorted(fl)
@@ -270,7 +273,141 @@ calculate_streamorder <- function(fl) {
       }
     }
   }
-  data.frame(ID = ID, order = order)
+
+  distinct(left_join(o_sort, data.frame(ID = ID, order = order), by = "ID"))[["order"]]
+
+}
+
+#' @title Get Pfafstetter Codes (Experimental)
+#' @description Determines Pfafstetter codes for a dendritic network with
+#' total drainage area, levelpath, and topo_sort attributes.
+#' @param fl sf data.frame with ID, toID, totda, outletID, topo_sort,
+#' and levelpath attributes.
+#' @return data.frame with ID and pfaf columns.
+#' @export
+#' @importFrom tidyr pivot_wider
+#' @importFrom dplyr select bind_rows
+#' @examples
+#' library(dplyr)
+#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#' hr_flowline <- nhdplusTools:::rename_nhdplus(hr_flowline)
+#'
+#' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = TRUE, warn = FALSE) %>%
+#'   left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
+#'   sf::st_sf() %>%
+#'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
+#'
+#' fl$nameID = ""
+#' fl$totda <- calculate_total_drainage_area(st_set_geometry(fl, NULL))
+#' fl <- left_join(fl, get_levelpaths(rename(st_set_geometry(fl, NULL), weight = totda)), by = "ID")
+#'
+#' pfaf <- get_pfaf(fl, max_level = 2)
+#'
+#' fl <- left_join(fl, pfaf, by = c("ID" = "members"))
+#'
+#' plot(fl["pf_level_2"], lwd = 2)
+#'
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#'
+#' fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
+#'   left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
+#'   sf::st_sf() %>%
+#'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
+#'
+#' fl$nameID = ""
+#' fl$totda <- calculate_total_drainage_area(st_set_geometry(fl, NULL))
+#' fl <- left_join(fl, get_levelpaths(rename(st_set_geometry(fl, NULL), weight = totda)), by = "ID")
+#'
+#' pfaf <- get_pfaf(fl, max_level = 2)
+#'
+#' fl <- left_join(fl, pfaf, by = c("ID" = "members"))
+#'
+#' plot(fl["pf_level_2"], lwd = 2)
+#'
+get_pfaf <- function(fl, max_level = 2) {
+  check_names(fl, "get_pfaf")
+
+  mainstem_levelpath <- unique(fl$levelpath[fl$topo_sort == min(fl$topo_sort)])
+
+  mainstem <- fl[fl$levelpath == mainstem_levelpath, ]
+
+  pfaf <- bind_rows(get_pfaf_9(fl, mainstem, max_level))
+
+  pfaf$level <- ceiling(log10(pfaf$pfaf))
+  pfaf <- select(pfaf, -p_id, ID = members)
+
+  pivot_wider(pfaf, ID,
+              names_from = "level", names_prefix = "pf_level_",
+              values_from = pfaf)
+}
+
+#' @noRd
+#' @importFrom dplyr arrange left_join
+#' @importFrom sf st_drop_geometry
+get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
+
+  if((pre_pfaf / 10^(max_level-1)) > 1) return()
+
+  # Get all tributary outlets that go to the passed mainstem.
+  trib_outlets <- fl[fl$toID %in% mainstem$ID &
+                   fl$levelpath != mainstem$levelpath[1], ]
+
+  # Exclude those that have already been defined as drainage basin outlets
+  if(methods::is(assigned, "data.frame")) {
+    trib_outlets <- trib_outlets[!trib_outlets$ID %in%
+                                   assigned$members[(assigned$pfaf %% 2) == 0], ]
+  }
+
+  # Get the top 4 tributaries (or less) by total drainage area and arrange along the mainstem
+  area_filter <- (if(nrow(trib_outlets) >= 4) 4 else nrow(trib_outlets))
+  area_filter <- sort(trib_outlets$totda, decreasing = TRUE)[area_filter]
+  t4_tribs <- trib_outlets[trib_outlets$totda >= area_filter, ]
+  t4_tribs <- left_join(t4_tribs, select(st_drop_geometry(fl), ID, ms_ts = topo_sort),
+                        by = c("toID" = "ID")) %>% arrange(ms_ts)
+
+  ms_inter <- lapply(seq_len(5), function(x, ms, ts) {
+    if(x > (length(ts) + 1)) return(data.frame(ID = NA_real_))
+    if(x == 1) {
+      ms <- ms[ms$topo_sort <= ts[x], ]
+    } else if(x == 5 | x == (length(ts) + 1)) {
+      ms <- ms[ms$topo_sort > ts[x - 1], ]
+    } else {
+      ms <- ms[ms$topo_sort > ts[x - 1] & ms$topo_sort <= ts[x], ]
+    }
+    if(nrow(ms) > 0) ms$p_id <- c(1, 3, 5, 7, 9)[x]
+    ms
+  }, ms = mainstem, ts = t4_tribs$ms_ts)
+
+  out <- data.frame(p_id = c(1:9))
+  out[["members"]] <- list(ms_inter[[1]]$ID, fl$ID[fl$outletID == t4_tribs$outletID[1]],
+                           ms_inter[[2]]$ID, fl$ID[fl$outletID == t4_tribs$outletID[2]],
+                           ms_inter[[3]]$ID, fl$ID[fl$outletID == t4_tribs$outletID[3]],
+                           ms_inter[[4]]$ID, fl$ID[fl$outletID == t4_tribs$outletID[4]],
+                           ms_inter[[5]]$ID)
+  out[["pfaf"]] <- out$p_id + pre_pfaf * 10
+
+  if(all(sapply(out$members, function(x) all(is.na(x))))) out$members[[1]] <- mainstem$ID
+  out <- tidyr::unnest(out, cols = c(members))
+  out <- list(out[!is.na(out$members), ])
+
+  if(nrow(out[[1]]) == 0 | all(out[[1]]$members %in% mainstem$ID)) return(out)
+
+  c(out, unlist(lapply(c(1:9), apply_fun,
+                       p9 = out[[1]], fl = fl, max_level = max_level),
+                recursive = FALSE))
+}
+
+apply_fun <- function(p, p9, fl, max_level) {
+  p_sub <- p9[p9$p_id == p, ]
+  ms_ids <- p_sub$members
+  pre_pfaf <- unique(p_sub$pfaf)
+  mainstem <- fl[fl$ID %in% ms_ids, ]
+
+  if(length(pre_pfaf) > 0) {
+    get_pfaf_9(fl, mainstem, max_level, pre_pfaf = pre_pfaf, assigned = p9)
+  } else {
+    NULL
+  }
 }
 
 #' @noRd

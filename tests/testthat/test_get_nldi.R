@@ -16,7 +16,7 @@ test_that("nldi basics work", {
 
   expect_equal(length(discover_nldi_navigation(nldi_nwis)), 4)
 
-  expect_equal(length(discover_nldi_navigation(nldi_nwis, tier = "test")), 4)
+  # expect_equal(length(discover_nldi_navigation(nldi_nwis, tier = "test")), 4)
 
   expect_error(discover_nldi_navigation(nldi_nwis, tier = "borked"),
                "only prod or test allowed.")
@@ -58,10 +58,10 @@ test_that("navigation works", {
 
   expect_is(sf::st_geometry(nav3), "sfc_LINESTRING")
 
-  expect_equal(navigate_nldi(list(featureSource = "wqp",
-                                  featureID = "TCEQMAIN-16638"),
-                             mode = "upstreamMain",
-                             data_source = "nwissite"), dplyr::tibble())
+  # expect_equal(navigate_nldi(list(featureSource = "wqp",
+  #                                 featureID = "TCEQMAIN-16638"),
+  #                            mode = "upstreamMain",
+  #                            data_source = "nwissite"), dplyr::tibble())
 })
 
 test_that("basin works", {

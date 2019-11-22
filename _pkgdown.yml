@@ -8,7 +8,7 @@ reference:
       - '`plot_nhdplus`'
       - '`calculate_total_drainage_area`'
       - '`calculate_arbolate_sum`'
-      - '`calculate_levelpaths`'
+      - '`get_levelpaths`'
       - '`subset_nhdplus`'
       - '`prepare_nhdplus`'
       - '`download_nhdplushr`'

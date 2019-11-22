@@ -118,8 +118,16 @@ assign("get_flowline_index_attributes",
        c("COMID", "REACHCODE", "ToMeas", "FromMeas"),
        envir = nhdplusTools_env)
 
-assign("calculate_levelpaths_attributes",
+assign("get_levelpaths_attributes",
        c("ID", "toID", "nameID", "weight"),
+       envir = nhdplusTools_env)
+
+assign("get_streamorder_attributes",
+       c("ID", "toID"),
+       envir = nhdplusTools_env)
+
+assign("get_pfaf_attributes",
+       c("ID", "toID", "totda", "outletID", "topo_sort", "levelpath"),
        envir = nhdplusTools_env)
 
 check_names <- function(x, function_name) {

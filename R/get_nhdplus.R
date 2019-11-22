@@ -36,7 +36,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
                         p_crd[2] + 0.00001, p_crd[1] + 0.00001,
                         "urn:ogc:def:crs:EPSG:4269", sep = ","))
 
-    req_data <- httr::RETRY("GET", url, times = 10, pause_cap = 240)
+    req_data <- httr::RETRY("GET", url, times = 3, pause_cap = 60)
 
     catchment <- make_web_sf(req_data)
 
@@ -110,7 +110,7 @@ get_nhdplus_byid <- function(comids, layer) {
 
   # nolint end
 
-  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
+  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 3, pause_cap = 60)
 
   return(make_web_sf(req_data))
 }
@@ -150,7 +150,7 @@ get_nhdplus_bybox <- function(box, layer) {
 
   # nolint end
 
-  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
+  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 3, pause_cap = 60)
 
   return(make_web_sf(req_data))
 

@@ -179,7 +179,9 @@ get_nldi_basin <- function(nldi_feature,
 #' @param tier character optional "prod" or "test"
 #' @return sf feature collection with one feature
 #' @examples
+#' \donttest{
 #' get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
+#' }
 #' @export
 get_nldi_feature <- function(nldi_feature, tier = "prod") {
   nldi_feature <- check_nldi_feature(nldi_feature)
@@ -198,7 +200,7 @@ query_nldi <- function(query, tier = "prod", parse_json = TRUE) {
   url <- paste(nldi_base_url, query,
                sep = "/")
 
-  req_data <- rawToChar(httr::RETRY("GET", url, times = 10, pause_cap = 240)$content)
+  req_data <- rawToChar(httr::RETRY("GET", url, times = 3, pause_cap = 60)$content)
 
   if (nchar(req_data) == 0) {
     NULL

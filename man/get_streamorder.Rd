@@ -27,7 +27,7 @@ test_flowline <- data.frame(
   ID = test_flowline$COMID,
   toID = test_flowline$toCOMID)
 
-(order <- calculate_streamorder(test_flowline))
+(order <- get_streamorder(test_flowline))
 
 walker_flowline$order <- order
 

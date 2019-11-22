@@ -8,8 +8,9 @@ if(file.exists(project_file)) {
   file.copy(project_file,
             temp_file)
 } else {
-  download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
-                temp_file, quiet = TRUE)
+  url <- "https://usgs-r.github.io/nhdplusTools/data/03_sub.zip"
+  resp <- httr::RETRY("GET", url, httr::write_disk(temp_file, overwrite=TRUE),
+                      times = 3, pause_cap = 20)
 }
 unzip(temp_file, exdir = work_dir)
 

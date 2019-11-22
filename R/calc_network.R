@@ -237,7 +237,7 @@ get_path <- function(flowline, tailID) {
 #'   ID = test_flowline$COMID,
 #'   toID = test_flowline$toCOMID)
 #'
-#' (order <- calculate_streamorder(test_flowline))
+#' (order <- get_streamorder(test_flowline))
 #'
 #' walker_flowline$order <- order
 #'
@@ -302,11 +302,12 @@ get_streamorder <- function(fl) {
 #'
 #' fl$nameID = ""
 #' fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
-#' fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL), weight = totda)), by = "ID")
+#' fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL),
+#'                                    weight = totda)), by = "ID")
 #'
 #' pfaf <- get_pfaf(fl, max_level = 2)
 #'
-#' fl <- left_join(fl, pfaf, by = c("ID" = "members"))
+#' fl <- left_join(fl, pfaf, by = "ID")
 #'
 #' plot(fl["pf_level_2"], lwd = 2)
 #'
@@ -319,11 +320,12 @@ get_streamorder <- function(fl) {
 #'
 #' fl$nameID = ""
 #' fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
-#' fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL), weight = totda)), by = "ID")
+#' fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL),
+#'                                    weight = totda)), by = "ID")
 #'
 #' pfaf <- get_pfaf(fl, max_level = 2)
 #'
-#' fl <- left_join(fl, pfaf, by = c("ID" = "members"))
+#' fl <- left_join(fl, pfaf, by = "ID")
 #'
 #' plot(fl["pf_level_2"], lwd = 2)
 #'
@@ -367,7 +369,7 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
   area_filter <- sort(trib_outlets$totda, decreasing = TRUE)[area_filter]
   t4_tribs <- trib_outlets[trib_outlets$totda >= area_filter, ]
   t4_tribs <- left_join(t4_tribs, select(st_drop_geometry(fl), .data$ID, ms_ts = .data$topo_sort),
-                        by = c("toID" = "ID")) %>% arrange(ms_ts)
+                        by = c("toID" = "ID")) %>% arrange(.data$ms_ts)
 
   ms_inter <- lapply(seq_len(5), function(x, ms, ts) {
     if(x > (length(ts) + 1)) return(data.frame(ID = NA_real_))
@@ -391,7 +393,7 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
   out[["pfaf"]] <- out$p_id + pre_pfaf * 10
 
   if(all(sapply(out$members, function(x) all(is.na(x))))) out$members[[1]] <- mainstem$ID
-  out <- tidyr::unnest(out, cols = c(members))
+  out <- tidyr::unnest(out, cols = c(.data$members))
   out <- list(out[!is.na(out$members), ])
 
   if(nrow(out[[1]]) == 0 | all(out[[1]]$members %in% mainstem$ID)) return(out)

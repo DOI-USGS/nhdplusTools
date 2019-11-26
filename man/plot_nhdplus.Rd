@@ -5,7 +5,7 @@
 \title{Plot NHDPlus}
 \usage{
 plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
-  nhdplus_data = NA, gpkg = NA, plot_config = NA, ...)
+  nhdplus_data = NA, gpkg = NA, plot_config = NA, add = FALSE, ...)
 }
 \arguments{
 \item{outlets}{list of nldi outlets. Other inputs are coerced into nldi outlets, see details.}
@@ -19,6 +19,8 @@ plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
 \item{gpkg}{path and file with .gpkg ending. If omitted, no file is written. (not implemented)}
 
 \item{plot_config}{list containing plot configuration, see details.}
+
+\item{add}{boolean should this plot be added to an already built map.}
 
 \item{...}{parameters passed on to rosm.}
 }
@@ -93,14 +95,20 @@ plot_nhdplus(list(list("comid", "13293970"),
 bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
                     crs = "+proj=longlat +datum=WGS84 +no_defs")
 
+fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
+comids <- nhdplusTools::get_UT(fline, 13293970)
+
+plot_nhdplus(comids)
+
+#' # With Local Data (note this sanple is already subset to a watershed basis)
+plot_nhdplus(bbox = bbox, streamorder = 2, nhdplus_data = sample_data)
+
 # With downloaded data
 plot_nhdplus(bbox = bbox)
 
-# With Local Data (note this sanple is already subset to a watershed basis)
-plot_nhdplus(bbox = bbox, streamorder = 2, nhdplus_data = sample_data)
-
-fline <- read_sf(sample_data, "NHDFlowline_Network")
-comids <- get_UT(fline, 13293970)
-
-plot_nhdplus(comids)
+# Can also plot on top of the previous!
+plot_nhdplus(bbox = bbox, nhdplus_data = sample_data,
+             plot_config = list(flowline = list(lwd = 0.5)))
+plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
+             plot_config = list(flowline = list(col = "darkblue")))
 }

@@ -6,6 +6,7 @@
 #' @param nhdplus_data geopackage containing source nhdplus data (omit to download)
 #' @param gpkg path and file with .gpkg ending. If omitted, no file is written. (not implemented)
 #' @param plot_config list containing plot configuration, see details.
+#' @param add boolean should this plot be added to an already built map.
 #' @param ... parameters passed on to rosm.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
@@ -75,26 +76,35 @@
 #' bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
 #'                     crs = "+proj=longlat +datum=WGS84 +no_defs")
 #'
+#' fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
+#' comids <- nhdplusTools::get_UT(fline, 13293970)
+#'
+#' plot_nhdplus(comids)
+#'
+#' #' # With Local Data (note this sanple is already subset to a watershed basis)
+#' plot_nhdplus(bbox = bbox, streamorder = 2, nhdplus_data = sample_data)
+#'
 #' # With downloaded data
 #' plot_nhdplus(bbox = bbox)
 #'
-#' # With Local Data (note this sanple is already subset to a watershed basis)
-#' plot_nhdplus(bbox = bbox, streamorder = 2, nhdplus_data = sample_data)
-#'
-#' fline <- read_sf(sample_data, "NHDFlowline_Network")
-#' comids <- get_UT(fline, 13293970)
-#'
-#' plot_nhdplus(comids)
+#' # Can also plot on top of the previous!
+#' plot_nhdplus(bbox = bbox, nhdplus_data = sample_data,
+#'              plot_config = list(flowline = list(lwd = 0.5)))
+#' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
+#'              plot_config = list(flowline = list(col = "darkblue")))
 
 plot_nhdplus <- function(outlets = NA, bbox = NA, streamorder = NA,
-                         nhdplus_data = NA, gpkg = NA, plot_config = NA, ...) {
+                         nhdplus_data = NA, gpkg = NA, plot_config = NA,
+                         add = FALSE, ...) {
 
   pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg)
 
   st <- get_styles(plot_config)
 
   prettymapr::prettymap({
-    rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE, progress = "none", ...)
+    if(!add) {
+      rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE, progress = "none", ...)
+    }
     # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
     if(!is.null(pd$basin))
       graphics::plot(gt(pd$basin), lwd = st$basin$lwd, col = st$basin$col,

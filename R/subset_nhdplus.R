@@ -452,7 +452,7 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
 }
 
 get_catchment_layer_name <- function(simplified, nhdplus_data) {
-  if(nhdplus_data == "download") { # Only simplified via download
+  if(nhdplus_data == "download" | is.na(nhdplus_data)) { # Only simplified via download
     layer_name <- "CatchmentSP"
   } else {
     if(simplified) { # Can get simplified from local data

@@ -29,6 +29,8 @@ test_that("subset runs as expected", {
                              package = "nhdplusTools")
 
   expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, sample_data), "CatchmentSP")
+  expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, "download"), "CatchmentSP")
+  expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, "download"), "CatchmentSP")
 
   nc <- read_sf(system.file("shape/nc.shp", package="sf"))
   tempf <- file.path(temp_dir, "temp.geojson")

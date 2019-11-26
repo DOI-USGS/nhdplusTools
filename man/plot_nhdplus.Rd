@@ -34,7 +34,7 @@ is used to convert the outlet formats as described below.
   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
   and all upstream tributaries are plotted.
   \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
-  that should be plotted. (not implemented)
+  that should be plotted. Allows custom filtering.
   \item If outlets is a character vector, it is assumed to be NWIS site ids.
   \item if outlets is a list containing only characters, it is assumed to be a list
   of nldi features and all upstream tributaries are plotted.
@@ -99,4 +99,8 @@ plot_nhdplus(bbox = bbox)
 # With Local Data (note this sanple is already subset to a watershed basis)
 plot_nhdplus(bbox = bbox, streamorder = 2, nhdplus_data = sample_data)
 
+fline <- read_sf(sample_data, "NHDFlowline_Network")
+comids <- get_UT(fline, 13293970)
+
+plot_nhdplus(comids)
 }

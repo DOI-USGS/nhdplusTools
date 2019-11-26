@@ -15,7 +15,7 @@
 #'   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
 #'   and all upstream tributaries are plotted.
 #'   \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
-#'   that should be plotted. (not implemented)
+#'   that should be plotted. Allows custom filtering.
 #'   \item If outlets is a character vector, it is assumed to be NWIS site ids.
 #'   \item if outlets is a list containing only characters, it is assumed to be a list
 #'   of nldi features and all upstream tributaries are plotted.
@@ -81,6 +81,11 @@
 #' # With Local Data (note this sanple is already subset to a watershed basis)
 #' plot_nhdplus(bbox = bbox, streamorder = 2, nhdplus_data = sample_data)
 #'
+#' fline <- read_sf(sample_data, "NHDFlowline_Network")
+#' comids <- get_UT(fline, 13293970)
+#'
+#' plot_nhdplus(comids)
+
 plot_nhdplus <- function(outlets = NA, bbox = NA, streamorder = NA,
                          nhdplus_data = NA, gpkg = NA, plot_config = NA, ...) {
 
@@ -178,14 +183,21 @@ get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_dat
     flowline <- flowline$flowline
   }
 
+  comids <- NA
+  if(methods::is(outlets, "integer")) {
+    comids <- outlets
+    outlets <- NA
+  }
+
   if(all(!is.na(outlets))) {
     outlets <- as_outlets(outlets)
     outlet_type <- sapply(outlets, function(x) x$featureSource)
   }
 
+  fline_layer = get_flowline_layer_name()
+  catchment_layer <- get_catchment_layer_name(simplified = TRUE, nhdplus_data)
+
   if(!is.na(nhdplus_data) & all(!is.na(outlets))) {
-    fline_layer = get_flowline_layer_name()
-    catchment_layer <- get_catchment_layer_name(simplified = TRUE, nhdplus_data)
 
     flowline <- sf::st_zm(sf::read_sf(nhdplus_data, fline_layer))
 
@@ -227,6 +239,16 @@ get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_dat
     }))
 
     catchment <- nhd_data$catchment
+  }
+
+  if(!all(is.na(comids))) {
+    if(is.na(nhdplus_data)) nhdplus_data <- "download"
+    nhd_data <- subset_nhdplus(comids, nhdplus_data = nhdplus_data, status = FALSE)
+    bbox <- sf::st_bbox(nhd_data$CatchmentSP)
+    flowline <- sf::st_zm(nhd_data$NHDFlowline_Network)
+    catchment <- nhd_data[[catchment_layer]]
+    basin <- make_basin(nhd_data, catchment_layer = catchment_layer)
+    nexus <- NULL
   }
 
   if(all(!is.na(outlets))) {

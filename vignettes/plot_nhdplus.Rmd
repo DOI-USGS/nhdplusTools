@@ -105,7 +105,7 @@ flowline <- navigate_nldi(nwissite,
 nhdplus <- subset_nhdplus(comids = flowline$nhdplus_comid,
                           output_file = file.path(temp_dir, "nhdplus.gpkg"),
                           nhdplus_data = "download",
-                          overwrite = TRUE)
+                          overwrite = TRUE, return_data = FALSE)
 
 flowline <- read_sf(nhdplus, "NHDFlowline_Network")
 

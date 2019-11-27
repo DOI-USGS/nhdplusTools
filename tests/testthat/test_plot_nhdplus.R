@@ -5,19 +5,26 @@ sample_data <- system.file("extdata/sample_natseamless.gpkg",
 
 test_that("basics work", {
   skip_on_cran()
+  tempd <- tempdir()
+  dir.create(tempd, recursive = TRUE)
+
   site <- "USGS-05428500"
-  d <-  nhdplusTools:::get_plot_data(site)
+  g_temp <- file.path(tempd, "foo.gpkg")
+
+  d <-  nhdplusTools:::get_plot_data(site, gpkg = g_temp)
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
 
   expect_true(all(c("comid", "type") %in% names(d$outlets)))
+  l <- sf::st_layers(g_temp)
+  expect_equal(l$name,
+               c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody"))
+  expect_equal(l$features, c(0, 402, 1, 90))
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
   expect_s3_class(p_ready, "sfc_MULTILINESTRING")
 
   pdf(NULL)
-  tempd <- tempdir()
-  dir.create(tempd, recursive = TRUE)
   tempf <- file.path(tempd, "temp.png")
 
   png(file.path(tempd, "temp.png"))
@@ -27,6 +34,7 @@ test_that("basics work", {
   expect_true(file.exists(tempf))
 
   unlink(tempf)
+  unlink(g_temp)
 
   png(file.path(tempd, "temp.png"))
   plot_nhdplus(list(list("comid", "13293970"),
@@ -34,19 +42,34 @@ test_that("basics work", {
                     list("huc12pp", "070900020603"),
                     list("huc12pp", "070900020602")),
                streamorder = 2,
-               nhdplus_data = sample_data)
+               nhdplus_data = sample_data,
+               gpkg = g_temp)
   dev.off()
+
+  l <- sf::st_layers(g_temp)
+  expect_equal(l$name,
+               c("NHDFlowline_Network", "CatchmentSP", "NHDArea", "NHDWaterbody",
+                 "Gage", "NHDFlowline_NonNetwork"))
+  expect_equal(l$features, c(251, 250, 3, 117, 44, 48))
 
   expect_true(file.exists(tempf))
   unlink(tempf)
+  unlink(g_temp)
 
   png(file.path(tempd, "temp.png"))
   plot_nhdplus(sf::st_as_sf(data.frame(x = -89.36083,
                                        y = 43.08944),
                             coords = c("x", "y"), crs = 4326),
                streamorder = 2,
-               nhdplus_data = sample_data)
+               nhdplus_data = sample_data,
+               gpkg = g_temp)
   dev.off()
+
+  l <- sf::st_layers(g_temp)
+  expect_equal(l$name,
+               c("NHDFlowline_Network", "CatchmentSP", "NHDArea", "NHDWaterbody",
+                 "Gage", "NHDFlowline_NonNetwork"))
+  expect_equal(l$features, c(168, 167, 1, 90, 33, 45))
 
   expect_true(file.exists(tempf))
   unlink(tempf)
@@ -136,6 +159,8 @@ test_that("local data", {
 })
 
 test_that("test_as_outlets", {
+  expect_equal(nhdplusTools:::as_outlets(NULL), NULL)
+
   o <- list(13293970, 13293971)
 
   expect_equal(nhdplusTools:::as_outlets(o),
@@ -203,7 +228,7 @@ test_that("test_as_outlets", {
 })
 
 test_that("test_styles", {
-  st <- nhdplusTools:::get_styles(NA)
+  st <- nhdplusTools:::get_styles(NULL)
   expect_named(st, c("basin", "flowline", "outlets"))
   expect_named(st$outlets, c("default", "nwissite", "huc12pp", "wqp"))
   expect_named(st$outlets$nwissite, c("col", "bg", "pch", "cex"))
@@ -235,7 +260,8 @@ test_that("test_styles", {
 test_that("bbox", {
   skip_on_cran()
 
-   bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
+   bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
+                         xmax = -89.24681, ymax = 43.17192),
                        crs = "+proj=longlat +datum=WGS84 +no_defs")
 
    # With downloaded data
@@ -248,8 +274,17 @@ test_that("bbox", {
                                      nhdplus_data = sample_data)
 
   expect_equal(nrow(d$flowline), 76)
+
+  expect_error(nhdplusTools:::get_plot_data(c(1,2,3), bbox = bbox),
+               "Both bbox and outlets not supported.")
 })
 
+test_that("comids", {
+  fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
+  comids <- nhdplusTools::get_UT(fline, 13293970)
+  d <- nhdplusTools:::get_plot_data(comids)
 
-
+  expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
+  expect_true(all(d$flowline$comid %in% comids))
+})
 

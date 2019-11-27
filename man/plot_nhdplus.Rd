@@ -4,8 +4,9 @@
 \alias{plot_nhdplus}
 \title{Plot NHDPlus}
 \usage{
-plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
-  nhdplus_data = NA, gpkg = NA, plot_config = NA, ...)
+plot_nhdplus(outlets = NULL, bbox = NULL, streamorder = NULL,
+  nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
+  add = FALSE, ...)
 }
 \arguments{
 \item{outlets}{list of nldi outlets. Other inputs are coerced into nldi outlets, see details.}
@@ -16,9 +17,11 @@ plot_nhdplus(outlets = NA, bbox = NA, streamorder = NA,
 
 \item{nhdplus_data}{geopackage containing source nhdplus data (omit to download)}
 
-\item{gpkg}{path and file with .gpkg ending. If omitted, no file is written. (not implemented)}
+\item{gpkg}{path and file with .gpkg ending. If omitted, no file is written.}
 
 \item{plot_config}{list containing plot configuration, see details.}
+
+\item{add}{boolean should this plot be added to an already built map.}
 
 \item{...}{parameters passed on to rosm.}
 }
@@ -34,7 +37,7 @@ is used to convert the outlet formats as described below.
   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
   and all upstream tributaries are plotted.
   \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
-  that should be plotted. (not implemented)
+  that should be plotted. Allows custom filtering.
   \item If outlets is a character vector, it is assumed to be NWIS site ids.
   \item if outlets is a list containing only characters, it is assumed to be a list
   of nldi features and all upstream tributaries are plotted.
@@ -90,13 +93,23 @@ plot_nhdplus(list(list("comid", "13293970"),
                                 outlets = list(huc12pp = list(cex = 1.5),
                                                comid = list(col = "green"))))
 
-bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
+bbox <- sf::st_bbox(c(xmin = -89.43, ymin = 43, xmax = -89.28, ymax = 43.1),
                     crs = "+proj=longlat +datum=WGS84 +no_defs")
 
+fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
+comids <- nhdplusTools::get_UT(fline, 13293970)
+
+plot_nhdplus(comids)
+
+#' # With Local Data
+plot_nhdplus(bbox = bbox, nhdplus_data = sample_data)
+
 # With downloaded data
-plot_nhdplus(bbox = bbox)
+plot_nhdplus(bbox = bbox, streamorder = 3)
 
-# With Local Data (note this sanple is already subset to a watershed basis)
-plot_nhdplus(bbox = bbox, streamorder = 2, nhdplus_data = sample_data)
-
+# Can also plot on top of the previous!
+plot_nhdplus(bbox = bbox, nhdplus_data = sample_data,
+             plot_config = list(flowline = list(lwd = 0.5)))
+plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
+             plot_config = list(flowline = list(col = "darkblue")))
 }

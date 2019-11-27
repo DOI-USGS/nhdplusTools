@@ -4,8 +4,9 @@
 #' @param bbox object of class bbox with a defined crs. See examples.
 #' @param streamorder integer only streams of order greater than or equal will be returned
 #' @param nhdplus_data geopackage containing source nhdplus data (omit to download)
-#' @param gpkg path and file with .gpkg ending. If omitted, no file is written. (not implemented)
+#' @param gpkg path and file with .gpkg ending. If omitted, no file is written.
 #' @param plot_config list containing plot configuration, see details.
+#' @param add boolean should this plot be added to an already built map.
 #' @param ... parameters passed on to rosm.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
@@ -15,7 +16,7 @@
 #'   \item If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)
 #'   and all upstream tributaries are plotted.
 #'   \item if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)
-#'   that should be plotted. (not implemented)
+#'   that should be plotted. Allows custom filtering.
 #'   \item If outlets is a character vector, it is assumed to be NWIS site ids.
 #'   \item if outlets is a list containing only characters, it is assumed to be a list
 #'   of nldi features and all upstream tributaries are plotted.
@@ -72,24 +73,38 @@
 #'                                 outlets = list(huc12pp = list(cex = 1.5),
 #'                                                comid = list(col = "green"))))
 #'
-#' bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
+#' bbox <- sf::st_bbox(c(xmin = -89.43, ymin = 43, xmax = -89.28, ymax = 43.1),
 #'                     crs = "+proj=longlat +datum=WGS84 +no_defs")
 #'
+#' fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
+#' comids <- nhdplusTools::get_UT(fline, 13293970)
+#'
+#' plot_nhdplus(comids)
+#'
+#' #' # With Local Data
+#' plot_nhdplus(bbox = bbox, nhdplus_data = sample_data)
+#'
 #' # With downloaded data
-#' plot_nhdplus(bbox = bbox)
+#' plot_nhdplus(bbox = bbox, streamorder = 3)
 #'
-#' # With Local Data (note this sanple is already subset to a watershed basis)
-#' plot_nhdplus(bbox = bbox, streamorder = 2, nhdplus_data = sample_data)
-#'
-plot_nhdplus <- function(outlets = NA, bbox = NA, streamorder = NA,
-                         nhdplus_data = NA, gpkg = NA, plot_config = NA, ...) {
+#' # Can also plot on top of the previous!
+#' plot_nhdplus(bbox = bbox, nhdplus_data = sample_data,
+#'              plot_config = list(flowline = list(lwd = 0.5)))
+#' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
+#'              plot_config = list(flowline = list(col = "darkblue")))
+
+plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
+                         nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
+                         add = FALSE, ...) {
 
   pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg)
 
   st <- get_styles(plot_config)
 
   prettymapr::prettymap({
-    rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE, progress = "none", ...)
+    if(!add) {
+      rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE, progress = "none", ...)
+    }
     # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
     if(!is.null(pd$basin))
       graphics::plot(gt(pd$basin), lwd = st$basin$lwd, col = st$basin$col,
@@ -137,7 +152,7 @@ get_styles <- function(plot_config) {
 }
 
 validate_plot_config <- function(plot_config) {
-  if(all(is.na(plot_config))) return(invisible(NA))
+  if(is.null(plot_config)) return(invisible(NULL))
 
   if(!all(names(plot_config) %in% c("basin", "flowline", "outlets")))
     stop(paste('Expected one or more of "basin", "flowline", or "outlets" in plot_config, got:',
@@ -162,30 +177,33 @@ validate_plot_config <- function(plot_config) {
   return(invisible(NA))
 }
 
-get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_data = NA, gpkg = NA) {
+get_plot_data <- function(outlets = NULL, bbox = NULL, streamorder = NULL, nhdplus_data = NULL, gpkg = NULL) {
 
-  if(!is.na(gpkg)) {
-    stop("Data export to gpkg not implemented yet.")
-  }
+  if(!is.null(outlets) & !is.null(bbox)) stop("Both bbox and outlets not supported.")
 
-  if(!all(is.na(outlets)) & !is.na(bbox)) stop("Not supporting outlets and bbox yet.")
-
-  if(!is.na(bbox)) {
-    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data)
+  if(!is.null(bbox)) {
+    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg)
     catchment <- flowline$catchment
     basin <- flowline$basin
     nexus <- flowline$nexus
     flowline <- flowline$flowline
   }
 
-  if(all(!is.na(outlets))) {
+  comids <- NULL
+  if(methods::is(outlets, "integer")) {
+    comids <- outlets
+    outlets <- NULL
+  }
+
+  if(!is.null(outlets)) {
     outlets <- as_outlets(outlets)
     outlet_type <- sapply(outlets, function(x) x$featureSource)
   }
 
-  if(!is.na(nhdplus_data) & all(!is.na(outlets))) {
-    fline_layer = get_flowline_layer_name()
-    catchment_layer <- get_catchment_layer_name(simplified = TRUE, nhdplus_data)
+  fline_layer = get_flowline_layer_name()
+  catchment_layer <- get_catchment_layer_name(simplified = TRUE, nhdplus_data)
+
+  if(!is.null(nhdplus_data) & !is.null(outlets)) {
 
     flowline <- sf::st_zm(sf::read_sf(nhdplus_data, fline_layer))
 
@@ -204,23 +222,23 @@ get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_dat
 
     all_comids <- lapply(nexus, function(x) get_UT(flowline, x$comid))
 
-    subsets <- lapply(all_comids, subset_nhdplus, nhdplus_data = nhdplus_data, status = FALSE)
+    subsets <- subset_nhdplus(comids = unlist(all_comids), output_file = gpkg,
+                              nhdplus_data = nhdplus_data, status = FALSE)
 
-    flowline <- sf::st_zm(do.call(rbind, lapply(subsets, function(x) x[[fline_layer]])))
-    catchment <- do.call(rbind, lapply(subsets, function(x) x[[catchment_layer]]))
-    basin <- do.call(rbind, lapply(subsets, make_basin, catchment_layer = catchment_layer))
+    flowline <- sf::st_zm(subsets[[fline_layer]])
+    catchment <- subsets[[catchment_layer]]
+    basin <- do.call(rbind, lapply(all_comids, function(x, catchment_layer, subsets) {
+      make_basin(subsets, catchment_layer, x)
+      }, catchment_layer = catchment_layer, subsets = subsets))
 
     nexus <- do.call(rbind, nexus)
 
-    if(!any(grepl("sfc_POINT", class(sf::st_geometry(nexus)))))
-      sf::st_geometry(nexus) <- suppressWarnings(sf::st_centroid(sf::st_geometry(nexus)))
-
-  } else if(all(!is.na(outlets))) {
+  } else if(all(!is.null(outlets))) {
     basin <- do.call(rbind, lapply(outlets, get_nldi_basin))
 
     nexus <- do.call(rbind, lapply(outlets, get_outlet_from_nldi))
 
-    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data)
+    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data, gpkg)
     flowline <- align_nhdplus_names(nhd_data$flowline)
     flowline <- do.call(rbind, lapply(nexus$comid, function(x) {
       flowline[flowline$COMID %in% get_UT(flowline, x), ]
@@ -229,15 +247,25 @@ get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_dat
     catchment <- nhd_data$catchment
   }
 
-  if(all(!is.na(outlets))) {
+  if(!is.null(comids)) {
+    if(is.null(nhdplus_data)) nhdplus_data <- "download"
+    nhd_data <- subset_nhdplus(comids, nhdplus_data = nhdplus_data, status = FALSE)
+    bbox <- sf::st_bbox(nhd_data$CatchmentSP)
+    flowline <- sf::st_zm(nhd_data$NHDFlowline_Network)
+    catchment <- nhd_data[[catchment_layer]]
+    basin <- make_basin(nhd_data, catchment_layer = catchment_layer)
+    nexus <- NULL
+  }
+
+  if(!is.null(outlets)) {
     nexus["type"] <- outlet_type
   }
 
-  if(is.na(bbox)) {
+  if(is.null(bbox)) {
     bbox <- sp_bbox(sf::st_transform(basin, 4326))
   }
 
-  if(!is.na(streamorder) && "StreamOrde" %in% names(flowline)) {
+  if(!is.null(streamorder) && "StreamOrde" %in% names(flowline)) {
     flowline <- flowline[flowline$StreamOrde >= streamorder, ]
   }
 
@@ -245,13 +273,15 @@ get_plot_data <- function(outlets = NA, bbox = NA, streamorder = NA, nhdplus_dat
               basin = basin, catchment = catchment))
 }
 
-dl_plot_data_by_bbox <- function(bbox, nhdplus_data) {
+dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg) {
   bbox <- sf::st_bbox(sf::st_transform(sf::st_as_sfc(bbox), 4326))
   source <- "download"
-  if(!is.na(nhdplus_data)) source <- nhdplus_data
+  if(!is.null(nhdplus_data)) source <- nhdplus_data
 
-  d <- subset_nhdplus(bbox = bbox, nhdplus_data = source,
+  d <- subset_nhdplus(bbox = bbox, output_file = gpkg, nhdplus_data = source,
                              simplified = TRUE, status = FALSE)
+
+  d <- lapply(d, align_nhdplus_names)
 
   return(list(catchment = d$CatchmentSP,
               flowline = d$NHDFlowline_Network,
@@ -266,8 +296,11 @@ sp_bbox <- function(g) {
                                    c("min", "max")))
 }
 
-make_basin <- function(x, catchment_layer) {
+make_basin <- function(x, catchment_layer, comids = NULL) {
   x <- x[[catchment_layer]]
+  if(!is.null(comids)) {
+    x <- x[x$FEATUREID %in% comids, ]
+  }
   sf::st_precision(x) <- 10000 # kills slivers
   sf::st_sf(geom = sf::st_union(sf::st_geometry(x)))
 }
@@ -313,7 +346,7 @@ make_comid_nldi_feature <- function(x) {
 
 as_outlets <- function(o) {
   tryCatch({
-    if(all(is.na(o))) return(NA)
+    if(is.null(o)) return(NULL)
 
     if(!is.list(o) && all_int(o))
       return(list(subset = o))

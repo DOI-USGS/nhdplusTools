@@ -10,7 +10,7 @@ Authors@R: c(person(given = "David",
                     family = "Johnson",
                     role = "ctb"))
 Description: Tools for traversing and working with National Hydrography Dataset Plus (NHDPlus) data. All methods implemented in 'nhdplusTools' are available in the NHDPlus documentation available from the US Environmental Protection Agency <https://www.epa.gov/waterdata/basic-information>.
-URL: https://github.com/usgs-r/nhdplusTools/
+URL: https://usgs-r.github.io/nhdplusTools/ https://github.com/usgs-r/nhdplusTools/
 BugReports: https://github.com/usgs-r/nhdplusTools/issues/
 Depends:
     R (>= 3.5.0)

@@ -5,4 +5,7 @@ articles:
   nhdplusTools: nhdplusTools.html
   plot_nhdplus: plot_nhdplus.html
   point_indexing: point_indexing.html
+urls:
+  reference: https://usgs-r.github.io/nhdplusTools//reference
+  article: https://usgs-r.github.io/nhdplusTools//articles
 

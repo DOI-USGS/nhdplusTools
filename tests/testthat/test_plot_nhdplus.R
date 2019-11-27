@@ -5,19 +5,26 @@ sample_data <- system.file("extdata/sample_natseamless.gpkg",
 
 test_that("basics work", {
   skip_on_cran()
+  tempd <- tempdir()
+  dir.create(tempd, recursive = TRUE)
+
   site <- "USGS-05428500"
-  d <-  nhdplusTools:::get_plot_data(site)
+  g_temp <- file.path(tempd, "foo.gpkg")
+
+  d <-  nhdplusTools:::get_plot_data(site, gpkg = g_temp)
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
 
   expect_true(all(c("comid", "type") %in% names(d$outlets)))
+  l <- sf::st_layers(g_temp)
+  expect_equal(l$name,
+               c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody"))
+  expect_equal(l$features, c(0, 402, 1, 90))
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
   expect_s3_class(p_ready, "sfc_MULTILINESTRING")
 
   pdf(NULL)
-  tempd <- tempdir()
-  dir.create(tempd, recursive = TRUE)
   tempf <- file.path(tempd, "temp.png")
 
   png(file.path(tempd, "temp.png"))
@@ -27,6 +34,7 @@ test_that("basics work", {
   expect_true(file.exists(tempf))
 
   unlink(tempf)
+  unlink(g_temp)
 
   png(file.path(tempd, "temp.png"))
   plot_nhdplus(list(list("comid", "13293970"),
@@ -34,19 +42,34 @@ test_that("basics work", {
                     list("huc12pp", "070900020603"),
                     list("huc12pp", "070900020602")),
                streamorder = 2,
-               nhdplus_data = sample_data)
+               nhdplus_data = sample_data,
+               gpkg = g_temp)
   dev.off()
+
+  l <- sf::st_layers(g_temp)
+  expect_equal(l$name,
+               c("NHDFlowline_Network", "CatchmentSP", "NHDArea", "NHDWaterbody",
+                 "Gage", "NHDFlowline_NonNetwork"))
+  expect_equal(l$features, c(251, 250, 3, 117, 44, 48))
 
   expect_true(file.exists(tempf))
   unlink(tempf)
+  unlink(g_temp)
 
   png(file.path(tempd, "temp.png"))
   plot_nhdplus(sf::st_as_sf(data.frame(x = -89.36083,
                                        y = 43.08944),
                             coords = c("x", "y"), crs = 4326),
                streamorder = 2,
-               nhdplus_data = sample_data)
+               nhdplus_data = sample_data,
+               gpkg = g_temp)
   dev.off()
+
+  l <- sf::st_layers(g_temp)
+  expect_equal(l$name,
+               c("NHDFlowline_Network", "CatchmentSP", "NHDArea", "NHDWaterbody",
+                 "Gage", "NHDFlowline_NonNetwork"))
+  expect_equal(l$features, c(168, 167, 1, 90, 33, 45))
 
   expect_true(file.exists(tempf))
   unlink(tempf)

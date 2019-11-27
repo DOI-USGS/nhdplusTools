@@ -38,13 +38,21 @@ flowline <- navigate_nldi(list(featureSource = "comid",
                           mode = "upstreamTributaries", 
                           data_source = "")
 
-subset_gpkg <-subset_nhdplus(comids = flowline$nhdplus_comid,
-                             output_file = tempfile(fileext = ".gpkg"),
-                             nhdplus_data = "download")
+subset_file <- tempfile(fileext = ".gpkg")
+subset <- subset_nhdplus(comids = flowline$nhdplus_comid,
+                         output_file = subset_file,
+                         nhdplus_data = "download", 
+                         return_data = TRUE)
 
-flowline <- sf::read_sf(subset_gpkg, "NHDFlowline_Network")
-catchment <- sf::read_sf(subset_gpkg, "CatchmentSP")
-waterbody <- sf::read_sf(subset_gpkg, "NHDWaterbody")
+flowline <- subset$NHDFlowline_Network
+catchment <- subset$CatchmentSP
+waterbody <- subset$NHDWaterbody
+
+## Or:
+
+flowline <- sf::read_sf(subset_file, "NHDFlowline_Network")
+catchment <- sf::read_sf(subset_file, "CatchmentSP")
+waterbody <- sf::read_sf(subset_file, "NHDWaterbody")
 
 plot(sf::st_geometry(flowline), col = "blue")
 plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
@@ -215,7 +223,7 @@ output_file_download <- file.path(temp_dir, "subset_download.gpkg")
 
 output_file_download <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
                              output_file = output_file_download,
-                             nhdplus_data = "download")
+                             nhdplus_data = "download", return_data = FALSE)
 
 sf::st_layers(output_file_download)
 
@@ -246,7 +254,8 @@ output_file_nwis <- file.path(temp_dir, "subset_download_nwis.gpkg")
 
 output_file_nwis <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
                                   output_file = output_file_nwis,
-                                  nhdplus_data = "download")
+                                  nhdplus_data = "download",
+                                  return_data = FALSE)
 
 sf::st_layers(output_file_download)
 
@@ -288,7 +297,8 @@ output_file <- file.path(temp_dir, "subset.gpkg")
 
 output_file <-subset_nhdplus(comids = UT_comids,
                              output_file = output_file,
-                             nhdplus_data = nhdplus_path())
+                             nhdplus_data = nhdplus_path(), 
+                             return_data = FALSE)
 
 sf::st_layers(output_file)
 ```

@@ -14,6 +14,8 @@
 #' @param simplified boolean if TRUE (the default) the CatchmentSP layer
 #' will be included. Not relevant to the "download" option or NHDPlusHR data.
 #' @param overwrite boolean should the output file be overwritten
+#' @param return_data boolean if FALSE path to output file is returned silently otherwise
+#' data is returned in a list.
 #' @param status boolean should the function print status messages
 #' @details If \code{\link{stage_national_data}} has been run in the current
 #' session, this function will use the staged national data automatically.
@@ -110,7 +112,7 @@
 #'
 
 subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NULL, bbox = NULL,
-                           simplified = TRUE, overwrite = FALSE, status = TRUE) {
+                           simplified = TRUE, overwrite = FALSE, return_data = TRUE, status = TRUE) {
 
   if (status) message("All intersections performed in latitude/longitude.")
 
@@ -174,9 +176,12 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     for (layer_name in intersection_names) {
       layer <- sf::st_transform(envelope, 4326) %>%
         get_nhdplus_bybox(layer = tolower(layer_name))
-      if(is.null(output_file)) {
+
+      if(return_data) {
         out_list[layer_name] <- list(layer)
-      } else {
+      }
+
+      if(!is.null(output_file)) {
         sf::write_sf(layer, output_file, layer_name)
       }
     }
@@ -198,7 +203,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
                                          status), intersection_names))
   }
 
-  if(is.null(output_file)) return(out_list)
+  if(return_data) return(out_list)
 
   return(output_file)
 }

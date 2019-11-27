@@ -63,6 +63,7 @@ test_that("subset runs as expected", {
   fi <- subset_nhdplus(comids = comids,
                  output_file = out_file,
                  nhdplus_data = sample_data,
+                 return_data = FALSE,
                  status = FALSE)
 
   expect_equal(fi, out_file)
@@ -137,7 +138,7 @@ test_that("subset works with HR", {
 
   up_ids <- get_UT(flowlines, 15000500028335)
 
-  sub <- subset_nhdplus(up_ids, file.path(work_dir, "sub.gpkg"), hr)
+  sub <- subset_nhdplus(up_ids, file.path(work_dir, "sub.gpkg"), hr, return_data = FALSE)
 
   layers <- sf::st_layers(sub)
 

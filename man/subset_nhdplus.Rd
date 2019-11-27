@@ -6,7 +6,7 @@
 \usage{
 subset_nhdplus(comids = NULL, output_file = NULL,
   nhdplus_data = NULL, bbox = NULL, simplified = TRUE,
-  overwrite = FALSE, status = TRUE)
+  overwrite = FALSE, return_data = TRUE, status = TRUE)
 }
 \arguments{
 \item{comids}{integer vector of COMIDs to include.}
@@ -27,6 +27,9 @@ If no CRS is present, will be assumed to be in WGS84 Latitude Longitude.}
 will be included. Not relevant to the "download" option or NHDPlusHR data.}
 
 \item{overwrite}{boolean should the output file be overwritten}
+
+\item{return_data}{boolean if FALSE path to output file is returned silently otherwise
+data is returned in a list.}
 
 \item{status}{boolean should the function print status messages}
 }

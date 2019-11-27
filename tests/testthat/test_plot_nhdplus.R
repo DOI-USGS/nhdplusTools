@@ -159,6 +159,8 @@ test_that("local data", {
 })
 
 test_that("test_as_outlets", {
+  expect_equal(nhdplusTools:::as_outlets(NULL), NULL)
+
   o <- list(13293970, 13293971)
 
   expect_equal(nhdplusTools:::as_outlets(o),
@@ -258,7 +260,8 @@ test_that("test_styles", {
 test_that("bbox", {
   skip_on_cran()
 
-   bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
+   bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
+                         xmax = -89.24681, ymax = 43.17192),
                        crs = "+proj=longlat +datum=WGS84 +no_defs")
 
    # With downloaded data
@@ -271,8 +274,17 @@ test_that("bbox", {
                                      nhdplus_data = sample_data)
 
   expect_equal(nrow(d$flowline), 76)
+
+  expect_error(nhdplusTools:::get_plot_data(c(1,2,3), bbox = bbox),
+               "Both bbox and outlets not supported.")
 })
 
+test_that("comids", {
+  fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
+  comids <- nhdplusTools::get_UT(fline, 13293970)
+  d <- nhdplusTools:::get_plot_data(comids)
 
-
+  expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
+  expect_true(all(d$flowline$comid %in% comids))
+})
 

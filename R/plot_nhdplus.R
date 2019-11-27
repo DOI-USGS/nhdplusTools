@@ -179,7 +179,7 @@ validate_plot_config <- function(plot_config) {
 
 get_plot_data <- function(outlets = NULL, bbox = NULL, streamorder = NULL, nhdplus_data = NULL, gpkg = NULL) {
 
-  if(!is.null(outlets) & !is.null(bbox)) stop("Not supporting outlets and bbox yet.")
+  if(!is.null(outlets) & !is.null(bbox)) stop("Both bbox and outlets not supported.")
 
   if(!is.null(bbox)) {
     flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg)
@@ -232,9 +232,6 @@ get_plot_data <- function(outlets = NULL, bbox = NULL, streamorder = NULL, nhdpl
       }, catchment_layer = catchment_layer, subsets = subsets))
 
     nexus <- do.call(rbind, nexus)
-
-    if(!any(grepl("sfc_POINT", class(sf::st_geometry(nexus)))))
-      sf::st_geometry(nexus) <- suppressWarnings(sf::st_centroid(sf::st_geometry(nexus)))
 
   } else if(all(!is.null(outlets))) {
     basin <- do.call(rbind, lapply(outlets, get_nldi_basin))
@@ -349,7 +346,7 @@ make_comid_nldi_feature <- function(x) {
 
 as_outlets <- function(o) {
   tryCatch({
-    if(is.null(o)) return(NA)
+    if(is.null(o)) return(NULL)
 
     if(!is.list(o) && all_int(o))
       return(list(subset = o))

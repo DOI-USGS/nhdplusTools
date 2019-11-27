@@ -203,7 +203,7 @@ test_that("test_as_outlets", {
 })
 
 test_that("test_styles", {
-  st <- nhdplusTools:::get_styles(NA)
+  st <- nhdplusTools:::get_styles(NULL)
   expect_named(st, c("basin", "flowline", "outlets"))
   expect_named(st$outlets, c("default", "nwissite", "huc12pp", "wqp"))
   expect_named(st$outlets$nwissite, c("col", "bg", "pch", "cex"))

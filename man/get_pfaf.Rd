@@ -36,11 +36,17 @@ fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
 fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL),
                                    weight = totda)), by = "ID")
 
-pfaf <- get_pfaf(fl, max_level = 2)
+pfaf <- get_pfaf(fl, max_level = 3)
 
 fl <- left_join(fl, pfaf, by = "ID")
 
-plot(fl["pf_level_2"], lwd = 2)
+plot(fl["pf_level_3"], lwd = 2)
+
+pfaf <- get_pfaf(fl, max_level = 5)
+
+hr_catchment <- left_join(hr_catchment, pfaf, by = c("NHDPlusID" = "ID"))
+
+plot(hr_catchment["pf_level_5"], border = NA)
 
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 

@@ -113,8 +113,23 @@ test_that("get_pfaf", {
   pfaf <- get_pfaf(fl, max_level = 2)
 
   expect_equal(pfaf[pfaf$ID == 15000500028335,	], dplyr::tibble(ID = 15000500028335,
-                                                         pf_level_0 = NA_real_,
                                                          pf_level_1 = 5, pf_level_2 = 51))
+
+  pfaf <- get_pfaf(fl, max_level = 5)
+
+  fl <- left_join(fl, pfaf, by = "ID")
+
+  expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500061836], 611)
+
+  expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500028338], 591)
+  expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500050711], 592)
+  expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500028337], 593)
+
+  expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500072804], 151)
+  expect_equal(pfaf$pf_level_4[pfaf$ID == 15000500072804], 1511)
+
+  expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500084318], 161)
+  expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500028332], 181)
 
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 

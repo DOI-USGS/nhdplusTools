@@ -288,14 +288,14 @@ get_streamorder <- function(fl) {
 #' unexpected behavior may occur.
 #' @return data.frame with ID and pfaf columns.
 #' @export
-#' @importFrom tidyr pivot_wider
-#' @importFrom dplyr select bind_rows
+#' @importFrom sf st_drop_geometry
+#' @importFrom methods is
 #' @examples
 #' library(dplyr)
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 #' hr_flowline <- nhdplusTools:::rename_nhdplus(hr_flowline)
 #'
-#' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = TRUE, warn = FALSE) %>%
+#' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
 #'   left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
 #'   sf::st_sf() %>%
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
@@ -315,7 +315,12 @@ get_streamorder <- function(fl) {
 #'
 #' hr_catchment <- left_join(hr_catchment, pfaf, by = c("NHDPlusID" = "ID"))
 #'
-#' plot(hr_catchment["pf_level_7"], border = NA)
+#' colors <- data.frame(pf_level_4 = unique(hr_catchment$pf_level_4),
+#'                      color = sample(terrain.colors(length(unique(hr_catchment$pf_level_4)))),
+#'                     stringsAsFactors = FALSE)
+#' hr_catchment <- left_join(hr_catchment, colors, by = "pf_level_4")
+#' plot(hr_catchment["color"], border = NA, reset = FALSE)
+#' plot(sf::st_geometry(hr_flowline), col = "blue", add = TRUE)
 #'
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #'
@@ -336,41 +341,20 @@ get_streamorder <- function(fl) {
 #' plot(fl["pf_level_2"], lwd = 2)
 #'
 get_pfaf <- function(fl, max_level = 2) {
+  if(is(fl, "sf")) fl <- st_drop_geometry(fl)
   check_names(fl, "get_pfaf")
 
   mainstem_levelpath <- unique(fl$levelpath[fl$topo_sort == min(fl$topo_sort)])
 
   mainstem <- fl[fl$levelpath == mainstem_levelpath, ]
 
-  pfaf <- bind_rows(get_pfaf_9(fl, mainstem, max_level))
+  pfaf <- do.call(rbind, get_pfaf_9(fl, mainstem, max_level))
 
-  pfaf$level <- ceiling(log10(pfaf$pfaf + 0.01))
-  pfaf <- select(pfaf, -.data$p_id, ID = .data$members)
-
-  pfaf$uid <- 1:nrow(pfaf)
-
-  remove <- do.call(c, lapply(1:length(unique(pfaf$level)), function(l, pfaf) {
-    check <- pfaf[pfaf$level == l, ]
-    check <- dplyr::group_by(check, ID)
-    check <- dplyr::filter(check, n() > 1 & pfaf < max(pfaf))$uid
-  }, pfaf = pfaf))
-
-  pfaf <- dplyr::select(pfaf[!pfaf$uid %in% remove, ], -uid)
-
-  pfaf <- pivot_wider(pfaf, .data$ID,
-                      names_from = "level", names_prefix = "pf_level_",
-                      values_from = .data$pfaf)
-
-  for(i in 3:ncol(pfaf)) {
-    pfaf[, i][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] <-
-      1 + (pfaf[, (i - 1)][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] * 10)
-  }
-  return(pfaf)
+  return(cleanup_pfaf(pfaf))
 }
 
 #' @noRd
 #' @importFrom dplyr arrange left_join
-#' @importFrom sf st_drop_geometry
 #' @importFrom methods is
 get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
 
@@ -394,7 +378,7 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
   area_filter <- (if(nrow(trib_outlets) >= 4) 4 else nrow(trib_outlets))
   area_filter <- sort(trib_outlets$totda, decreasing = TRUE)[area_filter]
   t4_tribs <- trib_outlets[trib_outlets$totda >= area_filter, ]
-  t4_tribs <- left_join(t4_tribs, select(st_drop_geometry(fl), .data$ID, ms_ts = .data$topo_sort),
+  t4_tribs <- left_join(t4_tribs, select(fl, .data$ID, ms_ts = .data$topo_sort),
                         by = c("toID" = "ID")) %>% arrange(.data$ms_ts)
 
   # t4_tribs <- t4_tribs[t4_tribs$ms_ts < max(mainstem$topo_sort),]
@@ -444,6 +428,41 @@ apply_fun <- function(p, p9, fl, max_level) {
   } else {
     NULL
   }
+}
+
+#' @importFrom tidyr pivot_wider
+#' @importFrom dplyr select
+#' @noRd
+cleanup_pfaf <- function(pfaf) {
+  # Add level number
+  pfaf$level <- ceiling(log10(pfaf$pfaf + 0.01))
+  pfaf <- select(pfaf, -.data$p_id, ID = .data$members)
+
+  pfaf$uid <- 1:nrow(pfaf)
+
+  # Deduplicate problem tributaries
+  remove <- do.call(c, lapply(1:length(unique(pfaf$level)), function(l, pfaf) {
+    check <- pfaf[pfaf$level == l, ]
+    check <- dplyr::group_by(check, ID)
+    check <- dplyr::filter(check, n() > 1 & pfaf < max(pfaf))$uid
+  }, pfaf = pfaf))
+
+  pfaf <- pivot_wider(select(pfaf[!pfaf$uid %in% remove, ], -.data$uid),
+                      id_cols = .data$ID, names_from = "level",
+                      names_prefix = "pf_level_", values_from = .data$pfaf)
+
+  # replace NAs with known values.
+  for(i in 3:ncol(pfaf)) {
+    pfaf[, i][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] <-
+      1 + (pfaf[, (i - 1)][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] * 10)
+  }
+
+  for(i in (ncol(pfaf) - 1):2) {
+    pfaf[, i][is.na(pfaf[, i]), ] <-
+      floor(pfaf[, (i + 1)][is.na(pfaf[, i]), ] / 10)
+  }
+
+  return(pfaf)
 }
 
 #' @noRd

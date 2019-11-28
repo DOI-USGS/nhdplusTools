@@ -100,7 +100,7 @@ test_that("get_pfaf", {
   hr_flowline <- nhdplusTools:::rename_nhdplus(hr_flowline)
 
   suppressWarnings(
-  fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = TRUE, warn = FALSE) %>%
+  fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
     left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
     st_sf() %>%
     select(ID = COMID, toID = toCOMID, area = AreaSqKM))
@@ -115,7 +115,9 @@ test_that("get_pfaf", {
   expect_equal(pfaf[pfaf$ID == 15000500028335,	], dplyr::tibble(ID = 15000500028335,
                                                          pf_level_1 = 5, pf_level_2 = 51))
 
-  pfaf <- get_pfaf(fl, max_level = 5)
+  pfaf <- get_pfaf(fl, max_level = 4)
+
+  expect_true(all(!is.na(c(pfaf$pf_level_1, pfaf$pf_level_4))))
 
   fl <- left_join(fl, pfaf, by = "ID")
 

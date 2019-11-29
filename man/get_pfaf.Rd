@@ -26,7 +26,7 @@ library(dplyr)
 source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 hr_flowline <- nhdplusTools:::rename_nhdplus(hr_flowline)
 
-fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = TRUE, warn = FALSE) \%>\%
+fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) \%>\%
   left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") \%>\%
   sf::st_sf() \%>\%
   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
@@ -36,11 +36,22 @@ fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
 fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL),
                                    weight = totda)), by = "ID")
 
-pfaf <- get_pfaf(fl, max_level = 2)
+pfaf <- get_pfaf(fl, max_level = 3)
 
 fl <- left_join(fl, pfaf, by = "ID")
 
-plot(fl["pf_level_2"], lwd = 2)
+plot(fl["pf_level_3"], lwd = 2)
+
+pfaf <- get_pfaf(fl, max_level = 7)
+
+hr_catchment <- left_join(hr_catchment, pfaf, by = c("NHDPlusID" = "ID"))
+
+colors <- data.frame(pf_level_4 = unique(hr_catchment$pf_level_4),
+                     color = sample(terrain.colors(length(unique(hr_catchment$pf_level_4)))),
+                    stringsAsFactors = FALSE)
+hr_catchment <- left_join(hr_catchment, colors, by = "pf_level_4")
+plot(hr_catchment["color"], border = NA, reset = FALSE)
+plot(sf::st_geometry(hr_flowline), col = "blue", add = TRUE)
 
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 

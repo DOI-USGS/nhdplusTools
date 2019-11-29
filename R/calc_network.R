@@ -288,14 +288,14 @@ get_streamorder <- function(fl) {
 #' unexpected behavior may occur.
 #' @return data.frame with ID and pfaf columns.
 #' @export
-#' @importFrom tidyr pivot_wider
-#' @importFrom dplyr select bind_rows
+#' @importFrom sf st_drop_geometry
+#' @importFrom methods is
 #' @examples
 #' library(dplyr)
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 #' hr_flowline <- nhdplusTools:::rename_nhdplus(hr_flowline)
 #'
-#' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = TRUE, warn = FALSE) %>%
+#' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
 #'   left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
 #'   sf::st_sf() %>%
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
@@ -305,11 +305,22 @@ get_streamorder <- function(fl) {
 #' fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL),
 #'                                    weight = totda)), by = "ID")
 #'
-#' pfaf <- get_pfaf(fl, max_level = 2)
+#' pfaf <- get_pfaf(fl, max_level = 3)
 #'
 #' fl <- left_join(fl, pfaf, by = "ID")
 #'
-#' plot(fl["pf_level_2"], lwd = 2)
+#' plot(fl["pf_level_3"], lwd = 2)
+#'
+#' pfaf <- get_pfaf(fl, max_level = 7)
+#'
+#' hr_catchment <- left_join(hr_catchment, pfaf, by = c("NHDPlusID" = "ID"))
+#'
+#' colors <- data.frame(pf_level_4 = unique(hr_catchment$pf_level_4),
+#'                      color = sample(terrain.colors(length(unique(hr_catchment$pf_level_4)))),
+#'                     stringsAsFactors = FALSE)
+#' hr_catchment <- left_join(hr_catchment, colors, by = "pf_level_4")
+#' plot(hr_catchment["color"], border = NA, reset = FALSE)
+#' plot(sf::st_geometry(hr_flowline), col = "blue", add = TRUE)
 #'
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #'
@@ -330,25 +341,20 @@ get_streamorder <- function(fl) {
 #' plot(fl["pf_level_2"], lwd = 2)
 #'
 get_pfaf <- function(fl, max_level = 2) {
+  if(is(fl, "sf")) fl <- st_drop_geometry(fl)
   check_names(fl, "get_pfaf")
 
   mainstem_levelpath <- unique(fl$levelpath[fl$topo_sort == min(fl$topo_sort)])
 
   mainstem <- fl[fl$levelpath == mainstem_levelpath, ]
 
-  pfaf <- bind_rows(get_pfaf_9(fl, mainstem, max_level))
+  pfaf <- do.call(rbind, get_pfaf_9(fl, mainstem, max_level))
 
-  pfaf$level <- ceiling(log10(pfaf$pfaf))
-  pfaf <- select(pfaf, -.data$p_id, ID = .data$members)
-
-  pivot_wider(pfaf, .data$ID,
-              names_from = "level", names_prefix = "pf_level_",
-              values_from = .data$pfaf)
+  return(cleanup_pfaf(pfaf))
 }
 
 #' @noRd
 #' @importFrom dplyr arrange left_join
-#' @importFrom sf st_drop_geometry
 #' @importFrom methods is
 get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
 
@@ -364,12 +370,18 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
                                    assigned$members[(assigned$pfaf %% 2) == 0], ]
   }
 
+  if(length(mainstem$ID) == 1 && nrow(trib_outlets) == 0) {
+    return()
+  }
+
   # Get the top 4 tributaries (or less) by total drainage area and arrange along the mainstem
   area_filter <- (if(nrow(trib_outlets) >= 4) 4 else nrow(trib_outlets))
   area_filter <- sort(trib_outlets$totda, decreasing = TRUE)[area_filter]
   t4_tribs <- trib_outlets[trib_outlets$totda >= area_filter, ]
-  t4_tribs <- left_join(t4_tribs, select(st_drop_geometry(fl), .data$ID, ms_ts = .data$topo_sort),
+  t4_tribs <- left_join(t4_tribs, select(fl, .data$ID, ms_ts = .data$topo_sort),
                         by = c("toID" = "ID")) %>% arrange(.data$ms_ts)
+
+  # t4_tribs <- t4_tribs[t4_tribs$ms_ts < max(mainstem$topo_sort),]
 
   ms_inter <- lapply(seq_len(5), function(x, ms, ts) {
     if(x > (length(ts) + 1)) return(data.frame(ID = NA_real_))
@@ -396,7 +408,9 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
   out <- tidyr::unnest(out, cols = c(.data$members))
   out <- list(out[!is.na(out$members), ])
 
-  if(nrow(out[[1]]) == 0 | all(out[[1]]$members %in% mainstem$ID)) return(out)
+  if(nrow(out[[1]]) == 0 | all(out[[1]]$members %in% mainstem$ID)) {
+    return(out)
+  }
 
   c(out, unlist(lapply(c(1:9), apply_fun,
                        p9 = out[[1]], fl = fl, max_level = max_level),
@@ -414,6 +428,41 @@ apply_fun <- function(p, p9, fl, max_level) {
   } else {
     NULL
   }
+}
+
+#' @importFrom tidyr pivot_wider
+#' @importFrom dplyr select
+#' @noRd
+cleanup_pfaf <- function(pfaf) {
+  # Add level number
+  pfaf$level <- ceiling(log10(pfaf$pfaf + 0.01))
+  pfaf <- select(pfaf, -.data$p_id, ID = .data$members)
+
+  pfaf$uid <- 1:nrow(pfaf)
+
+  # Deduplicate problem tributaries
+  remove <- do.call(c, lapply(1:length(unique(pfaf$level)), function(l, pfaf) {
+    check <- pfaf[pfaf$level == l, ]
+    check <- dplyr::group_by(check, ID)
+    check <- dplyr::filter(check, n() > 1 & pfaf < max(pfaf))$uid
+  }, pfaf = pfaf))
+
+  pfaf <- pivot_wider(select(pfaf[!pfaf$uid %in% remove, ], -.data$uid),
+                      id_cols = .data$ID, names_from = "level",
+                      names_prefix = "pf_level_", values_from = .data$pfaf)
+
+  # replace NAs with known values.
+  for(i in 3:ncol(pfaf)) {
+    pfaf[, i][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] <-
+      1 + (pfaf[, (i - 1)][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] * 10)
+  }
+
+  for(i in (ncol(pfaf) - 1):2) {
+    pfaf[, i][is.na(pfaf[, i]), ] <-
+      floor(pfaf[, (i + 1)][is.na(pfaf[, i]), ] / 10)
+  }
+
+  return(pfaf)
 }
 
 #' @noRd

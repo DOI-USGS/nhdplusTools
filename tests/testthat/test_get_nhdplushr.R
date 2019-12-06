@@ -103,5 +103,17 @@ test_that("get_nhdplushr rename and keep_cols", {
 test_that("make_standalone", {
   fl <- get_nhdplushr(work_dir)$NHDFlowline
 
-  expect_warning(sa <- make_standalone(fl), "Found 3 broken outlets where no toNode and not terminal. Fixing.")
+  sa <- make_standalone(fl)
+
+  sa <- st_drop_geometry(sa)
+
+  expect_true(!unique(fl$TerminalPa) %in% sa$TerminalPa)
+
+  outlet <- sa$COMID[sa$Hydroseq == min(sa$Hydroseq)]
+
+  sa_UT <- get_UT(sa, outlet)
+  fl_UT <- get_UT(fl, outlet)
+  expect_equal(sa_UT, fl_UT)
+
+  expect_true(all(sa[sa$Hydroseq == min(sa$Hydroseq), ][c("DnLevel", "DnLevelPat", "DnHydroseq")] == 0))
 })

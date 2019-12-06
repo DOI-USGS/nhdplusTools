@@ -247,30 +247,29 @@ make_standalone <- function(flowlines, fix_terminals = TRUE) {
     # outlets are the lowest hydrosequence on non-terminal flagged outlets
     outlets <- group_by(st_drop_geometry(flowlines_null), .data$TerminalPa)
     outlets <- select(filter(outlets, .data$Hydroseq == min(.data$Hydroseq)),
-                      .data$Hydroseq, .data$TerminalPa)
+                      .data$Hydroseq, .data$TerminalPa, .data$LevelPathI)
 
     for(term in unique(flowlines_null$TerminalPa)) {
-      term_hydroseq <- outlets$Hydroseq[outlets$TerminalPa == term]
-      flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1
-      flowlines$TerminalPa[flowlines$TerminalPa == term] <- outlets$Hydroseq[outlets$TerminalPa == term]
+      flowlines = fix_term(outlets, flowlines, term)
     }
 
-    flowlines <- flowlines[(flowlines$FTYPE != 566 & flowlines$TerminalFl != 1), ]
+    # Remove non-terminal coastal flowlines
+    flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$TerminalFl != 1), ]
 
-    t_atts <- select(st_drop_geometry(flowlines), .data$COMID, .data$ToNode,
-                     .data$FromNode, .data$TerminalFl)
+    t_atts <- select(st_drop_geometry(flowlines),
+                     .data$COMID, .data$ToNode, .data$FromNode, .data$TerminalFl)
 
-    t_atts <- left_join(t_atts, select(t_atts,
-                                       toCOMID = .data$COMID,
-                                       .data$FromNode),
+    t_atts <- left_join(t_atts,
+                        select(t_atts,
+                               toCOMID = .data$COMID, .data$FromNode),
                         by = c("ToNode" = "FromNode"))
 
     na_t_atts <- filter(t_atts, is.na(t_atts$toCOMID) & .data$TerminalFl == 0)
 
-    warning(paste("Found", nrow(na_t_atts),
-                  "broken outlets where no toNode and not terminal. Fixing."))
-
-    flowlines$TerminalFl[which(flowlines$COMID %in% na_t_atts$COMID)] <- 1
+    if(nrow(na_t_atts) > 0) {
+      stop(paste("Found", nrow(na_t_atts),
+                    "broken outlets where no toNode and not terminal."))
+    }
 
   } else {
 
@@ -279,6 +278,37 @@ make_standalone <- function(flowlines, fix_terminals = TRUE) {
 
     flowlines <- flowlines[terminal_test, ]
   }
+
+  return(flowlines)
+}
+
+
+fix_term <- function(outlets, flowlines, term) {
+  # term_hydrosequence is the new basin outlet ID.
+  term_hydroseq <- outlets$Hydroseq[outlets$TerminalPa == term]
+
+  # old_term_levelpath is the levelpath of the mainstem of the basin.
+  old_term_levelpath <- flowlines$LevelPathI[flowlines$Hydroseq == term_hydroseq]
+
+  # Set the terminal flag of the new basin outlet.
+  flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1
+
+  # Change all terminal path IDs to match the new Termal ID of the basin.
+  flowlines$TerminalPa[flowlines$TerminalPa == term] <- outlets$Hydroseq[outlets$TerminalPa == term]
+
+  # Change the mainstem levelpath ID to match the new Terminal ID of the basin.
+  flowlines$LevelPathI[flowlines$LevelPathI == old_term_levelpath] <- term_hydroseq
+
+  # Change the old Down Level Paths so they point to the new mainstem levelpath ID
+  flowlines$DnLevelPat[flowlines$DnLevelPat == old_term_levelpath] <- term_hydroseq
+
+  # Change olf Up Level Path to point to the new mainstem levelpath ID
+  flowlines$UpLevelPat[flowlines$UpLevelPat == old_term_levelpath] <- term_hydroseq
+
+  # Make the Down Hydrosequence and Down Level and Path look like an outlet.
+  flowlines$DnLevel[flowlines$Hydroseq == term_hydroseq] <- 0
+  flowlines$DnLevelPat[flowlines$Hydroseq == term_hydroseq] <- 0
+  flowlines$DnHydroseq[flowlines$Hydroseq == term_hydroseq] <- 0
 
   return(flowlines)
 }

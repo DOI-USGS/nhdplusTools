@@ -10,17 +10,21 @@ get_hr_data(gdb, layer = NULL, min_size_sqkm = NULL, simp = NULL,
 \arguments{
 \item{gdb}{character path to geodatabase to get data from.}
 
-\item{layer}{character layer name from geodatabase found with \link{sf::st_layers}}
+\item{layer}{character layer name from geodatabase found with \link[sf]{st_layers}}
 
 \item{min_size_sqkm}{numeric minimum basin size to be included in the output}
 
 \item{simp}{numeric simplification tolerance in units of projection}
 
-\item{proj}{a projection specification compatible with \link{sf::st_crs}}
+\item{proj}{a projection specification compatible with \link[sf]{st_crs}}
 
 \item{keep_cols}{character vector of column names to keep in the output. If NULL,
 all will be kept.}
+
+\item{rename}{boolean if TRUE, nhdplusTools standard attribute values will
+be applied.}
 }
 \description{
-Get NHDPlus HiRes Data
+Use to remove unwanted detail NHDPlusHR data
+See \link{get_nhdplushr} for examples.
 }

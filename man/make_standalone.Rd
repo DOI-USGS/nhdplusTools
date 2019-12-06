@@ -18,3 +18,17 @@ data. The primary modification applied is to ensure that any flowpath that exits
 domain is labeled as a terminal path and attributes are propogated upstream such that
 the domain is independently complete.
 }
+\examples{
+source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+
+(outlet <- hr_flowline[hr_flowline$Hydroseq == min(hr_flowline$Hydroseq), ])
+length(sf::st_geometry(hr_flowline)[hr_flowline$TerminalPa == outlet$Hydroseq])
+
+hr_flowline <- make_standalone(hr_flowline)
+
+(outlet <- hr_flowline[hr_flowline$Hydroseq == min(hr_flowline$Hydroseq), ])
+length(sf::st_geometry(hr_flowline)[hr_flowline$TerminalPa == outlet$Hydroseq])
+
+
+
+}

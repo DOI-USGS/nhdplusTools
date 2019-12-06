@@ -447,8 +447,8 @@ cleanup_pfaf <- function(pfaf) {
   # Deduplicate problem tributaries
   remove <- do.call(c, lapply(1:length(unique(pfaf$level)), function(l, pfaf) {
     check <- pfaf[pfaf$level == l, ]
-    check <- dplyr::group_by(check, ID)
-    check <- dplyr::filter(check, n() > 1 & pfaf < max(pfaf))$uid
+    check <- dplyr::group_by(check, .data$ID)
+    check <- dplyr::filter(check, n() > 1 & .data$pfaf < max(.data$pfaf))$uid
   }, pfaf = pfaf))
 
   pfaf <- pivot_wider(select(pfaf[!pfaf$uid %in% remove, ], -.data$uid),

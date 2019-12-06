@@ -24,7 +24,7 @@ Set to NULL to get all available.}
 
 \item{pattern}{character optional regex to select certain files in hr_dir}
 
-\item{check_terminals}{boolean if TRUE, run \link{clean_hr_region} on output.}
+\item{check_terminals}{boolean if TRUE, run \link{make_standalone} on output.}
 
 \item{overwrite}{boolean should the output overwrite? If false and the output layer
 exists, it will be read and returned so this function will always return data even
@@ -52,6 +52,17 @@ Set layers to "NULL" to get all layers.
 # Note this will download a lot of data to a temp directory.
 # Change 'tempdir()' to your directory of choice.
 download_dir <- download_nhdplushr(tempdir(), c("0302", "0303"))
+
 get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
+
+get_nhdplushr(download_dir,
+              file.path(download_dir, "nhdplus_0302-03.gpkg"),
+              layers = NULL, overwrite = TRUE)
+
+get_nhdplushr(download_dir,
+              file.path(download_dir, "nhdplus_0302-03.gpkg"),
+              layers = "NHDFlowline", overwrite = TRUE,
+              min_size_sqkm = 10, simp = 10, proj = "+init=epsg:5070")
+
 }
 }

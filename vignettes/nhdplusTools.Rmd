@@ -149,15 +149,18 @@ download_nhdplushr(nhd_dir = "download_dir",
                    hu_list = c("0101"), # can mix hu02 and hu04 codes.
                    download_files = FALSE) # TRUE will download files.
 
+out_gpkg <- file.path(nhd_dir, "nhd_hr.gpkg")
 hr_data <- get_nhdplushr(nhd_dir, 
-                         out_gpkg = file.path(nhd_dir, "nhd_hr.gpkg"))
-(layers <- st_layers(hr_data))
-unlink(hr_data)
+                         out_gpkg = out_gpkg)
+(layers <- st_layers(out_gpkg))
+names(hr_data)
+unlink(out_gpkg)
 
 hr_data <- get_nhdplushr(nhd_dir, 
-                         out_gpkg = file.path(nhd_dir, "nhd_hr.gpkg"), 
+                         out_gpkg = out_gpkg, 
                          layers = NULL)
-(layers <- st_layers(hr_data))
+(layers <- st_layers(out_gpkg))
+names(hr_data)
 ```
 
 Other functionality in the package, such as the `get_UT/UM/DM/DD` functions, subsetting, indexing, etc. also work now or will soon! Stay tuned for a dedicated NHDPlus HiRes vignette and submit issues as you find them! 

@@ -1,6 +1,7 @@
 context("get_nhdplushr")
 
 work_dir <- tempdir()
+dir.create(work_dir, recursive = TRUE)
 out_gpkg <- file.path(work_dir, "temp.gpkg")
 
 test_that("we get urls for nhdplushr", {

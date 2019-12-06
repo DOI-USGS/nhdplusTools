@@ -80,7 +80,7 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' "WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")
 #' Set to NULL to get all available.
 #' @param pattern character optional regex to select certain files in hr_dir
-#' @param check_terminals boolean if TRUE, run \link{clean_hr_region} on output.
+#' @param check_terminals boolean if TRUE, run \link{make_standalone} on output.
 #' @param overwrite boolean should the output overwrite? If false and the output layer
 #' exists, it will be read and returned so this function will always return data even
 #' if called a second time for the same output. This is useful for workflows. Note that
@@ -102,7 +102,18 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' # Note this will download a lot of data to a temp directory.
 #' # Change 'tempdir()' to your directory of choice.
 #' download_dir <- download_nhdplushr(tempdir(), c("0302", "0303"))
+#'
 #' get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
+#'
+#' get_nhdplushr(download_dir,
+#'               file.path(download_dir, "nhdplus_0302-03.gpkg"),
+#'               layers = NULL, overwrite = TRUE)
+#'
+#' get_nhdplushr(download_dir,
+#'               file.path(download_dir, "nhdplus_0302-03.gpkg"),
+#'               layers = "NHDFlowline", overwrite = TRUE,
+#'               min_size_sqkm = 10, simp = 10, proj = "+init=epsg:5070")
+#'
 #' }
 get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
                           layers = c("NHDFlowline", "NHDPlusCatchment"),
@@ -153,16 +164,20 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 }
 
 #' Get NHDPlus HiRes Data
+#' @description Use to remove unwanted detail NHDPlusHR data
+#' See \link{get_nhdplushr} for examples.
 #' @param gdb character path to geodatabase to get data from.
-#' @param layer character layer name from geodatabase found with \link{sf::st_layers}
+#' @param layer character layer name from geodatabase found with \link[sf]{st_layers}
 #' @param min_size_sqkm numeric minimum basin size to be included in the output
 #' @param keep_cols character vector of column names to keep in the output. If NULL,
 #' all will be kept.
-#' @param proj a projection specification compatible with \link{sf::st_crs}
+#' @param proj a projection specification compatible with \link[sf]{st_crs}
 #' @param simp numeric simplification tolerance in units of projection
+#' @param rename boolean if TRUE, nhdplusTools standard attribute values will
+#' be applied.
 #' @export
 #' @importFrom sf st_transform st_simplify st_crs st_drop_geometry st_geometry
-#' @importFrom sf st_cast st_multilinestring st_zm
+#' @importFrom sf st_cast st_multilinestring st_zm st_geometry<-
 #' @importFrom dplyr select group_by filter ungroup distinct
 get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
                         simp = NULL, proj = NULL, keep_cols = NULL,
@@ -234,6 +249,19 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
 #' @importFrom sf st_zm write_sf st_drop_geometry
 #' @importFrom dplyr group_by filter select
 #' @export
+#' @examples
+#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#'
+#' (outlet <- hr_flowline[hr_flowline$Hydroseq == min(hr_flowline$Hydroseq), ])
+#' length(sf::st_geometry(hr_flowline)[hr_flowline$TerminalPa == outlet$Hydroseq])
+#'
+#' hr_flowline <- make_standalone(hr_flowline)
+#'
+#' (outlet <- hr_flowline[hr_flowline$Hydroseq == min(hr_flowline$Hydroseq), ])
+#' length(sf::st_geometry(hr_flowline)[hr_flowline$TerminalPa == outlet$Hydroseq])
+#'
+#'
+#'
 make_standalone <- function(flowlines, fix_terminals = TRUE) {
 
   terminals <- flowlines[flowlines$TerminalFl == 1, ]

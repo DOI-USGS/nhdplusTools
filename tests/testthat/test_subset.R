@@ -127,18 +127,20 @@ test_that("subset works with HR", {
   skip_on_cran()
   get_test_file(work_dir)
 
-  hr <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"),
+  out_gpkg <- file.path(work_dir, "temp.gpkg")
+
+  hr <- get_nhdplushr(work_dir, out_gpkg = out_gpkg,
                       layers = c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody",
                                  "NHDArea", "NHDPlusSink"))
 
-  expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, hr), "NHDPlusCatchment")
-  expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, hr), "NHDPlusCatchment")
+  expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, out_gpkg), "NHDPlusCatchment")
+  expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, out_gpkg), "NHDPlusCatchment")
 
-  flowlines <- sf::read_sf(hr, "NHDFlowline")
+  flowlines <- sf::read_sf(out_gpkg, "NHDFlowline")
 
   up_ids <- get_UT(flowlines, 15000500028335)
 
-  sub <- subset_nhdplus(up_ids, file.path(work_dir, "sub.gpkg"), hr, return_data = FALSE)
+  sub <- subset_nhdplus(up_ids, file.path(work_dir, "sub.gpkg"), out_gpkg, return_data = FALSE)
 
   layers <- sf::st_layers(sub)
 

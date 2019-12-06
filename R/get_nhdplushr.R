@@ -125,8 +125,12 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 
   out_list <- list()
 
+  layer_names <- c()
+  if(!is.null(out_gpkg) && file.exists(out_gpkg))
+    layer_names <- st_layers(out_gpkg)$names
+
   for(layer in layers) {
-    if(!is.null(out_gpkg) && layer %in% st_layers(out_gpkg)$names & !overwrite) {
+    if(!is.null(out_gpkg) && layer %in% layer_names & !overwrite) {
       out <- read_sf(out_gpkg, layer)
     } else {
 
@@ -137,7 +141,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
       try(out <- st_sf(out))
     }
 
-    if(!is.null(out_gpkg) && (!layer %in% st_layers(out_gpkg)$names | overwrite)) {
+    if(!is.null(out_gpkg) && (!layer %in% layer_names | overwrite)) {
       write_sf(out, layer = layer, dsn = out_gpkg)
     }
 
@@ -179,7 +183,7 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
     if(!is.null(proj) && st_crs(proj) != st_crs(hr_data))
       hr_data <- st_transform(hr_data, proj)
 
-    if(simp > 0)
+    if(!is.null(simp) && simp > 0)
       hr_data <- st_simplify(hr_data, dTolerance = simp)
 
     if(!is.null(min_size_sqkm)) {

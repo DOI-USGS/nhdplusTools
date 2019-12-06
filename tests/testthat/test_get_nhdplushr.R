@@ -13,15 +13,17 @@ test_that("get_nhdplushr runs", {
 
   get_test_file(work_dir)
 
-  out <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"))
+  out_gpkg <- file.path(work_dir, "temp.gpkg")
 
-  layers <- sf::st_layers(out)
+  out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
+
+  layers <- sf::st_layers(out_gpkg)
   expect_equal(layers$name, c("NHDFlowline", "NHDPlusCatchment"))
   expect_equal(layers$features, c(2691, 2603))
 
-  out <- get_nhdplushr(work_dir, out_gpkg = file.path(work_dir, "temp.gpkg"), layers = NULL)
+  out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg, layers = NULL)
 
-  layers <- sf::st_layers(out)
+  layers <- sf::st_layers(out_gpkg)
 
   expect_equal(length(layers$name), 7)
   expect_equal(layers$fields[which(layers$name == "NHDFlowline")], 57)

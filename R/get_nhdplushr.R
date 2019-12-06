@@ -78,11 +78,13 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' "NHDPlusSink", "NHDPlusWall", "NHDPoint", "NHDPlusBurnWaterbody",
 #' "NHDPlusBurnLineEvent", "HYDRO_NET_Junctions",
 #' "WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")
+#' Set to NULL to get all available.
 #' @param pattern character optional regex to select certain files in hr_dir
 #' @param check_terminals boolean if TRUE, run \link{clean_hr_region} on output.
 #' @param overwrite boolean should the output overwrite? If false and the output layer
 #' exists, it will be read and returned so this function will always return data even
-#' if called a second time for the same output. This is useful for workflows.
+#' if called a second time for the same output. This is useful for workflows. Note that
+#' this will NOT delete the entire GeoPackage. It will overwite on a per layer basis.
 #' @param ... parameters passed along to \link{get_hr_data}
 #' for "NHDFlowline" layers.
 #' @return Response is a list of sf data.frames containing output that may also be written
@@ -159,7 +161,8 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 #' @param proj a projection specification compatible with \link{sf::st_crs}
 #' @param simp numeric simplification tolerance in units of projection
 #' @export
-#' @importFrom sf st_multilinestring st_zm st_transform st_simplify st_crs st_drop_geometry
+#' @importFrom sf st_transform st_simplify st_crs st_drop_geometry st_geometry
+#' @importFrom sf st_cast st_multilinestring st_zm
 #' @importFrom dplyr select group_by filter ungroup distinct
 get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
                         simp = NULL, proj = NULL, keep_cols = NULL,
@@ -167,40 +170,57 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
   if(layer == "NHDFlowline") {
     hr_data <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
     hr_data <- select(hr_data, -ReachCode, -VPUID)
-    hr_data <- left_join( sf::st_zm(read_sf(gdb, layer)), hr_data, by = "NHDPlusID")
+    hr_data <- left_join(st_zm(read_sf(gdb, layer)), hr_data, by = "NHDPlusID")
 
-    fix <- which(!sapply(sf::st_geometry(hr_data), function(x) class(x)[2]) %in% c("LINESTRING", "MULTILINESTRING"))
+    fix <- which( # In the case things come in as non-linestring geometries
+      !sapply(st_geometry(hr_data),
+              function(x) class(x)[2]) %in% c("LINESTRING", "MULTILINESTRING"))
 
     for(f in fix) {
-      sf::st_geometry(hr_data)[[f]] <- st_multilinestring(lapply(sf::st_geometry(hr_data)[[f]][[1]],
-                                                                 sf::st_cast, to = "LINESTRING"), dim = "XY")
+      st_geometry(hr_data)[[f]] <- st_multilinestring(lapply(st_geometry(hr_data)[[f]][[1]],
+                                                             st_cast, to = "LINESTRING"),
+                                                      dim = "XY")
     }
-
-    if(rename) hr_data <- rename_nhdplus(hr_data)
 
     hr_data <- st_zm(hr_data)
 
-    if(!is.null(proj) && st_crs(proj) != st_crs(hr_data))
-      hr_data <- st_transform(hr_data, proj)
-
-    if(!is.null(simp) && simp > 0)
-      hr_data <- st_simplify(hr_data, dTolerance = simp)
-
     if(!is.null(min_size_sqkm)) {
+
+      orig_names <- names(hr_data)
+      hr_data <- rename_nhdplus(hr_data)
+
       filter_data <- select(st_drop_geometry(hr_data), LevelPathI, TotDASqKM)
       filter_data <- ungroup(filter(group_by(filter_data, LevelPathI),
                                     TotDASqKM == max(TotDASqKM)))
       filter_data <- distinct(filter(filter_data, TotDASqKM > min_size_sqkm))
       hr_data <- hr_data[hr_data$LevelPathI %in% filter_data$LevelPathI, ]
+
+
+      names(hr_data) <- orig_names
     }
 
-    if(!is.null(keep_cols)) hr_data <- hr_data[, keep_cols]
-
-    return(hr_data)
-
   } else {
-    read_sf(gdb, layer)
+    hr_data <- read_sf(gdb, layer)
   }
+
+  if(rename) hr_data <- rename_nhdplus(hr_data)
+
+  if(!is.null(keep_cols)) {
+    keep_cols <- keep_cols[keep_cols %in% names(hr_data)]
+
+    geom_name <- attr(hr_data, "sf_column")
+    if(!geom_name %in% keep_cols) keep_cols <- c(keep_cols, geom_name)
+
+    hr_data <- hr_data[, keep_cols]
+  }
+
+  if(!is.null(proj) && st_crs(proj) != st_crs(hr_data))
+    hr_data <- st_transform(hr_data, proj)
+
+  if(!is.null(simp) && simp > 0)
+    hr_data <- st_simplify(hr_data, dTolerance = simp)
+
+  return(hr_data)
 }
 
 #' Make isolated NHDPlusHR region a standalone dataset

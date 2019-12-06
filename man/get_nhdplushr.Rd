@@ -19,7 +19,8 @@ Choose from:
 c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine",
 "NHDPlusSink", "NHDPlusWall", "NHDPoint", "NHDPlusBurnWaterbody",
 "NHDPlusBurnLineEvent", "HYDRO_NET_Junctions",
-"WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")}
+"WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")
+Set to NULL to get all available.}
 
 \item{pattern}{character optional regex to select certain files in hr_dir}
 
@@ -27,7 +28,8 @@ c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine",
 
 \item{overwrite}{boolean should the output overwrite? If false and the output layer
 exists, it will be read and returned so this function will always return data even
-if called a second time for the same output. This is useful for workflows.}
+if called a second time for the same output. This is useful for workflows. Note that
+this will NOT delete the entire GeoPackage. It will overwite on a per layer basis.}
 
 \item{...}{parameters passed along to \link{get_hr_data}
 for "NHDFlowline" layers.}

@@ -4,7 +4,7 @@
 \alias{get_pfaf}
 \title{Get Pfafstetter Codes (Experimental)}
 \usage{
-get_pfaf(fl, max_level = 2)
+get_pfaf(fl, max_level = 2, status = FALSE)
 }
 \arguments{
 \item{fl}{sf data.frame with ID, toID, totda, outletID, topo_sort,
@@ -13,6 +13,8 @@ and levelpath attributes.}
 \item{max_level}{integer number of pfaf levels to attempt to calculate.
 If the network doesn't have resolution to support the desired level,
 unexpected behavior may occur.}
+
+\item{status}{boolean print status or not}
 }
 \value{
 data.frame with ID and pfaf columns.

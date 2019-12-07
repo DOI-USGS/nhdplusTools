@@ -200,7 +200,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL, streamorder = NULL, nhdpl
     outlet_type <- sapply(outlets, function(x) x$featureSource)
   }
 
-  fline_layer = get_flowline_layer_name()
+  fline_layer = get_flowline_layer_name(nhdplus_data)
   catchment_layer <- get_catchment_layer_name(simplified = TRUE, nhdplus_data)
 
   if(!is.null(nhdplus_data) & !is.null(outlets)) {

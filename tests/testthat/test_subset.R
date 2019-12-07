@@ -154,6 +154,12 @@ test_that("subset by bounding box", {
 
   bbox <- st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = st_crs(4326))
 
+  expect_error(subset_nhdplus(bbox = (bbox + c(-200, -200, 200, 200)),
+                              nhdplus_data = sample_data,
+                              simplified = TRUE,
+                              status = FALSE),
+               "invalid bbox entry")
+
   fi <- subset_nhdplus(bbox = bbox,
                        nhdplus_data = sample_data,
                        simplified = TRUE,
@@ -191,8 +197,7 @@ test_that("subset by bounding box", {
                        status = FALSE),
                  "using bounding box rather than submitted comids")
 
-  bbox[1] <- -190
-  expect_error(fi <- subset_nhdplus(bbox = as.numeric(bbox),
+  expect_error(fi <- subset_nhdplus(bbox = as.character(bbox),
                        nhdplus_data = sample_data,
                        status = FALSE),
                "invalid bbox entry")

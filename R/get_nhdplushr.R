@@ -244,76 +244,81 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
 #' domain is labeled as a terminal path and attributes are propogated upstream such that
 #' the domain is independently complete.
 #' @param flowlines sf data.frame of NHDPlusHR flowlines.
-#' @param fix_terminals boolean If true, an attempt is made to make flowlines that
-#' leave the domain act as terminal paths.
 #' @importFrom sf st_zm write_sf st_drop_geometry
 #' @importFrom dplyr group_by filter select
 #' @export
 #' @examples
+#' \donttest{
+#' library(dplyr)
+#' library(sf)
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 #'
-#' (outlet <- hr_flowline[hr_flowline$Hydroseq == min(hr_flowline$Hydroseq), ])
-#' length(sf::st_geometry(hr_flowline)[hr_flowline$TerminalPa == outlet$Hydroseq])
+#' (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
+#' nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
 #'
-#' hr_flowline <- make_standalone(hr_flowline)
+#' hr_data$NHDFlowline <- make_standalone(hr_data$NHDFlowline)
 #'
-#' (outlet <- hr_flowline[hr_flowline$Hydroseq == min(hr_flowline$Hydroseq), ])
-#' length(sf::st_geometry(hr_flowline)[hr_flowline$TerminalPa == outlet$Hydroseq])
+#' (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
+#' nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
 #'
+#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 #'
+#' # Remove mainstem and non-dendritic stuff.
+#' subset <- filter(hr_data$NHDFlowline,
+#'                         StreamLeve > min(hr_data$NHDFlowline$StreamLeve) &
+#'                           StreamOrde == StreamCalc)
 #'
-make_standalone <- function(flowlines, fix_terminals = TRUE) {
+#' subset <- subset_nhdplus(subset$COMID, nhdplus_data = hr_gpkg)$NHDFlowline
+#'
+#' plot(sf::st_geometry(hr_data$NHDFlowline))
+#'
+#' flowline_mod <- make_standalone(subset)
+#'
+#' terminals <- unique(flowline_mod$TerminalPa)
+#'
+#' colors <- sample(hcl.colors(length(terminals), palette = "Zissou 1"))
+#'
+#' for(i in 1:length(terminals)) {
+#'   fl <- flowline_mod[flowline_mod$TerminalPa == terminals[i], ]
+#'   plot(st_geometry(fl), col = colors[i], lwd = 2, add = TRUE)
+#' }
+#'
+#' ol <- filter(flowline_mod, TerminalFl == 1 & TerminalPa %in% terminals)
+#'
+#' plot(st_geometry(ol), lwd = 2, add = TRUE)
+#'}
+make_standalone <- function(flowlines) {
 
-  terminals <- flowlines[flowlines$TerminalFl == 1, ]
+  # Remove non-terminal coastal flowlines
+  flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$TerminalFl != 1), ]
 
-  terminal_test <- flowlines$TerminalPa %in% terminals$TerminalPa
+  outlets <- select(st_drop_geometry(flowlines),
+                    .data$COMID, .data$ToNode,
+                    .data$FromNode, .data$TerminalFl,
+                    .data$Hydroseq, .data$TerminalPa,
+                    .data$LevelPathI)
 
-  if(fix_terminals) {
+  outlets <- left_join(outlets,
+                       select(outlets,
+                              toCOMID = .data$COMID, .data$FromNode),
+                       by = c("ToNode" = "FromNode"))
 
-    flowlines_null <- flowlines[!terminal_test, ]
+  outlets <- filter(outlets,
+                    is.na(.data$toCOMID) & .data$TerminalFl == 0)
 
-    # outlets are the lowest hydrosequence on non-terminal flagged outlets
-    outlets <- group_by(st_drop_geometry(flowlines_null), .data$TerminalPa)
-    outlets <- select(filter(outlets, .data$Hydroseq == min(.data$Hydroseq)),
-                      .data$Hydroseq, .data$TerminalPa, .data$LevelPathI)
+  outlets <- select(outlets, .data$Hydroseq, .data$LevelPathI, .data$COMID)
 
-    for(term in unique(flowlines_null$TerminalPa)) {
-      flowlines = fix_term(outlets, flowlines, term)
-    }
-
-    # Remove non-terminal coastal flowlines
-    flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$TerminalFl != 1), ]
-
-    t_atts <- select(st_drop_geometry(flowlines),
-                     .data$COMID, .data$ToNode, .data$FromNode, .data$TerminalFl)
-
-    t_atts <- left_join(t_atts,
-                        select(t_atts,
-                               toCOMID = .data$COMID, .data$FromNode),
-                        by = c("ToNode" = "FromNode"))
-
-    na_t_atts <- filter(t_atts, is.na(t_atts$toCOMID) & .data$TerminalFl == 0)
-
-    if(nrow(na_t_atts) > 0) {
-      stop(paste("Found", nrow(na_t_atts),
-                    "broken outlets where no toNode and not terminal."))
-    }
-
-  } else {
-
-    warning(paste("Removing", sum(!terminal_test),
-                  "flowlines that are missing terminal paths."))
-
-    flowlines <- flowlines[terminal_test, ]
+  for(i in 1:nrow(outlets)) {
+    flowlines = fix_term(outlets[i, ], flowlines)
   }
 
   return(flowlines)
 }
 
 
-fix_term <- function(outlets, flowlines, term) {
-  # term_hydrosequence is the new basin outlet ID.
-  term_hydroseq <- outlets$Hydroseq[outlets$TerminalPa == term]
+fix_term <- function(term, flowlines) {
+  term_hydroseq <- term$Hydroseq
+  term_comid <- term$COMID
 
   # old_term_levelpath is the levelpath of the mainstem of the basin.
   old_term_levelpath <- flowlines$LevelPathI[flowlines$Hydroseq == term_hydroseq]
@@ -322,7 +327,8 @@ fix_term <- function(outlets, flowlines, term) {
   flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1
 
   # Change all terminal path IDs to match the new Termal ID of the basin.
-  flowlines$TerminalPa[flowlines$TerminalPa == term] <- outlets$Hydroseq[outlets$TerminalPa == term]
+  ut <- get_UT(flowlines, term_comid)
+  flowlines$TerminalPa[flowlines$COMID %in% ut] <- term_hydroseq
 
   # Change the mainstem levelpath ID to match the new Terminal ID of the basin.
   flowlines$LevelPathI[flowlines$LevelPathI == old_term_levelpath] <- term_hydroseq

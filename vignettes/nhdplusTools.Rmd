@@ -137,11 +137,7 @@ plot(sf::st_geometry(flowline))
 For the demo below, a small sample of HiRes data that has been loaded into `nhdplusTools` is used. The first line shows how you can download additional data (just change `download_files` to `TRUE`).
 
 ```{r nhdplushr_secret, echo=FALSE, include=FALSE} 
-  nhd_dir <- tempdir()
-  temp_file <- file.path(nhd_dir, "temp.zip")
-  download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
-            temp_file)
-  unzip(temp_file, exdir = nhd_dir)
+source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 ```
 
 ```{r nhdplus_hr}
@@ -149,14 +145,14 @@ download_nhdplushr(nhd_dir = "download_dir",
                    hu_list = c("0101"), # can mix hu02 and hu04 codes.
                    download_files = FALSE) # TRUE will download files.
 
-out_gpkg <- file.path(nhd_dir, "nhd_hr.gpkg")
-hr_data <- get_nhdplushr(nhd_dir, 
+out_gpkg <- file.path(work_dir, "nhd_hr.gpkg")
+hr_data <- get_nhdplushr(work_dir, 
                          out_gpkg = out_gpkg)
 (layers <- st_layers(out_gpkg))
 names(hr_data)
 unlink(out_gpkg)
 
-hr_data <- get_nhdplushr(nhd_dir, 
+hr_data <- get_nhdplushr(work_dir, 
                          out_gpkg = out_gpkg, 
                          layers = NULL)
 (layers <- st_layers(out_gpkg))

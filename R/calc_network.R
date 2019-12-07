@@ -294,7 +294,7 @@ get_streamorder <- function(fl) {
 #' @examples
 #' library(dplyr)
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
-#' hr_flowline <- nhdplusTools:::rename_nhdplus(hr_flowline)
+#' hr_flowline <- nhdplusTools:::rename_nhdplus(hr_data$NHDFlowline)
 #'
 #' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
 #'   left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
@@ -312,9 +312,9 @@ get_streamorder <- function(fl) {
 #'
 #' plot(fl["pf_level_3"], lwd = 2)
 #'
-#' pfaf <- get_pfaf(fl, max_level = 7)
+#' pfaf <- get_pfaf(fl, max_level = 4)
 #'
-#' hr_catchment <- left_join(hr_catchment, pfaf, by = c("NHDPlusID" = "ID"))
+#' hr_catchment <- left_join(hr_data$NHDPlusCatchment, pfaf, by = c("FEATUREID" = "ID"))
 #'
 #' colors <- data.frame(pf_level_4 = unique(hr_catchment$pf_level_4),
 #'                      color = sample(terrain.colors(length(unique(hr_catchment$pf_level_4)))),

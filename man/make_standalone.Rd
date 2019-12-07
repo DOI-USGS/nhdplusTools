@@ -4,13 +4,10 @@
 \alias{make_standalone}
 \title{Make isolated NHDPlusHR region a standalone dataset}
 \usage{
-make_standalone(flowlines, fix_terminals = TRUE)
+make_standalone(flowlines)
 }
 \arguments{
 \item{flowlines}{sf data.frame of NHDPlusHR flowlines.}
-
-\item{fix_terminals}{boolean If true, an attempt is made to make flowlines that
-leave the domain act as terminal paths.}
 }
 \description{
 Cleans up and prepares NHDPlusHR regional data for use as complete NHDPlus
@@ -19,16 +16,43 @@ domain is labeled as a terminal path and attributes are propogated upstream such
 the domain is independently complete.
 }
 \examples{
+\donttest{
+library(dplyr)
+library(sf)
 source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 
-(outlet <- hr_flowline[hr_flowline$Hydroseq == min(hr_flowline$Hydroseq), ])
-length(sf::st_geometry(hr_flowline)[hr_flowline$TerminalPa == outlet$Hydroseq])
+(outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
+nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
 
-hr_flowline <- make_standalone(hr_flowline)
+hr_data$NHDFlowline <- make_standalone(hr_data$NHDFlowline)
 
-(outlet <- hr_flowline[hr_flowline$Hydroseq == min(hr_flowline$Hydroseq), ])
-length(sf::st_geometry(hr_flowline)[hr_flowline$TerminalPa == outlet$Hydroseq])
+(outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
+nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
 
+source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 
+# Remove mainstem and non-dendritic stuff.
+subset <- filter(hr_data$NHDFlowline,
+                        StreamLeve > min(hr_data$NHDFlowline$StreamLeve) &
+                          StreamOrde == StreamCalc)
 
+subset <- subset_nhdplus(subset$COMID, nhdplus_data = hr_gpkg)$NHDFlowline
+
+plot(sf::st_geometry(hr_data$NHDFlowline))
+
+flowline_mod <- make_standalone(subset)
+
+terminals <- unique(flowline_mod$TerminalPa)
+
+colors <- sample(hcl.colors(length(terminals), palette = "Zissou 1"))
+
+for(i in 1:length(terminals)) {
+  fl <- flowline_mod[flowline_mod$TerminalPa == terminals[i], ]
+  plot(st_geometry(fl), col = colors[i], lwd = 2, add = TRUE)
+}
+
+ol <- filter(flowline_mod, TerminalFl == 1 & TerminalPa \%in\% terminals)
+
+plot(st_geometry(ol), lwd = 2, add = TRUE)
+}
 }

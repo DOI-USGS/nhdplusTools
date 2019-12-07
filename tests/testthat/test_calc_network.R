@@ -97,7 +97,7 @@ test_that("calculate level path", {
 test_that("get_pfaf", {
   suppressMessages(
   source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
-  hr_flowline <- nhdplusTools:::rename_nhdplus(hr_flowline)
+  hr_flowline <- nhdplusTools:::rename_nhdplus(hr_data$NHDFlowline)
 
   suppressWarnings(
   fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%

@@ -1,33 +1,34 @@
 # nolint start
-proj <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
-
 work_dir <- tempdir()
-temp_file <- file.path(work_dir, "temp.zip")
-project_file <- "docs/data/03_sub.zip"
-if(file.exists(project_file)) {
-  file.copy(project_file,
-            temp_file)
+hr_source <- file.path(work_dir, "temp.zip")
+
+project_file <- c("../../docs/data/03_sub.zip", "docs/data/03_sub.zip")
+project_file <- project_file[file.exists(project_file)]
+
+if(length(project_file) > 0 &&
+          file.exists(project_file[1])) {
+  file.copy(project_file, hr_source)
 } else {
   url <- "https://usgs-r.github.io/nhdplusTools/data/03_sub.zip"
-  resp <- httr::RETRY("GET", url, httr::write_disk(temp_file, overwrite=TRUE),
-                      times = 3, pause_cap = 20)
+  invisible(httr::RETRY("GET", url, httr::write_disk(hr_source, overwrite=TRUE),
+                        times = 3, pause_cap = 20))
 }
-unzip(temp_file, exdir = work_dir)
 
-hr_path <- file.path(work_dir, "03_sub.gpkg")
+unzip(hr_source, exdir = work_dir)
 
-hr_catchment <- sf::read_sf(hr_path, "NHDPlusCatchment")
-hr_catchment <- sf::st_transform(hr_catchment, proj)
+hr_source <- file.path(work_dir, "03_sub.gpkg")
+hr_gpkg <- file.path(work_dir, "hr_data.gpkg")
 
-hr_flowline <- nhdplusTools:::get_hr_data(hr_path, "NHDFlowline")
-hr_flowline <- sf::st_transform(hr_flowline, proj)
+hr_data <- get_nhdplushr(work_dir, layers = NULL,
+                         out_gpkg = hr_gpkg,
+                         pattern = "03_sub.gpkg")
 
-# hr_fline_ref <- sf::read_sf(file.path(extdata, "hr_refactor.gpkg"))
-# hr_fline_rec <- sf::read_sf(file.path(extdata, "hr_reconcile.gpkg"))
-# hr_catchment_rec <- sf::read_sf(file.path(extdata, "hr_cat_rec.gpkg"))
-
-hr_wbd <- sf::read_sf(system.file("extdata/new_hope_wbd.gpkg", package = "nhdplusTools"),
-                      "HUC12")
-
-unlink(c(temp_file, file.path(work_dir, "03_sub.gpkg")))
+# hr_catchment <- sf::read_sf(hr_path, "NHDPlusCatchment")
+# hr_catchment <- sf::st_transform(hr_catchment, proj)
+#
+# hr_flowline <- nhdplusTools:::get_hr_data(hr_path, "NHDFlowline")
+# hr_flowline <- sf::st_transform(hr_flowline, proj)
+#
+# hr_wbd <- sf::read_sf(system.file("extdata/new_hope_wbd.gpkg", package = "nhdplusTools"),
+#                       "HUC12")
 # nolint end

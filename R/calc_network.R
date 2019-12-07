@@ -286,6 +286,7 @@ get_streamorder <- function(fl) {
 #' @param max_level integer number of pfaf levels to attempt to calculate.
 #' If the network doesn't have resolution to support the desired level,
 #' unexpected behavior may occur.
+#' @param status boolean print status or not
 #' @return data.frame with ID and pfaf columns.
 #' @export
 #' @importFrom sf st_drop_geometry
@@ -293,7 +294,7 @@ get_streamorder <- function(fl) {
 #' @examples
 #' library(dplyr)
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
-#' hr_flowline <- nhdplusTools:::rename_nhdplus(hr_flowline)
+#' hr_flowline <- nhdplusTools:::rename_nhdplus(hr_data$NHDFlowline)
 #'
 #' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
 #'   left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
@@ -311,9 +312,9 @@ get_streamorder <- function(fl) {
 #'
 #' plot(fl["pf_level_3"], lwd = 2)
 #'
-#' pfaf <- get_pfaf(fl, max_level = 7)
+#' pfaf <- get_pfaf(fl, max_level = 4)
 #'
-#' hr_catchment <- left_join(hr_catchment, pfaf, by = c("NHDPlusID" = "ID"))
+#' hr_catchment <- left_join(hr_data$NHDPlusCatchment, pfaf, by = c("FEATUREID" = "ID"))
 #'
 #' colors <- data.frame(pf_level_4 = unique(hr_catchment$pf_level_4),
 #'                      color = sample(terrain.colors(length(unique(hr_catchment$pf_level_4)))),
@@ -340,7 +341,7 @@ get_streamorder <- function(fl) {
 #'
 #' plot(fl["pf_level_2"], lwd = 2)
 #'
-get_pfaf <- function(fl, max_level = 2) {
+get_pfaf <- function(fl, max_level = 2, status = FALSE) {
   if(is(fl, "sf")) fl <- st_drop_geometry(fl)
   check_names(fl, "get_pfaf")
 
@@ -348,7 +349,7 @@ get_pfaf <- function(fl, max_level = 2) {
 
   mainstem <- fl[fl$levelpath == mainstem_levelpath, ]
 
-  pfaf <- do.call(rbind, get_pfaf_9(fl, mainstem, max_level))
+  pfaf <- do.call(rbind, get_pfaf_9(fl, mainstem, max_level, status = status))
 
   return(cleanup_pfaf(pfaf))
 }
@@ -356,10 +357,13 @@ get_pfaf <- function(fl, max_level = 2) {
 #' @noRd
 #' @importFrom dplyr arrange left_join
 #' @importFrom methods is
-get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
+get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA, status = FALSE) {
 
   if((pre_pfaf / 10^(max_level-1)) > 1) return()
 
+  if(status && ((pre_pfaf - 1111) %% 1000) == 0) {
+    message(paste("On level:", pre_pfaf - 1111))
+  }
   # Get all tributary outlets that go to the passed mainstem.
   trib_outlets <- fl[fl$toID %in% mainstem$ID &
                    fl$levelpath != mainstem$levelpath[1], ]
@@ -413,18 +417,18 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA) {
   }
 
   c(out, unlist(lapply(c(1:9), apply_fun,
-                       p9 = out[[1]], fl = fl, max_level = max_level),
+                       p9 = out[[1]], fl = fl, max_level = max_level, status = status),
                 recursive = FALSE))
 }
 
-apply_fun <- function(p, p9, fl, max_level) {
+apply_fun <- function(p, p9, fl, max_level, status) {
   p_sub <- p9[p9$p_id == p, ]
   ms_ids <- p_sub$members
   pre_pfaf <- unique(p_sub$pfaf)
   mainstem <- fl[fl$ID %in% ms_ids, ]
 
   if(length(pre_pfaf) > 0) {
-    get_pfaf_9(fl, mainstem, max_level, pre_pfaf = pre_pfaf, assigned = p9)
+    get_pfaf_9(fl, mainstem, max_level, pre_pfaf = pre_pfaf, assigned = p9, status = status)
   } else {
     NULL
   }
@@ -443,8 +447,8 @@ cleanup_pfaf <- function(pfaf) {
   # Deduplicate problem tributaries
   remove <- do.call(c, lapply(1:length(unique(pfaf$level)), function(l, pfaf) {
     check <- pfaf[pfaf$level == l, ]
-    check <- dplyr::group_by(check, ID)
-    check <- dplyr::filter(check, n() > 1 & pfaf < max(pfaf))$uid
+    check <- dplyr::group_by(check, .data$ID)
+    check <- dplyr::filter(check, n() > 1 & .data$pfaf < max(.data$pfaf))$uid
   }, pfaf = pfaf))
 
   pfaf <- pivot_wider(select(pfaf[!pfaf$uid %in% remove, ], -.data$uid),

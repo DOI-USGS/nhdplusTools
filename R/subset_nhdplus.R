@@ -87,27 +87,19 @@
 #' sf::st_layers(output_file)
 #'
 #' # NHDPlusHR
-#' temp_dir <- tempdir()
-#' temp_file <- tempfile(fileext = ".zip", tmpdir = temp_dir)
-#' download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
-#'               temp_file)
-#' unzip(temp_file, exdir = temp_dir)
+#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 #'
-#' hr_data <- get_nhdplushr(temp_dir,
-#'                          out_gpkg = file.path(temp_dir, "nhd_hr.gpkg"),
-#'                          layers = NULL)
-#' flowlines <- sf::read_sf(hr_data, "NHDFlowline")
+#' up_ids <- get_UT(hr_data$NHDFlowline, 15000500028335)
 #'
-#' up_ids <- get_UT(flowlines, 15000500028335)
+#' sub_gpkg <- file.path(work_dir, "sub.gpkg")
+#' sub_nhdhr <- subset_nhdplus(up_ids, output_file = sub_gpkg,
+#'                             nhdplus_data = hr_gpkg, overwrite = TRUE)
 #'
-#' sub_nhdhr <- subset_nhdplus(up_ids, file.path(temp_dir, "sub.gpkg"),
-#'                       hr_data, overwrite = TRUE)
+#' sf::st_layers(sub_gpkg)
+#' names(sub_nhdhr)
 #'
-#' sf::st_layers(sub_nhdhr)
-#'
-#' sub_flowline <- sf::read_sf(sub_nhdhr, "NHDFlowline")
-#' plot(sf::st_geometry(flowlines), lwd = 0.5)
-#' plot(sf::st_geometry(sub_flowline), lwd = 0.6, col = "red", add = TRUE)
+#' plot(sf::st_geometry(hr_data$NHDFlowline), lwd = 0.5)
+#' plot(sf::st_geometry(sub_nhdhr$NHDFlowline), lwd = 0.6, col = "red", add = TRUE)
 #' }
 #'
 
@@ -115,6 +107,8 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
                            simplified = TRUE, overwrite = FALSE, return_data = TRUE, status = TRUE) {
 
   if (status) message("All intersections performed in latitude/longitude.")
+
+  if(any(bbox > 180 | bbox < -180)) stop("invalid bbox entry")
 
   if(!is.null(output_file)) {
     if (!grepl("*.gpkg$", output_file)) {
@@ -167,7 +161,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     }
 
     intersection_names <- c(get_catchment_layer_name(simplified, nhdplus_data),
-                            get_flowline_layer_name(),
+                            get_flowline_layer_name(nhdplus_data),
                             "NHDArea", "NHDWaterbody")
   }
 
@@ -308,7 +302,7 @@ stage_national_data <- function(include = c("attribute",
 
     if (!(file.exists(out_path_flines) | file.exists(out_path_attributes))) {
       fline <- sf::st_zm(sf::read_sf(nhdplus_data,
-                                     get_flowline_layer_name()))
+                                     get_flowline_layer_name(nhdplus_data)))
     }
 
     if ("attribute" %in% include) {
@@ -384,7 +378,7 @@ get_staged_data <- function(nhdplus_data) {
 get_flowline_subset <- function(nhdplus_data, comids, output_file,
                                 fline_path, status) {
 
-  layer_name <- get_flowline_layer_name()
+  layer_name <- get_flowline_layer_name(nhdplus_data)
 
   if (status) message(paste("Reading", layer_name))
 
@@ -471,4 +465,16 @@ get_catchment_layer_name <- function(simplified, nhdplus_data) {
   return(layer_name)
 }
 
-get_flowline_layer_name <- function() "NHDFlowline_Network"
+get_flowline_layer_name <- function(nhdplus_data) {
+  layer_name <- "NHDFlowline_Network"
+  if(nhdplus_data != "download" &&
+     !is.null(nhdplus_data) &&
+     !layer_name %in% sf::st_layers(nhdplus_data)$name) # unless it's high res.
+    layer_name <- "NHDFlowline"
+  layer_name
+}
+
+
+
+
+

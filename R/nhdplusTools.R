@@ -159,7 +159,8 @@ rename_nhdplus <- function(x) {
 
   names(x) <- new_names
 
-  if("GridCode" %in% names(x)) names(x)[which(names(x) == "COMID")] <- "FEATUREID"
+  if("GridCode" %in% names(x) & !"FeatureID" %in% names(x))
+    names(x)[which(names(x) == "COMID")] <- "FEATUREID"
 
   return(x)
 }
@@ -231,7 +232,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #'
 #' names(new_hope_flowline)
 #'
-align_nhdplus_names = function(x){
+align_nhdplus_names <- function(x){
 
   good_names <- unique(unlist(do.call(rbind, nhdplus_attributes))[,1])
 

@@ -11,10 +11,10 @@ reference:
       - '`subset_nhdplus`'
       - '`prepare_nhdplus`'
       - '`download_nhdplushr`'
+      - '`get_nhdplushr`'
       - '`download_nhdplusv2`'
       - '`download_rf1`'
       - '`download_wbd`'
-      - '`get_nhdplushr`'
       - '`align_nhdplus_names`'
   - title: Network Attributes
     desc: >
@@ -25,6 +25,7 @@ reference:
       - '`get_levelpaths`'
       - '`get_streamorder`'
       - '`get_pfaf`'
+      - '`make_standalone`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are

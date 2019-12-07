@@ -49,6 +49,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_flowline_index.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_hr_data.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_levelpaths.html</loc>
   </url>
   <url>
@@ -65,6 +68,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_streamorder.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/make_standalone.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/navigate_nldi.html</loc>

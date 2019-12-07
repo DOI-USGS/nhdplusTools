@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Download NHDPlus HiRes — download_nhdplushr • nhdplusTools</title>
+<title>Get NHDPlus HiRes Data — get_hr_data • nhdplusTools</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,8 +42,9 @@
 
 
 
-<meta property="og:title" content="Download NHDPlus HiRes — download_nhdplushr" />
-<meta property="og:description" content="Download NHDPlus HiRes" />
+<meta property="og:title" content="Get NHDPlus HiRes Data — get_hr_data" />
+<meta property="og:description" content="Use to remove unwanted detail NHDPlusHR data
+See get_nhdplushr for examples." />
 <meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -134,60 +135,60 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Download NHDPlus HiRes</h1>
+    <h1>Get NHDPlus HiRes Data</h1>
     <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_nhdplushr.R'><code>R/get_nhdplushr.R</code></a></small>
-    <div class="hidden name"><code>download_nhdplushr.Rd</code></div>
+    <div class="hidden name"><code>get_hr_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Download NHDPlus HiRes</p>
+    <p>Use to remove unwanted detail NHDPlusHR data
+See <a href='get_nhdplushr.html'>get_nhdplushr</a> for examples.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>download_nhdplushr</span>(<span class='no'>nhd_dir</span>, <span class='no'>hu_list</span>, <span class='kw'>download_files</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_hr_data</span>(<span class='no'>gdb</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>min_size_sqkm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>simp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>proj</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep_cols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rename</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>nhd_dir</th>
-      <td><p>character directory to save output into</p></td>
+      <th>gdb</th>
+      <td><p>character path to geodatabase to get data from.</p></td>
     </tr>
     <tr>
-      <th>hu_list</th>
-      <td><p>character vector of hydrologic region(s) to download</p></td>
+      <th>layer</th>
+      <td><p>character layer name from geodatabase found with <a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></p></td>
     </tr>
     <tr>
-      <th>download_files</th>
-      <td><p>boolean if FALSE, only URLs to files will be returned
-can be hu02s and/or hu04s</p></td>
+      <th>min_size_sqkm</th>
+      <td><p>numeric minimum basin size to be included in the output</p></td>
+    </tr>
+    <tr>
+      <th>simp</th>
+      <td><p>numeric simplification tolerance in units of projection</p></td>
+    </tr>
+    <tr>
+      <th>proj</th>
+      <td><p>a projection specification compatible with <a href='https://rdrr.io/pkg/sf/man/st_crs.html'>st_crs</a></p></td>
+    </tr>
+    <tr>
+      <th>keep_cols</th>
+      <td><p>character vector of column names to keep in the output. If NULL,
+all will be kept.</p></td>
+    </tr>
+    <tr>
+      <th>rename</th>
+      <td><p>boolean if TRUE, nhdplusTools standard attribute values will
+be applied.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Paths to geodatabases created.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'>download_nhdplushr</span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"01"</span>, <span class='st'>"0203"</span>), <span class='kw'>download_files</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;  [1] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0101_HU4_GDB.zip"
-#&gt;  [2] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0102_HU4_GDB.zip"
-#&gt;  [3] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0103_HU4_GDB.zip"
-#&gt;  [4] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0104_HU4_GDB.zip"
-#&gt;  [5] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0105_HU4_GDB.zip"
-#&gt;  [6] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0106_HU4_GDB.zip"
-#&gt;  [7] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0107_HU4_GDB.zip"
-#&gt;  [8] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0108_HU4_GDB.zip"
-#&gt;  [9] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0109_HU4_GDB.zip"
-#&gt; [10] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0110_HU4_GDB.zip"
-#&gt; [11] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0203_HU4_GDB.zip"</div><div class='input'># }
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

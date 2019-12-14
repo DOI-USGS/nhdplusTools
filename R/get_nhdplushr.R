@@ -49,7 +49,8 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
     }
 
     for(key in file_list) {
-      out_file <- paste0(out[length(out)], "/", tail(strsplit(key, "/")[[1]], 1))
+      dir_out <- ifelse(is.null(out[length(out)]), "", out[length(out)])
+      out_file <- file.path(dir_out, basename(key))
       url <- paste0(nhdhr_bucket, key)
 
       hu04 <- regexec("[0-9][0-9][0-9][0-9]", out_file)[[1]]
@@ -153,6 +154,9 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 
       try(out <- st_sf(out))
     }
+
+    if(grepl("flowline", layer, ignore.case = TRUE) & check_terminals)
+      out <- make_standalone(out)
 
     if(!is.null(out_gpkg) && (!layer %in% layer_names | overwrite)) {
       write_sf(out, layer = layer, dsn = out_gpkg)

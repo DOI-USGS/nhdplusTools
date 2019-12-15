@@ -312,7 +312,7 @@ make_standalone <- function(flowlines) {
 
   outlets <- select(outlets, .data$Hydroseq, .data$LevelPathI, .data$COMID)
 
-  for(i in 1:nrow(outlets)) {
+  for(i in seq_len(nrow(outlets))) {
     flowlines = fix_term(outlets[i, ], flowlines)
   }
 

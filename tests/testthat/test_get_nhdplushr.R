@@ -92,19 +92,26 @@ test_that("get_nhdplushr simp and proj", {
 })
 
 test_that("get_nhdplushr rename and keep_cols", {
-  out_sub <- get_nhdplushr(work_dir, keep_cols = c("COMID", "FEATUREID", "StreamOrde", "AreaSqKM"))
+  out_sub <- get_nhdplushr(work_dir,
+                           keep_cols = c("COMID", "FEATUREID", "StreamOrde", "AreaSqKM"),
+                           check_terminals = FALSE)
 
   expect_equal(names(out_sub$NHDFlowline), c("COMID", "StreamOrde", "AreaSqKM", "geom"))
   expect_equal(names(out_sub$NHDPlusCatchment), c("FEATUREID", "AreaSqKM", "geom"))
 
-  out_sub <- get_nhdplushr(work_dir, rename = FALSE)
+  out_sub <- get_nhdplushr(work_dir, rename = FALSE, check_terminals = FALSE)
   expect_true("NHDPlusID" %in% names(out_sub$NHDFlowline))
 })
 
 test_that("make_standalone", {
-  fl <- get_nhdplushr(work_dir)$NHDFlowline
+  fl <- get_nhdplushr(work_dir, check_terminals = FALSE)$NHDFlowline
 
   sa <- make_standalone(fl)
+
+  sa_check <- get_nhdplushr(work_dir, check_terminals = TRUE)$NHDFlowline
+
+  expect_true(all(sa$LevelPathI == sa_check$LevelPathI))
+  expect_true(!all(fl$LevelPathI == sa_check$LevelPathI))
 
   sa <- st_drop_geometry(sa)
 

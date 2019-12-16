@@ -5,9 +5,12 @@
 #' @param streamorder integer only streams of order greater than or equal will be returned
 #' @param nhdplus_data geopackage containing source nhdplus data (omit to download)
 #' @param gpkg path and file with .gpkg ending. If omitted, no file is written.
+#' @param overwrite passed on the \link{subset_nhdplus}.
 #' @param plot_config list containing plot configuration, see details.
 #' @param add boolean should this plot be added to an already built map.
+#' @param actually_plot boolean actually draw the plot? Use to get data subset only.
 #' @param ... parameters passed on to rosm.
+#' @return plot data is returned invisibly.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
 #' \enumerate{
@@ -95,33 +98,36 @@
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
-                         add = FALSE, ...) {
+                         add = FALSE, actually_plot = TRUE, overwrite = TRUE, ...) {
 
-  pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg)
+  pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg, overwrite)
 
-  st <- get_styles(plot_config)
+  if(actually_plot) {
+    st <- get_styles(plot_config)
 
-  prettymapr::prettymap({
-    if(!add) {
-      rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE, progress = "none", ...)
-    }
-    # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
-    if(!is.null(pd$basin))
-      graphics::plot(gt(pd$basin), lwd = st$basin$lwd, col = st$basin$col,
-                     border = st$basin$border, add = TRUE)
-    graphics::plot(gt(pd$flowline), lwd = st$flowline$lwd, col = st$flowline$col,
-                   add = TRUE)
-    if(!is.null(pd$outlets)) {
-      for(type in unique(pd$outlets$type)) {
-        st_type <- "default"
-        if(type %in% names(st$outlets)) st_type <- type
-        graphics::plot(gt(pd$outlets[pd$outlets$type == type, ]), col = st$outlets[[st_type]]$col,
-                       pch = st$outlets[[st_type]]$pch, bg = st$outlets[[st_type]]$bg,
-                       cex = st$outlets[[st_type]]$cex, add = TRUE)
+    prettymapr::prettymap({
+      if(!add) {
+        rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE, progress = "none", ...)
       }
-    }
-  },
-  drawarrow = TRUE)
+      # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
+      if(!is.null(pd$basin))
+        graphics::plot(gt(pd$basin), lwd = st$basin$lwd, col = st$basin$col,
+                       border = st$basin$border, add = TRUE)
+      graphics::plot(gt(pd$flowline), lwd = st$flowline$lwd, col = st$flowline$col,
+                     add = TRUE)
+      if(!is.null(pd$outlets)) {
+        for(type in unique(pd$outlets$type)) {
+          st_type <- "default"
+          if(type %in% names(st$outlets)) st_type <- type
+          graphics::plot(gt(pd$outlets[pd$outlets$type == type, ]), col = st$outlets[[st_type]]$col,
+                         pch = st$outlets[[st_type]]$pch, bg = st$outlets[[st_type]]$bg,
+                         cex = st$outlets[[st_type]]$cex, add = TRUE)
+        }
+      }
+    },
+    drawarrow = TRUE)
+  }
+  return(invisible(pd))
 }
 
 get_styles <- function(plot_config) {
@@ -177,9 +183,21 @@ validate_plot_config <- function(plot_config) {
   return(invisible(NA))
 }
 
-get_plot_data <- function(outlets = NULL, bbox = NULL, streamorder = NULL, nhdplus_data = NULL, gpkg = NULL) {
+get_plot_data <- function(outlets = NULL, bbox = NULL,
+                          streamorder = NULL, nhdplus_data = NULL,
+                          gpkg = NULL, overwrite = TRUE, ...) {
 
   if(!is.null(outlets) & !is.null(bbox)) stop("Both bbox and outlets not supported.")
+
+  if(!is.null(nhdplus_data)) {
+    if(!file.exists(nhdplus_data)) {
+      if(!is.null(gpkg) && nhdplus_data != gpkg)
+        stop("couldn't find nhdplus_data and output data not requested by the same path.")
+      nhdplus_data <- NULL
+    } else if(!is.null(gpkg) && nhdplus_data == gpkg) {
+      gpkg <- NULL
+    }
+  }
 
   if(!is.null(bbox)) {
     flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg)
@@ -220,10 +238,11 @@ get_plot_data <- function(outlets = NULL, bbox = NULL, streamorder = NULL, nhdpl
       nexus <- c(nexus, lapply(outlets, get_outlet_from_nldi))
     }
 
-    all_comids <- lapply(nexus, function(x) get_UT(flowline, x$comid))
+    all_comids <- lapply(nexus, function(x) get_UT(align_nhdplus_names(flowline), x$comid))
 
     subsets <- subset_nhdplus(comids = unlist(all_comids), output_file = gpkg,
-                              nhdplus_data = nhdplus_data, status = FALSE)
+                              nhdplus_data = nhdplus_data, status = FALSE,
+                              overwrite = overwrite)
 
     flowline <- sf::st_zm(subsets[[fline_layer]])
     catchment <- subsets[[catchment_layer]]
@@ -238,10 +257,10 @@ get_plot_data <- function(outlets = NULL, bbox = NULL, streamorder = NULL, nhdpl
 
     nexus <- do.call(rbind, lapply(outlets, get_outlet_from_nldi))
 
-    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data, gpkg)
+    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data, gpkg, overwrite)
     flowline <- align_nhdplus_names(nhd_data$flowline)
     flowline <- do.call(rbind, lapply(nexus$comid, function(x) {
-      flowline[flowline$COMID %in% get_UT(flowline, x), ]
+      flowline[flowline$COMID %in% get_UT(align_nhdplus_names(flowline), x), ]
     }))
 
     catchment <- nhd_data$catchment
@@ -249,7 +268,8 @@ get_plot_data <- function(outlets = NULL, bbox = NULL, streamorder = NULL, nhdpl
 
   if(!is.null(comids)) {
     if(is.null(nhdplus_data)) nhdplus_data <- "download"
-    nhd_data <- subset_nhdplus(comids, nhdplus_data = nhdplus_data, status = FALSE)
+    nhd_data <- subset_nhdplus(comids, nhdplus_data = nhdplus_data,
+                               status = FALSE, overwrite = overwrite)
     bbox <- sf::st_bbox(nhd_data$CatchmentSP)
     flowline <- sf::st_zm(nhd_data$NHDFlowline_Network)
     catchment <- nhd_data[[catchment_layer]]
@@ -273,13 +293,13 @@ get_plot_data <- function(outlets = NULL, bbox = NULL, streamorder = NULL, nhdpl
               basin = basin, catchment = catchment))
 }
 
-dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg) {
+dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite) {
   bbox <- sf::st_bbox(sf::st_transform(sf::st_as_sfc(bbox), 4326))
   source <- "download"
   if(!is.null(nhdplus_data)) source <- nhdplus_data
 
   d <- subset_nhdplus(bbox = bbox, output_file = gpkg, nhdplus_data = source,
-                             simplified = TRUE, status = FALSE)
+                             simplified = TRUE, status = FALSE, overwrite = overwrite)
 
   d <- lapply(d, align_nhdplus_names)
 

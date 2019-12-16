@@ -206,7 +206,7 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
     if(!is.null(min_size_sqkm)) {
 
       orig_names <- names(hr_data)
-      hr_data <- rename_nhdplus(hr_data)
+      hr_data <- align_nhdplus_names(hr_data)
 
       filter_data <- select(st_drop_geometry(hr_data), LevelPathI, TotDASqKM)
       filter_data <- ungroup(filter(group_by(filter_data, LevelPathI),
@@ -222,7 +222,7 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
     hr_data <- read_sf(gdb, layer)
   }
 
-  if(rename) hr_data <- rename_nhdplus(hr_data)
+  if(rename) hr_data <- align_nhdplus_names(hr_data)
 
   if(!is.null(keep_cols)) {
     keep_cols <- keep_cols[keep_cols %in% names(hr_data)]
@@ -326,6 +326,7 @@ fix_term <- function(term, flowlines) {
 
   # old_term_levelpath is the levelpath of the mainstem of the basin.
   old_term_levelpath <- flowlines$LevelPathI[flowlines$Hydroseq == term_hydroseq]
+  old_term_levelpath <- old_term_levelpath[!is.na(old_term_levelpath)]
 
   # Set the terminal flag of the new basin outlet.
   flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1

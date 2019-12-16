@@ -131,7 +131,7 @@ assign("get_pfaf_attributes",
        envir = nhdplusTools_env)
 
 check_names <- function(x, function_name) {
-  x <- rename_nhdplus(x)
+  x <- align_nhdplus_names(x)
   names_x <- names(x)
   expect_names <- get(paste0(function_name, "_attributes"),
                       envir = nhdplusTools_env)
@@ -142,26 +142,6 @@ check_names <- function(x, function_name) {
                                              names_x))],
                       collapse = ", "), " or NHDPlusHR equivalents."))
   }
-  return(x)
-}
-
-#' @noRd
-rename_nhdplus <- function(x) {
-  attribute_names <- get("nhdplus_attributes", envir = nhdplusTools_env)
-
-  old_names <- names(x)
-  new_names <- old_names
-
-  matched <- match(names(x), names(attribute_names))
-  replacement_names <- as.character(attribute_names[matched[which(!is.na(matched))]])
-
-  new_names[which(old_names %in% names(attribute_names))] <- replacement_names
-
-  names(x) <- new_names
-
-  if("GridCode" %in% names(x) & !"FeatureID" %in% names(x))
-    names(x)[which(names(x) == "COMID")] <- "FEATUREID"
-
   return(x)
 }
 
@@ -234,22 +214,32 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #'
 align_nhdplus_names <- function(x){
 
-  good_names <- unique(unlist(do.call(rbind, nhdplus_attributes))[,1])
+  attribute_names <- get("nhdplus_attributes", envir = nhdplusTools_env)
 
-  old_names <- names(x)
-  new_names <- old_names
+  # get into correct case
+  good_names <- unique(unlist(do.call(rbind, attribute_names))[,1])
+
+  new_names <- old_names <- names(x)
 
   matched <- match(toupper(names(x)), toupper(good_names))
-
   replacement_names <- as.character(good_names[matched[which(!is.na(matched))]])
 
   new_names[which(toupper(old_names) %in% toupper(good_names))] <- replacement_names
   names(x) <- new_names
+
+  # rename to match package
+  new_names <- old_names <- names(x)
+
+  matched <- match(names(x), names(attribute_names))
+  replacement_names <- as.character(attribute_names[matched[which(!is.na(matched))]])
+
+  new_names[which(old_names %in% names(attribute_names))] <- replacement_names
+
+  names(x) <- new_names
+
+  if("GridCode" %in% names(x) & !"FeatureID" %in% names(x) & !"FEATUREID" %in% names(x))
+    names(x)[which(names(x) == "COMID")] <- "FEATUREID"
+
   return(x)
 
 }
-
-
-
-
-

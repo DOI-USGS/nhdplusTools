@@ -294,7 +294,7 @@ get_streamorder <- function(fl) {
 #' @examples
 #' library(dplyr)
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
-#' hr_flowline <- nhdplusTools:::rename_nhdplus(hr_data$NHDFlowline)
+#' hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 #'
 #' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
 #'   left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%

@@ -130,6 +130,10 @@ assign("get_pfaf_attributes",
        c("ID", "toID", "totda", "outletID", "topo_sort", "levelpath"),
        envir = nhdplusTools_env)
 
+assign("make_standalone_attributes",
+       c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
+         "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+
 check_names <- function(x, function_name) {
   x <- align_nhdplus_names(x)
   names_x <- names(x)

@@ -5,7 +5,7 @@
 \title{Get NHDPlus HiRes Data}
 \usage{
 get_hr_data(gdb, layer = NULL, min_size_sqkm = NULL, simp = NULL,
-  proj = NULL, keep_cols = NULL, rename = TRUE)
+  proj = NULL, rename = TRUE)
 }
 \arguments{
 \item{gdb}{character path to geodatabase to get data from.}
@@ -17,9 +17,6 @@ get_hr_data(gdb, layer = NULL, min_size_sqkm = NULL, simp = NULL,
 \item{simp}{numeric simplification tolerance in units of projection}
 
 \item{proj}{a projection specification compatible with \link[sf]{st_crs}}
-
-\item{keep_cols}{character vector of column names to keep in the output. If NULL,
-all will be kept.}
 
 \item{rename}{boolean if TRUE, nhdplusTools standard attribute values will
 be applied.}

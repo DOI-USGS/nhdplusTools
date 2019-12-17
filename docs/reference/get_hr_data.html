@@ -78,7 +78,7 @@ See get_nhdplushr for examples." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.11.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.12</span>
       </span>
     </div>
 
@@ -103,6 +103,9 @@ See get_nhdplushr for examples." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
+    </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
@@ -146,7 +149,7 @@ See <a href='get_nhdplushr.html'>get_nhdplushr</a> for examples.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_hr_data</span>(<span class='no'>gdb</span>, <span class='kw'>layer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>min_size_sqkm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>simp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>proj</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>keep_cols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rename</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>proj</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rename</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,11 +173,6 @@ See <a href='get_nhdplushr.html'>get_nhdplushr</a> for examples.</p>
     <tr>
       <th>proj</th>
       <td><p>a projection specification compatible with <a href='https://rdrr.io/pkg/sf/man/st_crs.html'>st_crs</a></p></td>
-    </tr>
-    <tr>
-      <th>keep_cols</th>
-      <td><p>character vector of column names to keep in the output. If NULL,
-all will be kept.</p></td>
     </tr>
     <tr>
       <th>rename</th>

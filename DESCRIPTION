@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 0.3.11.9000
+Version: 0.3.12
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 

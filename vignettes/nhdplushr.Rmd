@@ -1,0 +1,188 @@
+---
+title: "Working with NHDPlusHR"
+author: "dblodgett@usgs.gov"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NHDPlusHR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  fig.width=8.5, 
+  fig.height=8,
+  eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
+)
+oldoption <- options(scipen = 9999)
+```
+
+## TL;DR;
+
+Most functions in `nhdplusTools` work with NHDPlus High Res (HR) the same as they do with medium res. The demo below shows how to get a single four-digit hydrologic unit worth of HR data, index a point to it, subset it, and plot the results. 
+
+_Note: For consistency, identifiers from NHDPlusV2 are used with HiRes data. A future release of nhdplusTools may alter this behavior._
+```{r tldr}
+library(nhdplusTools)
+library(sf)
+
+work_dir <- tempdir(check = TRUE)
+sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+
+hr_gpkg <- file.path(work_dir, "hr_data.gpkg")
+
+# Make a plot and get some background NHDPlusV2 data.
+plot_data <- plot_nhdplus(list("nwissite", "USGS-05428500"), streamorder = 3,
+                          nhdplus_data = sample_data,
+                          stoponlargerequest = FALSE)
+
+# Find the HU04 we are interested in.
+hu04 <- unique(substr(plot_data$flowline$REACHCODE, 1, 4))
+
+# Download some NHDPlusHR Data
+hr_data_dir <- download_nhdplushr(work_dir, hu04)
+
+# Projection and simplification for demo purposes.
+hr <- get_nhdplushr(work_dir, out_gpkg = hr_gpkg,
+                    proj = 3857)
+
+(start_index <- get_flowline_index(st_transform(hr$NHDFlowline, 5070),
+                                   st_transform(plot_data$outlets, 5070),
+                                   search_radius = 200)) # meters albers eq area
+
+ids <- get_UT(hr$NHDFlowline, start_index$COMID)
+
+hr_subset <- subset_nhdplus(ids, nhdplus_data = hr_gpkg)
+```
+
+Now that we have both a four digit hydrologic unit worth of NHDPlusHR data and a subset upstream of a point of interest, we can plot things up and see what it looks like. This plot uses NHDPlusV2 as returned by `plot_nhdplus()` as a base layer and adds NHDPlusHR data on top of it.
+
+```{r plot}
+plot_nhdplus(list("nwissite", "USGS-05428500"), streamorder = 2, 
+             nhdplus_data = sample_data, overwrite = TRUE,
+             plot_config = list(flowline = list(lwd = 2.5),
+                                basin = list(lwd = 3)),
+             stoponlargerequest = FALSE)
+
+plot(st_geometry(hr$NHDPlusCatchment), lwd = 0.25, add = TRUE)
+plot(st_geometry(hr$NHDFlowline), col = "blue", lwd = 0.5, add = TRUE)
+
+plot(st_geometry(st_transform(hr_subset$NHDFlowline, 3857)),
+     col = "cyan", lwd = 1, add = TRUE)
+```
+
+## Download
+
+NHDPlusHR support in nhdplusTools begins with the function `download_nhdplushr()`. The NHDPlusHR can be downloaded in [four digit hydrologic unit code subsets here.](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/access-national-hydrography-products) `download_nhdplushr()` facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.
+
+_Note: Data for each HU02 are put in their own output folder._
+
+```{r downloadhr} 
+(hr_urls <- download_nhdplushr(work_dir, "06", download_files = FALSE))
+
+# already downloaded:
+list.files(hr_data_dir)
+```
+
+## Basic functionality
+
+The second part of nhdplusTools support for NHDPlusHR is a bit more involved. The entry point is a function called `get_nhdplushr()`. At it's core, it will take a collection of NHDPlusHR subsets, open them up one by one and build a single output table for later use. It also 
+1. joins flowline attributes to the flowline geometry, 
+1. can return one or more selected layers, 
+1. can save the result to a standalone geopackage for later use, and 
+1. can make some attributes of a subset look like they are part of a standalone network rather than having references to downstream data that aren't in the subset. 
+
+Using the data we downloaded in the TL;DR; intro, the code below demonstrates a few behaviors of `get_nhdplushr()`
+
+First, if we just give it a directory containing HR data, it will give us back a list with flowlines and catchments as sf data.frames.
+
+```{r get_nhdplushr}
+hr <- get_nhdplushr(hr_data_dir)
+sapply(hr, class)
+plot(st_geometry(hr$NHDFlowline), lwd = (hr$NHDFlowline$StreamOrde / 6))
+```
+
+If we want more data, we can get any of the layer options listed in the `get_nhdplushr()` documentation.
+
+```{r get_nhdplushr2}
+hr <- get_nhdplushr(hr_data_dir, layers = c("NHDFlowline", "NHDWaterbody", "NHDArea"))
+sapply(hr, class)
+sapply(hr, nrow)
+plot(st_geometry(hr$NHDFlowline), lwd = (hr$NHDFlowline$StreamOrde / 6), col = "blue")
+
+plot(c(st_geometry(hr$NHDWaterbody), st_geometry(hr$NHDArea)), 
+     col = "cyan", border = "cyan", lwd = 0.25, add = TRUE)
+```
+
+Since this function can work over large ammounts of data and we don't want to keep running it again and again, there is an option to save the results to a standalone database for later use. 
+```{r get_nhdplushr3}
+demo_gpkg <- file.path(work_dir, "demo.gpkg")
+hr <- get_nhdplushr(hr_data_dir, out_gpkg = demo_gpkg)
+st_layers(demo_gpkg)
+```
+
+## HR modification and filtering
+
+Since NHDPlusHR data can be very large, `get_nhdplushr()` offers the ability to subset the data using a few filter options. Most of the filters are described in the manual page of the `get_hr_data()` utility function. 
+1. `min_size_sqkm` will remove flowlines under a certain size threshold.
+1. `sim` will simplify all geometry to a given tolerance using `sf::st_simplify()`.
+1. `proj` will project the output into the desired projection.
+1. `keep_cols` is used to specify which attributes are desired in the output.
+1. `rename` controls whether output is automatically renamed to be compatible with `nhdplusTools` functions.
+
+_Note: These options only operate on the flowline network._
+
+```{r get_nhdplushr4}
+demo <- get_nhdplushr(hr_data_dir, layers = "NHDFlowline", 
+                               min_size_sqkm = 50)
+plot(st_geometry(demo$NHDFlowline), 
+     lwd = demo$NHDFlowline$StreamOrde/4, col = "blue")
+```
+
+```{r get_nhdplushr5}
+demo <- get_nhdplushr(hr_data_dir, layers = "NHDFlowline", 
+                      min_size_sqkm = 100, 
+                      proj = "+init=epsg:5070", simp = 200,
+                      keep_cols = c("COMID", "StreamOrde"))
+names(demo$NHDFlowline)
+plot(st_geometry(demo$NHDFlowline), 
+     lwd = demo$NHDFlowline$StreamOrde/4, col = "blue")
+```
+
+## Make Standalone Basins
+
+The NHDPlus data model has some shared identifiers that can span very large distances. For example, the "Level Path Identifier" identifies an entire river from headwater to outlet using the "hydrologic sequence identifier" of the outlet. Similarly, the "Terminal Path Identifier" identifies an entire basin using the hydrologic sequence identifier of the terminal flowline (to the ocean or an inland sink). When creating subsets of NHDPlus data, many times, these attributes can identify flowlines that are not included in the subset. For most applications, this is not a problem, but in some cases, it is advantageous to adjust identifiers such that the subset appears to be a complete drainage basin with a true terminal outlet. `make_standalone()` accomplishes this task. 
+
+On a one by one basis, this may seam insignificant, but for workflows that need to work with arbitrary subsets and start from basin outlets, this functionality is useful. It has little impact on the data and is applied by default.
+
+The example below shows how the outlet is modified. As described in the documentation os `make_standalone()` all related attribues upstream are also fixed such that the network is intact for further use.
+
+```{r make_standalone}
+demo <- get_nhdplushr(hr_data_dir, layers = "NHDFlowline", 
+                    min_size_sqkm = 100, check_terminals = FALSE)
+
+# Create a standalone basin with the results for comparison.
+standalone_demo <- make_standalone(demo$NHDFlowline)
+
+demo_outlet <- dplyr::filter(demo$NHDFlowline, TotDASqKM == max(TotDASqKM)) 
+
+standalone_demo_outlet <- dplyr::filter(standalone_demo, TotDASqKM == max(TotDASqKM))
+
+broken_outlet <- dplyr::select(st_drop_geometry(demo_outlet), 
+                               Hydroseq, TerminalPa, TerminalFl, LevelPathI)
+fixed_outlet <- dplyr::select(st_drop_geometry(standalone_demo_outlet), 
+                              Hydroseq, TerminalPa, TerminalFl, LevelPathI)
+
+print(data.frame(broken_outlet))
+print(data.frame(fixed_outlet))
+
+(broken <- dplyr::filter(demo$NHDFlowline, TerminalPa == demo_outlet$Hydroseq))
+(standalone <- dplyr::filter(standalone_demo, TerminalPa == standalone_demo_outlet$Hydroseq))
+
+plot(st_geometry(standalone))
+```
+
+```{r teardown, include=FALSE}
+options(oldoption)
+```

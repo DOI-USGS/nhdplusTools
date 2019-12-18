@@ -398,7 +398,7 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
         layer_name <- "NHDFlowline"
       }
       fline <- sf::read_sf(fline_path, layer_name)
-      fline <- rename_nhdplus(fline)
+      fline <- align_nhdplus_names(fline)
     }
 
     fline <- dplyr::filter(fline, .data$COMID %in% comids)
@@ -433,7 +433,7 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
       catchment <- readRDS(catchment_path)
     } else {
       catchment <- sf::read_sf(catchment_path, layer_name)
-      catchment <- rename_nhdplus(catchment)
+      catchment <- align_nhdplus_names(catchment)
     }
 
     catchment <- dplyr::filter(catchment, .data$FEATUREID %in% comids)

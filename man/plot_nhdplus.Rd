@@ -6,7 +6,7 @@
 \usage{
 plot_nhdplus(outlets = NULL, bbox = NULL, streamorder = NULL,
   nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
-  add = FALSE, ...)
+  add = FALSE, actually_plot = TRUE, overwrite = TRUE, ...)
 }
 \arguments{
 \item{outlets}{list of nldi outlets. Other inputs are coerced into nldi outlets, see details.}
@@ -23,7 +23,14 @@ plot_nhdplus(outlets = NULL, bbox = NULL, streamorder = NULL,
 
 \item{add}{boolean should this plot be added to an already built map.}
 
+\item{actually_plot}{boolean actually draw the plot? Use to get data subset only.}
+
+\item{overwrite}{passed on the \link{subset_nhdplus}.}
+
 \item{...}{parameters passed on to rosm.}
+}
+\value{
+plot data is returned invisibly.
 }
 \description{
 Given a list of outlets, get their basin boundaries and network and return a plot.

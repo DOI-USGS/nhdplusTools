@@ -5,8 +5,7 @@ sample_data <- system.file("extdata/sample_natseamless.gpkg",
 
 test_that("basics work", {
   skip_on_cran()
-  tempd <- tempdir()
-  dir.create(tempd, recursive = TRUE)
+  tempd <- tempdir(check = TRUE)
 
   site <- "USGS-05428500"
   g_temp <- file.path(tempd, "foo.gpkg")
@@ -18,7 +17,7 @@ test_that("basics work", {
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
                c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody"))
-  expect_equal(l$features, c(0, 402, 1, 90))
+  expect_equal(l$features, c(431, 402, 1, 90))
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
@@ -101,7 +100,18 @@ test_that("local data", {
 
   outlet <- c("comid", start)
 
+  expect_error(plot_nhdplus(outlets = outlet, nhdplus_data = "borked", gpkg = "borky"),
+               "couldn't find nhdplus_data and output data not requested by the same path.")
+
+  expect_error(plot_nhdplus(outlets = outlet, nhdplus_data = "borked", gpkg = "borked"),
+               "output_file must end in '.gpkg'")
+
+  plot_data_check <- plot_nhdplus(outlets = outlet, nhdplus_data = sample_data,
+                                  actually_plot = FALSE)
+
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, nhdplus_data = sample_data)
+
+  expect_equal(names(plot_data), names(plot_data_check))
 
   expect_equal(names(plot_data), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
   expect_equal(nrow(plot_data$flowline), 251)

@@ -6,7 +6,7 @@
 \usage{
 get_nhdplushr(hr_dir, out_gpkg = NULL, layers = c("NHDFlowline",
   "NHDPlusCatchment"), pattern = ".*GDB.gdb$", check_terminals = TRUE,
-  overwrite = FALSE, ...)
+  overwrite = FALSE, keep_cols = NULL, ...)
 }
 \arguments{
 \item{hr_dir}{character directory with geodatabases (gdb search is recursive)}
@@ -30,6 +30,9 @@ Set to NULL to get all available.}
 exists, it will be read and returned so this function will always return data even
 if called a second time for the same output. This is useful for workflows. Note that
 this will NOT delete the entire GeoPackage. It will overwite on a per layer basis.}
+
+\item{keep_cols}{character vector of column names to keep in the output. If NULL,
+all will be kept.}
 
 \item{...}{parameters passed along to \link{get_hr_data}
 for "NHDFlowline" layers.}

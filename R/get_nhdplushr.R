@@ -86,6 +86,8 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' exists, it will be read and returned so this function will always return data even
 #' if called a second time for the same output. This is useful for workflows. Note that
 #' this will NOT delete the entire GeoPackage. It will overwite on a per layer basis.
+#' @param keep_cols character vector of column names to keep in the output. If NULL,
+#' all will be kept.
 #' @param ... parameters passed along to \link{get_hr_data}
 #' for "NHDFlowline" layers.
 #' @return Response is a list of sf data.frames containing output that may also be written
@@ -119,7 +121,7 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
                           layers = c("NHDFlowline", "NHDPlusCatchment"),
                           pattern = ".*GDB.gdb$", check_terminals = TRUE,
-                          overwrite = FALSE, ...) {
+                          overwrite = FALSE, keep_cols = NULL, ...) {
 
   gdbs <- do.call(c, as.list(sapply(hr_dir, list.files,
                                     pattern = pattern,
@@ -162,7 +164,8 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
       write_sf(out, layer = layer, dsn = out_gpkg)
     }
 
-    out_list[layer] <- list(out)
+    out_list[layer] <- list(cull_cols(out, keep_cols))
+
   }
   return(out_list)
 }
@@ -173,8 +176,6 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 #' @param gdb character path to geodatabase to get data from.
 #' @param layer character layer name from geodatabase found with \link[sf]{st_layers}
 #' @param min_size_sqkm numeric minimum basin size to be included in the output
-#' @param keep_cols character vector of column names to keep in the output. If NULL,
-#' all will be kept.
 #' @param proj a projection specification compatible with \link[sf]{st_crs}
 #' @param simp numeric simplification tolerance in units of projection
 #' @param rename boolean if TRUE, nhdplusTools standard attribute values will
@@ -184,8 +185,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 #' @importFrom sf st_cast st_multilinestring st_zm st_geometry<-
 #' @importFrom dplyr select group_by filter ungroup distinct
 get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
-                        simp = NULL, proj = NULL, keep_cols = NULL,
-                        rename = TRUE) {
+                        simp = NULL, proj = NULL, rename = TRUE) {
   if(layer == "NHDFlowline") {
     hr_data <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
     hr_data <- select(hr_data, -ReachCode, -VPUID)
@@ -206,7 +206,7 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
     if(!is.null(min_size_sqkm)) {
 
       orig_names <- names(hr_data)
-      hr_data <- rename_nhdplus(hr_data)
+      hr_data <- align_nhdplus_names(hr_data)
 
       filter_data <- select(st_drop_geometry(hr_data), LevelPathI, TotDASqKM)
       filter_data <- ungroup(filter(group_by(filter_data, LevelPathI),
@@ -222,16 +222,7 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
     hr_data <- read_sf(gdb, layer)
   }
 
-  if(rename) hr_data <- rename_nhdplus(hr_data)
-
-  if(!is.null(keep_cols)) {
-    keep_cols <- keep_cols[keep_cols %in% names(hr_data)]
-
-    geom_name <- attr(hr_data, "sf_column")
-    if(!geom_name %in% keep_cols) keep_cols <- c(keep_cols, geom_name)
-
-    hr_data <- hr_data[, keep_cols]
-  }
+  if(rename) hr_data <- align_nhdplus_names(hr_data)
 
   if(!is.null(proj) && st_crs(proj) != st_crs(hr_data))
     hr_data <- st_transform(hr_data, proj)
@@ -240,6 +231,18 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
     hr_data <- st_simplify(hr_data, dTolerance = simp)
 
   return(hr_data)
+}
+
+cull_cols <- function(x, keep_cols) {
+
+  if(is.null(keep_cols)) return(x)
+
+  keep_cols <- keep_cols[keep_cols %in% names(x)]
+
+  geom_name <- attr(x, "sf_column")
+  if(!geom_name %in% keep_cols) keep_cols <- c(keep_cols, geom_name)
+
+  x[, keep_cols]
 }
 
 #' Make isolated NHDPlusHR region a standalone dataset
@@ -293,6 +296,8 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
 #'}
 make_standalone <- function(flowlines) {
 
+  flowlines <- check_names(flowlines, "make_standalone")
+
   # Remove non-terminal coastal flowlines
   flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$TerminalFl != 1), ]
 
@@ -326,6 +331,7 @@ fix_term <- function(term, flowlines) {
 
   # old_term_levelpath is the levelpath of the mainstem of the basin.
   old_term_levelpath <- flowlines$LevelPathI[flowlines$Hydroseq == term_hydroseq]
+  old_term_levelpath <- old_term_levelpath[!is.na(old_term_levelpath)]
 
   # Set the terminal flag of the new basin outlet.
   flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1

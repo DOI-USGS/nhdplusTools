@@ -76,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.11.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.12</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
+    </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
@@ -137,17 +140,18 @@
       <small>Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="nhdplustools-0-3-11-9000" class="section level1">
+    <div id="nhdplustools-0-3-12" class="section level1">
 <h1 class="page-header">
-<a href="#nhdplustools-0-3-11-9000" class="anchor"></a>nhdplusTools 0.3.11.9000<small> Unreleased </small>
+<a href="#nhdplustools-0-3-12" class="anchor"></a>nhdplusTools 0.3.12<small> Unreleased </small>
 </h1>
-<p>0.3.12 is a work in progress. These features are in the works for the next release and are available via <code><a href="https://rdrr.io/pkg/remotes/man/install_github.html">remotes::install_github("USGS-R/nhdplusTools")</a></code></p>
 <ul>
 <li>Added <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code> with both outlet-based and bbox based data subsetting as well as rudimentary style modification capabilities.</li>
 <li>Implemented stream order and Pfafstetter code generators (<code><a href="../reference/get_streamorder.html">get_streamorder()</a></code> and <code><a href="../reference/get_pfaf.html">get_pfaf()</a></code>) for dendritic networks.</li>
 <li>
 <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> can now return data without writing a file to disk.</li>
 <li>NLDI feature specification is more flexible, doesn’t require names anymore.</li>
+<li>
+<code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> has been updated to modify terminal path and other identifiers making nhdplusHR subsets “stand alone”. A function <code><a href="../reference/make_standalone.html">make_standalone()</a></code> is now exported.</li>
 </ul>
 </div>
     <div id="nhdplustools-0-3-11" class="section level1">
@@ -202,7 +206,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#nhdplustools-0-3-11-9000">0.3.11.9000</a></li>
+        <li><a href="#nhdplustools-0-3-12">0.3.12</a></li>
         <li><a href="#nhdplustools-0-3-11">0.3.11</a></li>
         <li><a href="#nhdplustools-0-3-10">0.3.10</a></li>
         <li><a href="#nhdplustools-0-3-9">0.3.9</a></li>

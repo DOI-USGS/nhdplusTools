@@ -224,7 +224,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   if(!is.null(nhdplus_data) & !is.null(outlets)) {
 
     flowline <- sf::st_zm(sf::read_sf(nhdplus_data, fline_layer))
-
+    flowline <- align_nhdplus_names(flowline)
     # For the "COMID" inputs we don't have to go to the NLDI,
     nexus <- lapply(outlets, get_comid_outlets, flowline = flowline)
 

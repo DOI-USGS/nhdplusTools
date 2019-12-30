@@ -31,7 +31,7 @@ get_UT <- function(network, comid, distance = NULL) {
   network <- network %>% check_names("get_UT") %>%
     dplyr::select(get("get_UT_attributes", nhdplusTools_env))
 
-  start_comid <- filter(network, COMID == comid)
+  start_comid <- get_start_comid(network, comid)
 
   if (!is.null(distance)) {
     if (distance < start_comid$LENGTHKM) return(comid)
@@ -181,7 +181,7 @@ get_DM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
     check_names(type) %>%
     select(get(paste0(type, "_attributes"), nhdplusTools_env))
 
-  start_comid <- filter(network, COMID == comid)
+  start_comid <- get_start_comid(network, comid)
 
   if (!is.null(distance)) {
     if (distance < start_comid$LENGTHKM){
@@ -276,7 +276,7 @@ get_DD <- function(network, comid, distance = NULL) {
   network <- network %>% check_names("get_DD") %>%
     dplyr::select(get("get_DD_attributes", nhdplusTools_env))
 
-  start_comid <- filter(network, COMID == comid)
+  start_comid <- get_start_comid(network, comid)
 
   stop_pathlength <- 0
 
@@ -337,4 +337,14 @@ private_get_DD <- function(network, comid, stop_pathlength = 0) {
   } else {
     return(ds_main$COMID)
   }
+}
+
+get_start_comid <- function(network, comid) {
+  start_comid <- filter(network, COMID == comid)
+
+  if(nrow(start_comid) > 1) {
+    stop("Found duplicate ID for starting catchment. Duplicate rows in network?")
+  }
+
+  start_comid
 }

@@ -1,7 +1,7 @@
 context("get_nhdplushr")
 
 work_dir <- tempdir()
-dir.create(work_dir, recursive = TRUE)
+dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
 out_gpkg <- file.path(work_dir, "temp.gpkg")
 
 test_that("we get urls for nhdplushr", {
@@ -63,6 +63,10 @@ test_that("get_nhdplushr overwrite gpkg and pattern", {
 
   devnull <- file.copy(file.path(work_dir, "03_sub.gpkg"),
             file.path(work_dir, "04_sub.gpkg"))
+
+  fl <- read_sf(file.path(work_dir, "04_sub.gpkg"), "NHDFlowline")
+  fl$NHDPlusID <- fl$NHDPlusID + max(fl$NHDPlusID)
+  write_sf(fl, file.path(work_dir, "04_sub.gpkg"), "NHDFlowline")
 
   out_sub <- get_nhdplushr(work_dir, pattern = ".*sub.gpkg$")
 

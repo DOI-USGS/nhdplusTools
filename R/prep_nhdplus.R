@@ -16,7 +16,7 @@
 #' @param warn boolean controls whether warning an status messages are printed
 #' @param error boolean controls whether to return potentially invalid data with a warning rather than an error
 #' @return data.frame ready to be used with the refactor_flowlines function.
-#' @importFrom dplyr select filter left_join
+#' @importFrom dplyr select filter left_join group_split group_by bind_rows
 #' @family refactor functions
 #' @export
 #' @examples
@@ -96,12 +96,22 @@ prepare_nhdplus <- function(flines,
                   min_path_size))
   }
 
-  # Join ToNode and FromNode along with COMID and Length to
-  # get downstream attributes.
-  flines <- left_join(flines, select(flines,
-                                     toCOMID = .data$COMID,
-                                     .data$FromNode),
-                      by = c("ToNode" = "FromNode"))
+  if(nrow(flines) > 0) {
+    # Join ToNode and FromNode along with COMID and Length to
+    # get downstream attributes. This is done grouped by
+    # terminalpathID becasue duplicate node ids were encountered
+    # accross basins.
+    flines <- group_by(flines, TerminalPa)
+    flines <- group_split(flines)
+
+    flines <- lapply(flines, function(x){
+      left_join(x, select(x,
+                          toCOMID = .data$COMID,
+                          .data$FromNode),
+                by = c("ToNode" = "FromNode"))})
+
+    flines <- bind_rows(flines)
+  }
 
   if (!all(flines[["TerminalFl"]][which(is.na(flines$toCOMID))] == 1)) {
     warn <- paste("FromNode - ToNode imply terminal flowlines that are not\n",

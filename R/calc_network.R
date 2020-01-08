@@ -527,3 +527,45 @@ get_terminal <- function(x, outlets) {
   return(basin_df)
 }
 
+#' Get path length
+#' @description Generates the main path length to a basin's
+#' terminal path.
+#' @param x data.frame with ID, toID, length columns.
+#' @importFrom dplyr arrange
+#' @importFrom methods as
+#' @export
+#' @examples
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#'
+#' fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
+#'                     ID = COMID, toID = toCOMID, length = LENGTHKM)
+#'
+#' get_pathlength(fl)
+#'
+get_pathlength <- function(x) {
+
+  sorted <- as(get_sorted(x[, c("ID", "toID")]),
+               class(x$ID))
+  x <- left_join(data.frame(ID = sorted[length(sorted):1], stringsAsFactors = FALSE),
+                 x, by = "ID")
+
+  x <- x[!is.na(x$ID), ]
+
+  id <- x$ID
+  toid <- x$toID
+  le <- x$length
+  leo <- rep(0, length(le))
+
+  for(i in seq_len(length(id))) {
+    if(!is.na(tid <- toid[i])) {
+      r <- which(id == tid)
+
+      leo[i] <- le[r] + leo[r]
+    }
+  }
+  return(data.frame(ID = id, pathlength = leo,
+                    stringsAsFactors = FALSE))
+}
+
+
+

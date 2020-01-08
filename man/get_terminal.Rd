@@ -14,3 +14,14 @@ get_terminal(x, outlets)
 \description{
 Get the ID of the basin outlet for each flowline.
 }
+\examples{
+source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
+fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
+                    ID = COMID, toID = toCOMID)
+
+outlet <- fl$ID[which(!fl$toID \%in\% fl$ID)]
+
+get_terminal(fl, outlet)
+
+}

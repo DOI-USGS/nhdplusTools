@@ -149,3 +149,54 @@ test_that("get_pfaf", {
 
   expect_equal(nrow(pfaf), 57)
 })
+
+test_that("get_terminal", {
+  suppressMessages(
+    source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
+  hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
+
+  suppressWarnings(
+    fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
+      select(ID = COMID, toID = toCOMID))
+
+  outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
+  fl$toID[which(!fl$toID %in% fl$ID)] <- 0
+  terminal <- get_terminal(fl, outlet)
+
+  expect_equal(names(terminal), c("terminalID", "ID"))
+  expect_true(is.numeric(terminal$ID))
+  expect_equal(nrow(terminal), nrow(fl))
+
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
+  fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
+    select(ID = COMID, toID = toCOMID)
+
+  outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
+  fl$toID[which(!fl$toID %in% fl$ID)] <- 0
+
+  terminal <- get_terminal(fl, outlet)
+
+  expect_equal(nrow(terminal), nrow(fl))
+  expect_true(is.integer(terminal$ID))
+})
+
+test_that("get_terminal", {
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
+  fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
+    select(ID = COMID, toID = toCOMID, length = LENGTHKM)
+
+  pl <- get_pathlength(fl)
+
+  expect_equal(nrow(fl), nrow(pl))
+
+  pl <- left_join(pl, select(walker_flowline,
+                             COMID, Pathlength),
+                  by = c("ID" = "COMID"))
+
+  expect_equal(pl$pathlength, pl$Pathlength)
+})
+
+
+

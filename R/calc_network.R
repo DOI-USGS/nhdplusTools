@@ -478,3 +478,94 @@ get_sorted <- function(flowline) {
                                         directed = TRUE),
                   mode = "out"))
 }
+
+#' Get Terminal ID
+#' @description Get the ID of the basin outlet for each flowline.
+#' @param x two column data.frame with IDs and toIDs. Names are ignored.
+#' @param outlets IDs of outlet flowlines
+#' @export
+#' @importFrom igraph dfs graph_from_data_frame V
+#' @importFrom sf st_drop_geometry
+#' @importFrom tidyr unnest
+#' @examples
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#'
+#' fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
+#'                     ID = COMID, toID = toCOMID)
+#'
+#' outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
+#'
+#' get_terminal(fl, outlet)
+#'
+get_terminal <- function(x, outlets) {
+
+  g <- graph_from_data_frame(x, directed = TRUE)
+
+  basins <- lapply(outlets, function(o, g) {
+    v <- V(g)[which(names(igraph::V(g)) == o)]
+
+    b <- dfs(g, v, neimode = "in", unreachable = FALSE)
+
+    b <- names(b$order)
+    b[!is.na(b) & b !=0]
+
+  }, g = g)
+
+  basin_df <- data.frame(terminalID = outlets, stringsAsFactors = FALSE)
+  basin_df[["ID"]] <- basins
+
+  basin_df <- distinct(unnest(basin_df, cols = "ID"))
+
+  if(is.integer(x[[1, 1]])) {
+    basin_df[["ID"]] <- as.integer(basin_df[["ID"]])
+  }
+
+  if(is.numeric(x[[1, 1]]) & !is.integer(x[[1, 1]])) {
+    basin_df[["ID"]] <- as.numeric(basin_df[["ID"]])
+  }
+
+  return(basin_df)
+}
+
+#' Get path length
+#' @description Generates the main path length to a basin's
+#' terminal path.
+#' @param x data.frame with ID, toID, length columns.
+#' @importFrom dplyr arrange
+#' @importFrom methods as
+#' @export
+#' @examples
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#'
+#' fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
+#'                     ID = COMID, toID = toCOMID, length = LENGTHKM)
+#'
+#' get_pathlength(fl)
+#'
+get_pathlength <- function(x) {
+
+  sorted <- as(get_sorted(x[, c("ID", "toID")]),
+               class(x$ID))
+  x <- left_join(data.frame(ID = sorted[length(sorted):1], stringsAsFactors = FALSE),
+                 x, by = "ID")
+
+  x <- x[!is.na(x$ID), ]
+
+  id <- x$ID
+  toid <- x$toID
+  le <- x$length
+  leo <- rep(0, length(le))
+
+  for(i in seq_len(length(id))) {
+    if(!is.na(tid <- toid[i])) {
+      r <- which(id == tid)
+
+      leo[i] <- le[r] + leo[r]
+    }
+  }
+  return(data.frame(ID = id, pathlength = leo,
+                    stringsAsFactors = FALSE))
+}
+
+
+

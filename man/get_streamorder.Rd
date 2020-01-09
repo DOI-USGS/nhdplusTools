@@ -4,10 +4,10 @@
 \alias{get_streamorder}
 \title{Get Streamorder}
 \usage{
-get_streamorder(fl)
+get_streamorder(x)
 }
 \arguments{
-\item{fl}{data.frame with dendritic ID and toID columns.}
+\item{x}{data.frame with dendritic ID and toID columns.}
 }
 \value{
 numeric stream order in same order as input

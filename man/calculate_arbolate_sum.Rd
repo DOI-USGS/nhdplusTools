@@ -4,10 +4,10 @@
 \alias{calculate_arbolate_sum}
 \title{Calculate Arbolate Sum}
 \usage{
-calculate_arbolate_sum(catchment_area)
+calculate_arbolate_sum(x)
 }
 \arguments{
-\item{catchment_area}{data.frame with ID, toID, and length columns.}
+\item{x}{data.frame with ID, toID, and length columns.}
 }
 \value{
 numeric with arbolate sum.

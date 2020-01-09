@@ -187,7 +187,7 @@ test_that("get_terminal", {
   fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
     select(ID = COMID, toID = toCOMID, length = LENGTHKM)
 
-  pl <- get_pathlength(fl)
+  suppressWarnings(pl <- get_pathlength(fl))
 
   expect_equal(nrow(fl), nrow(pl))
 

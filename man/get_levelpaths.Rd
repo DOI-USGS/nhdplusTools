@@ -4,10 +4,10 @@
 \alias{get_levelpaths}
 \title{Get Level Paths}
 \usage{
-get_levelpaths(flowline, status = FALSE)
+get_levelpaths(x, status = FALSE)
 }
 \arguments{
-\item{flowline}{data.frame with ID, toID, nameID, and weight columns.}
+\item{x}{data.frame with ID, toID, nameID, and weight columns.}
 
 \item{status}{boolean if status updates should be printed.}
 }

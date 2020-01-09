@@ -1,7 +1,7 @@
 #' Total Drainage Area
 #' @description Calculates total drainage area given a dendritic
 #' network and incremental areas.
-#' @param catchment_area data.frame with ID, toID, and area columns.
+#' @param x data.frame with ID, toID, and area columns.
 #' @return numeric with total area.
 #' @importFrom igraph graph_from_data_frame topo_sort
 #' @importFrom dplyr select left_join
@@ -23,9 +23,9 @@
 #' max(abs(catchment_area$totda - catchment_area$nhdptotda))
 #'
 
-calculate_total_drainage_area <- function(catchment_area) {
+calculate_total_drainage_area <- function(x) {
 
-  return(accumulate_downstream(catchment_area, "area"))
+  return(accumulate_downstream(x, "area"))
 
 }
 
@@ -33,7 +33,7 @@ calculate_total_drainage_area <- function(catchment_area) {
 #' @description Calculates arbolate sum given a dendritic
 #' network and incremental lengths. Arbolate sum is the total length
 #' of all upstream flowlines.
-#' @param catchment_area data.frame with ID, toID, and length columns.
+#' @param x data.frame with ID, toID, and length columns.
 #' @return numeric with arbolate sum.
 #' @export
 #' @examples
@@ -53,42 +53,42 @@ calculate_total_drainage_area <- function(catchment_area) {
 #' max(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum))
 #'
 
-calculate_arbolate_sum <- function(catchment_area) {
+calculate_arbolate_sum <- function(x) {
 
-  return(accumulate_downstream(catchment_area, "length"))
+  return(accumulate_downstream(x, "length"))
 
 }
 
 #' @importFrom dplyr select left_join ungroup distinct
 #' @noRd
 #'
-accumulate_downstream <- function(dat_fram, var) {
+accumulate_downstream <- function(x, var) {
 
-  cat_order <- select(dat_fram, .data$ID)
+  cat_order <- select(x, .data$ID)
 
-  dat_fram[["toID"]][which(is.na(dat_fram[["toID"]]))] <- 0
+  x[["toID"]][which(is.na(x[["toID"]]))] <- 0
 
-  sorted <- get_sorted(dat_fram)
+  sorted <- get_sorted(x)
 
   sorted <- sorted[sorted != "0" & sorted %in% as.character(cat_order$ID)]
 
-  dat_fram <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
-                        dat_fram, by = "ID")
+  x <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
+                        x, by = "ID")
 
-  dat_fram[["toID_row"]] <- match(dat_fram[["toID"]], dat_fram[["ID"]])
+  x[["toID_row"]] <- match(x[["toID"]], x[["ID"]])
 
-  var_out <- dat_fram[[var]]
-  toid_row <- dat_fram[["toID_row"]]
+  var_out <- x[[var]]
+  toid_row <- x[["toID_row"]]
 
   for(cat in 1:length(var_out)) {
     var_out[toid_row[cat]] <- var_out[toid_row[cat]] + var_out[cat]
   }
 
-  dat_fram[[var]] <- var_out
+  x[[var]] <- var_out
 
-  dat_fram <- distinct(left_join(cat_order, dat_fram, by = "ID"))
+  x <- distinct(left_join(cat_order, x, by = "ID"))
 
-  return(dat_fram[[var]])
+  return(x[[var]])
 }
 
 #' Get Level Paths
@@ -97,7 +97,7 @@ accumulate_downstream <- function(dat_fram, var) {
 #' levelpath outlet identifier is provided in output. If arbolate sum is provided in
 #' the weight column, this will match the behavior of NHDPlus. Any numeric value can be
 #' included in this column and the largest value will be followed when no nameID is available.
-#' @param flowline data.frame with ID, toID, nameID, and weight columns.
+#' @param x data.frame with ID, toID, nameID, and weight columns.
 #' @param status boolean if status updates should be printed.
 #' @return data.frame with ID, outletID, topo_sort, and levelpath collumns.
 #' See details for more info.
@@ -128,74 +128,74 @@ accumulate_downstream <- function(dat_fram, var) {
 #' get_levelpaths(test_flowline)
 #'
 #'
-get_levelpaths <- function(flowline, status = FALSE) {
+get_levelpaths <- function(x, status = FALSE) {
 
-  flowline <- check_names(flowline, "get_levelpaths")
+  x <- check_names(x, "get_levelpaths")
 
-  flowline[["toID"]][which(is.na(flowline[["toID"]]))] <- 0
+  x[["toID"]][which(is.na(x[["toID"]]))] <- 0
 
-  flowline[["nameID"]][is.na(flowline[["nameID"]])] <- " " # NHDPlusHR uses NA for empty names.
-  flowline[["nameID"]][flowline[["nameID"]] == "-1"] <- " "
+  x[["nameID"]][is.na(x[["nameID"]])] <- " " # NHDPlusHR uses NA for empty names.
+  x[["nameID"]][x[["nameID"]] == "-1"] <- " "
 
-  sorted <- get_sorted(flowline)
+  sorted <- get_sorted(x)
 
   sorted <- sorted[sorted != 0]
 
-  flowline <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
-                        flowline, by = "ID")
+  x <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
+                        x, by = "ID")
 
-  flowline[["topo_sort"]] <- seq(nrow(flowline), 1)
-  flowline[["levelpath"]] <- rep(0, nrow(flowline))
+  x[["topo_sort"]] <- seq(nrow(x), 1)
+  x[["levelpath"]] <- rep(0, nrow(x))
 
-  flc <- flowline
+  flc <- x
   diff = 1
   checker <- 0
   while(nrow(flc) > 0 & checker < 10000000) {
     tail_ind <- which(flc$topo_sort == min(flc$topo_sort))
     tailID <- flc$ID[tail_ind]
-    sortID <- flowline$topo_sort[tail_ind]
+    sortID <- x$topo_sort[tail_ind]
 
     pathIDs <- get_path(flc, tailID)
 
-    flowline <- mutate(flowline,
+    x <- mutate(x,
                        levelpath = ifelse(.data$ID %in% pathIDs,
                                           sortID, .data$levelpath))
     flc <- filter(flc, !.data$ID %in% pathIDs)
     checker <- checker + 1
 
     if(status && checker %% 1000 == 0) {
-      message(paste(nrow(flc), "of", nrow(flowline), "remaining."))
+      message(paste(nrow(flc), "of", nrow(x), "remaining."))
     }
   }
 
-  outlets <- flowline %>%
+  outlets <- x %>%
     group_by(.data$levelpath) %>%
     filter(topo_sort == min(topo_sort)) %>%
     ungroup() %>%
     select(outletID = .data$ID, .data$levelpath)
 
-  flowline <- left_join(flowline, outlets, by = "levelpath")
+  x <- left_join(x, outlets, by = "levelpath")
 
-  return(select(flowline, .data$ID, .data$outletID, .data$topo_sort, .data$levelpath))
+  return(select(x, .data$ID, .data$outletID, .data$topo_sort, .data$levelpath))
 }
 
 #' get level path
 #' @noRd
 #' @description Recursively walks up a network following the nameID
 #' or, if no nameID exists, maximum weight column.
-#' @param flowline data.frame with ID, toID, nameID and weight columns.
+#' @param x data.frame with ID, toID, nameID and weight columns.
 #' @param tailID integer or numeric ID of outlet catchment.
 #'
-get_path <- function(flowline, tailID) {
+get_path <- function(x, tailID) {
   # May be more than 1
-  from_inds <- which(flowline$toID == tailID)
+  from_inds <- which(x$toID == tailID)
   if(length(from_inds) > 1) { # need to find dominant
-    ind <- which(flowline$ID == tailID)
-    next_tails <- flowline[from_inds, ]
+    ind <- which(x$ID == tailID)
+    next_tails <- x[from_inds, ]
 
     if(any(next_tails$nameID != " ")) { # If any of the candidates are named.
       next_tails <- # pick the matching one.
-        filter(next_tails, .data$nameID == flowline$nameID[ind])
+        filter(next_tails, .data$nameID == x$nameID[ind])
 
       if(nrow(next_tails) > 1) {
         next_tails <- # pick the named one.
@@ -205,15 +205,15 @@ get_path <- function(flowline, tailID) {
 
     if(nrow(next_tails) != 1) { # If the above didn't result in one row.
       next_tails <- # use weighting
-        filter(flowline[from_inds, ], .data$weight == max(.data$weight))
+        filter(x[from_inds, ], .data$weight == max(.data$weight))
     }
 
     if(length(next_tails$ID) > 1) {
       next_tails <- next_tails[1, ]
     }
-    c(tailID, get_path(flowline, next_tails$ID))
+    c(tailID, get_path(x, next_tails$ID))
   } else if(length(from_inds) == 1) {
-    c(tailID, get_path(flowline, flowline$ID[from_inds]))
+    c(tailID, get_path(x, x$ID[from_inds]))
   } else {
     return(tailID)
   }
@@ -224,7 +224,7 @@ get_path <- function(flowline, tailID) {
 #' Algorithm: If more than one upstream flowpath has an order equal to the
 #' maximum upstream order then the downstream flowpath is assigned the maximum
 #' upstream order plus one. Otherwise it is assigned the max upstream order.
-#' @param fl data.frame with dendritic ID and toID columns.
+#' @param x data.frame with dendritic ID and toID columns.
 #' @return numeric stream order in same order as input
 #' @importFrom dplyr left_join select
 #' @export
@@ -243,20 +243,20 @@ get_path <- function(flowline, tailID) {
 #'
 #' plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$order, col = "blue")
 #'
-get_streamorder <- function(fl) {
-  check_names(fl, "get_streamorder")
+get_streamorder <- function(x) {
+  check_names(x, "get_streamorder")
 
-  o_sort <- select(fl, .data$ID)
+  o_sort <- select(x, .data$ID)
 
-  fl[["toID"]][which(is.na(fl[["toID"]]))] <- 0
+  x[["toID"]][which(is.na(x[["toID"]]))] <- 0
 
-  sorted <- get_sorted(fl)
+  sorted <- get_sorted(x)
 
-  fl <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "0"])),
-                  fl, by = "ID")
+  x <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "0"])),
+                  x, by = "ID")
 
-  ID <- as.numeric(fl$ID)
-  toID <- as.numeric(fl$toID)
+  ID <- as.numeric(x$ID)
+  toID <- as.numeric(x$toID)
   order <- rep(1, length(ID))
 
   for(i in seq(1, length(ID))) {
@@ -281,7 +281,7 @@ get_streamorder <- function(fl) {
 #' @title Get Pfafstetter Codes (Experimental)
 #' @description Determines Pfafstetter codes for a dendritic network with
 #' total drainage area, levelpath, and topo_sort attributes.
-#' @param fl sf data.frame with ID, toID, totda, outletID, topo_sort,
+#' @param x sf data.frame with ID, toID, totda, outletID, topo_sort,
 #' and levelpath attributes.
 #' @param max_level integer number of pfaf levels to attempt to calculate.
 #' If the network doesn't have resolution to support the desired level,
@@ -341,15 +341,15 @@ get_streamorder <- function(fl) {
 #'
 #' plot(fl["pf_level_2"], lwd = 2)
 #'
-get_pfaf <- function(fl, max_level = 2, status = FALSE) {
-  if(is(fl, "sf")) fl <- st_drop_geometry(fl)
-  check_names(fl, "get_pfaf")
+get_pfaf <- function(x, max_level = 2, status = FALSE) {
+  if(is(x, "sf")) x <- st_drop_geometry(x)
+  check_names(x, "get_pfaf")
 
-  mainstem_levelpath <- unique(fl$levelpath[fl$topo_sort == min(fl$topo_sort)])
+  mainstem_levelpath <- unique(x$levelpath[x$topo_sort == min(x$topo_sort)])
 
-  mainstem <- fl[fl$levelpath == mainstem_levelpath, ]
+  mainstem <- x[x$levelpath == mainstem_levelpath, ]
 
-  pfaf <- do.call(rbind, get_pfaf_9(fl, mainstem, max_level, status = status))
+  pfaf <- do.call(rbind, get_pfaf_9(x, mainstem, max_level, status = status))
 
   return(cleanup_pfaf(pfaf))
 }
@@ -357,7 +357,7 @@ get_pfaf <- function(fl, max_level = 2, status = FALSE) {
 #' @noRd
 #' @importFrom dplyr arrange left_join
 #' @importFrom methods is
-get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA, status = FALSE) {
+get_pfaf_9 <- function(x, mainstem, max_level, pre_pfaf = 0, assigned = NA, status = FALSE) {
 
   if((pre_pfaf / 10^(max_level-1)) > 1) return()
 
@@ -365,8 +365,8 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA, sta
     message(paste("On level:", pre_pfaf - 1111))
   }
   # Get all tributary outlets that go to the passed mainstem.
-  trib_outlets <- fl[fl$toID %in% mainstem$ID &
-                   fl$levelpath != mainstem$levelpath[1], ]
+  trib_outlets <- x[x$toID %in% mainstem$ID &
+                   x$levelpath != mainstem$levelpath[1], ]
 
   # Exclude those that have already been defined as drainage basin outlets
   if(is(assigned, "data.frame")) {
@@ -382,7 +382,7 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA, sta
   area_filter <- (if(nrow(trib_outlets) >= 4) 4 else nrow(trib_outlets))
   area_filter <- sort(trib_outlets$totda, decreasing = TRUE)[area_filter]
   t4_tribs <- trib_outlets[trib_outlets$totda >= area_filter, ]
-  t4_tribs <- left_join(t4_tribs, select(fl, .data$ID, ms_ts = .data$topo_sort),
+  t4_tribs <- left_join(t4_tribs, select(x, .data$ID, ms_ts = .data$topo_sort),
                         by = c("toID" = "ID")) %>% arrange(.data$ms_ts)
 
   # t4_tribs <- t4_tribs[t4_tribs$ms_ts < max(mainstem$topo_sort),]
@@ -401,10 +401,10 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA, sta
   }, ms = mainstem, ts = t4_tribs$ms_ts)
 
   out <- data.frame(p_id = c(1:9))
-  out[["members"]] <- list(ms_inter[[1]]$ID, fl$ID[fl$outletID == t4_tribs$outletID[1]],
-                           ms_inter[[2]]$ID, fl$ID[fl$outletID == t4_tribs$outletID[2]],
-                           ms_inter[[3]]$ID, fl$ID[fl$outletID == t4_tribs$outletID[3]],
-                           ms_inter[[4]]$ID, fl$ID[fl$outletID == t4_tribs$outletID[4]],
+  out[["members"]] <- list(ms_inter[[1]]$ID, x$ID[x$outletID == t4_tribs$outletID[1]],
+                           ms_inter[[2]]$ID, x$ID[x$outletID == t4_tribs$outletID[2]],
+                           ms_inter[[3]]$ID, x$ID[x$outletID == t4_tribs$outletID[3]],
+                           ms_inter[[4]]$ID, x$ID[x$outletID == t4_tribs$outletID[4]],
                            ms_inter[[5]]$ID)
   out[["pfaf"]] <- out$p_id + pre_pfaf * 10
 
@@ -417,18 +417,18 @@ get_pfaf_9 <- function(fl, mainstem, max_level, pre_pfaf = 0, assigned = NA, sta
   }
 
   c(out, unlist(lapply(c(1:9), apply_fun,
-                       p9 = out[[1]], fl = fl, max_level = max_level, status = status),
+                       p9 = out[[1]], x = x, max_level = max_level, status = status),
                 recursive = FALSE))
 }
 
-apply_fun <- function(p, p9, fl, max_level, status) {
+apply_fun <- function(p, p9, x, max_level, status) {
   p_sub <- p9[p9$p_id == p, ]
   ms_ids <- p_sub$members
   pre_pfaf <- unique(p_sub$pfaf)
-  mainstem <- fl[fl$ID %in% ms_ids, ]
+  mainstem <- x[x$ID %in% ms_ids, ]
 
   if(length(pre_pfaf) > 0) {
-    get_pfaf_9(fl, mainstem, max_level, pre_pfaf = pre_pfaf, assigned = p9, status = status)
+    get_pfaf_9(x, mainstem, max_level, pre_pfaf = pre_pfaf, assigned = p9, status = status)
   } else {
     NULL
   }
@@ -470,11 +470,11 @@ cleanup_pfaf <- function(pfaf) {
 }
 
 #' @noRd
-#' @param flowline data.frame if an identifier and to identifier in the
+#' @param x data.frame if an identifier and to identifier in the
 #' first and second columns.
 #' @importFrom igraph topo_sort graph_from_data_frame
-get_sorted <- function(flowline) {
-  names(topo_sort(graph_from_data_frame(flowline,
+get_sorted <- function(x) {
+  names(topo_sort(graph_from_data_frame(x,
                                         directed = TRUE),
                   mode = "out"))
 }

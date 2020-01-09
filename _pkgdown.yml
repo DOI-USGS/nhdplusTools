@@ -24,6 +24,8 @@ reference:
       - '`calculate_total_drainage_area`'
       - '`calculate_arbolate_sum`'
       - '`get_levelpaths`'
+      - '`get_pathlength`'
+      - '`get_terminal`'
       - '`get_streamorder`'
       - '`get_pfaf`'
       - '`make_standalone`'

@@ -60,7 +60,9 @@ get_levelpaths <- function(x, status = FALSE) {
   while(nrow(flc) > 0 & checker < 10000000) {
     tail_ind <- which(flc$topo_sort == min(flc$topo_sort))
     tailID <- flc$ID[tail_ind]
-    sortID <- x$topo_sort[tail_ind]
+
+    x_tail_ind <- which(x$topo_sort == min(flc$topo_sort))
+    sortID <- x$topo_sort[x_tail_ind]
 
     pathIDs <- get_path(flc, tailID)
 

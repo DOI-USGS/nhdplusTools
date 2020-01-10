@@ -42,7 +42,7 @@
 #'
 #' @export
 #' @examples
-#'
+#' \donttest{
 #' plot_nhdplus("05428500")
 #'
 #' plot_nhdplus("05428500", streamorder = 2)
@@ -95,6 +95,7 @@
 #'              plot_config = list(flowline = list(lwd = 0.5)))
 #' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
 #'              plot_config = list(flowline = list(col = "darkblue")))
+#' }
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,

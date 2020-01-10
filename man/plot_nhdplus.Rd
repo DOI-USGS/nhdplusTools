@@ -66,7 +66,7 @@ The following shows the defaults that can be altered.
 }
 }
 \examples{
-
+\donttest{
 plot_nhdplus("05428500")
 
 plot_nhdplus("05428500", streamorder = 2)
@@ -119,4 +119,5 @@ plot_nhdplus(bbox = bbox, nhdplus_data = sample_data,
              plot_config = list(flowline = list(lwd = 0.5)))
 plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
              plot_config = list(flowline = list(col = "darkblue")))
+}
 }

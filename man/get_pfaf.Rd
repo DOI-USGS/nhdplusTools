@@ -24,6 +24,7 @@ Determines Pfafstetter codes for a dendritic network with
 total drainage area, levelpath, and topo_sort attributes.
 }
 \examples{
+\donttest{
 library(dplyr)
 source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
@@ -72,5 +73,5 @@ pfaf <- get_pfaf(fl, max_level = 2)
 fl <- left_join(fl, pfaf, by = "ID")
 
 plot(fl["pf_level_2"], lwd = 2)
-
+}
 }

@@ -71,6 +71,7 @@ get_streamorder <- function(x) {
 #' @importFrom sf st_drop_geometry
 #' @importFrom methods is
 #' @examples
+#' \donttest{
 #' library(dplyr)
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 #' hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
@@ -119,7 +120,7 @@ get_streamorder <- function(x) {
 #' fl <- left_join(fl, pfaf, by = "ID")
 #'
 #' plot(fl["pf_level_2"], lwd = 2)
-#'
+#' }
 get_pfaf <- function(x, max_level = 2, status = FALSE) {
   if(is(x, "sf")) x <- st_drop_geometry(x)
   check_names(x, "get_pfaf")

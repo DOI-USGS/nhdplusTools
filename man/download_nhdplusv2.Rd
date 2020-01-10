@@ -5,7 +5,7 @@
 \title{Download seamless National Hydrography Dataset Version 2 (NHDPlusV2)}
 \usage{
 download_nhdplusv2(outdir,
-  url = paste0("https://s3.amazonaws.com/nhdplus/NHDPlusV21/",
+  url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
   "Data/NationalData/NHDPlusV21_NationalData_Seamless",
   "_Geodatabase_Lower48_07.7z"))
 }

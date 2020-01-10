@@ -64,10 +64,16 @@
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_nldi_feature.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_pathlength.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_pfaf.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_streamorder.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_terminal.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/make_standalone.html</loc>

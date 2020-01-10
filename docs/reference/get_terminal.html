@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate Arbolate Sum — calculate_arbolate_sum • nhdplusTools</title>
+<title>Get Terminal ID — get_terminal • nhdplusTools</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,10 +42,8 @@
 
 
 
-<meta property="og:title" content="Calculate Arbolate Sum — calculate_arbolate_sum" />
-<meta property="og:description" content="Calculates arbolate sum given a dendritic
-network and incremental lengths. Arbolate sum is the total length
-of all upstream flowlines." />
+<meta property="og:title" content="Get Terminal ID — get_terminal" />
+<meta property="og:description" content="Get the ID of the basin outlet for each flowline." />
 <meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -139,57 +137,60 @@ of all upstream flowlines." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate Arbolate Sum</h1>
-    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/calc_network.R'><code>R/calc_network.R</code></a></small>
-    <div class="hidden name"><code>calculate_arbolate_sum.Rd</code></div>
+    <h1>Get Terminal ID</h1>
+    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_paths.R'><code>R/get_paths.R</code></a></small>
+    <div class="hidden name"><code>get_terminal.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculates arbolate sum given a dendritic
-network and incremental lengths. Arbolate sum is the total length
-of all upstream flowlines.</p>
+    <p>Get the ID of the basin outlet for each flowline.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>calculate_arbolate_sum</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>get_terminal</span>(<span class='no'>x</span>, <span class='no'>outlets</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>data.frame with ID, toID, and length columns.</p></td>
+      <td><p>two column data.frame with IDs and toIDs. Names are ignored.</p></td>
+    </tr>
+    <tr>
+      <th>outlets</th>
+      <td><p>IDs of outlet flowlines</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>numeric with arbolate sum.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
-<span class='no'>catchment_length</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
-                             <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>walker_flowline</span>, <span class='no'>COMID</span>), <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='no'>LENGTHKM</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
 
-<span class='no'>arb_sum</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_arbolate_sum</span>(<span class='no'>catchment_length</span>)
+<span class='no'>fl</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>),
+                    <span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: removing geometry</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 0 flowlines that don't apply.</span>
+#&gt; <span class='warning'> Includes: Coastlines, non-dendritic paths, </span>
+#&gt; <span class='warning'>and networks with drainage area less than 0 sqkm, and drainage basins smaller than 0</span></div><div class='input'>
+<span class='no'>outlet</span> <span class='kw'>&lt;-</span> <span class='no'>fl</span>$<span class='no'>ID</span>[<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(!<span class='no'>fl</span>$<span class='no'>toID</span> <span class='kw'>%in%</span> <span class='no'>fl</span>$<span class='no'>ID</span>)]
 
-<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> <span class='kw'>&lt;-</span> <span class='no'>arb_sum</span>
-<span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span> <span class='kw'>&lt;-</span> <span class='no'>walker_flowline</span>$<span class='no'>ArbolateSu</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span>(<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> - <span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span>))</div><div class='output co'>#&gt; [1] 2.249097e-15</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span>(<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> - <span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span>))</div><div class='output co'>#&gt; [1] 2.842171e-14</div><div class='input'>
-</div></pre>
+<span class='fu'>get_terminal</span>(<span class='no'>fl</span>, <span class='no'>outlet</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: In `d' `NA' elements were replaced with string "NA"</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 62 x 2</span><span>
+#&gt;    terminalID      ID
+#&gt;         </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>303
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>293
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>305
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>317
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>315
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>339
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>343
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>357
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>365
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span>    5</span><span style='text-decoration: underline;'>329</span><span>303 5</span><span style='text-decoration: underline;'>329</span><span>373
+#&gt; </span><span style='color: #949494;'># … with 52 more rows</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

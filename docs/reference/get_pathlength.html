@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate Arbolate Sum — calculate_arbolate_sum • nhdplusTools</title>
+<title>Get path length — get_pathlength • nhdplusTools</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,10 +42,9 @@
 
 
 
-<meta property="og:title" content="Calculate Arbolate Sum — calculate_arbolate_sum" />
-<meta property="og:description" content="Calculates arbolate sum given a dendritic
-network and incremental lengths. Arbolate sum is the total length
-of all upstream flowlines." />
+<meta property="og:title" content="Get path length — get_pathlength" />
+<meta property="og:description" content="Generates the main path length to a basin's
+terminal path." />
 <meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -139,57 +138,104 @@ of all upstream flowlines." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate Arbolate Sum</h1>
-    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/calc_network.R'><code>R/calc_network.R</code></a></small>
-    <div class="hidden name"><code>calculate_arbolate_sum.Rd</code></div>
+    <h1>Get path length</h1>
+    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_paths.R'><code>R/get_paths.R</code></a></small>
+    <div class="hidden name"><code>get_pathlength.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculates arbolate sum given a dendritic
-network and incremental lengths. Arbolate sum is the total length
-of all upstream flowlines.</p>
+    <p>Generates the main path length to a basin's
+terminal path.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>calculate_arbolate_sum</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>get_pathlength</span>(<span class='no'>x</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>data.frame with ID, toID, and length columns.</p></td>
+      <td><p>data.frame with ID, toID, length columns.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>numeric with arbolate sum.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
-<span class='no'>catchment_length</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
-                             <span class='kw'>purge_non_dendritic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>warn</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>walker_flowline</span>, <span class='no'>COMID</span>), <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"COMID"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='no'>LENGTHKM</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
 
-<span class='no'>arb_sum</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_arbolate_sum</span>(<span class='no'>catchment_length</span>)
-
-<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> <span class='kw'>&lt;-</span> <span class='no'>arb_sum</span>
-<span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span> <span class='kw'>&lt;-</span> <span class='no'>walker_flowline</span>$<span class='no'>ArbolateSu</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span>(<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> - <span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span>))</div><div class='output co'>#&gt; [1] 2.249097e-15</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span>(<span class='no'>catchment_length</span>$<span class='no'>arb_sum</span> - <span class='no'>catchment_length</span>$<span class='no'>nhd_arb_sum</span>))</div><div class='output co'>#&gt; [1] 2.842171e-14</div><div class='input'>
+<span class='no'>fl</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>),
+                    <span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>COMID</span>, <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>toCOMID</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='no'>LENGTHKM</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: removing geometry</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 0 flowlines that don't apply.</span>
+#&gt; <span class='warning'> Includes: Coastlines, non-dendritic paths, </span>
+#&gt; <span class='warning'>and networks with drainage area less than 0 sqkm, and drainage basins smaller than 0</span></div><div class='input'>
+<span class='fu'>get_pathlength</span>(<span class='no'>fl</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: In `d' `NA' elements were replaced with string "NA"</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt;         ID pathlength
+#&gt; 1  5329303      0.000
+#&gt; 2  5329293      1.195
+#&gt; 3  5329305      1.777
+#&gt; 4  5329317      5.797
+#&gt; 5  5329315     10.240
+#&gt; 6  5329339     12.924
+#&gt; 7  5329343     17.710
+#&gt; 8  5329357     18.742
+#&gt; 9  5329365     22.345
+#&gt; 10 5329373     25.484
+#&gt; 11 5329843     26.943
+#&gt; 12 5329847     27.173
+#&gt; 13 5329385     28.463
+#&gt; 14 5329821     30.379
+#&gt; 15 5329313     12.924
+#&gt; 16 5329395     31.511
+#&gt; 17 5329311     14.870
+#&gt; 18 5329397     33.519
+#&gt; 19 5329817     16.043
+#&gt; 20 5329389     34.700
+#&gt; 21 5329323     20.855
+#&gt; 22 5329391     35.130
+#&gt; 23 5329327     21.496
+#&gt; 24 5329393     35.306
+#&gt; 25 5329325     21.822
+#&gt; 26 5329849     35.779
+#&gt; 27 5329321     22.473
+#&gt; 28 5329363     25.484
+#&gt; 29 5329375     22.345
+#&gt; 30 5329383     36.172
+#&gt; 31 5329299      5.797
+#&gt; 32 5329841     23.494
+#&gt; 33 5329335     21.496
+#&gt; 34 5329819     26.764
+#&gt; 35 5329845     27.173
+#&gt; 36 5329379     24.666
+#&gt; 37 5329871     38.554
+#&gt; 38 5329295      1.195
+#&gt; 39 5329297      7.206
+#&gt; 40 5329307     14.870
+#&gt; 41 5329309     16.043
+#&gt; 42 5329319     20.855
+#&gt; 43 5329815     27.094
+#&gt; 44 5329341     22.878
+#&gt; 45 5329345     22.878
+#&gt; 46 5329337     17.710
+#&gt; 47 5329355     29.649
+#&gt; 48 5329415     27.521
+#&gt; 49 5329387     34.700
+#&gt; 50 5329407     35.306
+#&gt; 51 5329419     33.519
+#&gt; 52 5329413     31.511
+#&gt; 53 5329427     30.379
+#&gt; 54 5329405     24.748
+#&gt; 55 5329399     24.748
+#&gt; 56 5329377     24.666
+#&gt; 57 5329371     18.742
+#&gt; 58 5329333     10.240
+#&gt; 59 5329359     29.649
+#&gt; 60 5329291      1.777
+#&gt; 61 5329347     22.473
+#&gt; 62 5329435     35.130</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

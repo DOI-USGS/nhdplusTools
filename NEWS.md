@@ -6,6 +6,7 @@ nhdplusTools 0.3.12
 * `subset_nhdplus()` can now return data without writing a file to disk.
 * NLDI feature specification is more flexible, doesn't require names anymore.
 * `get_nhdplushr()` has been updated to modify terminal path and other identifiers making nhdplusHR subsets "stand alone". A function `make_standalone()` is now exported.
+* Added `get_terminal()` and `get_pathlength()` functions to generate nhdplus network attributes.
 
 nhdplusTools 0.3.11
 ==========

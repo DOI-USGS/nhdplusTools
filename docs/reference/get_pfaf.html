@@ -139,7 +139,7 @@ total drainage area, levelpath, and topo_sort attributes." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get Pfafstetter Codes (Experimental)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/calc_network.R'><code>R/calc_network.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_codes.R'><code>R/get_codes.R</code></a></small>
     <div class="hidden name"><code>get_pfaf.Rd</code></div>
     </div>
 
@@ -148,13 +148,13 @@ total drainage area, levelpath, and topo_sort attributes." />
 total drainage area, levelpath, and topo_sort attributes.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_pfaf</span>(<span class='no'>fl</span>, <span class='kw'>max_level</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_pfaf</span>(<span class='no'>x</span>, <span class='kw'>max_level</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>fl</th>
+      <th>x</th>
       <td><p>sf data.frame with ID, toID, totda, outletID, topo_sort,
 and levelpath attributes.</p></td>
     </tr>

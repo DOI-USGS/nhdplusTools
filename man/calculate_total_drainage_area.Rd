@@ -4,10 +4,10 @@
 \alias{calculate_total_drainage_area}
 \title{Total Drainage Area}
 \usage{
-calculate_total_drainage_area(catchment_area)
+calculate_total_drainage_area(x)
 }
 \arguments{
-\item{catchment_area}{data.frame with ID, toID, and area columns.}
+\item{x}{data.frame with ID, toID, and area columns.}
 }
 \value{
 numeric with total area.

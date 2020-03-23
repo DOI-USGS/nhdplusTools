@@ -4,9 +4,16 @@
 \alias{subset_nhdplus}
 \title{Subset NHDPlus}
 \usage{
-subset_nhdplus(comids = NULL, output_file = NULL,
-  nhdplus_data = NULL, bbox = NULL, simplified = TRUE,
-  overwrite = FALSE, return_data = TRUE, status = TRUE)
+subset_nhdplus(
+  comids = NULL,
+  output_file = NULL,
+  nhdplus_data = NULL,
+  bbox = NULL,
+  simplified = TRUE,
+  overwrite = FALSE,
+  return_data = TRUE,
+  status = TRUE
+)
 }
 \arguments{
 \item{comids}{integer vector of COMIDs to include.}

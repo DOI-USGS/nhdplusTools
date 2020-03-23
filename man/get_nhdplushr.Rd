@@ -4,9 +4,16 @@
 \alias{get_nhdplushr}
 \title{Get NHDPlus HiRes}
 \usage{
-get_nhdplushr(hr_dir, out_gpkg = NULL, layers = c("NHDFlowline",
-  "NHDPlusCatchment"), pattern = ".*GDB.gdb$", check_terminals = TRUE,
-  overwrite = FALSE, keep_cols = NULL, ...)
+get_nhdplushr(
+  hr_dir,
+  out_gpkg = NULL,
+  layers = c("NHDFlowline", "NHDPlusCatchment"),
+  pattern = ".*GDB.gdb$",
+  check_terminals = TRUE,
+  overwrite = FALSE,
+  keep_cols = NULL,
+  ...
+)
 }
 \arguments{
 \item{hr_dir}{character directory with geodatabases (gdb search is recursive)}

@@ -64,6 +64,8 @@ calculate_arbolate_sum <- function(x) {
 #'
 accumulate_downstream <- function(x, var) {
 
+  try(x <- st_drop_geometry(x), silent = TRUE)
+
   cat_order <- select(x, .data$ID)
 
   x[["toID"]][which(is.na(x[["toID"]]))] <- 0

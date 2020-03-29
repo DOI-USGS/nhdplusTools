@@ -38,6 +38,7 @@ reference:
       - '`discover_nldi_sources`'
       - '`discover_nldi_navigation`'
       - '`get_nldi_basin`'
+      - '`get_nldi_feature`'
       - '`navigate_nldi`'
       - '`subset_nhdplus`'
       - '`get_DD`'

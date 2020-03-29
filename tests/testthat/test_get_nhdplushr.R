@@ -1,12 +1,12 @@
 context("get_nhdplushr")
 
-work_dir <- tempdir()
+work_dir <- file.path(tempdir(), "test_hr")
 dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
 out_gpkg <- file.path(work_dir, "temp.gpkg")
 
 test_that("we get urls for nhdplushr", {
   skip_on_cran()
-  urls <- download_nhdplushr(tempdir(), c("01", "0203"), download_files = FALSE)
+  urls <- download_nhdplushr(work_dir, c("01", "0203"), download_files = FALSE)
 
   expect_equal(length(urls), 11)
 })
@@ -76,6 +76,7 @@ test_that("get_nhdplushr overwrite gpkg and pattern", {
 })
 
 test_that("get_nhdplushr simp and proj", {
+  skip_on_cran()
   out <- get_nhdplushr(work_dir)
 
   out_sub <- get_nhdplushr(work_dir, proj = 5070)
@@ -96,6 +97,7 @@ test_that("get_nhdplushr simp and proj", {
 })
 
 test_that("get_nhdplushr rename and keep_cols", {
+  skip_on_cran()
   out_sub <- get_nhdplushr(work_dir,
                            keep_cols = c("COMID", "FEATUREID", "StreamOrde", "AreaSqKM"),
                            check_terminals = FALSE)
@@ -108,6 +110,7 @@ test_that("get_nhdplushr rename and keep_cols", {
 })
 
 test_that("make_standalone", {
+  skip_on_cran()
   fl <- get_nhdplushr(work_dir, check_terminals = FALSE)$NHDFlowline
 
   sa <- make_standalone(fl)
@@ -129,3 +132,5 @@ test_that("make_standalone", {
 
   expect_true(all(sa[sa$Hydroseq == min(sa$Hydroseq), ][c("DnLevel", "DnLevelPat", "DnHydroseq")] == 0))
 })
+
+unlink(work_dir, recursive = TRUE)

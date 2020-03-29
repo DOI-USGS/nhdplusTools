@@ -20,9 +20,9 @@ of all upstream flowlines.
 \examples{
 library(dplyr)
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
-                             purge_non_dendritic = FALSE, warn = FALSE) \%>\%
-  left_join(select(walker_flowline, COMID), by = "COMID") \%>\%
+catchment_length <- select(walker_flowline, COMID, AreaSqKM) \%>\%
+  right_join(prepare_nhdplus(walker_flowline, 0, 0,
+                            purge_non_dendritic = FALSE, warn = FALSE), by = "COMID") \%>\%
   select(ID = COMID, toID = toCOMID, length = LENGTHKM)
 
 arb_sum <- calculate_arbolate_sum(catchment_length)

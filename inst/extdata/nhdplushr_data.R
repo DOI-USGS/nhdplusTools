@@ -1,5 +1,10 @@
 # nolint start
-work_dir <- tempdir(check = TRUE)
+work_dir <- file.path(tempdir(check = TRUE), "hr_temp")
+
+dir.create(work_dir, showWarnings = FALSE)
+
+unlink(file.path(work_dir, "*"), recursive = TRUE)
+
 hr_source <- file.path(work_dir, "temp.zip")
 
 project_file <- c("../../docs/data/03_sub.zip", "docs/data/03_sub.zip")

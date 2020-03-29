@@ -4,9 +4,18 @@
 \alias{plot_nhdplus}
 \title{Plot NHDPlus}
 \usage{
-plot_nhdplus(outlets = NULL, bbox = NULL, streamorder = NULL,
-  nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
-  add = FALSE, actually_plot = TRUE, overwrite = TRUE, ...)
+plot_nhdplus(
+  outlets = NULL,
+  bbox = NULL,
+  streamorder = NULL,
+  nhdplus_data = NULL,
+  gpkg = NULL,
+  plot_config = NULL,
+  add = FALSE,
+  actually_plot = TRUE,
+  overwrite = TRUE,
+  ...
+)
 }
 \arguments{
 \item{outlets}{list of nldi outlets. Other inputs are coerced into nldi outlets, see details.}

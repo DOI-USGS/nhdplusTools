@@ -4,8 +4,10 @@ test_that("total drainage area works", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
   catchment_area <- prepare_nhdplus(walker_flowline, 0, 0,
-                                    purge_non_dendritic = FALSE, warn = FALSE) %>%
-    left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
+                                    purge_non_dendritic = FALSE, warn = FALSE)
+
+  catchment_area <- select(walker_flowline, COMID, AreaSqKM) %>%
+    left_join(catchment_area, by = "COMID") %>%
     select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
   new_da <- calculate_total_drainage_area(catchment_area)
@@ -20,8 +22,10 @@ test_that("total drainage area works", {
 test_that("arbolate sum works", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
   catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
-                                      purge_non_dendritic = FALSE, warn = FALSE) %>%
-    left_join(select(walker_flowline, COMID), by = "COMID") %>%
+                                      purge_non_dendritic = FALSE, warn = FALSE)
+
+  catchment_length <- select(walker_flowline, COMID) %>%
+    left_join(catchment_length, by = "COMID") %>%
     select(ID = COMID, toID = toCOMID, length = LENGTHKM)
 
   arb_sum <- calculate_arbolate_sum(catchment_length)
@@ -100,10 +104,12 @@ test_that("get_pfaf", {
   hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 
   suppressWarnings(
-  fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
-    left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
+  fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE))
+
+  fl <- select(hr_flowline, COMID, AreaSqKM) %>%
+    left_join(fl, by = "COMID") %>%
     st_sf() %>%
-    select(ID = COMID, toID = toCOMID, area = AreaSqKM))
+    select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
   fl$nameID = ""
   fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
@@ -135,8 +141,10 @@ test_that("get_pfaf", {
 
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
-  fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
-    left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
+  fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE)
+
+  fl <- select(walker_flowline, COMID, AreaSqKM) %>%
+    left_join(fl, by = "COMID") %>%
     st_sf() %>%
     select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
@@ -191,9 +199,10 @@ test_that("get_terminal", {
 
   expect_equal(nrow(fl), nrow(pl))
 
-  pl <- left_join(pl, select(walker_flowline,
-                             COMID, Pathlength),
-                  by = c("ID" = "COMID"))
+  pl <- left_join(select(walker_flowline,
+                         COMID, Pathlength),
+                  pl,
+                  by = c("COMID" = "ID"))
 
   expect_equal(pl$pathlength, pl$Pathlength)
 })

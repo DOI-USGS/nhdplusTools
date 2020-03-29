@@ -1,3 +1,6 @@
+library("sf")
+library("dplyr")
+
 get_test_file <- function(temp_dir) {
   check_locations <- c("../../docs/data/03_sub.zip", "docs/data/03_sub.zip")
   check_location <- check_locations[file.exists(check_locations)]

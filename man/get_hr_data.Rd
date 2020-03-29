@@ -4,8 +4,14 @@
 \alias{get_hr_data}
 \title{Get NHDPlus HiRes Data}
 \usage{
-get_hr_data(gdb, layer = NULL, min_size_sqkm = NULL, simp = NULL,
-  proj = NULL, rename = TRUE)
+get_hr_data(
+  gdb,
+  layer = NULL,
+  min_size_sqkm = NULL,
+  simp = NULL,
+  proj = NULL,
+  rename = TRUE
+)
 }
 \arguments{
 \item{gdb}{character path to geodatabase to get data from.}

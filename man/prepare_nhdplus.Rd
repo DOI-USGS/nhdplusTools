@@ -4,9 +4,15 @@
 \alias{prepare_nhdplus}
 \title{Prep NHDPlus Data}
 \usage{
-prepare_nhdplus(flines, min_network_size, min_path_length,
-  min_path_size = 0, purge_non_dendritic = TRUE, warn = TRUE,
-  error = TRUE)
+prepare_nhdplus(
+  flines,
+  min_network_size,
+  min_path_length,
+  min_path_size = 0,
+  purge_non_dendritic = TRUE,
+  warn = TRUE,
+  error = TRUE
+)
 }
 \arguments{
 \item{flines}{data.frame NHDPlus flowlines including:

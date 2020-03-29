@@ -4,10 +4,11 @@
 \alias{download_nhdplusv2}
 \title{Download seamless National Hydrography Dataset Version 2 (NHDPlusV2)}
 \usage{
-download_nhdplusv2(outdir,
+download_nhdplusv2(
+  outdir,
   url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
-  "Data/NationalData/NHDPlusV21_NationalData_Seamless",
-  "_Geodatabase_Lower48_07.7z"))
+    "Data/NationalData/NHDPlusV21_NationalData_Seamless", "_Geodatabase_Lower48_07.7z")
+)
 }
 \arguments{
 \item{outdir}{The folder path where data should be downloaded and extracted}

@@ -4,9 +4,11 @@
 \alias{download_wbd}
 \title{Download the seamless Watershed Boundary Dataset (WBD)}
 \usage{
-download_wbd(outdir,
+download_wbd(
+  outdir,
   url = paste0("https://prd-tnm.s3.amazonaws.com/StagedProducts/",
-  "Hydrography/WBD/National/GDB/National_WBD_GDB.zip"))
+    "Hydrography/WBD/National/GDB/National_WBD_GDB.zip")
+)
 }
 \arguments{
 \item{outdir}{The folder path where data should be downloaded and extracted}

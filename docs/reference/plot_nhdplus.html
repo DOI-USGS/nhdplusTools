@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.13</span>
       </span>
     </div>
 
@@ -146,9 +146,18 @@
     <p>Given a list of outlets, get their basin boundaries and network and return a plot.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_nhdplus</span>(<span class='kw'>outlets</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>streamorder</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gpkg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>plot_config</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>actually_plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>plot_nhdplus</span>(
+  <span class='kw'>outlets</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>streamorder</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>gpkg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>plot_config</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>actually_plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -229,7 +238,7 @@ The following shows the defaults that can be altered.</p><ol>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='fu'>plot_nhdplus</span>(<span class='st'>"05428500"</span>)</div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='fu'>plot_nhdplus</span>(<span class='st'>"05428500"</span>, <span class='kw'>streamorder</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='fu'>plot_nhdplus</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>13293970</span>, <span class='fl'>13293750</span>))</div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-3.png' alt='' width='700' height='433' /></div><div class='input'>
@@ -270,7 +279,8 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='co'># Can also plot on top of the previous!</span>
 <span class='fu'>plot_nhdplus</span>(<span class='kw'>bbox</span> <span class='kw'>=</span> <span class='no'>bbox</span>, <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>sample_data</span>,
              <span class='kw'>plot_config</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>flowline</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)))</div><div class='output co'>#&gt; <span class='message'>Zoom: 13</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='input'><span class='fu'>plot_nhdplus</span>(<span class='no'>comids</span>, <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>sample_data</span>, <span class='kw'>streamorder</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-             <span class='kw'>plot_config</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>flowline</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"darkblue"</span>)))</div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-11.png' alt='' width='700' height='433' /></div></pre>
+             <span class='kw'>plot_config</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>flowline</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"darkblue"</span>)))</div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-11.png' alt='' width='700' height='433' /></div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

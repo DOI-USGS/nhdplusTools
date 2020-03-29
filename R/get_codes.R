@@ -76,8 +76,11 @@ get_streamorder <- function(x) {
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 #' hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 #'
-#' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
-#'   left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
+#' fl <-  select(hr_flowline, COMID, AreaSqKM) %>%
+#'   right_join(prepare_nhdplus(hr_flowline, 0, 0,
+#'                              purge_non_dendritic = FALSE,
+#'                              warn = FALSE),
+#'              by = "COMID") %>%
 #'   sf::st_sf() %>%
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 #'
@@ -105,8 +108,10 @@ get_streamorder <- function(x) {
 #'
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #'
-#' fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
-#'   left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
+#' fl <- select(walker_flowline, COMID, AreaSqKM) %>%
+#'   right_join(prepare_nhdplus(walker_flowline, 0, 0,
+#'                             purge_non_dendritic = FALSE, warn = FALSE),
+#'             by = "COMID") %>%
 #'   sf::st_sf() %>%
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 #'

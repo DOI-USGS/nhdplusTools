@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.13</span>
       </span>
     </div>
 
@@ -157,7 +157,7 @@
 <a class="sourceLine" id="cb5-2" data-line-number="2">                              gages[[geom_col]], </a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">                              <span class="dt">search_radius =</span> <span class="fl">0.1</span>, </a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">                              <span class="dt">precision =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; Linking to GEOS 3.7.2, GDAL 2.4.1, PROJ 5.2.0</span></a></code></pre></div>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; Linking to GEOS 3.8.1, GDAL 3.0.4, PROJ 7.0.0</span></a></code></pre></div>
 <p>Now lets look at out comparison again.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(indexes<span class="op">$</span>COMID <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>FLComID)) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(gages)</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </a>
@@ -184,7 +184,7 @@
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(matched<span class="op">$</span>REACH_meas_diff, </a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">               <span class="dt">probs =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), <span class="dt">digits =</span> <span class="dv">2</span>)</a>
 <a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; -1.20 -0.67 -0.36  0.01  0.28  0.93  1.57</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; -1.31 -0.66 -0.33 -0.04  0.22  0.81  1.57</span></a></code></pre></div>
 </div>
   </div>
 

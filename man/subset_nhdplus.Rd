@@ -106,6 +106,10 @@ waterbody <- sf::read_sf(output_file, "NHDWaterbody")
 plot(waterbody[[attr(waterbody, "sf_column")]],
      col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 
+# Cleanup temp
+sapply(staged_nhdplus, unlink)
+unlink(output_file)
+
 # Download Option:
 subset_nhdplus(comids = comids,
                output_file = output_file,
@@ -129,6 +133,9 @@ names(sub_nhdhr)
 
 plot(sf::st_geometry(hr_data$NHDFlowline), lwd = 0.5)
 plot(sf::st_geometry(sub_nhdhr$NHDFlowline), lwd = 0.6, col = "red", add = TRUE)
+
+unlink(output_file)
+unlink(sub_gpkg)
 }
 
 }

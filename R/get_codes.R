@@ -242,13 +242,13 @@ cleanup_pfaf <- function(pfaf) {
 
   # replace NAs with known values.
   for(i in 3:ncol(pfaf)) {
-    pfaf[, i][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] <-
-      1 + (pfaf[, (i - 1)][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] * 10)
+    pfaf[, i][is.na(pfaf[, i, drop = TRUE]) & !is.na(pfaf[, (i - 1), drop = TRUE]), ] <-
+      1 + (pfaf[, (i - 1)][is.na(pfaf[, i, drop = TRUE]) & !is.na(pfaf[, (i - 1), drop = TRUE]), ] * 10)
   }
 
   for(i in (ncol(pfaf) - 1):2) {
-    pfaf[, i][is.na(pfaf[, i]), ] <-
-      floor(pfaf[, (i + 1)][is.na(pfaf[, i]), ] / 10)
+    pfaf[, i][is.na(pfaf[, i, drop = TRUE]), ] <-
+      floor(pfaf[, (i + 1)][is.na(pfaf[, i, drop = TRUE]), ] / 10)
   }
 
   return(pfaf)

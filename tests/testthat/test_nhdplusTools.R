@@ -60,6 +60,14 @@ test_that("prep_nhdplus_works and errors as expected", {
       warn = FALSE),
     paste("Missing some required attributes in call to:",
           "prepare_nhdplus. Expected: LENGTHKM."))
+
+  flines <- prepare_nhdplus(flines_in,
+                            min_network_size = 10,
+                            min_path_length = 1,
+                            warn = FALSE,
+                            skip_toCOMID = TRUE)
+
+  expect_true(!"toCOMID" %in% names(flines))
 })
 
 test_that("prep_nhdplus leaves non-dendritic", {

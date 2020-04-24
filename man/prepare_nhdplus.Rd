@@ -11,7 +11,8 @@ prepare_nhdplus(
   min_path_size = 0,
   purge_non_dendritic = TRUE,
   warn = TRUE,
-  error = TRUE
+  error = TRUE,
+  skip_toCOMID = FALSE
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ or not.}
 \item{warn}{boolean controls whether warning an status messages are printed}
 
 \item{error}{boolean controls whether to return potentially invalid data with a warning rather than an error}
+
+\item{skip_toCOMID}{boolean if TRUE, toCOMID will not be added to output.}
 }
 \value{
 data.frame ready to be used with the refactor_flowlines function.

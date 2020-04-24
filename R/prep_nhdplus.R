@@ -15,6 +15,7 @@
 #' or not.
 #' @param warn boolean controls whether warning an status messages are printed
 #' @param error boolean controls whether to return potentially invalid data with a warning rather than an error
+#' @param skip_toCOMID boolean if TRUE, toCOMID will not be added to output.
 #' @return data.frame ready to be used with the refactor_flowlines function.
 #' @importFrom dplyr select filter left_join group_split group_by bind_rows
 #' @family refactor functions
@@ -33,7 +34,8 @@ prepare_nhdplus <- function(flines,
                             min_path_size = 0,
                             purge_non_dendritic = TRUE,
                             warn = TRUE,
-                            error = TRUE) {
+                            error = TRUE,
+                            skip_toCOMID = FALSE) {
 
   flines <- check_names(flines, "prepare_nhdplus")
 
@@ -95,6 +97,10 @@ prepare_nhdplus <- function(flines,
                   min_network_size, "sqkm, and drainage basins smaller than",
                   min_path_size))
   }
+
+  if(skip_toCOMID) return(select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
+                                 -StreamOrde, -StreamCalc, -TerminalPa,
+                                 -FTYPE, -Pathlength, -Divergence))
 
   if(nrow(flines) > 0) {
     # Join ToNode and FromNode along with COMID and Length to

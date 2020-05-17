@@ -31,6 +31,7 @@ env:
    global:
      - _R_CHECK_FORCE_SUGGESTS_=false
      - R_CODECOV=true
+     - _R_CHECK_DONTTEST_EXAMPLES_=false
 
 r_github_packages:
   - jimhester/covr

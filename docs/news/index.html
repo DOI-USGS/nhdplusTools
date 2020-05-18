@@ -76,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.14</span>
       </span>
     </div>
 
@@ -140,32 +140,40 @@
       <small>Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="nhdplustools-0-3-13" class="section level1">
+    <div id="nhdplustools-0314" class="section level1">
 <h1 class="page-header">
-<a href="#nhdplustools-0-3-13" class="anchor"></a>nhdplusTools 0.3.13<small> Unreleased </small>
+<a href="#nhdplustools-0314" class="anchor"></a>nhdplusTools 0.3.14<small> Unreleased </small>
+</h1>
+<ul>
+<li>Added <code><a href="../reference/get_node.html">get_node()</a></code> to get top and bottom of a flowline.</li>
+</ul>
+</div>
+    <div id="nhdplustools-0313" class="section level1">
+<h1 class="page-header">
+<a href="#nhdplustools-0313" class="anchor"></a>nhdplusTools 0.3.13<small> 2020-04-01 </small>
 </h1>
 <ul>
 <li>tested with dplyr 1.0 and sf 0.9.</li>
 </ul>
 </div>
-    <div id="nhdplustools-0-3-12" class="section level1">
+    <div id="nhdplustools-0312" class="section level1">
 <h1 class="page-header">
-<a href="#nhdplustools-0-3-12" class="anchor"></a>nhdplusTools 0.3.12<small> 2020-01-11 </small>
+<a href="#nhdplustools-0312" class="anchor"></a>nhdplusTools 0.3.12<small> 2020-01-11 </small>
 </h1>
 <ul>
 <li>Added <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code> with both outlet-based and bbox based data subsetting as well as rudimentary style modification capabilities.</li>
 <li>Implemented stream order and Pfafstetter code generators (<code><a href="../reference/get_streamorder.html">get_streamorder()</a></code> and <code><a href="../reference/get_pfaf.html">get_pfaf()</a></code>) for dendritic networks.</li>
 <li>
 <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> can now return data without writing a file to disk.</li>
-<li>NLDI feature specification is more flexible, doesn’t require names anymore.</li>
+<li>NLDI feature specification is more flexible, doesnât require names anymore.</li>
 <li>
-<code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> has been updated to modify terminal path and other identifiers making nhdplusHR subsets “stand alone”. A function <code><a href="../reference/make_standalone.html">make_standalone()</a></code> is now exported.</li>
+<code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> has been updated to modify terminal path and other identifiers making nhdplusHR subsets âstand aloneâ. A function <code><a href="../reference/make_standalone.html">make_standalone()</a></code> is now exported.</li>
 <li>Added <code><a href="../reference/get_terminal.html">get_terminal()</a></code> and <code><a href="../reference/get_pathlength.html">get_pathlength()</a></code> functions to generate nhdplus network attributes.</li>
 </ul>
 </div>
-    <div id="nhdplustools-0-3-11" class="section level1">
+    <div id="nhdplustools-0311" class="section level1">
 <h1 class="page-header">
-<a href="#nhdplustools-0-3-11" class="anchor"></a>nhdplusTools 0.3.11<small> 2019-11-07 </small>
+<a href="#nhdplustools-0311" class="anchor"></a>nhdplusTools 0.3.11<small> 2019-11-07 </small>
 </h1>
 <ul>
 <li>Updated link to NHDPlusHR data</li>
@@ -173,27 +181,27 @@
 <li>Slides from AWRA National 2019, link in README</li>
 </ul>
 </div>
-    <div id="nhdplustools-0-3-10" class="section level1">
+    <div id="nhdplustools-0310" class="section level1">
 <h1 class="page-header">
-<a href="#nhdplustools-0-3-10" class="anchor"></a>nhdplusTools 0.3.10<small> 2019-10-17 </small>
+<a href="#nhdplustools-0310" class="anchor"></a>nhdplusTools 0.3.10<small> 2019-10-17 </small>
 </h1>
 <ul>
 <li>Added name alignment function</li>
 <li>Added ability to sort response of network navigation</li>
 </ul>
 </div>
-    <div id="nhdplustools-0-3-9" class="section level1">
+    <div id="nhdplustools-039" class="section level1">
 <h1 class="page-header">
-<a href="#nhdplustools-0-3-9" class="anchor"></a>nhdplusTools 0.3.9<small> 2019-10-16 </small>
+<a href="#nhdplustools-039" class="anchor"></a>nhdplusTools 0.3.9<small> 2019-10-16 </small>
 </h1>
 <ul>
 <li>Added downloader functions for more hydrography datasets</li>
 <li>Change navigations to exclude requested catchment</li>
 </ul>
 </div>
-    <div id="nhdplustools-0-3-8" class="section level1">
+    <div id="nhdplustools-038" class="section level1">
 <h1 class="page-header">
-<a href="#nhdplustools-0-3-8" class="anchor"></a>nhdplusTools 0.3.8<small> 2019-08-27 </small>
+<a href="#nhdplustools-038" class="anchor"></a>nhdplusTools 0.3.8<small> 2019-08-27 </small>
 </h1>
 <ul>
 <li>Modified vignettes and examples to avoid web-service calls breaking CRAN build.</li>
@@ -201,9 +209,9 @@
 <li>Added CITATION and NEWS.</li>
 </ul>
 </div>
-    <div id="nhdplustools-0-3-7" class="section level1">
+    <div id="nhdplustools-037" class="section level1">
 <h1 class="page-header">
-<a href="#nhdplustools-0-3-7" class="anchor"></a>nhdplusTools 0.3.7<small> 2019-08-25 </small>
+<a href="#nhdplustools-037" class="anchor"></a>nhdplusTools 0.3.7<small> 2019-08-25 </small>
 </h1>
 <ul>
 <li>First CRAN release!</li>
@@ -215,13 +223,14 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#nhdplustools-0-3-13">0.3.13</a></li>
-        <li><a href="#nhdplustools-0-3-12">0.3.12</a></li>
-        <li><a href="#nhdplustools-0-3-11">0.3.11</a></li>
-        <li><a href="#nhdplustools-0-3-10">0.3.10</a></li>
-        <li><a href="#nhdplustools-0-3-9">0.3.9</a></li>
-        <li><a href="#nhdplustools-0-3-8">0.3.8</a></li>
-        <li><a href="#nhdplustools-0-3-7">0.3.7</a></li>
+        <li><a href="#nhdplustools-0314">0.3.14</a></li>
+        <li><a href="#nhdplustools-0313">0.3.13</a></li>
+        <li><a href="#nhdplustools-0312">0.3.12</a></li>
+        <li><a href="#nhdplustools-0311">0.3.11</a></li>
+        <li><a href="#nhdplustools-0310">0.3.10</a></li>
+        <li><a href="#nhdplustools-039">0.3.9</a></li>
+        <li><a href="#nhdplustools-038">0.3.8</a></li>
+        <li><a href="#nhdplustools-037">0.3.7</a></li>
       </ul>
     </div>
   </div>

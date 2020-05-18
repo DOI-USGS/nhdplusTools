@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get Flowline Index — get_flowline_index • nhdplusTools</title>
+<title>Get flowline node — get_node • nhdplusTools</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,9 +42,9 @@
 
 
 
-<meta property="og:title" content="Get Flowline Index — get_flowline_index" />
-<meta property="og:description" content="given an sf point geometry column, return COMID, reachcode,
-and measure for each." />
+<meta property="og:title" content="Get flowline node — get_node" />
+<meta property="og:description" content="Given one or more flowlines, returns
+  a particular node from the flowline." />
 <meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -138,74 +138,50 @@ and measure for each." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get Flowline Index</h1>
-    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/index_nhdplus.R'><code>R/index_nhdplus.R</code></a></small>
-    <div class="hidden name"><code>get_flowline_index.Rd</code></div>
+    <h1>Get flowline node</h1>
+    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_geometry.R'><code>R/get_geometry.R</code></a></small>
+    <div class="hidden name"><code>get_node.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>given an sf point geometry column, return COMID, reachcode,
-and measure for each.</p>
+    <p>Given one or more flowlines, returns
+  a particular node from the flowline.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_flowline_index</span>(<span class='no'>flines</span>, <span class='no'>points</span>, <span class='kw'>search_radius</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>get_node</span>(<span class='no'>x</span>, <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"end"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>flines</th>
-      <td><p>sf data.frame of type LINESTRING or MULTILINESTRING including
-COMID, REACHCODE, ToMeas, and FromMeas</p></td>
+      <th>x</th>
+      <td><p>sf data.frame with one or more flowlines</p></td>
     </tr>
     <tr>
-      <th>points</th>
-      <td><p>sfc of type POINT</p></td>
-    </tr>
-    <tr>
-      <th>search_radius</th>
-      <td><p>numeric the distance for the nearest neighbor search
-to extend.
-See RANN nn2 documentation for more details.</p></td>
-    </tr>
-    <tr>
-      <th>precision</th>
-      <td><p>numeric the resolution of measure precision in the output.</p></td>
+      <th>position</th>
+      <td><p>character either "start" or "end"</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>data.frame with four columns, COMID, REACHCODE, REACH_meas, and offset.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Note 1: Inputs are cast into LINESTRINGS. Because of this,
-the measure output
-of inputs that are true multipart lines may be in error.</p>
-<p>Note 2: This algorithm finds the nearest node in the input flowlines to
-identify which flowline the point should belong to. As a second pass,
-it can calculate the measure to greater precision than the nearest flowline
-geometry node.</p>
-<p>Note 3: Offset is returned in units consistant with the projection of
-the flowlines.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,
-                                         <span class='st'>"petapsco_flowlines.gpkg"</span>,
-                                         <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
-<span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
-                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.87479</span>,
-                                             <span class='fl'>39.48233</span>)),
-                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt;      COMID      REACHCODE REACH_meas       offset
-#&gt; 1 11689978 02060003001472   51.50201 0.0003010502</div><div class='input'>
+    <pre class="examples"><div class='input'>
+<span class='no'>fline</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/sample_natseamless.gpkg"</span>,
+                             <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>),
+                 <span class='st'>"NHDFlowline_Network"</span>)
+<span class='no'>start</span> <span class='kw'>&lt;-</span> <span class='fu'>get_node</span>(<span class='no'>fline</span>, <span class='st'>"start"</span>)
+<span class='no'>end</span> <span class='kw'>&lt;-</span> <span class='fu'>get_node</span>(<span class='no'>fline</span>, <span class='st'>"end"</span>)
+
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_zm.html'>st_zm</a></span>(<span class='no'>fline</span>$<span class='no'>geom</span>),
+     <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='no'>fline</span>$<span class='no'>StreamOrde</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>start</span>), <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='get_node-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_zm.html'>st_zm</a></span>(<span class='no'>fline</span>$<span class='no'>geom</span>),
+     <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='no'>fline</span>$<span class='no'>StreamOrde</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>end</span>), <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='get_node-2.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

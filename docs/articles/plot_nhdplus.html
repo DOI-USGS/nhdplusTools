@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.14</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="plot_nhdplus_files/header-attrs-2.1.2/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Plotting with nhdplusTools</h1>
@@ -119,38 +119,38 @@
 <p><strong><code>plot_nhdplus</code> is a work in progress. Not all inputs in the function have been implemented as of 11/18/2019 and additional functionality will be added later. Please leave feature requests and issues you find in an <a href="https://github.com/USGS-R/nhdplusTools/pulls">issue here</a>.</strong></p>
 <p><code>plot_nhdplus</code> is a function that makes getting a simple plot of NHDPlus data as easy as possible. It works with other functions from <code>nhdplusTools</code> for identifying and retrieving watershed outlet locations. See the <code>plot_nhdplus</code> documentation for more info.</p>
 <p>If we pass <code>plot_nhdplus</code> a single NWIS site id, <code>nhdplusTools</code> uses web services to get data and we get a plot like this:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="st">"05428500"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="st">"05428500"</span>)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/nwis_simple1-1.png" width="576"></p>
 <p>If we want to add other watersheds, we can use any outlet available from the Network Linked Data Index. See “nldi” functions elsewhere in <code>nhdplusTools</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span>),</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span>),</span>
+<span id="cb2-2"><a href="#cb2-2"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span>)))</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/nwis_simple2-1.png" width="576"></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span>),</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span>),</span>
+<span id="cb3-2"><a href="#cb3-2"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span>)))</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/two_outlets-1.png" width="576"></p>
 <p>If we don’t know a site id, we can just pass in one or more latitude / longitude locations.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">start_point &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sf.html">st_as_sf</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x =</span> <span class="fl">-89.36</span>, <span class="dt">y =</span> <span class="fl">43.09</span>), </a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">                            <span class="dt">coords =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>, <span class="st">"y"</span>), <span class="dt">crs =</span> <span class="dv">4326</span>)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(start_point)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>start_point &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_as_sf.html">st_as_sf</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x =</span> <span class="fl">-89.36</span>, <span class="dt">y =</span> <span class="fl">43.09</span>), </span>
+<span id="cb4-2"><a href="#cb4-2"></a>                            <span class="dt">coords =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>, <span class="st">"y"</span>), <span class="dt">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(start_point)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/point_location-1.png" width="576"></p>
 <p><code>plot_nhdplus</code> also allows modification of streamorder (if you have data available locally) and styles. This plot request shows how to get a subset of data for a plot and the range of options. See documentation for more details.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">sample_data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/sample_natseamless.gpkg"</span>, <span class="dt">package =</span> <span class="st">"nhdplusTools"</span>)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"comid"</span>, <span class="st">"13293970"</span>),</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span>),</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"huc12pp"</span>, <span class="st">"070900020603"</span>),</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span>)),</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">             <span class="dt">streamorder =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">             <span class="dt">nhdplus_data =</span> sample_data,</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">             <span class="dt">plot_config =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">basin =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">lwd =</span> <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">                                <span class="dt">outlets =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">huc12pp =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">cex =</span> <span class="fl">1.5</span>),</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">                                               <span class="dt">comid =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">col =</span> <span class="st">"green"</span>))),</a>
-<a class="sourceLine" id="cb5-11" data-line-number="11">             <span class="dt">stoponlargerequest =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>sample_data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/sample_natseamless.gpkg"</span>, <span class="dt">package =</span> <span class="st">"nhdplusTools"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"comid"</span>, <span class="st">"13293970"</span>),</span>
+<span id="cb5-3"><a href="#cb5-3"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span>),</span>
+<span id="cb5-4"><a href="#cb5-4"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"huc12pp"</span>, <span class="st">"070900020603"</span>),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>                  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span>)),</span>
+<span id="cb5-6"><a href="#cb5-6"></a>             <span class="dt">streamorder =</span> <span class="dv">2</span>,</span>
+<span id="cb5-7"><a href="#cb5-7"></a>             <span class="dt">nhdplus_data =</span> sample_data,</span>
+<span id="cb5-8"><a href="#cb5-8"></a>             <span class="dt">plot_config =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">basin =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">lwd =</span> <span class="dv">2</span>),</span>
+<span id="cb5-9"><a href="#cb5-9"></a>                                <span class="dt">outlets =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">huc12pp =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">cex =</span> <span class="fl">1.5</span>),</span>
+<span id="cb5-10"><a href="#cb5-10"></a>                                               <span class="dt">comid =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">col =</span> <span class="st">"green"</span>))),</span>
+<span id="cb5-11"><a href="#cb5-11"></a>             <span class="dt">stoponlargerequest =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/plot_styles-1.png" width="576"></p>
 <p>We can also plot NHDPlus data without an outlet at all.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">bbox &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">st_bbox</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dt">xmin =</span> <span class="fl">-89.56684</span>, <span class="dt">ymin =</span> <span class="fl">42.99816</span>, <span class="dt">xmax =</span> <span class="fl">-89.24681</span>, <span class="dt">ymax =</span> <span class="fl">43.17192</span>),</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">                    <span class="dt">crs =</span> <span class="st">"+proj=longlat +datum=WGS84 +no_defs"</span>)</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="dt">bbox =</span> bbox)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>bbox &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">st_bbox</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dt">xmin =</span> <span class="fl">-89.56684</span>, <span class="dt">ymin =</span> <span class="fl">42.99816</span>, <span class="dt">xmax =</span> <span class="fl">-89.24681</span>, <span class="dt">ymax =</span> <span class="fl">43.17192</span>),</span>
+<span id="cb6-2"><a href="#cb6-2"></a>                    <span class="dt">crs =</span> <span class="st">"+proj=longlat +datum=WGS84 +no_defs"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="kw"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="dt">bbox =</span> bbox)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/bbox_plotting-1.png" width="576"></p>
 </div>
 <div id="getting-data" class="section level2">
@@ -158,73 +158,73 @@
 <a href="#getting-data" class="anchor"></a>Getting Data</h2>
 <p>What follows shows how to use <code>nhdplusTools</code> to create plots without the <code>plot_nhdplus</code> function. While super convenient, we all know the “easy button” is never quite right, the description below should help get you started.</p>
 <p>For this example, we’ll start from an outlet NWIS Site. Note that other options are possible with <code>discover_nhdplus_id</code> and <code>discover_nldi_sources</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sf)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt; Linking to GEOS 3.8.1, GDAL 3.0.4, PROJ 7.0.0</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nhdplusTools)</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">nwissite &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">featureSource =</span> <span class="st">"nwissite"</span>, </a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">                     <span class="dt">featureID =</span> <span class="st">"USGS-05428500"</span>)</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">flowline &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nwissite, </a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">                          <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>, </a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">                          <span class="dt">data_source =</span> <span class="st">""</span>)</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">nhdplus &lt;-<span class="st"> </span><span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline<span class="op">$</span>nhdplus_comid,</a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">                          <span class="dt">output_file =</span> <span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"nhdplus.gpkg"</span>),</a>
-<a class="sourceLine" id="cb7-13" data-line-number="13">                          <span class="dt">nhdplus_data =</span> <span class="st">"download"</span>,</a>
-<a class="sourceLine" id="cb7-14" data-line-number="14">                          <span class="dt">overwrite =</span> <span class="ot">TRUE</span>, <span class="dt">return_data =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="co">#&gt; All intersections performed in latitude/longitude.</span></a>
-<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt; Reading NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; Writing NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; Reading CatchmentSP</span></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; Writing CatchmentSP</span></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb7-21" data-line-number="21">flowline &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(nhdplus, <span class="st">"NHDFlowline_Network"</span>)</a>
-<a class="sourceLine" id="cb7-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb7-23" data-line-number="23">upstream_nwis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nwissite,</a>
-<a class="sourceLine" id="cb7-24" data-line-number="24">                               <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>,</a>
-<a class="sourceLine" id="cb7-25" data-line-number="25">                               <span class="dt">data_source =</span> <span class="st">"nwissite"</span>)</a>
-<a class="sourceLine" id="cb7-26" data-line-number="26"></a>
-<a class="sourceLine" id="cb7-27" data-line-number="27">basin &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_nldi_basin.html">get_nldi_basin</a></span>(nwissite)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sf)</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co">#&gt; Linking to GEOS 3.8.1, GDAL 3.0.4, PROJ 7.0.0</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nhdplusTools)</span>
+<span id="cb7-4"><a href="#cb7-4"></a>nwissite &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">featureSource =</span> <span class="st">"nwissite"</span>, </span>
+<span id="cb7-5"><a href="#cb7-5"></a>                     <span class="dt">featureID =</span> <span class="st">"USGS-05428500"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a>flowline &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nwissite, </span>
+<span id="cb7-8"><a href="#cb7-8"></a>                          <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>, </span>
+<span id="cb7-9"><a href="#cb7-9"></a>                          <span class="dt">data_source =</span> <span class="st">""</span>)</span>
+<span id="cb7-10"><a href="#cb7-10"></a></span>
+<span id="cb7-11"><a href="#cb7-11"></a>nhdplus &lt;-<span class="st"> </span><span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline<span class="op">$</span>nhdplus_comid,</span>
+<span id="cb7-12"><a href="#cb7-12"></a>                          <span class="dt">output_file =</span> <span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"nhdplus.gpkg"</span>),</span>
+<span id="cb7-13"><a href="#cb7-13"></a>                          <span class="dt">nhdplus_data =</span> <span class="st">"download"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14"></a>                          <span class="dt">overwrite =</span> <span class="ot">TRUE</span>, <span class="dt">return_data =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; Reading CatchmentSP</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co">#&gt; Writing CatchmentSP</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a></span>
+<span id="cb7-21"><a href="#cb7-21"></a>flowline &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(nhdplus, <span class="st">"NHDFlowline_Network"</span>)</span>
+<span id="cb7-22"><a href="#cb7-22"></a></span>
+<span id="cb7-23"><a href="#cb7-23"></a>upstream_nwis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nwissite,</span>
+<span id="cb7-24"><a href="#cb7-24"></a>                               <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>,</span>
+<span id="cb7-25"><a href="#cb7-25"></a>                               <span class="dt">data_source =</span> <span class="st">"nwissite"</span>)</span>
+<span id="cb7-26"><a href="#cb7-26"></a></span>
+<span id="cb7-27"><a href="#cb7-27"></a>basin &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_nldi_basin.html">get_nldi_basin</a></span>(nwissite)</span></code></pre></div>
 <p>Now we have a file at the path held in the variable <code>nhdplus</code> and three <code>sf</code> <code>data.frame</code>s with contents that look like:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(nhdplus)</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; Driver: GPKG </span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; Available layers:</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt;            layer_name        geometry_type features fields</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; 1 NHDFlowline_Network 3D Multi Line String      168     91</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; 2         CatchmentSP        Multi Polygon      167      8</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; 3             NHDArea        Multi Polygon        1     16</span></a>
-<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; 4        NHDWaterbody        Multi Polygon       90     23</span></a>
-<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(flowline)</a>
-<a class="sourceLine" id="cb8-10" data-line-number="10"><span class="co">#&gt;  [1] "id"           "ogc_fid"      "comid"        "fdate"        "resolution"  </span></a>
-<a class="sourceLine" id="cb8-11" data-line-number="11"><span class="co">#&gt;  [6] "gnis_id"      "gnis_name"    "lengthkm"     "reachcode"    "flowdir"     </span></a>
-<a class="sourceLine" id="cb8-12" data-line-number="12"><span class="co">#&gt; [11] "wbareacomi"   "ftype"        "fcode"        "streamleve"   "streamorde"  </span></a>
-<a class="sourceLine" id="cb8-13" data-line-number="13"><span class="co">#&gt; [16] "streamcalc"   "fromnode"     "tonode"       "hydroseq"     "levelpathi"  </span></a>
-<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="co">#&gt; [21] "pathlength"   "terminalpa"   "arbolatesu"   "divergence"   "startflag"   </span></a>
-<a class="sourceLine" id="cb8-15" data-line-number="15"><span class="co">#&gt; [26] "terminalfl"   "dnlevel"      "uplevelpat"   "uphydroseq"   "dnlevelpat"  </span></a>
-<a class="sourceLine" id="cb8-16" data-line-number="16"><span class="co">#&gt; [31] "dnminorhyd"   "dndraincou"   "dnhydroseq"   "frommeas"     "tomeas"      </span></a>
-<a class="sourceLine" id="cb8-17" data-line-number="17"><span class="co">#&gt; [36] "rtndiv"       "vpuin"        "vpuout"       "areasqkm"     "totdasqkm"   </span></a>
-<a class="sourceLine" id="cb8-18" data-line-number="18"><span class="co">#&gt; [41] "divdasqkm"    "hwnodesqkm"   "maxelevraw"   "minelevraw"   "maxelevsmo"  </span></a>
-<a class="sourceLine" id="cb8-19" data-line-number="19"><span class="co">#&gt; [46] "minelevsmo"   "slope"        "elevfixed"    "hwtype"       "slopelenkm"  </span></a>
-<a class="sourceLine" id="cb8-20" data-line-number="20"><span class="co">#&gt; [51] "q0001a"       "v0001a"       "qincr0001a"   "q0001b"       "v0001b"      </span></a>
-<a class="sourceLine" id="cb8-21" data-line-number="21"><span class="co">#&gt; [56] "qincr0001b"   "q0001c"       "v0001c"       "qincr0001c"   "q0001d"      </span></a>
-<a class="sourceLine" id="cb8-22" data-line-number="22"><span class="co">#&gt; [61] "v0001d"       "qincr0001d"   "q0001e"       "v0001e"       "qincr0001e"  </span></a>
-<a class="sourceLine" id="cb8-23" data-line-number="23"><span class="co">#&gt; [66] "q0001f"       "qincr0001f"   "arq0001nav"   "temp0001"     "ppt0001"     </span></a>
-<a class="sourceLine" id="cb8-24" data-line-number="24"><span class="co">#&gt; [71] "pet0001"      "qloss0001"    "qg0001adj"    "qg0001nav"    "lat"         </span></a>
-<a class="sourceLine" id="cb8-25" data-line-number="25"><span class="co">#&gt; [76] "gageadj"      "avgqadj"      "smgageid"     "smgageq"      "etfract1"    </span></a>
-<a class="sourceLine" id="cb8-26" data-line-number="26"><span class="co">#&gt; [81] "etfract2"     "a"            "b"            "bcf"          "r2"          </span></a>
-<a class="sourceLine" id="cb8-27" data-line-number="27"><span class="co">#&gt; [86] "ser"          "nref"         "gageseqp"     "gageseq"      "shape_length"</span></a>
-<a class="sourceLine" id="cb8-28" data-line-number="28"><span class="co">#&gt; [91] "rpuid"        "geom"</span></a>
-<a class="sourceLine" id="cb8-29" data-line-number="29"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(upstream_nwis)</a>
-<a class="sourceLine" id="cb8-30" data-line-number="30"><span class="co">#&gt; [1] "source"     "sourceName" "identifier" "name"       "uri"       </span></a>
-<a class="sourceLine" id="cb8-31" data-line-number="31"><span class="co">#&gt; [6] "comid"      "navigation" "geometry"</span></a>
-<a class="sourceLine" id="cb8-32" data-line-number="32"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(basin)</a>
-<a class="sourceLine" id="cb8-33" data-line-number="33"><span class="co">#&gt; [1] "geometry"</span></a>
-<a class="sourceLine" id="cb8-34" data-line-number="34"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</a>
-<a class="sourceLine" id="cb8-35" data-line-number="35"><span class="co">#&gt; [1] "sfc_MULTILINESTRING" "sfc"</span></a>
-<a class="sourceLine" id="cb8-36" data-line-number="36"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(upstream_nwis))</a>
-<a class="sourceLine" id="cb8-37" data-line-number="37"><span class="co">#&gt; [1] "sfc_POINT" "sfc"</span></a>
-<a class="sourceLine" id="cb8-38" data-line-number="38"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(basin))</a>
-<a class="sourceLine" id="cb8-39" data-line-number="39"><span class="co">#&gt; [1] "sfc_POLYGON" "sfc"</span></a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(nhdplus)</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="co">#&gt; Driver: GPKG </span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt; Available layers:</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt;            layer_name        geometry_type features fields</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; 1 NHDFlowline_Network 3D Multi Line String      168     91</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; 2         CatchmentSP        Multi Polygon      167      8</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt; 3             NHDArea        Multi Polygon        1     16</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; 4        NHDWaterbody        Multi Polygon       90     23</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(flowline)</span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt;  [1] "id"           "ogc_fid"      "comid"        "fdate"        "resolution"  </span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt;  [6] "gnis_id"      "gnis_name"    "lengthkm"     "reachcode"    "flowdir"     </span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; [11] "wbareacomi"   "ftype"        "fcode"        "streamleve"   "streamorde"  </span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; [16] "streamcalc"   "fromnode"     "tonode"       "hydroseq"     "levelpathi"  </span></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#&gt; [21] "pathlength"   "terminalpa"   "arbolatesu"   "divergence"   "startflag"   </span></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; [26] "terminalfl"   "dnlevel"      "uplevelpat"   "uphydroseq"   "dnlevelpat"  </span></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt; [31] "dnminorhyd"   "dndraincou"   "dnhydroseq"   "frommeas"     "tomeas"      </span></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt; [36] "rtndiv"       "vpuin"        "vpuout"       "areasqkm"     "totdasqkm"   </span></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; [41] "divdasqkm"    "hwnodesqkm"   "maxelevraw"   "minelevraw"   "maxelevsmo"  </span></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="co">#&gt; [46] "minelevsmo"   "slope"        "elevfixed"    "hwtype"       "slopelenkm"  </span></span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="co">#&gt; [51] "q0001a"       "v0001a"       "qincr0001a"   "q0001b"       "v0001b"      </span></span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="co">#&gt; [56] "qincr0001b"   "q0001c"       "v0001c"       "qincr0001c"   "q0001d"      </span></span>
+<span id="cb8-22"><a href="#cb8-22"></a><span class="co">#&gt; [61] "v0001d"       "qincr0001d"   "q0001e"       "v0001e"       "qincr0001e"  </span></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="co">#&gt; [66] "q0001f"       "qincr0001f"   "arq0001nav"   "temp0001"     "ppt0001"     </span></span>
+<span id="cb8-24"><a href="#cb8-24"></a><span class="co">#&gt; [71] "pet0001"      "qloss0001"    "qg0001adj"    "qg0001nav"    "lat"         </span></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="co">#&gt; [76] "gageadj"      "avgqadj"      "smgageid"     "smgageq"      "etfract1"    </span></span>
+<span id="cb8-26"><a href="#cb8-26"></a><span class="co">#&gt; [81] "etfract2"     "a"            "b"            "bcf"          "r2"          </span></span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="co">#&gt; [86] "ser"          "nref"         "gageseqp"     "gageseq"      "shape_length"</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="co">#&gt; [91] "rpuid"        "geom"</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(upstream_nwis)</span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="co">#&gt; [1] "source"     "sourceName" "identifier" "name"       "uri"       </span></span>
+<span id="cb8-31"><a href="#cb8-31"></a><span class="co">#&gt; [6] "comid"      "navigation" "geometry"</span></span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(basin)</span>
+<span id="cb8-33"><a href="#cb8-33"></a><span class="co">#&gt; [1] "geometry"</span></span>
+<span id="cb8-34"><a href="#cb8-34"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</span>
+<span id="cb8-35"><a href="#cb8-35"></a><span class="co">#&gt; [1] "sfc_MULTILINESTRING" "sfc"</span></span>
+<span id="cb8-36"><a href="#cb8-36"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(upstream_nwis))</span>
+<span id="cb8-37"><a href="#cb8-37"></a><span class="co">#&gt; [1] "sfc_POINT" "sfc"</span></span>
+<span id="cb8-38"><a href="#cb8-38"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(basin))</span>
+<span id="cb8-39"><a href="#cb8-39"></a><span class="co">#&gt; [1] "sfc_POLYGON" "sfc"</span></span></code></pre></div>
 <p>Our file has four layers: network flowlines, simplified catchments, nhd area features, and nhd waterbody features.</p>
 <p>The flowlines have a large set of attributes from the NHDPlus dataset. And the nwis sites have a few attributes that came from the NLDI. Attributes for NWIS sites can be found using the <a href="https://owi.usgs.gov/R/dataRetrieval.html">dataRetrieval package.</a></p>
 <p>See the NHDPlus user guide <a href="https://www.epa.gov/waterdata/learn-more#Documentation">linked here</a> for more on what these layers are and what the flowline attributes entail.</p>
@@ -234,106 +234,108 @@
 <h1 class="hasAnchor">
 <a href="#bounding-boxes" class="anchor"></a>Bounding Boxes</h1>
 <p>First, a side note on bounding boxes. With the ongoing transition from the <code>sp</code> package to the <code>sf</code> package, there are a few stumbling blocks. Bounding boxes are one of them. As shown below, the <code>sf</code> bbox format is a named vector of class “bbox”. The <code>sp</code> bbox format is a matrix with named dimensions. Many packages expect the sp format. the <code>ggmap</code> package expects yet another bbox format, much like <code>sf</code> but with different names.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sp)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">sf_bbox &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">st_bbox</a></span>(basin)</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">sf_bbox</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt;      xmin      ymin      xmax      ymax </span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt; -89.60465  43.03507 -89.20378  43.36607</span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(sf_bbox)</a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt; [1] "bbox"</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10">sp_bbox &lt;-<span class="st"> </span>sp<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sp/man/bbox.html">bbox</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/coerce-methods.html">as_Spatial</a></span>(basin))</a>
-<a class="sourceLine" id="cb9-11" data-line-number="11">sp_bbox</a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt;         min       max</span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt; x -89.60465 -89.20378</span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt; y  43.03507  43.36607</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(sp_bbox)</a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt; [1] "matrix"</span></a>
-<a class="sourceLine" id="cb9-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co"># Or without the sp::bbox</span></a>
-<a class="sourceLine" id="cb9-19" data-line-number="19">sp_bbox &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(sf_bbox, </a>
-<a class="sourceLine" id="cb9-20" data-line-number="20">                  <span class="dt">byrow =</span> <span class="ot">FALSE</span>, </a>
-<a class="sourceLine" id="cb9-21" data-line-number="21">                  <span class="dt">ncol =</span> <span class="dv">2</span>, </a>
-<a class="sourceLine" id="cb9-22" data-line-number="22">                  <span class="dt">dimnames =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>, <span class="st">"y"</span>), </a>
-<a class="sourceLine" id="cb9-23" data-line-number="23">                                  <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"min"</span>, <span class="st">"max"</span>)))</a>
-<a class="sourceLine" id="cb9-24" data-line-number="24">sp_bbox</a>
-<a class="sourceLine" id="cb9-25" data-line-number="25"><span class="co">#&gt;         min       max</span></a>
-<a class="sourceLine" id="cb9-26" data-line-number="26"><span class="co">#&gt; x -89.60465 -89.20378</span></a>
-<a class="sourceLine" id="cb9-27" data-line-number="27"><span class="co">#&gt; y  43.03507  43.36607</span></a>
-<a class="sourceLine" id="cb9-28" data-line-number="28"></a>
-<a class="sourceLine" id="cb9-29" data-line-number="29">ggmap_bbox &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span>(sf_bbox, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>, <span class="st">"right"</span>, <span class="st">"top"</span>))</a>
-<a class="sourceLine" id="cb9-30" data-line-number="30">ggmap_bbox</a>
-<a class="sourceLine" id="cb9-31" data-line-number="31"><span class="co">#&gt;      left    bottom     right       top </span></a>
-<a class="sourceLine" id="cb9-32" data-line-number="32"><span class="co">#&gt; -89.60465  43.03507 -89.20378  43.36607</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sp)</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a>sf_bbox &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">st_bbox</a></span>(basin)</span>
+<span id="cb9-4"><a href="#cb9-4"></a>sf_bbox</span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt;      xmin      ymin      xmax      ymax </span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="co">#&gt; -89.60465  43.03507 -89.20378  43.36607</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(sf_bbox)</span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt; [1] "bbox"</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a></span>
+<span id="cb9-10"><a href="#cb9-10"></a>sp_bbox &lt;-<span class="st"> </span>sp<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sp/man/bbox.html">bbox</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/coerce-methods.html">as_Spatial</a></span>(basin))</span>
+<span id="cb9-11"><a href="#cb9-11"></a>sp_bbox</span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt;         min       max</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; x -89.60465 -89.20378</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt; y  43.03507  43.36607</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(sp_bbox)</span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; [1] "matrix"</span></span>
+<span id="cb9-17"><a href="#cb9-17"></a></span>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="co"># Or without the sp::bbox</span></span>
+<span id="cb9-19"><a href="#cb9-19"></a>sp_bbox &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(sf_bbox, </span>
+<span id="cb9-20"><a href="#cb9-20"></a>                  <span class="dt">byrow =</span> <span class="ot">FALSE</span>, </span>
+<span id="cb9-21"><a href="#cb9-21"></a>                  <span class="dt">ncol =</span> <span class="dv">2</span>, </span>
+<span id="cb9-22"><a href="#cb9-22"></a>                  <span class="dt">dimnames =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>, <span class="st">"y"</span>), </span>
+<span id="cb9-23"><a href="#cb9-23"></a>                                  <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"min"</span>, <span class="st">"max"</span>)))</span>
+<span id="cb9-24"><a href="#cb9-24"></a>sp_bbox</span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="co">#&gt;         min       max</span></span>
+<span id="cb9-26"><a href="#cb9-26"></a><span class="co">#&gt; x -89.60465 -89.20378</span></span>
+<span id="cb9-27"><a href="#cb9-27"></a><span class="co">#&gt; y  43.03507  43.36607</span></span>
+<span id="cb9-28"><a href="#cb9-28"></a></span>
+<span id="cb9-29"><a href="#cb9-29"></a>ggmap_bbox &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span>(sf_bbox, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>, <span class="st">"right"</span>, <span class="st">"top"</span>))</span>
+<span id="cb9-30"><a href="#cb9-30"></a>ggmap_bbox</span>
+<span id="cb9-31"><a href="#cb9-31"></a><span class="co">#&gt;      left    bottom     right       top </span></span>
+<span id="cb9-32"><a href="#cb9-32"></a><span class="co">#&gt; -89.60465  43.03507 -89.20378  43.36607</span></span></code></pre></div>
 <div id="base-r-plotting" class="section level2">
 <h2 class="hasAnchor">
 <a href="#base-r-plotting" class="anchor"></a>Base R Plotting</h2>
 <p>In order to maximize flexibility and make sure we understand what’s going on with coordinate reference systems, the demonstration below shows how to use base R plotting with the package <code>prettymappr</code> and <code>rosm</code>.</p>
 <p>In this example, we have to plot just the geometry, extracted with <code>st_geometry</code> and we need to project the geometry into the plotting coordinate reference system, <a href="https://en.wikipedia.org/wiki/Web_Mercator">EPSG:3857 also known as “web mercator”</a>. The reason we have to make this transformation is that practically all basemap tiles are in this projection and reprojection of pre-rendered tiles doesn’t look good. We do this with a simple <code>prep_layer</code> function.</p>
 <p>The <code><a href="https://rdrr.io/pkg/prettymapr/man/prettymap.html">prettymapr::prettymap()</a></code> function isn’t strictly necessary, but it gives us nice margins, a scale bar, and a north arrow. The <code><a href="https://rdrr.io/pkg/rosm/man/osm.plot.html">rosm::osm.plot</a></code> and base <code>plot</code> commands put data onto the R plotting device so the first to be plotted is on the bottom. A couple hints here. <code>lwd</code> is line width. <code>pch</code> is point style. <code>cex</code> is an expansion factor. Colors shown below are <a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf">basic R colors.</a> the <code>rgb</code> function is handy for creating colors with transparency if that’s of interest.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">prep_layer &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(x, <span class="dv">3857</span>))</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3">prettymapr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/prettymapr/man/prettymap.html">prettymap</a></span>({</a>
-<a class="sourceLine" id="cb10-4" data-line-number="4">  rosm<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/rosm/man/osm.plot.html">osm.plot</a></span>(sp_bbox, <span class="dt">type =</span> <span class="st">"cartolight"</span>, <span class="dt">quiet =</span> <span class="ot">TRUE</span>, <span class="dt">progress =</span> <span class="st">"none"</span>)</a>
-<a class="sourceLine" id="cb10-5" data-line-number="5">  </a>
-<a class="sourceLine" id="cb10-6" data-line-number="6">  <span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw">prep_layer</span>(basin), </a>
-<a class="sourceLine" id="cb10-7" data-line-number="7">       <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb10-8" data-line-number="8">  </a>
-<a class="sourceLine" id="cb10-9" data-line-number="9">  <span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw">prep_layer</span>(flowline), </a>
-<a class="sourceLine" id="cb10-10" data-line-number="10">       <span class="dt">lwd =</span> <span class="fl">1.5</span>, <span class="dt">col =</span> <span class="st">"deepskyblue"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb10-11" data-line-number="11">  </a>
-<a class="sourceLine" id="cb10-12" data-line-number="12">  <span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw">prep_layer</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline, streamorde <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>)), </a>
-<a class="sourceLine" id="cb10-13" data-line-number="13">       <span class="dt">lwd =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="st">"darkblue"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb10-14" data-line-number="14">  </a>
-<a class="sourceLine" id="cb10-15" data-line-number="15">  us_nwis_layer &lt;-<span class="st"> </span><span class="kw">prep_layer</span>(upstream_nwis)</a>
-<a class="sourceLine" id="cb10-16" data-line-number="16">  </a>
-<a class="sourceLine" id="cb10-17" data-line-number="17">  <span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(us_nwis_layer, </a>
-<a class="sourceLine" id="cb10-18" data-line-number="18">       <span class="dt">pch =</span> <span class="dv">17</span>, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">col =</span> <span class="st">"yellow"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb10-19" data-line-number="19">  </a>
-<a class="sourceLine" id="cb10-20" data-line-number="20">  label_pos &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_coordinates.html">st_coordinates</a></span>(us_nwis_layer)</a>
-<a class="sourceLine" id="cb10-21" data-line-number="21">  </a>
-<a class="sourceLine" id="cb10-22" data-line-number="22">  <span class="kw"><a href="https://rdrr.io/pkg/sp/man/gridlines.html">text</a></span>(label_pos[,<span class="dv">1</span>],label_pos[,<span class="dv">2</span>], </a>
-<a class="sourceLine" id="cb10-23" data-line-number="23">       upstream_nwis<span class="op">$</span>identifier, </a>
-<a class="sourceLine" id="cb10-24" data-line-number="24">       <span class="dt">adj =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.5</span>), <span class="dt">cex =</span> <span class="fl">0.7</span>)</a>
-<a class="sourceLine" id="cb10-25" data-line-number="25">  </a>
-<a class="sourceLine" id="cb10-26" data-line-number="26">}, <span class="dt">drawarrow =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb10-27" data-line-number="27"><span class="co">#&gt; Zoom: 10</span></a>
-<a class="sourceLine" id="cb10-28" data-line-number="28"><span class="co">#&gt; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></a>
-<a class="sourceLine" id="cb10-29" data-line-number="29"><span class="co">#&gt; Audotdetect projection: assuming Google Mercator (epsg 3857)</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>prep_layer &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(x, <span class="dv">3857</span>))</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a>prettymapr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/prettymapr/man/prettymap.html">prettymap</a></span>({</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  rosm<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/rosm/man/osm.plot.html">osm.plot</a></span>(sp_bbox, <span class="dt">type =</span> <span class="st">"cartolight"</span>, <span class="dt">quiet =</span> <span class="ot">TRUE</span>, <span class="dt">progress =</span> <span class="st">"none"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5"></a>  </span>
+<span id="cb10-6"><a href="#cb10-6"></a>  <span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw">prep_layer</span>(basin), </span>
+<span id="cb10-7"><a href="#cb10-7"></a>       <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb10-8"><a href="#cb10-8"></a>  </span>
+<span id="cb10-9"><a href="#cb10-9"></a>  <span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw">prep_layer</span>(flowline), </span>
+<span id="cb10-10"><a href="#cb10-10"></a>       <span class="dt">lwd =</span> <span class="fl">1.5</span>, <span class="dt">col =</span> <span class="st">"deepskyblue"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb10-11"><a href="#cb10-11"></a>  </span>
+<span id="cb10-12"><a href="#cb10-12"></a>  <span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw">prep_layer</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline, streamorde <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>)), </span>
+<span id="cb10-13"><a href="#cb10-13"></a>       <span class="dt">lwd =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="st">"darkblue"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb10-14"><a href="#cb10-14"></a>  </span>
+<span id="cb10-15"><a href="#cb10-15"></a>  us_nwis_layer &lt;-<span class="st"> </span><span class="kw">prep_layer</span>(upstream_nwis)</span>
+<span id="cb10-16"><a href="#cb10-16"></a>  </span>
+<span id="cb10-17"><a href="#cb10-17"></a>  <span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(us_nwis_layer, </span>
+<span id="cb10-18"><a href="#cb10-18"></a>       <span class="dt">pch =</span> <span class="dv">17</span>, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">col =</span> <span class="st">"yellow"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb10-19"><a href="#cb10-19"></a>  </span>
+<span id="cb10-20"><a href="#cb10-20"></a>  label_pos &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_coordinates.html">st_coordinates</a></span>(us_nwis_layer)</span>
+<span id="cb10-21"><a href="#cb10-21"></a>  </span>
+<span id="cb10-22"><a href="#cb10-22"></a>  <span class="kw"><a href="https://rdrr.io/pkg/sp/man/gridlines.html">text</a></span>(label_pos[,<span class="dv">1</span>],label_pos[,<span class="dv">2</span>], </span>
+<span id="cb10-23"><a href="#cb10-23"></a>       upstream_nwis<span class="op">$</span>identifier, </span>
+<span id="cb10-24"><a href="#cb10-24"></a>       <span class="dt">adj =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.5</span>), <span class="dt">cex =</span> <span class="fl">0.7</span>)</span>
+<span id="cb10-25"><a href="#cb10-25"></a>  </span>
+<span id="cb10-26"><a href="#cb10-26"></a>}, <span class="dt">drawarrow =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb10-27"><a href="#cb10-27"></a><span class="co">#&gt; Zoom: 10</span></span>
+<span id="cb10-28"><a href="#cb10-28"></a><span class="co">#&gt; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></span>
+<span id="cb10-29"><a href="#cb10-29"></a><span class="co">#&gt; Audotdetect projection: assuming Google Mercator (epsg 3857)</span></span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/plot-1.png" width="576"></p>
 </div>
 <div id="plotting-with-ggplot2" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-with-ggplot2" class="anchor"></a>Plotting with ggplot2</h2>
 <p>Below is a very similar example using <a href="https://github.com/dkahle/ggmap"><code>ggmap</code></a> and <a href="https://ggplot2.tidyverse.org/reference/ggsf.html"><code>ggplot2</code> <code>geom_sf</code></a>. Note that ggmap takes case of projections for us, which should either make you happy because it <em>just works</em> or very nervous because it <em>just works</em>.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggmap)</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4">upstream_nwis[<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"lon"</span>, <span class="st">"lat"</span>)] &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_coordinates.html">st_coordinates</a></span>(upstream_nwis)</a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb11-6" data-line-number="6">basemap_toner &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggmap/man/get_map.html">get_map</a></span>(<span class="dt">source =</span> <span class="st">"stamen"</span>, <span class="dt">maptype =</span> <span class="st">"toner"</span>, </a>
-<a class="sourceLine" id="cb11-7" data-line-number="7">                         <span class="dt">location =</span> ggmap_bbox, <span class="dt">zoom =</span> <span class="dv">11</span>, <span class="dt">messaging =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb11-8" data-line-number="8">basemap_terrain &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggmap/man/get_map.html">get_map</a></span>(<span class="dt">source =</span> <span class="st">"stamen"</span>, <span class="dt">maptype =</span> <span class="st">"terrain-lines"</span>, </a>
-<a class="sourceLine" id="cb11-9" data-line-number="9">                           <span class="dt">location =</span> ggmap_bbox, <span class="dt">zoom =</span> <span class="dv">11</span>, <span class="dt">messaging =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb11-10" data-line-number="10">toner_map &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span>(basemap_toner)</a>
-<a class="sourceLine" id="cb11-11" data-line-number="11">terrain_map &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span>(basemap_terrain)</a>
-<a class="sourceLine" id="cb11-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb11-13" data-line-number="13">toner_map</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggmap)</span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</span>
+<span id="cb11-3"><a href="#cb11-3"></a></span>
+<span id="cb11-4"><a href="#cb11-4"></a>upstream_nwis &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span>(upstream_nwis,</span>
+<span id="cb11-5"><a href="#cb11-5"></a>                           dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_coordinates.html">st_coordinates</a></span>(upstream_nwis)), </span>
+<span id="cb11-6"><a href="#cb11-6"></a>                                         <span class="dt">lat =</span> Y, <span class="dt">lon =</span> X))</span>
+<span id="cb11-7"><a href="#cb11-7"></a></span>
+<span id="cb11-8"><a href="#cb11-8"></a>basemap_toner &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggmap/man/get_map.html">get_map</a></span>(<span class="dt">source =</span> <span class="st">"stamen"</span>, <span class="dt">maptype =</span> <span class="st">"toner"</span>, </span>
+<span id="cb11-9"><a href="#cb11-9"></a>                         <span class="dt">location =</span> ggmap_bbox, <span class="dt">zoom =</span> <span class="dv">11</span>, <span class="dt">messaging =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb11-10"><a href="#cb11-10"></a>basemap_terrain &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggmap/man/get_map.html">get_map</a></span>(<span class="dt">source =</span> <span class="st">"stamen"</span>, <span class="dt">maptype =</span> <span class="st">"terrain-lines"</span>, </span>
+<span id="cb11-11"><a href="#cb11-11"></a>                           <span class="dt">location =</span> ggmap_bbox, <span class="dt">zoom =</span> <span class="dv">11</span>, <span class="dt">messaging =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb11-12"><a href="#cb11-12"></a>toner_map &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span>(basemap_toner)</span>
+<span id="cb11-13"><a href="#cb11-13"></a>terrain_map &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span>(basemap_terrain)</span>
+<span id="cb11-14"><a href="#cb11-14"></a></span>
+<span id="cb11-15"><a href="#cb11-15"></a>toner_map</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/ggmap-1.png" width="576"></p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">terrain_map <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> basin,</a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">                        <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">                        <span class="dt">color =</span> <span class="st">"black"</span>, <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> flowline,</a>
-<a class="sourceLine" id="cb12-6" data-line-number="6">          <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb12-7" data-line-number="7">          <span class="dt">color =</span> <span class="st">"deepskyblue"</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline, streamorde <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb12-9" data-line-number="9">          <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb12-10" data-line-number="10">          <span class="dt">color =</span> <span class="st">"darkblue"</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> upstream_nwis, <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>, <span class="dt">color =</span> <span class="st">"red"</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="dt">data =</span> upstream_nwis, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">label =</span> identifier, <span class="dt">x =</span> lon, <span class="dt">y =</span> lat),</a>
-<a class="sourceLine" id="cb12-13" data-line-number="13">            <span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">size=</span><span class="fl">2.5</span>, <span class="dt">nudge_x =</span> <span class="fl">0.02</span>, <span class="dt">col =</span> <span class="st">"black"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a></span>
+<span id="cb12-2"><a href="#cb12-2"></a>terrain_map <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> basin,</span>
+<span id="cb12-3"><a href="#cb12-3"></a>                        <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb12-4"><a href="#cb12-4"></a>                        <span class="dt">color =</span> <span class="st">"black"</span>, <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> flowline,</span>
+<span id="cb12-6"><a href="#cb12-6"></a>          <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb12-7"><a href="#cb12-7"></a>          <span class="dt">color =</span> <span class="st">"deepskyblue"</span>) <span class="op">+</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline, streamorde <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>),</span>
+<span id="cb12-9"><a href="#cb12-9"></a>          <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb12-10"><a href="#cb12-10"></a>          <span class="dt">color =</span> <span class="st">"darkblue"</span>) <span class="op">+</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span>(<span class="dt">data =</span> upstream_nwis, <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>, <span class="dt">color =</span> <span class="st">"red"</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(<span class="dt">data =</span> upstream_nwis, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">label =</span> identifier, <span class="dt">x =</span> lon, <span class="dt">y =</span> lat),</span>
+<span id="cb12-13"><a href="#cb12-13"></a>            <span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">size=</span><span class="fl">2.5</span>, <span class="dt">nudge_x =</span> <span class="fl">0.02</span>, <span class="dt">col =</span> <span class="st">"black"</span>)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/ggmap-2.png" width="576"></p>
 <p>Hopefully these examples give a good head start to plotting NHDPlus data. Please submit questions via github issues for more!! Pull requests on this vignette are more than welcome if you have additions or suggestions.</p>
 </div>
@@ -347,13 +349,15 @@
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li>
-<a href="#plotting-with-nhdplustools">Plotting with nhdplusTools</a><ul class="nav nav-pills nav-stacked">
+<a href="#plotting-with-nhdplustools">Plotting with nhdplusTools</a>
+      <ul class="nav nav-pills nav-stacked">
 <li><a href="#the-plot_nhdplus-function">The <code>plot_nhdplus</code> function</a></li>
       <li><a href="#getting-data">Getting Data</a></li>
       </ul>
 </li>
       <li>
-<a href="#bounding-boxes">Bounding Boxes</a><ul class="nav nav-pills nav-stacked">
+<a href="#bounding-boxes">Bounding Boxes</a>
+      <ul class="nav nav-pills nav-stacked">
 <li><a href="#base-r-plotting">Base R Plotting</a></li>
       <li><a href="#plotting-with-ggplot2">Plotting with ggplot2</a></li>
       </ul>

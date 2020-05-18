@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.14</span>
       </span>
     </div>
 
@@ -97,9 +97,9 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="nhdplustools" class="section level1">
+<div id="nhdplustools-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#nhdplustools" class="anchor"></a>nhdplusTools <img src="reference/figures/logo.png" align="right" alt="" width="120">
+<a href="#nhdplustools-" class="anchor"></a>nhdplusTools <img src="reference/figures/logo.png" align="right" alt="" width="120">
 </h1></div>
 
 <div id="nhdplustools-tools-for-accessing-and-working-with-the-nhdplus" class="section level2">
@@ -117,15 +117,15 @@ devtools::install_github("USGS-R/nhdplusTools")</a></code></pre>
 <div id="resources" class="section level3">
 <h3 class="hasAnchor">
 <a href="#resources" class="anchor"></a>Resources</h3>
-<p>See the <a href="https://usgs-r.github.io/nhdplusTools/articles/nhdplusTools.html">“Get Started”</a> vignette showing the gneral workflow and functionality of nhdplusTools.<br>
+<p>See the <a href="https://usgs-r.github.io/nhdplusTools/articles/nhdplusTools.html">âGet Startedâ</a> vignette showing the gneral workflow and functionality of nhdplusTools.<br>
 See a set of <a href="https://usgs-r.github.io/nhdplusTools/awra_2019/">slides</a> illustrating how to use nhdplusTools with other USGS-R packages.</p>
 </div>
 <div id="terminology" class="section level3">
 <h3 class="hasAnchor">
 <a href="#terminology" class="anchor"></a>Terminology:</h3>
 <p>The following definitions have been used as much as possible throughout the package.<br>
-Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic representation of a flowing body of water. Flowline is generally used when referring to geometry.<br><strong>Flowpath:</strong> The HY_Features name for a hydrologic feature that is the primary path water follows through a catchment; either from headwater to outlet or inlet to outlet. Flowpath is used when describing aspects of the abstract flowpath featuretype, generally in relation to a flowpath’s relationship to a catchment.</p>
-<p>Terms used for hydrologic units:<br><strong>Catchment:</strong> The most abstract unit of hydrology in HY_Features is the catchment. It is a physiographic unit with zero or one inlets and one outlet. It does not inherently have any conceptual realizations. Rather, a given catchment can be realized in a number of ways; flowpath, divide, and networks of flowpaths and divides are the primary realizations.<br><strong>Catchment divide:</strong> NHD “catchment” polygons are more accurately described as “catchment divide” features. Because of the overlap with the HY_Features abstract “catchment” feature type, “catchment divide” is used for polygon represenations of catchments.</p>
+Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic representation of a flowing body of water. Flowline is generally used when referring to geometry.<br><strong>Flowpath:</strong> The HY_Features name for a hydrologic feature that is the primary path water follows through a catchment; either from headwater to outlet or inlet to outlet. Flowpath is used when describing aspects of the abstract flowpath featuretype, generally in relation to a flowpathâs relationship to a catchment.</p>
+<p>Terms used for hydrologic units:<br><strong>Catchment:</strong> The most abstract unit of hydrology in HY_Features is the catchment. It is a physiographic unit with zero or one inlets and one outlet. It does not inherently have any conceptual realizations. Rather, a given catchment can be realized in a number of ways; flowpath, divide, and networks of flowpaths and divides are the primary realizations.<br><strong>Catchment divide:</strong> NHD âcatchmentâ polygons are more accurately described as âcatchment divideâ features. Because of the overlap with the HY_Features abstract âcatchmentâ feature type, âcatchment divideâ is used for polygon represenations of catchments.</p>
 </div>
 <div id="data" class="section level3">
 <h3 class="hasAnchor">
@@ -139,7 +139,7 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdp
 <a href="#package-vision" class="anchor"></a>Package Vision</h2>
 <p>The <code>nhdplusTools</code> package is intended to provide a reusable set of tools to subset and relate data to NHDPlus data.</p>
 <p>It implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus">NHDPlus</a> and <a href="http://opengeospatial.github.io/HY_Features/">HY_Features</a>. The package aims to provide a set of tools with minimal dependencies that can be used to build workflows using NHDPlus data.</p>
-<p><strong>This vision is intended as a guide to contributors – conveying what kinds of contributions are of interest to the package’s long term vision. It is a reflection of the current thinking and is open to discussion and modification.</strong></p>
+<p><strong>This vision is intended as a guide to contributors â conveying what kinds of contributions are of interest to the packageâs long term vision. It is a reflection of the current thinking and is open to discussion and modification.</strong></p>
 <div id="functional-vision" class="section level3">
 <h3 class="hasAnchor">
 <a href="#functional-vision" class="anchor"></a>Functional Vision</h3>
@@ -159,12 +159,12 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdp
 <h3 class="hasAnchor">
 <a href="#data-model" class="anchor"></a>Data Model</h3>
 <p>Given that <code>nhdplusTools</code> is focused on working with NHDPlus data, the NHDPlus data model will largely govern the data model the package is designed to work with. That said, much of the package functionality also uses concepts from the HY_Features standard.</p>
-<p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a wholistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can <em>only</em> be characterized fully through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given NHD flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as an identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a collection of data that together fully describe an NHDPlus catchment. <a href="http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1">See the NHDPlus mapping to HY_Features in the HY_Features specification.</a></p>
+<p><em>Note:</em> The HY_Features standard is based on the notion that a âcatchmentâ is a wholistic feature that can be ârealizedâ (some might say modeled) in a number of ways. In other words, a catchment can <em>only</em> be characterized fully through a collection of different conceptual representations. In NHDPlus, the âcatchmentâ feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given NHD flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as an identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchmentâs interior. In this way, the COMID identifier is actually an identifier for a collection of data that together fully describe an NHDPlus catchment. <a href="http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1">See the NHDPlus mapping to HY_Features in the HY_Features specification.</a></p>
 <p>Below is a description of the expected scope of data to be used by the <code>nhdplusTools</code> package. While other data and attributes may come into scope, it should only be done as a naive pass-through, as in data subsetting, or with considerable deliberation.</p>
 <div id="flowlines-and-waterbodies" class="section level5">
 <h5 class="hasAnchor">
 <a href="#flowlines-and-waterbodies" class="anchor"></a>Flowlines and Waterbodies</h5>
-<p>Flowline geometry is a mix of 1-d streams and 1-d “artificial paths”. In order to complete the set of features meant to represent water, we need to include waterbody and potentially NHDArea polygons (double line stream overlays).</p>
+<p>Flowline geometry is a mix of 1-d streams and 1-d âartificial pathsâ. In order to complete the set of features meant to represent water, we need to include waterbody and potentially NHDArea polygons (double line stream overlays).</p>
 </div>
 <div id="catchment-polygons" class="section level5">
 <h5 class="hasAnchor">
@@ -196,12 +196,12 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdp
 <h3 class="hasAnchor">
 <a href="#related-similar-packages" class="anchor"></a>Related similar packages:</h3>
 <p><a href="https://github.com/mbtyers/riverdist" class="uri">https://github.com/mbtyers/riverdist</a><br><a href="https://github.com/jsta/nhdR" class="uri">https://github.com/jsta/nhdR</a><br><a href="https://github.com/lawinslow/hydrolinks" class="uri">https://github.com/lawinslow/hydrolinks</a><br><a href="https://github.com/mikejohnson51/HydroData" class="uri">https://github.com/mikejohnson51/HydroData</a><br><a href="https://github.com/ropensci/FedData" class="uri">https://github.com/ropensci/FedData</a><br>
-… others – please suggest additions?</p>
+â¦ others â please suggest additions?</p>
 </div>
 <div id="contributing" class="section level3">
 <h3 class="hasAnchor">
 <a href="#contributing" class="anchor"></a>Contributing:</h3>
-<p>First, thanks for considering a contribution! I hope to make this package a community created resource for us all to gain from and won’t be able to do that without your help!</p>
+<p>First, thanks for considering a contribution! I hope to make this package a community created resource for us all to gain from and wonât be able to do that without your help!</p>
 <p>1) Contributions should be thoroughly tested with <a href="https://testthat.r-lib.org/">testthat</a>.<br>
 2) Code style should attempt to follow the <a href="http://style.tidyverse.org/">tidyverse style guide.</a><br>
 3) Please attempt to describe what you want to do prior to contributing by submitting an issue.<br>
@@ -222,7 +222,7 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdp
 <p>This information is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The information has not received final approval by the U.S. Geological Survey (USGS) and is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the information.</p>
 <p>This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at <a href="https://www.usgs.gov/visual-id/credit_usgs.html#copyright">https://www.usgs.gov/visual-id/credit_usgs.html#copyright</a></p>
 <p>Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.</p>
-<p>This software is provided “AS IS.”</p>
+<p>This software is provided âAS IS.â</p>
 <p><a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://i.creativecommons.org/p/zero/1.0/88x31.png" alt="CC0"></a></p>
 </div>
 </div>

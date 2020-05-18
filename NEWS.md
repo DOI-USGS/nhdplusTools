@@ -1,3 +1,7 @@
+nhdplusTools 0.3.14
+==========
+* Added `get_node()` to get top and bottom of a flowline.
+
 nhdplusTools 0.3.13
 ==========
 * tested with dplyr 1.0 and sf 0.9. 

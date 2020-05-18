@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.14</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="nhdplusTools_files/header-attrs-2.1.2/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Introduction to nhdplusTools</h1>
@@ -113,47 +113,47 @@
 <h2 class="hasAnchor">
 <a href="#tldr" class="anchor"></a>TL;DR</h2>
 <p>First, pick an outlet location and download some data.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Uncomment to install!</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co"># install.packages("nhdplusTools")</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nhdplusTools)</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#&gt; USGS Support Package: https://owi.usgs.gov/R/packages.html#support</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sf)</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; Linking to GEOS 3.8.1, GDAL 3.0.4, PROJ 7.0.0</span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">start_point &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/sfc.html">st_sfc</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st.html">st_point</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">89.362239</span>, <span class="fl">43.090266</span>)), <span class="dt">crs =</span> <span class="dv">4269</span>)</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">start_comid &lt;-<span class="st"> </span><span class="kw"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span>(start_point)</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">flowline &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">featureSource =</span> <span class="st">"comid"</span>, </a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">                               <span class="dt">featureID =</span> start_comid), </a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">                          <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>, </a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">                          <span class="dt">data_source =</span> <span class="st">""</span>)</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17">subset_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>(<span class="dt">fileext =</span> <span class="st">".gpkg"</span>)</a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">subset &lt;-<span class="st"> </span><span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline<span class="op">$</span>nhdplus_comid,</a>
-<a class="sourceLine" id="cb1-19" data-line-number="19">                         <span class="dt">output_file =</span> subset_file,</a>
-<a class="sourceLine" id="cb1-20" data-line-number="20">                         <span class="dt">nhdplus_data =</span> <span class="st">"download"</span>, </a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">                         <span class="dt">return_data =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#&gt; All intersections performed in latitude/longitude.</span></a>
-<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co">#&gt; Reading NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co">#&gt; Writing NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb1-25" data-line-number="25"><span class="co">#&gt; Reading CatchmentSP</span></a>
-<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="co">#&gt; Writing CatchmentSP</span></a>
-<a class="sourceLine" id="cb1-27" data-line-number="27"></a>
-<a class="sourceLine" id="cb1-28" data-line-number="28">flowline &lt;-<span class="st"> </span>subset<span class="op">$</span>NHDFlowline_Network</a>
-<a class="sourceLine" id="cb1-29" data-line-number="29">catchment &lt;-<span class="st"> </span>subset<span class="op">$</span>CatchmentSP</a>
-<a class="sourceLine" id="cb1-30" data-line-number="30">waterbody &lt;-<span class="st"> </span>subset<span class="op">$</span>NHDWaterbody</a>
-<a class="sourceLine" id="cb1-31" data-line-number="31"></a>
-<a class="sourceLine" id="cb1-32" data-line-number="32"><span class="co">## Or:</span></a>
-<a class="sourceLine" id="cb1-33" data-line-number="33"></a>
-<a class="sourceLine" id="cb1-34" data-line-number="34">flowline &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(subset_file, <span class="st">"NHDFlowline_Network"</span>)</a>
-<a class="sourceLine" id="cb1-35" data-line-number="35">catchment &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(subset_file, <span class="st">"CatchmentSP"</span>)</a>
-<a class="sourceLine" id="cb1-36" data-line-number="36">waterbody &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(subset_file, <span class="st">"NHDWaterbody"</span>)</a>
-<a class="sourceLine" id="cb1-37" data-line-number="37"></a>
-<a class="sourceLine" id="cb1-38" data-line-number="38"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline), <span class="dt">col =</span> <span class="st">"blue"</span>)</a>
-<a class="sourceLine" id="cb1-39" data-line-number="39"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(start_point, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb1-40" data-line-number="40"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(catchment), <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb1-41" data-line-number="41"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(waterbody), <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>), <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Uncomment to install!</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># install.packages("nhdplusTools")</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nhdplusTools)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; USGS Support Package: https://owi.usgs.gov/R/packages.html#support</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sf)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; Linking to GEOS 3.8.1, GDAL 3.0.4, PROJ 7.0.0</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a>start_point &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/sfc.html">st_sfc</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/sf/man/st.html">st_point</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">89.362239</span>, <span class="fl">43.090266</span>)), <span class="dt">crs =</span> <span class="dv">4269</span>)</span>
+<span id="cb1-10"><a href="#cb1-10"></a>start_comid &lt;-<span class="st"> </span><span class="kw"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span>(start_point)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a>flowline &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">featureSource =</span> <span class="st">"comid"</span>, </span>
+<span id="cb1-13"><a href="#cb1-13"></a>                               <span class="dt">featureID =</span> start_comid), </span>
+<span id="cb1-14"><a href="#cb1-14"></a>                          <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>, </span>
+<span id="cb1-15"><a href="#cb1-15"></a>                          <span class="dt">data_source =</span> <span class="st">""</span>)</span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a>subset_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>(<span class="dt">fileext =</span> <span class="st">".gpkg"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18"></a>subset &lt;-<span class="st"> </span><span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline<span class="op">$</span>nhdplus_comid,</span>
+<span id="cb1-19"><a href="#cb1-19"></a>                         <span class="dt">output_file =</span> subset_file,</span>
+<span id="cb1-20"><a href="#cb1-20"></a>                         <span class="dt">nhdplus_data =</span> <span class="st">"download"</span>, </span>
+<span id="cb1-21"><a href="#cb1-21"></a>                         <span class="dt">return_data =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
+<span id="cb1-25"><a href="#cb1-25"></a><span class="co">#&gt; Reading CatchmentSP</span></span>
+<span id="cb1-26"><a href="#cb1-26"></a><span class="co">#&gt; Writing CatchmentSP</span></span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a>flowline &lt;-<span class="st"> </span>subset<span class="op">$</span>NHDFlowline_Network</span>
+<span id="cb1-29"><a href="#cb1-29"></a>catchment &lt;-<span class="st"> </span>subset<span class="op">$</span>CatchmentSP</span>
+<span id="cb1-30"><a href="#cb1-30"></a>waterbody &lt;-<span class="st"> </span>subset<span class="op">$</span>NHDWaterbody</span>
+<span id="cb1-31"><a href="#cb1-31"></a></span>
+<span id="cb1-32"><a href="#cb1-32"></a><span class="co">## Or:</span></span>
+<span id="cb1-33"><a href="#cb1-33"></a></span>
+<span id="cb1-34"><a href="#cb1-34"></a>flowline &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(subset_file, <span class="st">"NHDFlowline_Network"</span>)</span>
+<span id="cb1-35"><a href="#cb1-35"></a>catchment &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(subset_file, <span class="st">"CatchmentSP"</span>)</span>
+<span id="cb1-36"><a href="#cb1-36"></a>waterbody &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(subset_file, <span class="st">"NHDWaterbody"</span>)</span>
+<span id="cb1-37"><a href="#cb1-37"></a></span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline), <span class="dt">col =</span> <span class="st">"blue"</span>)</span>
+<span id="cb1-39"><a href="#cb1-39"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(start_point, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb1-40"><a href="#cb1-40"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(catchment), <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb1-41"><a href="#cb1-41"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(waterbody), <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>), <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/tldr-1.png" width="576"></p>
 <p>Read on to see how NHDPlusTools will help you index data to the network you just retrieved and refactor (split, collapse, and aggregate) the catchments into a different set of catchments. Please consider registering <a href="https://github.com/dblodgett-usgs/nhdplusTools/issues">issues and feature suggestions on github</a>.</p>
 </div>
@@ -173,77 +173,77 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The easiest way to install <code>nhdplusTools</code> is with the <code>devtools</code> package like this:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co"># devtools::install_github("usgs-r/nhdplusTools")</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># devtools::install_github("usgs-r/nhdplusTools")</span></span></code></pre></div>
 <p>Then you can load up nhdplusTools:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nhdplusTools)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nhdplusTools)</span></code></pre></div>
 </div>
 <div id="data-and-package-basics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-and-package-basics" class="anchor"></a>Data and Package Basics</h2>
 <p>The first thing you are going to need to do is go get some data to work with. <code>nhdplusTools</code> provides the ability to download small subsets of the NHDPlus as described in the <a href="#discovery_subsetting">Discovery and Subsetting</a> section. For large subsets, greater than a few thousand square kilometers, you can download the <a href="https://www.epa.gov/waterdata/nhdplus-national-data">National Seamless database at this web page.</a> You will need <a href="https://www.7-zip.org/">7z</a> or the <a href="https://github.com/jimhester/archive"><code>archive</code> package</a> to extract it.</p>
 <p>If you are working with the whole National Seamless database, <code>nhdplusTools</code> has some convenience functions you should be aware of. Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the <code><a href="../reference/nhdplus_path.html">nhdplus_path()</a></code> function.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"natseamless.gpkg"</span>))</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>()</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpsyoGpc/natseamless.gpkg"</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"natseamless.gpkg"</span>))</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>()</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpQOHuKu/natseamless.gpkg"</span></span></code></pre></div>
 <p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatadly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">staged_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/stage_national_data.html">stage_national_data</a></span>(<span class="dt">output_path =</span> <span class="kw"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>())</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(staged_data)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; List of 3</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt;  $ attributes: chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpsyoGpc/nhdplus_flowline_attributes.rds"</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt;  $ flowline  : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpsyoGpc/nhdplus_flowline.rds"</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt;  $ catchment : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpsyoGpc/nhdplus_catchment.rds"</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>staged_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/stage_national_data.html">stage_national_data</a></span>(<span class="dt">output_path =</span> <span class="kw"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>())</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(staged_data)</span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt; List of 3</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;  $ attributes: chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpQOHuKu/nhdplus_flowline_attributes.rds"</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;  $ flowline  : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpQOHuKu/nhdplus_flowline.rds"</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt;  $ catchment : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpQOHuKu/nhdplus_catchment.rds"</span></span></code></pre></div>
 <p>As you can see, <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are <a href="https://r-spatial.github.io/sf/"><code>sf</code></a> <code>data.frame</code>s and attributes is a plain <code>data.frame</code> with the attributes from <code>flowline</code>. Note that this introduction uses a small subset of the national seamless database as shown in the plot.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">flowline &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(staged_data<span class="op">$</span>flowline)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(flowline)[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt;  [1] "COMID"      "FDATE"      "RESOLUTION" "GNIS_ID"    "GNIS_NAME" </span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt;  [6] "LENGTHKM"   "REACHCODE"  "FLOWDIR"    "WBAREACOMI" "FTYPE"</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sf)</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>flowline &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(staged_data<span class="op">$</span>flowline)</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(flowline)[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt;  [1] "COMID"      "FDATE"      "RESOLUTION" "GNIS_ID"    "GNIS_NAME" </span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt;  [6] "LENGTHKM"   "REACHCODE"  "FLOWDIR"    "WBAREACOMI" "FTYPE"</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(sf)</span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/staged_data-1.png" width="576"><a id="discovery_subsetting"></a></p>
 <div id="nhdplus-hires" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nhdplus-hires" class="anchor"></a>NHDPlus HiRes</h3>
 <p>(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, <code>nhdplusTools</code> will have complete support for NHDPlus HiRes. So far, <code>nhdplusTools</code> will help download and interface NHDPlus HiRes data with existing <code>nhdplusTools</code> functionality. It’s important to note that <code>nhdplusTools</code> was primarily implemented using NHDPlusV2 and any use of HiRes (which is still “beta data” as of writing this) should be subject to significant scruitiny. Never the less, here’s a short summary of how to work with NHDPlus HiRes.</p>
 <p>For the demo below, a small sample of HiRes data that has been loaded into <code>nhdplusTools</code> is used. The first line shows how you can download additional data (just change <code>download_files</code> to <code>TRUE</code>).</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span>(<span class="dt">nhd_dir =</span> <span class="st">"download_dir"</span>, </a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">                   <span class="dt">hu_list =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"0101"</span>), <span class="co"># can mix hu02 and hu04 codes.</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">                   <span class="dt">download_files =</span> <span class="ot">FALSE</span>) <span class="co"># TRUE will download files.</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; [1] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0101_HU4_GDB.zip"</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">out_gpkg &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(work_dir, <span class="st">"nhd_hr.gpkg"</span>)</a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">hr_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(work_dir, </a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">                         <span class="dt">out_gpkg =</span> out_gpkg)</a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">(layers &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(out_gpkg))</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; Driver: GPKG </span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; Available layers:</span></a>
-<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt;         layer_name geometry_type features fields</span></a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57</span></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7</span></a>
-<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(hr_data)</a>
-<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment"</span></a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="kw"><a href="https://rdrr.io/r/base/unlink.html">unlink</a></span>(out_gpkg)</a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19">hr_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(work_dir, </a>
-<a class="sourceLine" id="cb7-20" data-line-number="20">                         <span class="dt">out_gpkg =</span> out_gpkg, </a>
-<a class="sourceLine" id="cb7-21" data-line-number="21">                         <span class="dt">layers =</span> <span class="ot">NULL</span>)</a>
-<a class="sourceLine" id="cb7-22" data-line-number="22">(layers &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(out_gpkg))</a>
-<a class="sourceLine" id="cb7-23" data-line-number="23"><span class="co">#&gt; Driver: GPKG </span></a>
-<a class="sourceLine" id="cb7-24" data-line-number="24"><span class="co">#&gt; Available layers:</span></a>
-<a class="sourceLine" id="cb7-25" data-line-number="25"><span class="co">#&gt;         layer_name geometry_type features fields</span></a>
-<a class="sourceLine" id="cb7-26" data-line-number="26"><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57</span></a>
-<a class="sourceLine" id="cb7-27" data-line-number="27"><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7</span></a>
-<a class="sourceLine" id="cb7-28" data-line-number="28"><span class="co">#&gt; 3     NHDWaterbody       Polygon     1044     15</span></a>
-<a class="sourceLine" id="cb7-29" data-line-number="29"><span class="co">#&gt; 4          NHDArea       Polygon       10     14</span></a>
-<a class="sourceLine" id="cb7-30" data-line-number="30"><span class="co">#&gt; 5          NHDLine   Line String      142     12</span></a>
-<a class="sourceLine" id="cb7-31" data-line-number="31"><span class="co">#&gt; 6      NHDPlusSink         Point        1     10</span></a>
-<a class="sourceLine" id="cb7-32" data-line-number="32"><span class="co">#&gt; 7         NHDPoint      3D Point        7     10</span></a>
-<a class="sourceLine" id="cb7-33" data-line-number="33"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(hr_data)</a>
-<a class="sourceLine" id="cb7-34" data-line-number="34"><span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment" "NHDWaterbody"     "NHDArea"         </span></a>
-<a class="sourceLine" id="cb7-35" data-line-number="35"><span class="co">#&gt; [5] "NHDLine"          "NHDPlusSink"      "NHDPoint"</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span>(<span class="dt">nhd_dir =</span> <span class="st">"download_dir"</span>, </span>
+<span id="cb7-2"><a href="#cb7-2"></a>                   <span class="dt">hu_list =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"0101"</span>), <span class="co"># can mix hu02 and hu04 codes.</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>                   <span class="dt">download_files =</span> <span class="ot">FALSE</span>) <span class="co"># TRUE will download files.</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt; [1] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0101_HU4_GDB.zip"</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a>out_gpkg &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(work_dir, <span class="st">"nhd_hr.gpkg"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7"></a>hr_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(work_dir, </span>
+<span id="cb7-8"><a href="#cb7-8"></a>                         <span class="dt">out_gpkg =</span> out_gpkg)</span>
+<span id="cb7-9"><a href="#cb7-9"></a>(layers &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(out_gpkg))</span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; Driver: GPKG </span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; Available layers:</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt;         layer_name geometry_type features fields</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(hr_data)</span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment"</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="kw"><a href="https://rdrr.io/r/base/unlink.html">unlink</a></span>(out_gpkg)</span>
+<span id="cb7-18"><a href="#cb7-18"></a></span>
+<span id="cb7-19"><a href="#cb7-19"></a>hr_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(work_dir, </span>
+<span id="cb7-20"><a href="#cb7-20"></a>                         <span class="dt">out_gpkg =</span> out_gpkg, </span>
+<span id="cb7-21"><a href="#cb7-21"></a>                         <span class="dt">layers =</span> <span class="ot">NULL</span>)</span>
+<span id="cb7-22"><a href="#cb7-22"></a>(layers &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(out_gpkg))</span>
+<span id="cb7-23"><a href="#cb7-23"></a><span class="co">#&gt; Driver: GPKG </span></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="co">#&gt; Available layers:</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a><span class="co">#&gt;         layer_name geometry_type features fields</span></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57</span></span>
+<span id="cb7-27"><a href="#cb7-27"></a><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7</span></span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="co">#&gt; 3     NHDWaterbody       Polygon     1044     15</span></span>
+<span id="cb7-29"><a href="#cb7-29"></a><span class="co">#&gt; 4          NHDArea       Polygon       10     14</span></span>
+<span id="cb7-30"><a href="#cb7-30"></a><span class="co">#&gt; 5          NHDLine   Line String      142     12</span></span>
+<span id="cb7-31"><a href="#cb7-31"></a><span class="co">#&gt; 6      NHDPlusSink         Point        1     10</span></span>
+<span id="cb7-32"><a href="#cb7-32"></a><span class="co">#&gt; 7         NHDPoint      3D Point        7     10</span></span>
+<span id="cb7-33"><a href="#cb7-33"></a><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(hr_data)</span>
+<span id="cb7-34"><a href="#cb7-34"></a><span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment" "NHDWaterbody"     "NHDArea"         </span></span>
+<span id="cb7-35"><a href="#cb7-35"></a><span class="co">#&gt; [5] "NHDLine"          "NHDPlusSink"      "NHDPoint"</span></span></code></pre></div>
 <p>Other functionality in the package, such as the <code>get_UT/UM/DM/DD</code> functions, subsetting, indexing, etc. also work now or will soon! Stay tuned for a dedicated NHDPlus HiRes vignette and submit issues as you find them!</p>
 </div>
 </div>
@@ -257,202 +257,202 @@
 <li>create a stand alone subset for that collection of catchments.</li>
 </ol>
 <p>Say we want to get a subset of the NHDPlus upstream of a given location. We can start with <code><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id()</a></code> First, let’s look at a given point location. Then see where it is relative to our flowlines.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">lon &lt;-<span class="st"> </span><span class="fl">-89.362239</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">lat &lt;-<span class="st"> </span><span class="fl">43.090266</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">start_point &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/sfc.html">st_sfc</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st.html">st_point</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(lon, lat)),</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">                          <span class="dt">crs =</span> <span class="dv">4269</span>)</a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</a>
-<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(start_point, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>lon &lt;-<span class="st"> </span><span class="fl">-89.362239</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>lat &lt;-<span class="st"> </span><span class="fl">43.090266</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a>start_point &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/sfc.html">st_sfc</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st.html">st_point</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(lon, lat)),</span>
+<span id="cb8-5"><a href="#cb8-5"></a>                          <span class="dt">crs =</span> <span class="dv">4269</span>)</span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(start_point, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/point-1.png" width="576"></p>
 <p>OK, so we have a point location near a river and we want to figure out what catchment is at its outlet. We can use the <code><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id()</a></code> function which calls out to a web service and returns an NHDPlus catchment identifier, typically called a COMID.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">start_comid &lt;-<span class="st"> </span><span class="kw"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span>(start_point)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">start_comid</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; [1] 13293750</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>start_comid &lt;-<span class="st"> </span><span class="kw"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span>(start_point)</span>
+<span id="cb9-2"><a href="#cb9-2"></a>start_comid</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co">#&gt; [1] 13293750</span></span></code></pre></div>
 <p><strong>If you have the whole National Seamless database and want to work at regional to national scales, skip down the the Local Data Subsetting section.</strong></p>
 <div id="web-service-data-subsetting" class="section level3">
 <h3 class="hasAnchor">
 <a href="#web-service-data-subsetting" class="anchor"></a>Web Service Data Subsetting</h3>
 <p><code>nhdplusTools</code> supports discovery and data subsetting using web services made available through the <a href="https://owi.usgs.gov/blog/nldi-intro/">Network Linked Data Index</a> (NLDI) and the <a href="https://cida.usgs.gov/nwc/geoserver">National Water Census Geoserver.</a> The code below shows how to use the NLDI functions to build a dataset upstream of our <code>start_comid</code> that we found above.</p>
 <p>The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these “featureSources”. We can query the NLDI for an identifier of a given feature from any of its “featureSources” and find out what our navigation options are as shown below.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="../reference/discover_nldi_sources.html">discover_nldi_sources</a></span>()<span class="op">$</span>source</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; [1] "comid"    "huc12pp"  "nwissite" "WQP"</span></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4">nldi_feature &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">featureSource =</span> <span class="st">"comid"</span>, <span class="dt">featureID =</span> start_comid)</a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="kw"><a href="../reference/discover_nldi_navigation.html">discover_nldi_navigation</a></span>(nldi_feature)</a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; $upstreamMain</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/UM"</span></a>
-<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt; $upstreamTributaries</span></a>
-<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/UT"</span></a>
-<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co">#&gt; $downstreamMain</span></a>
-<a class="sourceLine" id="cb10-13" data-line-number="13"><span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/DM"</span></a>
-<a class="sourceLine" id="cb10-14" data-line-number="14"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-15" data-line-number="15"><span class="co">#&gt; $downstreamDiversions</span></a>
-<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/DD"</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw"><a href="../reference/discover_nldi_sources.html">discover_nldi_sources</a></span>()<span class="op">$</span>source</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co">#&gt; [1] "comid"    "huc12pp"  "nwissite" "WQP"</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a></span>
+<span id="cb10-4"><a href="#cb10-4"></a>nldi_feature &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">featureSource =</span> <span class="st">"comid"</span>, <span class="dt">featureID =</span> start_comid)</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="kw"><a href="../reference/discover_nldi_navigation.html">discover_nldi_navigation</a></span>(nldi_feature)</span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt; $upstreamMain</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/UM"</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt; </span></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt; $upstreamTributaries</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/UT"</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="co">#&gt; </span></span>
+<span id="cb10-12"><a href="#cb10-12"></a><span class="co">#&gt; $downstreamMain</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/DM"</span></span>
+<span id="cb10-14"><a href="#cb10-14"></a><span class="co">#&gt; </span></span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="co">#&gt; $downstreamDiversions</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/DD"</span></span></code></pre></div>
 <p>The <code>discover_nldi_navigation</code> function is a handy way to make sure the featureID is available for the chosen “featureSource” as well as find valid navigation modes to be used with <code>navigate_nldi</code>. Now that we know the NLDI has our comid, we can use the “upstreamTributaries” navigation option to get all the flowlines upstream or all the features from any of the “featureSources” as shown below.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">flowline_nldi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nldi_feature, </a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">                               <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>, </a>
-<a class="sourceLine" id="cb11-4" data-line-number="4">                               <span class="dt">data_source =</span> <span class="st">""</span>)</a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline), <span class="dt">lwd =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="st">"black"</span>)</a>
-<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline_nldi), <span class="dt">lwd =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a></span>
+<span id="cb11-2"><a href="#cb11-2"></a>flowline_nldi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nldi_feature, </span>
+<span id="cb11-3"><a href="#cb11-3"></a>                               <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>, </span>
+<span id="cb11-4"><a href="#cb11-4"></a>                               <span class="dt">data_source =</span> <span class="st">""</span>)</span>
+<span id="cb11-5"><a href="#cb11-5"></a></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline), <span class="dt">lwd =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="st">"black"</span>)</span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline_nldi), <span class="dt">lwd =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/navigate_nldi-1.png" width="576"></p>
 <p>What is not shown here is that the NLDI only provided geometry and a comid for each of the flowlines. The <code>subset_nhdplus</code> function has a “download” option that allows us to download four layers and all attributes as shown below.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">output_file_download &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"subset_download.gpkg"</span>)</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">output_file_download &lt;-<span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline_nldi<span class="op">$</span>nhdplus_comid,</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">                             <span class="dt">output_file =</span> output_file_download,</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5">                             <span class="dt">nhdplus_data =</span> <span class="st">"download"</span>, <span class="dt">return_data =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co">#&gt; All intersections performed in latitude/longitude.</span></a>
-<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">#&gt; Reading NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">#&gt; Writing NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">#&gt; Reading CatchmentSP</span></a>
-<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">#&gt; Writing CatchmentSP</span></a>
-<a class="sourceLine" id="cb12-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb12-12" data-line-number="12">sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(output_file_download)</a>
-<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="co">#&gt; Driver: GPKG </span></a>
-<a class="sourceLine" id="cb12-14" data-line-number="14"><span class="co">#&gt; Available layers:</span></a>
-<a class="sourceLine" id="cb12-15" data-line-number="15"><span class="co">#&gt;            layer_name        geometry_type features fields</span></a>
-<a class="sourceLine" id="cb12-16" data-line-number="16"><span class="co">#&gt; 1 NHDFlowline_Network 3D Multi Line String      168     91</span></a>
-<a class="sourceLine" id="cb12-17" data-line-number="17"><span class="co">#&gt; 2         CatchmentSP        Multi Polygon      167      8</span></a>
-<a class="sourceLine" id="cb12-18" data-line-number="18"><span class="co">#&gt; 3             NHDArea        Multi Polygon        1     16</span></a>
-<a class="sourceLine" id="cb12-19" data-line-number="19"><span class="co">#&gt; 4        NHDWaterbody        Multi Polygon       90     23</span></a>
-<a class="sourceLine" id="cb12-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb12-21" data-line-number="21">flowline_download &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"subset_download.gpkg"</span>), </a>
-<a class="sourceLine" id="cb12-22" data-line-number="22">                                 <span class="st">"NHDFlowline_Network"</span>)</a>
-<a class="sourceLine" id="cb12-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb12-24" data-line-number="24"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline_download, </a>
-<a class="sourceLine" id="cb12-25" data-line-number="25">                                   streamorde <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>)), </a>
-<a class="sourceLine" id="cb12-26" data-line-number="26">     <span class="dt">lwd =</span> <span class="dv">7</span>, <span class="dt">col =</span> <span class="st">"darkgrey"</span>)</a>
-<a class="sourceLine" id="cb12-27" data-line-number="27"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline_nldi), </a>
-<a class="sourceLine" id="cb12-28" data-line-number="28">     <span class="dt">lwd =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>output_file_download &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"subset_download.gpkg"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2"></a></span>
+<span id="cb12-3"><a href="#cb12-3"></a>output_file_download &lt;-<span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline_nldi<span class="op">$</span>nhdplus_comid,</span>
+<span id="cb12-4"><a href="#cb12-4"></a>                             <span class="dt">output_file =</span> output_file_download,</span>
+<span id="cb12-5"><a href="#cb12-5"></a>                             <span class="dt">nhdplus_data =</span> <span class="st">"download"</span>, <span class="dt">return_data =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb12-6"><a href="#cb12-6"></a><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
+<span id="cb12-9"><a href="#cb12-9"></a><span class="co">#&gt; Reading CatchmentSP</span></span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="co">#&gt; Writing CatchmentSP</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a></span>
+<span id="cb12-12"><a href="#cb12-12"></a>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(output_file_download)</span>
+<span id="cb12-13"><a href="#cb12-13"></a><span class="co">#&gt; Driver: GPKG </span></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="co">#&gt; Available layers:</span></span>
+<span id="cb12-15"><a href="#cb12-15"></a><span class="co">#&gt;            layer_name        geometry_type features fields</span></span>
+<span id="cb12-16"><a href="#cb12-16"></a><span class="co">#&gt; 1 NHDFlowline_Network 3D Multi Line String      168     91</span></span>
+<span id="cb12-17"><a href="#cb12-17"></a><span class="co">#&gt; 2         CatchmentSP        Multi Polygon      167      8</span></span>
+<span id="cb12-18"><a href="#cb12-18"></a><span class="co">#&gt; 3             NHDArea        Multi Polygon        1     16</span></span>
+<span id="cb12-19"><a href="#cb12-19"></a><span class="co">#&gt; 4        NHDWaterbody        Multi Polygon       90     23</span></span>
+<span id="cb12-20"><a href="#cb12-20"></a></span>
+<span id="cb12-21"><a href="#cb12-21"></a>flowline_download &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"subset_download.gpkg"</span>), </span>
+<span id="cb12-22"><a href="#cb12-22"></a>                                 <span class="st">"NHDFlowline_Network"</span>)</span>
+<span id="cb12-23"><a href="#cb12-23"></a></span>
+<span id="cb12-24"><a href="#cb12-24"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline_download, </span>
+<span id="cb12-25"><a href="#cb12-25"></a>                                   streamorde <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>)), </span>
+<span id="cb12-26"><a href="#cb12-26"></a>     <span class="dt">lwd =</span> <span class="dv">7</span>, <span class="dt">col =</span> <span class="st">"darkgrey"</span>)</span>
+<span id="cb12-27"><a href="#cb12-27"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline_nldi), </span>
+<span id="cb12-28"><a href="#cb12-28"></a>     <span class="dt">lwd =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/subset_nhdplus_download-1.png" width="576"></p>
 <p>This plot illustrates the kind of thing that’s possible (filtering to specific stream orders) using the attributes that are downloaded.</p>
 <p>Notice that the data downloaded above only has four layers where the subset we build below has more. This functionality should be considered beta in nature, but may be useful for some applications so has been included.</p>
 <p>Before moving on, one more demonstration of what can be done using the NLDI. Say we knew the USGS gage ID that we want NHDPlus data upstream of. We can use the NLDI to navigate from the gage the same as we did our comid. We can also get back all the nwis sites the NLDI knows about upstream of the one we chose!</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">nldi_feature &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">featureSource =</span> <span class="st">"nwissite"</span>, <span class="dt">featureID =</span> <span class="st">"USGS-05428500"</span>)</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3">flowline_nldi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nldi_feature, </a>
-<a class="sourceLine" id="cb13-4" data-line-number="4">                               <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>, </a>
-<a class="sourceLine" id="cb13-5" data-line-number="5">                               <span class="dt">data_source =</span> <span class="st">""</span>)</a>
-<a class="sourceLine" id="cb13-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb13-7" data-line-number="7">output_file_nwis &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"subset_download_nwis.gpkg"</span>)</a>
-<a class="sourceLine" id="cb13-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb13-9" data-line-number="9">output_file_nwis &lt;-<span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline_nldi<span class="op">$</span>nhdplus_comid,</a>
-<a class="sourceLine" id="cb13-10" data-line-number="10">                                  <span class="dt">output_file =</span> output_file_nwis,</a>
-<a class="sourceLine" id="cb13-11" data-line-number="11">                                  <span class="dt">nhdplus_data =</span> <span class="st">"download"</span>,</a>
-<a class="sourceLine" id="cb13-12" data-line-number="12">                                  <span class="dt">return_data =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb13-13" data-line-number="13"><span class="co">#&gt; All intersections performed in latitude/longitude.</span></a>
-<a class="sourceLine" id="cb13-14" data-line-number="14"><span class="co">#&gt; Reading NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="co">#&gt; Writing NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb13-16" data-line-number="16"><span class="co">#&gt; Reading CatchmentSP</span></a>
-<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#&gt; Writing CatchmentSP</span></a>
-<a class="sourceLine" id="cb13-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb13-19" data-line-number="19">sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(output_file_download)</a>
-<a class="sourceLine" id="cb13-20" data-line-number="20"><span class="co">#&gt; Driver: GPKG </span></a>
-<a class="sourceLine" id="cb13-21" data-line-number="21"><span class="co">#&gt; Available layers:</span></a>
-<a class="sourceLine" id="cb13-22" data-line-number="22"><span class="co">#&gt;            layer_name        geometry_type features fields</span></a>
-<a class="sourceLine" id="cb13-23" data-line-number="23"><span class="co">#&gt; 1 NHDFlowline_Network 3D Multi Line String      168     91</span></a>
-<a class="sourceLine" id="cb13-24" data-line-number="24"><span class="co">#&gt; 2         CatchmentSP        Multi Polygon      167      8</span></a>
-<a class="sourceLine" id="cb13-25" data-line-number="25"><span class="co">#&gt; 3             NHDArea        Multi Polygon        1     16</span></a>
-<a class="sourceLine" id="cb13-26" data-line-number="26"><span class="co">#&gt; 4        NHDWaterbody        Multi Polygon       90     23</span></a>
-<a class="sourceLine" id="cb13-27" data-line-number="27"></a>
-<a class="sourceLine" id="cb13-28" data-line-number="28">flowline_nwis &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(output_file_nwis, </a>
-<a class="sourceLine" id="cb13-29" data-line-number="29">                                 <span class="st">"NHDFlowline_Network"</span>)</a>
-<a class="sourceLine" id="cb13-30" data-line-number="30"></a>
-<a class="sourceLine" id="cb13-31" data-line-number="31">upstream_nwis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nldi_feature,</a>
-<a class="sourceLine" id="cb13-32" data-line-number="32">                               <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>,</a>
-<a class="sourceLine" id="cb13-33" data-line-number="33">                               <span class="dt">data_source =</span> <span class="st">"nwissite"</span>)</a>
-<a class="sourceLine" id="cb13-34" data-line-number="34"></a>
-<a class="sourceLine" id="cb13-35" data-line-number="35"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline_nwis), </a>
-<a class="sourceLine" id="cb13-36" data-line-number="36">     <span class="dt">lwd =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="st">"blue"</span>)</a>
-<a class="sourceLine" id="cb13-37" data-line-number="37"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(upstream_nwis), </a>
-<a class="sourceLine" id="cb13-38" data-line-number="38">     <span class="dt">cex =</span> <span class="dv">1</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>nldi_feature &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">featureSource =</span> <span class="st">"nwissite"</span>, <span class="dt">featureID =</span> <span class="st">"USGS-05428500"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a>flowline_nldi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nldi_feature, </span>
+<span id="cb13-4"><a href="#cb13-4"></a>                               <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>, </span>
+<span id="cb13-5"><a href="#cb13-5"></a>                               <span class="dt">data_source =</span> <span class="st">""</span>)</span>
+<span id="cb13-6"><a href="#cb13-6"></a></span>
+<span id="cb13-7"><a href="#cb13-7"></a>output_file_nwis &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"subset_download_nwis.gpkg"</span>)</span>
+<span id="cb13-8"><a href="#cb13-8"></a></span>
+<span id="cb13-9"><a href="#cb13-9"></a>output_file_nwis &lt;-<span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> flowline_nldi<span class="op">$</span>nhdplus_comid,</span>
+<span id="cb13-10"><a href="#cb13-10"></a>                                  <span class="dt">output_file =</span> output_file_nwis,</span>
+<span id="cb13-11"><a href="#cb13-11"></a>                                  <span class="dt">nhdplus_data =</span> <span class="st">"download"</span>,</span>
+<span id="cb13-12"><a href="#cb13-12"></a>                                  <span class="dt">return_data =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
+<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#&gt; Reading CatchmentSP</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#&gt; Writing CatchmentSP</span></span>
+<span id="cb13-18"><a href="#cb13-18"></a></span>
+<span id="cb13-19"><a href="#cb13-19"></a>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(output_file_download)</span>
+<span id="cb13-20"><a href="#cb13-20"></a><span class="co">#&gt; Driver: GPKG </span></span>
+<span id="cb13-21"><a href="#cb13-21"></a><span class="co">#&gt; Available layers:</span></span>
+<span id="cb13-22"><a href="#cb13-22"></a><span class="co">#&gt;            layer_name        geometry_type features fields</span></span>
+<span id="cb13-23"><a href="#cb13-23"></a><span class="co">#&gt; 1 NHDFlowline_Network 3D Multi Line String      168     91</span></span>
+<span id="cb13-24"><a href="#cb13-24"></a><span class="co">#&gt; 2         CatchmentSP        Multi Polygon      167      8</span></span>
+<span id="cb13-25"><a href="#cb13-25"></a><span class="co">#&gt; 3             NHDArea        Multi Polygon        1     16</span></span>
+<span id="cb13-26"><a href="#cb13-26"></a><span class="co">#&gt; 4        NHDWaterbody        Multi Polygon       90     23</span></span>
+<span id="cb13-27"><a href="#cb13-27"></a></span>
+<span id="cb13-28"><a href="#cb13-28"></a>flowline_nwis &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(output_file_nwis, </span>
+<span id="cb13-29"><a href="#cb13-29"></a>                                 <span class="st">"NHDFlowline_Network"</span>)</span>
+<span id="cb13-30"><a href="#cb13-30"></a></span>
+<span id="cb13-31"><a href="#cb13-31"></a>upstream_nwis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(nldi_feature,</span>
+<span id="cb13-32"><a href="#cb13-32"></a>                               <span class="dt">mode =</span> <span class="st">"upstreamTributaries"</span>,</span>
+<span id="cb13-33"><a href="#cb13-33"></a>                               <span class="dt">data_source =</span> <span class="st">"nwissite"</span>)</span>
+<span id="cb13-34"><a href="#cb13-34"></a></span>
+<span id="cb13-35"><a href="#cb13-35"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline_nwis), </span>
+<span id="cb13-36"><a href="#cb13-36"></a>     <span class="dt">lwd =</span> <span class="dv">3</span>, <span class="dt">col =</span> <span class="st">"blue"</span>)</span>
+<span id="cb13-37"><a href="#cb13-37"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(upstream_nwis), </span>
+<span id="cb13-38"><a href="#cb13-38"></a>     <span class="dt">cex =</span> <span class="dv">1</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/nldi_nwissite-1.png" width="576"></p>
 </div>
 <div id="local-data-subsetting" class="section level3">
 <h3 class="hasAnchor">
 <a href="#local-data-subsetting" class="anchor"></a>Local Data Subsetting</h3>
 <p>With the starting COMID we found with <code>discover_nhdplus_id</code> above, we can use one of the network navigation functions, <code>get_UM</code>, <code>get_UT</code>, <code>get_DM</code>, or <code>get_DD</code> to retrieve a collection of comids along the upstream mainstaem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we’ll use upstream with tributaries.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">UT_comids &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_UT.html">get_UT</a></span>(flowline, start_comid)</a>
-<a class="sourceLine" id="cb14-2" data-line-number="2">UT_comids</a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="co">#&gt;   [1]  13293750  13293504  13294134  13294128  13294394  13293454  13293430</span></a>
-<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="co">#&gt;   [8]  13293424  13294110  13293398  13293392  13293388  13293384  13293380</span></a>
-<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="co">#&gt;  [15]  13293576  13294288  13294284  13293506  13294280  13294290  13294298</span></a>
-<a class="sourceLine" id="cb14-6" data-line-number="6"><span class="co">#&gt;  [22]  13294304  13294310  13294312  13293696  13293694  13294264  13293676</span></a>
-<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="co">#&gt;  [29]  13293620  13293612  13293584  13294166  13293554  13293540  13294282</span></a>
-<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="co">#&gt;  [36]  13293520  13293480  13294132  13293588  13293550  13293574  13293508</span></a>
-<a class="sourceLine" id="cb14-9" data-line-number="9"><span class="co">#&gt;  [43]  13293530  13293526  13293524  13294138  13293496  13293488  13293484</span></a>
-<a class="sourceLine" id="cb14-10" data-line-number="10"><span class="co">#&gt;  [50]  13293474  13294118  13293440  13293426  13293458  13294382  13294274</span></a>
-<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="co">#&gt;  [57]  13293422  13293416  13293390  13293382  13293386  13293376  13293396</span></a>
-<a class="sourceLine" id="cb14-12" data-line-number="12"><span class="co">#&gt;  [64]  13293394  13293406  13293404  13294268  13294366  13293400  13293432</span></a>
-<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#&gt;  [71]  13293452  13293456  13293492  13294158  13294286  13293634  13294368</span></a>
-<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="co">#&gt;  [78]  13294124 937090090 937090091  13293464  13293444  13293446  13293434</span></a>
-<a class="sourceLine" id="cb14-15" data-line-number="15"><span class="co">#&gt;  [85]  13293542  13294154  13293536  13294292  13294294  13294300  13294308</span></a>
-<a class="sourceLine" id="cb14-16" data-line-number="16"><span class="co">#&gt;  [92]  13294314  13294272  13294276  13294384  13294278  13294386  13293494</span></a>
-<a class="sourceLine" id="cb14-17" data-line-number="17"><span class="co">#&gt;  [99]  13294130  13294306  13294184  13293690  13293692  13293586  13293614</span></a>
-<a class="sourceLine" id="cb14-18" data-line-number="18"><span class="co">#&gt; [106]  13293624  13293678  13293672  13293674  13294176  13294168  13293578</span></a>
-<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="co">#&gt; [113]  13293564  13293548  13293478  13293476  13293450  13293442  13293518</span></a>
-<a class="sourceLine" id="cb14-20" data-line-number="20"><span class="co">#&gt; [120]  13293472  13293572  13293568  13293556  13293558  13293552  13293514</span></a>
-<a class="sourceLine" id="cb14-21" data-line-number="21"><span class="co">#&gt; [127]  13293522  13294144  13293532  13294150  13294148  13294140  13293516</span></a>
-<a class="sourceLine" id="cb14-22" data-line-number="22"><span class="co">#&gt; [134]  13293502  13293498  13293460  13294122  13293468  13294112  13293512</span></a>
-<a class="sourceLine" id="cb14-23" data-line-number="23"><span class="co">#&gt; [141]  13293486  13293378  13293462  13293428  13293420  13293412  13293438</span></a>
-<a class="sourceLine" id="cb14-24" data-line-number="24"><span class="co">#&gt; [148]  13293490  13293436  13294152  13294296  13294270  13302588  13302590</span></a>
-<a class="sourceLine" id="cb14-25" data-line-number="25"><span class="co">#&gt; [155]  13293688  13293646  13294174  13294178  13293562  13293600  13293448</span></a>
-<a class="sourceLine" id="cb14-26" data-line-number="26"><span class="co">#&gt; [162]  13294116  13294120  13293570  13294114  13293418  13293410  13293590</span></a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>UT_comids &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_UT.html">get_UT</a></span>(flowline, start_comid)</span>
+<span id="cb14-2"><a href="#cb14-2"></a>UT_comids</span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co">#&gt;   [1]  13293750  13293504  13294134  13294128  13294394  13293454  13293430</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="co">#&gt;   [8]  13293424  13294110  13293398  13293392  13293388  13293384  13293380</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="co">#&gt;  [15]  13293576  13294288  13294284  13293506  13294280  13294290  13294298</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="co">#&gt;  [22]  13294304  13294310  13294312  13293696  13293694  13294264  13293676</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a><span class="co">#&gt;  [29]  13293620  13293612  13293584  13294166  13293554  13293540  13294282</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a><span class="co">#&gt;  [36]  13293520  13293480  13294132  13293588  13293550  13293574  13293508</span></span>
+<span id="cb14-9"><a href="#cb14-9"></a><span class="co">#&gt;  [43]  13293530  13293526  13293524  13294138  13293496  13293488  13293484</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="co">#&gt;  [50]  13293474  13294118  13293440  13293426  13293458  13294382  13294274</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="co">#&gt;  [57]  13293422  13293416  13293390  13293382  13293386  13293376  13293396</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt;  [64]  13293394  13293406  13293404  13294268  13294366  13293400  13293432</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a><span class="co">#&gt;  [71]  13293452  13293456  13293492  13294158  13294286  13293634  13294368</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a><span class="co">#&gt;  [78]  13294124 937090090 937090091  13293464  13293444  13293446  13293434</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a><span class="co">#&gt;  [85]  13293542  13294154  13293536  13294292  13294294  13294300  13294308</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a><span class="co">#&gt;  [92]  13294314  13294272  13294276  13294384  13294278  13294386  13293494</span></span>
+<span id="cb14-17"><a href="#cb14-17"></a><span class="co">#&gt;  [99]  13294130  13294306  13294184  13293690  13293692  13293586  13293614</span></span>
+<span id="cb14-18"><a href="#cb14-18"></a><span class="co">#&gt; [106]  13293624  13293678  13293672  13293674  13294176  13294168  13293578</span></span>
+<span id="cb14-19"><a href="#cb14-19"></a><span class="co">#&gt; [113]  13293564  13293548  13293478  13293476  13293450  13293442  13293518</span></span>
+<span id="cb14-20"><a href="#cb14-20"></a><span class="co">#&gt; [120]  13293472  13293572  13293568  13293556  13293558  13293552  13293514</span></span>
+<span id="cb14-21"><a href="#cb14-21"></a><span class="co">#&gt; [127]  13293522  13294144  13293532  13294150  13294148  13294140  13293516</span></span>
+<span id="cb14-22"><a href="#cb14-22"></a><span class="co">#&gt; [134]  13293502  13293498  13293460  13294122  13293468  13294112  13293512</span></span>
+<span id="cb14-23"><a href="#cb14-23"></a><span class="co">#&gt; [141]  13293486  13293378  13293462  13293428  13293420  13293412  13293438</span></span>
+<span id="cb14-24"><a href="#cb14-24"></a><span class="co">#&gt; [148]  13293490  13293436  13294152  13294296  13294270  13302588  13302590</span></span>
+<span id="cb14-25"><a href="#cb14-25"></a><span class="co">#&gt; [155]  13293688  13293646  13294174  13294178  13293562  13293600  13293448</span></span>
+<span id="cb14-26"><a href="#cb14-26"></a><span class="co">#&gt; [162]  13294116  13294120  13293570  13294114  13293418  13293410  13293590</span></span></code></pre></div>
 <p>If you are familiar with the NHDPlus, you will recognize that now that we have this list of COMIDs, we could go off and do all sorts of things with the various flowline attributes. For now, let’s just use the COMID list to filter our <code>fline</code> <code>sf</code> <code>data.frame</code> and plot it with our other layers.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</a>
-<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(start_point, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline, COMID <span class="op">%in%</span><span class="st"> </span>UT_comids)),</a>
-<a class="sourceLine" id="cb15-4" data-line-number="4">     <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(start_point, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline, COMID <span class="op">%in%</span><span class="st"> </span>UT_comids)),</span>
+<span id="cb15-4"><a href="#cb15-4"></a>     <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/plot_fline_subset-1.png" width="576"></p>
 <p>Say you want to save the network subset for later use in R or in some other GIS. The `subset_nhdplus() function is your friend. If you have the whole national seamless database downloaded, you can pull out large subsets of it like shown below. If you don’t have the whole national seamless, look at the second example in this section.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">output_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"subset.gpkg"</span>)</a>
-<a class="sourceLine" id="cb16-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb16-3" data-line-number="3">output_file &lt;-<span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> UT_comids,</a>
-<a class="sourceLine" id="cb16-4" data-line-number="4">                             <span class="dt">output_file =</span> output_file,</a>
-<a class="sourceLine" id="cb16-5" data-line-number="5">                             <span class="dt">nhdplus_data =</span> <span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(), </a>
-<a class="sourceLine" id="cb16-6" data-line-number="6">                             <span class="dt">return_data =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb16-7" data-line-number="7"><span class="co">#&gt; All intersections performed in latitude/longitude.</span></a>
-<a class="sourceLine" id="cb16-8" data-line-number="8"><span class="co">#&gt; Reading NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb16-9" data-line-number="9"><span class="co">#&gt; Writing NHDFlowline_Network</span></a>
-<a class="sourceLine" id="cb16-10" data-line-number="10"><span class="co">#&gt; Reading CatchmentSP</span></a>
-<a class="sourceLine" id="cb16-11" data-line-number="11"><span class="co">#&gt; Writing CatchmentSP</span></a>
-<a class="sourceLine" id="cb16-12" data-line-number="12"><span class="co">#&gt; Reading NHDArea</span></a>
-<a class="sourceLine" id="cb16-13" data-line-number="13"><span class="co">#&gt; Writing NHDArea</span></a>
-<a class="sourceLine" id="cb16-14" data-line-number="14"><span class="co">#&gt; Reading NHDWaterbody</span></a>
-<a class="sourceLine" id="cb16-15" data-line-number="15"><span class="co">#&gt; Writing NHDWaterbody</span></a>
-<a class="sourceLine" id="cb16-16" data-line-number="16"><span class="co">#&gt; Reading Gage</span></a>
-<a class="sourceLine" id="cb16-17" data-line-number="17"><span class="co">#&gt; Writing Gage</span></a>
-<a class="sourceLine" id="cb16-18" data-line-number="18"><span class="co">#&gt; Reading Sink</span></a>
-<a class="sourceLine" id="cb16-19" data-line-number="19"><span class="co">#&gt; No features to write in Sink</span></a>
-<a class="sourceLine" id="cb16-20" data-line-number="20"><span class="co">#&gt; Reading NHDFlowline_NonNetwork</span></a>
-<a class="sourceLine" id="cb16-21" data-line-number="21"><span class="co">#&gt; Writing NHDFlowline_NonNetwork</span></a>
-<a class="sourceLine" id="cb16-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb16-23" data-line-number="23">sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(output_file)</a>
-<a class="sourceLine" id="cb16-24" data-line-number="24"><span class="co">#&gt; Driver: GPKG </span></a>
-<a class="sourceLine" id="cb16-25" data-line-number="25"><span class="co">#&gt; Available layers:</span></a>
-<a class="sourceLine" id="cb16-26" data-line-number="26"><span class="co">#&gt;               layer_name     geometry_type features fields</span></a>
-<a class="sourceLine" id="cb16-27" data-line-number="27"><span class="co">#&gt; 1    NHDFlowline_Network Multi Line String      168    136</span></a>
-<a class="sourceLine" id="cb16-28" data-line-number="28"><span class="co">#&gt; 2            CatchmentSP     Multi Polygon      167      6</span></a>
-<a class="sourceLine" id="cb16-29" data-line-number="29"><span class="co">#&gt; 3                NHDArea     Multi Polygon        1     14</span></a>
-<a class="sourceLine" id="cb16-30" data-line-number="30"><span class="co">#&gt; 4           NHDWaterbody     Multi Polygon       90     21</span></a>
-<a class="sourceLine" id="cb16-31" data-line-number="31"><span class="co">#&gt; 5                   Gage             Point       33     19</span></a>
-<a class="sourceLine" id="cb16-32" data-line-number="32"><span class="co">#&gt; 6 NHDFlowline_NonNetwork Multi Line String       45     12</span></a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>output_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"subset.gpkg"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2"></a></span>
+<span id="cb16-3"><a href="#cb16-3"></a>output_file &lt;-<span class="kw"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="dt">comids =</span> UT_comids,</span>
+<span id="cb16-4"><a href="#cb16-4"></a>                             <span class="dt">output_file =</span> output_file,</span>
+<span id="cb16-5"><a href="#cb16-5"></a>                             <span class="dt">nhdplus_data =</span> <span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(), </span>
+<span id="cb16-6"><a href="#cb16-6"></a>                             <span class="dt">return_data =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb16-7"><a href="#cb16-7"></a><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="co">#&gt; Reading CatchmentSP</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a><span class="co">#&gt; Writing CatchmentSP</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a><span class="co">#&gt; Reading NHDArea</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a><span class="co">#&gt; Writing NHDArea</span></span>
+<span id="cb16-14"><a href="#cb16-14"></a><span class="co">#&gt; Reading NHDWaterbody</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a><span class="co">#&gt; Writing NHDWaterbody</span></span>
+<span id="cb16-16"><a href="#cb16-16"></a><span class="co">#&gt; Reading Gage</span></span>
+<span id="cb16-17"><a href="#cb16-17"></a><span class="co">#&gt; Writing Gage</span></span>
+<span id="cb16-18"><a href="#cb16-18"></a><span class="co">#&gt; Reading Sink</span></span>
+<span id="cb16-19"><a href="#cb16-19"></a><span class="co">#&gt; No features to write in Sink</span></span>
+<span id="cb16-20"><a href="#cb16-20"></a><span class="co">#&gt; Reading NHDFlowline_NonNetwork</span></span>
+<span id="cb16-21"><a href="#cb16-21"></a><span class="co">#&gt; Writing NHDFlowline_NonNetwork</span></span>
+<span id="cb16-22"><a href="#cb16-22"></a></span>
+<span id="cb16-23"><a href="#cb16-23"></a>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(output_file)</span>
+<span id="cb16-24"><a href="#cb16-24"></a><span class="co">#&gt; Driver: GPKG </span></span>
+<span id="cb16-25"><a href="#cb16-25"></a><span class="co">#&gt; Available layers:</span></span>
+<span id="cb16-26"><a href="#cb16-26"></a><span class="co">#&gt;               layer_name     geometry_type features fields</span></span>
+<span id="cb16-27"><a href="#cb16-27"></a><span class="co">#&gt; 1    NHDFlowline_Network Multi Line String      168    136</span></span>
+<span id="cb16-28"><a href="#cb16-28"></a><span class="co">#&gt; 2            CatchmentSP     Multi Polygon      167      6</span></span>
+<span id="cb16-29"><a href="#cb16-29"></a><span class="co">#&gt; 3                NHDArea     Multi Polygon        1     14</span></span>
+<span id="cb16-30"><a href="#cb16-30"></a><span class="co">#&gt; 4           NHDWaterbody     Multi Polygon       90     21</span></span>
+<span id="cb16-31"><a href="#cb16-31"></a><span class="co">#&gt; 5                   Gage             Point       33     19</span></span>
+<span id="cb16-32"><a href="#cb16-32"></a><span class="co">#&gt; 6 NHDFlowline_NonNetwork Multi Line String       45     12</span></span></code></pre></div>
 <p>Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other laters as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">catchment &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(output_file, <span class="st">"CatchmentSP"</span>)</a>
-<a class="sourceLine" id="cb17-2" data-line-number="2">waterbody &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(output_file, <span class="st">"NHDWaterbody"</span>)</a>
-<a class="sourceLine" id="cb17-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb17-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</a>
-<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(start_point, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb17-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline, COMID <span class="op">%in%</span><span class="st"> </span>UT_comids)),</a>
-<a class="sourceLine" id="cb17-7" data-line-number="7">     <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb17-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(catchment), <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb17-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(waterbody), <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>), <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>catchment &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(output_file, <span class="st">"CatchmentSP"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a>waterbody &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(output_file, <span class="st">"NHDWaterbody"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3"></a></span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(flowline))</span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(start_point, <span class="dt">cex =</span> <span class="fl">1.5</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb17-6"><a href="#cb17-6"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(flowline, COMID <span class="op">%in%</span><span class="st"> </span>UT_comids)),</span>
+<span id="cb17-7"><a href="#cb17-7"></a>     <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb17-8"><a href="#cb17-8"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(catchment), <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb17-9"><a href="#cb17-9"></a><span class="kw"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(waterbody), <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>), <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/plot_result-1.png" width="576"></p>
 <p><a id="indexing"></a></p>
 </div>
@@ -461,49 +461,49 @@
 <h2 class="hasAnchor">
 <a href="#indexing" class="anchor"></a>Indexing</h2>
 <p>Expect more in this space as <code>nhdplustTools</code> progresses. Right now, one indexing method has been implemented. Using the data above, we can use the <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> function to get the comid, reachcode, and measure of our starting point like this.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(flowline, start_point)</a>
-<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="co">#&gt; Warning in get_flowline_index(flowline, start_point): crs of lines and points</span></a>
-<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="co">#&gt; don't match. attempting st_transform of points</span></a>
-<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="co">#&gt;      COMID      REACHCODE REACH_meas       offset</span></a>
-<a class="sourceLine" id="cb18-5" data-line-number="5"><span class="co">#&gt; 1 13293750 07090002007373   53.13861 0.0004206437</span></a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(flowline, start_point)</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="co">#&gt; Warning in get_flowline_index(flowline, start_point): crs of lines and points</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="co">#&gt; don't match. attempting st_transform of points</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="co">#&gt;      COMID      REACHCODE REACH_meas       offset</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="co">#&gt; 1 13293750 07090002007373   53.13861 0.0004206437</span></span></code></pre></div>
 <p><code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> will work with a list of points too. For demonstration purposes, we can use the gages in our subset from above.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">gage &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(output_file, <span class="st">"Gage"</span>)</a>
-<a class="sourceLine" id="cb19-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="kw"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(flowline, sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(gage), <span class="dt">precision =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="co">#&gt;       COMID      REACHCODE  REACH_meas         offset</span></a>
-<a class="sourceLine" id="cb19-5" data-line-number="5"><span class="co">#&gt; 1  13293744 07090002007743  29.3045252 0.000016031339</span></a>
-<a class="sourceLine" id="cb19-6" data-line-number="6"><span class="co">#&gt; 2  13294276 07090002008387  14.8355105 0.000012319388</span></a>
-<a class="sourceLine" id="cb19-7" data-line-number="7"><span class="co">#&gt; 3  13294264 07090002007650  56.4438696 0.000020924187</span></a>
-<a class="sourceLine" id="cb19-8" data-line-number="8"><span class="co">#&gt; 4  13293750 07090002007373  42.5089435 0.000025343524</span></a>
-<a class="sourceLine" id="cb19-9" data-line-number="9"><span class="co">#&gt; 5  13294312 07090002008383   1.2211441 0.000002976034</span></a>
-<a class="sourceLine" id="cb19-10" data-line-number="10"><span class="co">#&gt; 6  13294264 07090002007650  41.0519403 0.000033122595</span></a>
-<a class="sourceLine" id="cb19-11" data-line-number="11"><span class="co">#&gt; 7  13294264 07090002007650   2.0871734 0.000002256005</span></a>
-<a class="sourceLine" id="cb19-12" data-line-number="12"><span class="co">#&gt; 8  13293688 07090002007660 100.0000000 0.020929363236</span></a>
-<a class="sourceLine" id="cb19-13" data-line-number="13"><span class="co">#&gt; 9  13294300 07090002008379  85.4440745 0.000016082151</span></a>
-<a class="sourceLine" id="cb19-14" data-line-number="14"><span class="co">#&gt; 10 13293690 07090002007648   0.7642491 0.000014026098</span></a>
-<a class="sourceLine" id="cb19-15" data-line-number="15"><span class="co">#&gt; 11 13294264 07090002007650  71.4042342 0.008204867456</span></a>
-<a class="sourceLine" id="cb19-16" data-line-number="16"><span class="co">#&gt; 12 13294264 07090002007650  72.0019381 0.019942565085</span></a>
-<a class="sourceLine" id="cb19-17" data-line-number="17"><span class="co">#&gt; 13 13294176 07090002007664   6.1174271 0.000031905454</span></a>
-<a class="sourceLine" id="cb19-18" data-line-number="18"><span class="co">#&gt; 14 13294264 07090002007650  29.9935507 0.014844404582</span></a>
-<a class="sourceLine" id="cb19-19" data-line-number="19"><span class="co">#&gt; 15 13294290 07090002008374  88.0212984 0.000027985042</span></a>
-<a class="sourceLine" id="cb19-20" data-line-number="20"><span class="co">#&gt; 16 13294138 07090002007709  73.3716682 0.000010977009</span></a>
-<a class="sourceLine" id="cb19-21" data-line-number="21"><span class="co">#&gt; 17 13293614 07090002007657 100.0000000 0.017607698993</span></a>
-<a class="sourceLine" id="cb19-22" data-line-number="22"><span class="co">#&gt; 18 13293486 07090002007724   8.8530113 0.000012426106</span></a>
-<a class="sourceLine" id="cb19-23" data-line-number="23"><span class="co">#&gt; 19 13293512 07090002007723   5.9867618 0.000010481501</span></a>
-<a class="sourceLine" id="cb19-24" data-line-number="24"><span class="co">#&gt; 20 13294176 07090002007664  16.9958260 0.000012406860</span></a>
-<a class="sourceLine" id="cb19-25" data-line-number="25"><span class="co">#&gt; 21 13293892 07090002007769  76.2138002 0.033424958786</span></a>
-<a class="sourceLine" id="cb19-26" data-line-number="26"><span class="co">#&gt; 22 13293474 07090002007713  72.0813909 0.000006053102</span></a>
-<a class="sourceLine" id="cb19-27" data-line-number="27"><span class="co">#&gt; 23 13293520 07090002007676  18.1942138 0.000030263717</span></a>
-<a class="sourceLine" id="cb19-28" data-line-number="28"><span class="co">#&gt; 24 13293876 07090002007627  60.1357174 0.000025453648</span></a>
-<a class="sourceLine" id="cb19-29" data-line-number="29"><span class="co">#&gt; 25 13293826 07090002007632 100.0000000 0.004750241659</span></a>
-<a class="sourceLine" id="cb19-30" data-line-number="30"><span class="co">#&gt; 26 13293512 07090002007723  68.1716181 0.000025778329</span></a>
-<a class="sourceLine" id="cb19-31" data-line-number="31"><span class="co">#&gt; 27 13294264 07090002007650  97.1673437 0.000013950790</span></a>
-<a class="sourceLine" id="cb19-32" data-line-number="32"><span class="co">#&gt; 28 13294344 07090002007629   6.5787509 0.000007648685</span></a>
-<a class="sourceLine" id="cb19-33" data-line-number="33"><span class="co">#&gt; 29 13293452 07090002007737   0.0000000 0.000486895250</span></a>
-<a class="sourceLine" id="cb19-34" data-line-number="34"><span class="co">#&gt; 30 13294344 07090002007629  27.7299659 0.000012934585</span></a>
-<a class="sourceLine" id="cb19-35" data-line-number="35"><span class="co">#&gt; 31 13293512 07090002007723  67.6223334 0.000022459225</span></a>
-<a class="sourceLine" id="cb19-36" data-line-number="36"><span class="co">#&gt; 32 13294344 07090002007629   6.5787509 0.000007648685</span></a>
-<a class="sourceLine" id="cb19-37" data-line-number="37"><span class="co">#&gt; 33 13294288 07090002008236   4.3378700 0.000275389563</span></a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>gage &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(output_file, <span class="st">"Gage"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="kw"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(flowline, sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(gage), <span class="dt">precision =</span> <span class="dv">10</span>)</span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="co">#&gt;       COMID      REACHCODE  REACH_meas         offset</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="co">#&gt; 1  13293744 07090002007743  29.3045252 0.000016031339</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="co">#&gt; 2  13294276 07090002008387  14.8355105 0.000012319388</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="co">#&gt; 3  13294264 07090002007650  56.4438696 0.000020924187</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="co">#&gt; 4  13293750 07090002007373  42.5089435 0.000025343524</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="co">#&gt; 5  13294312 07090002008383   1.2211441 0.000002976034</span></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="co">#&gt; 6  13294264 07090002007650  41.0519403 0.000033122595</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="co">#&gt; 7  13294264 07090002007650   2.0871734 0.000002256005</span></span>
+<span id="cb19-12"><a href="#cb19-12"></a><span class="co">#&gt; 8  13293688 07090002007660 100.0000000 0.020929363236</span></span>
+<span id="cb19-13"><a href="#cb19-13"></a><span class="co">#&gt; 9  13294300 07090002008379  85.4440745 0.000016082151</span></span>
+<span id="cb19-14"><a href="#cb19-14"></a><span class="co">#&gt; 10 13293690 07090002007648   0.7642491 0.000014026098</span></span>
+<span id="cb19-15"><a href="#cb19-15"></a><span class="co">#&gt; 11 13294264 07090002007650  71.4042342 0.008204867456</span></span>
+<span id="cb19-16"><a href="#cb19-16"></a><span class="co">#&gt; 12 13294264 07090002007650  72.0019381 0.019942565085</span></span>
+<span id="cb19-17"><a href="#cb19-17"></a><span class="co">#&gt; 13 13294176 07090002007664   6.1174271 0.000031905454</span></span>
+<span id="cb19-18"><a href="#cb19-18"></a><span class="co">#&gt; 14 13294264 07090002007650  29.9935507 0.014844404582</span></span>
+<span id="cb19-19"><a href="#cb19-19"></a><span class="co">#&gt; 15 13294290 07090002008374  88.0212984 0.000027985042</span></span>
+<span id="cb19-20"><a href="#cb19-20"></a><span class="co">#&gt; 16 13294138 07090002007709  73.3716682 0.000010977009</span></span>
+<span id="cb19-21"><a href="#cb19-21"></a><span class="co">#&gt; 17 13293614 07090002007657 100.0000000 0.017607698993</span></span>
+<span id="cb19-22"><a href="#cb19-22"></a><span class="co">#&gt; 18 13293486 07090002007724   8.8530113 0.000012426106</span></span>
+<span id="cb19-23"><a href="#cb19-23"></a><span class="co">#&gt; 19 13293512 07090002007723   5.9867618 0.000010481501</span></span>
+<span id="cb19-24"><a href="#cb19-24"></a><span class="co">#&gt; 20 13294176 07090002007664  16.9958260 0.000012406860</span></span>
+<span id="cb19-25"><a href="#cb19-25"></a><span class="co">#&gt; 21 13293892 07090002007769  76.2138002 0.033424958786</span></span>
+<span id="cb19-26"><a href="#cb19-26"></a><span class="co">#&gt; 22 13293474 07090002007713  72.0813909 0.000006053102</span></span>
+<span id="cb19-27"><a href="#cb19-27"></a><span class="co">#&gt; 23 13293520 07090002007676  18.1942138 0.000030263717</span></span>
+<span id="cb19-28"><a href="#cb19-28"></a><span class="co">#&gt; 24 13293876 07090002007627  60.1357174 0.000025453648</span></span>
+<span id="cb19-29"><a href="#cb19-29"></a><span class="co">#&gt; 25 13293826 07090002007632 100.0000000 0.004750241659</span></span>
+<span id="cb19-30"><a href="#cb19-30"></a><span class="co">#&gt; 26 13293512 07090002007723  68.1716181 0.000025778329</span></span>
+<span id="cb19-31"><a href="#cb19-31"></a><span class="co">#&gt; 27 13294264 07090002007650  97.1673437 0.000013950790</span></span>
+<span id="cb19-32"><a href="#cb19-32"></a><span class="co">#&gt; 28 13294344 07090002007629   6.5787509 0.000007648685</span></span>
+<span id="cb19-33"><a href="#cb19-33"></a><span class="co">#&gt; 29 13293452 07090002007737   0.0000000 0.000486895250</span></span>
+<span id="cb19-34"><a href="#cb19-34"></a><span class="co">#&gt; 30 13294344 07090002007629  27.7299659 0.000012934585</span></span>
+<span id="cb19-35"><a href="#cb19-35"></a><span class="co">#&gt; 31 13293512 07090002007723  67.6223334 0.000022459225</span></span>
+<span id="cb19-36"><a href="#cb19-36"></a><span class="co">#&gt; 32 13294344 07090002007629   6.5787509 0.000007648685</span></span>
+<span id="cb19-37"><a href="#cb19-37"></a><span class="co">#&gt; 33 13294288 07090002008236   4.3378700 0.000275389563</span></span></code></pre></div>
 <p>For more info about <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> see the article <code><a href="../articles/point_indexing.html">vignette("point_indexing")</a></code> about it or the reference page that describes it.</p>
 <p><a id="refactoring"></a></p>
 </div>

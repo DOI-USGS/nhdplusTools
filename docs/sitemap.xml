@@ -64,6 +64,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_nldi_feature.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_node.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_pathlength.html</loc>
   </url>
   <url>

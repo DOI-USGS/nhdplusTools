@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.14</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="point_indexing_files/header-attrs-2.1.2/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Indexing and Referencing</h1>
@@ -113,78 +113,78 @@
 <h2 class="hasAnchor">
 <a href="#nhdplus-point-indexing" class="anchor"></a>NHDPlus Point Indexing</h2>
 <p>First we’ll load up some data. In this case, we use flowlines from the NHDPlus subset that’s included in the package and a set of points to index. We’ll use the NHDPlus Gages layer for this example. The data in this example is big. The R session needs a lot of memory to hold the whole NHDPlus flowline layer and run the calculations.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nhdplusTools)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; USGS Support Package: https://owi.usgs.gov/R/packages.html#support</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"natseamless.gpkg"</span>))</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">flowlines &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(), <span class="st">"NHDFlowline_Network"</span>)</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">gages &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(), <span class="st">"Gage"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nhdplusTools)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; USGS Support Package: https://owi.usgs.gov/R/packages.html#support</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(temp_dir, <span class="st">"natseamless.gpkg"</span>))</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a>flowlines &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(), <span class="st">"NHDFlowline_Network"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>gages &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="kw"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(), <span class="st">"Gage"</span>)</span></code></pre></div>
 <p>Now we can call <code><a href="../reference/get_flowline_index.html">nhdplusTools::get_flowline_index()</a></code> on the data we just loaded. Note that we are doing our spatial searching in units of degrees. The get_flowline_index has an input, <code>search_radius</code> which defaults to 0.1. See the documentation of the <a href="https://cran.r-project.org/package=RANN">nn2 function from the RANN package</a> for more information on how the search works.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">geom_col &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(gages, <span class="st">"sf_column"</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">indexes &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(flowlines, gages[[geom_col]], <span class="dt">search_radius =</span> <span class="fl">0.1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>geom_col &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(gages, <span class="st">"sf_column"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a>indexes &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(flowlines, gages[[geom_col]], <span class="dt">search_radius =</span> <span class="fl">0.1</span>)</span></code></pre></div>
 <p>Now let’s look at the results and see how the <code><a href="../reference/get_flowline_index.html">nhdplusTools::get_flowline_index()</a></code> did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODES that were matched.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(indexes<span class="op">$</span>COMID <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>FLComID)) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(gages)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">       <span class="st">"% were found to match the COMID in the NHDPlus gages layer"</span>)</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; [1] "69.6% were found to match the COMID in the NHDPlus gages layer"</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(indexes<span class="op">$</span>REACHCODE <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>REACHCODE)) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(gages)</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">       <span class="st">"% were found to match the REACHCODE in the NHDPlus gages layer"</span>)</a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt; [1] "71.7% were found to match the REACHCODE in the NHDPlus gages layer"</span></a>
-<a class="sourceLine" id="cb3-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb3-11" data-line-number="11">matched &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(indexes, </a>
-<a class="sourceLine" id="cb3-12" data-line-number="12">                 dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(gages, <span class="ot">NULL</span>), </a>
-<a class="sourceLine" id="cb3-13" data-line-number="13">                               <span class="dt">REACHCODE_ref =</span> REACHCODE, </a>
-<a class="sourceLine" id="cb3-14" data-line-number="14">                               <span class="dt">COMID_ref =</span> FLComID, </a>
-<a class="sourceLine" id="cb3-15" data-line-number="15">                               <span class="dt">REACH_meas_ref =</span> Measure)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(REACHCODE <span class="op">==</span><span class="st"> </span>REACHCODE_ref) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">REACH_meas_diff =</span> REACH_meas <span class="op">-</span><span class="st"> </span>REACH_meas_ref)</a>
-<a class="sourceLine" id="cb3-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb3-19" data-line-number="19"><span class="kw"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span>(matched<span class="op">$</span>REACH_meas_diff, <span class="dt">breaks =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb3-20" data-line-number="20">     <span class="dt">main =</span> <span class="st">"Difference in measure for gages matched to the same reach."</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(indexes<span class="op">$</span>COMID <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>FLComID)) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(gages)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
+<span id="cb3-3"><a href="#cb3-3"></a>       <span class="st">"% were found to match the COMID in the NHDPlus gages layer"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; [1] "69.6% were found to match the COMID in the NHDPlus gages layer"</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(indexes<span class="op">$</span>REACHCODE <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>REACHCODE)) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(gages)</span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
+<span id="cb3-8"><a href="#cb3-8"></a>       <span class="st">"% were found to match the REACHCODE in the NHDPlus gages layer"</span>)</span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; [1] "71.7% were found to match the REACHCODE in the NHDPlus gages layer"</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a>matched &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(indexes, </span>
+<span id="cb3-12"><a href="#cb3-12"></a>                 dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(gages, <span class="ot">NULL</span>), </span>
+<span id="cb3-13"><a href="#cb3-13"></a>                               <span class="dt">REACHCODE_ref =</span> REACHCODE, </span>
+<span id="cb3-14"><a href="#cb3-14"></a>                               <span class="dt">COMID_ref =</span> FLComID, </span>
+<span id="cb3-15"><a href="#cb3-15"></a>                               <span class="dt">REACH_meas_ref =</span> Measure)) <span class="op">%&gt;%</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(REACHCODE <span class="op">==</span><span class="st"> </span>REACHCODE_ref) <span class="op">%&gt;%</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">REACH_meas_diff =</span> REACH_meas <span class="op">-</span><span class="st"> </span>REACH_meas_ref)</span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="kw"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span>(matched<span class="op">$</span>REACH_meas_diff, <span class="dt">breaks =</span> <span class="dv">100</span>, </span>
+<span id="cb3-20"><a href="#cb3-20"></a>     <span class="dt">main =</span> <span class="st">"Difference in measure for gages matched to the same reach."</span>)</span></code></pre></div>
 <p><img src="point_indexing_files/figure-html/analyze_index-1.png" width="576"></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(matched<span class="op">$</span>REACH_meas_diff, </a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">               <span class="dt">probs =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), </a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">      <span class="dt">digits =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span></a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; -5.11 -1.40 -0.52  0.36  1.57  8.11 30.74</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(matched<span class="op">$</span>REACH_meas_diff, </span>
+<span id="cb4-3"><a href="#cb4-3"></a>               <span class="dt">probs =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), </span>
+<span id="cb4-4"><a href="#cb4-4"></a>      <span class="dt">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt; -5.11 -1.40 -0.52  0.36  1.57  8.11 30.74</span></span></code></pre></div>
 <p>The above example used the native nodes of the NHDPlus as the potential measure snap locations. The <code><a href="../reference/get_flowline_index.html">nhdplusTools::get_flowline_index()</a></code> function has the ability to refine these by segmentizing the line to some given resolution. Let’s try the same thing using a resolution of 10m and see if we can do any better.</p>
 <p>Note that the <code><a href="https://rdrr.io/pkg/sf/man/geos_unary.html">sf::st_segmentize</a></code> function takes care of the distance conversion and segmentizes our lon/lat lines to 10m on the fly.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">indexes &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(flowlines, </a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">                              gages[[geom_col]], </a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">                              <span class="dt">search_radius =</span> <span class="fl">0.1</span>, </a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">                              <span class="dt">precision =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; Linking to GEOS 3.8.1, GDAL 3.0.4, PROJ 7.0.0</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>indexes &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(flowlines, </span>
+<span id="cb5-2"><a href="#cb5-2"></a>                              gages[[geom_col]], </span>
+<span id="cb5-3"><a href="#cb5-3"></a>                              <span class="dt">search_radius =</span> <span class="fl">0.1</span>, </span>
+<span id="cb5-4"><a href="#cb5-4"></a>                              <span class="dt">precision =</span> <span class="dv">10</span>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt; Linking to GEOS 3.8.1, GDAL 3.0.4, PROJ 7.0.0</span></span></code></pre></div>
 <p>Now lets look at out comparison again.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(indexes<span class="op">$</span>COMID <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>FLComID)) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(gages)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">       <span class="st">"% were found to match the COMID in the NHDPlus gages layer"</span>)</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt; [1] "69.6% were found to match the COMID in the NHDPlus gages layer"</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(indexes<span class="op">$</span>REACHCODE <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>REACHCODE)) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(gages)</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">       <span class="st">"% were found to match the REACHCODE in the NHDPlus gages layer"</span>)</a>
-<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">#&gt; [1] "71.7% were found to match the REACHCODE in the NHDPlus gages layer"</span></a>
-<a class="sourceLine" id="cb6-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb6-11" data-line-number="11">matched &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(indexes, </a>
-<a class="sourceLine" id="cb6-12" data-line-number="12">                 dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(gages, <span class="ot">NULL</span>), </a>
-<a class="sourceLine" id="cb6-13" data-line-number="13">                               <span class="dt">REACHCODE_ref =</span> REACHCODE, </a>
-<a class="sourceLine" id="cb6-14" data-line-number="14">                               <span class="dt">COMID_ref =</span> FLComID, </a>
-<a class="sourceLine" id="cb6-15" data-line-number="15">                               <span class="dt">REACH_meas_ref =</span> Measure)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(REACHCODE <span class="op">==</span><span class="st"> </span>REACHCODE_ref) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-17" data-line-number="17"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">REACH_meas_diff =</span> REACH_meas <span class="op">-</span><span class="st"> </span>REACH_meas_ref)</a>
-<a class="sourceLine" id="cb6-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="kw"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span>(matched<span class="op">$</span>REACH_meas_diff, <span class="dt">breaks =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb6-20" data-line-number="20">     <span class="dt">main =</span> <span class="st">"Difference in measure for gages matched to the same reach."</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(indexes<span class="op">$</span>COMID <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>FLComID)) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(gages)</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
+<span id="cb6-3"><a href="#cb6-3"></a>       <span class="st">"% were found to match the COMID in the NHDPlus gages layer"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; [1] "69.6% were found to match the COMID in the NHDPlus gages layer"</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(indexes<span class="op">$</span>REACHCODE <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>REACHCODE)) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(gages)</span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
+<span id="cb6-8"><a href="#cb6-8"></a>       <span class="st">"% were found to match the REACHCODE in the NHDPlus gages layer"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; [1] "71.7% were found to match the REACHCODE in the NHDPlus gages layer"</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-11"><a href="#cb6-11"></a>matched &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(indexes, </span>
+<span id="cb6-12"><a href="#cb6-12"></a>                 dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(sf<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(gages, <span class="ot">NULL</span>), </span>
+<span id="cb6-13"><a href="#cb6-13"></a>                               <span class="dt">REACHCODE_ref =</span> REACHCODE, </span>
+<span id="cb6-14"><a href="#cb6-14"></a>                               <span class="dt">COMID_ref =</span> FLComID, </span>
+<span id="cb6-15"><a href="#cb6-15"></a>                               <span class="dt">REACH_meas_ref =</span> Measure)) <span class="op">%&gt;%</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(REACHCODE <span class="op">==</span><span class="st"> </span>REACHCODE_ref) <span class="op">%&gt;%</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">REACH_meas_diff =</span> REACH_meas <span class="op">-</span><span class="st"> </span>REACH_meas_ref)</span>
+<span id="cb6-18"><a href="#cb6-18"></a></span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="kw"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span>(matched<span class="op">$</span>REACH_meas_diff, <span class="dt">breaks =</span> <span class="dv">100</span>, </span>
+<span id="cb6-20"><a href="#cb6-20"></a>     <span class="dt">main =</span> <span class="st">"Difference in measure for gages matched to the same reach."</span>)</span></code></pre></div>
 <p><img src="point_indexing_files/figure-html/analyze_inde_precise-1.png" width="576"></p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(matched<span class="op">$</span>REACH_meas_diff, </a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">               <span class="dt">probs =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), <span class="dt">digits =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; -1.31 -0.66 -0.33 -0.04  0.22  0.81  1.57</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(matched<span class="op">$</span>REACH_meas_diff, </span>
+<span id="cb7-3"><a href="#cb7-3"></a>               <span class="dt">probs =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), <span class="dt">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt; -1.31 -0.66 -0.33 -0.04  0.22  0.81  1.57</span></span></code></pre></div>
 </div>
   </div>
 

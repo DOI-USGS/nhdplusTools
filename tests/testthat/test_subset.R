@@ -257,3 +257,17 @@ test_that("prep_nhdplus runs as expected", {
   unlink(sample_gpkg)
 
 })
+
+test_that("by rpu", {
+  sample_data <- system.file("extdata/sample_natseamless.gpkg",
+                             package = "nhdplusTools")
+
+  nhdplus_path(sample_data)
+
+  staged_nhdplus <- stage_national_data(output_path = tempdir())
+
+  sample_flines <- readRDS(staged_nhdplus$flowline)
+
+  expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
+  expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_stanalone = TRUE)), 267)
+})

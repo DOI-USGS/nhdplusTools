@@ -481,7 +481,79 @@ get_flowline_layer_name <- function(nhdplus_data) {
   layer_name
 }
 
+#' Subset by Raster Processing Unit.
+#' @description Given flowlines and an rpu_code, performs a network-safe subset such
+#' that the result can be used in downstream processing. Has been tested to work
+#' against the entire NHDPlusV2 domain and satisfies a number of edge cases.
+#' @param fline sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM, and Hydroseq.
+#' LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.
+#' @param rpu character e.g. "01a"
+#' @export
+#' @importFrom dplyr filter arrange summarize
+#' @importFrom sf st_sf st_drop_geometry
+#' @examples
+#' sample_data <- system.file("extdata/sample_natseamless.gpkg",
+#'                            package = "nhdplusTools")
+#'
+#' nhdplus_path(sample_data)
+#'
+#' staged_nhdplus <- stage_national_data(output_path = tempdir())
+#'
+#' sample_flines <- readRDS(staged_nhdplus$flowline)
+#'
+#' subset_rpu(sample_flines, rpu = "07b")
+subset_rpu <- function(fline, rpu, run_make_stanalone = TRUE) {
+  # Find all outlets of current rpu and sort by size
+  # !ToNode %in% FromNode finds non-terminal flowlines that exit the domain.
+  outlets <- filter(fline, .data$RPUID %in% rpu)
 
+  outlets <- st_sf(filter(outlets, .data$TerminalFl == 1 |
+                                !.data$ToNode %in% .data$FromNode))
 
+  outlets <- arrange(outlets, desc(.data$ArbolateSu))
 
+  # run nhdplusTools::get_UT for all outlets and concatenate.
+  network <- lapply(outlets$COMID,
+                    function(x, fline) get_UT(fline, x),
+                    fline = fline)
+  network <- do.call(c, network)
+
+  # Filter so only navigable flowlines are included.
+  fline <- fline[fline$COMID %in% network, ]
+
+  # For flowlines labaled as in the RPU, find the top and bottom of each
+  # LevelPath. This was required for some unique network situations.
+  fline_sub <- filter(drop_geometry(fline), RPUID %in% rpu)
+
+  fline_sub <- group_by(fline_sub, .data$LevelPathI)
+
+  fline_sub <- summarize(fline_sub,
+                         lp_top = max(.data$Hydroseq),
+                         lp_bot = min(.data$Hydroseq))
+
+  # Using the levelpath top and bottoms found above, filter the complete
+  # domain to the hydrosequence of the levelpath top and bottoms instead
+  # of trusting the RPUID to be useable.
+  fline <- left_join(fline, fline_sub, by = "LevelPathI")
+
+  fline <- group_by(filter(fline, .data$LevelPathI %in% fline_sub$LevelPathI),
+                    .data$LevelPathI)
+
+  fline <- ungroup(filter(fline, .data$Hydroseq >= .data$lp_bot &
+                            .data$Hydroseq <= .data$lp_top))
+
+  if(run_make_stanalone) {
+    make_standalone(fline)
+  } else {
+    fline
+  }
+}
+
+drop_geometry <- function(x) {
+  if("sf" %in% class(x)) {
+    sf::st_drop_geometry(x)
+  } else {
+    x
+  }
+}
 

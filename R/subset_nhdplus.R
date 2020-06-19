@@ -488,6 +488,7 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #' @param fline sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM, and Hydroseq.
 #' LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.
 #' @param rpu character e.g. "01a"
+#' @param run_make_standalone boolean should the run_make_standalone function be run on result?
 #' @export
 #' @importFrom dplyr filter arrange summarize
 #' @importFrom sf st_sf st_drop_geometry
@@ -502,7 +503,7 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #' sample_flines <- readRDS(staged_nhdplus$flowline)
 #'
 #' subset_rpu(sample_flines, rpu = "07b")
-subset_rpu <- function(fline, rpu, run_make_stanalone = TRUE) {
+subset_rpu <- function(fline, rpu, run_make_standalone = TRUE) {
   # Find all outlets of current rpu and sort by size
   # !ToNode %in% FromNode finds non-terminal flowlines that exit the domain.
   outlets <- filter(fline, .data$RPUID %in% rpu)
@@ -523,7 +524,7 @@ subset_rpu <- function(fline, rpu, run_make_stanalone = TRUE) {
 
   # For flowlines labaled as in the RPU, find the top and bottom of each
   # LevelPath. This was required for some unique network situations.
-  fline_sub <- filter(drop_geometry(fline), RPUID %in% rpu)
+  fline_sub <- filter(drop_geometry(fline), .data$RPUID %in% rpu)
 
   fline_sub <- group_by(fline_sub, .data$LevelPathI)
 
@@ -542,7 +543,7 @@ subset_rpu <- function(fline, rpu, run_make_stanalone = TRUE) {
   fline <- ungroup(filter(fline, .data$Hydroseq >= .data$lp_bot &
                             .data$Hydroseq <= .data$lp_top))
 
-  if(run_make_stanalone) {
+  if(run_make_standalone) {
     make_standalone(fline)
   } else {
     fline

@@ -4,13 +4,15 @@
 \alias{subset_rpu}
 \title{Subset by Raster Processing Unit.}
 \usage{
-subset_rpu(fline, rpu, run_make_stanalone = TRUE)
+subset_rpu(fline, rpu, run_make_standalone = TRUE)
 }
 \arguments{
 \item{fline}{sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM, and Hydroseq.
 LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.}
 
 \item{rpu}{character e.g. "01a"}
+
+\item{run_make_standalone}{boolean should the run_make_standalone function be run on result?}
 }
 \description{
 Given flowlines and an rpu_code, performs a network-safe subset such

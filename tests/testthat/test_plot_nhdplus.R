@@ -125,7 +125,7 @@ test_that("local data", {
   outlet <- c(list(outlet), list(c("nwissite", "USGS-05428500")))
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
 
-  expect_equal(names(plot_data$outlets), c("comid", "geom", "type"))
+  expect_true(all(names(plot_data$outlets) %in% c("comid", "geom", "type")))
   expect_equal(plot_data$outlets$comid, c("13293970", "13293750"))
 
   expect_s3_class(sf::st_geometry(plot_data$flowline)[[1]], "XY")

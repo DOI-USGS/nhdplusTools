@@ -52,7 +52,7 @@ download_nhdplusv2 <- function(outdir,
 
 download_wbd <- function(outdir,
                          url = paste0("https://prd-tnm.s3.amazonaws.com/StagedProducts/",
-                                      "Hydrography/WBD/National/GDB/National_WBD_GDB.zip")) {
+                                      "Hydrography/WBD/National/GDB/WBD_National_GDB.zip")) {
 
   file <- downloader(outdir, url, "WBD")
 

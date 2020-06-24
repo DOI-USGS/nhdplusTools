@@ -183,7 +183,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
       }
 
       if(!is.null(output_file)) {
-        sf::write_sf(layer, output_file, layer_name)
+        sf::write_sf(clean_bbox(layer), output_file, layer_name)
       }
     }
 
@@ -228,7 +228,7 @@ intersection_write <- function(layer_name, data_path, envelope,
     if(is.null(output_file)) {
       return(out)
     } else {
-      sf::write_sf(out, output_file, layer_name)
+      sf::write_sf(clean_bbox(out), output_file, layer_name)
       return(layer_name)
     }
   } else {
@@ -414,7 +414,7 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
   if (status) message(paste("Writing", layer_name))
 
   if(!is.null(output_file)) {
-    sf::write_sf(fline, output_file, layer_name)
+    sf::write_sf(clean_bbox(fline), output_file, layer_name)
   }
   out <- list()
   out[layer_name] <- list(fline)
@@ -450,11 +450,18 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
   if (status) message(paste("Writing", layer_name))
 
   if(!is.null(output_file)) {
-    sf::write_sf(catchment, output_file, layer_name)
+    sf::write_sf(clean_bbox(catchment), output_file, layer_name)
   }
   out <- list()
   out[layer_name] <- list(catchment)
   return(out)
+}
+
+clean_bbox <- function(x) {
+  if("bbox" %in% names(x) && class(x$bbox[1]) == "list") {
+    x$bbox <- sapply(x$bbox, paste, collapse = ",")
+  }
+  return(x)
 }
 
 get_catchment_layer_name <- function(simplified, nhdplus_data) {

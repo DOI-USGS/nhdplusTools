@@ -66,6 +66,9 @@ nhdplus_attributes <- list(
 
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
+assign("geoserver_ows_root", "https://labs.waterdata.usgs.gov/geoserver/ows", 
+       envir = nhdplusTools_env)
+
 assign("prepare_nhdplus_attributes",
        c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
          "FromNode", "ToNode", "TotDASqKM",

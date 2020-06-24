@@ -1,6 +1,8 @@
 nhdplusTools 0.3.14
 ==========
 * Added `get_node()` to get top and bottom of a flowline.
+* Switched geospatial data dependency to use labs.waterdata.usgs.gov
+* Added `subset_rpu()` to enable subsetting the NHD by Raster Processing Unit
 
 nhdplusTools 0.3.13
 ==========

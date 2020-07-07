@@ -32,9 +32,9 @@ test_that("subset runs as expected", {
   expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, "download"), "CatchmentSP")
   expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, "download"), "CatchmentSP")
 
-  nc <- read_sf(system.file("shape/nc.shp", package="sf"))
+  nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
   tempf <- file.path(temp_dir, "temp.geojson")
-  write_sf(nc, tempf, "Catchment")
+  sf::write_sf(nc, tempf, "Catchment")
   expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, tempf), "Catchment")
 
   nhdplus_path(sample_data)

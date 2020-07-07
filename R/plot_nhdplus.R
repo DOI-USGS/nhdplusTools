@@ -201,7 +201,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   }
 
   if(!is.null(bbox)) {
-    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg)
+    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg, overwrite)
     catchment <- flowline$catchment
     basin <- flowline$basin
     nexus <- flowline$nexus

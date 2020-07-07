@@ -18,30 +18,29 @@
 #' }
 discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 
+  ows_url <- get("geoserver_ows_root", envir = nhdplusTools_env)
+
   if (!is.null(point)) {
 
-    url_base <- paste0("https://cida.usgs.gov/nwc/geoserver/nhdplus/ows",
+    url_base <- paste0(ows_url,
                        "?service=WFS",
                        "&version=1.0.0",
                        "&request=GetFeature",
-                       "&typeName=nhdplus:catchmentsp",
+                       "&typeName=wmadata:catchmentsp",
                        "&outputFormat=application%2Fjson",
-                       "&srsName=EPSG:4269")
-    # "&bbox=40,-90.001,40.001,-90,urn:ogc:def:crs:EPSG:4269",
+                       "&srsName=EPSG:4326")
 
-    p_crd <- sf::st_coordinates(sf::st_transform(point, 4269))
+    p_crd <- sf::st_coordinates(sf::st_transform(point, 4326))
 
-    url <- paste0(url_base, "&bbox=",
-                  paste(p_crd[2], p_crd[1],
-                        p_crd[2] + 0.00001, p_crd[1] + 0.00001,
-                        "urn:ogc:def:crs:EPSG:4269", sep = ","))
+    url <- paste0(url_base, "&CQL_FILTER=INTERSECTS%28the_geom,%20POINT%20%28",
+                  p_crd[1], "%20", p_crd[2], "%29%29")
 
     req_data <- httr::RETRY("GET", url, times = 3, pause_cap = 60)
 
     catchment <- make_web_sf(req_data)
 
     if (nrow(catchment) > 1) {
-      warning("point too close to edge of catchment found multiple.")
+      warning("point too close to edge of catchment found multiple")
     }
 
     return(as.integer(catchment$featureid))
@@ -67,6 +66,9 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 #' @noRd
 get_nhdplus_byid <- function(comids, layer) {
 
+  ows_url <- get("geoserver_ows_root", envir = nhdplusTools_env)
+
+
   id_name <- list(catchmentsp = "featureid", nhdflowline_network = "comid")
 
   if (!any(names(id_name) %in% layer)) {
@@ -75,13 +77,11 @@ get_nhdplus_byid <- function(comids, layer) {
                      collapse = ", ")))
   }
 
-  post_url <- "https://cida.usgs.gov/nwc/geoserver/nhdplus/ows"
-
   # nolint start
 
   filter_1 <- paste0('<?xml version="1.0"?>',
                      '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                     '<wfs:Query xmlns:feature="http://gov.usgs.cida/nhdplus" typeName="feature:',
+                     '<wfs:Query xmlns:feature="http://wmadata" typeName="feature:',
                      layer, '" srsName="EPSG:4326">',
                      '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">',
                      '<ogc:Or>',
@@ -110,7 +110,7 @@ get_nhdplus_byid <- function(comids, layer) {
 
   # nolint end
 
-  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 3, pause_cap = 60)
+  req_data <- httr::RETRY("POST", ows_url, body = filter_xml, times = 3, pause_cap = 60)
 
   return(make_web_sf(req_data))
 }
@@ -128,13 +128,13 @@ get_nhdplus_bybox <- function(box, layer) {
 
   bbox <- sf::st_bbox(sf::st_transform(box, 4326))
 
-  post_url <- "https://cida.usgs.gov/nwc/geoserver/nhdplus/ows"
+  post_url <- get("geoserver_ows_root", envir = nhdplusTools_env)
 
   # nolint start
 
   filter_xml <- paste0('<?xml version="1.0"?>',
                        '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                       '<wfs:Query xmlns:feature="http://gov.usgs.cida/nhdplus" typeName="feature:',
+                       '<wfs:Query xmlns:feature="http://wmadata" typeName="feature:',
                        layer, '" srsName="EPSG:4326">',
                        '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">',
                        '<ogc:BBOX>',

@@ -2,7 +2,7 @@ context("plot tests")
 
 sample_data <- system.file("extdata/sample_natseamless.gpkg",
                            package = "nhdplusTools")
-
+options("rgdal_show_exportToProj4_warnings"="none")
 test_that("basics work", {
   skip_on_cran()
   tempd <- tempdir(check = TRUE)

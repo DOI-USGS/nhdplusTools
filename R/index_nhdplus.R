@@ -139,7 +139,7 @@ get_flowline_index <- function(flines, points,
 #' COMID
 #' @param points sfc of type POINT
 #' @return data.frame with two columns, COMID, waterbody_ID.
-#' @importFrom sf st_join
+#' @importFrom sf st_join st_geometry_type
 #' @importFrom dplyr select mutate bind_cols
 #' @export
 #' @examples
@@ -175,9 +175,27 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radiu
   near_wb <- left_join(near_wb, wb_atts, by = c("L1" = "index"))
   near_wb <- mutate(near_wb, nn.dists = ifelse(nn.dists > search_radius, NA, nn.dists))
 
-  st_as_sf(bind_cols(select(near_wb, near_wb_COMID = .data$wb_COMID,
-                            near_wb_dist = .data$nn.dists),
-                     select(points, in_wb_COMID = .data$wb_COMID)))
+  out <- st_drop_geometry(st_as_sf(bind_cols(select(near_wb, near_wb_COMID = .data$wb_COMID,
+                                                    near_wb_dist = .data$nn.dists),
+                                             select(points, in_wb_COMID = .data$wb_COMID))))
+
+  if(!is.null(flines)) {
+
+    out <- mutate(out, joiner = ifelse(!is.na(.data$in_wb_COMID), in_wb_COMID, near_wb_COMID),
+                  id = seq_len(nrow(out)))
+
+    out <- left_join(out, select(st_drop_geometry(flines),
+                                 outlet_fline_COMID = .data$COMID,
+                                 .data$WBAREACOMI, .data$Hydroseq),
+                     by = c("joiner" = "WBAREACOMI"))
+
+    out <- ungroup(filter(group_by(out, id), is.na(Hydroseq) | Hydroseq == min(Hydroseq)))
+
+    out <- select(out, -.data$id, -.data$Hydroseq, -.data$joiner)
+
+  }
+
+  out
 }
 
 make_singlepart <- function(x, warn_text = "") {

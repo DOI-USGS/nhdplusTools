@@ -3,6 +3,7 @@ sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplus
 
 wb <- sf::read_sf(sample_data, "NHDWaterbody")
 gage <- sf::read_sf(sample_data, "Gage")
+fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
 
 gage_l <- sf::st_drop_geometry(gage) %>%
   dplyr::filter(!is.na(LonSite)) %>%
@@ -29,7 +30,16 @@ match <- get_waterbody_index(wb_l, gage_l, search_radius = 200)
 
 expect_equal(match[13,]$near_wb_dist, 164, tolerance = 1)
 
-expect_is(match, "sf")
+match <- get_waterbody_index(wb_l, gage_l, flines = fline, search_radius = 200)
 
-# mapview::mapview(list(wb_l, match))
+gage_l <- cbind(gage_l, match)
+
+# waterbody without flowline
+expect_true(is.na(match[18,]$outlet_fline_COMID))
+
+# point near waterbody
+expect_equal(match[7,]$outlet_fline_COMID, 13294312)
+
+# mapview::mapview(list(gage_l, wb_l, fline))
+
 })

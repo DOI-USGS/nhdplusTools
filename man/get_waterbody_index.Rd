@@ -24,10 +24,8 @@ given an sf point geometry column, return waterbody id, and COMID of dominant ar
 sample <- system.file("extdata/sample_natseamless.gpkg",
                       package = "nhdplusTools")
 
-flines <- sf::st_zm(sf::read_sf(sample, "NHDFlowline_Network"))
 waterbodies <- sf::read_sf(sample, "NHDWaterbody")
 get_waterbody_index(waterbodies,
-                    flines,
                     sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
                                crs = 4326, dim = "XY"))
 

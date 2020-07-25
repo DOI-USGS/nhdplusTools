@@ -1,3 +1,15 @@
+matcher <- function(coords, points, search_radius) {
+  matched <- nn2(data = coords[, 1:2],
+                 query = matrix(points[, c("X", "Y")], ncol = 2),
+                 k = 1,
+                 searchtype = "radius",
+                 radius = search_radius) %>%
+    data.frame(stringsAsFactors = FALSE) %>%
+    left_join(mutate(select(as.data.frame(coords), .data$L1),
+                     index = seq_len(nrow(coords))),
+              by = c("nn.idx" = "index"))
+}
+
 #' @title Get Flowline Index
 #' @description given an sf point geometry column, return COMID, reachcode,
 #' and measure for each.
@@ -50,8 +62,6 @@ get_flowline_index <- function(flines, points,
     points <- sf::st_transform(points, sf::st_crs(flines))
   }
 
-  points <- sf::st_coordinates(points)
-
   flines <- select(flines, COMID, REACHCODE, FromMeas, ToMeas) %>%
     mutate(index = seq_len(nrow(flines)))
 
@@ -65,6 +75,7 @@ get_flowline_index <- function(flines, points,
   }
 
   flines <- sf::st_coordinates(flines)
+  points <- sf::st_coordinates(points)
 
   matched <- matcher(flines, points, search_radius) %>%
     left_join(select(fline_atts, .data$COMID, .data$index),
@@ -121,14 +132,74 @@ get_flowline_index <- function(flines, points,
   return(matched)
 }
 
-matcher <- function(coords, points, search_radius) {
-  matched <- nn2(data = coords[, 1:2],
-                 query = matrix(points[, c("X", "Y")], ncol = 2),
-                 k = 1,
-                 searchtype = "radius",
-                 radius = search_radius) %>%
-    data.frame(stringsAsFactors = FALSE) %>%
-    left_join(mutate(select(as.data.frame(coords), .data$L1),
-                     index = seq_len(nrow(coords))),
-              by = c("nn.idx" = "index"))
+#' @title Get Waterbody Index
+#' @description given an sf point geometry column, return waterbody id, and COMID of dominant artificial path
+#' @param waterbodies sf data.frame of type POLYGON or MULTIPOLYGON including !!!
+#' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
+#' COMID
+#' @param points sfc of type POINT
+#' @return data.frame with two columns, COMID, waterbody_ID.
+#' @importFrom sf st_join
+#' @importFrom dplyr select mutate bind_cols
+#' @export
+#' @examples
+#' sample <- system.file("extdata/sample_natseamless.gpkg",
+#'                       package = "nhdplusTools")
+#'
+#' waterbodies <- sf::read_sf(sample, "NHDWaterbody")
+#' get_waterbody_index(waterbodies,
+#'                     sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
+#'                                crs = 4326, dim = "XY"))
+#'
+get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radius = 0.1) {
+  points <- st_geometry(points)
+
+  points <- st_sf(id = seq_len(length(points)), geometry = points)
+
+  waterbodies <- select(waterbodies, wb_COMID = .data$COMID)
+
+  points <- match_crs(points, waterbodies, "st_transform points to match waterbodies")
+
+  points <-suppressMessages(st_join(points, waterbodies))
+
+  wb_atts <- mutate(st_drop_geometry(waterbodies), index = seq_len(nrow(waterbodies)))
+
+  waterbodies <- make_singlepart(waterbodies, "Converting to singlepart.")
+
+  waterbodies <- st_coordinates(waterbodies)
+
+  if(ncol(waterbodies) == 4) waterbodies[ ,3] <- waterbodies[ ,4]
+
+  near_wb <- matcher(waterbodies,
+                     st_coordinates(points), search_radius)
+  near_wb <- left_join(near_wb, wb_atts, by = c("L1" = "index"))
+  near_wb <- mutate(near_wb, nn.dists = ifelse(nn.dists > search_radius, NA, nn.dists))
+
+  st_as_sf(bind_cols(select(near_wb, near_wb_COMID = .data$wb_COMID,
+                            near_wb_dist = .data$nn.dists),
+                     select(points, in_wb_COMID = .data$wb_COMID)))
+}
+
+make_singlepart <- function(x, warn_text = "") {
+  check <- nrow(x)
+
+  gt <- st_geometry_type(x, by_geometry = FALSE)
+
+  if(grepl("^MULTI", gt)) {
+    x <- sf::st_cast(x, gsub("^MULTI", "", gt), warn = FALSE)
+  }
+
+  if (nrow(x) != check) {
+    warning(warn_text)
+  }
+
+  sf::st_zm(x)
+}
+
+match_crs <- function(x, y, warn_text = "") {
+  if (sf::st_crs(x) != sf::st_crs(y)) {
+    warning(warn_text)
+    x <- sf::st_transform(x, sf::st_crs(y))
+  }
+  x
 }

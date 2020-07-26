@@ -13,12 +13,17 @@ get_waterbody_index(waterbodies, points, flines = NULL, search_radius = 0.1)
 
 \item{flines}{sf data.frame of type LINESTRING or MULTILINESTRING including
 COMID}
+
+\item{search_radius}{numeric how far to search for a waterbody boundary in
+units of provided projection}
 }
 \value{
-data.frame with two columns, COMID, waterbody_ID.
+data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,
+near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.
 }
 \description{
-given an sf point geometry column, return waterbody id, and COMID of dominant artificial path
+given an sf point geometry column, return waterbody id, and
+COMID of dominant artificial path
 }
 \examples{
 sample <- system.file("extdata/sample_natseamless.gpkg",

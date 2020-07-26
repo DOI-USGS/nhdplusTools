@@ -133,12 +133,16 @@ get_flowline_index <- function(flines, points,
 }
 
 #' @title Get Waterbody Index
-#' @description given an sf point geometry column, return waterbody id, and COMID of dominant artificial path
+#' @description given an sf point geometry column, return waterbody id, and
+#' COMID of dominant artificial path
 #' @param waterbodies sf data.frame of type POLYGON or MULTIPOLYGON including !!!
 #' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
 #' COMID
 #' @param points sfc of type POINT
-#' @return data.frame with two columns, COMID, waterbody_ID.
+#' @param search_radius numeric how far to search for a waterbody boundary in
+#' units of provided projection
+#' @return data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,
+#' near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.
 #' @importFrom sf st_join st_geometry_type
 #' @importFrom dplyr select mutate bind_cols
 #' @export
@@ -173,7 +177,8 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radiu
   near_wb <- matcher(waterbodies,
                      st_coordinates(points), search_radius)
   near_wb <- left_join(near_wb, wb_atts, by = c("L1" = "index"))
-  near_wb <- mutate(near_wb, nn.dists = ifelse(nn.dists > search_radius, NA, nn.dists))
+  near_wb <- mutate(near_wb, nn.dists = ifelse(.data$nn.dists > search_radius,
+                                               NA, .data$nn.dists))
 
   out <- st_drop_geometry(st_as_sf(bind_cols(select(near_wb, near_wb_COMID = .data$wb_COMID,
                                                     near_wb_dist = .data$nn.dists),
@@ -181,7 +186,7 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radiu
 
   if(!is.null(flines)) {
 
-    out <- mutate(out, joiner = ifelse(!is.na(.data$in_wb_COMID), in_wb_COMID, near_wb_COMID),
+    out <- mutate(out, joiner = ifelse(!is.na(.data$in_wb_COMID), .data$in_wb_COMID, .data$near_wb_COMID),
                   id = seq_len(nrow(out)))
 
     out <- left_join(out, select(st_drop_geometry(flines),
@@ -189,7 +194,7 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radiu
                                  .data$WBAREACOMI, .data$Hydroseq),
                      by = c("joiner" = "WBAREACOMI"))
 
-    out <- ungroup(filter(group_by(out, id), is.na(Hydroseq) | Hydroseq == min(Hydroseq)))
+    out <- ungroup(filter(group_by(out, .data$id), is.na(Hydroseq) | Hydroseq == min(Hydroseq)))
 
     out <- select(out, -.data$id, -.data$Hydroseq, -.data$joiner)
 

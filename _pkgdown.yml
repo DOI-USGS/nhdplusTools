@@ -50,4 +50,5 @@ reference:
       Functions to index and match data to NHDPlus features.
     contents:
       - '`get_flowline_index`'
+      - '`get_waterbody_index`'
 

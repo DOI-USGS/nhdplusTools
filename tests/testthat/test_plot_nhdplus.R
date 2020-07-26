@@ -84,6 +84,8 @@ test_that("basics work", {
 
 test_that("local data", {
 
+  testthat::skip_on_cran()
+
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   gage <- sf::read_sf(sample_data, "Gage")
 

@@ -81,6 +81,9 @@ get_flowline_index <- function(flines, points,
     left_join(select(fline_atts, .data$COMID, .data$index),
               by = c("L1" = "index"))
 
+  matched <- mutate(matched, nn.dists = ifelse(.data$nn.dists > search_radius,
+                                               NA, .data$nn.dists))
+
   if (!is.na(precision)) {
     # upstream to downstream order.
     flines <- as.data.frame(flines[which(flines[, "L1"] %in% matched$L1), ])
@@ -105,6 +108,9 @@ get_flowline_index <- function(flines, points,
     matched <- matcher(flines, points, search_radius) %>%
       left_join(select(fline_atts, .data$COMID, .data$precision_index),
                 by = c("L1" = "precision_index"))
+
+    matched <- mutate(matched, nn.dists = ifelse(.data$nn.dists > search_radius,
+                                                 NA, .data$nn.dists))
   }
 
   flines <- as.data.frame(flines) %>%
@@ -135,9 +141,10 @@ get_flowline_index <- function(flines, points,
 #' @title Get Waterbody Index
 #' @description given an sf point geometry column, return waterbody id, and
 #' COMID of dominant artificial path
-#' @param waterbodies sf data.frame of type POLYGON or MULTIPOLYGON including !!!
+#' @param waterbodies sf data.frame of type POLYGON or MULTIPOLYGON including
+#' COMID attributes.
 #' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
-#' COMID
+#' COMID, WBAREACOMI, and Hydroseq attributes
 #' @param points sfc of type POINT
 #' @param search_radius numeric how far to search for a waterbody boundary in
 #' units of provided projection
@@ -156,6 +163,8 @@ get_flowline_index <- function(flines, points,
 #'                                crs = 4326, dim = "XY"))
 #'
 get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radius = 0.1) {
+  check_names(waterbodies, "get_waterbody_index_waterbodies")
+
   points <- st_geometry(points)
 
   points <- st_sf(id = seq_len(length(points)), geometry = points)
@@ -186,10 +195,14 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radiu
 
   if(!is.null(flines)) {
 
+    check_names(flines, "get_waterbody_index_flines")
+
     out <- mutate(out, joiner = ifelse(!is.na(.data$in_wb_COMID), .data$in_wb_COMID, .data$near_wb_COMID),
                   id = seq_len(nrow(out)))
 
-    out <- left_join(out, select(st_drop_geometry(flines),
+    try(flines <- st_drop_geometry(flines), silent = TRUE)
+
+    out <- left_join(out, select(flines,
                                  outlet_fline_COMID = .data$COMID,
                                  .data$WBAREACOMI, .data$Hydroseq),
                      by = c("joiner" = "WBAREACOMI"))

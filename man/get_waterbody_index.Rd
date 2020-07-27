@@ -7,12 +7,13 @@
 get_waterbody_index(waterbodies, points, flines = NULL, search_radius = 0.1)
 }
 \arguments{
-\item{waterbodies}{sf data.frame of type POLYGON or MULTIPOLYGON including !!!}
+\item{waterbodies}{sf data.frame of type POLYGON or MULTIPOLYGON including
+COMID attributes.}
 
 \item{points}{sfc of type POINT}
 
 \item{flines}{sf data.frame of type LINESTRING or MULTILINESTRING including
-COMID}
+COMID, WBAREACOMI, and Hydroseq attributes}
 
 \item{search_radius}{numeric how far to search for a waterbody boundary in
 units of provided projection}

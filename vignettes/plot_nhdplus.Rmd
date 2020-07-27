@@ -16,7 +16,8 @@ knitr::opts_chunk$set(
   fig.height=4,
   eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
 )
-oldoption <- options(scipen = 9999)
+oldoption <- options(scipen = 9999,
+                     rmarkdown.html_vignette.check_title = FALSE)
 options(scipen = 9999)
 ```
 ```{r data_dir_setup, echo=FALSE, include=FALSE}

@@ -1,3 +1,15 @@
+matcher <- function(coords, points, search_radius) {
+  matched <- nn2(data = coords[, 1:2],
+                 query = matrix(points[, c("X", "Y")], ncol = 2),
+                 k = 1,
+                 searchtype = "radius",
+                 radius = search_radius) %>%
+    data.frame(stringsAsFactors = FALSE) %>%
+    left_join(mutate(select(as.data.frame(coords), .data$L1),
+                     index = seq_len(nrow(coords))),
+              by = c("nn.idx" = "index"))
+}
+
 #' @title Get Flowline Index
 #' @description given an sf point geometry column, return COMID, reachcode,
 #' and measure for each.
@@ -50,8 +62,6 @@ get_flowline_index <- function(flines, points,
     points <- sf::st_transform(points, sf::st_crs(flines))
   }
 
-  points <- sf::st_coordinates(points)
-
   flines <- select(flines, COMID, REACHCODE, FromMeas, ToMeas) %>%
     mutate(index = seq_len(nrow(flines)))
 
@@ -65,10 +75,14 @@ get_flowline_index <- function(flines, points,
   }
 
   flines <- sf::st_coordinates(flines)
+  points <- sf::st_coordinates(points)
 
   matched <- matcher(flines, points, search_radius) %>%
     left_join(select(fline_atts, .data$COMID, .data$index),
               by = c("L1" = "index"))
+
+  matched <- mutate(matched, nn.dists = ifelse(.data$nn.dists > search_radius,
+                                               NA, .data$nn.dists))
 
   if (!is.na(precision)) {
     # upstream to downstream order.
@@ -94,6 +108,9 @@ get_flowline_index <- function(flines, points,
     matched <- matcher(flines, points, search_radius) %>%
       left_join(select(fline_atts, .data$COMID, .data$precision_index),
                 by = c("L1" = "precision_index"))
+
+    matched <- mutate(matched, nn.dists = ifelse(.data$nn.dists > search_radius,
+                                                 NA, .data$nn.dists))
   }
 
   flines <- as.data.frame(flines) %>%
@@ -121,14 +138,104 @@ get_flowline_index <- function(flines, points,
   return(matched)
 }
 
-matcher <- function(coords, points, search_radius) {
-  matched <- nn2(data = coords[, 1:2],
-                 query = matrix(points[, c("X", "Y")], ncol = 2),
-                 k = 1,
-                 searchtype = "radius",
-                 radius = search_radius) %>%
-    data.frame(stringsAsFactors = FALSE) %>%
-    left_join(mutate(select(as.data.frame(coords), .data$L1),
-                     index = seq_len(nrow(coords))),
-              by = c("nn.idx" = "index"))
+#' @title Get Waterbody Index
+#' @description given an sf point geometry column, return waterbody id, and
+#' COMID of dominant artificial path
+#' @param waterbodies sf data.frame of type POLYGON or MULTIPOLYGON including
+#' COMID attributes.
+#' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
+#' COMID, WBAREACOMI, and Hydroseq attributes
+#' @param points sfc of type POINT
+#' @param search_radius numeric how far to search for a waterbody boundary in
+#' units of provided projection
+#' @return data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,
+#' near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.
+#' @importFrom sf st_join st_geometry_type
+#' @importFrom dplyr select mutate bind_cols
+#' @export
+#' @examples
+#' sample <- system.file("extdata/sample_natseamless.gpkg",
+#'                       package = "nhdplusTools")
+#'
+#' waterbodies <- sf::read_sf(sample, "NHDWaterbody")
+#' get_waterbody_index(waterbodies,
+#'                     sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
+#'                                crs = 4326, dim = "XY"))
+#'
+get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radius = 0.1) {
+  check_names(waterbodies, "get_waterbody_index_waterbodies")
+
+  points <- st_geometry(points)
+
+  points <- st_sf(id = seq_len(length(points)), geometry = points)
+
+  waterbodies <- select(waterbodies, wb_COMID = .data$COMID)
+
+  points <- match_crs(points, waterbodies, "st_transform points to match waterbodies")
+
+  points <-suppressMessages(st_join(points, waterbodies))
+
+  wb_atts <- mutate(st_drop_geometry(waterbodies), index = seq_len(nrow(waterbodies)))
+
+  waterbodies <- make_singlepart(waterbodies, "Converting to singlepart.")
+
+  waterbodies <- st_coordinates(waterbodies)
+
+  if(ncol(waterbodies) == 4) waterbodies[ ,3] <- waterbodies[ ,4]
+
+  near_wb <- matcher(waterbodies,
+                     st_coordinates(points), search_radius)
+  near_wb <- left_join(near_wb, wb_atts, by = c("L1" = "index"))
+  near_wb <- mutate(near_wb, nn.dists = ifelse(.data$nn.dists > search_radius,
+                                               NA, .data$nn.dists))
+
+  out <- st_drop_geometry(st_as_sf(bind_cols(select(near_wb, near_wb_COMID = .data$wb_COMID,
+                                                    near_wb_dist = .data$nn.dists),
+                                             select(points, in_wb_COMID = .data$wb_COMID))))
+
+  if(!is.null(flines)) {
+
+    check_names(flines, "get_waterbody_index_flines")
+
+    out <- mutate(out, joiner = ifelse(!is.na(.data$in_wb_COMID), .data$in_wb_COMID, .data$near_wb_COMID),
+                  id = seq_len(nrow(out)))
+
+    try(flines <- st_drop_geometry(flines), silent = TRUE)
+
+    out <- left_join(out, select(flines,
+                                 outlet_fline_COMID = .data$COMID,
+                                 .data$WBAREACOMI, .data$Hydroseq),
+                     by = c("joiner" = "WBAREACOMI"))
+
+    out <- ungroup(filter(group_by(out, .data$id), is.na(Hydroseq) | Hydroseq == min(Hydroseq)))
+
+    out <- select(out, -.data$id, -.data$Hydroseq, -.data$joiner)
+
+  }
+
+  out
+}
+
+make_singlepart <- function(x, warn_text = "") {
+  check <- nrow(x)
+
+  gt <- st_geometry_type(x, by_geometry = FALSE)
+
+  if(grepl("^MULTI", gt)) {
+    x <- sf::st_cast(x, gsub("^MULTI", "", gt), warn = FALSE)
+  }
+
+  if (nrow(x) != check) {
+    warning(warn_text)
+  }
+
+  sf::st_zm(x)
+}
+
+match_crs <- function(x, y, warn_text = "") {
+  if (sf::st_crs(x) != sf::st_crs(y)) {
+    warning(warn_text)
+    x <- sf::st_transform(x, sf::st_crs(y))
+  }
+  x
 }

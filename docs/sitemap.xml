@@ -79,6 +79,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_terminal.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_waterbody_index.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/make_standalone.html</loc>
   </url>
   <url>
@@ -98,6 +101,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/subset_nhdplus.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/subset_rpu.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//articles/nhdplusTools.html</loc>

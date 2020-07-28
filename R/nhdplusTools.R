@@ -66,7 +66,7 @@ nhdplus_attributes <- list(
 
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
-assign("geoserver_ows_root", "https://labs.waterdata.usgs.gov/geoserver/ows", 
+assign("geoserver_ows_root", "https://labs.waterdata.usgs.gov/geoserver/ows",
        envir = nhdplusTools_env)
 
 assign("prepare_nhdplus_attributes",
@@ -136,6 +136,13 @@ assign("get_pfaf_attributes",
 assign("make_standalone_attributes",
        c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
          "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+
+assign("get_waterbody_index_waterbodies_attributes",
+       c("COMID"), envir = nhdplusTools_env)
+
+assign("get_waterbody_index_flines_attributes",
+       c("COMID", "WBAREACOMI", "Hydroseq"))
+
 
 check_names <- function(x, function_name) {
   x <- align_nhdplus_names(x)

@@ -2,7 +2,7 @@ context("plot tests")
 
 sample_data <- system.file("extdata/sample_natseamless.gpkg",
                            package = "nhdplusTools")
-
+options("rgdal_show_exportToProj4_warnings"="none")
 test_that("basics work", {
   skip_on_cran()
   tempd <- tempdir(check = TRUE)
@@ -83,6 +83,8 @@ test_that("basics work", {
 })
 
 test_that("local data", {
+
+  testthat::skip_on_cran()
 
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   gage <- sf::read_sf(sample_data, "Gage")

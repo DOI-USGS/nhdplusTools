@@ -1,11 +1,13 @@
-matcher <- function(coords, points, search_radius) {
+matcher <- function(coords, points, search_radius, k = 1) {
   matched <- nn2(data = coords[, 1:2],
                  query = matrix(points[, c("X", "Y")], ncol = 2),
-                 k = 1,
+                 k = k,
                  searchtype = "radius",
-                 radius = search_radius) %>%
-    data.frame(stringsAsFactors = FALSE) %>%
-    left_join(mutate(select(as.data.frame(coords), .data$L1),
+                 radius = search_radius)
+
+    matched <- dplyr::tibble(nn.idx = as.integer(matched$nn.idx), nn.dists = as.numeric(matched$nn.dists))
+
+    left_join(matched, mutate(select(as.data.frame(coords), .data$L1),
                      index = seq_len(nrow(coords))),
               by = c("nn.idx" = "index"))
 }
@@ -30,7 +32,7 @@ matcher <- function(coords, points, search_radius) {
 #' it can calculate the measure to greater precision than the nearest flowline
 #' geometry node.
 #'
-#' Note 3: Offset is returned in units consistant with the projection of
+#' Note 3: Offset is returned in units consistent with the projection of
 #' the flowlines.
 #'
 #' @importFrom dplyr filter select mutate right_join left_join

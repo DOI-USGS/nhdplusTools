@@ -121,7 +121,7 @@ round(quantile(matched$REACH_meas_diff,
 
 ## Waterbody Indexing
 
-The `get_flowline_index()` function estimates a hydrographic address as a linear reference to a flowline. For points near bodies of water, these could be an inappropriate kind of index. This is because where flowlines run through a waterbpody. they are "artificial paths" and do not represent the waterbody. The `get_waterbody_index()` function is intended to address points that are in or near the shore of a waterbody.
+The `get_flowline_index()` function estimates a hydrographic address as a linear reference to a flowline. For points near bodies of water, these could be an inappropriate kind of index. This is because where flowlines run through a waterbody. they are "artificial paths" and do not represent the waterbody. The `get_waterbody_index()` function is intended to address points that are in or near the shore of a waterbody.
 
 This next block of code loads the NHDPlus Waterbody layer and creates an interactive map. Of interest on gages that are near the short of bodies of water but far away from flowlines. Note that we drop the NHDPlus geometry and use the source `LonSite` and `LatSite` attributes for geometry.
 

@@ -34,7 +34,7 @@ Terms for rivers:
 
 Terms used for hydrologic units:  
 **Catchment:** The most abstract unit of hydrology in HY_Features is the catchment. It is a physiographic unit with zero or one inlets and one outlet. It does not inherently have any conceptual realizations. Rather, a given catchment can be realized in a number of ways; flowpath, divide, and networks of flowpaths and divides are the primary realizations.  
-**Catchment divide:** NHD "catchment" polygons are more accurately described as "catchment divide" features. Because of the overlap with the HY_Features abstract "catchment" feature type, "catchment divide" is used for polygon represenations of catchments.  
+**Catchment divide:** NHD "catchment" polygons are more accurately described as "catchment divide" features. Because of the overlap with the HY_Features abstract "catchment" feature type, "catchment divide" is used for polygon representations of catchments.  
 
 ### Data:
 
@@ -81,7 +81,7 @@ with. That said, much of the package functionality also uses concepts from
 the HY\_Features standard.  
 
 *Note:* The HY\_Features standard is based on the notion that a "catchment" is a
-wholistic feature that can be "realized" (some might say modeled) in a number of
+holistic feature that can be "realized" (some might say modeled) in a number of
 ways. In other words, a catchment can *only* be characterized fully through a
 collection of different conceptual representations. In NHDPlus, the "catchment"
 feature is the polygon feature that describes the drainage divide around the

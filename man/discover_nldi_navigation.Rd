@@ -7,7 +7,7 @@
 discover_nldi_navigation(nldi_feature, tier = "prod")
 }
 \arguments{
-\item{nldi_feature}{length 2 list list with optionsal names `featureSource`
+\item{nldi_feature}{length 2 list list with optional names `featureSource`
 and `featureID` where `featureSource` is derived from the "source" column of
 the response of discover_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`. e.g. list("nwissite", "USGS-08279500")}

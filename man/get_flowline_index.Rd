@@ -35,7 +35,7 @@ identify which flowline the point should belong to. As a second pass,
 it can calculate the measure to greater precision than the nearest flowline
 geometry node.
 
-Note 3: Offset is returned in units consistant with the projection of
+Note 3: Offset is returned in units consistent with the projection of
 the flowlines.
 }
 \examples{

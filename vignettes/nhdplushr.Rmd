@@ -116,7 +116,7 @@ plot(c(st_geometry(hr$NHDWaterbody), st_geometry(hr$NHDArea)),
      col = "cyan", border = "cyan", lwd = 0.25, add = TRUE)
 ```
 
-Since this function can work over large ammounts of data and we don't want to keep running it again and again, there is an option to save the results to a standalone database for later use. 
+Since this function can work over large amounts of data and we don't want to keep running it again and again, there is an option to save the results to a standalone database for later use. 
 ```{r get_nhdplushr3}
 demo_gpkg <- file.path(work_dir, "demo.gpkg")
 hr <- get_nhdplushr(hr_data_dir, out_gpkg = demo_gpkg)
@@ -157,7 +157,7 @@ The NHDPlus data model has some shared identifiers that can span very large dist
 
 On a one by one basis, this may seam insignificant, but for workflows that need to work with arbitrary subsets and start from basin outlets, this functionality is useful. It has little impact on the data and is applied by default.
 
-The example below shows how the outlet is modified. As described in the documentation os `make_standalone()` all related attribues upstream are also fixed such that the network is intact for further use.
+The example below shows how the outlet is modified. As described in the documentation os `make_standalone()` all related attributes upstream are also fixed such that the network is intact for further use.
 
 ```{r make_standalone}
 demo <- get_nhdplushr(hr_data_dir, layers = "NHDFlowline", 

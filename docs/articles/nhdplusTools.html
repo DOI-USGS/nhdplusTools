@@ -187,7 +187,7 @@
 
 <span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>()
 <span class="co">#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmp8o2cRJ/natseamless.gpkg"</span></pre></body></html></div>
-<p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatadly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
+<p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatedly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">staged_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/stage_national_data.html">stage_national_data</a></span>(<span class="kw">output_path</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>())
 
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">staged_data</span>)
@@ -207,7 +207,7 @@
 <div id="nhdplus-hires" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nhdplus-hires" class="anchor"></a>NHDPlus HiRes</h3>
-<p>(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, <code>nhdplusTools</code> will have complete support for NHDPlus HiRes. So far, <code>nhdplusTools</code> will help download and interface NHDPlus HiRes data with existing <code>nhdplusTools</code> functionality. It’s important to note that <code>nhdplusTools</code> was primarily implemented using NHDPlusV2 and any use of HiRes (which is still “beta data” as of writing this) should be subject to significant scruitiny. Never the less, here’s a short summary of how to work with NHDPlus HiRes.</p>
+<p>(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, <code>nhdplusTools</code> will have complete support for NHDPlus HiRes. So far, <code>nhdplusTools</code> will help download and interface NHDPlus HiRes data with existing <code>nhdplusTools</code> functionality. It’s important to note that <code>nhdplusTools</code> was primarily implemented using NHDPlusV2 and any use of HiRes (which is still “beta data” as of writing this) should be subject to significant scrutiny. Never the less, here’s a short summary of how to work with NHDPlus HiRes.</p>
 <p>For the demo below, a small sample of HiRes data that has been loaded into <code>nhdplusTools</code> is used. The first line shows how you can download additional data (just change <code>download_files</code> to <code>TRUE</code>).</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span>(<span class="kw">nhd_dir</span> <span class="kw">=</span> <span class="st">"download_dir"</span>,
                    <span class="kw">hu_list</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"0101"</span>), <span class="co"># can mix hu02 and hu04 codes.</span>
@@ -377,7 +377,7 @@
 <div id="local-data-subsetting" class="section level3">
 <h3 class="hasAnchor">
 <a href="#local-data-subsetting" class="anchor"></a>Local Data Subsetting</h3>
-<p>With the starting COMID we found with <code>discover_nhdplus_id</code> above, we can use one of the network navigation functions, <code>get_UM</code>, <code>get_UT</code>, <code>get_DM</code>, or <code>get_DD</code> to retrieve a collection of comids along the upstream mainstaem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we’ll use upstream with tributaries.</p>
+<p>With the starting COMID we found with <code>discover_nhdplus_id</code> above, we can use one of the network navigation functions, <code>get_UM</code>, <code>get_UT</code>, <code>get_DM</code>, or <code>get_DD</code> to retrieve a collection of comids along the upstream mainstem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we’ll use upstream with tributaries.</p>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">UT_comids</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span>(<span class="no">flowline</span>, <span class="no">start_comid</span>)
 <span class="no">UT_comids</span>
 <span class="co">#&gt;   [1]  13293750  13293504  13294134  13294128  13294394  13293454  13293430</span>

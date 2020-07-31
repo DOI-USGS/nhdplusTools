@@ -26,7 +26,7 @@
 #'
 #' The "download" option of this function should be considered preliminary
 #' and subject to revision. It does not include as many layers and may not
-#' be available permenantly.
+#' be available permenently.
 #'
 #' @return path to the saved subset geopackage
 #' @export
@@ -249,7 +249,7 @@ intersection_write <- function(layer_name, data_path, envelope,
 #' @param simplified boolean if TRUE (the default) the CatchmentSP layer
 #' will be included.
 #' @details "attributes" will save `NHDFlowline_Network` attributes
-#' as a seperate data.frame without the geometry. The others will save
+#' as a separate data.frame without the geometry. The others will save
 #' the `NHDFlowline_Network` and `Catchment` or `CatchmentSP`
 #' (per the `simplified` parameter) as sf data.frames with
 #' superfluous Z information dropped.

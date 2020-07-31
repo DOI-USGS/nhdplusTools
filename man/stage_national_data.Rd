@@ -34,7 +34,7 @@ of quick to access R binary files.
 }
 \details{
 "attributes" will save `NHDFlowline_Network` attributes
-as a seperate data.frame without the geometry. The others will save
+as a separate data.frame without the geometry. The others will save
 the `NHDFlowline_Network` and `Catchment` or `CatchmentSP`
 (per the `simplified` parameter) as sf data.frames with
 superfluous Z information dropped.

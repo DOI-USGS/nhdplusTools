@@ -16,7 +16,7 @@ discover_nldi_sources <- function(tier = "prod") {
 #' @title Discover NLDI Navigation Options
 #' @description Discover available navigation options for a
 #' given feature source and id.
-#' @param nldi_feature length 2 list list with optionsal names `featureSource`
+#' @param nldi_feature length 2 list list with optional names `featureSource`
 #' and `featureID` where `featureSource` is derived from the "source" column of
 #' the response of discover_nldi_sources() and the `featureSource` is a known identifier
 #' from the specified `featureSource`. e.g. list("nwissite", "USGS-08279500")

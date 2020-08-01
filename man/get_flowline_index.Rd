@@ -14,7 +14,9 @@ get_flowline_index(
 }
 \arguments{
 \item{flines}{sf data.frame of type LINESTRING or MULTILINESTRING including
-COMID, REACHCODE, ToMeas, and FromMeas}
+COMID, REACHCODE, ToMeas, and FromMeas. Can be "download_nhdplusv2" and remote
+nhdplusv2 data will be downloaded for the bounding box surround the submitted points.
+NOTE: The download option may not work for large areas, use with caution.}
 
 \item{points}{sf or sfc of type POINT}
 
@@ -59,6 +61,12 @@ get_flowline_index(sample_flines,
                    sf::st_sfc(sf::st_point(c(-76.87479,
                                              39.48233)),
                               crs = 4326))
+
+get_flowline_index("download_nhdplusv2",
+                   sf::st_sfc(sf::st_point(c(-76.87479,
+                                             39.48233)),
+                              crs = 4326))
+
 get_flowline_index(sample_flines,
                    sf::st_sfc(sf::st_point(c(-76.87479,
                                              39.48233)),
@@ -71,4 +79,5 @@ get_flowline_index(sample_flines,
                               crs = 4326),
                    search_radius = 0.2,
                    max_matches = 10)
+
 }

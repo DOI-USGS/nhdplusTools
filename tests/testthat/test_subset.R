@@ -59,6 +59,15 @@ test_that("subset runs as expected", {
   expect_equal(nrow(fi$CatchmentSP), 4)
   expect_equal(nrow(fi$NHDWaterbody), 1)
 
+  # flowline only
+  fi <- subset_nhdplus(comids = comids,
+                       output_file = NULL,
+                       nhdplus_data = sample_data,
+                       status = FALSE,
+                       flowline_only = TRUE)
+
+  expect_equal(names(fi), "NHDFlowline_Network")
+
   # write to output file
   fi <- subset_nhdplus(comids = comids,
                  output_file = out_file,
@@ -163,7 +172,10 @@ test_that("subset by bounding box", {
   fi <- subset_nhdplus(bbox = bbox,
                        nhdplus_data = sample_data,
                        simplified = TRUE,
-                       status = FALSE)
+                       status = FALSE,
+                       flowline_only = TRUE)
+
+  expect_equal(names(fi), "NHDFlowline_Network")
 
   out_file <- tempfile(fileext = ".gpkg")
 

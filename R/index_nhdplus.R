@@ -34,9 +34,11 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #' @title Get Flowline Index
 #' @description given an sf point geometry column, return COMID, reachcode,
 #' and measure for each.
-#' @param points sf or sfc of type POINT
 #' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
-#' COMID, REACHCODE, ToMeas, and FromMeas
+#' COMID, REACHCODE, ToMeas, and FromMeas. Can be "download_nhdplusv2" and remote
+#' nhdplusv2 data will be downloaded for the bounding box surround the submitted points.
+#' NOTE: The download option may not work for large areas, use with caution.
+#' @param points sf or sfc of type POINT
 #' @param search_radius numeric the distance for the nearest neighbor search
 #' to extend.
 #' See RANN nn2 documentation for more details.
@@ -73,6 +75,12 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #'                    sf::st_sfc(sf::st_point(c(-76.87479,
 #'                                              39.48233)),
 #'                               crs = 4326))
+#'
+#' get_flowline_index("download_nhdplusv2",
+#'                    sf::st_sfc(sf::st_point(c(-76.87479,
+#'                                              39.48233)),
+#'                               crs = 4326))
+#'
 #' get_flowline_index(sample_flines,
 #'                    sf::st_sfc(sf::st_point(c(-76.87479,
 #'                                              39.48233)),
@@ -85,12 +93,24 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #'                               crs = 4326),
 #'                    search_radius = 0.2,
 #'                    max_matches = 10)
-
+#'
 
 get_flowline_index <- function(flines, points,
                                search_radius = 0.1,
                                precision = NA,
                                max_matches = 1) {
+
+  if(is.character(flines) && flines == "download_nhdplusv2") {
+
+    flines <- subset_nhdplus(bbox = sf::st_bbox(sf::st_transform(points, 4326)),
+                             nhdplus_data = "download",
+                             status = FALSE,
+                             return_data = TRUE,
+                             flowline_only = TRUE)
+
+    flines <- align_nhdplus_names(flines$NHDFlowline_Network)
+
+  }
 
   flines <- check_names(flines, "get_flowline_index")
 

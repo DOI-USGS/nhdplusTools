@@ -1,15 +1,43 @@
-matcher <- function(coords, points, search_radius, k = 1) {
+
+matcher <- function(coords, points, search_radius, max_matches = 1) {
+
   matched <- nn2(data = coords[, 1:2],
                  query = matrix(points[, c("X", "Y")], ncol = 2),
-                 k = k,
+                 k = ifelse(max_matches > 1, nrow(coords), 1),
                  searchtype = "radius",
                  radius = search_radius)
 
-    matched <- dplyr::tibble(nn.idx = as.integer(matched$nn.idx), nn.dists = as.numeric(matched$nn.dists))
+  matched <- dplyr::tibble(nn.idx = as.integer(matched$nn.idx),
+                           nn.dists = as.numeric(matched$nn.dists),
+                           id = rep(1:nrow(points), ncol(matched[["nn.idx"]])))
 
-    left_join(matched, mutate(select(as.data.frame(coords), .data$L1),
-                     index = seq_len(nrow(coords))),
-              by = c("nn.idx" = "index"))
+  matched <- left_join(matched, mutate(select(as.data.frame(coords), .data$L1),
+                                       index = seq_len(nrow(coords))),
+                       by = c("nn.idx" = "index"))
+
+  if(max_matches > 1) {
+
+    stop("not supported")
+
+    matched <- filter(matched, .data$nn.dists <= search_radius)
+
+    # First get rid of duplicate nodes on the same line.
+    matched <- group_by(matched, L1) %>%
+      filter(nn.dists == min(nn.dists)) %>%
+      ungroup()
+
+    # Now limit to max matches per point
+    matched <- group_by(matched, id) %>%
+      filter(dplyr::row_number() <= max_matches) %>%
+      tidyr::nest()
+
+  } else {
+
+    matched <- select(matched, -id)
+
+  }
+
+  return(matched)
 }
 
 #' @title Get Flowline Index
@@ -22,6 +50,7 @@ matcher <- function(coords, points, search_radius, k = 1) {
 #' to extend.
 #' See RANN nn2 documentation for more details.
 #' @param precision numeric the resolution of measure precision in the output.
+#' @param max_matches numeric the maximum number of matches to return if multiple are found in search_radius
 #' @return data.frame with four columns, COMID, REACHCODE, REACH_meas, and offset.
 #' @details Note 1: Inputs are cast into LINESTRINGS. Because of this,
 #' the measure output
@@ -36,7 +65,7 @@ matcher <- function(coords, points, search_radius, k = 1) {
 #' the flowlines.
 #'
 #' @importFrom dplyr filter select mutate right_join left_join
-#' @importFrom dplyr group_by summarise distinct desc lag n
+#' @importFrom dplyr group_by summarise distinct desc lag n arrange
 #' @importFrom RANN nn2
 #' @importFrom magrittr "%>%"
 #' @export
@@ -52,7 +81,8 @@ matcher <- function(coords, points, search_radius, k = 1) {
 
 get_flowline_index <- function(flines, points,
                                search_radius = 0.1,
-                               precision = NA) {
+                               precision = NA,
+                               max_matches = 1) {
 
   flines <- check_names(flines, "get_flowline_index")
 
@@ -79,7 +109,7 @@ get_flowline_index <- function(flines, points,
   flines <- sf::st_coordinates(flines)
   points <- sf::st_coordinates(points)
 
-  matched <- matcher(flines, points, search_radius) %>%
+  matched <- matcher(flines, points, search_radius, max_matches = max_matches) %>%
     left_join(select(fline_atts, .data$COMID, .data$index),
               by = c("L1" = "index"))
 

@@ -14,6 +14,10 @@ test_that("point indexing to nearest existing node works as expected", {
                                REACH_meas = 0,
                                offset = 0.00006026811), tolerance = 0.0001)
 
+    expect_equal(nrow(get_flowline_index(flines_in, point, search_radius = 0.1,
+                                         max_matches = 5)),
+                 5)
+
     expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1,
                                     precision = 30),
                  dplyr::tibble(COMID = 11688298,
@@ -63,5 +67,8 @@ test_that("point indexing to for multiple points works", {
                           offset = c(0.0000602681,
                                      0.0002523808,
                                      0.0001566810)), tolerance = 1e-2)
+
+  get_flowline_index(flines_in, point, search_radius = 0.1,
+                     precision = 30, max_matches = 10)
 
 })

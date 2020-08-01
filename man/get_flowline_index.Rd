@@ -4,7 +4,13 @@
 \alias{get_flowline_index}
 \title{Get Flowline Index}
 \usage{
-get_flowline_index(flines, points, search_radius = 0.1, precision = NA)
+get_flowline_index(
+  flines,
+  points,
+  search_radius = 0.1,
+  precision = NA,
+  max_matches = 1
+)
 }
 \arguments{
 \item{flines}{sf data.frame of type LINESTRING or MULTILINESTRING including
@@ -17,6 +23,8 @@ to extend.
 See RANN nn2 documentation for more details.}
 
 \item{precision}{numeric the resolution of measure precision in the output.}
+
+\item{max_matches}{numeric the maximum number of matches to return if multiple are found in search_radius}
 }
 \value{
 data.frame with four columns, COMID, REACHCODE, REACH_meas, and offset.

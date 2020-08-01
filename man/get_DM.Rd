@@ -15,7 +15,7 @@ COMID, LENGTHKM, DnHydroseq, and Hydroseq.}
 \item{distance}{numeric distance in km to limit how many COMIDs are
 returned. The COMID that exceeds the distance specified is returned.}
 
-\item{sort}{if TRUE, the returned COMID vector witll be sorted in order of distance from the input COMID (nearest to farthest)}
+\item{sort}{if TRUE, the returned COMID vector will be sorted in order of distance from the input COMID (nearest to farthest)}
 
 \item{include}{if TRUE, the input COMID will be included in the returned COMID vector}
 }

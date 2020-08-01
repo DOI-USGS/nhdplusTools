@@ -248,7 +248,7 @@ cull_cols <- function(x, keep_cols) {
 #' Make isolated NHDPlusHR region a standalone dataset
 #' @description Cleans up and prepares NHDPlusHR regional data for use as complete NHDPlus
 #' data. The primary modification applied is to ensure that any flowpath that exits the
-#' domain is labeled as a terminal path and attributes are propagatedupstream such that
+#' domain is labeled as a terminal path and attributes are propagated upstream such that
 #' the domain is independently complete.
 #' @param flowlines sf data.frame of NHDPlusHR flowlines.
 #' @importFrom sf st_zm write_sf st_drop_geometry

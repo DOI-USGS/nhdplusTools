@@ -50,10 +50,18 @@ Now we can call `nhdplusTools::get_flowline_index()` on the data we just loaded.
 ```{r get_indexes}
 indexes <- get_flowline_index(flowlines,
                               sf::st_geometry(gages), 
-                              search_radius = 0.1)
+                              search_radius = 0.01, 
+                              max_matches = 1)
+
+indexes <- left_join(sf::st_sf(id = c(1:nrow(gages)), 
+                               geom = sf::st_geometry(gages)), 
+                     indexes, by = "id")
+
+mapview::mapview(list(flowlines, indexes))
 ```
 
-Now let's look at the results and see how the `nhdplusTools::get_flowline_index()` did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODES that were matched.
+
+Now let's look at the results and see how the `nhdplusTools::get_flowline_index()` did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODEs that were matched.
 
 ```{r analyze_index}
 p_match <- 100 * length(which(indexes$COMID %in% gages$FLComID)) / nrow(gages)
@@ -117,6 +125,28 @@ hist(matched$REACH_meas_diff, breaks = 100,
 
 round(quantile(matched$REACH_meas_diff, 
                probs = c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)), digits = 2)
+```
+
+## Finding multiple indexes
+
+`get_flowline_index()` has a parameter `max_matches` that controls how many indexed flowlines are returned per point. This is useful for points that are near many flowlines and some further disambiguation is needed to determine exactly which flowline the point should be indexed to. At the time of writing, that functionality is not included in nhdplusTools but is planned.
+
+For this example, we'll just look at one point.
+
+```{r multi}
+indexes <- get_flowline_index(flowlines,
+                              sf::st_geometry(gages)[42], 
+                              search_radius = 0.01, 
+                              max_matches = 10)
+
+indexes <- left_join(sf::st_sf(id = 1, 
+                               geom = sf::st_geometry(gages)[42]), 
+                     indexes, by = "id")
+
+plot(sf::st_geometry(sf::st_buffer(indexes, 0.005)), border = NA)
+plot(sf::st_geometry(indexes), add = TRUE)
+plot(sf::st_geometry(sf::st_zm(flowlines)), col = "blue", add = TRUE)
+indexes
 ```
 
 ## Waterbody Indexing

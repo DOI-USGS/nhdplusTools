@@ -9,7 +9,8 @@ test_that("point indexing to nearest existing node works as expected", {
     point <- sf::st_sfc(sf::st_point(c(-76.86934, 39.49328)), crs = 4269)
 
     expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1),
-                 dplyr::tibble(COMID = 11688298,
+                 dplyr::tibble(id = 1,
+                               COMID = 11688298,
                                REACHCODE = "02060003000579",
                                REACH_meas = 0,
                                offset = 0.00006026811), tolerance = 0.0001)
@@ -20,7 +21,8 @@ test_that("point indexing to nearest existing node works as expected", {
 
     expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1,
                                     precision = 30),
-                 dplyr::tibble(COMID = 11688298,
+                 dplyr::tibble(id = 1,
+                               COMID = 11688298,
                                REACHCODE = "02060003000579",
                                REACH_meas = 0,
                                offset = 0.00006026811), tolerance = 0.0001)
@@ -48,7 +50,8 @@ test_that("point indexing to for multiple points works", {
                            sf::st_point(c(-76.88081, 39.36354))), crs = 4269)
 
   expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1),
-               dplyr::tibble(COMID = c(11688298, 11688808, 11688980),
+               dplyr::tibble(id = c(1, 2, 3),
+                             COMID = c(11688298, 11688808, 11688980),
                           REACHCODE = c("02060003000579",
                                         "02060003000519",
                                         "02060003000253"),
@@ -59,7 +62,8 @@ test_that("point indexing to for multiple points works", {
 
   expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1,
                                   precision = 30),
-               dplyr::tibble(COMID = c(11688298, 11688808, 11688980),
+               dplyr::tibble(id = c(1, 2, 3),
+                             COMID = c(11688298, 11688808, 11688980),
                           REACHCODE = c("02060003000579",
                                         "02060003000519",
                                         "02060003000253"),
@@ -68,7 +72,14 @@ test_that("point indexing to for multiple points works", {
                                      0.0002523808,
                                      0.0001566810)), tolerance = 1e-2)
 
-  get_flowline_index(flines_in, point, search_radius = 0.1,
-                     precision = 30, max_matches = 10)
+  matches <- get_flowline_index(flines_in, point, search_radius = 0.1, max_matches = 10)
+  expect_true("id" %in% names(matches))
+
+  matches2 <- get_flowline_index(flines_in, point, search_radius = 0.1,
+                                 precision = 30, max_matches = 10)
+
+  expect_equal(nrow(matches), nrow(matches2))
+
+  expect_true(all(matches$REACHCODE %in% matches2$REACHCODE))
 
 })

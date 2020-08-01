@@ -221,8 +221,10 @@
 (<span class="no">start_index</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="no">hr</span>$<span class="no">NHDFlowline</span>, <span class="fl">5070</span>),
                                    <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="no">plot_data</span>$<span class="no">outlets</span>, <span class="fl">5070</span>),
                                    <span class="kw">search_radius</span> <span class="kw">=</span> <span class="fl">200</span>)) <span class="co"># meters albers eq area</span></pre></body></html></div>
-<pre><code>#&gt;            COMID      REACHCODE REACH_meas   offset
-#&gt; 1 22001000032700 07090002006114    37.6572 87.66852</code></pre>
+<pre><code>#&gt; # A tibble: 1 x 5
+#&gt;      id   COMID REACHCODE      REACH_meas offset
+#&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt;  &lt;dbl&gt;
+#&gt; 1     1 2.20e13 07090002006114       37.7   87.7</code></pre>
 <div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="no">ids</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span>(<span class="no">hr</span>$<span class="no">NHDFlowline</span>, <span class="no">start_index</span>$<span class="no">COMID</span>)
 
 <span class="no">hr_subset</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="no">ids</span>, <span class="kw">nhdplus_data</span> <span class="kw">=</span> <span class="no">hr_gpkg</span>)</pre></body></html></div>

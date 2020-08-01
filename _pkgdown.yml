@@ -41,6 +41,7 @@ reference:
       - '`get_nldi_feature`'
       - '`navigate_nldi`'
       - '`subset_nhdplus`'
+      - '`subset_rpu`'
       - '`get_DD`'
       - '`get_DM`'
       - '`get_UM`'
@@ -51,4 +52,5 @@ reference:
     contents:
       - '`get_flowline_index`'
       - '`get_waterbody_index`'
+      - '`get_node`'
 

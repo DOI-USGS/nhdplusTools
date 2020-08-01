@@ -189,16 +189,30 @@ from the specified `featureSource`. e.g. list("nwissite", "USGS-08279500")</p></
 #&gt; 5      https://labs.waterdata.usgs.gov/api/nldi/linked-data/wqp</div><div class='input'>
 <span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-08279500"</span>)
 
-<span class='fu'>discover_nldi_navigation</span>(<span class='no'>nldi_nwis</span>)</div><div class='output co'>#&gt; <span class='message'>Request failed [502]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [502]. Retrying in 3.3 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Something went wrong accessing the NLDI.</span>
-#&gt; <span class='message'>Error: lexical error: invalid char in json text.</span>
-#&gt; <span class='message'>                                       &lt;html&gt;  &lt;head&gt;&lt;title&gt;502 Bad Ga</span>
-#&gt; <span class='message'>                     (right here) ------^</span>
-#&gt; <span class='message'></span></div><div class='input'>
-<span class='fu'>discover_nldi_navigation</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"nwissite"</span>, <span class='st'>"USGS-08279500"</span>))</div><div class='output co'>#&gt; <span class='message'>Request failed [502]. Retrying in 1.2 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Request failed [502]. Retrying in 1 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Something went wrong accessing the NLDI.</span>
-#&gt; <span class='message'>Error: lexical error: invalid char in json text.</span>
-#&gt; <span class='message'>                                       &lt;html&gt;  &lt;head&gt;&lt;title&gt;502 Bad Ga</span>
-#&gt; <span class='message'>                     (right here) ------^</span>
-#&gt; <span class='message'></span></div><div class='input'># }
+<span class='fu'>discover_nldi_navigation</span>(<span class='no'>nldi_nwis</span>)</div><div class='output co'>#&gt; $upstreamMain
+#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigate/UM"
+#&gt; 
+#&gt; $upstreamTributaries
+#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigate/UT"
+#&gt; 
+#&gt; $downstreamMain
+#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigate/DM"
+#&gt; 
+#&gt; $downstreamDiversions
+#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigate/DD"
+#&gt; </div><div class='input'>
+<span class='fu'>discover_nldi_navigation</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"nwissite"</span>, <span class='st'>"USGS-08279500"</span>))</div><div class='output co'>#&gt; $upstreamMain
+#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigate/UM"
+#&gt; 
+#&gt; $upstreamTributaries
+#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigate/UT"
+#&gt; 
+#&gt; $downstreamMain
+#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigate/DM"
+#&gt; 
+#&gt; $downstreamDiversions
+#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigate/DD"
+#&gt; </div><div class='input'># }
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -4,6 +4,8 @@ nhdplusTools 0.3.14
 * Switched geospatial data dependency to use labs.waterdata.usgs.gov
 * Added `subset_rpu()` to enable subsetting the NHD by Raster Processing Unit
 * Added `get_waterbody_index()` to find associations between point locations and waterbodys.
+* Added ability to get multiple matches from `get_flowline_index()` with `max_matches` parameter.
+* Added ability to download flowlines in `get_flowline_index()` rather than requiring data to be loaded locally.
 
 nhdplusTools 0.3.13
 ==========

@@ -15,6 +15,9 @@ test_that("point indexing to nearest existing node works as expected", {
                                REACH_meas = 0,
                                offset = 0.00006026811), tolerance = 0.0001)
 
+    expect_equal(suppressWarnings(get_flowline_index("download_nhdplusv2", point, search_radius = 0.1)$COMID),
+                 11688298)
+
     expect_equal(nrow(get_flowline_index(flines_in, point, search_radius = 0.1,
                                          max_matches = 5)),
                  5)

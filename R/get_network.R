@@ -86,7 +86,7 @@ private_get_UT <- function(network, comid) {
 #' COMID,Pathlength, LevelPathI, UpHydroseq, and Hydroseq.
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are
-#' @param sort if TRUE, the returned COMID vector witll be sorted in order of distance from the input COMID (nearest to farthest)
+#' @param sort if TRUE, the returned COMID vector will be sorted in order of distance from the input COMID (nearest to farthest)
 #' @param include if TRUE, the input COMID will be included in the returned COMID vector
 #' returned. The COMID that exceeds the distance specified is returned.
 #' @return integer vector of all COMIDs upstream of the starting COMID
@@ -148,7 +148,7 @@ get_UM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' returned. The COMID that exceeds the distance specified is returned.
-#' @param sort if TRUE, the returned COMID vector witll be sorted in order of distance from the input COMID (nearest to farthest)
+#' @param sort if TRUE, the returned COMID vector will be sorted in order of distance from the input COMID (nearest to farthest)
 #' @param include if TRUE, the input COMID will be included in the returned COMID vector
 #' @return integer vector of all COMIDs downstream of the starting COMID
 #' along the mainstem

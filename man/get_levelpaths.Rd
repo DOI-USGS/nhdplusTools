@@ -12,7 +12,7 @@ get_levelpaths(x, status = FALSE)
 \item{status}{boolean if status updates should be printed.}
 }
 \value{
-data.frame with ID, outletID, topo_sort, and levelpath collumns.
+data.frame with ID, outletID, topo_sort, and levelpath columns.
 See details for more info.
 }
 \description{

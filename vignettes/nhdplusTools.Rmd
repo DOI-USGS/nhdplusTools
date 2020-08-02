@@ -112,7 +112,7 @@ nhdplus_path(file.path(temp_dir, "natseamless.gpkg"))
 nhdplus_path()
 ```
 
-If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatadly, the `stage_national_data()` function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won't overwrite and just return the paths to your staged files.
+If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatedly, the `stage_national_data()` function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won't overwrite and just return the paths to your staged files.
 
 ```{r stage_national_data}
 staged_data <- stage_national_data(output_path = tempdir())
@@ -132,7 +132,7 @@ plot(sf::st_geometry(flowline))
 
 ### NHDPlus HiRes
 
-(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, `nhdplusTools` will have complete support for NHDPlus HiRes. So far, `nhdplusTools` will help download and interface NHDPlus HiRes data with existing `nhdplusTools` functionality. It's important to note that `nhdplusTools` was primarily implemented using NHDPlusV2 and any use of HiRes (which is still "beta data" as of writing this) should be subject to significant scruitiny. Never the less, here's a short summary of how to work with NHDPlus HiRes.
+(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, `nhdplusTools` will have complete support for NHDPlus HiRes. So far, `nhdplusTools` will help download and interface NHDPlus HiRes data with existing `nhdplusTools` functionality. It's important to note that `nhdplusTools` was primarily implemented using NHDPlusV2 and any use of HiRes (which is still "beta data" as of writing this) should be subject to significant scrutiny. Never the less, here's a short summary of how to work with NHDPlus HiRes.
 
 For the demo below, a small sample of HiRes data that has been loaded into `nhdplusTools` is used. The first line shows how you can download additional data (just change `download_files` to `TRUE`).
 
@@ -273,7 +273,7 @@ plot(sf::st_geometry(upstream_nwis),
 
 ### Local Data Subsetting
 
-With the starting COMID we found with `discover_nhdplus_id` above, we can use one of the network navigation functions, `get_UM`, `get_UT`, `get_DM`, or `get_DD` to retrieve a collection of comids along the upstream mainstaem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we'll use upstream with tributaries.
+With the starting COMID we found with `discover_nhdplus_id` above, we can use one of the network navigation functions, `get_UM`, `get_UT`, `get_DM`, or `get_DD` to retrieve a collection of comids along the upstream mainstem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we'll use upstream with tributaries.
 
 ```{r get_UT}
 UT_comids <- get_UT(flowline, start_comid)
@@ -302,7 +302,7 @@ output_file <-subset_nhdplus(comids = UT_comids,
 sf::st_layers(output_file)
 ```
 
-Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other laters as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.
+Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other layers as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.
 
 ```{r plot_result}
 catchment <- sf::read_sf(output_file, "CatchmentSP")

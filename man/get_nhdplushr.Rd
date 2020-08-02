@@ -36,7 +36,7 @@ Set to NULL to get all available.}
 \item{overwrite}{boolean should the output overwrite? If false and the output layer
 exists, it will be read and returned so this function will always return data even
 if called a second time for the same output. This is useful for workflows. Note that
-this will NOT delete the entire GeoPackage. It will overwite on a per layer basis.}
+this will NOT delete the entire Geopackage. It will overwrite on a per layer basis.}
 
 \item{keep_cols}{character vector of column names to keep in the output. If NULL,
 all will be kept.}

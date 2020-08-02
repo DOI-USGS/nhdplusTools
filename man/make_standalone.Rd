@@ -12,7 +12,7 @@ make_standalone(flowlines)
 \description{
 Cleans up and prepares NHDPlusHR regional data for use as complete NHDPlus
 data. The primary modification applied is to ensure that any flowpath that exits the
-domain is labeled as a terminal path and attributes are propogated upstream such that
+domain is labeled as a terminal path and attributes are propagated upstream such that
 the domain is independently complete.
 }
 \examples{

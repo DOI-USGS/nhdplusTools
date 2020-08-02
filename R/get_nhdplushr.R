@@ -85,7 +85,7 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' @param overwrite boolean should the output overwrite? If false and the output layer
 #' exists, it will be read and returned so this function will always return data even
 #' if called a second time for the same output. This is useful for workflows. Note that
-#' this will NOT delete the entire GeoPackage. It will overwite on a per layer basis.
+#' this will NOT delete the entire Geopackage. It will overwrite on a per layer basis.
 #' @param keep_cols character vector of column names to keep in the output. If NULL,
 #' all will be kept.
 #' @param ... parameters passed along to \link{get_hr_data}
@@ -248,7 +248,7 @@ cull_cols <- function(x, keep_cols) {
 #' Make isolated NHDPlusHR region a standalone dataset
 #' @description Cleans up and prepares NHDPlusHR regional data for use as complete NHDPlus
 #' data. The primary modification applied is to ensure that any flowpath that exits the
-#' domain is labeled as a terminal path and attributes are propogated upstream such that
+#' domain is labeled as a terminal path and attributes are propagated upstream such that
 #' the domain is independently complete.
 #' @param flowlines sf data.frame of NHDPlusHR flowlines.
 #' @importFrom sf st_zm write_sf st_drop_geometry

@@ -6,7 +6,7 @@
 #' included in this column and the largest value will be followed when no nameID is available.
 #' @param x data.frame with ID, toID, nameID, and weight columns.
 #' @param status boolean if status updates should be printed.
-#' @return data.frame with ID, outletID, topo_sort, and levelpath collumns.
+#' @return data.frame with ID, outletID, topo_sort, and levelpath columns.
 #' See details for more info.
 #' @details
 #' \enumerate{

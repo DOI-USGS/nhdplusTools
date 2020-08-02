@@ -17,6 +17,8 @@
 #' @param return_data boolean if FALSE path to output file is returned silently otherwise
 #' data is returned in a list.
 #' @param status boolean should the function print status messages
+#' @param flowline_only boolean WARNING: experimental
+#' if TRUE only the flowline network and attributes will be returned
 #' @details If \code{\link{stage_national_data}} has been run in the current
 #' session, this function will use the staged national data automatically.
 #'
@@ -26,7 +28,7 @@
 #'
 #' The "download" option of this function should be considered preliminary
 #' and subject to revision. It does not include as many layers and may not
-#' be available permenantly.
+#' be available permenently.
 #'
 #' @return path to the saved subset geopackage
 #' @export
@@ -111,7 +113,8 @@
 #'
 
 subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NULL, bbox = NULL,
-                           simplified = TRUE, overwrite = FALSE, return_data = TRUE, status = TRUE) {
+                           simplified = TRUE, overwrite = FALSE, return_data = TRUE, status = TRUE,
+                           flowline_only = FALSE) {
 
   if (status) message("All intersections performed in latitude/longitude.")
 
@@ -140,17 +143,24 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
     out_list <- c(get_flowline_subset(nhdplus_data, comids,
                                       output_file, paths$fline_path,
-                                      status),
-                  get_catchment_subset(nhdplus_data, comids,
-                                       output_file, simplified,
-                                       paths$catchment_path, status))
+                                      status))
 
-    catch_layer <- get_catchment_layer_name(simplified, nhdplus_data)
+    if(!flowline_only) {
 
-    envelope <- sf::st_transform(sf::st_as_sfc(sf::st_bbox(out_list[[catch_layer]])),
-                                 4326)
+      out_list <- c(out_list, get_catchment_subset(nhdplus_data, comids,
+                                                   output_file, simplified,
+                                                   paths$catchment_path, status))
 
-    intersection_names <- c("NHDArea", "NHDWaterbody")
+      catch_layer <- get_catchment_layer_name(simplified, nhdplus_data)
+
+      envelope <- sf::st_transform(sf::st_as_sfc(sf::st_bbox(out_list[[catch_layer]])),
+                                   4326)
+
+      intersection_names <- c("NHDArea", "NHDWaterbody")
+    } else {
+      intersection_names <- c()
+    }
+
   } else {
     out_list <- list()
 
@@ -170,6 +180,8 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     intersection_names <- c(get_catchment_layer_name(simplified, nhdplus_data),
                             get_flowline_layer_name(nhdplus_data),
                             "NHDArea", "NHDWaterbody")
+
+    if(flowline_only) intersection_names <- get_flowline_layer_name(nhdplus_data)
   }
 
   if (nhdplus_data == "download") {
@@ -188,12 +200,13 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     }
 
   } else {
-
-    if("Gage" %in% st_layers(nhdplus_data)$name) {
-      intersection_names <- c(intersection_names, "Gage", "Sink", "NHDFlowline_NonNetwork")
-    } else {
-      intersection_names <- c(intersection_names, "NHDPlusSink")
-      intersection_names <- intersection_names[which(intersection_names %in% st_layers(nhdplus_data)$name)]
+    if(!flowline_only) {
+      if("Gage" %in% st_layers(nhdplus_data)$name) {
+        intersection_names <- c(intersection_names, "Gage", "Sink", "NHDFlowline_NonNetwork")
+      } else {
+        intersection_names <- c(intersection_names, "NHDPlusSink")
+        intersection_names <- intersection_names[which(intersection_names %in% st_layers(nhdplus_data)$name)]
+      }
     }
 
     out_list <- c(out_list,
@@ -249,7 +262,7 @@ intersection_write <- function(layer_name, data_path, envelope,
 #' @param simplified boolean if TRUE (the default) the CatchmentSP layer
 #' will be included.
 #' @details "attributes" will save `NHDFlowline_Network` attributes
-#' as a seperate data.frame without the geometry. The others will save
+#' as a separate data.frame without the geometry. The others will save
 #' the `NHDFlowline_Network` and `Catchment` or `CatchmentSP`
 #' (per the `simplified` parameter) as sf data.frames with
 #' superfluous Z information dropped.

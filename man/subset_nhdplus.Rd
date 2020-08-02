@@ -12,7 +12,8 @@ subset_nhdplus(
   simplified = TRUE,
   overwrite = FALSE,
   return_data = TRUE,
-  status = TRUE
+  status = TRUE,
+  flowline_only = FALSE
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ will be included. Not relevant to the "download" option or NHDPlusHR data.}
 data is returned in a list.}
 
 \item{status}{boolean should the function print status messages}
+
+\item{flowline_only}{boolean WARNING: experimental
+if TRUE only the flowline network and attributes will be returned}
 }
 \value{
 path to the saved subset geopackage
@@ -57,7 +61,7 @@ It can be downloaded
 
 The "download" option of this function should be considered preliminary
 and subject to revision. It does not include as many layers and may not
-be available permenantly.
+be available permenently.
 }
 \examples{
 \donttest{

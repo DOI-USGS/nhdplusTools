@@ -151,7 +151,13 @@ and measure for each." />
 and measure for each.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_flowline_index</span>(<span class='no'>flines</span>, <span class='no'>points</span>, <span class='kw'>search_radius</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>get_flowline_index</span>(
+  <span class='no'>flines</span>,
+  <span class='no'>points</span>,
+  <span class='kw'>search_radius</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
+  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>max_matches</span> <span class='kw'>=</span> <span class='fl'>1</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,11 +165,13 @@ and measure for each.</p>
     <tr>
       <th>flines</th>
       <td><p>sf data.frame of type LINESTRING or MULTILINESTRING including
-COMID, REACHCODE, ToMeas, and FromMeas</p></td>
+COMID, REACHCODE, ToMeas, and FromMeas. Can be "download_nhdplusv2" and remote
+nhdplusv2 data will be downloaded for the bounding box surround the submitted points.
+NOTE: The download option may not work for large areas, use with caution.</p></td>
     </tr>
     <tr>
       <th>points</th>
-      <td><p>sfc of type POINT</p></td>
+      <td><p>sf or sfc of type POINT</p></td>
     </tr>
     <tr>
       <th>search_radius</th>
@@ -173,13 +181,19 @@ See RANN nn2 documentation for more details.</p></td>
     </tr>
     <tr>
       <th>precision</th>
-      <td><p>numeric the resolution of measure precision in the output.</p></td>
+      <td><p>numeric the resolution of measure precision in the output in meters.</p></td>
+    </tr>
+    <tr>
+      <th>max_matches</th>
+      <td><p>numeric the maximum number of matches to return if multiple are
+found in search_radius</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data.frame with four columns, COMID, REACHCODE, REACH_meas, and offset.</p>
+    <p>data.frame with five columns, id, COMID, REACHCODE, REACH_meas, and offset. id is the
+row or list element in the point input.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Note 1: Inputs are cast into LINESTRINGS. Because of this,
@@ -189,8 +203,10 @@ of inputs that are true multipart lines may be in error.</p>
 identify which flowline the point should belong to. As a second pass,
 it can calculate the measure to greater precision than the nearest flowline
 geometry node.</p>
-<p>Note 3: Offset is returned in units consistant with the projection of
+<p>Note 3: Offset is returned in units consistent with the projection of
 the flowlines.</p>
+<p>Note 4: See `dfMaxLength` input to sf::st_segmentize() for details of
+handling of precision parameter.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,
@@ -199,9 +215,45 @@ the flowlines.</p>
 <span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
                    <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.87479</span>,
                                              <span class='fl'>39.48233</span>)),
-                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt;      COMID      REACHCODE REACH_meas       offset
-#&gt; 1 11689978 02060003001472   51.50201 0.0003010502</div><div class='input'>
-</div></pre>
+                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
+#&gt;      id    COMID REACHCODE      REACH_meas   offset
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472       51.5 0.000</span><span style='text-decoration: underline;'>301</span><span></div><div class='input'>
+<span class='fu'>get_flowline_index</span>(<span class='st'>"download_nhdplusv2"</span>,
+                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.87479</span>,
+                                             <span class='fl'>39.48233</span>)),
+                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 1 x 5</span><span>
+#&gt;      id    COMID REACHCODE      REACH_meas   offset
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472       51.5 0.000</span><span style='text-decoration: underline;'>311</span><span></div><div class='input'>
+<span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
+                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.87479</span>,
+                                             <span class='fl'>39.48233</span>)),
+                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>), <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>30</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 1 x 5</span><span>
+#&gt;      id    COMID REACHCODE      REACH_meas    offset
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472       52.3 0.000</span><span style='text-decoration: underline;'>045</span><span>8</div><div class='input'>
+<span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
+                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.86934</span>, <span class='fl'>39.49328</span>)),
+                                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.91711</span>, <span class='fl'>39.40884</span>)),
+                                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.88081</span>, <span class='fl'>39.36354</span>))),
+                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>),
+                   <span class='kw'>search_radius</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
+                   <span class='kw'>max_matches</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 30 x 5</span><span>
+#&gt;       id    COMID REACHCODE      REACH_meas    offset
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span>     1 11</span><span style='text-decoration: underline;'>688</span><span>298 02060003000579        0   0.000</span><span style='text-decoration: underline;'>060</span><span>3
+#&gt; </span><span style='color: #555555;'> 2</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>808 02060003000519       53.6 0.000</span><span style='text-decoration: underline;'>564</span><span> 
+#&gt; </span><span style='color: #555555;'> 3</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>980 02060003000253       75.4 0.000</span><span style='text-decoration: underline;'>310</span><span> 
+#&gt; </span><span style='color: #555555;'> 4</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>926 02060003001467      100   0.000</span><span style='text-decoration: underline;'>060</span><span>3
+#&gt; </span><span style='color: #555555;'> 5</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>950 02060003000254       18.5 0.001</span><span style='text-decoration: underline;'>13</span><span>  
+#&gt; </span><span style='color: #555555;'> 6</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>928 02060003001468        0   0.002</span><span style='text-decoration: underline;'>03</span><span>  
+#&gt; </span><span style='color: #555555;'> 7</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472      100   0.002</span><span style='text-decoration: underline;'>03</span><span>  
+#&gt; </span><span style='color: #555555;'> 8</span><span>     1 11</span><span style='text-decoration: underline;'>690</span><span>530 02060003000585        0   0.002</span><span style='text-decoration: underline;'>85</span><span>  
+#&gt; </span><span style='color: #555555;'> 9</span><span>     1 11</span><span style='text-decoration: underline;'>690</span><span>490 02060003000580        0   0.002</span><span style='text-decoration: underline;'>85</span><span>  
+#&gt; </span><span style='color: #555555;'>10</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>948 02060003000516        0   0.003</span><span style='text-decoration: underline;'>21</span><span>  
+#&gt; </span><span style='color: #555555;'># … with 20 more rows</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

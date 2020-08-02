@@ -221,8 +221,10 @@
 (<span class="no">start_index</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="no">hr</span>$<span class="no">NHDFlowline</span>, <span class="fl">5070</span>),
                                    <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="no">plot_data</span>$<span class="no">outlets</span>, <span class="fl">5070</span>),
                                    <span class="kw">search_radius</span> <span class="kw">=</span> <span class="fl">200</span>)) <span class="co"># meters albers eq area</span></pre></body></html></div>
-<pre><code>#&gt;            COMID      REACHCODE REACH_meas   offset
-#&gt; 1 22001000032700 07090002006114    37.6572 87.66852</code></pre>
+<pre><code>#&gt; # A tibble: 1 x 5
+#&gt;      id   COMID REACHCODE      REACH_meas offset
+#&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt;  &lt;dbl&gt;
+#&gt; 1     1 2.20e13 07090002006114       37.7   87.7</code></pre>
 <div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="no">ids</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span>(<span class="no">hr</span>$<span class="no">NHDFlowline</span>, <span class="no">start_index</span>$<span class="no">COMID</span>)
 
 <span class="no">hr_subset</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="no">ids</span>, <span class="kw">nhdplus_data</span> <span class="kw">=</span> <span class="no">hr_gpkg</span>)</pre></body></html></div>
@@ -376,7 +378,7 @@
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDWaterbody</span>), <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDArea</span>)),
      <span class="kw">col</span> <span class="kw">=</span> <span class="st">"cyan"</span>, <span class="kw">border</span> <span class="kw">=</span> <span class="st">"cyan"</span>, <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">0.25</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="nhdplushr_files/figure-html/get_nhdplushr2-1.png" width="816"></p>
-<p>Since this function can work over large ammounts of data and we don’t want to keep running it again and again, there is an option to save the results to a standalone database for later use.</p>
+<p>Since this function can work over large amounts of data and we don’t want to keep running it again and again, there is an option to save the results to a standalone database for later use.</p>
 <div class="sourceCode" id="cb92"><html><body><pre class="r"><span class="no">demo_gpkg</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">work_dir</span>, <span class="st">"demo.gpkg"</span>)
 <span class="no">hr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">out_gpkg</span> <span class="kw">=</span> <span class="no">demo_gpkg</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(<span class="no">demo_gpkg</span>)</pre></body></html></div>
@@ -411,7 +413,7 @@
 <a href="#make-standalone-basins" class="anchor"></a>Make Standalone Basins</h2>
 <p>The NHDPlus data model has some shared identifiers that can span very large distances. For example, the “Level Path Identifier” identifies an entire river from headwater to outlet using the “hydrologic sequence identifier” of the outlet. Similarly, the “Terminal Path Identifier” identifies an entire basin using the hydrologic sequence identifier of the terminal flowline (to the ocean or an inland sink). When creating subsets of NHDPlus data, many times, these attributes can identify flowlines that are not included in the subset. For most applications, this is not a problem, but in some cases, it is advantageous to adjust identifiers such that the subset appears to be a complete drainage basin with a true terminal outlet. <code><a href="../reference/make_standalone.html">make_standalone()</a></code> accomplishes this task.</p>
 <p>On a one by one basis, this may seam insignificant, but for workflows that need to work with arbitrary subsets and start from basin outlets, this functionality is useful. It has little impact on the data and is applied by default.</p>
-<p>The example below shows how the outlet is modified. As described in the documentation os <code><a href="../reference/make_standalone.html">make_standalone()</a></code> all related attribues upstream are also fixed such that the network is intact for further use.</p>
+<p>The example below shows how the outlet is modified. As described in the documentation os <code><a href="../reference/make_standalone.html">make_standalone()</a></code> all related attributes upstream are also fixed such that the network is intact for further use.</p>
 <div class="sourceCode" id="cb98"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
                     <span class="kw">min_size_sqkm</span> <span class="kw">=</span> <span class="fl">100</span>, <span class="kw">check_terminals</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 

@@ -186,15 +186,15 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">temp_dir</span>, <span class="st">"natseamless.gpkg"</span>))
 
 <span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>()
-<span class="co">#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmp8o2cRJ/natseamless.gpkg"</span></pre></body></html></div>
-<p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatadly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
+<span class="co">#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpuayR22/natseamless.gpkg"</span></pre></body></html></div>
+<p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatedly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">staged_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/stage_national_data.html">stage_national_data</a></span>(<span class="kw">output_path</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>())
 
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">staged_data</span>)
 <span class="co">#&gt; List of 3</span>
-<span class="co">#&gt;  $ attributes: chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmp8o2cRJ/nhdplus_flowline_attributes.rds"</span>
-<span class="co">#&gt;  $ flowline  : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmp8o2cRJ/nhdplus_flowline.rds"</span>
-<span class="co">#&gt;  $ catchment : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//Rtmp8o2cRJ/nhdplus_catchment.rds"</span></pre></body></html></div>
+<span class="co">#&gt;  $ attributes: chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpuayR22/nhdplus_flowline_attributes.rds"</span>
+<span class="co">#&gt;  $ flowline  : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpuayR22/nhdplus_flowline.rds"</span>
+<span class="co">#&gt;  $ catchment : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpuayR22/nhdplus_catchment.rds"</span></pre></body></html></div>
 <p>As you can see, <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are <a href="https://r-spatial.github.io/sf/"><code>sf</code></a> <code>data.frame</code>s and attributes is a plain <code>data.frame</code> with the attributes from <code>flowline</code>. Note that this introduction uses a small subset of the national seamless database as shown in the plot.</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">flowline</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="no">staged_data</span>$<span class="no">flowline</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">flowline</span>)[<span class="fl">1</span>:<span class="fl">10</span>]
@@ -207,7 +207,7 @@
 <div id="nhdplus-hires" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nhdplus-hires" class="anchor"></a>NHDPlus HiRes</h3>
-<p>(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, <code>nhdplusTools</code> will have complete support for NHDPlus HiRes. So far, <code>nhdplusTools</code> will help download and interface NHDPlus HiRes data with existing <code>nhdplusTools</code> functionality. It’s important to note that <code>nhdplusTools</code> was primarily implemented using NHDPlusV2 and any use of HiRes (which is still “beta data” as of writing this) should be subject to significant scruitiny. Never the less, here’s a short summary of how to work with NHDPlus HiRes.</p>
+<p>(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, <code>nhdplusTools</code> will have complete support for NHDPlus HiRes. So far, <code>nhdplusTools</code> will help download and interface NHDPlus HiRes data with existing <code>nhdplusTools</code> functionality. It’s important to note that <code>nhdplusTools</code> was primarily implemented using NHDPlusV2 and any use of HiRes (which is still “beta data” as of writing this) should be subject to significant scrutiny. Never the less, here’s a short summary of how to work with NHDPlus HiRes.</p>
 <p>For the demo below, a small sample of HiRes data that has been loaded into <code>nhdplusTools</code> is used. The first line shows how you can download additional data (just change <code>download_files</code> to <code>TRUE</code>).</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span>(<span class="kw">nhd_dir</span> <span class="kw">=</span> <span class="st">"download_dir"</span>,
                    <span class="kw">hu_list</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"0101"</span>), <span class="co"># can mix hu02 and hu04 codes.</span>
@@ -377,7 +377,7 @@
 <div id="local-data-subsetting" class="section level3">
 <h3 class="hasAnchor">
 <a href="#local-data-subsetting" class="anchor"></a>Local Data Subsetting</h3>
-<p>With the starting COMID we found with <code>discover_nhdplus_id</code> above, we can use one of the network navigation functions, <code>get_UM</code>, <code>get_UT</code>, <code>get_DM</code>, or <code>get_DD</code> to retrieve a collection of comids along the upstream mainstaem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we’ll use upstream with tributaries.</p>
+<p>With the starting COMID we found with <code>discover_nhdplus_id</code> above, we can use one of the network navigation functions, <code>get_UM</code>, <code>get_UT</code>, <code>get_DM</code>, or <code>get_DD</code> to retrieve a collection of comids along the upstream mainstem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we’ll use upstream with tributaries.</p>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">UT_comids</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span>(<span class="no">flowline</span>, <span class="no">start_comid</span>)
 <span class="no">UT_comids</span>
 <span class="co">#&gt;   [1]  13293750  13293504  13294134  13294128  13294394  13293454  13293430</span>
@@ -443,7 +443,7 @@
 <span class="co">#&gt; 4           NHDWaterbody     Multi Polygon       90     21</span>
 <span class="co">#&gt; 5                   Gage             Point       33     19</span>
 <span class="co">#&gt; 6 NHDFlowline_NonNetwork Multi Line String       45     12</span></pre></body></html></div>
-<p>Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other laters as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.</p>
+<p>Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other layers as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.</p>
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">catchment</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">output_file</span>, <span class="st">"CatchmentSP"</span>)
 <span class="no">waterbody</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">output_file</span>, <span class="st">"NHDWaterbody"</span>)
 
@@ -464,46 +464,28 @@
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(<span class="no">flowline</span>, <span class="no">start_point</span>)
 <span class="co">#&gt; Warning in get_flowline_index(flowline, start_point): crs of lines and points</span>
 <span class="co">#&gt; don't match. attempting st_transform of points</span>
-<span class="co">#&gt;      COMID      REACHCODE REACH_meas       offset</span>
-<span class="co">#&gt; 1 13293750 07090002007373   53.13861 0.0004206437</span></pre></body></html></div>
+<span class="co">#&gt; # A tibble: 1 x 5</span>
+<span class="co">#&gt;      id    COMID REACHCODE      REACH_meas   offset</span>
+<span class="co">#&gt;   &lt;int&gt;    &lt;int&gt; &lt;chr&gt;               &lt;dbl&gt;    &lt;dbl&gt;</span>
+<span class="co">#&gt; 1     1 13293750 07090002007373       53.1 0.000421</span></pre></body></html></div>
 <p><code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> will work with a list of points too. For demonstration purposes, we can use the gages in our subset from above.</p>
 <div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="no">gage</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">output_file</span>, <span class="st">"Gage"</span>)
 
 <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span>(<span class="no">flowline</span>, <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">gage</span>), <span class="kw">precision</span> <span class="kw">=</span> <span class="fl">10</span>)
-<span class="co">#&gt;       COMID      REACHCODE  REACH_meas         offset</span>
-<span class="co">#&gt; 1  13293744 07090002007743  29.3045252 0.000016031339</span>
-<span class="co">#&gt; 2  13294276 07090002008387  14.8355105 0.000012319388</span>
-<span class="co">#&gt; 3  13294264 07090002007650  56.4438696 0.000020924187</span>
-<span class="co">#&gt; 4  13293750 07090002007373  42.5089435 0.000025343524</span>
-<span class="co">#&gt; 5  13294312 07090002008383   1.2211441 0.000002976034</span>
-<span class="co">#&gt; 6  13294264 07090002007650  41.0519403 0.000033122595</span>
-<span class="co">#&gt; 7  13294264 07090002007650   2.0871734 0.000002256005</span>
-<span class="co">#&gt; 8  13293688 07090002007660 100.0000000 0.020929363236</span>
-<span class="co">#&gt; 9  13294300 07090002008379  85.4440745 0.000016082151</span>
-<span class="co">#&gt; 10 13293690 07090002007648   0.7642491 0.000014026098</span>
-<span class="co">#&gt; 11 13294264 07090002007650  71.4042342 0.008204867456</span>
-<span class="co">#&gt; 12 13294264 07090002007650  72.0019381 0.019942565085</span>
-<span class="co">#&gt; 13 13294176 07090002007664   6.1174271 0.000031905454</span>
-<span class="co">#&gt; 14 13294264 07090002007650  29.9935507 0.014844404582</span>
-<span class="co">#&gt; 15 13294290 07090002008374  88.0212984 0.000027985042</span>
-<span class="co">#&gt; 16 13294138 07090002007709  73.3716682 0.000010977009</span>
-<span class="co">#&gt; 17 13293614 07090002007657 100.0000000 0.017607698993</span>
-<span class="co">#&gt; 18 13293486 07090002007724   8.8530113 0.000012426106</span>
-<span class="co">#&gt; 19 13293512 07090002007723   5.9867618 0.000010481501</span>
-<span class="co">#&gt; 20 13294176 07090002007664  16.9958260 0.000012406860</span>
-<span class="co">#&gt; 21 13293892 07090002007769  76.2138002 0.033424958786</span>
-<span class="co">#&gt; 22 13293474 07090002007713  72.0813909 0.000006053102</span>
-<span class="co">#&gt; 23 13293520 07090002007676  18.1942138 0.000030263717</span>
-<span class="co">#&gt; 24 13293876 07090002007627  60.1357174 0.000025453648</span>
-<span class="co">#&gt; 25 13293826 07090002007632 100.0000000 0.004750241659</span>
-<span class="co">#&gt; 26 13293512 07090002007723  68.1716181 0.000025778329</span>
-<span class="co">#&gt; 27 13294264 07090002007650  97.1673437 0.000013950790</span>
-<span class="co">#&gt; 28 13294344 07090002007629   6.5787509 0.000007648685</span>
-<span class="co">#&gt; 29 13293452 07090002007737   0.0000000 0.000486895250</span>
-<span class="co">#&gt; 30 13294344 07090002007629  27.7299659 0.000012934585</span>
-<span class="co">#&gt; 31 13293512 07090002007723  67.6223334 0.000022459225</span>
-<span class="co">#&gt; 32 13294344 07090002007629   6.5787509 0.000007648685</span>
-<span class="co">#&gt; 33 13294288 07090002008236   4.3378700 0.000275389563</span></pre></body></html></div>
+<span class="co">#&gt; # A tibble: 33 x 5</span>
+<span class="co">#&gt;       id    COMID REACHCODE      REACH_meas     offset</span>
+<span class="co">#&gt;    &lt;int&gt;    &lt;int&gt; &lt;chr&gt;               &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt;  1     1 13293744 07090002007743     29.3   0.0000160 </span>
+<span class="co">#&gt;  2     2 13294276 07090002008387     14.8   0.0000123 </span>
+<span class="co">#&gt;  3     3 13294264 07090002007650     56.4   0.0000209 </span>
+<span class="co">#&gt;  4     4 13293750 07090002007373     42.5   0.0000253 </span>
+<span class="co">#&gt;  5     5 13294312 07090002008383      1.22  0.00000298</span>
+<span class="co">#&gt;  6     6 13294264 07090002007650     41.1   0.0000331 </span>
+<span class="co">#&gt;  7     7 13294264 07090002007650      2.09  0.00000226</span>
+<span class="co">#&gt;  8     8 13293688 07090002007660    100     0.0209    </span>
+<span class="co">#&gt;  9     9 13294300 07090002008379     85.4   0.0000161 </span>
+<span class="co">#&gt; 10    10 13293690 07090002007648      0.764 0.0000140 </span>
+<span class="co">#&gt; # … with 23 more rows</span></pre></body></html></div>
 <p>For more info about <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> see the article <code><a href="../articles/point_indexing.html">vignette("point_indexing")</a></code> about it or the reference page that describes it.</p>
 <p><a id="refactoring"></a></p>
 </div>

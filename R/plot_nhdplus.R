@@ -43,6 +43,8 @@
 #' @export
 #' @examples
 #' \donttest{
+#' rosm::set_default_cachedir(tempfile())
+#'
 #' plot_nhdplus("05428500")
 #'
 #' plot_nhdplus("05428500", streamorder = 2)

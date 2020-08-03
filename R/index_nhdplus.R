@@ -19,12 +19,12 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
   matched <- filter(matched, .data$nn.dists <= search_radius)
 
   # First get rid of duplicate nodes on the same line.
-  matched <- group_by(matched, L1, id) %>%
-    filter(nn.dists == min(nn.dists)) %>%
+  matched <- group_by(matched, .data$L1, .data$id) %>%
+    filter(.data$nn.dists == min(.data$nn.dists)) %>%
     ungroup()
 
   # Now limit to max matches per point
-  matched <- group_by(matched, id) %>%
+  matched <- group_by(matched, .data$id) %>%
     filter(dplyr::row_number() <= max_matches) %>%
     ungroup()
 
@@ -188,12 +188,12 @@ get_flowline_index <- function(flines, points,
              (.data$FromMeas - .data$ToMeas) * (.data$measure)) %>%
     ungroup() %>% distinct()
 
-  matched <- select(matched, id, node = .data$nn.idx, offset = .data$nn.dists, .data$COMID)
+  matched <- select(matched, .data$id, node = .data$nn.idx, offset = .data$nn.dists, .data$COMID)
 
   matched <- left_join(matched,
                        select(flines, .data$index, .data$REACHCODE, .data$REACH_meas),
                         by = c("node" = "index")) %>%
-    select(id, .data$COMID, .data$REACHCODE, .data$REACH_meas, .data$offset)
+    select(.data$id, .data$COMID, .data$REACHCODE, .data$REACH_meas, .data$offset)
 
   return(matched)
 }

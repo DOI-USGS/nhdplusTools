@@ -16,13 +16,16 @@ knitr::opts_chunk$set(
   fig.height=4,
   eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
 )
-oldoption <- options(scipen = 9999,
-                     rmarkdown.html_vignette.check_title = FALSE)
-options(scipen = 9999)
+oldoption <- options()
+options(scipen = 9999,
+        rmarkdown.html_vignette.check_title = FALSE,
+        "rgdal_show_exportToProj4_warnings"="none")
 ```
 ```{r data_dir_setup, echo=FALSE, include=FALSE}
 temp_dir <- tempdir()
 dir.create(temp_dir)
+library(rosm)
+set_default_cachedir(tempfile())
 library(nhdplusTools)
 ```
 
@@ -174,7 +177,7 @@ The `prettymapr::prettymap()` function isn't strictly necessary, but it gives us
 prep_layer <- function(x) st_geometry(st_transform(x, 3857))
 
 prettymapr::prettymap({
-  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, progress = "none")
+  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, progress = "none", cachedir = tempfile())
   
   plot(prep_layer(basin), 
        lwd = 2, add = TRUE)

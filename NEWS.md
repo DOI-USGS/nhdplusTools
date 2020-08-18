@@ -1,3 +1,10 @@
+nhdplusTools 0.3.15
+==========
+* Fixed a bug in `get_flowline_index()` to handle multipart lines.
+* Added flowline_only input to `plot_nhdplus()` to improve scalability
+* Added streamorder filtering to `subset_nhdplus()` for download filtering.
+* Default behavior of `plot_nhdplus()` updated to improve scalability of large downloads.
+
 nhdplusTools 0.3.14
 ==========
 * Added `get_node()` to get top and bottom of a flowline.

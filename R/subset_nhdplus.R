@@ -19,6 +19,8 @@
 #' @param status boolean should the function print status messages
 #' @param flowline_only boolean WARNING: experimental
 #' if TRUE only the flowline network and attributes will be returned
+#' @param streamorder integer only streams of order greater than or equal will be downloaded.
+#' Not implemented for local data.
 #' @details If \code{\link{stage_national_data}} has been run in the current
 #' session, this function will use the staged national data automatically.
 #'
@@ -114,11 +116,28 @@
 
 subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NULL, bbox = NULL,
                            simplified = TRUE, overwrite = FALSE, return_data = TRUE, status = TRUE,
-                           flowline_only = FALSE) {
+                           flowline_only = NULL, streamorder = NULL) {
+
+  if(is.null(flowline_only)) {
+    if(!is.null(nhdplus_data) && nhdplus_data == "download") {
+      flowline_only <- TRUE
+    } else {
+      flowline_only <- FALSE
+    }
+  }
 
   if (status) message("All intersections performed in latitude/longitude.")
 
   if(any(bbox > 180 | bbox < -180)) stop("invalid bbox entry")
+
+  if(!is.null(bbox) && nhdplus_data == "download") {
+    x_range <- bbox[3] - bbox[1]
+    y_range <- bbox[4] - bbox[2]
+
+    if((x_range * y_range) > 10) {
+      warning("Large bounding box submitted for download. Performance may be slow or unstable.")
+    }
+  }
 
   if(!is.null(output_file)) {
     if (!grepl("*.gpkg$", output_file)) {
@@ -188,7 +207,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
     for (layer_name in intersection_names) {
       layer <- sf::st_transform(envelope, 4326) %>%
-        get_nhdplus_bybox(layer = tolower(layer_name))
+        get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
 
       if(return_data) {
         out_list[layer_name] <- list(layer)

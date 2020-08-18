@@ -130,8 +130,25 @@ get_flowline_index <- function(flines, points,
   flines <- sf::st_zm(sf::st_cast(flines, "LINESTRING", warn = FALSE))
 
   if (nrow(flines) != nrow(fline_atts)) {
-    warning(paste0("measure may be inacurate due to ",
-                   "conversion from multipart to singlepart lines"))
+
+    flines <- summarize(group_by(select(flines, .data$index),
+                                                       index),
+                                              do_union = FALSE)
+
+    flines <- left_join(flines, fline_atts, by = "index")
+
+    multi <- lengths(sf::st_geometry(flines)) > 1
+
+    if(any(multi)) {
+      warning(paste0("Attempting to combine multipart lines into single ",
+                     "part lines. Check results!!"))
+
+      st_geometry(flines)[multi] <- lapply(st_geometry(flines)[multi], function(x) {
+        st_linestring(do.call(rbind, x))
+      })
+
+      flines  <- sf::st_zm(sf::st_cast(flines, "LINESTRING", warn = FALSE))
+    }
   }
 
   flines <- sf::st_coordinates(flines)

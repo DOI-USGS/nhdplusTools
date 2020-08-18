@@ -9,6 +9,7 @@
 #' @param plot_config list containing plot configuration, see details.
 #' @param add boolean should this plot be added to an already built map.
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
+#' @param flowline_only boolean only subset and plot flowlines?
 #' @param ... parameters passed on to rosm.
 #' @return plot data is returned invisibly.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
@@ -43,6 +44,7 @@
 #' @export
 #' @examples
 #' \donttest{
+#' options("rgdal_show_exportToProj4_warnings"="none")
 #' rosm::set_default_cachedir(tempfile())
 #'
 #' plot_nhdplus("05428500")
@@ -101,9 +103,10 @@
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
-                         add = FALSE, actually_plot = TRUE, overwrite = TRUE, ...) {
+                         add = FALSE, actually_plot = TRUE, overwrite = TRUE,
+                         flowline_only = NULL, ...) {
 
-  pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg, overwrite)
+  pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg, overwrite, flowline_only)
 
   if(actually_plot) {
     st <- get_styles(plot_config)
@@ -188,7 +191,7 @@ validate_plot_config <- function(plot_config) {
 
 get_plot_data <- function(outlets = NULL, bbox = NULL,
                           streamorder = NULL, nhdplus_data = NULL,
-                          gpkg = NULL, overwrite = TRUE, ...) {
+                          gpkg = NULL, overwrite = TRUE, flowline_only = NULL, ...) {
 
   if(!is.null(outlets) & !is.null(bbox)) stop("Both bbox and outlets not supported.")
 
@@ -203,7 +206,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   }
 
   if(!is.null(bbox)) {
-    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg, overwrite)
+    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg, overwrite, streamorder = streamorder)
     catchment <- flowline$catchment
     basin <- flowline$basin
     nexus <- flowline$nexus
@@ -245,13 +248,21 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
 
     subsets <- subset_nhdplus(comids = unlist(all_comids), output_file = gpkg,
                               nhdplus_data = nhdplus_data, status = FALSE,
-                              overwrite = overwrite)
+                              overwrite = overwrite, streamorder = streamorder,
+                              flowline_only = flowline_only)
 
     flowline <- sf::st_zm(subsets[[fline_layer]])
-    catchment <- subsets[[catchment_layer]]
-    basin <- do.call(rbind, lapply(all_comids, function(x, catchment_layer, subsets) {
-      make_basin(subsets, catchment_layer, x)
+
+    if("CatchmentSP" %in% names(subsets)) {
+      catchment <- subsets[[catchment_layer]]
+
+      basin <- do.call(rbind, lapply(all_comids, function(x, catchment_layer, subsets) {
+        make_basin(subsets, catchment_layer, x)
       }, catchment_layer = catchment_layer, subsets = subsets))
+    } else {
+      catchment <- NULL
+      basin <- NULL
+    }
 
     nexus <- do.call(rbind, nexus)
 
@@ -260,7 +271,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
 
     nexus <- do.call(rbind, lapply(outlets, get_outlet_from_nldi))
 
-    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data, gpkg, overwrite)
+    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data, gpkg, overwrite, streamorder = streamorder, flowline_only = flowline_only)
     flowline <- align_nhdplus_names(nhd_data$flowline)
     flowline <- do.call(rbind, lapply(nexus$comid, function(x) {
       flowline[flowline$COMID %in% get_UT(align_nhdplus_names(flowline), x), ]
@@ -272,11 +283,18 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   if(!is.null(comids)) {
     if(is.null(nhdplus_data)) nhdplus_data <- "download"
     nhd_data <- subset_nhdplus(comids, nhdplus_data = nhdplus_data,
-                               status = FALSE, overwrite = overwrite)
-    bbox <- sf::st_bbox(nhd_data$CatchmentSP)
+                               status = FALSE, overwrite = overwrite,
+                               flowline_only = flowline_only)
+    if("CatchmentSP" %in% names(nhd_data)) {
+      bbox <- sf::st_bbox(nhd_data$CatchmentSP)
+      catchment <- nhd_data[[catchment_layer]]
+      basin <- make_basin(nhd_data, catchment_layer = catchment_layer)
+    } else {
+      bbox <- sf::st_bbox(nhd_data$NHDFlowline_Network)
+      catchment <- NULL
+      basin <- NULL
+    }
     flowline <- sf::st_zm(nhd_data$NHDFlowline_Network)
-    catchment <- nhd_data[[catchment_layer]]
-    basin <- make_basin(nhd_data, catchment_layer = catchment_layer)
     nexus <- NULL
   }
 
@@ -285,7 +303,11 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   }
 
   if(is.null(bbox)) {
-    bbox <- sp_bbox(sf::st_transform(basin, 4326))
+    if(is.null(basin)) {
+      bbox <- sp_bbox(sf::st_transform(flowline, 4326))
+    } else {
+      bbox <- sp_bbox(sf::st_transform(basin, 4326))
+    }
   }
 
   if(!is.null(streamorder) && "StreamOrde" %in% names(flowline)) {
@@ -296,13 +318,25 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
               basin = basin, catchment = catchment))
 }
 
-dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite) {
+dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorder = NULL, flowline_only = NULL) {
+
   bbox <- sf::st_bbox(sf::st_transform(sf::st_as_sfc(bbox), 4326))
-  source <- "download"
-  if(!is.null(nhdplus_data)) source <- nhdplus_data
+
+  if(!is.null(nhdplus_data)) {
+    source <- nhdplus_data
+  } else {
+    source <- "download"
+  }
+
+  if(is.null(flowline_only) && source == "download") {
+    flowline_only <- TRUE
+  } else {
+    flowline_only <- FALSE
+  }
 
   d <- subset_nhdplus(bbox = bbox, output_file = gpkg, nhdplus_data = source,
-                             simplified = TRUE, status = FALSE, overwrite = overwrite)
+                      simplified = TRUE, status = FALSE,
+                      overwrite = overwrite, flowline_only = flowline_only, streamorder = streamorder)
 
   d <- lapply(d, align_nhdplus_names)
 

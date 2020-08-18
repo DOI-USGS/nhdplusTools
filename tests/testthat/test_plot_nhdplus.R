@@ -10,7 +10,7 @@ test_that("basics work", {
   site <- "USGS-05428500"
   g_temp <- file.path(tempd, "foo.gpkg")
 
-  d <-  nhdplusTools:::get_plot_data(site, gpkg = g_temp)
+  d <-  nhdplusTools:::get_plot_data(site, gpkg = g_temp, flowline_only = FALSE)
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
 
   expect_true(all(c("comid", "type") %in% names(d$outlets)))
@@ -118,6 +118,8 @@ test_that("local data", {
   expect_equal(names(plot_data), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
   expect_equal(nrow(plot_data$flowline), 251)
   expect_equal(plot_data$outlets$type, "comid")
+
+  plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, nhdplus_data = sample_data, flowline_only = TRUE)
 
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
   expect_equal(nrow(plot_data$flowline), 57)
@@ -298,5 +300,10 @@ test_that("comids", {
 
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
   expect_true(all(d$flowline$comid %in% comids))
+  expect_equal(d$catchment, NULL)
+
+  d <- nhdplusTools:::get_plot_data(comids, flowline_only = FALSE)
+  expect_true(is(d$catchment, "sf"))
+  expect_true(is(d$basin, "sf"))
 })
 

@@ -124,9 +124,19 @@ test_that("subset runs as expected", {
                        output_file = out_file,
                        nhdplus_data = "download",
                        overwrite = FALSE,
-                       status = FALSE)
+                       status = FALSE, flowline_only = FALSE)
 
   check_layers()
+
+  unlink(file.path(temp_dir, "*"))
+
+  fi <- subset_nhdplus(comids = comids,
+                       output_file = out_file,
+                       nhdplus_data = "download",
+                       overwrite = FALSE,
+                       status = FALSE)
+
+  expect_equal(length(names(fi)), 1)
 
   })
 

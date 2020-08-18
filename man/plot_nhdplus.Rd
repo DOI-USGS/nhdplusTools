@@ -14,6 +14,7 @@ plot_nhdplus(
   add = FALSE,
   actually_plot = TRUE,
   overwrite = TRUE,
+  flowline_only = NULL,
   ...
 )
 }
@@ -35,6 +36,8 @@ plot_nhdplus(
 \item{actually_plot}{boolean actually draw the plot? Use to get data subset only.}
 
 \item{overwrite}{passed on the \link{subset_nhdplus}.}
+
+\item{flowline_only}{boolean only subset and plot flowlines?}
 
 \item{...}{parameters passed on to rosm.}
 }
@@ -76,6 +79,7 @@ The following shows the defaults that can be altered.
 }
 \examples{
 \donttest{
+options("rgdal_show_exportToProj4_warnings"="none")
 rosm::set_default_cachedir(tempfile())
 
 plot_nhdplus("05428500")

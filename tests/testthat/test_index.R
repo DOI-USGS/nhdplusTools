@@ -86,3 +86,17 @@ test_that("point indexing to for multiple points works", {
   expect_true(all(matches$REACHCODE %in% matches2$REACHCODE))
 
 })
+
+test_that("multipart indexing", {
+
+  points <- sf::read_sf(list.files(pattern = "*flowline_index_reprex.gpkg",
+                                   recursive = TRUE, full.names = TRUE), "sites")
+  lines <- sf::read_sf(list.files(pattern = "*flowline_index_reprex.gpkg",
+                                  recursive = TRUE, full.names = TRUE), "reaches")
+
+  expect_warning(index <- nhdplusTools::get_flowline_index(lines, points, search_radius = 500),
+                 "Attempting to combine multipart lines into single part lines. Check results!!")
+
+  expect_true(all(index$COMID == 51664))
+
+})

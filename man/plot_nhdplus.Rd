@@ -79,6 +79,7 @@ The following shows the defaults that can be altered.
 }
 \examples{
 \donttest{
+options("rgdal_show_exportToProj4_warnings"="none")
 rosm::set_default_cachedir(tempfile())
 
 plot_nhdplus("05428500")

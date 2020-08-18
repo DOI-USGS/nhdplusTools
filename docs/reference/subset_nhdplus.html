@@ -160,7 +160,8 @@ nhdplusTools compatible data based on a specified collection of COMIDs.</p>
   <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>return_data</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>flowline_only</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>flowline_only</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>streamorder</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -211,6 +212,11 @@ data is returned in a list.</p></td>
       <td><p>boolean WARNING: experimental
 if TRUE only the flowline network and attributes will be returned</p></td>
     </tr>
+    <tr>
+      <th>streamorder</th>
+      <td><p>integer only streams of order greater than or equal will be downloaded.
+Not implemented for local data.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -234,7 +240,8 @@ be available permenently.</p>
 
 <span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span>(<span class='no'>sample_data</span>)
 
-<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())</div><div class='output co'>#&gt; <span class='warning'>Warning: attributes file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: flowline file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: catchment already exists.</span></div><div class='input'>
+<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+
 <span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>staged_nhdplus</span>$<span class='no'>flowline</span>)
 
 <span class='no'>geom_col</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>sample_flines</span>, <span class='st'>"sf_column"</span>)
@@ -361,7 +368,7 @@ be available permenently.</p>
                <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>output_file</span>,
                <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='st'>"download"</span>,
                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; $NHDFlowline_Network
+               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; $NHDFlowline_Network
 #&gt; Simple feature collection with 168 features and 139 fields
 #&gt; geometry type:  MULTILINESTRING
 #&gt; dimension:      XYZ
@@ -404,74 +411,11 @@ be available permenently.</p>
 #&gt; </span><span style='color: #555555;'>#   qa_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, va_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   ve_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, va_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   qe_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, …</span><span>
-#&gt; 
-#&gt; $CatchmentSP
-#&gt; Simple feature collection with 167 features and 8 fields
-#&gt; geometry type:  MULTIPOLYGON
-#&gt; dimension:      XY
-#&gt; bbox:           xmin: -89.6048 ymin: 43.0351 xmax: -89.2038 ymax: 43.3661
-#&gt; geographic CRS: WGS 84
-#&gt; </span><span style='color: #555555;'># A tibble: 167 x 9</span><span>
-#&gt;    id    gridcode featureid sourcefc areasqkm shape_length shape_area bbox 
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;lis&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>512  13</span><span style='text-decoration: underline;'>293</span><span>376 NHDFlow…  47.8          0.465  0.005</span><span style='text-decoration: underline;'>30</span><span>    </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'> 2</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>714  13</span><span style='text-decoration: underline;'>293</span><span>378 NHDFlow…   3.30         0.089</span><span style='text-decoration: underline;'>9</span><span> 0.000</span><span style='text-decoration: underline;'>366</span><span>   </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'> 3</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>651  13</span><span style='text-decoration: underline;'>293</span><span>380 NHDFlow…  19.1          0.247  0.002</span><span style='text-decoration: underline;'>12</span><span>    </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'> 4</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>750  13</span><span style='text-decoration: underline;'>293</span><span>382 NHDFlow…  12.1          0.197  0.001</span><span style='text-decoration: underline;'>35</span><span>    </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'> 5</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>509  13</span><span style='text-decoration: underline;'>293</span><span>384 NHDFlow…   0.291        0.029</span><span style='text-decoration: underline;'>6</span><span> 0.000</span><span style='text-decoration: underline;'>032</span><span>3  </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'> 6</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>979  13</span><span style='text-decoration: underline;'>293</span><span>386 NHDFlow…   9.94         0.175  0.001</span><span style='text-decoration: underline;'>10</span><span>    </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'> 7</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>517  13</span><span style='text-decoration: underline;'>293</span><span>388 NHDFlow…   0.154        0.018</span><span style='text-decoration: underline;'>7</span><span> 0.000</span><span style='text-decoration: underline;'>017</span><span>1  </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'> 8</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>768  13</span><span style='text-decoration: underline;'>293</span><span>390 NHDFlow…   1.41         0.061</span><span style='text-decoration: underline;'>2</span><span> 0.000</span><span style='text-decoration: underline;'>157</span><span>   </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'> 9</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>605  13</span><span style='text-decoration: underline;'>293</span><span>392 NHDFlow…   0.461        0.039</span><span style='text-decoration: underline;'>3</span><span> 0.000</span><span style='text-decoration: underline;'>051</span><span>1  </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'>10</span><span> catc…  1</span><span style='text-decoration: underline;'>085</span><span>893  13</span><span style='text-decoration: underline;'>293</span><span>394 NHDFlow…   0.079</span><span style='text-decoration: underline;'>6</span><span>       0.012</span><span style='text-decoration: underline;'>4</span><span> 0.000</span><span style='text-decoration: underline;'>008</span><span>82 </span><span style='color: #555555;'>&lt;dbl</span><span>…
-#&gt; </span><span style='color: #555555;'># … with 157 more rows, and 1 more variable: geometry </span><span style='color: #555555;font-style: italic;'>&lt;MULTIPOLYGON [°]&gt;</span><span>
-#&gt; 
-#&gt; $NHDArea
-#&gt; Simple feature collection with 1 feature and 16 fields
-#&gt; geometry type:  MULTIPOLYGON
-#&gt; dimension:      XY
-#&gt; bbox:           xmin: -89.4019 ymin: 43.1502 xmax: -89.3613 ymax: 43.1811
-#&gt; geographic CRS: WGS 84
-#&gt; </span><span style='color: #555555;'># A tibble: 1 x 17</span><span>
-#&gt;   id     comid fdate               resolution gnis_id gnis_name areasqkm
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> nhda… 1.47</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>           1.36
-#&gt; </span><span style='color: #555555;'># … with 10 more variables: elevation </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, ftype </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, fcode </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   shape_length </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, shape_area </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, onoffnet </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, purpcode </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   purpdesc </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, bbox </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span style='color: #555555;'>, geometry </span><span style='color: #555555;font-style: italic;'>&lt;MULTIPOLYGON [°]&gt;</span><span>
-#&gt; 
-#&gt; $NHDWaterbody
-#&gt; Simple feature collection with 90 features and 23 fields
-#&gt; geometry type:  MULTIPOLYGON
-#&gt; dimension:      XY
-#&gt; bbox:           xmin: -89.7288 ymin: 42.9897 xmax: -89.2094 ymax: 43.4039
-#&gt; geographic CRS: WGS 84
-#&gt; </span><span style='color: #555555;'># A tibble: 90 x 24</span><span>
-#&gt;    id     comid fdate               resolution gnis_id gnis_name areasqkm
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> nhdw… 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          0.012
-#&gt; </span><span style='color: #555555;'> 2</span><span> nhdw… 1.36</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          0.03 
-#&gt; </span><span style='color: #555555;'> 3</span><span> nhdw… 1.36</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          0.025
-#&gt; </span><span style='color: #555555;'> 4</span><span> nhdw… 1.36</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          0.045
-#&gt; </span><span style='color: #555555;'> 5</span><span> nhdw… 1.36</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          0.048
-#&gt; </span><span style='color: #555555;'> 6</span><span> nhdw… 1.36</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          0.01 
-#&gt; </span><span style='color: #555555;'> 7</span><span> nhdw… 1.36</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          0.028
-#&gt; </span><span style='color: #555555;'> 8</span><span> nhdw… 1.47</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          1.72 
-#&gt; </span><span style='color: #555555;'> 9</span><span> nhdw… 1.47</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          2.97 
-#&gt; </span><span style='color: #555555;'>10</span><span> nhdw… 1.36</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          0.015
-#&gt; </span><span style='color: #555555;'># … with 80 more rows, and 17 more variables: elevation </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, reachcode </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   ftype </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, fcode </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, shape_length </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, shape_area </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   onoffnet </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, purpcode </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, purpdesc </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, meandepth </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   lakevolume </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, maxdepth </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, meandused </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, meandcode </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   lakearea </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, bbox </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span style='color: #555555;'>, geometry </span><span style='color: #555555;font-style: italic;'>&lt;MULTIPOLYGON [°]&gt;</span><span>
 #&gt; </div><div class='input'>
 <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
 #&gt; Available layers:
 #&gt;            layer_name        geometry_type features fields
-#&gt; 1 NHDFlowline_Network 3D Multi Line String      168    139
-#&gt; 2         CatchmentSP        Multi Polygon      167      8
-#&gt; 3             NHDArea        Multi Polygon        1     16
-#&gt; 4        NHDWaterbody        Multi Polygon       90     23</div><div class='input'>
+#&gt; 1 NHDFlowline_Network 3D Multi Line String      168    139</div><div class='input'>
 <span class='co'># NHDPlusHR</span>
 <span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/nhdplushr_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
 

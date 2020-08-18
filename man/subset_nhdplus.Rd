@@ -13,7 +13,8 @@ subset_nhdplus(
   overwrite = FALSE,
   return_data = TRUE,
   status = TRUE,
-  flowline_only = FALSE
+  flowline_only = NULL,
+  streamorder = NULL
 )
 }
 \arguments{
@@ -43,6 +44,9 @@ data is returned in a list.}
 
 \item{flowline_only}{boolean WARNING: experimental
 if TRUE only the flowline network and attributes will be returned}
+
+\item{streamorder}{integer only streams of order greater than or equal will be downloaded.
+Not implemented for local data.}
 }
 \value{
 path to the saved subset geopackage

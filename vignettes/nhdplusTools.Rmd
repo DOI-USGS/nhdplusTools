@@ -42,6 +42,7 @@ subset_file <- tempfile(fileext = ".gpkg")
 subset <- subset_nhdplus(comids = flowline$nhdplus_comid,
                          output_file = subset_file,
                          nhdplus_data = "download", 
+                         flowline_only = FALSE,
                          return_data = TRUE)
 
 flowline <- subset$NHDFlowline_Network

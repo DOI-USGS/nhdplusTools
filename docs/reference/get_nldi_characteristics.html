@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get NLDI Basin Boundary — get_nldi_basin • nhdplusTools</title>
+<title>Get Catchment Characteristics — get_nldi_characteristics • nhdplusTools</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Get NLDI Basin Boundary — get_nldi_basin" />
-<meta property="og:description" content="Get a basin boundary for a given NLDI feature." />
+<meta property="og:title" content="Get Catchment Characteristics — get_nldi_characteristics" />
+<meta property="og:description" content="Retrieves catchment characteristics from the Network Linked Data Index.
+Metadata for these characteristics can be found using `discover_nldi_characteristics()`." />
 <meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 
 
@@ -80,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.15</span>
       </span>
     </div>
 
@@ -140,16 +141,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get NLDI Basin Boundary</h1>
+    <h1>Get Catchment Characteristics</h1>
     <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_nldi.R'><code>R/get_nldi.R</code></a></small>
-    <div class="hidden name"><code>get_nldi_basin.Rd</code></div>
+    <div class="hidden name"><code>get_nldi_characteristics.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get a basin boundary for a given NLDI feature.</p>
+    <p>Retrieves catchment characteristics from the Network Linked Data Index.
+Metadata for these characteristics can be found using `discover_nldi_characteristics()`.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_nldi_basin</span>(<span class='no'>nldi_feature</span>, <span class='kw'>tier</span> <span class='kw'>=</span> <span class='st'>"prod"</span>)</pre>
+    <pre class="usage"><span class='fu'>get_nldi_characteristics</span>(<span class='no'>nldi_feature</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"local"</span>, <span class='kw'>tier</span> <span class='kw'>=</span> <span class='st'>"prod"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,41 +164,29 @@ discover_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.</p></td>
     </tr>
     <tr>
+      <th>type</th>
+      <td><p>character "all", "local", "total", or "divergence_routed".</p></td>
+    </tr>
+    <tr>
       <th>tier</th>
       <td><p>character optional "prod" or "test"</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>sf data.frame with result basin boundary</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Only resolves to the nearest NHDPlus catchment divide. See:
-https://owi.usgs.gov/blog/nldi-intro/ for more info on the nldi.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-
-<span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05428500"</span>)
-
-<span class='no'>basin</span> <span class='kw'>&lt;-</span> <span class='fu'>get_nldi_basin</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>)
-
-<span class='no'>basin</span> <span class='kw'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
- <span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>()</div><div class='img'><img src='get_nldi_basin-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='no'>basin</span></div><div class='output co'>#&gt; Simple feature collection with 1 feature and 0 fields
-#&gt; geometry type:  POLYGON
-#&gt; dimension:      XY
-#&gt; bbox:           xmin: -89.60465 ymin: 43.03507 xmax: -89.20378 ymax: 43.36607
-#&gt; geographic CRS: WGS 84
-#&gt; <span style='color: #555555;'># A tibble: 1 x 1</span><span>
-#&gt;                                                                         geometry
-#&gt;                                                                    </span><span style='color: #555555;font-style: italic;'>&lt;POLYGON [°]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> ((-89.35859 43.11776, -89.35423 43.11546, -89.35437 43.11067, -89.34997 43.10~</div><div class='input'># }
-</div></span></pre>
+    <pre class="examples"><div class='input'><span class='no'>chars</span> <span class='kw'>&lt;-</span> <span class='fu'>get_nldi_characteristics</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05429700"</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>chars</span>)</div><div class='output co'>#&gt; [1] "local"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>chars</span>$<span class='no'>local</span>, <span class='fl'>10</span>)</div><div class='output co'>#&gt;    characteristic_id characteristic_value percent_nodata
+#&gt; 1      CAT_NPDES_MAJ                    0              0
+#&gt; 2            CAT_BFI                64.15              0
+#&gt; 3            CAT_PET               644.71              0
+#&gt; 4        CAT_CONTACT                47.28              0
+#&gt; 5            CAT_EWT               -18.74              0
+#&gt; 6           CAT_IEOF                    2              0
+#&gt; 7          CAT_RECHG               133.18              0
+#&gt; 8          CAT_SATOF                    2              0
+#&gt; 9            CAT_TWI                14.05              0
+#&gt; 10    CAT_OLSON_PERM                 7.23              0</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -95,7 +95,7 @@
 
       
 
-      </header><script src="nhdplushr_files/header-attrs-2.3/header-attrs.js"></script><script src="nhdplushr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="nhdplushr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Working with NHDPlusHR</h1>
@@ -117,7 +117,7 @@
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">nhdplusTools</span>)</pre></body></html></div>
 <pre><code>#&gt; USGS Support Package: https://owi.usgs.gov/R/packages.html#support</code></pre>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">sf</span>)</pre></body></html></div>
-<pre><code>#&gt; Linking to GEOS 3.8.1, GDAL 3.1.0, PROJ 6.3.2</code></pre>
+<pre><code>#&gt; Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1</code></pre>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">work_dir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>(<span class="kw">check</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 <span class="no">sample_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/sample_natseamless.gpkg"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"nhdplusTools"</span>)
 
@@ -401,10 +401,12 @@
 <div class="sourceCode" id="cb95"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
                       <span class="kw">min_size_sqkm</span> <span class="kw">=</span> <span class="fl">100</span>,
                       <span class="kw">proj</span> <span class="kw">=</span> <span class="st">"+init=epsg:5070"</span>, <span class="kw">simp</span> <span class="kw">=</span> <span class="fl">200</span>,
-                      <span class="kw">keep_cols</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"COMID"</span>, <span class="st">"StreamOrde"</span>))
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>)</pre></body></html></div>
+                      <span class="kw">keep_cols</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"COMID"</span>, <span class="st">"StreamOrde"</span>))</pre></body></html></div>
+<pre><code>#&gt; Warning in CPL_crs_from_input(x): GDAL Message 1: +init=epsg:XXXX syntax is
+#&gt; deprecated. It might return a CRS with a non-EPSG compliant axis order.</code></pre>
+<div class="sourceCode" id="cb97"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>)</pre></body></html></div>
 <pre><code>#&gt; [1] "COMID"      "StreamOrde" "Shape"</code></pre>
-<div class="sourceCode" id="cb97"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>),
+<div class="sourceCode" id="cb99"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>),
      <span class="kw">lwd</span> <span class="kw">=</span> <span class="no">demo</span>$<span class="no">NHDFlowline</span>$<span class="no">StreamOrde</span>/<span class="fl">4</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"blue"</span>)</pre></body></html></div>
 <p><img src="nhdplushr_files/figure-html/get_nhdplushr5-1.png" width="816"></p>
 </div>
@@ -414,7 +416,7 @@
 <p>The NHDPlus data model has some shared identifiers that can span very large distances. For example, the “Level Path Identifier” identifies an entire river from headwater to outlet using the “hydrologic sequence identifier” of the outlet. Similarly, the “Terminal Path Identifier” identifies an entire basin using the hydrologic sequence identifier of the terminal flowline (to the ocean or an inland sink). When creating subsets of NHDPlus data, many times, these attributes can identify flowlines that are not included in the subset. For most applications, this is not a problem, but in some cases, it is advantageous to adjust identifiers such that the subset appears to be a complete drainage basin with a true terminal outlet. <code><a href="../reference/make_standalone.html">make_standalone()</a></code> accomplishes this task.</p>
 <p>On a one by one basis, this may seam insignificant, but for workflows that need to work with arbitrary subsets and start from basin outlets, this functionality is useful. It has little impact on the data and is applied by default.</p>
 <p>The example below shows how the outlet is modified. As described in the documentation os <code><a href="../reference/make_standalone.html">make_standalone()</a></code> all related attributes upstream are also fixed such that the network is intact for further use.</p>
-<div class="sourceCode" id="cb98"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
+<div class="sourceCode" id="cb100"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
                     <span class="kw">min_size_sqkm</span> <span class="kw">=</span> <span class="fl">100</span>, <span class="kw">check_terminals</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 
 <span class="co"># Create a standalone basin with the results for comparison.</span>
@@ -432,15 +434,15 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="no">broken_outlet</span>))</pre></body></html></div>
 <pre><code>#&gt;         Hydroseq     TerminalPa TerminalFl     LevelPathI
 #&gt; 1 22001000000414 22000100000212          0 22000300045683</code></pre>
-<div class="sourceCode" id="cb100"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="no">fixed_outlet</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb102"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="no">fixed_outlet</span>))</pre></body></html></div>
 <pre><code>#&gt;         Hydroseq     TerminalPa TerminalFl     LevelPathI
 #&gt; 1 22001000000414 22001000000414          1 22001000000414</code></pre>
-<div class="sourceCode" id="cb102"><html><body><pre class="r">(<span class="no">broken</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>, <span class="no">TerminalPa</span> <span class="kw">==</span> <span class="no">demo_outlet</span>$<span class="no">Hydroseq</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb104"><html><body><pre class="r">(<span class="no">broken</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>, <span class="no">TerminalPa</span> <span class="kw">==</span> <span class="no">demo_outlet</span>$<span class="no">Hydroseq</span>))</pre></body></html></div>
 <pre><code>#&gt; Simple feature collection with 0 features and 57 fields
 #&gt; bbox:           xmin: NA ymin: NA xmax: NA ymax: NA
 #&gt; geographic CRS: NAD83
 #&gt; # A tibble: 0 x 58
-#&gt; # … with 58 variables: Permanent_Identifier &lt;chr&gt;, FDate &lt;dttm&gt;,
+#&gt; # ... with 58 variables: Permanent_Identifier &lt;chr&gt;, FDate &lt;dttm&gt;,
 #&gt; #   Resolution &lt;int&gt;, GNIS_ID &lt;chr&gt;, GNIS_Name &lt;chr&gt;, LENGTHKM &lt;dbl&gt;,
 #&gt; #   REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;,
 #&gt; #   FTYPE &lt;int&gt;, FCode &lt;int&gt;, MainPath &lt;int&gt;, InNetwork &lt;int&gt;,
@@ -455,26 +457,26 @@
 #&gt; #   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,
 #&gt; #   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,
 #&gt; #   ElevFixed &lt;int&gt;, HWType &lt;int&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</code></pre>
-<div class="sourceCode" id="cb104"><html><body><pre class="r">(<span class="no">standalone</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">standalone_demo</span>, <span class="no">TerminalPa</span> <span class="kw">==</span> <span class="no">standalone_demo_outlet</span>$<span class="no">Hydroseq</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb106"><html><body><pre class="r">(<span class="no">standalone</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">standalone_demo</span>, <span class="no">TerminalPa</span> <span class="kw">==</span> <span class="no">standalone_demo_outlet</span>$<span class="no">Hydroseq</span>))</pre></body></html></div>
 <pre><code>#&gt; Simple feature collection with 5358 features and 57 fields
 #&gt; geometry type:  MULTILINESTRING
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: -90.68076 ymin: 41.27482 xmax: -88.1999 ymax: 43.74949
 #&gt; geographic CRS: NAD83
 #&gt; # A tibble: 5,358 x 58
-#&gt;    Permanent_Ident… FDate               Resolution GNIS_ID GNIS_Name LENGTHKM
+#&gt;    Permanent_Ident~ FDate               Resolution GNIS_ID GNIS_Name LENGTHKM
 #&gt;  * &lt;chr&gt;            &lt;dttm&gt;                   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;        &lt;dbl&gt;
-#&gt;  1 156038282        2012-03-19 06:32:25          2 004155… Pecatoni…    1.34 
-#&gt;  2 155714162        2014-10-29 00:00:00          2 004248… Fairfiel…    0.417
-#&gt;  3 156035374        2012-03-19 06:35:08          2 015619… Gordon C…    0.39 
-#&gt;  4 145600320        2012-03-19 06:34:47          2 004168… Rock Cre…    0.352
+#&gt;  1 156038282        2012-03-19 06:32:25          2 004155~ Pecatoni~    1.34 
+#&gt;  2 155714162        2014-10-29 00:00:00          2 004248~ Fairfiel~    0.417
+#&gt;  3 156035374        2012-03-19 06:35:08          2 015619~ Gordon C~    0.39 
+#&gt;  4 145600320        2012-03-19 06:34:47          2 004168~ Rock Cre~    0.352
 #&gt;  5 155712981        2012-03-19 07:05:43          2 &lt;NA&gt;    &lt;NA&gt;         0.034
-#&gt;  6 137417698        2012-03-18 18:07:30          2 015750… Sugar Ri…    0.798
+#&gt;  6 137417698        2012-03-18 18:07:30          2 015750~ Sugar Ri~    0.798
 #&gt;  7 156037500        2012-03-19 06:33:10          2 &lt;NA&gt;    &lt;NA&gt;         0.009
-#&gt;  8 145599800        2012-03-19 06:34:47          2 004145… North Fo…    0.665
-#&gt;  9 143246785        2012-03-18 17:56:42          2 004168… Rock Riv…    0.165
-#&gt; 10 155712415        2012-03-19 07:05:51          2 004241… Willow C…    2.11 
-#&gt; # … with 5,348 more rows, and 52 more variables: REACHCODE &lt;chr&gt;,
+#&gt;  8 145599800        2012-03-19 06:34:47          2 004145~ North Fo~    0.665
+#&gt;  9 143246785        2012-03-18 17:56:42          2 004168~ Rock Riv~    0.165
+#&gt; 10 155712415        2012-03-19 07:05:51          2 004241~ Willow C~    2.11 
+#&gt; # ... with 5,348 more rows, and 52 more variables: REACHCODE &lt;chr&gt;,
 #&gt; #   FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCode &lt;int&gt;,
 #&gt; #   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,
 #&gt; #   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,
@@ -488,7 +490,7 @@
 #&gt; #   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,
 #&gt; #   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,
 #&gt; #   ElevFixed &lt;int&gt;, HWType &lt;int&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</code></pre>
-<div class="sourceCode" id="cb106"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">standalone</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb108"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">standalone</span>))</pre></body></html></div>
 <p><img src="nhdplushr_files/figure-html/make_standalone-1.png" width="816"></p>
 </div>
   </div>

@@ -21,5 +21,7 @@ Retrieves catchment characteristics from the Network Linked Data Index.
 Metadata for these characteristics can be found using `discover_nldi_characteristics()`.
 }
 \examples{
-get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
+chars <- get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
+names(chars)
+head(chars$local, 10)
 }

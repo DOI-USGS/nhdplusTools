@@ -95,7 +95,7 @@
 
       
 
-      </header><script src="nhdplusTools_files/header-attrs-2.3/header-attrs.js"></script><script src="nhdplusTools_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="nhdplusTools_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to nhdplusTools</h1>
@@ -119,7 +119,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">nhdplusTools</span>)
 <span class="co">#&gt; USGS Support Package: https://owi.usgs.gov/R/packages.html#support</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">sf</span>)
-<span class="co">#&gt; Linking to GEOS 3.8.1, GDAL 3.1.0, PROJ 6.3.2</span>
+<span class="co">#&gt; Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1</span>
 
 <span class="no">start_point</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/sfc.html">st_sfc</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st.html">st_point</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">89.362239</span>, <span class="fl">43.090266</span>)), <span class="kw">crs</span> <span class="kw">=</span> <span class="fl">4269</span>)
 <span class="no">start_comid</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span>(<span class="no">start_point</span>)
@@ -133,6 +133,7 @@
 <span class="no">subset</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="kw">comids</span> <span class="kw">=</span> <span class="no">flowline</span>$<span class="no">nhdplus_comid</span>,
                          <span class="kw">output_file</span> <span class="kw">=</span> <span class="no">subset_file</span>,
                          <span class="kw">nhdplus_data</span> <span class="kw">=</span> <span class="st">"download"</span>,
+                         <span class="kw">flowline_only</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
                          <span class="kw">return_data</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 <span class="co">#&gt; All intersections performed in latitude/longitude.</span>
 <span class="co">#&gt; Reading NHDFlowline_Network</span>
@@ -186,15 +187,15 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">temp_dir</span>, <span class="st">"natseamless.gpkg"</span>))
 
 <span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>()
-<span class="co">#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpuayR22/natseamless.gpkg"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\Rtmp4UXaWl/natseamless.gpkg"</span></pre></body></html></div>
 <p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatedly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">staged_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/stage_national_data.html">stage_national_data</a></span>(<span class="kw">output_path</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>())
 
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">staged_data</span>)
 <span class="co">#&gt; List of 3</span>
-<span class="co">#&gt;  $ attributes: chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpuayR22/nhdplus_flowline_attributes.rds"</span>
-<span class="co">#&gt;  $ flowline  : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpuayR22/nhdplus_flowline.rds"</span>
-<span class="co">#&gt;  $ catchment : chr "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpuayR22/nhdplus_catchment.rds"</span></pre></body></html></div>
+<span class="co">#&gt;  $ attributes: chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\Rtmp4UXaWl/nhdplus_flowline_attributes.rds"</span>
+<span class="co">#&gt;  $ flowline  : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\Rtmp4UXaWl/nhdplus_flowline.rds"</span>
+<span class="co">#&gt;  $ catchment : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\Rtmp4UXaWl/nhdplus_catchment.rds"</span></pre></body></html></div>
 <p>As you can see, <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are <a href="https://r-spatial.github.io/sf/"><code>sf</code></a> <code>data.frame</code>s and attributes is a plain <code>data.frame</code> with the attributes from <code>flowline</code>. Note that this introduction uses a small subset of the national seamless database as shown in the plot.</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">flowline</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="no">staged_data</span>$<span class="no">flowline</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">flowline</span>)[<span class="fl">1</span>:<span class="fl">10</span>]
@@ -310,17 +311,12 @@
 <span class="co">#&gt; All intersections performed in latitude/longitude.</span>
 <span class="co">#&gt; Reading NHDFlowline_Network</span>
 <span class="co">#&gt; Writing NHDFlowline_Network</span>
-<span class="co">#&gt; Reading CatchmentSP</span>
-<span class="co">#&gt; Writing CatchmentSP</span>
 
 <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(<span class="no">output_file_download</span>)
 <span class="co">#&gt; Driver: GPKG </span>
 <span class="co">#&gt; Available layers:</span>
 <span class="co">#&gt;            layer_name        geometry_type features fields</span>
 <span class="co">#&gt; 1 NHDFlowline_Network 3D Multi Line String      168    139</span>
-<span class="co">#&gt; 2         CatchmentSP        Multi Polygon      167      8</span>
-<span class="co">#&gt; 3             NHDArea        Multi Polygon        1     16</span>
-<span class="co">#&gt; 4        NHDWaterbody        Multi Polygon       90     23</span>
 
 <span class="no">flowline_download</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">temp_dir</span>, <span class="st">"subset_download.gpkg"</span>),
                                  <span class="st">"NHDFlowline_Network"</span>)
@@ -349,17 +345,12 @@
 <span class="co">#&gt; All intersections performed in latitude/longitude.</span>
 <span class="co">#&gt; Reading NHDFlowline_Network</span>
 <span class="co">#&gt; Writing NHDFlowline_Network</span>
-<span class="co">#&gt; Reading CatchmentSP</span>
-<span class="co">#&gt; Writing CatchmentSP</span>
 
 <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(<span class="no">output_file_download</span>)
 <span class="co">#&gt; Driver: GPKG </span>
 <span class="co">#&gt; Available layers:</span>
 <span class="co">#&gt;            layer_name        geometry_type features fields</span>
 <span class="co">#&gt; 1 NHDFlowline_Network 3D Multi Line String      168    139</span>
-<span class="co">#&gt; 2         CatchmentSP        Multi Polygon      167      8</span>
-<span class="co">#&gt; 3             NHDArea        Multi Polygon        1     16</span>
-<span class="co">#&gt; 4        NHDWaterbody        Multi Polygon       90     23</span>
 
 <span class="no">flowline_nwis</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">read_sf</a></span>(<span class="no">output_file_nwis</span>,
                                  <span class="st">"NHDFlowline_Network"</span>)
@@ -485,7 +476,7 @@
 <span class="co">#&gt;  8     8 13293688 07090002007660    100     0.0209    </span>
 <span class="co">#&gt;  9     9 13294300 07090002008379     85.4   0.0000161 </span>
 <span class="co">#&gt; 10    10 13293690 07090002007648      0.764 0.0000140 </span>
-<span class="co">#&gt; # … with 23 more rows</span></pre></body></html></div>
+<span class="co">#&gt; # ... with 23 more rows</span></pre></body></html></div>
 <p>For more info about <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> see the article <code><a href="../articles/point_indexing.html">vignette("point_indexing")</a></code> about it or the reference page that describes it.</p>
 <p><a id="refactoring"></a></p>
 </div>

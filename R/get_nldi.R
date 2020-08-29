@@ -49,7 +49,9 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' @inheritParams discover_nldi_sources
 #' @export
 #' @examples
-#' discover_nldi_characteristics()
+#' chars <- discover_nldi_characteristics()
+#' names(chars)
+#' head(chars$local, 10)
 discover_nldi_characteristics <- function(type="all", tier = "prod") {
 
   tc <- type_check(type)
@@ -227,7 +229,9 @@ get_nldi_feature <- function(nldi_feature, tier = "prod") {
 #' @inheritParams discover_nldi_characteristics
 #' @export
 #' @examples
-#' get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
+#' chars <- get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
+#' names(chars)
+#' head(chars$local, 10)
 get_nldi_characteristics <- function(nldi_feature, type="local", tier = "prod") {
 
   tc <- type_check(type)

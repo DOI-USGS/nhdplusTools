@@ -15,5 +15,7 @@ discover_nldi_characteristics(type = "all", tier = "prod")
 Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.
 }
 \examples{
-discover_nldi_characteristics()
+chars <- discover_nldi_characteristics()
+names(chars)
+head(chars$local, 10)
 }

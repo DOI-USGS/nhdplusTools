@@ -9,10 +9,10 @@ get_nldi_characteristics(nldi_feature, type = "local", tier = "prod")
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-discover_nldi_sources() and the `featureID` is a known identifier
+discover_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.}
 
-\item{type}{character "local", "total", or "divergence_routed".}
+\item{type}{character "all", "local", "total", or "divergence_routed".}
 
 \item{tier}{character optional "prod" or "test"}
 }

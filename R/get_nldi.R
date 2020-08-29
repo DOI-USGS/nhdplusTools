@@ -20,7 +20,7 @@ discover_nldi_sources <- function(tier = "prod") {
 #' and `featureID` where `featureSource` is derived from the "source" column of
 #' the response of discover_nldi_sources() and the `featureSource` is a known identifier
 #' from the specified `featureSource`. e.g. list("nwissite", "USGS-08279500")
-#' @param tier character optional "prod" or "test"
+#' @inheritParams discover_nldi_sources
 #' @return data.frame with three columns "source", "sourceName" and "features"
 #' @export
 #' @examples
@@ -46,6 +46,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' @title Discover Characteristics Metadata
 #' @description Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.
 #' @param type character "all", "local", "total", or "divergence_routed".
+#' @inheritParams discover_nldi_sources
 #' @export
 #' @examples
 #' discover_nldi_characteristics()
@@ -90,7 +91,7 @@ type_check <- function(type) {
 #' @param data_source character chosen from "source" column of the response
 #' of discover_nldi_sources() or empty string for flowline geometry.
 #' @param distance_km numeric distance in km to stop navigating.
-#' @param tier character optional "prod" or "test"
+#' @inheritParams discover_nldi_sources
 #' @return sf data.frame with result
 #' @export
 #' @importFrom utils tail
@@ -169,11 +170,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' @description Get a basin boundary for a given NLDI feature.
 #' @details Only resolves to the nearest NHDPlus catchment divide. See:
 #' https://owi.usgs.gov/blog/nldi-intro/ for more info on the nldi.
-#' @param nldi_feature list with names `featureSource` and `featureID` where
-#' `featureSource` is derived from the "source" column of  the response of
-#' discover_nldi_sources() and the `featureSource` is a known identifier
-#' from the specified `featureSource`.
-#' @param tier character optional "prod" or "test"
+#' @inheritParams navigate_nldi
 #' @return sf data.frame with result basin boundary
 #' @export
 #' @examples
@@ -208,11 +205,7 @@ get_nldi_basin <- function(nldi_feature,
 
 #' @title Get NLDI Feature
 #' @description Get a single feature from the NLDI
-#' @param nldi_feature list with names `featureSource` and `featureID` where
-#' `featureSource` is derived from the "source" column of  the response of
-#' discover_nldi_sources() and the `featureID` is a known identifier
-#' from the specified `featureSource`.
-#' @param tier character optional "prod" or "test"
+#' @inheritParams navigate_nldi
 #' @return sf feature collection with one feature
 #' @examples
 #' \donttest{
@@ -230,12 +223,8 @@ get_nldi_feature <- function(nldi_feature, tier = "prod") {
 #' @title Get Catchment Characteristics
 #' @description Retrieves catchment characteristics from the Network Linked Data Index.
 #' Metadata for these characteristics can be found using `discover_nldi_characteristics()`.
-#' @param nldi_feature list with names `featureSource` and `featureID` where
-#' `featureSource` is derived from the "source" column of  the response of
-#' discover_nldi_sources() and the `featureID` is a known identifier
-#' from the specified `featureSource`.
-#' @param type character "local", "total", or "divergence_routed".
-#' @param tier character optional "prod" or "test"
+#' @inheritParams navigate_nldi
+#' @inheritParams discover_nldi_characteristics
 #' @export
 #' @examples
 #' get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))

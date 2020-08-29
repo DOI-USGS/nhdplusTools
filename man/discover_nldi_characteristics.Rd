@@ -8,6 +8,8 @@ discover_nldi_characteristics(type = "all", tier = "prod")
 }
 \arguments{
 \item{type}{character "all", "local", "total", or "divergence_routed".}
+
+\item{tier}{character optional "prod" or "test"}
 }
 \description{
 Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.

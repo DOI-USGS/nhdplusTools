@@ -7,8 +7,8 @@
 navigate_nldi(
   nldi_feature,
   mode = "upstreamMain",
-  data_source = "flowline",
-  distance_km = NULL,
+  data_source = "flowlines",
+  distance_km = 10,
   tier = "prod"
 )
 }
@@ -42,14 +42,12 @@ library(dplyr)
 nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 
 navigate_nldi(nldi_feature = nldi_nwis,
-              mode = "upstreamTributaries",
-              data_source = "") \%>\%
+              mode = "upstreamTributaries") \%>\%
   st_geometry() \%>\%
   plot()
 
 navigate_nldi(nldi_feature = nldi_nwis,
-              mode = "UM",
-              data_source = "") \%>\%
+              mode = "UM") \%>\%
   st_geometry() \%>\%
   plot(col = "blue", add = TRUE)
 

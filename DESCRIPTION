@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 0.3.14
+Version: 0.3.15
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -19,5 +19,5 @@ Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, sp, lwgeom, devtools, code
 License: CC0
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr

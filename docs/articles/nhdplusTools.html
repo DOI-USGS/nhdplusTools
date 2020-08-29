@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.15</span>
       </span>
     </div>
 
@@ -127,7 +127,7 @@
 <span class="no">flowline</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">featureSource</span> <span class="kw">=</span> <span class="st">"comid"</span>,
                                <span class="kw">featureID</span> <span class="kw">=</span> <span class="no">start_comid</span>),
                           <span class="kw">mode</span> <span class="kw">=</span> <span class="st">"upstreamTributaries"</span>,
-                          <span class="kw">data_source</span> <span class="kw">=</span> <span class="st">""</span>)
+                          <span class="kw">distance_km</span> <span class="kw">=</span> <span class="fl">1000</span>)
 
 <span class="no">subset_file</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>(<span class="kw">fileext</span> <span class="kw">=</span> <span class="st">".gpkg"</span>)
 <span class="no">subset</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span>(<span class="kw">comids</span> <span class="kw">=</span> <span class="no">flowline</span>$<span class="no">nhdplus_comid</span>,
@@ -187,15 +187,15 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">temp_dir</span>, <span class="st">"natseamless.gpkg"</span>))
 
 <span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span>()
-<span class="co">#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\Rtmp4UXaWl/natseamless.gpkg"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\RtmpYREQZO/natseamless.gpkg"</span></pre></body></html></div>
 <p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatedly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">staged_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/stage_national_data.html">stage_national_data</a></span>(<span class="kw">output_path</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>())
 
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">staged_data</span>)
 <span class="co">#&gt; List of 3</span>
-<span class="co">#&gt;  $ attributes: chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\Rtmp4UXaWl/nhdplus_flowline_attributes.rds"</span>
-<span class="co">#&gt;  $ flowline  : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\Rtmp4UXaWl/nhdplus_flowline.rds"</span>
-<span class="co">#&gt;  $ catchment : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\Rtmp4UXaWl/nhdplus_catchment.rds"</span></pre></body></html></div>
+<span class="co">#&gt;  $ attributes: chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\RtmpYREQZO/nhdplus_flowline_attributes.rds"</span>
+<span class="co">#&gt;  $ flowline  : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\RtmpYREQZO/nhdplus_flowline.rds"</span>
+<span class="co">#&gt;  $ catchment : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\4\\RtmpYREQZO/nhdplus_catchment.rds"</span></pre></body></html></div>
 <p>As you can see, <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are <a href="https://r-spatial.github.io/sf/"><code>sf</code></a> <code>data.frame</code>s and attributes is a plain <code>data.frame</code> with the attributes from <code>flowline</code>. Note that this introduction uses a small subset of the national seamless database as shown in the plot.</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">flowline</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="no">staged_data</span>$<span class="no">flowline</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">flowline</span>)[<span class="fl">1</span>:<span class="fl">10</span>]
@@ -283,21 +283,21 @@
 <span class="no">nldi_feature</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">featureSource</span> <span class="kw">=</span> <span class="st">"comid"</span>, <span class="kw">featureID</span> <span class="kw">=</span> <span class="no">start_comid</span>)
 <span class="fu"><a href="../reference/discover_nldi_navigation.html">discover_nldi_navigation</a></span>(<span class="no">nldi_feature</span>)
 <span class="co">#&gt; $upstreamMain</span>
-<span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/UM"</span>
+<span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigation/UM"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $upstreamTributaries</span>
-<span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/UT"</span>
+<span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigation/UT"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $downstreamMain</span>
-<span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/DM"</span>
+<span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigation/DM"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $downstreamDiversions</span>
-<span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigate/DD"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/13293750/navigation/DD"</span></pre></body></html></div>
 <p>The <code>discover_nldi_navigation</code> function is a handy way to make sure the featureID is available for the chosen “featureSource” as well as find valid navigation modes to be used with <code>navigate_nldi</code>. Now that we know the NLDI has our comid, we can use the “upstreamTributaries” navigation option to get all the flowlines upstream or all the features from any of the “featureSources” as shown below.</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r">
 <span class="no">flowline_nldi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(<span class="no">nldi_feature</span>,
                                <span class="kw">mode</span> <span class="kw">=</span> <span class="st">"upstreamTributaries"</span>,
-                               <span class="kw">data_source</span> <span class="kw">=</span> <span class="st">""</span>)
+                               <span class="kw">distance_km</span> <span class="kw">=</span> <span class="fl">1000</span>)
 
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">flowline</span>), <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"black"</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">flowline_nldi</span>), <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"red"</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
@@ -334,7 +334,7 @@
 
 <span class="no">flowline_nldi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(<span class="no">nldi_feature</span>,
                                <span class="kw">mode</span> <span class="kw">=</span> <span class="st">"upstreamTributaries"</span>,
-                               <span class="kw">data_source</span> <span class="kw">=</span> <span class="st">""</span>)
+                               <span class="kw">distance_km</span> <span class="kw">=</span> <span class="fl">1000</span>)
 
 <span class="no">output_file_nwis</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">temp_dir</span>, <span class="st">"subset_download_nwis.gpkg"</span>)
 
@@ -357,7 +357,8 @@
 
 <span class="no">upstream_nwis</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span>(<span class="no">nldi_feature</span>,
                                <span class="kw">mode</span> <span class="kw">=</span> <span class="st">"upstreamTributaries"</span>,
-                               <span class="kw">data_source</span> <span class="kw">=</span> <span class="st">"nwissite"</span>)
+                               <span class="kw">data_source</span> <span class="kw">=</span> <span class="st">"nwissite"</span>,
+                               <span class="kw">distance_km</span> <span class="kw">=</span> <span class="fl">1000</span>)
 
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">flowline_nwis</span>),
      <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"blue"</span>)
@@ -483,7 +484,7 @@
 <div id="refactoring" class="section level2">
 <h2 class="hasAnchor">
 <a href="#refactoring" class="anchor"></a>Refactoring</h2>
-<p>The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be found in the network_refactor branch of this repository.</p>
+<p>The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be <a href="https://dblodgett-usgs.github.io/hyRefactor/dev/">found here</a>.</p>
 </div>
   </div>
 

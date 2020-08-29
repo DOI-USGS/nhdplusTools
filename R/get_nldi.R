@@ -105,14 +105,12 @@ type_check <- function(type) {
 #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 #'
 #' navigate_nldi(nldi_feature = nldi_nwis,
-#'               mode = "upstreamTributaries",
-#'               data_source = "") %>%
+#'               mode = "upstreamTributaries") %>%
 #'   st_geometry() %>%
 #'   plot()
 #'
 #' navigate_nldi(nldi_feature = nldi_nwis,
-#'               mode = "UM",
-#'               data_source = "") %>%
+#'               mode = "UM") %>%
 #'   st_geometry() %>%
 #'   plot(col = "blue", add = TRUE)
 #'
@@ -148,7 +146,10 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
   }
 
   # For backward compatibility
-  if(data_source == "flowline") data_source <- "flowlines"
+  if(data_source == "flowline" | data_source == "") {
+    data_source <- "flowlines"
+    warning("data source specified as flowline or '' is deprecated")
+  }
 
   query <- paste(nldi_feature[["featureSource"]],
                  nldi_feature[["featureID"]],

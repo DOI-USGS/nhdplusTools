@@ -36,7 +36,7 @@ start_comid <- discover_nhdplus_id(start_point)
 flowline <- navigate_nldi(list(featureSource = "comid", 
                                featureID = start_comid), 
                           mode = "upstreamTributaries", 
-                          data_source = "")
+                          distance_km = 1000)
 
 subset_file <- tempfile(fileext = ".gpkg")
 subset <- subset_nhdplus(comids = flowline$nhdplus_comid,
@@ -210,7 +210,7 @@ The `discover_nldi_navigation` function is a handy way to make sure the featureI
 
 flowline_nldi <- navigate_nldi(nldi_feature, 
                                mode = "upstreamTributaries", 
-                               data_source = "")
+                               distance_km = 1000)
 
 plot(sf::st_geometry(flowline), lwd = 3, col = "black")
 plot(sf::st_geometry(flowline_nldi), lwd = 1, col = "red", add = TRUE)
@@ -248,7 +248,7 @@ nldi_feature <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 
 flowline_nldi <- navigate_nldi(nldi_feature, 
                                mode = "upstreamTributaries", 
-                               data_source = "")
+                               distance_km = 1000)
 
 output_file_nwis <- file.path(temp_dir, "subset_download_nwis.gpkg")
 
@@ -264,7 +264,8 @@ flowline_nwis <- sf::read_sf(output_file_nwis,
 
 upstream_nwis <- navigate_nldi(nldi_feature,
                                mode = "upstreamTributaries",
-                               data_source = "nwissite")
+                               data_source = "nwissite", 
+                               distance_km = 1000)
 
 plot(sf::st_geometry(flowline_nwis), 
      lwd = 3, col = "blue")
@@ -341,7 +342,7 @@ For more info about `get_flowline_index()` see the article `vignette("point_inde
 
 ## Refactoring
 
-The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be found in the network_refactor branch of this repository.
+The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be [found here](https://dblodgett-usgs.github.io/hyRefactor/dev/).
 
 ```{r teardown, include=FALSE}
 options(oldoption)

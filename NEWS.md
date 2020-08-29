@@ -1,5 +1,6 @@
 nhdplusTools 0.3.15
 ==========
+* Added `discover_nldi_characteristics()` and `get_nldi_characteristics()`
 * Fixed a bug in `get_flowline_index()` to handle multipart lines.
 * Added flowline_only input to `plot_nhdplus()` to improve scalability
 * Added streamorder filtering to `subset_nhdplus()` for download filtering.

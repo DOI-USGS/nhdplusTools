@@ -43,6 +43,35 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
   query_nldi(query, tier)
 }
 
+#' @title Discover Characteristics Metadata
+#' @description Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.
+#' @param type character "all", "local", "total", or "divergence_routed".
+#' @export
+#' @examples
+#' discover_nldi_characteristics()
+discover_nldi_characteristics <- function(type="all", tier = "prod") {
+
+  type_options <- list("all" = c("local", "tot", "div"),
+                       "local" = "local",
+                       "total" = "tot",
+                       "divergence_routed" = "div")
+
+  if(!type %in% names(type_options)) stop(paste("Type must be one of", paste(names(type_options), collapse = ", ")))
+
+  char_names <- type
+
+  if(type == "all") char_names <- names(type_options)[2:4]
+
+  out <- lapply(type_options[[type]], function(x, tier) {
+    o <- query_nldi(paste0(x, "/characteristics"),
+                    base_path = "/lookups", tier = tier)
+    o$characteristicMetadata$characteristic
+  }, tier = tier)
+  names(out) <- char_names
+
+  out
+}
+
 #' @title Navigate NLDI
 #' @description Navigate the Network Linked Data Index network.
 #' @param nldi_feature list with names `featureSource` and `featureID` where
@@ -194,8 +223,8 @@ get_nldi_feature <- function(nldi_feature, tier = "prod") {
 #' @importFrom httr GET
 #' @importFrom jsonlite fromJSON
 #' @noRd
-query_nldi <- function(query, tier = "prod", parse_json = TRUE) {
-  nldi_base_url <- get_nldi_url(tier)
+query_nldi <- function(query, base_path = "/linked-data", tier = "prod", parse_json = TRUE) {
+  nldi_base_url <- paste0(get_nldi_url(tier), base_path)
 
   url <- paste(nldi_base_url, query,
                sep = "/")
@@ -221,9 +250,9 @@ query_nldi <- function(query, tier = "prod", parse_json = TRUE) {
 #' @noRd
 get_nldi_url <- function(tier = "prod") {
   if (tier == "prod") {
-    "https://labs.waterdata.usgs.gov/api/nldi/linked-data"
+    "https://labs.waterdata.usgs.gov/api/nldi"
   } else if (tier == "test") {
-    "https://labs-beta.waterdata.usgs.gov/api/nldi/linked-data"
+    "https://labs-beta.waterdata.usgs.gov/api/nldi"
   } else {
     stop("only prod or test allowed.")
   }

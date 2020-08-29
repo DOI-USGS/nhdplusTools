@@ -94,3 +94,24 @@ test_that("get feature works", {
   expect_equal(f$identifier, "USGS-05428500")
 
 })
+
+test_that("characteristics", {
+  skip_on_cran()
+
+  expect_error(discover_nldi_characteristics(type = "test"), "Type must be one of all, local, total, divergence_routed")
+
+  m <- discover_nldi_characteristics()
+
+  expect_equal(names(m), c("local", "total", "divergence_routed"))
+
+  expect_equal(names(m$local), c("characteristic_id", "characteristic_description", "units", "dataset_label", "dataset_url", "theme_label", "theme_url", "characteristic_type"))
+
+  m <- discover_nldi_characteristics(type = "local")
+
+  expect_equal(names(m$local), c("characteristic_id", "characteristic_description", "units", "dataset_label", "dataset_url", "theme_label", "theme_url", "characteristic_type"))
+
+  m <- discover_nldi_characteristics(type = "total")
+
+  expect_equal(names(m$total), c("characteristic_id", "characteristic_description", "units", "dataset_label", "dataset_url", "theme_label", "theme_url", "characteristic_type"))
+
+})

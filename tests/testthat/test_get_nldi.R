@@ -114,4 +114,19 @@ test_that("characteristics", {
 
   expect_equal(names(m$total), c("characteristic_id", "characteristic_description", "units", "dataset_label", "dataset_url", "theme_label", "theme_url", "characteristic_type"))
 
+  site <- list(featureSource = "nwissite", featureID = "USGS-05429700")
+
+  chars <- get_nldi_characteristics(site)
+
+  expect_equal(names(chars), "local")
+
+  expect_equal(names(chars$local), c("characteristic_id", "characteristic_value", "percent_nodata"))
+
+  chars <- get_nldi_characteristics(site, type = "all")
+
+  expect_equal(names(chars), c("local", "total", "divergence_routed"))
+
+  chars <- get_nldi_characteristics(site, type = "total")
+
+  expect_equal(names(chars), "total")
 })

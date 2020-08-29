@@ -51,6 +51,20 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 #' discover_nldi_characteristics()
 discover_nldi_characteristics <- function(type="all", tier = "prod") {
 
+  tc <- type_check(type)
+
+  out <- lapply(tc$type_options[[type]], function(x, tier) {
+    o <- query_nldi(paste0(x, "/characteristics"),
+                    base_path = "/lookups", tier = tier)
+    o$characteristicMetadata$characteristic
+  }, tier = tier)
+
+  names(out) <- tc$char_names
+
+  out
+}
+
+type_check <- function(type) {
   type_options <- list("all" = c("local", "tot", "div"),
                        "local" = "local",
                        "total" = "tot",
@@ -62,14 +76,7 @@ discover_nldi_characteristics <- function(type="all", tier = "prod") {
 
   if(type == "all") char_names <- names(type_options)[2:4]
 
-  out <- lapply(type_options[[type]], function(x, tier) {
-    o <- query_nldi(paste0(x, "/characteristics"),
-                    base_path = "/lookups", tier = tier)
-    o$characteristicMetadata$characteristic
-  }, tier = tier)
-  names(out) <- char_names
-
-  out
+  return(list(type_options = type_options, char_names = char_names))
 }
 
 #' @title Navigate NLDI
@@ -203,7 +210,7 @@ get_nldi_basin <- function(nldi_feature,
 #' @description Get a single feature from the NLDI
 #' @param nldi_feature list with names `featureSource` and `featureID` where
 #' `featureSource` is derived from the "source" column of  the response of
-#' discover_nldi_sources() and the `featureSource` is a known identifier
+#' discover_nldi_sources() and the `featureID` is a known identifier
 #' from the specified `featureSource`.
 #' @param tier character optional "prod" or "test"
 #' @return sf feature collection with one feature
@@ -220,10 +227,42 @@ get_nldi_feature <- function(nldi_feature, tier = "prod") {
                                 tier, parse_json = FALSE)))
 }
 
+#' @title Get Catchment Characteristics
+#' @description Retrieves catchment characteristics from the Network Linked Data Index.
+#' Metadata for these characteristics can be found using `discover_nldi_characteristics()`.
+#' @param nldi_feature list with names `featureSource` and `featureID` where
+#' `featureSource` is derived from the "source" column of  the response of
+#' discover_nldi_sources() and the `featureID` is a known identifier
+#' from the specified `featureSource`.
+#' @param type character "local", "total", or "divergence_routed".
+#' @param tier character optional "prod" or "test"
+#' @export
+#' @examples
+#' get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
+get_nldi_characteristics <- function(nldi_feature, type="local", tier = "prod") {
+
+  tc <- type_check(type)
+
+  nldi_feature <- check_nldi_feature(nldi_feature)
+
+  out <- lapply(tc$type_options[[type]], function(x, tier) {
+    o <- query_nldi(paste(nldi_feature[["featureSource"]],
+                          nldi_feature[["featureID"]],
+                          x,
+                          sep = "/"), tier = tier)
+    o$characteristics
+  }, tier = tier)
+
+  names(out) <- tc$char_names
+
+  out
+
+}
+
 #' @importFrom httr GET
 #' @importFrom jsonlite fromJSON
 #' @noRd
-query_nldi <- function(query, base_path = "/linked-data", tier = "prod", parse_json = TRUE) {
+query_nldi <- function(query, tier = "prod", base_path = "/linked-data", parse_json = TRUE) {
   nldi_base_url <- paste0(get_nldi_url(tier), base_path)
 
   url <- paste(nldi_base_url, query,

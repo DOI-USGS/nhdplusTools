@@ -7,8 +7,8 @@
 navigate_nldi(
   nldi_feature,
   mode = "upstreamMain",
-  data_source = "flowline",
-  distance_km = NULL,
+  data_source = "flowlines",
+  distance_km = 10,
   tier = "prod"
 )
 }

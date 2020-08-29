@@ -38,7 +38,7 @@ discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
 
   query <- paste(nldi_feature[["featureSource"]],
                  nldi_feature[["featureID"]],
-                 "navigate", sep = "/")
+                 "navigation", sep = "/")
 
   query_nldi(query, tier)
 }
@@ -129,7 +129,7 @@ type_check <- function(type) {
 #' }
 #'
 navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
-                          data_source = "flowline", distance_km = NULL,
+                          data_source = "flowlines", distance_km = 10,
                           tier = "prod") {
 
   nldi_feature <- check_nldi_feature(nldi_feature)
@@ -147,11 +147,12 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
     }
   }
 
-  if(data_source == "flowline") data_source <- ""
+  # For backward compatibility
+  if(data_source == "flowline") data_source <- "flowlines"
 
   query <- paste(nldi_feature[["featureSource"]],
                  nldi_feature[["featureID"]],
-                 "navigate", mode, data_source,
+                 "navigation", mode, data_source,
                  sep = "/")
 
   if (!is.null(distance_km)) {

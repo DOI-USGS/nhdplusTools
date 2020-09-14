@@ -132,8 +132,8 @@ get_flowline_index <- function(flines, points,
   if (nrow(flines) != nrow(fline_atts)) {
 
     flines <- summarize(group_by(select(flines, .data$index),
-                                                       index),
-                                              do_union = FALSE)
+                                 .data$index),
+                        do_union = FALSE)
 
     flines <- left_join(flines, fline_atts, by = "index")
 
@@ -144,7 +144,7 @@ get_flowline_index <- function(flines, points,
                      "part lines. Check results!!"))
 
       st_geometry(flines)[multi] <- lapply(st_geometry(flines)[multi], function(x) {
-        st_linestring(do.call(rbind, x))
+        sf::st_linestring(do.call(rbind, x))
       })
 
       flines  <- sf::st_zm(sf::st_cast(flines, "LINESTRING", warn = FALSE))

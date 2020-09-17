@@ -3,6 +3,10 @@
 #' The following requirements are needed: p7zip (MacOS), 7zip (windows) Please see:
 #' https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data
 #' for more information and metadata about this data.
+#'
+#' Default downloads lower-48 only. See examples for islands. No Alaska data
+#' are available.
+#'
 #' @param outdir The folder path where data should be downloaded and extracted
 #' @param url the location of the online resource
 #' @return the path to the local geodatabase
@@ -10,6 +14,11 @@
 #' @examples
 #' \dontrun{
 #'   download_nhdplusV2("./data/nhd/")
+#'
+#'   download_nhdplusv2(outdir = "./inst/",
+#'       url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
+#'                    "Data/NationalData/NHDPlusV21_NationalData_Seamless",
+#'                    "_Geodatabase_HI_PR_VI_PI_03.7z"))
 #' }
 
 download_nhdplusv2 <- function(outdir,

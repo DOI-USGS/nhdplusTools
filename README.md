@@ -123,12 +123,12 @@ relates to handling data and what dependencies are used will be very important.
 Web services will generally be avoided. However, applications that would require
 loading significant amounts of data to perform something that can be
 accomplished with a web service very quickly will be considered. Systems like
-the [Network Linked Data Index](https://owi.usgs.gov/blog/nldi-intro/) are
+the [Network Linked Data Index](https://waterdata.usgs.gov/blog/nldi-intro/) are
 used for data discovery.
 
 ##### NHDPlus Version
 Initial package development focused on the [National Seamless NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-data)
-database. [NHDPlus High Resolution](https://nhd.usgs.gov/NHDPlus_HR.html) is
+database. [NHDPlus High Resolution](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution) is
 also supported.
 
 ### Related similar packages:
@@ -140,13 +140,23 @@ https://github.com/ropensci/FedData
 https://github.com/cheginit/hydrodata
 ... others -- please suggest additions?
 
+### Build notes:
+This package uses a convention to avoid building vignettes on CRAN. The `BUILD_VIGNETTES` environment variable must be set to `TRUE`. This is done with a .Renviron file in the package directory with the line `BUILD_VIGNETTES=TRUE`.
+
+Given this, the package should be built locally to include vignettes using:
+
+```r
+devtools::build_vignettes(install = FALSE)
+devtools::build(vignettes = FALSE)
+```
+
 ### Contributing:
 
 First, thanks for considering a contribution! I hope to make this package a community created resource
 for us all to gain from and won't be able to do that without your help!
 
 1) Contributions should be thoroughly tested with [testthat](https://testthat.r-lib.org/).  
-2) Code style should attempt to follow the [tidyverse style guide.](http://style.tidyverse.org/)  
+2) Code style should attempt to follow the [tidyverse style guide.](https://style.tidyverse.org/)  
 3) Please attempt to describe what you want to do prior to contributing by submitting an issue.  
 4) Please follow the typical github [fork - pull-request workflow.](https://gist.github.com/Chaser324/ce0505fbed06b947d962)  
 5) Make sure you use roxygen and run Check before contributing. More on this front as the package matures. 
@@ -161,7 +171,7 @@ Other notes:
 
 This information is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The information has not received final approval by the U.S. Geological Survey (USGS) and is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the information.
 
-This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey  (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at [https://www.usgs.gov/visual-id/credit_usgs.html#copyright](https://www.usgs.gov/visual-id/credit_usgs.html#copyright)
+This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey  (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at [https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits](https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits)
 
 Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
 

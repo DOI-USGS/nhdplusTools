@@ -23,9 +23,17 @@ This function downloads and decompresses staged seamless NHDPlusV2 data.
 The following requirements are needed: p7zip (MacOS), 7zip (windows) Please see:
 https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data
 for more information and metadata about this data.
+
+Default downloads lower-48 only. See examples for islands. No Alaska data
+are available.
 }
 \examples{
 \dontrun{
   download_nhdplusV2("./data/nhd/")
+
+  download_nhdplusV2(outdir = "./data/nhd_islands/",
+      url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
+                   "Data/NationalData/NHDPlusV21_NationalData_Seamless",
+                   "_Geodatabase_HI_PR_VI_PI_03.7z"))
 }
 }

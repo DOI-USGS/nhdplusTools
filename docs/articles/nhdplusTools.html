@@ -47,7 +47,7 @@
 <li>
   <a href="../index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li>
@@ -59,7 +59,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -82,7 +82,7 @@
 <li>
   <a href="https://github.com/usgs-r/nhdplusTools/">
     <span class="fab fa fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -93,22 +93,22 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><script src="nhdplusTools_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to nhdplusTools</h1>
                         <h4 class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
-            
-      
+
+
       <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/master/vignettes/nhdplusTools.Rmd"><code>vignettes/nhdplusTools.Rmd</code></a></small>
       <div class="hidden name"><code>nhdplusTools.Rmd</code></div>
 
     </div>
 
-    
-    
+
+
 <div id="tldr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#tldr" class="anchor"></a>TL;DR</h2>
@@ -275,7 +275,7 @@
 <div id="web-service-data-subsetting" class="section level3">
 <h3 class="hasAnchor">
 <a href="#web-service-data-subsetting" class="anchor"></a>Web Service Data Subsetting</h3>
-<p><code>nhdplusTools</code> supports discovery and data subsetting using web services made available through the <a href="https://owi.usgs.gov/blog/nldi-intro/">Network Linked Data Index</a> (NLDI) and the <a href="https://labs.waterdata.usgs.gov/geoserver">National Water Census Geoserver.</a> The code below shows how to use the NLDI functions to build a dataset upstream of our <code>start_comid</code> that we found above.</p>
+<p><code>nhdplusTools</code> supports discovery and data subsetting using web services made available through the <a href="https://waterdata.usgs.gov/blog/nldi-intro/">Network Linked Data Index</a> (NLDI) and the <a href="https://labs.waterdata.usgs.gov/geoserver">National Water Census Geoserver.</a> The code below shows how to use the NLDI functions to build a dataset upstream of our <code>start_comid</code> that we found above.</p>
 <p>The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these “featureSources”. We can query the NLDI for an identifier of a given feature from any of its “featureSources” and find out what our navigation options are as shown below.</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="../reference/discover_nldi_sources.html">discover_nldi_sources</a></span>()$<span class="no">source</span>
 <span class="co">#&gt; [1] "comid"    "huc12pp"  "nwissite" "wade"     "WQP"</span>
@@ -509,7 +509,7 @@
       </footer>
 </div>
 
-  
+
 
 
   </body>

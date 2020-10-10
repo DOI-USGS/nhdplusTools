@@ -293,3 +293,21 @@ test_that("by rpu", {
   expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
   expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = TRUE)), 267)
 })
+
+
+test_that("roundtrip", {
+
+  skip_on_cran()
+
+  out <- tempfile(fileext = ".gpkg")
+
+  mr <- nhdplusTools::plot_nhdplus(list(13293970), gpkg = out,
+                                   nhdplus_data = out,
+                                   overwrite = FALSE)
+
+  mess <- testthat::capture_warnings(
+  mr <- nhdplusTools::plot_nhdplus(list(13293970), gpkg = out,
+                                   nhdplus_data = out,
+                                   overwrite = FALSE))
+  testthat::expect_true(any(grepl("error getting catchment from nhdplus_data", mess)))
+})

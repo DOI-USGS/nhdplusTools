@@ -165,17 +165,23 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
                                       status))
 
     if(!flowline_only) {
+      tryCatch({
+        out_list <- c(out_list, get_catchment_subset(nhdplus_data, comids,
+                                                     output_file, simplified,
+                                                     paths$catchment_path, status))
 
-      out_list <- c(out_list, get_catchment_subset(nhdplus_data, comids,
-                                                   output_file, simplified,
-                                                   paths$catchment_path, status))
+        catch_layer <- get_catchment_layer_name(simplified, nhdplus_data)
 
-      catch_layer <- get_catchment_layer_name(simplified, nhdplus_data)
+        envelope <- sf::st_transform(sf::st_as_sfc(sf::st_bbox(out_list[[catch_layer]])),
+                                     4326)
 
-      envelope <- sf::st_transform(sf::st_as_sfc(sf::st_bbox(out_list[[catch_layer]])),
-                                   4326)
+        intersection_names <- c("NHDArea", "NHDWaterbody")
+      }, error = function(e) {
+        warning(paste("error getting catchment from nhdplus_data\n", e))
+      })
 
-      intersection_names <- c("NHDArea", "NHDWaterbody")
+      if(!exists("intersection_names")) intersection_names <- c()
+
     } else {
       intersection_names <- c()
     }
@@ -253,7 +259,13 @@ intersection_write <- function(layer_name, data_path, envelope,
   try(intersection_test <- suppressMessages(sf::st_intersects(
     sf::st_transform(layer, 4326), envelope)), silent = TRUE)
 
-  out <- dplyr::filter(layer, lengths(intersection_test) > 0)
+  found <- lengths(intersection_test)
+
+  if(length(found) > 0) {
+    out <- dplyr::filter(layer, found > 0)
+  } else {
+    out <- data.frame()
+  }
 
   if (nrow(out) > 0) {
     if (status) message(paste("Writing", layer_name))

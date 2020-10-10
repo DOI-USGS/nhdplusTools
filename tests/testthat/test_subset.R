@@ -18,6 +18,8 @@ test_that("subset errors", {
                               "must provide comids or bounding box"))
 
   nhdplus_path("../NHDPlusV21_National_Seamless.gdb")
+
+  expect_error(subset_nhdplus(comids = integer(0), nhdplus_data = "download"), "comids must be NULL or non-empty")
 })
 
 test_that("subset runs as expected", {

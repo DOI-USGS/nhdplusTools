@@ -127,6 +127,8 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     }
   }
 
+  if(!is.null(comids) && length(comids) == 0) stop("comids must be NULL or non-empty")
+
   if (status) message("All intersections performed in latitude/longitude.")
 
   if(any(bbox > 180 | bbox < -180)) stop("invalid bbox entry")
@@ -243,7 +245,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
                                          envelope = envelope,
                                          output_file = output_file,
                                          status = status,
-                                         out_prj = out_prj,), intersection_names))
+                                         out_prj = out_prj), intersection_names))
   }
 
   if(return_data) return(out_list)

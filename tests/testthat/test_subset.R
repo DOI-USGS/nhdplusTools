@@ -171,7 +171,7 @@ test_that("subset by bounding box", {
   sample_data <- system.file("extdata/sample_natseamless.gpkg",
                              package = "nhdplusTools")
 
-  bbox <- st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = st_crs(4326))
+  bbox <- sf::st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = sf::st_crs(4326))
 
   expect_error(subset_nhdplus(bbox = (bbox + c(-200, -200, 200, 200)),
                               nhdplus_data = sample_data,
@@ -295,19 +295,26 @@ test_that("by rpu", {
 })
 
 
-test_that("roundtrip", {
+test_that("roundtrip and projection check", {
 
   skip_on_cran()
 
   out <- tempfile(fileext = ".gpkg")
 
+  unlink(out, recursive = TRUE)
+
   mr <- nhdplusTools::plot_nhdplus(list(13293970), gpkg = out,
                                    nhdplus_data = out,
-                                   overwrite = FALSE)
+                                   overwrite = FALSE, actually_plot = FALSE)
+
+
+  expect_true(sf::st_crs(mr$flowline) == sf::st_crs(4269))
 
   mess <- testthat::capture_warnings(
   mr <- nhdplusTools::plot_nhdplus(list(13293970), gpkg = out,
                                    nhdplus_data = out,
-                                   overwrite = FALSE))
+                                   overwrite = FALSE,
+                                   actually_plot = FALSE))
+
   testthat::expect_true(any(grepl("error getting catchment from nhdplus_data", mess)))
 })

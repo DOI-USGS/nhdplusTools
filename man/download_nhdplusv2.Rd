@@ -31,7 +31,7 @@ are available.
 \dontrun{
   download_nhdplusV2("./data/nhd/")
 
-  download_nhdplusV2(outdir = "./data/nhd_islands/",
+  download_nhdplusv2(outdir = "./inst/",
       url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
                    "Data/NationalData/NHDPlusV21_NationalData_Seamless",
                    "_Geodatabase_HI_PR_VI_PI_03.7z"))

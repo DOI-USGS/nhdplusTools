@@ -21,6 +21,7 @@
 #' if TRUE only the flowline network and attributes will be returned
 #' @param streamorder integer only streams of order greater than or equal will be downloaded.
 #' Not implemented for local data.
+#' @param out_prj character override the default output CRS of NAD83 lat/lon (EPSG:4269)
 #' @details If \code{\link{stage_national_data}} has been run in the current
 #' session, this function will use the staged national data automatically.
 #'
@@ -116,7 +117,7 @@
 
 subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NULL, bbox = NULL,
                            simplified = TRUE, overwrite = FALSE, return_data = TRUE, status = TRUE,
-                           flowline_only = NULL, streamorder = NULL) {
+                           flowline_only = NULL, streamorder = NULL, out_prj = 4269) {
 
   if(is.null(flowline_only)) {
     if(!is.null(nhdplus_data) && nhdplus_data == "download") {
@@ -162,7 +163,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
     out_list <- c(get_flowline_subset(nhdplus_data, comids,
                                       output_file, paths$fline_path,
-                                      status))
+                                      status, out_prj))
 
     if(!flowline_only) {
       tryCatch({
@@ -215,6 +216,8 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
       layer <- sf::st_transform(envelope, 4326) %>%
         get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
 
+      layer <- check_valid(layer, out_prj)
+
       if(return_data) {
         out_list[layer_name] <- list(layer)
       }
@@ -239,7 +242,8 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
                                          data_path = nhdplus_data,
                                          envelope = envelope,
                                          output_file = output_file,
-                                         status), intersection_names))
+                                         status = status,
+                                         out_prj = out_prj,), intersection_names))
   }
 
   if(return_data) return(out_list)
@@ -248,7 +252,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 }
 
 intersection_write <- function(layer_name, data_path, envelope,
-                               output_file, status) {
+                               output_file, status, out_prj) {
   out_list <- list()
 
   if (status) message(paste("Reading", layer_name))
@@ -268,8 +272,11 @@ intersection_write <- function(layer_name, data_path, envelope,
   }
 
   if (nrow(out) > 0) {
+
+    out <- check_valid(out, out_prj)
+
     if (status) message(paste("Writing", layer_name))
-    if(is.null(output_file)) {
+    if (is.null(output_file)) {
       return(out)
     } else {
       sf::write_sf(clean_bbox(out), output_file, layer_name)
@@ -427,7 +434,7 @@ get_staged_data <- function(nhdplus_data) {
 #' @title Get subset of flowline data later.
 #' @noRd
 get_flowline_subset <- function(nhdplus_data, comids, output_file,
-                                fline_path, status) {
+                                fline_path, status, out_prj) {
 
   layer_name <- get_flowline_layer_name(nhdplus_data)
 
@@ -455,6 +462,8 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
     fline <- dplyr::filter(fline, .data$COMID %in% comids)
   }
 
+  fline <- check_valid(fline, out_prj)
+
   if (status) message(paste("Writing", layer_name))
 
   if(!is.null(output_file)) {
@@ -462,6 +471,7 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
   }
   out <- list()
   out[layer_name] <- list(fline)
+
   return(out)
 }
 
@@ -505,6 +515,29 @@ clean_bbox <- function(x) {
   if("bbox" %in% names(x) && class(x$bbox[1]) == "list") {
     x$bbox <- sapply(x$bbox, paste, collapse = ",")
   }
+
+  return(x)
+}
+
+check_valid <- function(x, out_prj) {
+
+  x <- sf::st_zm(x)
+
+  if (!all(sf::st_is_valid(x))) {
+
+    message("Found invalid geometry, attempting to fix.")
+
+    try(x <- sf::st_make_valid(x))
+  }
+
+  if (any(grepl("POLYGON", class(sf::st_geometry(x))))) {
+    suppressMessages(suppressWarnings(x <- sf::st_buffer(x, 0)))
+  }
+
+  if (sf::st_crs(x) != sf::st_crs(out_prj)) {
+    x <- sf::st_transform(x, out_prj)
+  }
+
   return(x)
 }
 

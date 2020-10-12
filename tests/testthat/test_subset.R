@@ -297,7 +297,7 @@ test_that("by rpu", {
 })
 
 
-test_that("roundtrip and projection check", {
+test_that("projection check", {
 
   skip_on_cran()
 
@@ -312,11 +312,4 @@ test_that("roundtrip and projection check", {
 
   expect_true(sf::st_crs(mr$flowline) == sf::st_crs(4269))
 
-  mess <- testthat::capture_warnings(
-  mr <- nhdplusTools::plot_nhdplus(list(13293970), gpkg = out,
-                                   nhdplus_data = out,
-                                   overwrite = FALSE,
-                                   actually_plot = FALSE))
-
-  testthat::expect_true(any(grepl("error getting catchment from nhdplus_data", mess)))
 })

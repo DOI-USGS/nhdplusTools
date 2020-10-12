@@ -218,14 +218,16 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
       layer <- sf::st_transform(envelope, 4326) %>%
         get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
 
-      layer <- check_valid(layer, out_prj)
+      if(nrow(layer) > 0) {
+        layer <- check_valid(layer, out_prj)
 
-      if(return_data) {
-        out_list[layer_name] <- list(layer)
-      }
+        if(return_data) {
+          out_list[layer_name] <- list(layer)
+        }
 
-      if(!is.null(output_file)) {
-        sf::write_sf(clean_bbox(layer), output_file, layer_name)
+        if(!is.null(output_file)) {
+          sf::write_sf(clean_bbox(layer), output_file, layer_name)
+        }
       }
     }
 

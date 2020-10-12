@@ -53,7 +53,7 @@ test_that("navigation works", {
 
   nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
                         mode = "upstreamMain",
-                        data_source = "flowline",
+                        data_source = "flowlines",
                         distance_km = 10)
 
   expect_is(sf::st_geometry(nav3), "sfc_LINESTRING")

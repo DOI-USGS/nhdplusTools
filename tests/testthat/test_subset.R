@@ -100,6 +100,12 @@ test_that("subset runs as expected", {
   check_layers <- function() {
     expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
     expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 1)
+    expect_true(sf::st_crs(sf::read_sf(out_file, "CatchmentSP")) ==
+                  sf::st_crs(4269))
+    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDWaterbody")) ==
+                  sf::st_crs(4269))
+    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDFlowline_Network")) ==
+                  sf::st_crs(4269))
   }
 
   check_layers()

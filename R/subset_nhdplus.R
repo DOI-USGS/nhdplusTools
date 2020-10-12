@@ -171,7 +171,8 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
       tryCatch({
         out_list <- c(out_list, get_catchment_subset(nhdplus_data, comids,
                                                      output_file, simplified,
-                                                     paths$catchment_path, status))
+                                                     paths$catchment_path, status,
+                                                     out_prj))
 
         catch_layer <- get_catchment_layer_name(simplified, nhdplus_data)
 

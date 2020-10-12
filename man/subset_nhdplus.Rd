@@ -14,7 +14,8 @@ subset_nhdplus(
   return_data = TRUE,
   status = TRUE,
   flowline_only = NULL,
-  streamorder = NULL
+  streamorder = NULL,
+  out_prj = 4269
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ if TRUE only the flowline network and attributes will be returned}
 
 \item{streamorder}{integer only streams of order greater than or equal will be downloaded.
 Not implemented for local data.}
+
+\item{out_prj}{character override the default output CRS of NAD83 lat/lon (EPSG:4269)}
 }
 \value{
 path to the saved subset geopackage

@@ -18,6 +18,8 @@ test_that("subset errors", {
                               "must provide comids or bounding box"))
 
   nhdplus_path("../NHDPlusV21_National_Seamless.gdb")
+
+  expect_error(subset_nhdplus(comids = integer(0), nhdplus_data = "download"), "comids must be NULL or non-empty")
 })
 
 test_that("subset runs as expected", {
@@ -98,6 +100,12 @@ test_that("subset runs as expected", {
   check_layers <- function() {
     expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
     expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 1)
+    expect_true(sf::st_crs(sf::read_sf(out_file, "CatchmentSP")) ==
+                  sf::st_crs(4269))
+    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDWaterbody")) ==
+                  sf::st_crs(4269))
+    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDFlowline_Network")) ==
+                  sf::st_crs(4269))
   }
 
   check_layers()
@@ -124,7 +132,8 @@ test_that("subset runs as expected", {
                        output_file = out_file,
                        nhdplus_data = "download",
                        overwrite = FALSE,
-                       status = FALSE, flowline_only = FALSE)
+                       status = FALSE,
+                       flowline_only = FALSE)
 
   check_layers()
 
@@ -159,7 +168,11 @@ test_that("subset works with HR", {
 
   up_ids <- get_UT(flowlines, 15000500028335)
 
-  sub <- subset_nhdplus(up_ids, file.path(work_dir, "sub.gpkg"), out_gpkg, return_data = FALSE)
+  suppressWarnings(sub <- subset_nhdplus(up_ids,
+                                         file.path(work_dir,
+                                                   "sub.gpkg"),
+                                         out_gpkg,
+                                         return_data = FALSE))
 
   layers <- sf::st_layers(sub)
 
@@ -171,7 +184,7 @@ test_that("subset by bounding box", {
   sample_data <- system.file("extdata/sample_natseamless.gpkg",
                              package = "nhdplusTools")
 
-  bbox <- st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = st_crs(4326))
+  bbox <- sf::st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = sf::st_crs(4326))
 
   expect_error(subset_nhdplus(bbox = (bbox + c(-200, -200, 200, 200)),
                               nhdplus_data = sample_data,
@@ -198,6 +211,13 @@ test_that("subset by bounding box", {
   check_layers <- function() {
     expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 66)
     expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 12)
+    expect_true(sf::st_crs(sf::read_sf(out_file, "CatchmentSP")) ==
+                 sf::st_crs(4269))
+    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDWaterbody")) ==
+                 sf::st_crs(4269))
+    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDFlowline_Network")) ==
+                 sf::st_crs(4269))
+
   }
 
   check_layers()
@@ -292,4 +312,22 @@ test_that("by rpu", {
 
   expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
   expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = TRUE)), 267)
+})
+
+
+test_that("projection check", {
+
+  skip_on_cran()
+
+  out <- tempfile(fileext = ".gpkg")
+
+  unlink(out, recursive = TRUE)
+
+  mr <- nhdplusTools::plot_nhdplus(list(13293970), gpkg = out,
+                                   nhdplus_data = out,
+                                   overwrite = FALSE, actually_plot = FALSE)
+
+
+  expect_true(sf::st_crs(mr$flowline) == sf::st_crs(4269))
+
 })

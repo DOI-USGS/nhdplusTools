@@ -546,6 +546,34 @@ check_valid <- function(x, out_prj) {
     x <- sf::st_transform(x, out_prj)
   }
 
+  types <- as.character(sf::st_geometry_type(x, by_geometry = FALSE))
+
+  if(grepl("^GEOME", types)) {
+    unq <- unique(as.character(
+      sf::st_geometry_type(x, by_geometry = TRUE)))
+
+    cast_to <- unq[which.max(tabulate(match(types, unq)))]
+
+    if(any(grepl("^MULTI", unq)) & !grepl("^MULTI", cast_to)) {
+      cast_to <- paste0("MULTI", cast_to)
+    }
+
+    tryCatch(x <- sf::st_cast(x, cast_to),
+             error = function(e) {
+               warning(paste0("\n\n Failed to unify output geometry type. \n\n",
+                             e,
+                             "\n Dropping non-", cast_to, " geometries. \n"))
+             })
+
+    r <- nrow(x)
+
+    x <- x[sf::st_geometry_type(x, by_geometry = TRUE) == cast_to, ]
+
+    if(r != nrow(x)) {
+      x <- sf::st_cast(x, cast_to)
+    }
+  }
+
   return(x)
 }
 

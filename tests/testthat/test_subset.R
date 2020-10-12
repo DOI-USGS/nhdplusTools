@@ -168,7 +168,11 @@ test_that("subset works with HR", {
 
   up_ids <- get_UT(flowlines, 15000500028335)
 
-  sub <- subset_nhdplus(up_ids, file.path(work_dir, "sub.gpkg"), out_gpkg, return_data = FALSE)
+  suppressWarnings(sub <- subset_nhdplus(up_ids,
+                                         file.path(work_dir,
+                                                   "sub.gpkg"),
+                                         out_gpkg,
+                                         return_data = FALSE))
 
   layers <- sf::st_layers(sub)
 

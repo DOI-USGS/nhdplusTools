@@ -482,7 +482,8 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
 #' @title Get subset of catchment data layer.
 #' @noRd
 get_catchment_subset <- function(nhdplus_data, comids, output_file,
-                                 simplified, catchment_path, status) {
+                                 simplified, catchment_path, status,
+                                 out_prj) {
 
   layer_name <- get_catchment_layer_name(simplified, nhdplus_data)
 
@@ -504,6 +505,8 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
     catchment <- dplyr::filter(catchment, .data$FEATUREID %in% comids)
 
   }
+
+  catchment <- check_valid(catchment, out_prj)
 
   if (status) message(paste("Writing", layer_name))
 

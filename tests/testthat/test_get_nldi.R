@@ -58,6 +58,26 @@ test_that("navigation works", {
 
   expect_is(sf::st_geometry(nav3), "sfc_LINESTRING")
 
+  expect_warning(nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
+                                       mode = "upstreamMain",
+                                       data_source = "flowline",
+                                       distance_km = 10),
+                 "data source specified as flowline or '' is deprecated")
+
+  nav <- navigate_nldi(nldi_feature = nldi_nwis,
+                       mode = "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
+                       data_source = "dumb",
+                       distance_km = 1)
+
+  expect_equal(nav, dplyr::tibble())
+
+  nav <- navigate_nldi(nldi_feature = nldi_nwis,
+                       mode = "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
+                       data_source = "nwissite",
+                       distance_km = 1)
+
+  expect("sf" %in% class(nav), "expected an sf data.frame")
+
   # expect_equal(navigate_nldi(list(featureSource = "wqp",
   #                                 featureID = "TCEQMAIN-16638"),
   #                            mode = "upstreamMain",

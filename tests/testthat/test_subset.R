@@ -126,7 +126,8 @@ test_that("subset runs as expected", {
                        output_file = out_file,
                        nhdplus_data = "download",
                        overwrite = FALSE,
-                       status = FALSE, flowline_only = FALSE)
+                       status = FALSE,
+                       flowline_only = FALSE)
 
   check_layers()
 
@@ -200,6 +201,13 @@ test_that("subset by bounding box", {
   check_layers <- function() {
     expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 66)
     expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 12)
+    expect_true(sf::st_crs(sf::read_sf(out_file, "CatchmentSP")) ==
+                 sf::st_crs(4269))
+    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDWaterbody")) ==
+                 sf::st_crs(4269))
+    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDFlowline_Network")) ==
+                 sf::st_crs(4269))
+
   }
 
   check_layers()

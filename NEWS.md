@@ -1,3 +1,8 @@
+nhdplusTools 0.3.16
+==========
+* `subset_nhdplus()` now validates geometry and ensures all outputs are in NAD83
+* `subset_nhdplus()` queries the NHDPlus database rather than loading then filtering
+
 nhdplusTools 0.3.15
 ==========
 * Added `discover_nldi_characteristics()` and `get_nldi_characteristics()`

@@ -22,8 +22,7 @@
 #' @param streamorder integer only streams of order greater than or equal will be downloaded.
 #' Not implemented for local data.
 #' @param out_prj character override the default output CRS of NAD83 lat/lon (EPSG:4269)
-#' @details If \code{\link{stage_national_data}} has been run in the current
-#' session, this function will use the staged national data automatically.
+#' @details
 #'
 #' This function relies on the National Seamless Geodatabase or Geopackage.
 #' It can be downloaded
@@ -158,21 +157,20 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     nhdplus_data <- nhdplus_path()
   }
 
-  paths <- get_staged_data(nhdplus_data)
+  check_nhd_data(nhdplus_data)
 
   if(is.null(bbox)) {
     if(is.null(comids)) stop("must provide comids or bounding box")
 
     out_list <- c(get_flowline_subset(nhdplus_data, comids,
-                                      output_file, paths$fline_path,
+                                      output_file,
                                       status, out_prj))
 
     if(!flowline_only) {
       tryCatch({
         out_list <- c(out_list, get_catchment_subset(nhdplus_data, comids,
                                                      output_file, simplified,
-                                                     paths$catchment_path, status,
-                                                     out_prj))
+                                                     status, out_prj))
 
         catch_layer <- get_catchment_layer_name(simplified, nhdplus_data)
 
@@ -409,37 +407,21 @@ stage_national_data <- function(include = c("attribute",
 
 #' @title Try to find staged NHDPlus data
 #' @noRd
-get_staged_data <- function(nhdplus_data) {
+check_nhd_data <- function(nhdplus_data) {
 
-  if(nhdplus_data == "download") return(list(fline_path = NULL, catchment_path = NULL))
+  if(nhdplus_data == "download") return(invisible(TRUE))
 
-  staged_data <- try(get("national_data",
-                         envir = nhdplusTools_env),
-                     silent = TRUE)
-
-  if (is.list(staged_data)) {
-    if (all(c("flowline", "catchment") %in% names(staged_data)) &
-        file.exists(staged_data$flowline) &
-        file.exists(staged_data$catchment)) {
-      fline_path <- staged_data$flowline
-      catchment_path <- staged_data$catchment
-    } else {
-      fline_path <- nhdplus_data
-      catchment_path <- nhdplus_data
-    }
-  } else if(file.exists(nhdplus_data)) {
-    fline_path <- nhdplus_data
-    catchment_path <- nhdplus_data
+  if(file.exists(nhdplus_data)) {
+    return(invisible(TRUE))
   } else {
     stop("couldn't find nhdplus data")
   }
-  return(list(fline_path = fline_path, catchment_path = catchment_path))
 }
 
 #' @title Get subset of flowline data later.
 #' @noRd
 get_flowline_subset <- function(nhdplus_data, comids, output_file,
-                                fline_path, status, out_prj) {
+                                status, out_prj) {
 
   layer_name <- get_flowline_layer_name(nhdplus_data)
 
@@ -452,19 +434,20 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
     }
 
     fline <- get_nhdplus_byid(comids, tolower(layer_name))
+
   } else {
 
-    if (grepl("*.rds$", fline_path)) {
-      fline <- readRDS(fline_path)
-    } else {
-      if(!layer_name %in% st_layers(fline_path)$name) {
-        layer_name <- "NHDFlowline"
-      }
-      fline <- sf::read_sf(fline_path, layer_name)
-      fline <- align_nhdplus_names(fline)
+    if(!layer_name %in% st_layers(nhdplus_data)$name) {
+      layer_name <- "NHDFlowline"
     }
 
-    fline <- dplyr::filter(fline, .data$COMID %in% comids)
+
+
+    fline <- sf::read_sf(nhdplus_data, layer_name,
+                         query = get_query(nhdplus_data, layer_name,
+                                           "COMID", comids))
+    fline <- align_nhdplus_names(fline)
+
   }
 
   fline <- check_valid(fline, out_prj)
@@ -480,11 +463,24 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
   return(out)
 }
 
+get_query <- function(nhdplus_data, layer_name, id, comids) {
+  layer_atts <- sf::read_sf(nhdplus_data, layer_name,
+                            query = paste0("SELECT * FROM ",
+                                           layer_name, " LIMIT 1"))
+
+  update_atts <- align_nhdplus_names(layer_atts)
+
+  id_att <- names(layer_atts)[which(names(update_atts) == id)]
+
+  query <- paste0("SELECT * FROM ", layer_name,
+                  " WHERE ", id_att, " IN (",
+                  paste(comids, collapse = ", "), ")")
+}
+
 #' @title Get subset of catchment data layer.
 #' @noRd
 get_catchment_subset <- function(nhdplus_data, comids, output_file,
-                                 simplified, catchment_path, status,
-                                 out_prj) {
+                                 simplified, status, out_prj) {
 
   layer_name <- get_catchment_layer_name(simplified, nhdplus_data)
 
@@ -496,14 +492,11 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
 
   } else {
 
-    if (grepl("*.rds$", catchment_path)) {
-      catchment <- readRDS(catchment_path)
-    } else {
-      catchment <- sf::read_sf(catchment_path, layer_name)
-      catchment <- align_nhdplus_names(catchment)
-    }
+    catchment <- sf::read_sf(nhdplus_data, layer_name,
+                             query = get_query(nhdplus_data, layer_name,
+                                               "FEATUREID", comids))
 
-    catchment <- dplyr::filter(catchment, .data$FEATUREID %in% comids)
+    catchment <- align_nhdplus_names(catchment)
 
   }
 

@@ -574,6 +574,8 @@ check_valid <- function(x, out_prj) {
     }
   }
 
+  suppressWarnings(x <- sf::st_simplify(x, dTolerance = 0))
+
   return(x)
 }
 

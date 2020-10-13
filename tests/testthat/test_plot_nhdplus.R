@@ -21,7 +21,7 @@ test_that("basics work", {
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
-  expect_s3_class(p_ready, "sfc_MULTILINESTRING")
+  expect_s3_class(p_ready, "sfc_LINESTRING")
 
   pdf(NULL)
   tempf <- file.path(tempd, "temp.png")

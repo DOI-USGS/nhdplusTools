@@ -206,6 +206,3 @@ test_that("get_terminal", {
 
   expect_equal(pl$pathlength, pl$Pathlength)
 })
-
-
-

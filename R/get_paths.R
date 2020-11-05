@@ -101,7 +101,7 @@ get_path <- function(x, tailID, status) {
   tracker <- rep(NA, nrow(x))
   counter <- 1
 
-  if(dt <- require(data.table, quietly = TRUE)) {
+  if(dt <- requireNamespace("data.table", quietly = TRUE)) {
     x <- data.table::data.table(x)
   }
 

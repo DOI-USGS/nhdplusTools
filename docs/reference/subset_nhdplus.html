@@ -81,7 +81,7 @@ nhdplusTools compatible data based on a specified collection of COMIDs." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
       </span>
     </div>
 
@@ -161,7 +161,8 @@ nhdplusTools compatible data based on a specified collection of COMIDs.</p>
   <span class='kw'>return_data</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>flowline_only</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>streamorder</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>streamorder</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>out_prj</span> <span class='kw'>=</span> <span class='fl'>4269</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -217,6 +218,10 @@ if TRUE only the flowline network and attributes will be returned</p></td>
       <td><p>integer only streams of order greater than or equal will be downloaded.
 Not implemented for local data.</p></td>
     </tr>
+    <tr>
+      <th>out_prj</th>
+      <td><p>character override the default output CRS of NAD83 lat/lon (EPSG:4269)</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -224,9 +229,7 @@ Not implemented for local data.</p></td>
     <p>path to the saved subset geopackage</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If <code><a href='stage_national_data.html'>stage_national_data</a></code> has been run in the current
-session, this function will use the staged national data automatically.</p>
-<p>This function relies on the National Seamless Geodatabase or Geopackage.
+    <p>This function relies on the National Seamless Geodatabase or Geopackage.
 It can be downloaded
 <a href='https://www.epa.gov/waterdata/nhdplus-national-data'>here.</a></p>
 <p>The "download" option of this function should be considered preliminary
@@ -240,7 +243,8 @@ be available permenently.</p>
 
 <span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span>(<span class='no'>sample_data</span>)
 
-<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())</div><div class='output co'>#&gt; <span class='warning'>Warning: attributes file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: flowline file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: catchment already exists.</span></div><div class='input'>
+<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+
 <span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>staged_nhdplus</span>$<span class='no'>flowline</span>)
 
 <span class='no'>geom_col</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>sample_flines</span>, <span class='st'>"sf_column"</span>)
@@ -265,10 +269,10 @@ be available permenently.</p>
                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
                <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading Gage</span></div><div class='output co'>#&gt; <span class='message'>Writing Gage</span></div><div class='output co'>#&gt; <span class='message'>Reading Sink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in Sink</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; $NHDFlowline_Network
 #&gt; Simple feature collection with 168 features and 136 fields
-#&gt; geometry type:  MULTILINESTRING
+#&gt; geometry type:  LINESTRING
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: -89.58537 ymin: 43.08521 xmax: -89.21254 ymax: 43.30179
-#&gt; geographic CRS: GRS 1980(IUGG, 1980)
+#&gt; geographic CRS: NAD83
 #&gt; <span style='color: #555555;'># A tibble: 168 x 137</span><span>
 #&gt;     COMID FDATE               RESOLUTION GNIS_ID GNIS_NAME LENGTHKM REACHCODE
 #&gt;  </span><span style='color: #555555;'>*</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    
@@ -308,10 +312,10 @@ be available permenently.</p>
 #&gt; 
 #&gt; $CatchmentSP
 #&gt; Simple feature collection with 167 features and 6 fields
-#&gt; geometry type:  MULTIPOLYGON
+#&gt; geometry type:  GEOMETRY
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: -89.60479 ymin: 43.03507 xmax: -89.20378 ymax: 43.36607
-#&gt; geographic CRS: GRS 1980(IUGG, 1980)
+#&gt; geographic CRS: NAD83
 #&gt; </span><span style='color: #555555;'># A tibble: 167 x 7</span><span>
 #&gt;    GRIDCODE FEATUREID SOURCEFC AreaSqKM Shape_Length Shape_Area
 #&gt;  </span><span style='color: #555555;'>*</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
@@ -325,7 +329,7 @@ be available permenently.</p>
 #&gt; </span><span style='color: #555555;'> 8</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>478  13</span><span style='text-decoration: underline;'>293</span><span>614 NHDFlow~   3.15        0.095</span><span style='text-decoration: underline;'>3</span><span>  0.000</span><span style='text-decoration: underline;'>348</span><span>  
 #&gt; </span><span style='color: #555555;'> 9</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>502  13</span><span style='text-decoration: underline;'>294</span><span>264 NHDFlow~  24.8         0.348   0.002</span><span style='text-decoration: underline;'>75</span><span>   
 #&gt; </span><span style='color: #555555;'>10</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>509  13</span><span style='text-decoration: underline;'>293</span><span>384 NHDFlow~   0.291       0.029</span><span style='text-decoration: underline;'>6</span><span>  0.000</span><span style='text-decoration: underline;'>032</span><span>3 
-#&gt; </span><span style='color: #555555;'># ... with 157 more rows, and 1 more variable: geom </span><span style='color: #555555;font-style: italic;'>&lt;MULTIPOLYGON [°]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'># ... with 157 more rows, and 1 more variable: geom </span><span style='color: #555555;font-style: italic;'>&lt;GEOMETRY [°]&gt;</span><span>
 #&gt; 
 #&gt; $NHDArea
 #&gt; [1] "NHDArea"
@@ -344,13 +348,13 @@ be available permenently.</p>
 #&gt; </div><div class='input'>
 <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
 #&gt; Available layers:
-#&gt;               layer_name     geometry_type features fields
-#&gt; 1    NHDFlowline_Network Multi Line String      168    136
-#&gt; 2            CatchmentSP     Multi Polygon      167      6
-#&gt; 3                NHDArea     Multi Polygon        1     14
-#&gt; 4           NHDWaterbody     Multi Polygon       90     21
-#&gt; 5                   Gage             Point       33     19
-#&gt; 6 NHDFlowline_NonNetwork Multi Line String       45     12</div><div class='input'>
+#&gt;               layer_name geometry_type features fields
+#&gt; 1    NHDFlowline_Network   Line String      168    136
+#&gt; 2            CatchmentSP                    167      6
+#&gt; 3                NHDArea       Polygon        1     14
+#&gt; 4           NHDWaterbody       Polygon       90     21
+#&gt; 5                   Gage         Point       33     19
+#&gt; 6 NHDFlowline_NonNetwork   Line String       45     12</div><div class='input'>
 <span class='no'>catchment</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='no'>output_file</span>, <span class='st'>"CatchmentSP"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>catchment</span><span class='kw'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>catchment</span>, <span class='st'>"sf_column"</span>)]], <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
@@ -369,14 +373,13 @@ be available permenently.</p>
                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
                <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; $NHDFlowline_Network
 #&gt; Simple feature collection with 168 features and 139 fields
-#&gt; geometry type:  MULTILINESTRING
-#&gt; dimension:      XYZ
+#&gt; geometry type:  LINESTRING
+#&gt; dimension:      XY
 #&gt; bbox:           xmin: -89.5854 ymin: 43.0852 xmax: -89.2125 ymax: 43.3018
-#&gt; z_range:        zmin: 0 zmax: 0
-#&gt; geographic CRS: WGS 84
+#&gt; geographic CRS: NAD83
 #&gt; </span><span style='color: #555555;'># A tibble: 168 x 140</span><span>
 #&gt;    id     comid fdate               resolution gnis_id gnis_name lengthkm
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt;  </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          3.04 
 #&gt; </span><span style='color: #555555;'> 2</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          1.44 
 #&gt; </span><span style='color: #555555;'> 3</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span>15770~ </span><span style='color: #555555;'>"</span><span>Yahara ~    4.84 
@@ -413,8 +416,8 @@ be available permenently.</p>
 #&gt; </div><div class='input'>
 <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
 #&gt; Available layers:
-#&gt;            layer_name        geometry_type features fields
-#&gt; 1 NHDFlowline_Network 3D Multi Line String      168    139</div><div class='input'>
+#&gt;            layer_name geometry_type features fields
+#&gt; 1 NHDFlowline_Network   Line String      168    139</div><div class='input'>
 <span class='co'># NHDPlusHR</span>
 <span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/nhdplushr_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
 
@@ -422,12 +425,12 @@ be available permenently.</p>
 
 <span class='no'>sub_gpkg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>work_dir</span>, <span class='st'>"sub.gpkg"</span>)
 <span class='no'>sub_nhdhr</span> <span class='kw'>&lt;-</span> <span class='fu'>subset_nhdplus</span>(<span class='no'>up_ids</span>, <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>sub_gpkg</span>,
-                            <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>hr_gpkg</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusSink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in NHDPlusSink</span></div><div class='input'>
+                            <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>hr_gpkg</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Found invalid geometry, attempting to fix.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: only first part of geometrycollection is retained</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusSink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in NHDPlusSink</span></div><div class='input'>
 <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>sub_gpkg</span>)</div><div class='output co'>#&gt; Driver: GPKG 
 #&gt; Available layers:
 #&gt;         layer_name geometry_type features fields
 #&gt; 1      NHDFlowline   Line String     1427     57
-#&gt; 2 NHDPlusCatchment Multi Polygon     1361      7
+#&gt; 2 NHDPlusCatchment                   1361      7
 #&gt; 3          NHDArea       Polygon        8     14
 #&gt; 4     NHDWaterbody       Polygon      741     15</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>sub_nhdhr</span>)</div><div class='output co'>#&gt; [1] "NHDFlowline"      "NHDPlusCatchment" "NHDArea"          "NHDWaterbody"    
 #&gt; [5] "NHDPlusSink"     </div><div class='input'>

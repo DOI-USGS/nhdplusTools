@@ -1,5 +1,6 @@
 #' @title Plot NHDPlus
-#' @description Given a list of outlets, get their basin boundaries and network and return a plot.
+#' @description Given a list of outlets, get their basin boundaries and network and return a plot in
+#' EPSG:3857 Web Mercator Projection.
 #' @param outlets list of nldi outlets. Other inputs are coerced into nldi outlets, see details.
 #' @param bbox object of class bbox with a defined crs. See examples.
 #' @param streamorder integer only streams of order greater than or equal will be returned
@@ -11,7 +12,7 @@
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
 #' @param flowline_only boolean only subset and plot flowlines?
 #' @param ... parameters passed on to rosm.
-#' @return plot data is returned invisibly.
+#' @return plot data is returned invisibly in NAD83 Lat/Lon.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
 #' \enumerate{
@@ -40,6 +41,9 @@
 #'         wqp = list(col = "red", border = NA, pch = 20, cex = 1))
 #'         }
 #' }
+#'
+#' If adding additional layers to the plot, data must be projected to EPSG:3857 with
+#' `sf::st_transform(x, 3857)` prior to adding to the plot.
 #'
 #' @export
 #' @examples

@@ -81,7 +81,7 @@ Metadata for these characteristics can be found using `discover_nldi_characteris
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
       </span>
     </div>
 
@@ -177,16 +177,16 @@ from the specified `featureSource`.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>chars</span> <span class='kw'>&lt;-</span> <span class='fu'>get_nldi_characteristics</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05429700"</span>))
 <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>chars</span>)</div><div class='output co'>#&gt; [1] "local"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>chars</span>$<span class='no'>local</span>, <span class='fl'>10</span>)</div><div class='output co'>#&gt;    characteristic_id characteristic_value percent_nodata
-#&gt; 1      CAT_NPDES_MAJ                    0              0
-#&gt; 2            CAT_BFI                64.15              0
-#&gt; 3            CAT_PET               644.71              0
-#&gt; 4        CAT_CONTACT                47.28              0
-#&gt; 5            CAT_EWT               -18.74              0
-#&gt; 6           CAT_IEOF                    2              0
-#&gt; 7          CAT_RECHG               133.18              0
-#&gt; 8          CAT_SATOF                    2              0
-#&gt; 9            CAT_TWI                14.05              0
-#&gt; 10    CAT_OLSON_PERM                 7.23              0</div></pre>
+#&gt; 1            CAT_BFI                64.15              0
+#&gt; 2        CAT_CONTACT                47.28              0
+#&gt; 3             CAT_ET                  538              0
+#&gt; 4            CAT_EWT               -18.74              0
+#&gt; 5            CAT_HGA                 6.35              0
+#&gt; 6           CAT_HGAC                    0              0
+#&gt; 7           CAT_HGAD                 4.17              0
+#&gt; 8            CAT_HGB                82.52              0
+#&gt; 9           CAT_HGBC                    0              0
+#&gt; 10          CAT_HGBD                 6.02              0</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

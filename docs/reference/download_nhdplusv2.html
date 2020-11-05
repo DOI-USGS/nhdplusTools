@@ -50,7 +50,9 @@
 <meta property="og:description" content="This function downloads and decompresses staged seamless NHDPlusV2 data.
 The following requirements are needed: p7zip (MacOS), 7zip (windows) Please see:
 https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data
-for more information and metadata about this data." />
+for more information and metadata about this data.
+Default downloads lower-48 only. See examples for islands. No Alaska data
+are available." />
 <meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 
 
@@ -83,7 +85,7 @@ for more information and metadata about this data." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
       </span>
     </div>
 
@@ -153,6 +155,8 @@ for more information and metadata about this data." />
 The following requirements are needed: p7zip (MacOS), 7zip (windows) Please see:
 https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data
 for more information and metadata about this data.</p>
+<p>Default downloads lower-48 only. See examples for islands. No Alaska data
+are available.</p>
     </div>
 
     <pre class="usage"><span class='fu'>download_nhdplusv2</span>(
@@ -181,6 +185,11 @@ for more information and metadata about this data.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
   <span class='fu'>download_nhdplusV2</span>(<span class='st'>"./data/nhd/"</span>)
+
+  <span class='fu'>download_nhdplusv2</span>(<span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"./inst/"</span>,
+      <span class='kw'>url</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/"</span>,
+                   <span class='st'>"Data/NationalData/NHDPlusV21_NationalData_Seamless"</span>,
+                   <span class='st'>"_Geodatabase_HI_PR_VI_PI_03.7z"</span>))
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

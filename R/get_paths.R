@@ -64,7 +64,7 @@ get_levelpaths <- function(x, status = FALSE) {
     x_tail_ind <- which(x$topo_sort == min(flc$topo_sort))
     sortID <- x$topo_sort[x_tail_ind]
 
-    pathIDs <- get_path(flc, tailID)
+    pathIDs <- get_path(flc, tailID, status)
 
     x <- mutate(x,
                 levelpath = ifelse(.data$ID %in% pathIDs,
@@ -95,37 +95,77 @@ get_levelpaths <- function(x, status = FALSE) {
 #' @param x data.frame with ID, toID, nameID and weight columns.
 #' @param tailID integer or numeric ID of outlet catchment.
 #'
-get_path <- function(x, tailID) {
-  # May be more than 1
-  from_inds <- which(x$toID == tailID)
-  if(length(from_inds) > 1) { # need to find dominant
-    ind <- which(x$ID == tailID)
-    next_tails <- x[from_inds, ]
+get_path <- function(x, tailID, status) {
+
+  keep_going <- TRUE
+  tracker <- rep(NA, nrow(x))
+  counter <- 1
+
+  if(dt <- requireNamespace("data.table", quietly = TRUE)) {
+    x <- data.table::data.table(x)
+  }
+
+  while(keep_going) {
+    # May be more than 1
+    if(dt) {
+      next_tails <- x[toID == tailID]
+    } else {
+      next_tails <- filter(x, .data$toID == tailID)
+    }
+
+    if(nrow(next_tails) > 1) { # need to find dominant
+
+      next_tails <- get_next_tail(next_tails, x$nameID[x$ID == tailID][1])
+
+    }
+
+    if(nrow(next_tails) == 0) {
+
+      keep_going <- FALSE
+
+    }
+
+    if(tailID %in% tracker) stop(paste0("loop at", tailID))
+
+    tracker[counter] <- tailID
+
+    counter <- counter + 1
+
+    tailID <- next_tails$ID
+
+    if(status && counter %% 1000 == 0) message(paste("long mainstem", counter))
+
+  }
+
+  return(tracker[!is.na(tracker)])
+}
+
+.datatable.aware <- TRUE
+
+get_next_tail <- function(next_tails, cur_name) {
 
     if(any(next_tails$nameID != " ")) { # If any of the candidates are named.
-      next_tails <- # pick the matching one.
-        filter(next_tails, .data$nameID == x$nameID[ind])
+
+      if(cur_name %in% next_tails$nameID) {
+        next_tails <- # pick the matching one.
+          next_tails[next_tails$nameID == cur_name, ]
+      }
 
       if(nrow(next_tails) > 1) {
         next_tails <- # pick the named one.
-          filter(next_tails, .data$nameID != " ")
+          next_tails[next_tails$nameID != " ", ]
       }
     }
 
-    if(nrow(next_tails) != 1) { # If the above didn't result in one row.
-      next_tails <- # use weighting
-        filter(x[from_inds, ], .data$weight == max(.data$weight))
+    if(nrow(next_tails) > 1) { # If the above didn't result in one row.
+      next_tails <- next_tails[next_tails$weight == max(next_tails$weight), ]
     }
 
-    if(length(next_tails$ID) > 1) {
+    if(nrow(next_tails) > 1) {
       next_tails <- next_tails[1, ]
     }
-    c(tailID, get_path(x, next_tails$ID))
-  } else if(length(from_inds) == 1) {
-    c(tailID, get_path(x, x$ID[from_inds]))
-  } else {
-    return(tailID)
-  }
+
+    return(next_tails)
 }
 
 #' @noRd
@@ -133,9 +173,9 @@ get_path <- function(x, tailID) {
 #' first and second columns.
 #' @importFrom igraph topo_sort graph_from_data_frame
 get_sorted <- function(x) {
-  names(topo_sort(graph_from_data_frame(x,
-                                        directed = TRUE),
-                  mode = "out"))
+  x <- graph_from_data_frame(x, directed = TRUE)
+  x <- topo_sort(x, mode = "out")
+  names(x)
 }
 
 #' Get Terminal ID

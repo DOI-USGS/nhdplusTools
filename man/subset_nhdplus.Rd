@@ -59,9 +59,6 @@ Saves a subset of the National Seamless database or other
 nhdplusTools compatible data based on a specified collection of COMIDs.
 }
 \details{
-If \code{\link{stage_national_data}} has been run in the current
-session, this function will use the staged national data automatically.
-
 This function relies on the National Seamless Geodatabase or Geopackage.
 It can be downloaded
 \href{https://www.epa.gov/waterdata/nhdplus-national-data}{here.}

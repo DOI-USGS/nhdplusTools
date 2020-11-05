@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
 
       
 
-      </header><script src="nhdplushr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="nhdplushr_files/header-attrs-2.3/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Working with NHDPlusHR</h1>
@@ -232,9 +232,10 @@
 <pre><code>#&gt; Reading NHDFlowline</code></pre>
 <pre><code>#&gt; Writing NHDFlowline</code></pre>
 <pre><code>#&gt; Reading NHDPlusCatchment</code></pre>
+<pre><code>#&gt; Found invalid geometry, attempting to fix.</code></pre>
 <pre><code>#&gt; Writing NHDPlusCatchment</code></pre>
 <p>Now that we have both a four digit hydrologic unit worth of NHDPlusHR data and a subset upstream of a point of interest, we can plot things up and see what it looks like. This plot uses NHDPlusV2 as returned by <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code> as a base layer and adds NHDPlusHR data on top of it.</p>
-<div class="sourceCode" id="cb45"><html><body><pre class="r"><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span>), <span class="kw">streamorder</span> <span class="kw">=</span> <span class="fl">2</span>,
+<div class="sourceCode" id="cb46"><html><body><pre class="r"><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span>), <span class="kw">streamorder</span> <span class="kw">=</span> <span class="fl">2</span>,
              <span class="kw">nhdplus_data</span> <span class="kw">=</span> <span class="no">sample_data</span>, <span class="kw">overwrite</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
              <span class="kw">plot_config</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">flowline</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2.5</span>),
                                 <span class="kw">basin</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">3</span>)),
@@ -319,7 +320,7 @@
 #&gt; +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs</code></pre>
 <pre><code>#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO"): Discarded
 #&gt; datum WGS_1984 in CRS definition</code></pre>
-<div class="sourceCode" id="cb77"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDPlusCatchment</span>), <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">0.25</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<div class="sourceCode" id="cb78"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDPlusCatchment</span>), <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">0.25</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDFlowline</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="st">"blue"</span>, <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">0.5</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="no">hr_subset</span>$<span class="no">NHDFlowline</span>, <span class="fl">3857</span>)),
@@ -331,12 +332,12 @@
 <a href="#download" class="anchor"></a>Download</h2>
 <p>NHDPlusHR support in nhdplusTools begins with the function <code><a href="../reference/download_nhdplushr.html">download_nhdplushr()</a></code>. The NHDPlusHR can be downloaded in <a href="https://www.usgs.gov/core-science-systems/ngp/national-hydrography/access-national-hydrography-products">four digit hydrologic unit code subsets here.</a> <code><a href="../reference/download_nhdplushr.html">download_nhdplushr()</a></code> facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.</p>
 <p><em>Note: Data for each HU02 are put in their own output folder.</em></p>
-<div class="sourceCode" id="cb78"><html><body><pre class="r">(<span class="no">hr_urls</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span>(<span class="no">work_dir</span>, <span class="st">"06"</span>, <span class="kw">download_files</span> <span class="kw">=</span> <span class="fl">FALSE</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb79"><html><body><pre class="r">(<span class="no">hr_urls</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span>(<span class="no">work_dir</span>, <span class="st">"06"</span>, <span class="kw">download_files</span> <span class="kw">=</span> <span class="fl">FALSE</span>))</pre></body></html></div>
 <pre><code>#&gt; [1] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0601_HU4_GDB.zip"
 #&gt; [2] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0602_HU4_GDB.zip"
 #&gt; [3] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0603_HU4_GDB.zip"
 #&gt; [4] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0604_HU4_GDB.zip"</code></pre>
-<div class="sourceCode" id="cb80"><html><body><pre class="r"><span class="co"># already downloaded:</span>
+<div class="sourceCode" id="cb81"><html><body><pre class="r"><span class="co"># already downloaded:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="no">hr_data_dir</span>)</pre></body></html></div>
 <pre><code>#&gt; [1] "NHDPLUS_H_0709_HU4_GDB.gdb" "NHDPLUS_H_0709_HU4_GDB.jpg"
 #&gt; [3] "NHDPLUS_H_0709_HU4_GDB.xml"</code></pre>
@@ -347,39 +348,39 @@
 <p>The second part of nhdplusTools support for NHDPlusHR is a bit more involved. The entry point is a function called <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code>. At it’s core, it will take a collection of NHDPlusHR subsets, open them up one by one and build a single output table for later use. It also 1. joins flowline attributes to the flowline geometry, 1. can return one or more selected layers, 1. can save the result to a standalone geopackage for later use, and 1. can make some attributes of a subset look like they are part of a standalone network rather than having references to downstream data that aren’t in the subset.</p>
 <p>Using the data we downloaded in the TL;DR; intro, the code below demonstrates a few behaviors of <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code></p>
 <p>First, if we just give it a directory containing HR data, it will give us back a list with flowlines and catchments as sf data.frames.</p>
-<div class="sourceCode" id="cb82"><html><body><pre class="r"><span class="no">hr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>)
+<div class="sourceCode" id="cb83"><html><body><pre class="r"><span class="no">hr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="no">hr</span>, <span class="no">class</span>)</pre></body></html></div>
 <pre><code>#&gt;      NHDFlowline  NHDPlusCatchment
 #&gt; [1,] "sf"         "sf"            
 #&gt; [2,] "tbl_df"     "tbl_df"        
 #&gt; [3,] "tbl"        "tbl"           
 #&gt; [4,] "data.frame" "data.frame"</code></pre>
-<div class="sourceCode" id="cb84"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDFlowline</span>), <span class="kw">lwd</span> <span class="kw">=</span> (<span class="no">hr</span>$<span class="no">NHDFlowline</span>$<span class="no">StreamOrde</span> / <span class="fl">6</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb85"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDFlowline</span>), <span class="kw">lwd</span> <span class="kw">=</span> (<span class="no">hr</span>$<span class="no">NHDFlowline</span>$<span class="no">StreamOrde</span> / <span class="fl">6</span>))</pre></body></html></div>
 <p><img src="nhdplushr_files/figure-html/get_nhdplushr-1.png" width="816"></p>
 <p>If we want more data, we can get any of the layer options listed in the <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> documentation.</p>
-<div class="sourceCode" id="cb85"><html><body><pre class="r"><span class="no">hr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NHDFlowline"</span>, <span class="st">"NHDWaterbody"</span>, <span class="st">"NHDArea"</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb86"><html><body><pre class="r"><span class="no">hr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NHDFlowline"</span>, <span class="st">"NHDWaterbody"</span>, <span class="st">"NHDArea"</span>))</pre></body></html></div>
 <pre><code>#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :
 #&gt; GDAL Message 1: organizePolygons() received a polygon with more than 100 parts.
 #&gt; The processing may be really slow. You can skip the processing by setting
 #&gt; METHOD=SKIP, or only make it analyze counter-clock wise parts by setting
 #&gt; METHOD=ONLY_CCW if you can assume that the outline of holes is counter-clock
 #&gt; wise defined</code></pre>
-<div class="sourceCode" id="cb87"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="no">hr</span>, <span class="no">class</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb88"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="no">hr</span>, <span class="no">class</span>)</pre></body></html></div>
 <pre><code>#&gt;      NHDFlowline  NHDWaterbody NHDArea     
 #&gt; [1,] "sf"         "sf"         "sf"        
 #&gt; [2,] "tbl_df"     "tbl_df"     "tbl_df"    
 #&gt; [3,] "tbl"        "tbl"        "tbl"       
 #&gt; [4,] "data.frame" "data.frame" "data.frame"</code></pre>
-<div class="sourceCode" id="cb89"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="no">hr</span>, <span class="no">nrow</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb90"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="no">hr</span>, <span class="no">nrow</span>)</pre></body></html></div>
 <pre><code>#&gt;  NHDFlowline NHDWaterbody      NHDArea 
 #&gt;        34532        11444          499</code></pre>
-<div class="sourceCode" id="cb91"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDFlowline</span>), <span class="kw">lwd</span> <span class="kw">=</span> (<span class="no">hr</span>$<span class="no">NHDFlowline</span>$<span class="no">StreamOrde</span> / <span class="fl">6</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="st">"blue"</span>)
+<div class="sourceCode" id="cb92"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDFlowline</span>), <span class="kw">lwd</span> <span class="kw">=</span> (<span class="no">hr</span>$<span class="no">NHDFlowline</span>$<span class="no">StreamOrde</span> / <span class="fl">6</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="st">"blue"</span>)
 
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDWaterbody</span>), <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">hr</span>$<span class="no">NHDArea</span>)),
      <span class="kw">col</span> <span class="kw">=</span> <span class="st">"cyan"</span>, <span class="kw">border</span> <span class="kw">=</span> <span class="st">"cyan"</span>, <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">0.25</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="nhdplushr_files/figure-html/get_nhdplushr2-1.png" width="816"></p>
 <p>Since this function can work over large amounts of data and we don’t want to keep running it again and again, there is an option to save the results to a standalone database for later use.</p>
-<div class="sourceCode" id="cb92"><html><body><pre class="r"><span class="no">demo_gpkg</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">work_dir</span>, <span class="st">"demo.gpkg"</span>)
+<div class="sourceCode" id="cb93"><html><body><pre class="r"><span class="no">demo_gpkg</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">work_dir</span>, <span class="st">"demo.gpkg"</span>)
 <span class="no">hr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">out_gpkg</span> <span class="kw">=</span> <span class="no">demo_gpkg</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_layers.html">st_layers</a></span>(<span class="no">demo_gpkg</span>)</pre></body></html></div>
 <pre><code>#&gt; Driver: GPKG 
@@ -393,20 +394,20 @@
 <a href="#hr-modification-and-filtering" class="anchor"></a>HR modification and filtering</h2>
 <p>Since NHDPlusHR data can be very large, <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> offers the ability to subset the data using a few filter options. Most of the filters are described in the manual page of the <code><a href="../reference/get_hr_data.html">get_hr_data()</a></code> utility function. 1. <code>min_size_sqkm</code> will remove flowlines under a certain size threshold. 1. <code>sim</code> will simplify all geometry to a given tolerance using <code><a href="https://rdrr.io/pkg/sf/man/geos_unary.html">sf::st_simplify()</a></code>. 1. <code>proj</code> will project the output into the desired projection. 1. <code>keep_cols</code> is used to specify which attributes are desired in the output. 1. <code>rename</code> controls whether output is automatically renamed to be compatible with <code>nhdplusTools</code> functions.</p>
 <p><em>Note: These options only operate on the flowline network.</em></p>
-<div class="sourceCode" id="cb94"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
+<div class="sourceCode" id="cb95"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
                                <span class="kw">min_size_sqkm</span> <span class="kw">=</span> <span class="fl">50</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>),
      <span class="kw">lwd</span> <span class="kw">=</span> <span class="no">demo</span>$<span class="no">NHDFlowline</span>$<span class="no">StreamOrde</span>/<span class="fl">4</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"blue"</span>)</pre></body></html></div>
 <p><img src="nhdplushr_files/figure-html/get_nhdplushr4-1.png" width="816"></p>
-<div class="sourceCode" id="cb95"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
+<div class="sourceCode" id="cb96"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
                       <span class="kw">min_size_sqkm</span> <span class="kw">=</span> <span class="fl">100</span>,
                       <span class="kw">proj</span> <span class="kw">=</span> <span class="st">"+init=epsg:5070"</span>, <span class="kw">simp</span> <span class="kw">=</span> <span class="fl">200</span>,
                       <span class="kw">keep_cols</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"COMID"</span>, <span class="st">"StreamOrde"</span>))</pre></body></html></div>
 <pre><code>#&gt; Warning in CPL_crs_from_input(x): GDAL Message 1: +init=epsg:XXXX syntax is
 #&gt; deprecated. It might return a CRS with a non-EPSG compliant axis order.</code></pre>
-<div class="sourceCode" id="cb97"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb98"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>)</pre></body></html></div>
 <pre><code>#&gt; [1] "COMID"      "StreamOrde" "Shape"</code></pre>
-<div class="sourceCode" id="cb99"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>),
+<div class="sourceCode" id="cb100"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>),
      <span class="kw">lwd</span> <span class="kw">=</span> <span class="no">demo</span>$<span class="no">NHDFlowline</span>$<span class="no">StreamOrde</span>/<span class="fl">4</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"blue"</span>)</pre></body></html></div>
 <p><img src="nhdplushr_files/figure-html/get_nhdplushr5-1.png" width="816"></p>
 </div>
@@ -416,7 +417,7 @@
 <p>The NHDPlus data model has some shared identifiers that can span very large distances. For example, the “Level Path Identifier” identifies an entire river from headwater to outlet using the “hydrologic sequence identifier” of the outlet. Similarly, the “Terminal Path Identifier” identifies an entire basin using the hydrologic sequence identifier of the terminal flowline (to the ocean or an inland sink). When creating subsets of NHDPlus data, many times, these attributes can identify flowlines that are not included in the subset. For most applications, this is not a problem, but in some cases, it is advantageous to adjust identifiers such that the subset appears to be a complete drainage basin with a true terminal outlet. <code><a href="../reference/make_standalone.html">make_standalone()</a></code> accomplishes this task.</p>
 <p>On a one by one basis, this may seam insignificant, but for workflows that need to work with arbitrary subsets and start from basin outlets, this functionality is useful. It has little impact on the data and is applied by default.</p>
 <p>The example below shows how the outlet is modified. As described in the documentation os <code><a href="../reference/make_standalone.html">make_standalone()</a></code> all related attributes upstream are also fixed such that the network is intact for further use.</p>
-<div class="sourceCode" id="cb100"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
+<div class="sourceCode" id="cb101"><html><body><pre class="r"><span class="no">demo</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span>(<span class="no">hr_data_dir</span>, <span class="kw">layers</span> <span class="kw">=</span> <span class="st">"NHDFlowline"</span>,
                     <span class="kw">min_size_sqkm</span> <span class="kw">=</span> <span class="fl">100</span>, <span class="kw">check_terminals</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 
 <span class="co"># Create a standalone basin with the results for comparison.</span>
@@ -434,10 +435,10 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="no">broken_outlet</span>))</pre></body></html></div>
 <pre><code>#&gt;         Hydroseq     TerminalPa TerminalFl     LevelPathI
 #&gt; 1 22001000000414 22000100000212          0 22000300045683</code></pre>
-<div class="sourceCode" id="cb102"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="no">fixed_outlet</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb103"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="no">fixed_outlet</span>))</pre></body></html></div>
 <pre><code>#&gt;         Hydroseq     TerminalPa TerminalFl     LevelPathI
 #&gt; 1 22001000000414 22001000000414          1 22001000000414</code></pre>
-<div class="sourceCode" id="cb104"><html><body><pre class="r">(<span class="no">broken</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>, <span class="no">TerminalPa</span> <span class="kw">==</span> <span class="no">demo_outlet</span>$<span class="no">Hydroseq</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb105"><html><body><pre class="r">(<span class="no">broken</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">demo</span>$<span class="no">NHDFlowline</span>, <span class="no">TerminalPa</span> <span class="kw">==</span> <span class="no">demo_outlet</span>$<span class="no">Hydroseq</span>))</pre></body></html></div>
 <pre><code>#&gt; Simple feature collection with 0 features and 57 fields
 #&gt; bbox:           xmin: NA ymin: NA xmax: NA ymax: NA
 #&gt; geographic CRS: NAD83
@@ -457,7 +458,7 @@
 #&gt; #   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,
 #&gt; #   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,
 #&gt; #   ElevFixed &lt;int&gt;, HWType &lt;int&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</code></pre>
-<div class="sourceCode" id="cb106"><html><body><pre class="r">(<span class="no">standalone</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">standalone_demo</span>, <span class="no">TerminalPa</span> <span class="kw">==</span> <span class="no">standalone_demo_outlet</span>$<span class="no">Hydroseq</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb107"><html><body><pre class="r">(<span class="no">standalone</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">standalone_demo</span>, <span class="no">TerminalPa</span> <span class="kw">==</span> <span class="no">standalone_demo_outlet</span>$<span class="no">Hydroseq</span>))</pre></body></html></div>
 <pre><code>#&gt; Simple feature collection with 5358 features and 57 fields
 #&gt; geometry type:  MULTILINESTRING
 #&gt; dimension:      XY
@@ -490,7 +491,7 @@
 #&gt; #   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,
 #&gt; #   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,
 #&gt; #   ElevFixed &lt;int&gt;, HWType &lt;int&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</code></pre>
-<div class="sourceCode" id="cb108"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">standalone</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb109"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>(<span class="no">standalone</span>))</pre></body></html></div>
 <p><img src="nhdplushr_files/figure-html/make_standalone-1.png" width="816"></p>
 </div>
   </div>

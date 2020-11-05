@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
       </span>
     </div>
 
@@ -168,82 +168,71 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>chars</span> <span class='kw'>&lt;-</span> <span class='fu'>discover_nldi_characteristics</span>()
 <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>chars</span>)</div><div class='output co'>#&gt; [1] "local"             "total"             "divergence_routed"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>chars</span>$<span class='no'>local</span>, <span class='fl'>10</span>)</div><div class='output co'>#&gt;    characteristic_id
-#&gt; 1      CAT_NPDES_MAJ
-#&gt; 2       CAT_ECOL3_24
-#&gt; 3            CAT_BFI
-#&gt; 4            CAT_PET
-#&gt; 5        CAT_CONTACT
-#&gt; 6            CAT_EWT
-#&gt; 7           CAT_IEOF
-#&gt; 8          CAT_RECHG
-#&gt; 9          CAT_SATOF
-#&gt; 10           CAT_TWI
-#&gt;                                                                                                                                                                                                                                          characteristic_description
-#&gt; 1                                                                                                                                                                                                                                       Number of major NPDES sites
-#&gt; 2                                                                                                                                                                                                                             level 3 ecoregion: Chihuahuan Desert.
-#&gt; 3    Base Flow Index (BFI), The BFI is a ratio of base flow to total streamflow, expressed as a percentage and ranging from 0 to 100. Base flow is the sustained, slowly varying component of streamflow, usually attributed to ground-water discharge to a stream.
-#&gt; 4                                                                                                                                                                        Mean-annual potential evapotranspiration (PET), estimated using the Hamon (1961) equation.
-#&gt; 5                                               Subsurface flow contact time index. The subsurface contact time index estimates the number of days that infiltrated water resides in the saturated subsurface zone of the basin before discharging into the stream.
-#&gt; 6                                                                                                                                                                                                 Average depth to water table relatice to the land surface(meters)
-#&gt; 7                                                                                                                                                                                                                   Percentage of Horton overland flow as a percent
-#&gt; 8                                                                                                                                                                                                 Mean annual natural ground-water recharge in millimeters per year
-#&gt; 9                                                                                                                                                                                                                    Percentage of Dunne overland flow as a percent
-#&gt; 10 Topographic wetness index, ln(a/S); where ln is the natural log, a is the upslope area per unit contour length and S is the slope at that point.  See http://ks.water.usgs.gov/Kansas/pubs/reports/wrir.99-4242.html and Wolock and McCabe, 1995 for more detail
-#&gt;      units
-#&gt; 1    count
-#&gt; 2  unknown
-#&gt; 3  percent
-#&gt; 4  mm/year
-#&gt; 5     days
-#&gt; 6   meters
-#&gt; 7  percent
-#&gt; 8    mm/yr
-#&gt; 9  percent
-#&gt; 10   ln(m)
-#&gt;                                                                                                                                                                                                                                                       dataset_label
-#&gt; 1                                                                                                                                                                                                                                       Number of major NPDES sites
-#&gt; 2                                                                                                                                                                                                        percent of catchment containing dominant level 3 ecoregion
-#&gt; 3    Base Flow Index (BFI), The BFI is a ratio of base flow to total streamflow, expressed as a percentage and ranging from 0 to 100. Base flow is the sustained, slowly varying component of streamflow, usually attributed to ground-water discharge to a stream.
-#&gt; 4                                                                                                                                                                        Mean-annual potential evapotranspiration (PET), estimated using the Hamon (1961) equation.
-#&gt; 5                                               Subsurface flow contact time index. The subsurface contact time index estimates the number of days that infiltrated water resides in the saturated subsurface zone of the basin before discharging into the stream.
-#&gt; 6                                                                                                                                                                                                 Average depth to water table relatice to the land surface(meters)
-#&gt; 7                                                                                                                                                                                                                   Percentage of Horton overland flow as a percent
-#&gt; 8                                                                                                                                   Runoff (mm/yr) delivered to the stream network for every month for the years 1945 - 2013 divided by 12 to derive annual runoff.
-#&gt; 9                                                                                                                                                                                                                    Percentage of Dunne overland flow as a percent
-#&gt; 10 Topographic wetness index, ln(a/S); where ln is the natural log, a is the upslope area per unit contour length and S is the slope at that point.  See http://ks.water.usgs.gov/Kansas/pubs/reports/wrir.99-4242.html and Wolock and McCabe, 1995 for more detail
+#&gt; 1            CAT_BFI
+#&gt; 2        CAT_CONTACT
+#&gt; 3             CAT_ET
+#&gt; 4            CAT_EWT
+#&gt; 5            CAT_HGA
+#&gt; 6           CAT_HGAC
+#&gt; 7           CAT_HGAD
+#&gt; 8            CAT_HGB
+#&gt; 9           CAT_HGBC
+#&gt; 10          CAT_HGBD
+#&gt;                                                                                                                                                                                                                                                       characteristic_description
+#&gt; 1                 Base Flow Index (BFI), The BFI is a ratio of base flow to total streamflow, expressed as a percentage and ranging from 0 to 100. Base flow is the sustained, slowly varying component of streamflow, usually attributed to ground-water discharge to a stream.
+#&gt; 2                                                           Subsurface flow contact time index. The subsurface contact time index estimates the number of days that infiltrated water resides in the saturated subsurface zone of the basin before discharging into the stream. 
+#&gt; 3                                                                                                                                                                  Mean-annual actual evapotranspiration (ET), estimated using regression equation of Sanford and Selnick (2013)
+#&gt; 4                                                                                                                                                                                                              Average depth to water table relatice to the land surface(meters)
+#&gt; 5                                                          Percentage of Hydrologic Group A soil. -9999 denotes NODATA, usually water. Hydrologic group A soils have high infiltration rates. Soils are deep and well drained and, typically, have high sand and gravel content.
+#&gt; 6           Percentage of Hydrologic Group AC soil. -9999 denotes NODATA, usually water. Hydrologic group AC soils have group A characteristics (high infiltration rates) when artificially drained and have group C characteristics (slow infiltration rates) when not drained.
+#&gt; 7      Percentage of Hydrologic Group AD soil. -9999 denotes NODATA, usually water. Hydrologic group AD soils have group A characteristics (high infiltration rates) when artificially drained and have group D characteristics (very slow infiltration rates) when not drained.
+#&gt; 8                                                   Percentage of Hydrologic Group B soil. -9999 denotes NODATA, usually water. Hydrologic group B soils have moderate infiltration rates. Soils are moderately deep, moderately well drained, and moderately coarse in texture.
+#&gt; 9       Percentage of Hydrologic Group BC soil. -9999 denotes NODATA, usually water. Hydrologic group BC soils have group B characteristics (moderate infiltration rates) when artificially drained and have group C characteristics (slow infiltration rates) when not drained.
+#&gt; 10 Percentage of Hydrologic Group BD soil. -9999 denotes NODATA, usually water. Hydrologic group BD soils have group B characteristics (moderate infiltration rates) when artificially drained and have group D characteristics (very slow infiltration rates) when not drained.
+#&gt;      units dataset_label
+#&gt; 1  percent              
+#&gt; 2     days              
+#&gt; 3  mm/year              
+#&gt; 4   meters              
+#&gt; 5  percent              
+#&gt; 6  percent              
+#&gt; 7  percent              
+#&gt; 8  percent              
+#&gt; 9  percent              
+#&gt; 10 percent              
 #&gt;                                                          dataset_url
-#&gt; 1  https://www.sciencebase.gov/catalog/item/57c9d89ce4b0f2f0cec192da
-#&gt; 2  https://www.sciencebase.gov/catalog/item/5785595ce4b0e02680bf2fd8
-#&gt; 3  https://www.sciencebase.gov/catalog/item/5669a8e3e4b08895842a1d4f
-#&gt; 4  https://www.sciencebase.gov/catalog/item/56f96ed1e4b0a6037df06a2d
-#&gt; 5  https://www.sciencebase.gov/catalog/item/56f96fc5e4b0a6037df06b12
-#&gt; 6  https://www.sciencebase.gov/catalog/item/56f97456e4b0a6037df06b50
-#&gt; 7  https://www.sciencebase.gov/catalog/item/56f974e2e4b0a6037df06b55
-#&gt; 8  https://www.sciencebase.gov/catalog/item/56f97577e4b0a6037df06b5a
-#&gt; 9  https://www.sciencebase.gov/catalog/item/56f97acbe4b0a6037df06b6a
-#&gt; 10 https://www.sciencebase.gov/catalog/item/56f97be4e4b0a6037df06b70
+#&gt; 1  https://www.sciencebase.gov/catalog/item/5669a8e3e4b08895842a1d4f
+#&gt; 2  https://www.sciencebase.gov/catalog/item/56f96fc5e4b0a6037df06b12
+#&gt; 3  https://www.sciencebase.gov/catalog/item/5705491be4b0d4e2b756cf8a
+#&gt; 4  https://www.sciencebase.gov/catalog/item/56f97456e4b0a6037df06b50
+#&gt; 5  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 6  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 7  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 8  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 9  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 10 https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
 #&gt;    theme_label
-#&gt; 1    Hydro_Mod
-#&gt; 2      Regions
-#&gt; 3   Hydrologic
-#&gt; 4      Climate
-#&gt; 5   Hydrologic
-#&gt; 6   Hydrologic
-#&gt; 7   Hydrologic
-#&gt; 8   Hydrologic
-#&gt; 9   Hydrologic
-#&gt; 10  Hydrologic
+#&gt; 1   Hydrologic
+#&gt; 2   Hydrologic
+#&gt; 3      Climate
+#&gt; 4   Hydrologic
+#&gt; 5        Soils
+#&gt; 6        Soils
+#&gt; 7        Soils
+#&gt; 8        Soils
+#&gt; 9        Soils
+#&gt; 10       Soils
 #&gt;                                                            theme_url
-#&gt; 1  https://www.sciencebase.gov/catalog/item/570670f2e4b03f95a075aacd
-#&gt; 2  https://www.sciencebase.gov/catalog/item/5785585ee4b0e02680bf2fd6
-#&gt; 3  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
-#&gt; 4  https://www.sciencebase.gov/catalog/item/566ef828e4b09cfe53ca76f7
-#&gt; 5  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
-#&gt; 6  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
-#&gt; 7  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
-#&gt; 8  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
-#&gt; 9  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
-#&gt; 10 https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
+#&gt; 1  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
+#&gt; 2  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
+#&gt; 3  https://www.sciencebase.gov/catalog/item/566ef828e4b09cfe53ca76f7
+#&gt; 4  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
+#&gt; 5  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 6  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 7  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 8  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 9  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 10 https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
 #&gt;    characteristic_type
 #&gt; 1      localCatch_name
 #&gt; 2      localCatch_name

@@ -90,6 +90,9 @@ bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax 
 plot_nhdplus(bbox = bbox)
 ```
 
+The plots above are all in the EPSG:3857 projection to be compatible with background tiles. 
+Any data added to these plots must be projected to this coordinate system to be added to the plot.
+
 ## Getting Data
 
 What follows shows how to use `nhdplusTools` to create plots without the `plot_nhdplus` function. While super convenient, we all know the "easy button" is never quite right, the description below should help get you started.

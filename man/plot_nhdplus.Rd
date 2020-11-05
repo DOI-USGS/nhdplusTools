@@ -42,10 +42,11 @@ plot_nhdplus(
 \item{...}{parameters passed on to rosm.}
 }
 \value{
-plot data is returned invisibly.
+plot data is returned invisibly in NAD83 Lat/Lon.
 }
 \description{
-Given a list of outlets, get their basin boundaries and network and return a plot.
+Given a list of outlets, get their basin boundaries and network and return a plot in
+EPSG:3857 Web Mercator Projection.
 }
 \details{
 plot_nhdplus supports several input specifications. An unexported function "as_outlet"
@@ -76,6 +77,9 @@ The following shows the defaults that can be altered.
         wqp = list(col = "red", border = NA, pch = 20, cex = 1))
         }
 }
+
+If adding additional layers to the plot, data must be projected to EPSG:3857 with
+`sf::st_transform(x, 3857)` prior to adding to the plot.
 }
 \examples{
 \donttest{

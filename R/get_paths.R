@@ -105,6 +105,7 @@ get_path <- function(x, tailID, status) {
     x <- data.table::data.table(x)
   }
 
+  toID <- NULL
   while(keep_going) {
     # May be more than 1
     if(dt) {

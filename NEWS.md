@@ -2,6 +2,7 @@ nhdplusTools 0.3.16
 ==========
 * `subset_nhdplus()` now validates geometry and ensures all outputs are in NAD83
 * `subset_nhdplus()` queries the NHDPlus database rather than loading then filtering
+* `get_levelpaths()` rewritten for performance. Package now uses `data.table`.
 
 nhdplusTools 0.3.15
 ==========

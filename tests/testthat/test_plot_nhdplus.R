@@ -294,6 +294,7 @@ test_that("bbox", {
 })
 
 test_that("comids", {
+  testthat::skip_on_cran()
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   comids <- nhdplusTools::get_UT(fline, 13293970)
   d <- nhdplusTools:::get_plot_data(comids)

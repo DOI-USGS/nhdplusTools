@@ -68,6 +68,7 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #' @importFrom magrittr "%>%"
 #' @export
 #' @examples
+#' \donttest{
 #' sample_flines <- sf::read_sf(system.file("extdata",
 #'                                          "petapsco_flowlines.gpkg",
 #'                                          package = "nhdplusTools"))
@@ -94,6 +95,7 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #'                    search_radius = 0.2,
 #'                    max_matches = 10)
 #'
+#' }
 
 get_flowline_index <- function(flines, points,
                                search_radius = 0.1,

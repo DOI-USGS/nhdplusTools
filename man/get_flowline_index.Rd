@@ -54,6 +54,7 @@ Note 4: See `dfMaxLength` input to sf::st_segmentize() for details of
 handling of precision parameter.
 }
 \examples{
+\donttest{
 sample_flines <- sf::read_sf(system.file("extdata",
                                          "petapsco_flowlines.gpkg",
                                          package = "nhdplusTools"))
@@ -80,4 +81,5 @@ get_flowline_index(sample_flines,
                    search_radius = 0.2,
                    max_matches = 10)
 
+}
 }

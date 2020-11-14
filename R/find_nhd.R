@@ -312,7 +312,7 @@ discover_nhd <- function(AOI = NULL, comid = NULL, nwis = NULL,
 #' @return simple feature polygon object
 #' @export
 
-find_huc8 <-  function(AOI = NULL, id = NULL){
+discover_huc8 <-  function(AOI = NULL, id = NULL){
   query_waterlabs(AOI = AOI, ids = id, type = "huc08")
 }
 
@@ -323,7 +323,7 @@ find_huc8 <-  function(AOI = NULL, id = NULL){
 #' @return simple feature polygon object
 #' @export
 
-find_huc12 <- function(AOI = NULL, id = NULL){
+discover_huc12 <- function(AOI = NULL, id = NULL){
   query_waterlabs(AOI = AOI, ids = id, type = "huc12")
 }
 
@@ -334,7 +334,7 @@ find_huc12 <- function(AOI = NULL, id = NULL){
 #' @return simple feature polygon object
 #' @export
 
-find_waterbodies <- function(AOI = NULL, id = NULL){
+discover_waterbodies <- function(AOI = NULL, id = NULL){
   query_waterlabs(AOI = AOI, ids = id, type = "waterbodies")
 }
 

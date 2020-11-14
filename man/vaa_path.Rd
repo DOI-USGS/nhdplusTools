@@ -2,13 +2,13 @@
 % Please edit documentation in R/get_vaa.R
 \name{vaa_path}
 \alias{vaa_path}
-\title{VAA Cache location}
+\title{File path to VAA Cache}
 \usage{
 vaa_path()
 }
 \value{
-file.path
+file.path (character)
 }
 \description{
-Location of base fst nhdplusVAA file
+nhdplusTools will download and cache an fst file with NHDPlusV2 attribute data sans geometry. This function returns the file path to the cached file.
 }

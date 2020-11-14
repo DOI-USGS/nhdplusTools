@@ -10,7 +10,7 @@ get_vaa_names()
 character vector
 }
 \description{
-Find varaibles availiable in the VAA data.frame
+Find variables available in the VAA data.frame
 }
 \examples{
 get_vaa_names()

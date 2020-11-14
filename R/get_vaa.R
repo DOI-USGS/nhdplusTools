@@ -1,11 +1,6 @@
-# Primary HydroShare Data Resource
-vaa_hydroshare <-
-  'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
-
-# Where to cache the data:
-#' @title VAA Cache location
-#' @description Location of base fst nhdplusVAA file
-#' @return file.path
+#' @title File path to VAA Cache
+#' @description nhdplusTools will download and cache an fst file with NHDPlusV2 attribute data sans geometry. This function returns the file path to the cached file.
+#' @return file.path (character)
 #' @importFrom rappdirs user_cache_dir
 #' @export
 
@@ -20,7 +15,17 @@ vaa_path <- function() {
 #' get_vaa_names()
 #' @export
 
-get_vaa_names <- function(){ nhdplusTools::attributes }
+get_vaa_names <- function(){
+  # Build with: colnames(get_vaa())
+  c("comid", "fdate", "streamleve", "streamorde", "streamcalc",
+    "fromnode", "tonode", "hydroseq", "levelpathi", "pathlength",
+    "terminalpa", "arbolatesu", "divergence", "startflag", "terminalfl",
+    "dnlevel", "thinnercod", "uplevelpat", "uphydroseq", "dnlevelpat",
+    "dnminorhyd", "dndraincou", "dnhydroseq", "frommeas", "tomeas",
+    "reachcode", "lengthkm", "fcode", "rtndiv", "outdiv", "diveffect",
+    "areasqkm", "totdasqkm", "divdasqkm", "tidal", "totma", "wbareatype",
+    "pathtimema", "slope", "slopelenkm")
+}
 
 #' @title NHDPlusV2 Attribute Subset
 #' @description Return requested NHDPlusv2 Attributes
@@ -50,19 +55,18 @@ get_vaa <- function(atts = NULL){
 
 #' @title Download nhdplusVAA data from HydroShare
 #' @description downloads and caches data on your computer
-#' @param url Don't mess with this :)
 #' @return path to cached data
 #' @export
 #' @importFrom httr GET progress write_disk
 
-download_vaa <- function(url = vaa_hydroshare) {
+download_vaa <- function() {
 
   if (file.exists(vaa_path())) {
     message("File already cached")
   } else {
     dir.create(dirname(vaa_path()), showWarnings = FALSE, recursive = TRUE)
 
-    resp <- httr::GET(url,
+    resp <- httr::GET(vaa_hydroshare,
                       httr::write_disk(vaa_path(), overwrite = TRUE),
                       httr::progress())
 
@@ -74,9 +78,4 @@ download_vaa <- function(url = vaa_hydroshare) {
   return(vaa_path())
 }
 
-#' @title NHDPlusV2 attribute names
-#' @name attributes
-#' @docType data
-
-NULL
 

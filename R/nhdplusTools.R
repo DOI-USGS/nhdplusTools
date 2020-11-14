@@ -1,3 +1,7 @@
+# Primary HydroShare Data Resource
+vaa_hydroshare <-
+  'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
+
 nhdplusTools_env <- new.env()
 
 # NHDPlus Attributes

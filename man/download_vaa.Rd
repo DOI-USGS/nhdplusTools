@@ -4,10 +4,7 @@
 \alias{download_vaa}
 \title{Download nhdplusVAA data from HydroShare}
 \usage{
-download_vaa(url = vaa_hydroshare)
-}
-\arguments{
-\item{url}{Don't mess with this :)}
+download_vaa()
 }
 \value{
 path to cached data

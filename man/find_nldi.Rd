@@ -39,13 +39,11 @@ find_nldi(
 a list of simple feature objects (points, lines, polygons)
 }
 \description{
-Provides a formal query to the
-\href{https://labs.waterdata.usgs.gov/about-nldi/index.html}{Network Linked Data Index}.
-The function is useful for topology and location based feature discovery.
+Provides a wrapper over [dataRetrieval::findNLDI()] that returns spatial objects.
 A user must supply a starting feature, and can add optional navigation direction(s),
 and features to identify on the navigated network.
 Valid starting options can be given by one of the following arguments: comid, nwis, huc12,
- wqp, location, and origin.
+ wqp, location, and origin. Possible sources can be found with [dataRetrieval::get_nldi_sources()]
 }
 \examples{
 

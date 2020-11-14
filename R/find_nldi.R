@@ -1,11 +1,9 @@
-#' @title 	Retrieve features from the \href{https://labs.waterdata.usgs.gov/api/nldi/swagger-ui/index.html?configUrl=/api/nldi/v3/api-docs/swagger-config}{NLDI}
-#' @description Provides a formal query to the
-#' \href{https://labs.waterdata.usgs.gov/about-nldi/index.html}{Network Linked Data Index}.
-#' The function is useful for topology and location based feature discovery.
+#' @title Retrieve features from the \href{https://labs.waterdata.usgs.gov/api/nldi/swagger-ui/index.html?configUrl=/api/nldi/v3/api-docs/swagger-config}{NLDI}
+#' @description Provides a wrapper over [dataRetrieval::findNLDI()] that returns spatial objects.
 #' A user must supply a starting feature, and can add optional navigation direction(s),
 #' and features to identify on the navigated network.
 #' Valid starting options can be given by one of the following arguments: comid, nwis, huc12,
-#'  wqp, location, and origin.
+#'  wqp, location, and origin. Possible sources can be found with [dataRetrieval::get_nldi_sources()]
 #' @param comid an NHDPlusV2 COMID
 #' @param nwis  a USGS NWIS siteID
 #' @param wqp a water quality point ID

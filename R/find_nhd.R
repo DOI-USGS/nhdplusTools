@@ -15,7 +15,7 @@
 query_waterlabs <- function(AOI = NULL, ids = NULL, type, filter = NULL){
 
   if(!is.null(AOI) & !is.null(ids)){
-    stop("Either IDs or a spatial AOI can be passed.",.call = FALSE)
+    stop("Either IDs or a spatial AOI can be passed.", .call = FALSE)
   }
 
   if(is.null(AOI) & is.null(ids)){
@@ -83,6 +83,7 @@ query_waterlabs <- function(AOI = NULL, ids = NULL, type, filter = NULL){
   }
 
   return(out)
+
 }
 
 #' @title Spatial Filter for Geoserver
@@ -97,9 +98,9 @@ spatial_filter  <- function(AOI){
 
   if(is.null(AOI)){ return(NULL)}
 
-  AOI.type <- as.character(sf::st_geometry_type(AOI))
+  AOI_type <- as.character(sf::st_geometry_type(AOI))
 
-  if (AOI.type == "POINT") { AOI <- sf::st_buffer(
+  if (AOI_type == "POINT") { AOI <- sf::st_buffer(
     sf::st_transform(AOI, 5070), 1) }
 
   bb <- sf::st_bbox(sf::st_transform(AOI, 4269))
@@ -111,6 +112,7 @@ spatial_filter  <- function(AOI){
          '<gml:upperCorner>', bb$ymax, " ", bb$xmax, '</gml:upperCorner>',
          '</gml:Envelope>',
          '</ogc:BBOX>')
+
 }
 
 #' @title Attribute Filter for Geoserver
@@ -121,7 +123,7 @@ spatial_filter  <- function(AOI){
 #' @keywords internal
 #' @noRd
 
-id_filter       <- function(ids, name = "comid"){
+id_filter  <- function(ids, name = "comid"){
 
   if(is.null(ids)){ return(NULL)}
 
@@ -148,6 +150,7 @@ id_filter       <- function(ids, name = "comid"){
                    '</wfs:GetFeature>')
 
   paste0(startXML, paste0(ids, collapse = tmp), endXML)
+
 }
 
 #' @title Stream Order Filter
@@ -204,8 +207,8 @@ extact_comid_nwis <- function(nwis){
 #' @importFrom sf st_geometry_type st_cast st_transform st_crs st_line_sample st_zm
 
 find_outlets <- function(flowlines){
-  AOI.type = unique(sf::st_geometry_type(flowlines))
-  if(!AOI.type %in% c("MULTILINESTRING", "LINESTRING")){
+  AOI_type = unique(sf::st_geometry_type(flowlines))
+  if(!AOI_type %in% c("MULTILINESTRING", "LINESTRING")){
     stop("outlets can only be extracted from flowlines", call. = FALSE)
   } else {
     flowlines$geometry = suppressWarnings(
@@ -233,22 +236,22 @@ find_outlets <- function(flowlines){
 #' @return a single, or list, or simple feature objects
 #' @examples
 #'  point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)
-#'  find_nhd(point)
-#'  find_nhd(point, realization = "catchment")
-#'  find_nhd(point, realization = "all")
+#'  discover_nhd(point)
+#'  discover_nhd(point, realization = "catchment")
+#'  discover_nhd(point, realization = "all")
 
-#'  find_nhd(comid = 101)
-#'  find_nhd(nwis  = c(11120000, 11120500))
+#'  discover_nhd(comid = 101)
+#'  discover_nhd(nwis  = c(11120000, 11120500))
 
 #'  area <- sf::st_as_sfc(sf::st_bbox(
 #'    c(xmin = -119.8851, xmax =-119.8361, ymax = 34.42439, ymin = 34.40473), crs = 4326))
 
-#'  find_nhd(area)
-#'  find_nhd(area, realization = "flowline", streamorder = 3)
+#'  discover_nhd(area)
+#'  discover_nhd(area, realization = "flowline", streamorder = 3)
 #' @importFrom methods is
 #' @export
 
-find_nhd <- function(AOI = NULL, comid = NULL, nwis = NULL,
+discover_nhd <- function(AOI = NULL, comid = NULL, nwis = NULL,
                      realization = "flowline",
                      streamorder = NULL){
 
@@ -272,32 +275,32 @@ find_nhd <- function(AOI = NULL, comid = NULL, nwis = NULL,
     stop("IDs (comid, nwis) or a spatial AOI must be passed.",.call = FALSE)
   }
 
-  good.realizations = c("flowline", "catchment", 'outlet')
-  if(realization == "all"){ realization = good.realizations}
-  if(any(!realization %in% good.realizations)){
-    stop(paste(realization, "not valid.\n Select from", paste(good.realizations, collapse = ", ")))
+  good_realizations = c("flowline", "catchment", 'outlet')
+  if(realization == "all"){ realization = good_realizations}
+  if(any(!realization %in% good_realizations)){
+    stop(paste(realization, "not valid.\n Select from", paste(good_realizations, collapse = ", ")))
   }
 
-
-  catch <- fl <- outlet <-  NULL
+  geoms = list()
 
   if(!is.null(nwis)){
     comid = c(unlist(lapply(nwis, extact_comid_nwis)), comid)
   }
 
   if("catchment" %in% realization){
-    catch   <- query_waterlabs(AOI = AOI, ids = comid, type = "catchments")
+    geoms$catch   <- query_waterlabs(AOI = AOI, ids = comid, type = "catchments")
   }
 
   if(any(c("flowline", "outlet") %in% realization)){
-    fl      <- query_waterlabs(AOI = AOI, ids = comid, type = 'nhd',
+    geoms$fl      <- query_waterlabs(AOI = AOI, ids = comid, type = 'nhd',
                                filter = streamorder_filter(streamorder))
 
-    if("outlet" %in% realization){ outlet = find_outlets(fl) }
+    if("outlet" %in% realization){ geoms$outlet = find_outlets(geoms$fl) }
   }
 
-  geoms = tc(list(catch = catch, flowline = fl, outlet = outlet))
+  geoms = tc(geoms)
   if(length(geoms) == 1){ geoms = geoms[[1]]}
+
   return(geoms)
 
 }
@@ -330,8 +333,74 @@ find_huc12 <- function(AOI = NULL, id = NULL){
 #' @param id Search for WBD HUC08 features by ID
 #' @return simple feature polygon object
 #' @export
-#'
+
 find_waterbodies <- function(AOI = NULL, id = NULL){
   query_waterlabs(AOI = AOI, ids = id, type = "waterbodies")
 }
+
+#' @title Discover USGS NWIS Stream Gages
+#' @description Returns a POINT feature class of active, ST, NWIS gages for an Area of Interest.
+#' If a POINT is given as the AOI, a 20km2 bounding box is searched and the nearest
+#' feature (euclidian) is returned. Data is accessed through the NWIS web portal.
+#' @param AOI an 'area of interest' object (sf POINT or POLYGON)
+#' @return sf object
+#' @importFrom xml2 xml_root xml_children xml_attr read_xml
+#' @importFrom sf st_geometry_type  st_transform st_buffer st_as_sf st_bbox st_nearest_feature
+#' @importFrom dplyr filter
+#' @export
+
+discover_nwis = function(AOI = NULL){
+
+  AOI_type <- st_geometry_type(AOI)
+
+  if(AOI_type == "POINT"){
+    pt  <-  AOI
+    AOI <-  sf::st_transform(AOI, 5070) %>%
+      sf::st_buffer(20000)
+  }
+
+  bb <-  sf::st_transform(AOI, 4269)
+  bb <-  round(sf::st_bbox(bb), 7)
+
+  url <- paste0("https://waterservices.usgs.gov/nwis/site/?format=mapper&bBox=",
+               bb$xmin, ",", bb$ymin, ",",
+               bb$xmax, ",", bb$ymax,
+               "&siteType=ST&siteStatus=active")
+
+  resp <- tryCatch(
+    {read_xml(url) },
+    warning = function(w) { NULL },
+    error = function(e)   { NULL })
+
+  if(is.null(resp)){
+    if(AOI_type == "POINT"){
+      stop("No gages with 20km of this location", call. = FALSE)
+    } else {}
+      stop("No gages found in this AOI.", call. = FALSE)
+  } else {
+    doc        <- xml2::xml_root(resp)
+    sc         <- xml2::xml_children(doc)
+    sites      <- xml2::xml_children(sc)
+
+    sites_sf <- data.frame(agency_cd  = xml2::xml_attr(sites, "agc"),
+                           site_no    = xml2::xml_attr(sites, "sno"),
+                           station_nm = xml2::xml_attr(sites, "sna"),
+                           site_type  = xml2::xml_attr(sites, "cat"),
+                           lat = as.numeric(xml2::xml_attr(sites, "lat")),
+                           lon = as.numeric(xml2::xml_attr(sites, "lng"))) %>%
+      st_as_sf(coords = c("lon", "lat"), crs = 4269)
+
+    if(AOI_type == "POINT"){
+      sites_sf <- suppressMessages(
+        sites_sf[sf::st_nearest_feature(pt, sites_sf),]
+      )
+    }
+
+    rturn(sites_sf)
+
+  }
+}
+
+
+
 

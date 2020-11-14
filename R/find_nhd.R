@@ -292,10 +292,10 @@ discover_nhd <- function(AOI = NULL, comid = NULL, nwis = NULL,
   }
 
   if(any(c("flowline", "outlet") %in% realization)){
-    geoms$fl      <- query_waterlabs(AOI = AOI, ids = comid, type = 'nhd',
+    geoms$flowline      <- query_waterlabs(AOI = AOI, ids = comid, type = 'nhd',
                                filter = streamorder_filter(streamorder))
 
-    if("outlet" %in% realization){ geoms$outlet = find_outlets(geoms$fl) }
+    if("outlet" %in% realization){ geoms$outlet = find_outlets(geoms$flowline) }
   }
 
   geoms = tc(geoms)
@@ -396,7 +396,7 @@ discover_nwis = function(AOI = NULL){
       )
     }
 
-    rturn(sites_sf)
+    return(sites_sf)
 
   }
 }

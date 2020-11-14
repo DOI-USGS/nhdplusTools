@@ -4,8 +4,12 @@
 \alias{stage_national_data}
 \title{Stage NHDPlus National Data}
 \usage{
-stage_national_data(include = c("attribute", "flowline", "catchment"),
-  output_path = NULL, nhdplus_data = NULL, simplified = TRUE)
+stage_national_data(
+  include = c("attribute", "flowline", "catchment"),
+  output_path = NULL,
+  nhdplus_data = NULL,
+  simplified = TRUE
+)
 }
 \arguments{
 \item{include}{character vector containing one or more of:

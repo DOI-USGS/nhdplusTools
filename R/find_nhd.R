@@ -256,6 +256,12 @@ find_nhd <- function(AOI = NULL, comid = NULL, nwis = NULL,
     if(!methods::is(AOI,c("sf", 'sfc'))){
       stop("AOI must be of class sf.",.call = FALSE)
     }
+
+    if(st_geometry_type(AOI) == "POINT"){
+      coords = sf::st_coordinates(AOI)
+      comid  = dataRetrieval::findNLDI(location = c(X = coords[1], Y = coords[2]))$origin$identifier
+      AOI = NULL
+    }
   }
 
   if(!is.null(AOI) & !is.null(c(nwis, comid))){
@@ -271,6 +277,7 @@ find_nhd <- function(AOI = NULL, comid = NULL, nwis = NULL,
   if(any(!realization %in% good.realizations)){
     stop(paste(realization, "not valid.\n Select from", paste(good.realizations, collapse = ", ")))
   }
+
 
   catch <- fl <- outlet <-  NULL
 

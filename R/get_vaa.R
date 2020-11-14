@@ -14,7 +14,7 @@ vaa_path <- function() {
 }
 
 #' @title Available NHDPlusV2 Attributes
-#' @description Find varaibles availiable in the VAA data.frame
+#' @description Find variables available in the VAA data.frame
 #' @return character vector
 #' @examples
 #' get_vaa_names()
@@ -38,7 +38,7 @@ get_vaa <- function(atts = NULL){
     stop("need to download data: run `download_vaa()`")
   }
 
-  if(!is.null(atts)){
+  if(is.null(atts)){
     return(fst::read.fst(vaa_path()))
   }
 

@@ -29,4 +29,5 @@ discover_nhdplus_id(point)
 nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 discover_nhdplus_id(nldi_feature = nldi_nwis)
 }
+
 }

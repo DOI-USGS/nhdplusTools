@@ -32,7 +32,6 @@ plan <- drake_plan(
   nldi_feature = list(featureSource = "comid",
                       featureID = start_nhdplusid),
   nldi_sources = dataRetrieval::get_nldi_sources(),
-  nldi_navigation = nhdplusTools::discover_nldi_navigation(nldi_feature),
   UT = nhdplusTools::navigate_nldi(nldi_feature = nldi_feature,
                                    mode = "upstreamTributaries",
                                    data_source = ""),

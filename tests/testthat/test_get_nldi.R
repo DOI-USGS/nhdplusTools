@@ -14,14 +14,7 @@ test_that("nldi basics work", {
 
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
-  expect_equal(length(discover_nldi_navigation(nldi_nwis)), 4)
-
-  # expect_equal(length(discover_nldi_navigation(nldi_nwis, tier = "test")), 4)
-
-  expect_error(discover_nldi_navigation(nldi_nwis, tier = "borked"),
-               "only prod or test allowed.")
-
-  expect_error(discover_nldi_navigation(nldi_nwis[1]),
+  expect_error(nhdplusTools:::check_nldi_feature(nldi_nwis[1]),
                  "Missing some required input for NLDI. Expected length 2 character vector or list with optional names: featureID")
 
 })
@@ -37,9 +30,9 @@ test_that("navigation works", {
                        data_source = "nwissite",
                        distance_km = 1)
 
-  expect("sf" %in% class(nav), "expected an sf data.frame")
+  expect("sf" %in% class(nav$UM_nwissite), "expected an sf data.frame")
 
-  expect_true("sfc_POINT" %in% class(sf::st_geometry(nav)),
+  expect_true("sfc_POINT" %in% class(sf::st_geometry(nav$UM_nwissite)),
          "expected point response")
 
   nav2 <- navigate_nldi(nldi_feature = nldi_nwis,
@@ -47,7 +40,7 @@ test_that("navigation works", {
                        data_source = "nwissite",
                        distance_km = 100)
 
-  expect_true(nrow(nav2) > nrow(nav))
+  expect_true(nrow(nav2$UM_nwissite) > nrow(nav$UM_nwissite))
 
   nldi_nwis <- as.character(nldi_nwis)
 
@@ -56,7 +49,7 @@ test_that("navigation works", {
                         data_source = "flowlines",
                         distance_km = 10)
 
-  expect_is(sf::st_geometry(nav3), "sfc_LINESTRING")
+  expect_is(sf::st_geometry(nav3$UM), "sfc_LINESTRING")
 
   expect_warning(nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
                                        mode = "upstreamMain",
@@ -69,14 +62,16 @@ test_that("navigation works", {
                        data_source = "dumb",
                        distance_km = 1)
 
-  expect_equal(nav, dplyr::tibble())
+  expect_equal(nav$origin$sourceName, "NWIS Sites")
+
+  expect_equal(class(nav$UM$nhdplus_comid), "character")
 
   nav <- navigate_nldi(nldi_feature = nldi_nwis,
                        mode = "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
                        data_source = "nwissite",
                        distance_km = 1)
 
-  expect("sf" %in% class(nav), "expected an sf data.frame")
+  expect("sf" %in% sapply(nav, class), "expected an sf data.frame")
 
   # expect_equal(navigate_nldi(list(featureSource = "wqp",
   #                                 featureID = "TCEQMAIN-16638"),
@@ -104,14 +99,14 @@ test_that("get feature works", {
   f <- get_nldi_feature(list(featureSource = "nwissite", featureID = "USGS-05428500"))
 
   expect_equal(nrow(f), 1)
-  expect_equal(ncol(f), 8)
-  expect_equal(f$identifier, "USGS-05428500")
+  expect_equal(ncol(f), 6)
+  expect_equal(f$identifier, "05428500")
 
   f <- get_nldi_feature(list("nwissite", "USGS-05428500"))
 
   expect_equal(nrow(f), 1)
-  expect_equal(ncol(f), 8)
-  expect_equal(f$identifier, "USGS-05428500")
+  expect_equal(ncol(f), 6)
+  expect_equal(f$identifier, "05428500")
 
 })
 

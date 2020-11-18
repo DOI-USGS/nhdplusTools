@@ -55,36 +55,46 @@ query_usgs_geoserver <- function(AOI = NULL, ids = NULL,
                      here$server,
                      "/ows")
 
-  startXML <- paste0('<?xml version="1.0"?>',
-                     '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs"
+  sp_filter <- spatial_filter(AOI)
+
+  if(!is.null(sp_filter) && grepl("^[?]", sp_filter)) {
+    resp <- rawToChar(httr::RETRY("GET",
+                                  paste0(URL, sp_filter),
+                                  times = 10,
+                                  pause_cap = 240)$content)
+  } else {
+
+    startXML <- paste0('<?xml version="1.0"?>',
+                       '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
-                     ' xmlns:gml="http://www.opengis.net/gml" service="WFS"
+                       ' xmlns:gml="http://www.opengis.net/gml" service="WFS"
                      version="1.1.0" outputFormat="application/json"',
-                     ' xsi:schemaLocation="http://www.opengis.net/wfs
+                       ' xsi:schemaLocation="http://www.opengis.net/wfs
                      http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                     '<wfs:Query xmlns:feature="https://cida.usgs.gov/',
-                     here$server,
-                     '" typeName="feature:',
-                     here$geoserver,
-                     '" srsName="EPSG:4269">',
-                     '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">')
+                       '<wfs:Query xmlns:feature="https://cida.usgs.gov/',
+                       here$server,
+                       '" typeName="feature:',
+                       here$geoserver,
+                       '" srsName="EPSG:4269">',
+                       '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">')
 
-  filterXML <- ifelse(is.null(AOI),
-                      paste0(startXML,
-                             id_filter(ids, here$ids)),
-                      paste0(startXML,
-                             '<ogc:And>',
-                             filter, spatial_filter(AOI),
-                             '</ogc:And>',
-                             '</ogc:Filter>',
-                             '</wfs:Query>',
-                             '</wfs:GetFeature>')
-  )
+    filterXML <- ifelse(is.null(AOI),
+                        paste0(startXML,
+                               id_filter(ids, here$ids)),
+                        paste0(startXML,
+                               '<ogc:And>',
+                               filter, sp_filter,
+                               '</ogc:And>',
+                               '</ogc:Filter>',
+                               '</wfs:Query>',
+                               '</wfs:GetFeature>')
+    )
 
-  resp <- rawToChar(httr::RETRY("POST",
-                             URL,
-                             body = filterXML,
-                             times = 10, pause_cap = 240)$content)
+    resp <- rawToChar(httr::RETRY("POST",
+                                  URL,
+                                  body = filterXML,
+                                  times = 10, pause_cap = 240)$content)
+  }
 
   out = tryCatch({sf::st_zm(sf::read_sf(resp))},
                  error   = function(e){ return(NULL) },
@@ -93,7 +103,7 @@ query_usgs_geoserver <- function(AOI = NULL, ids = NULL,
 
   if(any(is.null(out), nrow(out) == 0)) {
     out = NULL
-    warning("No features found in this AOI.")
+    warning(paste("No features found in this AOI from layer,", here$user_call))
   }
 
   return(out)
@@ -112,12 +122,23 @@ spatial_filter  <- function(AOI){
 
   if(is.null(AOI)){ return(NULL)}
 
-  AOI_type <- as.character(sf::st_geometry_type(AOI))
+  AOI <- sf::st_transform(AOI, 4269)
 
-  if (AOI_type == "POINT") { AOI <- sf::st_buffer(
-    sf::st_transform(AOI, 5070), 1) }
+  if (as.character(sf::st_geometry_type(AOI)) == "POINT") {
 
-  bb <- sf::st_bbox(sf::st_transform(AOI, 4269))
+    AOI <- sf::st_coordinates(AOI)
+
+    return(paste0("?service=WFS",
+                  "&version=1.0.0",
+                  "&request=GetFeature",
+                  "&typeName=wmadata:catchmentsp",
+                  "&outputFormat=application%2Fjson",
+                  "&srsName=EPSG:4326",
+                  "&CQL_FILTER=INTERSECTS%28the_geom,%20POINT%20%28",
+                  AOI[1], "%20", AOI[2], "%29%29"))
+    }
+
+  bb <- sf::st_bbox(AOI)
 
   paste0('<ogc:BBOX>',
          '<ogc:PropertyName>the_geom</ogc:PropertyName>',

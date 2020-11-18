@@ -201,10 +201,11 @@ The NLDI can be queried with any set of watershed outlet locations that it has i
 dataRetrieval::get_nldi_sources()$source
 
 nldi_feature <- list(featureSource = "comid", featureID = start_comid)
-discover_nldi_navigation(nldi_feature)
+
+get_nldi_feature(nldi_feature)
 ```
 
-The `discover_nldi_navigation` function is a handy way to make sure the featureID is available for the chosen "featureSource" as well as find valid navigation modes to be used with `navigate_nldi`. Now that we know the NLDI has our comid, we can use the "upstreamTributaries" navigation option to get all the flowlines upstream or all the features from any of the "featureSources" as shown below. 
+We can use `get_nldi_feature()` as a way to make sure the featureID is available for the chosen "featureSource". Now that we know the NLDI has our comid, we can use the "upstreamTributaries" navigation option to get all the flowlines upstream or all the features from any of the "featureSources" as shown below. 
 
 ```{r navigate_nldi}
 

@@ -217,7 +217,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
       layer <- sf::st_transform(envelope, 4326) %>%
         get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
 
-      if(nrow(layer) > 0) {
+      if(!is.null(layer) && nrow(layer) > 0) {
         layer <- check_valid(layer, out_prj)
 
         if(return_data) {

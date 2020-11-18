@@ -1,51 +1,20 @@
-#' @title Discover NLDI Navigation Options
-#' @description Discover available navigation options for a
-#' given feature source and id.
-#' @param nldi_feature length 2 list list with optional names `featureSource`
-#' and `featureID` where `featureSource` is derived from the "source" column of
-#' the response of dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
-#' from the specified `featureSource`. e.g. list("nwissite", "USGS-08279500")
-#' @param tier character optional "prod" or "test"
-#' @return data.frame with three columns "source", "sourceName" and "features"
-#' @export
-#' @examples
-#' \donttest{
-#' dataRetrieval::get_nldi_sources()
-#'
-#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
-#'
-#' discover_nldi_navigation(nldi_nwis)
-#'
-#' discover_nldi_navigation(list("nwissite", "USGS-08279500"))
-#' }
-discover_nldi_navigation <- function(nldi_feature, tier = "prod") {
-  nldi_feature <- check_nldi_feature(nldi_feature)
-
-  query <- paste(nldi_feature[["featureSource"]],
-                 nldi_feature[["featureID"]],
-                 "navigation", sep = "/")
-
-  query_nldi(query, tier)
-}
-
 #' @title Discover Characteristics Metadata
 #' @description Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.
 #' @param type character "all", "local", "total", or "divergence_routed".
-#' @inheritParams discover_nldi_navigation
 #' @export
 #' @examples
 #' chars <- discover_nldi_characteristics()
 #' names(chars)
 #' head(chars$local, 10)
-discover_nldi_characteristics <- function(type="all", tier = "prod") {
+discover_nldi_characteristics <- function(type="all") {
 
   tc <- type_check(type)
 
-  out <- lapply(tc$type_options[[type]], function(x, tier) {
+  out <- lapply(tc$type_options[[type]], function(x) {
     o <- query_nldi(paste0(x, "/characteristics"),
-                    base_path = "/lookups", tier = tier)
+                    base_path = "/lookups")
     o$characteristicMetadata$characteristic
-  }, tier = tier)
+  })
 
   names(out) <- tc$char_names
 
@@ -73,12 +42,10 @@ type_check <- function(type) {
 #' `featureSource` is derived from the "source" column of  the response of
 #' dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
 #' from the specified `featureSource`.
-#' @param mode character chosen from names, URLs, or url parameters
-#' returned by discover_nldi_navigation(nldi_feature). See examples.
+#' @param mode character chosen from ("UM", "UT", DM", "DD"). See examples.
 #' @param data_source character chosen from "source" column of the response
 #' of dataRetrieval::get_nldi_sources() or empty string for flowline geometry.
 #' @param distance_km numeric distance in km to stop navigating.
-#' @inheritParams discover_nldi_navigation
 #' @return sf data.frame with result
 #' @export
 #' @importFrom utils tail
@@ -112,8 +79,7 @@ type_check <- function(type) {
 #' }
 #'
 navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
-                          data_source = "flowlines", distance_km = 10,
-                          tier = "prod") {
+                          data_source = "flowlines", distance_km = 10) {
 
   nldi_feature <- check_nldi_feature(nldi_feature)
 
@@ -136,23 +102,11 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
     warning("data source specified as flowline or '' is deprecated")
   }
 
-  query <- paste(nldi_feature[["featureSource"]],
-                 nldi_feature[["featureID"]],
-                 "navigation", mode, data_source,
-                 sep = "/")
-
-  if (!is.null(distance_km)) {
-    query <- paste0(query, "?distance=", distance_km)
-  }
-
-  out <- query_nldi(query, tier = tier, parse_json = FALSE)
-
-  if(!is.null(out)) {
-    return(sf::read_sf(out))
-  }
-
-  return(dplyr::tibble())
-
+  dataRetrieval::findNLDI(origin = nldi_feature,
+                          nav = mode,
+                          find = data_source,
+                          distance_km = distance_km,
+                          no_sf = FALSE)
 }
 
 #' @title Get NLDI Basin Boundary
@@ -177,17 +131,11 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #'
 #' basin
 #' }
-get_nldi_basin <- function(nldi_feature,
-                          tier = "prod") {
+get_nldi_basin <- function(nldi_feature) {
 
   nldi_feature <- check_nldi_feature(nldi_feature)
 
-  query <- paste(nldi_feature[["featureSource"]],
-                 nldi_feature[["featureID"]],
-                 "basin",
-                 sep = "/")
-
-  return(sf::read_sf(query_nldi(query, tier = tier, parse_json = FALSE)))
+  dataRetrieval::findNLDI(origin = nldi_feature, find = "basin")$basin
 
 }
 
@@ -201,12 +149,10 @@ get_nldi_basin <- function(nldi_feature,
 #' get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
 #' }
 #' @export
-get_nldi_feature <- function(nldi_feature, tier = "prod") {
+get_nldi_feature <- function(nldi_feature) {
   nldi_feature <- check_nldi_feature(nldi_feature)
-  return(sf::read_sf(query_nldi(paste(nldi_feature[["featureSource"]],
-                                      nldi_feature[["featureID"]],
-                                      sep = "/"),
-                                tier, parse_json = FALSE)))
+
+  return(dataRetrieval::findNLDI(origin = nldi_feature)$origin)
 }
 
 #' @title Get Catchment Characteristics
@@ -223,7 +169,7 @@ get_nldi_characteristics <- function(nldi_feature, type="local", tier = "prod") 
 
   tc <- type_check(type)
 
-  nldi_feature <- check_nldi_feature(nldi_feature)
+  nldi_feature <- check_nldi_feature(nldi_feature, convert = FALSE)
 
   out <- lapply(tc$type_options[[type]], function(x, tier) {
     o <- query_nldi(paste(nldi_feature[["featureSource"]],
@@ -278,7 +224,7 @@ get_nldi_url <- function(tier = "prod") {
 }
 
 #' @noRd
-check_nldi_feature <- function(nldi_feature) {
+check_nldi_feature <- function(nldi_feature, convert = TRUE) {
   expect_names <- c("featureSource", "featureID")
   if (!all(expect_names %in% names(nldi_feature))) {
     if(length(nldi_feature) != 2 | !all(sapply(nldi_feature, is.character)))
@@ -288,6 +234,22 @@ check_nldi_feature <- function(nldi_feature) {
                                                names(nldi_feature)))],
                         collapse = ", ")))
   }
+
+  nldi_feature <- as.list(nldi_feature)
   names(nldi_feature) <- expect_names
-  return(as.list(nldi_feature[expect_names]))
+
+  if(nldi_feature$featureSource == "nwissite" && convert) {
+    if(grepl("^USGS-", nldi_feature$featureID)) {
+      nldi_feature$featureID <- gsub("USGS-", "", nldi_feature$featureID)
+      nldi_feature$featureSource <- "nwis"
+    }
+  }
+
+  names(nldi_feature) <- expect_names
+
+  if(convert) {
+    stats::setNames(list(nldi_feature[["featureID"]]), nldi_feature[["featureSource"]])
+  } else {
+    nldi_feature
+  }
 }

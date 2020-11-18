@@ -19,11 +19,11 @@
 #'
 discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
   if (!is.null(point)) {
-    return(as.integer( query_usgs_geoserver(AOI = point, type = 'catchment')$featureid ))
+    return(as.integer(query_usgs_geoserver(AOI = point, type = 'catchment')$featureid))
   } else if (!is.null(nldi_feature)) {
 
-    if (is.null(nldi_feature[["tier"]])) nldi_feature[["tier"]] <- "prod"
-    nldi <- get_nldi_feature(nldi_feature, nldi_feature[["tier"]])
+    nldi <- get_nldi_feature(nldi_feature)
+
     return(as.integer(nldi$comid))
 
   } else {
@@ -34,16 +34,22 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 #' @noRd
 get_nhdplus_byid <- function(comids, layer, streamorder = NULL) {
 
- if(layer == "comid"){
+ if(layer == "nhdflowline_network"){
    query_usgs_geoserver(ids = comids, type = "nhd", filter = streamorder_filter(streamorder))
- } else if(layer == "featureid"){
+ } else if(layer == "catchmentsp"){
    query_usgs_geoserver(ids = comids, type = "catchment")
  } else {
-   stop("Layer must be either featureid or comid")
+   stop("Layer must be one of catchmentsp, nhdflowline_network")
  }
 }
 
 #' @noRd
 get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
-  query_usgs_geoserver(AOI = box, type = dplyr::filter(query_usgs_geoserver(), geoserver == layer)$user_call)
+
+  if(!layer %in% c("nhdarea", "nhdwaterbody", "nhdflowline_network", "catchmentsp")) {
+    stop("Layer must be one of nhdarea, nhdwaterbody")
+  }
+
+  query_usgs_geoserver(AOI = box, type = dplyr::filter(query_usgs_geoserver(),
+                                                       geoserver == layer)$user_call)
 }

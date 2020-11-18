@@ -13,8 +13,6 @@ dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.}
 
 \item{type}{character "all", "local", "total", or "divergence_routed".}
-
-\item{tier}{character optional "prod" or "test"}
 }
 \description{
 Retrieves catchment characteristics from the Network Linked Data Index.

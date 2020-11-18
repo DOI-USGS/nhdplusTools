@@ -4,10 +4,17 @@
 \alias{get_vaa}
 \title{NHDPlusV2 Attribute Subset}
 \usage{
-get_vaa(atts = NULL)
+get_vaa(atts = NULL, path = get_vaa_path(), download = TRUE)
 }
 \arguments{
-\item{atts}{The variable names you would like, always includes comid}
+\item{atts}{character The variable names you would like, always includes comid}
+
+\item{path}{character path where the file should be saved. Default is a
+persistent system cache as retrieved by \link[rappdirs]{user_cache_dir}.
+Also see: \link{get_vaa_path}}
+
+\item{download}{logical if TRUE, the default, will download VAA table if not
+found at path.}
 }
 \value{
 data.frame
@@ -16,6 +23,9 @@ data.frame
 Return requested NHDPlusv2 Attributes
 }
 \examples{
-get_vaa("slope")
-get_vaa(c("slope", "lengthkm"))
+\donttest{
+# NOTE: path = tempfile() for demo only.
+get_vaa("slope", path = tempfile())
+get_vaa(c("slope", "lengthkm"), path = tempfile())
+}
 }

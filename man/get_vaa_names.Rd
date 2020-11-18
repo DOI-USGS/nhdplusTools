@@ -10,8 +10,9 @@ get_vaa_names()
 character vector
 }
 \description{
-Find variables available in the VAA data.frame
+Find variables available from the NHDPlusV2 attribute data.frame
 }
 \examples{
+get_vaa_names()
 get_vaa_names()
 }

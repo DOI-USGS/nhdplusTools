@@ -4,11 +4,22 @@
 \alias{download_vaa}
 \title{Download nhdplusVAA data from HydroShare}
 \usage{
-download_vaa()
+download_vaa(path = get_vaa_path())
+}
+\arguments{
+\item{path}{character path where the file should be saved. Default is a
+persistent system cache as retrieved by \link[rappdirs]{user_cache_dir}.
+Also see: \link{get_vaa_path}}
 }
 \value{
 path to cached data
 }
 \description{
 downloads and caches data on your computer
+}
+\examples{
+\donttest{
+NOTE: path = tempfile() for demo only.
+download_vaa(path = tempfile())
+}
 }

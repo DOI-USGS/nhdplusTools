@@ -1,19 +1,27 @@
-#' @title File path to VAA Cache
-#' @description nhdplusTools will download and cache an fst file with NHDPlusV2 attribute data sans geometry. This function returns the file path to the cached file.
-#' @return file.path (character)
+#' @title File path to value added attribute (vaa) Cache
+#' @description nhdplusTools will download and cache an `fst` file with
+#' NHDPlusV2 attribute data sans geometry. This function returns the
+#' file path to the cached file. Will use the user cache dir indicated
+#' by \link[rappdirs]{user_cache_dir}.
+#'
+#' @return file.path character
 #' @importFrom rappdirs user_cache_dir
 #' @export
+#' @examples
+#' get_vaa_path()
 
-vaa_path <- function() {
-  rappdirs::user_cache_dir("nhdplus-vaa/nhdplusVAA.fst")
+get_vaa_path <- function() {
+  user_cache_dir("nhdplus-vaa/nhdplusVAA.fst")
 }
 
 #' @title Available NHDPlusV2 Attributes
-#' @description Find variables available in the VAA data.frame
+#' @description Find variables available from the NHDPlusV2 attribute data.frame
 #' @return character vector
 #' @examples
 #' get_vaa_names()
 #' @export
+#' @examples
+#' get_vaa_names()
 
 get_vaa_names <- function(){
   # Build with: colnames(get_vaa())
@@ -29,45 +37,62 @@ get_vaa_names <- function(){
 
 #' @title NHDPlusV2 Attribute Subset
 #' @description Return requested NHDPlusv2 Attributes
-#' @param atts The variable names you would like, always includes comid
+#' @param atts character The variable names you would like, always includes comid
+#' @param path character path where the file should be saved. Default is a
+#' persistent system cache as retrieved by \link[rappdirs]{user_cache_dir}.
+#' Also see: \link{get_vaa_path}
+#' @param download logical if TRUE, the default, will download VAA table if not
+#' found at path.
 #' @return data.frame
 #' @export
 #' @examples
-#' get_vaa("slope")
-#' get_vaa(c("slope", "lengthkm"))
+#' \donttest{
+#' # NOTE: path = tempfile() for demo only.
+#' get_vaa("slope", path = tempfile())
+#' get_vaa(c("slope", "lengthkm"), path = tempfile())
+#' }
 #' @importFrom fst read.fst
 
-get_vaa <- function(atts = NULL){
+get_vaa <- function(atts = NULL, path = get_vaa_path(), download = TRUE) {
 
-  if(!file.exists(vaa_path())){
+  if(!file.exists(path)){
+    if(download) {
+      message("didn't find data, downloading.")
+      path <- download_vaa(path = path)
+    }
     stop("need to download data: run `download_vaa()`")
   }
 
   if(is.null(atts)){
-    return(fst::read.fst(vaa_path()))
+    return(fst::read.fst(path))
   }
 
   if(all(atts %in% get_vaa_names())){
-    return(fst::read.fst(vaa_path(), c('comid', atts)))
+    return(fst::read.fst(path, c('comid', atts)))
   }
 
 }
 
 #' @title Download nhdplusVAA data from HydroShare
 #' @description downloads and caches data on your computer
+#' @inheritParams  get_vaa
 #' @return path to cached data
 #' @export
 #' @importFrom httr GET progress write_disk
+#' @examples
+#' \donttest{
+#' NOTE: path = tempfile() for demo only.
+#' download_vaa(path = tempfile())
+#' }
+download_vaa <- function(path = get_vaa_path()) {
 
-download_vaa <- function() {
-
-  if (file.exists(vaa_path())) {
+  if (file.exists(path)) {
     message("File already cached")
   } else {
-    dir.create(dirname(vaa_path()), showWarnings = FALSE, recursive = TRUE)
+    dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
 
     resp <- httr::GET(vaa_hydroshare,
-                      httr::write_disk(vaa_path(), overwrite = TRUE),
+                      httr::write_disk(path, overwrite = TRUE),
                       httr::progress())
 
     if (resp$status_code != 200) {
@@ -75,7 +100,7 @@ download_vaa <- function() {
     }
   }
   # return file path
-  return(vaa_path())
+  return(path)
 }
 
 

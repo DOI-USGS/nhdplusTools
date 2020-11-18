@@ -5,12 +5,17 @@
 \title{Subset NHDPlus}
 \usage{
 subset_nhdplus(
-  comids,
-  output_file,
+  comids = NULL,
+  output_file = NULL,
   nhdplus_data = NULL,
+  bbox = NULL,
   simplified = TRUE,
   overwrite = FALSE,
-  status = TRUE
+  return_data = TRUE,
+  status = TRUE,
+  flowline_only = NULL,
+  streamorder = NULL,
+  out_prj = 4269
 )
 }
 \arguments{
@@ -25,12 +30,26 @@ or "download" to use a web service to download NHDPlusV2.1 data.
 Not required if \code{\link{nhdplus_path}} has been set or the default
 has been adopted. See details for more.}
 
+\item{bbox}{object of class "bbox" as returned by sf::st_bbox in Latitude/Longitude.
+If no CRS is present, will be assumed to be in WGS84 Latitude Longitude.}
+
 \item{simplified}{boolean if TRUE (the default) the CatchmentSP layer
 will be included. Not relevant to the "download" option or NHDPlusHR data.}
 
 \item{overwrite}{boolean should the output file be overwritten}
 
+\item{return_data}{boolean if FALSE path to output file is returned silently otherwise
+data is returned in a list.}
+
 \item{status}{boolean should the function print status messages}
+
+\item{flowline_only}{boolean WARNING: experimental
+if TRUE only the flowline network and attributes will be returned}
+
+\item{streamorder}{integer only streams of order greater than or equal will be downloaded.
+Not implemented for local data.}
+
+\item{out_prj}{character override the default output CRS of NAD83 lat/lon (EPSG:4269)}
 }
 \value{
 path to the saved subset geopackage
@@ -40,16 +59,13 @@ Saves a subset of the National Seamless database or other
 nhdplusTools compatible data based on a specified collection of COMIDs.
 }
 \details{
-If \code{\link{stage_national_data}} has been run in the current
-session, this function will use the staged national data automatically.
-
 This function relies on the National Seamless Geodatabase or Geopackage.
 It can be downloaded
 \href{https://www.epa.gov/waterdata/nhdplus-national-data}{here.}
 
 The "download" option of this function should be considered preliminary
 and subject to revision. It does not include as many layers and may not
-be available permenantly.
+be available permenently.
 }
 \examples{
 \donttest{
@@ -98,6 +114,10 @@ waterbody <- sf::read_sf(output_file, "NHDWaterbody")
 plot(waterbody[[attr(waterbody, "sf_column")]],
      col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 
+# Cleanup temp
+sapply(staged_nhdplus, unlink)
+unlink(output_file)
+
 # Download Option:
 subset_nhdplus(comids = comids,
                output_file = output_file,
@@ -108,27 +128,22 @@ subset_nhdplus(comids = comids,
 sf::st_layers(output_file)
 
 # NHDPlusHR
-temp_dir <- tempdir()
-temp_file <- tempfile(fileext = ".zip", tmpdir = temp_dir)
-download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
-              temp_file)
-unzip(temp_file, exdir = temp_dir)
+source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 
-hr_data <- get_nhdplushr(temp_dir,
-                         out_gpkg = file.path(temp_dir, "nhd_hr.gpkg"),
-                         layers = NULL)
-flowlines <- sf::read_sf(hr_data, "NHDFlowline")
+up_ids <- get_UT(hr_data$NHDFlowline, 15000500028335)
 
-up_ids <- get_UT(flowlines, 15000500028335)
+sub_gpkg <- file.path(work_dir, "sub.gpkg")
+sub_nhdhr <- subset_nhdplus(up_ids, output_file = sub_gpkg,
+                            nhdplus_data = hr_gpkg, overwrite = TRUE)
 
-sub_nhdhr <- subset_nhdplus(up_ids, file.path(temp_dir, "sub.gpkg"),
-                      hr_data, overwrite = TRUE)
+sf::st_layers(sub_gpkg)
+names(sub_nhdhr)
 
-sf::st_layers(sub_nhdhr)
+plot(sf::st_geometry(hr_data$NHDFlowline), lwd = 0.5)
+plot(sf::st_geometry(sub_nhdhr$NHDFlowline), lwd = 0.6, col = "red", add = TRUE)
 
-sub_flowline <- sf::read_sf(sub_nhdhr, "NHDFlowline")
-plot(sf::st_geometry(flowlines), lwd = 0.5)
-plot(sf::st_geometry(sub_flowline), lwd = 0.6, col = "red", add = TRUE)
+unlink(output_file)
+unlink(sub_gpkg)
 }
 
 }

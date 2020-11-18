@@ -13,3 +13,6 @@ code.json
 ^doc$
 ^Meta$
 .Renviron
+tests/testthat/data/03
+rosm.cache
+pkgdown

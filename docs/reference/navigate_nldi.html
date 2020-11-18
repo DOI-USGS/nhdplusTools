@@ -8,21 +8,36 @@
 
 <title>Navigate NLDI — navigate_nldi • nhdplusTools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,12 +45,11 @@
 
 
 
+
 <meta property="og:title" content="Navigate NLDI — navigate_nldi" />
-
 <meta property="og:description" content="Navigate the Network Linked Data Index network." />
+<meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 
-<meta property="og:image" content="/logo.png" />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -49,9 +63,10 @@
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -65,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
       </span>
     </div>
 
@@ -73,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -91,19 +106,24 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
+    </li>
+    <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
+      <a href="../articles/point_indexing.html">Indexing and Referencing</a>
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/usgs-r/nhdplusTools">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/usgs-r/nhdplusTools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -114,6 +134,7 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -125,14 +146,17 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Navigate the Network Linked Data Index network.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>navigate_nldi</span>(<span class='no'>nldi_feature</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"upstreamMain"</span>,
-  <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>"comid"</span>, <span class='kw'>distance_km</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tier</span> <span class='kw'>=</span> <span class='st'>"prod"</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>navigate_nldi</span>(
+  <span class='no'>nldi_feature</span>,
+  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"upstreamMain"</span>,
+  <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>"flowlines"</span>,
+  <span class='kw'>distance_km</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>tier</span> <span class='kw'>=</span> <span class='st'>"prod"</span>
+)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -162,78 +186,55 @@ of discover_nldi_sources() or empty string for flowline geometry.</p></td>
       <td><p>character optional "prod" or "test"</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>sf data.frame with result</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>sf</span>)</div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.7.2, GDAL 2.4.1, PROJ 5.2.0</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    matches</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'>
-<span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05428500"</span>)
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
+
+<span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05428500"</span>)
 
 <span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
-              <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"upstreamTributaries"</span>,
-              <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>""</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>()</div><div class='input'>
+              <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"upstreamTributaries"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>()</div><div class='input'>
 <span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
-              <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"UM"</span>,
-              <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>""</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
+              <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"UM"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
 
 
 <span class='no'>nwissite</span> <span class='kw'>&lt;-</span> <span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
                           <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"UT"</span>,
                           <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>(<span class='no'>nwissite</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/plot'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"green"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='navigate_nldi-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='no'>nwissite</span></div><div class='output co'>#&gt; Simple feature collection with 13 features and 7 fields
+<span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>nwissite</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"green"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='navigate_nldi-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='no'>nwissite</span></div><div class='output co'>#&gt; Simple feature collection with 2 features and 7 fields
 #&gt; geometry type:  POINT
 #&gt; dimension:      XY
-#&gt; bbox:           xmin: -89.53611 ymin: 43.08944 xmax: -89.3525 ymax: 43.20889
-#&gt; epsg (SRID):    4326
-#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs
-#&gt; <span style='color: #949494;'># A tibble: 13 x 8</span><span>
-#&gt;    source sourceName identifier name  uri   comid navigation
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> nwiss… NWIS Sites USGS-0542… SIXM… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> nwiss… NWIS Sites USGS-0542… YAHA… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> nwiss… NWIS Sites USGS-0542… DORN… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> nwiss… NWIS Sites USGS-0542… DORN… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> nwiss… NWIS Sites USGS-0542… YAHA… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> nwiss… NWIS Sites USGS-0542… PHEA… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> nwiss… NWIS Sites USGS-0542… PHEA… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> nwiss… NWIS Sites USGS-0542… S FO… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> nwiss… NWIS Sites USGS-0542… PHEA… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> nwiss… NWIS Sites USGS-0542… SIXM… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'>11</span><span> nwiss… NWIS Sites USGS-0542… SIXM… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'>12</span><span> nwiss… NWIS Sites USGS-0542… PHEA… http… 1329… https://c…
-#&gt; </span><span style='color: #BCBCBC;'>13</span><span> nwiss… NWIS Sites USGS-0542… YAHA… http… 1329… https://c…
-#&gt; </span><span style='color: #949494;'># … with 1 more variable: geometry </span><span style='color: #949494;font-style: italic;'>&lt;POINT [°]&gt;</span><span></div></span><div class='input'>
-</div></pre>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+#&gt; bbox:           xmin: -89.37012 ymin: 43.08944 xmax: -89.36083 ymax: 43.095
+#&gt; geographic CRS: WGS 84
+#&gt; <span style='color: #555555;'># A tibble: 2 x 8</span><span>
+#&gt;   source sourceName identifier name  uri   comid navigation
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     
+#&gt; </span><span style='color: #555555;'>1</span><span> nwiss~ NWIS Sites USGS-0542~ LAKE~ http~ 1329~ https://l~
+#&gt; </span><span style='color: #555555;'>2</span><span> nwiss~ NWIS Sites USGS-0542~ YAHA~ http~ 1329~ https://l~
+#&gt; </span><span style='color: #555555;'># ... with 1 more variable: geometry </span><span style='color: #555555;font-style: italic;'>&lt;POINT [°]&gt;</span><span></div><div class='input'># }
 
+</div></span></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -241,13 +242,16 @@ of discover_nldi_sources() or empty string for flowline geometry.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

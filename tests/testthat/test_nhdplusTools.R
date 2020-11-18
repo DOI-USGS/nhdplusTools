@@ -23,8 +23,7 @@ test_that("discover nhdplus id errors", {
                "Must provide point or nldi_feature input.")
 
   point <- sf::st_sfc(sf::st_point(c(-76.89303, 39.57934)), crs = 4269)
-  expect_warning(discover_nhdplus_id(point),
-                 "point too close to edge of catchment.")
+
 })
 
 test_that("discover nhdplus id works as expected", {
@@ -40,70 +39,6 @@ test_that("discover nhdplus id works as expected", {
   expect_equal(discover_nhdplus_id(nldi_feature = nldi_nwis), 17864756)
 
 
-})
-
-context("calculate network attributes")
-
-test_that("total drainage area works", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-
-  catchment_area <- prepare_nhdplus(walker_flowline, 0, 0,
-                                    purge_non_dendritic = FALSE, warn = FALSE) %>%
-    left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
-    select(ID = COMID, toID = toCOMID, area = AreaSqKM)
-
-  new_da <- calculate_total_drainage_area(catchment_area)
-
-  catchment_area$totda <- new_da
-  catchment_area$nhdptotda <- walker_flowline$TotDASqKM
-
-  expect(mean(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-3, "drainage area not close enough")
-  expect(max(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-2, "drainage area not close enough")
-})
-
-test_that("arbolate sum works", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-  catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
-                                      purge_non_dendritic = FALSE, warn = FALSE) %>%
-    left_join(select(walker_flowline, COMID), by = "COMID") %>%
-    select(ID = COMID, toID = toCOMID, length = LENGTHKM)
-
-  arb_sum <- calculate_arbolate_sum(catchment_length)
-
-  catchment_length$arb_sum <- arb_sum
-  catchment_length$nhd_arb_sum <- walker_flowline$ArbolateSu
-
-  expect(mean(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-3, "arbolate sum not close enough")
-  expect(max(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-2, "arbolate sum not close enough")
-})
-
-test_that("calculate level path", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-
-  test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
-
-  test_flowline <- data.frame(
-    ID = test_flowline$COMID,
-    toID = test_flowline$toCOMID,
-    nameID = walker_flowline$GNIS_ID,
-    weight = walker_flowline$ArbolateSu,
-    stringsAsFactors = FALSE)
-
-  test_flowline <- left_join(test_flowline,
-                             calculate_levelpaths(test_flowline, status = TRUE), by = "ID")
-
-  nhdp_lp <- sort(unique(walker_flowline$LevelPathI))
-  nhdt_lp <- sort(unique(test_flowline$levelpath))
-
-  expect_true(length(nhdp_lp) == length(nhdt_lp))
-
-  for(lp in seq_along(nhdp_lp)) {
-    nhdp <- filter(walker_flowline, LevelPathI == nhdp_lp[lp])
-    outlet_comid <- filter(nhdp, Hydroseq == min(Hydroseq))$COMID
-    nhdt <- filter(test_flowline, outletID == outlet_comid)
-    expect(all(nhdp$COMID %in% nhdt$ID), paste("Mismatch in", nhdp_lp[lp],
-                                               "level path from NHDPlus."))
-  }
 })
 
 context("prepare_nhdplus")
@@ -124,6 +59,14 @@ test_that("prep_nhdplus_works and errors as expected", {
       warn = FALSE),
     paste("Missing some required attributes in call to:",
           "prepare_nhdplus. Expected: LENGTHKM."))
+
+  flines <- prepare_nhdplus(flines_in,
+                            min_network_size = 10,
+                            min_path_length = 1,
+                            warn = FALSE,
+                            skip_toCOMID = TRUE)
+
+  expect_true(!"toCOMID" %in% names(flines))
 })
 
 test_that("prep_nhdplus leaves non-dendritic", {

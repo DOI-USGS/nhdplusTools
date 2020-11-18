@@ -8,21 +8,36 @@
 
 <title>Subset NHDPlus — subset_nhdplus • nhdplusTools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,13 +45,12 @@
 
 
 
-<meta property="og:title" content="Subset NHDPlus — subset_nhdplus" />
 
+<meta property="og:title" content="Subset NHDPlus — subset_nhdplus" />
 <meta property="og:description" content="Saves a subset of the National Seamless database or other
 nhdplusTools compatible data based on a specified collection of COMIDs." />
+<meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 
-<meta property="og:image" content="/logo.png" />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -50,9 +64,10 @@ nhdplusTools compatible data based on a specified collection of COMIDs." />
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -66,7 +81,7 @@ nhdplusTools compatible data based on a specified collection of COMIDs." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
       </span>
     </div>
 
@@ -74,7 +89,7 @@ nhdplusTools compatible data based on a specified collection of COMIDs." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -92,19 +107,24 @@ nhdplusTools compatible data based on a specified collection of COMIDs." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
+    </li>
+    <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
     </li>
     <li>
-      <a href="../articles/point_indexing.html">Indexing / Referencing</a>
+      <a href="../articles/point_indexing.html">Indexing and Referencing</a>
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/usgs-r/nhdplusTools">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/usgs-r/nhdplusTools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -115,6 +135,7 @@ nhdplusTools compatible data based on a specified collection of COMIDs." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -126,15 +147,24 @@ nhdplusTools compatible data based on a specified collection of COMIDs." />
     </div>
 
     <div class="ref-description">
-    
     <p>Saves a subset of the National Seamless database or other
 nhdplusTools compatible data based on a specified collection of COMIDs.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>subset_nhdplus</span>(<span class='no'>comids</span>, <span class='no'>output_file</span>, <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>simplified</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>subset_nhdplus</span>(
+  <span class='kw'>comids</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>simplified</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>return_data</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>flowline_only</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>streamorder</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>out_prj</span> <span class='kw'>=</span> <span class='fl'>4269</span>
+)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -156,6 +186,11 @@ Not required if <code><a href='nhdplus_path.html'>nhdplus_path</a></code> has be
 has been adopted. See details for more.</p></td>
     </tr>
     <tr>
+      <th>bbox</th>
+      <td><p>object of class "bbox" as returned by sf::st_bbox in Latitude/Longitude.
+If no CRS is present, will be assumed to be in WGS84 Latitude Longitude.</p></td>
+    </tr>
+    <tr>
       <th>simplified</th>
       <td><p>boolean if TRUE (the default) the CatchmentSP layer
 will be included. Not relevant to the "download" option or NHDPlusHR data.</p></td>
@@ -165,121 +200,252 @@ will be included. Not relevant to the "download" option or NHDPlusHR data.</p></
       <td><p>boolean should the output file be overwritten</p></td>
     </tr>
     <tr>
+      <th>return_data</th>
+      <td><p>boolean if FALSE path to output file is returned silently otherwise
+data is returned in a list.</p></td>
+    </tr>
+    <tr>
       <th>status</th>
       <td><p>boolean should the function print status messages</p></td>
     </tr>
+    <tr>
+      <th>flowline_only</th>
+      <td><p>boolean WARNING: experimental
+if TRUE only the flowline network and attributes will be returned</p></td>
+    </tr>
+    <tr>
+      <th>streamorder</th>
+      <td><p>integer only streams of order greater than or equal will be downloaded.
+Not implemented for local data.</p></td>
+    </tr>
+    <tr>
+      <th>out_prj</th>
+      <td><p>character override the default output CRS of NAD83 lat/lon (EPSG:4269)</p></td>
+    </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>path to the saved subset geopackage</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If <code><a href='stage_national_data.html'>stage_national_data</a></code> has been run in the current
-session, this function will use the staged national data automatically.</p>
-<p>This function relies on the National Seamless Geodatabase or Geopackage.
+    <p>This function relies on the National Seamless Geodatabase or Geopackage.
 It can be downloaded
 <a href='https://www.epa.gov/waterdata/nhdplus-national-data'>here.</a></p>
 <p>The "download" option of this function should be considered preliminary
 and subject to revision. It does not include as many layers and may not
-be available permenantly.</p>
-    
+be available permenently.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>sample_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata/sample_natseamless.gpkg"</span>,
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='no'>sample_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/sample_natseamless.gpkg"</span>,
                            <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>)
 
 <span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span>(<span class='no'>sample_data</span>)
 
-<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>())
+<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
 
-<span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/readRDS'>readRDS</a></span>(<span class='no'>staged_nhdplus</span>$<span class='no'>flowline</span>)
+<span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>staged_nhdplus</span>$<span class='no'>flowline</span>)
 
-<span class='no'>geom_col</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>sample_flines</span>, <span class='st'>"sf_column"</span>)
+<span class='no'>geom_col</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>sample_flines</span>, <span class='st'>"sf_column"</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sample_flines</span><span class='kw'>[[</span><span class='no'>geom_col</span>]],
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>sample_flines</span><span class='kw'>[[</span><span class='no'>geom_col</span>]],
      <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='input'>
-<span class='no'>start_point</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/sfc'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st'>st_point</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(-<span class='fl'>89.362239</span>, <span class='fl'>43.090266</span>)),
+<span class='no'>start_point</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>89.362239</span>, <span class='fl'>43.090266</span>)),
                           <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>start_point</span>, <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>start_point</span>, <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
 <span class='no'>start_comid</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='discover_nhdplus_id.html'>discover_nhdplus_id</a></span>(<span class='no'>start_point</span>)
 
 <span class='no'>comids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_UT.html'>get_UT</a></span>(<span class='no'>sample_flines</span>, <span class='no'>start_comid</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>comids</span>)<span class='kw'>[[</span><span class='no'>geom_col</span>]],
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>comids</span>)<span class='kw'>[[</span><span class='no'>geom_col</span>]],
      <span class='kw'>add</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='input'>
-<span class='no'>output_file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gpkg"</span>)
+<span class='no'>output_file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gpkg"</span>)
 
 <span class='fu'>subset_nhdplus</span>(<span class='kw'>comids</span> <span class='kw'>=</span> <span class='no'>comids</span>,
                <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>output_file</span>,
                <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>sample_data</span>,
                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Reading Gage</span></div><div class='output co'>#&gt; <span class='message'>Writing Gage</span></div><div class='output co'>#&gt; <span class='message'>Reading Sink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in Sink</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpkriPQg/file16d29a9f47e6.gpkg"</div><div class='input'>
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_layers'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
+               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading Gage</span></div><div class='output co'>#&gt; <span class='message'>Writing Gage</span></div><div class='output co'>#&gt; <span class='message'>Reading Sink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in Sink</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; $NHDFlowline_Network
+#&gt; Simple feature collection with 168 features and 136 fields
+#&gt; geometry type:  LINESTRING
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: -89.58537 ymin: 43.08521 xmax: -89.21254 ymax: 43.30179
+#&gt; geographic CRS: NAD83
+#&gt; <span style='color: #555555;'># A tibble: 168 x 137</span><span>
+#&gt;     COMID FDATE               RESOLUTION GNIS_ID GNIS_NAME LENGTHKM REACHCODE
+#&gt;  </span><span style='color: #555555;'>*</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    
+#&gt; </span><span style='color: #555555;'> 1</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    1.72  07090002~
+#&gt; </span><span style='color: #555555;'> 2</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    1.41  07090002~
+#&gt; </span><span style='color: #555555;'> 3</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    0.74  07090002~
+#&gt; </span><span style='color: #555555;'> 4</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    3.70  07090002~
+#&gt; </span><span style='color: #555555;'> 5</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    0.077 07090002~
+#&gt; </span><span style='color: #555555;'> 6</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    0.94  07090002~
+#&gt; </span><span style='color: #555555;'> 7</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    1.14  07090002~
+#&gt; </span><span style='color: #555555;'> 8</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    1.27  07090002~
+#&gt; </span><span style='color: #555555;'> 9</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    7.48  07090002~
+#&gt; </span><span style='color: #555555;'>10</span><span> 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-29 </span><span style='color: #555555;'>00:00:00</span><span> Medium     1577073 Yahara R~    0.082 07090002~
+#&gt; </span><span style='color: #555555;'># ... with 158 more rows, and 130 more variables: FLOWDIR </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   WBAREACOMI </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, FTYPE </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, FCODE </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, Shape_Length </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   StreamLeve </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, StreamOrde </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, StreamCalc </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, FromNode </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   ToNode </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Hydroseq </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, LevelPathI </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Pathlength </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   TerminalPa </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ArbolateSu </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Divergence </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, StartFlag </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   TerminalFl </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, DnLevel </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, UpLevelPat </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, UpHydroseq </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   DnLevelPat </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, DnMinorHyd </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, DnDrainCou </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, DnHydroseq </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   FromMeas </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ToMeas </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, RtnDiv </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, VPUIn </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, VPUOut </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   AreaSqKM </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, TotDASqKM </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, DivDASqKM </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Tidal </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, TOTMA </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   WBAreaType </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, HWNodeSqKM </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, MAXELEVRAW </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, MINELEVRAW </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   MAXELEVSMO </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, MINELEVSMO </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, SLOPE </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ELEVFIXED </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   HWTYPE </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, SLOPELENKM </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QA_MA </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VA_MA </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QC_MA </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   VC_MA </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QE_MA </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VE_MA </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QA_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VA_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   QC_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VC_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QE_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VE_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QA_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   VA_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QC_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VC_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QE_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VE_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   QA_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VA_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QC_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VC_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QE_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   VE_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QA_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VA_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QC_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VC_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   QE_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VE_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QA_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VA_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QC_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   VC_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QE_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VE_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QA_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VA_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   QC_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VC_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QE_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VE_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QA_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   VA_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QC_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VC_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QE_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VE_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   QA_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VA_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QC_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, VC_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QE_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   VE_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, QA_09 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ...</span><span>
+#&gt; 
+#&gt; $CatchmentSP
+#&gt; Simple feature collection with 167 features and 6 fields
+#&gt; geometry type:  GEOMETRY
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: -89.60479 ymin: 43.03507 xmax: -89.20378 ymax: 43.36607
+#&gt; geographic CRS: NAD83
+#&gt; </span><span style='color: #555555;'># A tibble: 167 x 7</span><span>
+#&gt;    GRIDCODE FEATUREID SOURCEFC AreaSqKM Shape_Length Shape_Area
+#&gt;  </span><span style='color: #555555;'>*</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>160  13</span><span style='text-decoration: underline;'>293</span><span>454 NHDFlow~   0.328       0.025</span><span style='text-decoration: underline;'>6</span><span>  0.000</span><span style='text-decoration: underline;'>036</span><span>4 
+#&gt; </span><span style='color: #555555;'> 2</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>219  13</span><span style='text-decoration: underline;'>293</span><span>750 NHDFlow~   6.69        0.148   0.000</span><span style='text-decoration: underline;'>740</span><span>  
+#&gt; </span><span style='color: #555555;'> 3</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>247  13</span><span style='text-decoration: underline;'>294</span><span>134 NHDFlow~   0.261       0.030</span><span style='text-decoration: underline;'>7</span><span>  0.000</span><span style='text-decoration: underline;'>028</span><span>8 
+#&gt; </span><span style='color: #555555;'> 4</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>414  13</span><span style='text-decoration: underline;'>293</span><span>570 NHDFlow~   0.051</span><span style='text-decoration: underline;'>4</span><span>      0.009</span><span style='text-decoration: underline;'>63</span><span> 0.000</span><span style='text-decoration: underline;'>005</span><span>69
+#&gt; </span><span style='color: #555555;'> 5</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>447  13</span><span style='text-decoration: underline;'>293</span><span>430 NHDFlow~   1.63        0.078</span><span style='text-decoration: underline;'>0</span><span>  0.000</span><span style='text-decoration: underline;'>181</span><span>  
+#&gt; </span><span style='color: #555555;'> 6</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>448  13</span><span style='text-decoration: underline;'>293</span><span>526 NHDFlow~   0.069</span><span style='text-decoration: underline;'>0</span><span>      0.011</span><span style='text-decoration: underline;'>7</span><span>  0.000</span><span style='text-decoration: underline;'>007</span><span>64
+#&gt; </span><span style='color: #555555;'> 7</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>463  13</span><span style='text-decoration: underline;'>293</span><span>588 NHDFlow~   0.429       0.040</span><span style='text-decoration: underline;'>4</span><span>  0.000</span><span style='text-decoration: underline;'>047</span><span>5 
+#&gt; </span><span style='color: #555555;'> 8</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>478  13</span><span style='text-decoration: underline;'>293</span><span>614 NHDFlow~   3.15        0.095</span><span style='text-decoration: underline;'>3</span><span>  0.000</span><span style='text-decoration: underline;'>348</span><span>  
+#&gt; </span><span style='color: #555555;'> 9</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>502  13</span><span style='text-decoration: underline;'>294</span><span>264 NHDFlow~  24.8         0.348   0.002</span><span style='text-decoration: underline;'>75</span><span>   
+#&gt; </span><span style='color: #555555;'>10</span><span>  1</span><span style='text-decoration: underline;'>085</span><span>509  13</span><span style='text-decoration: underline;'>293</span><span>384 NHDFlow~   0.291       0.029</span><span style='text-decoration: underline;'>6</span><span>  0.000</span><span style='text-decoration: underline;'>032</span><span>3 
+#&gt; </span><span style='color: #555555;'># ... with 157 more rows, and 1 more variable: geom </span><span style='color: #555555;font-style: italic;'>&lt;GEOMETRY [°]&gt;</span><span>
+#&gt; 
+#&gt; $NHDArea
+#&gt; [1] "NHDArea"
+#&gt; 
+#&gt; $NHDWaterbody
+#&gt; [1] "NHDWaterbody"
+#&gt; 
+#&gt; $Gage
+#&gt; [1] "Gage"
+#&gt; 
+#&gt; $Sink
+#&gt; NULL
+#&gt; 
+#&gt; $NHDFlowline_NonNetwork
+#&gt; [1] "NHDFlowline_NonNetwork"
+#&gt; </div><div class='input'>
+<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
 #&gt; Available layers:
-#&gt;               layer_name     geometry_type features fields
-#&gt; 1    NHDFlowline_Network Multi Line String      168    136
-#&gt; 2            CatchmentSP     Multi Polygon      167      6
-#&gt; 3                   Gage             Point       33     19
-#&gt; 4                NHDArea     Multi Polygon        1     14
-#&gt; 5           NHDWaterbody     Multi Polygon       90     21
-#&gt; 6 NHDFlowline_NonNetwork Multi Line String       45     12</div><div class='input'>
-<span class='no'>catchment</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='no'>output_file</span>, <span class='st'>"CatchmentSP"</span>)
+#&gt;               layer_name geometry_type features fields
+#&gt; 1    NHDFlowline_Network   Line String      168    136
+#&gt; 2            CatchmentSP                    167      6
+#&gt; 3                NHDArea       Polygon        1     14
+#&gt; 4           NHDWaterbody       Polygon       90     21
+#&gt; 5                   Gage         Point       33     19
+#&gt; 6 NHDFlowline_NonNetwork   Line String       45     12</div><div class='input'>
+<span class='no'>catchment</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='no'>output_file</span>, <span class='st'>"CatchmentSP"</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>catchment</span><span class='kw'>[[</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>catchment</span>, <span class='st'>"sf_column"</span>)]], <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
-<span class='no'>waterbody</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='no'>output_file</span>, <span class='st'>"NHDWaterbody"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>catchment</span><span class='kw'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>catchment</span>, <span class='st'>"sf_column"</span>)]], <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
+<span class='no'>waterbody</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='no'>output_file</span>, <span class='st'>"NHDWaterbody"</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>waterbody</span><span class='kw'>[[</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>waterbody</span>, <span class='st'>"sf_column"</span>)]],
-     <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/grDevices/topics/rgb'>rgb</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>), <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='subset_nhdplus-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>waterbody</span><span class='kw'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>waterbody</span>, <span class='st'>"sf_column"</span>)]],
+     <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/rgb.html'>rgb</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>), <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='subset_nhdplus-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Cleanup temp</span>
+<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span>(<span class='no'>staged_nhdplus</span>, <span class='no'>unlink</span>)</div><div class='output co'>#&gt; attributes   flowline  catchment 
+#&gt;          0          0          0 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>output_file</span>)
+
 <span class='co'># Download Option:</span>
 <span class='fu'>subset_nhdplus</span>(<span class='kw'>comids</span> <span class='kw'>=</span> <span class='no'>comids</span>,
                <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>output_file</span>,
                <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='st'>"download"</span>,
                <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; [1] "/var/folders/p6/kr6wq6bj7wvdz1qywzhksz5h001t8d/T//RtmpkriPQg/file16d29a9f47e6.gpkg"</div><div class='input'>
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_layers'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
+               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; $NHDFlowline_Network
+#&gt; Simple feature collection with 168 features and 139 fields
+#&gt; geometry type:  LINESTRING
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: -89.5854 ymin: 43.0852 xmax: -89.2125 ymax: 43.3018
+#&gt; geographic CRS: NAD83
+#&gt; </span><span style='color: #555555;'># A tibble: 168 x 140</span><span>
+#&gt;    id     comid fdate               resolution gnis_id gnis_name lengthkm
+#&gt;  </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          3.04 
+#&gt; </span><span style='color: #555555;'> 2</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          1.44 
+#&gt; </span><span style='color: #555555;'> 3</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span>15770~ </span><span style='color: #555555;'>"</span><span>Yahara ~    4.84 
+#&gt; </span><span style='color: #555555;'> 4</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          4.40 
+#&gt; </span><span style='color: #555555;'> 5</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span>15770~ </span><span style='color: #555555;'>"</span><span>Yahara ~    0.839
+#&gt; </span><span style='color: #555555;'> 6</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          4.67 
+#&gt; </span><span style='color: #555555;'> 7</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span>15770~ </span><span style='color: #555555;'>"</span><span>Yahara ~    0.402
+#&gt; </span><span style='color: #555555;'> 8</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          1.08 
+#&gt; </span><span style='color: #555555;'> 9</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span>15770~ </span><span style='color: #555555;'>"</span><span>Yahara ~    1.12 
+#&gt; </span><span style='color: #555555;'>10</span><span> nhdf~ 1.33</span><span style='color: #555555;'>e</span><span>7 1999-10-28 </span><span style='color: #555555;'>23:00:00</span><span> Medium     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>     </span><span style='color: #555555;'>"</span><span> </span><span style='color: #555555;'>"</span><span>          0.351
+#&gt; </span><span style='color: #555555;'># ... with 158 more rows, and 133 more variables: reachcode </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   flowdir </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, wbareacomi </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, ftype </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, fcode </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   shape_length </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, streamleve </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, streamorde </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, streamcalc </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   fromnode </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, tonode </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, hydroseq </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, levelpathi </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   pathlength </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, terminalpa </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, arbolatesu </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, divergence </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   startflag </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, terminalfl </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, dnlevel </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, uplevelpat </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   uphydroseq </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, dnlevelpat </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, dnminorhyd </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, dndraincou </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   dnhydroseq </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, frommeas </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, tomeas </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, rtndiv </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, vpuin </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   vpuout </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, areasqkm </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, totdasqkm </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, divdasqkm </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   tidal </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, totma </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, wbareatype </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, pathtimema </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   hwnodesqkm </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, maxelevraw </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, minelevraw </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, maxelevsmo </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   minelevsmo </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, slope </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, elevfixed </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, hwtype </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   slopelenkm </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_ma </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, va_ma </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_ma </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_ma </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   qe_ma </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ve_ma </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, va_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   vc_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ve_01 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, va_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   qc_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ve_02 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   va_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ve_03 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   qa_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, va_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   ve_04 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, va_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   qe_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ve_05 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, va_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   vc_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ve_06 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, va_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   qc_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ve_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   va_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ...</span><span>
+#&gt; </div><div class='input'>
+<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
 #&gt; Available layers:
-#&gt;            layer_name        geometry_type features fields
-#&gt; 1 NHDFlowline_Network 3D Multi Line String      168     91
-#&gt; 2         CatchmentSP        Multi Polygon      167      8
-#&gt; 3             NHDArea        Multi Polygon        1     16
-#&gt; 4        NHDWaterbody        Multi Polygon       90     23</div><div class='input'>
+#&gt;            layer_name geometry_type features fields
+#&gt; 1 NHDFlowline_Network   Line String      168    139</div><div class='input'>
 <span class='co'># NHDPlusHR</span>
-<span class='no'>temp_dir</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempdir</a></span>()
-<span class='no'>temp_file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/tempfile'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".zip"</span>, <span class='kw'>tmpdir</span> <span class='kw'>=</span> <span class='no'>temp_dir</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/download.file'>download.file</a></span>(<span class='st'>"https://usgs-r.github.io/nhdplusTools/data/03_sub.zip"</span>,
-              <span class='no'>temp_file</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/unzip'>unzip</a></span>(<span class='no'>temp_file</span>, <span class='kw'>exdir</span> <span class='kw'>=</span> <span class='no'>temp_dir</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/nhdplushr_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
 
-<span class='no'>hr_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_nhdplushr.html'>get_nhdplushr</a></span>(<span class='no'>temp_dir</span>,
-                         <span class='kw'>out_gpkg</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/file.path'>file.path</a></span>(<span class='no'>temp_dir</span>, <span class='st'>"nhd_hr.gpkg"</span>),
-                         <span class='kw'>layers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
-<span class='no'>flowlines</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='no'>hr_data</span>, <span class='st'>"NHDFlowline"</span>)
+<span class='no'>up_ids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_UT.html'>get_UT</a></span>(<span class='no'>hr_data</span>$<span class='no'>NHDFlowline</span>, <span class='fl'>15000500028335</span>)
 
-<span class='no'>up_ids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_UT.html'>get_UT</a></span>(<span class='no'>flowlines</span>, <span class='fl'>15000500028335</span>)
-
-<span class='no'>sub_nhdhr</span> <span class='kw'>&lt;-</span> <span class='fu'>subset_nhdplus</span>(<span class='no'>up_ids</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/file.path'>file.path</a></span>(<span class='no'>temp_dir</span>, <span class='st'>"sub.gpkg"</span>),
-                      <span class='no'>hr_data</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; <span class='error'>Error in FUN(X[[i]], ...): !anyNA(x) is not TRUE</span></div><div class='input'>
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_layers'>st_layers</a></span>(<span class='no'>sub_nhdhr</span>)</div><div class='output co'>#&gt; <span class='error'>Error in sf::st_layers(sub_nhdhr): object 'sub_nhdhr' not found</span></div><div class='input'>
-<span class='no'>sub_flowline</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_read'>read_sf</a></span>(<span class='no'>sub_nhdhr</span>, <span class='st'>"NHDFlowline"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in st_read(..., quiet = quiet, stringsAsFactors = stringsAsFactors,     as_tibble = as_tibble): object 'sub_nhdhr' not found</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>(<span class='no'>flowlines</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><div class='output co'>#&gt; <span class='error'>Error in CPL_geos_is_empty(st_geometry(x)): GEOS does not support XYM or XYZM geometries; use st_zm() to drop M</span></div><div class='img'><img src='subset_nhdplus-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/sf/topics/st_geometry'>st_geometry</a></span>(<span class='no'>sub_flowline</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.6</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in sf::st_geometry(sub_flowline): object 'sub_flowline' not found</span></div><div class='input'>
-</div></pre>
+<span class='no'>sub_gpkg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>work_dir</span>, <span class='st'>"sub.gpkg"</span>)
+<span class='no'>sub_nhdhr</span> <span class='kw'>&lt;-</span> <span class='fu'>subset_nhdplus</span>(<span class='no'>up_ids</span>, <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>sub_gpkg</span>,
+                            <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>hr_gpkg</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Found invalid geometry, attempting to fix.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: only first part of geometrycollection is retained</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusSink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in NHDPlusSink</span></div><div class='input'>
+<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>sub_gpkg</span>)</div><div class='output co'>#&gt; Driver: GPKG 
+#&gt; Available layers:
+#&gt;         layer_name geometry_type features fields
+#&gt; 1      NHDFlowline   Line String     1427     57
+#&gt; 2 NHDPlusCatchment                   1361      7
+#&gt; 3          NHDArea       Polygon        8     14
+#&gt; 4     NHDWaterbody       Polygon      741     15</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>sub_nhdhr</span>)</div><div class='output co'>#&gt; [1] "NHDFlowline"      "NHDPlusCatchment" "NHDArea"          "NHDWaterbody"    
+#&gt; [5] "NHDPlusSink"     </div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>hr_data</span>$<span class='no'>NHDFlowline</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>sub_nhdhr</span>$<span class='no'>NHDFlowline</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.6</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='subset_nhdplus-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>output_file</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>sub_gpkg</span>)
+<span class='co'># }</span></div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -287,13 +453,16 @@ be available permenantly.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

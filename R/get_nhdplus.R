@@ -18,30 +18,29 @@
 #' }
 discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 
+  ows_url <- get("geoserver_ows_root", envir = nhdplusTools_env)
+
   if (!is.null(point)) {
 
-    url_base <- paste0("https://cida.usgs.gov/nwc/geoserver/nhdplus/ows",
+    url_base <- paste0(ows_url,
                        "?service=WFS",
                        "&version=1.0.0",
                        "&request=GetFeature",
-                       "&typeName=nhdplus:catchmentsp",
+                       "&typeName=wmadata:catchmentsp",
                        "&outputFormat=application%2Fjson",
-                       "&srsName=EPSG:4269")
-    # "&bbox=40,-90.001,40.001,-90,urn:ogc:def:crs:EPSG:4269",
+                       "&srsName=EPSG:4326")
 
-    p_crd <- sf::st_coordinates(sf::st_transform(point, 4269))
+    p_crd <- sf::st_coordinates(sf::st_transform(point, 4326))
 
-    url <- paste0(url_base, "&bbox=",
-                  paste(p_crd[2], p_crd[1],
-                        p_crd[2] + 0.00001, p_crd[1] + 0.00001,
-                        "urn:ogc:def:crs:EPSG:4269", sep = ","))
+    url <- paste0(url_base, "&CQL_FILTER=INTERSECTS%28the_geom,%20POINT%20%28",
+                  p_crd[1], "%20", p_crd[2], "%29%29")
 
-    req_data <- httr::RETRY("GET", url, times = 10, pause_cap = 240)
+    req_data <- httr::RETRY("GET", url, times = 3, pause_cap = 60)
 
     catchment <- make_web_sf(req_data)
 
     if (nrow(catchment) > 1) {
-      warning("point too close to edge of catchment found multiple.")
+      warning("point too close to edge of catchment found multiple")
     }
 
     return(as.integer(catchment$featureid))
@@ -52,11 +51,10 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 
     if (is.null(nldi_feature[["tier"]])) nldi_feature[["tier"]] <- "prod"
 
-    nldi <- get_nldi_feature(nldi_feature[["featureSource"]],
-                             nldi_feature[["featureID"]],
+    nldi <- get_nldi_feature(nldi_feature,
                              nldi_feature[["tier"]])
 
-    return(as.integer(nldi$features$properties$comid))
+    return(as.integer(nldi$comid))
 
   } else {
 
@@ -66,7 +64,10 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
 }
 
 #' @noRd
-get_nhdplus_byid <- function(comids, layer) {
+get_nhdplus_byid <- function(comids, layer, streamorder = NULL) {
+
+  ows_url <- get("geoserver_ows_root", envir = nhdplusTools_env)
+
 
   id_name <- list(catchmentsp = "featureid", nhdflowline_network = "comid")
 
@@ -76,13 +77,11 @@ get_nhdplus_byid <- function(comids, layer) {
                      collapse = ", ")))
   }
 
-  post_url <- "https://cida.usgs.gov/nwc/geoserver/nhdplus/ows"
-
   # nolint start
 
   filter_1 <- paste0('<?xml version="1.0"?>',
                      '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                     '<wfs:Query xmlns:feature="http://gov.usgs.cida/nhdplus" typeName="feature:',
+                     '<wfs:Query xmlns:feature="http://wmadata" typeName="feature:',
                      layer, '" srsName="EPSG:4326">',
                      '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">',
                      '<ogc:Or>',
@@ -111,15 +110,15 @@ get_nhdplus_byid <- function(comids, layer) {
 
   # nolint end
 
-  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
+  req_data <- httr::RETRY("POST", ows_url, body = filter_xml, times = 3, pause_cap = 60)
 
   return(make_web_sf(req_data))
 }
 
 #' @noRd
-get_nhdplus_bybox <- function(box, layer) {
+get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
 
-  valid_layers <- c("nhdarea", "nhdwaterbody")
+  valid_layers <- c("nhdarea", "nhdwaterbody", "catchmentsp", "nhdflowline_network")
 
   if (!layer %in% valid_layers) {
     stop(paste("Layer must be one of",
@@ -129,173 +128,54 @@ get_nhdplus_bybox <- function(box, layer) {
 
   bbox <- sf::st_bbox(sf::st_transform(box, 4326))
 
-  post_url <- "https://cida.usgs.gov/nwc/geoserver/nhdplus/ows"
+  post_url <- get("geoserver_ows_root", envir = nhdplusTools_env)
 
   # nolint start
 
-  filter_xml <- paste0('<?xml version="1.0"?>',
-                       '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                       '<wfs:Query xmlns:feature="http://gov.usgs.cida/nhdplus" typeName="feature:',
-                       layer, '" srsName="EPSG:4326">',
-                       '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">',
-                       '<ogc:BBOX>',
-                       '<ogc:PropertyName>the_geom</ogc:PropertyName>',
-                       '<gml:Envelope>',
-                       '<gml:lowerCorner>',bbox[2]," ",bbox[1],'</gml:lowerCorner>',
-                       '<gml:upperCorner>',bbox[4]," ",bbox[3],'</gml:upperCorner>',
-                       '</gml:Envelope>',
-                       '</ogc:BBOX>',
-                       '</ogc:Filter>',
-                       '</wfs:Query>',
-                       '</wfs:GetFeature>')
+  filter_1 <- paste0('<?xml version="1.0"?>',
+                     '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
+                     '<wfs:Query xmlns:feature="http://wmadata" typeName="feature:',
+                     layer, '" srsName="EPSG:4326">',
+                     '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">')
+
+  bbox_xml <- paste0('<ogc:BBOX>',
+                     '<ogc:PropertyName>the_geom</ogc:PropertyName>',
+                     '<gml:Envelope>',
+                     '<gml:lowerCorner>',bbox[2]," ",bbox[1],'</gml:lowerCorner>',
+                     '<gml:upperCorner>',bbox[4]," ",bbox[3],'</gml:upperCorner>',
+                     '</gml:Envelope>',
+                     '</ogc:BBOX>')
+
+  filter_2 <- paste0('</ogc:Filter>',
+                     '</wfs:Query>',
+                     '</wfs:GetFeature>')
+
+  if(is.null(streamorder)) {
+    filter_xml <- paste0(filter_1,
+                         bbox_xml,
+                         filter_2)
+  } else {
+    filter_xml <- paste0(filter_1,
+                         '<ogc:And>',
+                         '<ogc:PropertyIsGreaterThanOrEqualTo>',
+                         '<ogc:PropertyName>',
+                         'streamorde',
+                         '</ogc:PropertyName>',
+                         '<ogc:Literal>',
+                         streamorder,
+                         '</ogc:Literal>',
+                         '</ogc:PropertyIsGreaterThanOrEqualTo>',
+                         bbox_xml,
+                         '</ogc:And>',
+                         filter_2)
+  }
 
   # nolint end
 
-  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 10, pause_cap = 240)
+  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 3, pause_cap = 60)
 
   return(make_web_sf(req_data))
 
-}
-
-#' Download NHDPlus HiRes
-#' @param nhd_dir character directory to save output into
-#' @param hu_list character vector of hydrologic region(s) to download
-#' @param download_files boolean if FALSE, only URLs to files will be returned
-#' can be hu02s and/or hu04s
-#'
-#' @return Paths to geodatabases created.
-#' @importFrom xml2 read_xml xml_ns_strip xml_find_all xml_text
-#' @importFrom utils download.file unzip
-#' @export
-#' @examples
-#' \donttest{
-#' download_nhdplushr(tempdir(), c("01", "0203"), download_files = FALSE)
-#' }
-download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
-
-  nhdhr_bucket <- get("nhdhr_bucket", envir = nhdplusTools_env)
-  nhdhr_file_list <- get("nhdhr_file_list", envir = nhdplusTools_env)
-
-  hu02_list <- unique(substr(hu_list, 1, 2))
-  hu04_list <- hu_list[which(nchar(hu_list) == 4)]
-  subset_hu02 <- sapply(hu02_list, function(x)
-    sapply(x, function(y) any(grepl(y, hu04_list))))
-
-  out <- c()
-
-  for(h in 1:length(hu02_list)) {
-    hu02 <- hu02_list[h]
-
-    if(download_files) {
-      out <- c(out, file.path(nhd_dir, hu02))
-    }
-
-    if(download_files) {
-      dir.create(out[length(out)], recursive = TRUE, showWarnings = FALSE)
-    }
-
-    file_list <- read_xml(paste0(nhdhr_bucket, nhdhr_file_list,
-                                 "NHDPLUS_H_", hu02)) %>%
-      xml_ns_strip() %>%
-      xml_find_all(xpath = "//Key") %>%
-      xml_text()
-
-    file_list <- file_list[grepl("_GDB.zip", file_list)]
-
-    if(subset_hu02[h]) {
-      file_list <- file_list[sapply(file_list, function(f)
-        any(sapply(hu04_list, grepl, x = f)))]
-    }
-
-    for(key in file_list) {
-      out_file <- paste0(out[length(out)], "/", tail(strsplit(key, "/")[[1]], 1))
-      url <- paste0(nhdhr_bucket, key)
-
-      if(download_files & !dir.exists(gsub(".zip", ".gdb", out_file))) {
-        download.file(url, out_file)
-        unzip(out_file, exdir = out[length(out)])
-        unlink(out_file)
-      } else if(!download_files) {
-        out <- c(out, url)
-      }
-    }
-  }
-  return(out)
-}
-
-#' Get NHDPlus HiRes as single geopackage
-#' @param hr_dir character directory with geodatabases (gdb search is recursive)
-#' @param out_gpkg character path to write output geopackage
-#' @param layers character vector with desired layers to return.
-#' c("NHDFlowline", "NHDPlusCatchment") is default.
-#' Choose from:
-#' c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine",
-#' "NHDPlusSink", "NHDPlusWall", "NHDPoint", "NHDPlusBurnWaterbody",
-#' "NHDPlusBurnLineEvent", "HYDRO_NET_Junctions",
-#' "WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")
-#' @param pattern character optional regex to select certain files in hr_dir
-#'
-#' @details
-#' NHDFlowline is joined to value added attributes prior to being
-#' returned.
-#' Names are not modified from the NHDPlusHR geodatabase.
-#' Set layers to "NULL" to get all layers.
-#'
-#' @importFrom sf st_layers read_sf st_sf write_sf
-#' @export
-#' @examples
-#' \donttest{
-#' # Note this will download a lot of data to a temp directory.
-#' # Change 'tempdir()' to your directory of choice.
-#' download_dir <- download_nhdplushr(tempdir(), c("0302", "0303"))
-#' get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
-#' }
-get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
-                          layers = c("NHDFlowline", "NHDPlusCatchment"),
-                          pattern = ".*GDB.gdb$") {
-  gdb_files <- list.files(hr_dir, pattern = pattern,
-                          full.names = TRUE, recursive = TRUE, include.dirs = TRUE)
-
-  if(length(gdb_files) == 0) {
-    # For testing.
-    gdb_files <- list.files(hr_dir, pattern = "sub.gpkg", full.names = TRUE)
-  }
-  if(is.null(layers)) {
-    layers <- st_layers(gdb_files[1])
-
-    layers <- layers$name[!is.na(layers$geomtype) & layers$features > 0]
-  }
-
-  out_list <- list()
-
-  for(layer in layers) {
-    layer_set <- lapply(gdb_files, get_hr_data, layer = layer)
-
-    out <- do.call(rbind, layer_set)
-
-    try(out <- st_sf(out))
-
-    if(!is.null(out_gpkg)) {
-      write_sf(out, layer = layer, dsn = out_gpkg)
-    } else {
-      out_list[layer] <- list(out)
-    }
-  }
-  if(!is.null(out_gpkg)) {
-    return(out_gpkg)
-  } else {
-    return(out_list)
-  }
-}
-
-get_hr_data <- function(gdb, layer = NULL) {
-  if(layer == "NHDFlowline") {
-    vaa <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
-    vaa <- select(vaa, -ReachCode, -VPUID)
-    left_join( read_sf(gdb, layer), vaa, by = "NHDPlusID")
-  } else {
-    read_sf(gdb, layer)
-  }
 }
 
 make_web_sf <- function(content) {

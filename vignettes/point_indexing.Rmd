@@ -16,11 +16,12 @@ knitr::opts_chunk$set(
   fig.height=4,
   eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
 )
-oldoption <- options(scipen = 9999)
+oldoption <- options(scipen = 9999,
+                     rmarkdown.html_vignette.check_title = FALSE)
 options(scipen = 9999)
 ```
 
-## NHDPlus Point Indexing
+## NHDPlus Flowline Indexing
 
 First we'll load up some data. In this case, we use flowlines from the NHDPlus subset that's included in the package and a set of points to index. We'll use the NHDPlus Gages layer for this example. The data in this example is big. The R session needs a lot of memory to hold the whole NHDPlus flowline layer and run the calculations. 
 
@@ -46,12 +47,24 @@ gages <- sf::read_sf(nhdplus_path(), "Gage")
 
 Now we can call `nhdplusTools::get_flowline_index()` on the data we just loaded. Note that we are doing our spatial searching in units of degrees. The get_flowline_index has an input, `search_radius` which defaults to 0.1. See the documentation of the [nn2 function from the RANN package](https://cran.r-project.org/package=RANN) for more information on how the search works.
 
+NOTE: If you have a small area in which you need flowline indexes, `get_flowline_index()` has an 
+option to download flowlines in the bounding box of your input points.
+
 ```{r get_indexes}
-geom_col <- attr(gages, "sf_column")
-indexes <- get_flowline_index(flowlines, gages[[geom_col]], search_radius = 0.1)
+indexes <- get_flowline_index(flowlines,
+                              sf::st_geometry(gages), 
+                              search_radius = 0.01, 
+                              max_matches = 1)
+
+indexes <- left_join(sf::st_sf(id = c(1:nrow(gages)), 
+                               geom = sf::st_geometry(gages)), 
+                     indexes, by = "id")
+
+mapview::mapview(list(flowlines, indexes))
 ```
 
-Now let's look at the results and see how the `nhdplusTools::get_flowline_index()` did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODES that were matched.
+
+Now let's look at the results and see how the `nhdplusTools::get_flowline_index()` did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODEs that were matched.
 
 ```{r analyze_index}
 p_match <- 100 * length(which(indexes$COMID %in% gages$FLComID)) / nrow(gages)
@@ -63,7 +76,7 @@ paste0(round(p_match, digits = 1),
        "% were found to match the REACHCODE in the NHDPlus gages layer")
 
 matched <- cbind(indexes, 
-                 dplyr::select(sf::st_set_geometry(gages, NULL), 
+                 dplyr::select(sf::st_drop_geometry(gages), 
                                REACHCODE_ref = REACHCODE, 
                                COMID_ref = FLComID, 
                                REACH_meas_ref = Measure)) %>%
@@ -78,15 +91,19 @@ round(quantile(matched$REACH_meas_diff,
       digits = 2)
 ```
 
+## Flowline Indexing with higher precision
+
 The above example used the native nodes of the NHDPlus as the potential measure snap locations. The `nhdplusTools::get_flowline_index()` function has the ability to refine these by segmentizing the line to some given resolution. Let's try the same thing using a resolution of 10m and see if we can do any better. 
 
 Note that the `sf::st_segmentize` function takes care of the distance conversion and segmentizes our lon/lat lines to 10m on the fly.
 
 ```{r get_indexes_precise}
 indexes <- get_flowline_index(flowlines, 
-                              gages[[geom_col]], 
+                              sf::st_geometry(gages), 
                               search_radius = 0.1, 
                               precision = 10)
+
+indexes <- left_join(data.frame(id = seq_len(nrow(gages))), indexes, by = "id")
 ```
 
 Now lets look at out comparison again.
@@ -113,6 +130,73 @@ hist(matched$REACH_meas_diff, breaks = 100,
 
 round(quantile(matched$REACH_meas_diff, 
                probs = c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)), digits = 2)
+```
+
+## Finding multiple indexes
+
+`get_flowline_index()` has a parameter `max_matches` that controls how many indexed flowlines are returned per point. This is useful for points that are near many flowlines and some further disambiguation is needed to determine exactly which flowline the point should be indexed to. At the time of writing, that functionality is not included in nhdplusTools but is planned.
+
+For this example, we'll just look at one point.
+
+```{r multi}
+indexes <- get_flowline_index(flowlines,
+                              sf::st_geometry(gages)[42], 
+                              search_radius = 0.01, 
+                              max_matches = 10)
+
+indexes <- left_join(sf::st_sf(id = 1, 
+                               geom = sf::st_geometry(gages)[42]), 
+                     indexes, by = "id")
+
+plot(sf::st_geometry(sf::st_buffer(indexes, 0.005)), border = NA)
+plot(sf::st_geometry(indexes), add = TRUE)
+plot(sf::st_geometry(sf::st_zm(flowlines)), col = "blue", add = TRUE)
+indexes
+```
+
+## Waterbody Indexing
+
+The `get_flowline_index()` function estimates a hydrographic address as a linear reference to a flowline. For points near bodies of water, these could be an inappropriate kind of index. This is because where flowlines run through a waterbody. they are "artificial paths" and do not represent the waterbody. The `get_waterbody_index()` function is intended to address points that are in or near the shore of a waterbody.
+
+This next block of code loads the NHDPlus Waterbody layer and creates an interactive map. Of interest on gages that are near the short of bodies of water but far away from flowlines. Note that we drop the NHDPlus geometry and use the source `LonSite` and `LatSite` attributes for geometry.
+
+```{r waterbodies}
+waterbody <- sf::read_sf(nhdplus_path(), "NHDWaterbody")
+
+gages <- sf::st_drop_geometry(gages) %>%
+  dplyr::filter(!is.na(LonSite)) %>%
+  sf::st_as_sf(coords = c("LonSite", "LatSite"), crs = 4326)
+
+mapview::mapview(list(gages, flowlines, waterbody))
+```
+
+This next block shows how to call `get_flowline_index()` and `get_waterbody_index()` and what the output looks like. 
+
+```{r index_waterbodies}
+
+flowline_indexes <- left_join(data.frame(id = seq_len(nrow(gages))),
+                              get_flowline_index(
+                                sf::st_transform(flowlines, 5070), 
+                                sf::st_geometry(sf::st_transform(gages, 5070)), 
+                                search_radius = 200), by = "id")
+                              
+indexed_gages <- cbind(dplyr::select(gages, 
+                                      orig_REACHCODE = REACHCODE, 
+                                      orig_Measure = Measure, 
+                                      FLComID, 
+                                      STATION_NM), 
+                        flowline_indexes,
+                        get_waterbody_index(
+                          st_transform(waterbody, 5070), 
+                          st_transform(gages, 5070), 
+                          st_drop_geometry(flowlines), 
+                          search_radius = 200))
+
+
+mapview::mapview(list(indexed_gages, flowlines, waterbody))
+
+dplyr::select(sf::st_drop_geometry(indexed_gages), near_wb_COMID, near_wb_dist, in_wb_COMID, outlet_fline_COMID)
+
 ```
 
 ```{r teardown, include=FALSE}

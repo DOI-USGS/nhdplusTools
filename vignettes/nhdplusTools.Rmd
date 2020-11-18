@@ -36,15 +36,24 @@ start_comid <- discover_nhdplus_id(start_point)
 flowline <- navigate_nldi(list(featureSource = "comid", 
                                featureID = start_comid), 
                           mode = "upstreamTributaries", 
-                          data_source = "")
+                          distance_km = 1000)
 
-subset_gpkg <-subset_nhdplus(comids = flowline$nhdplus_comid,
-                             output_file = tempfile(fileext = ".gpkg"),
-                             nhdplus_data = "download")
+subset_file <- tempfile(fileext = ".gpkg")
+subset <- subset_nhdplus(comids = flowline$nhdplus_comid,
+                         output_file = subset_file,
+                         nhdplus_data = "download", 
+                         flowline_only = FALSE,
+                         return_data = TRUE)
 
-flowline <- sf::read_sf(subset_gpkg, "NHDFlowline_Network")
-catchment <- sf::read_sf(subset_gpkg, "CatchmentSP")
-waterbody <- sf::read_sf(subset_gpkg, "NHDWaterbody")
+flowline <- subset$NHDFlowline_Network
+catchment <- subset$CatchmentSP
+waterbody <- subset$NHDWaterbody
+
+## Or:
+
+flowline <- sf::read_sf(subset_file, "NHDFlowline_Network")
+catchment <- sf::read_sf(subset_file, "CatchmentSP")
+waterbody <- sf::read_sf(subset_file, "NHDWaterbody")
 
 plot(sf::st_geometry(flowline), col = "blue")
 plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
@@ -104,7 +113,7 @@ nhdplus_path(file.path(temp_dir, "natseamless.gpkg"))
 nhdplus_path()
 ```
 
-If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatadly, the `stage_national_data()` function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won't overwrite and just return the paths to your staged files.
+If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatedly, the `stage_national_data()` function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won't overwrite and just return the paths to your staged files.
 
 ```{r stage_national_data}
 staged_data <- stage_national_data(output_path = tempdir())
@@ -124,16 +133,12 @@ plot(sf::st_geometry(flowline))
 
 ### NHDPlus HiRes
 
-(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, `nhdplusTools` will have complete support for NHDPlus HiRes. So far, `nhdplusTools` will help download and interface NHDPlus HiRes data with existing `nhdplusTools` functionality. It's important to note that `nhdplusTools` was primarily implemented using NHDPlusV2 and any use of HiRes (which is still "beta data" as of writing this) should be subject to significant scruitiny. Never the less, here's a short summary of how to work with NHDPlus HiRes.
+(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, `nhdplusTools` will have complete support for NHDPlus HiRes. So far, `nhdplusTools` will help download and interface NHDPlus HiRes data with existing `nhdplusTools` functionality. It's important to note that `nhdplusTools` was primarily implemented using NHDPlusV2 and any use of HiRes (which is still "beta data" as of writing this) should be subject to significant scrutiny. Never the less, here's a short summary of how to work with NHDPlus HiRes.
 
 For the demo below, a small sample of HiRes data that has been loaded into `nhdplusTools` is used. The first line shows how you can download additional data (just change `download_files` to `TRUE`).
 
 ```{r nhdplushr_secret, echo=FALSE, include=FALSE} 
-  nhd_dir <- tempdir()
-  temp_file <- file.path(nhd_dir, "temp.zip")
-  download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
-            temp_file)
-  unzip(temp_file, exdir = nhd_dir)
+source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 ```
 
 ```{r nhdplus_hr}
@@ -141,15 +146,18 @@ download_nhdplushr(nhd_dir = "download_dir",
                    hu_list = c("0101"), # can mix hu02 and hu04 codes.
                    download_files = FALSE) # TRUE will download files.
 
-hr_data <- get_nhdplushr(nhd_dir, 
-                         out_gpkg = file.path(nhd_dir, "nhd_hr.gpkg"))
-(layers <- st_layers(hr_data))
-unlink(hr_data)
+out_gpkg <- file.path(work_dir, "nhd_hr.gpkg")
+hr_data <- get_nhdplushr(work_dir, 
+                         out_gpkg = out_gpkg)
+(layers <- st_layers(out_gpkg))
+names(hr_data)
+unlink(out_gpkg)
 
-hr_data <- get_nhdplushr(nhd_dir, 
-                         out_gpkg = file.path(nhd_dir, "nhd_hr.gpkg"), 
+hr_data <- get_nhdplushr(work_dir, 
+                         out_gpkg = out_gpkg, 
                          layers = NULL)
-(layers <- st_layers(hr_data))
+(layers <- st_layers(out_gpkg))
+names(hr_data)
 ```
 
 Other functionality in the package, such as the `get_UT/UM/DM/DD` functions, subsetting, indexing, etc. also work now or will soon! Stay tuned for a dedicated NHDPlus HiRes vignette and submit issues as you find them! 
@@ -186,7 +194,7 @@ start_comid
 
 ### Web Service Data Subsetting
 
-`nhdplusTools` supports discovery and data subsetting using web services made available through the [Network Linked Data Index](https://owi.usgs.gov/blog/nldi-intro/) (NLDI) and the [National Water Census Geoserver.](https://cida.usgs.gov/nwc/geoserver) The code below shows how to use the NLDI functions to build a dataset upstream of our `start_comid` that we found above.
+`nhdplusTools` supports discovery and data subsetting using web services made available through the [Network Linked Data Index](https://waterdata.usgs.gov/blog/nldi-intro/) (NLDI) and the [National Water Census Geoserver.](https://labs.waterdata.usgs.gov/geoserver) The code below shows how to use the NLDI functions to build a dataset upstream of our `start_comid` that we found above.
 
 The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these "featureSources". We can query the NLDI for an identifier of a given feature from any of its "featureSources" and find out what our navigation options are as shown below.
 ```{r discover_nldi}
@@ -202,7 +210,7 @@ The `discover_nldi_navigation` function is a handy way to make sure the featureI
 
 flowline_nldi <- navigate_nldi(nldi_feature, 
                                mode = "upstreamTributaries", 
-                               data_source = "")
+                               distance_km = 1000)
 
 plot(sf::st_geometry(flowline), lwd = 3, col = "black")
 plot(sf::st_geometry(flowline_nldi), lwd = 1, col = "red", add = TRUE)
@@ -215,7 +223,7 @@ output_file_download <- file.path(temp_dir, "subset_download.gpkg")
 
 output_file_download <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
                              output_file = output_file_download,
-                             nhdplus_data = "download")
+                             nhdplus_data = "download", return_data = FALSE)
 
 sf::st_layers(output_file_download)
 
@@ -240,13 +248,14 @@ nldi_feature <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 
 flowline_nldi <- navigate_nldi(nldi_feature, 
                                mode = "upstreamTributaries", 
-                               data_source = "")
+                               distance_km = 1000)
 
 output_file_nwis <- file.path(temp_dir, "subset_download_nwis.gpkg")
 
 output_file_nwis <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
                                   output_file = output_file_nwis,
-                                  nhdplus_data = "download")
+                                  nhdplus_data = "download",
+                                  return_data = FALSE)
 
 sf::st_layers(output_file_download)
 
@@ -255,7 +264,8 @@ flowline_nwis <- sf::read_sf(output_file_nwis,
 
 upstream_nwis <- navigate_nldi(nldi_feature,
                                mode = "upstreamTributaries",
-                               data_source = "nwissite")
+                               data_source = "nwissite", 
+                               distance_km = 1000)
 
 plot(sf::st_geometry(flowline_nwis), 
      lwd = 3, col = "blue")
@@ -265,7 +275,7 @@ plot(sf::st_geometry(upstream_nwis),
 
 ### Local Data Subsetting
 
-With the starting COMID we found with `discover_nhdplus_id` above, we can use one of the network navigation functions, `get_UM`, `get_UT`, `get_DM`, or `get_DD` to retrieve a collection of comids along the upstream mainstaem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we'll use upstream with tributaries.
+With the starting COMID we found with `discover_nhdplus_id` above, we can use one of the network navigation functions, `get_UM`, `get_UT`, `get_DM`, or `get_DD` to retrieve a collection of comids along the upstream mainstem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we'll use upstream with tributaries.
 
 ```{r get_UT}
 UT_comids <- get_UT(flowline, start_comid)
@@ -288,12 +298,13 @@ output_file <- file.path(temp_dir, "subset.gpkg")
 
 output_file <-subset_nhdplus(comids = UT_comids,
                              output_file = output_file,
-                             nhdplus_data = nhdplus_path())
+                             nhdplus_data = nhdplus_path(), 
+                             return_data = FALSE)
 
 sf::st_layers(output_file)
 ```
 
-Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other laters as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.
+Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other layers as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.
 
 ```{r plot_result}
 catchment <- sf::read_sf(output_file, "CatchmentSP")
@@ -331,7 +342,7 @@ For more info about `get_flowline_index()` see the article `vignette("point_inde
 
 ## Refactoring
 
-The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be found in the network_refactor branch of this repository.
+The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be [found here](https://dblodgett-usgs.github.io/hyRefactor/dev/).
 
 ```{r teardown, include=FALSE}
 options(oldoption)

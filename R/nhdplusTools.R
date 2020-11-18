@@ -9,6 +9,7 @@ COMID <- "COMID"
 FEATUREID <- "FEATUREID"
 Hydroseq <- "Hydroseq"
 DnHydroseq <- "DnHydroseq"
+UpHydroseq <- "UpHydroseq"
 DnMinorHyd <- "DnMinorHyd"
 LevelPathI <- "LevelPathI"
 DnLevelPat <- "DnLevelPat"
@@ -41,6 +42,7 @@ nhdplus_attributes <- list(
   FEATUREID = FEATUREID,
   Hydroseq = Hydroseq, HydroSeq = Hydroseq,
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
+  UpHydroseq = UpHydroseq,
   DnMinorHyd = DnMinorHyd,
   LevelPathI = LevelPathI,
   DnLevelPat = DnLevelPat,
@@ -67,6 +69,9 @@ nhdplus_attributes <- list(
 .data <- . <- NULL
 
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
+
+assign("geoserver_ows_root", "https://labs.waterdata.usgs.gov/geoserver/ows",
+       envir = nhdplusTools_env)
 
 assign("prepare_nhdplus_attributes",
        c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
@@ -120,12 +125,31 @@ assign("get_flowline_index_attributes",
        c("COMID", "REACHCODE", "ToMeas", "FromMeas"),
        envir = nhdplusTools_env)
 
-assign("calculate_levelpaths_attributes",
+assign("get_levelpaths_attributes",
        c("ID", "toID", "nameID", "weight"),
        envir = nhdplusTools_env)
 
+assign("get_streamorder_attributes",
+       c("ID", "toID"),
+       envir = nhdplusTools_env)
+
+assign("get_pfaf_attributes",
+       c("ID", "toID", "totda", "outletID", "topo_sort", "levelpath"),
+       envir = nhdplusTools_env)
+
+assign("make_standalone_attributes",
+       c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
+         "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+
+assign("get_waterbody_index_waterbodies_attributes",
+       c("COMID"), envir = nhdplusTools_env)
+
+assign("get_waterbody_index_flines_attributes",
+       c("COMID", "WBAREACOMI", "Hydroseq"))
+
+
 check_names <- function(x, function_name) {
-  x <- rename_nhdplus(x)
+  x <- align_nhdplus_names(x)
   names_x <- names(x)
   expect_names <- get(paste0(function_name, "_attributes"),
                       envir = nhdplusTools_env)
@@ -139,31 +163,12 @@ check_names <- function(x, function_name) {
   return(x)
 }
 
-#' @noRd
-rename_nhdplus <- function(x) {
-  attribute_names <- get("nhdplus_attributes", envir = nhdplusTools_env)
-
-  old_names <- names(x)
-  new_names <- old_names
-
-  matched <- match(names(x), names(attribute_names))
-  replacement_names <- as.character(attribute_names[matched[which(!is.na(matched))]])
-
-  new_names[which(old_names %in% names(attribute_names))] <- replacement_names
-
-  names(x) <- new_names
-
-  if("GridCode" %in% names(x)) names(x)[which(names(x) == "COMID")] <- "FEATUREID"
-
-  return(x)
-}
-
 default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
 
 assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
 nhdhr_bucket <- "https://prd-tnm.s3.amazonaws.com/"
-nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlus/HU4/HighResolution/GDB/"
+nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/"
 
 assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
@@ -206,4 +211,53 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
   } else {
       return(get("nhdplus_data", envir = nhdplusTools_env))
   }
+}
+
+
+#' @title Align NHD Dataset Names
+#' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.
+#' @param x a \code{sf} object of nhdplus flowlines
+#' @return a renamed \code{sf} object
+#' @export
+#' @examples
+#' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+#'
+#' names(new_hope_flowline)
+#'
+#' names(new_hope_flowline) <- tolower(names(new_hope_flowline))
+#'
+#' new_hope_flowline <- align_nhdplus_names(new_hope_flowline)
+#'
+#' names(new_hope_flowline)
+#'
+align_nhdplus_names <- function(x){
+
+  attribute_names <- get("nhdplus_attributes", envir = nhdplusTools_env)
+
+  # get into correct case
+  good_names <- unique(unlist(do.call(rbind, attribute_names))[,1])
+
+  new_names <- old_names <- names(x)
+
+  matched <- match(toupper(names(x)), toupper(good_names))
+  replacement_names <- as.character(good_names[matched[which(!is.na(matched))]])
+
+  new_names[which(toupper(old_names) %in% toupper(good_names))] <- replacement_names
+  names(x) <- new_names
+
+  # rename to match package
+  new_names <- old_names <- names(x)
+
+  matched <- match(names(x), names(attribute_names))
+  replacement_names <- as.character(attribute_names[matched[which(!is.na(matched))]])
+
+  new_names[which(old_names %in% names(attribute_names))] <- replacement_names
+
+  names(x) <- new_names
+
+  if("GridCode" %in% names(x) & !"FeatureID" %in% names(x) & !"FEATUREID" %in% names(x))
+    names(x)[which(names(x) == "COMID")] <- "FEATUREID"
+
+  return(x)
+
 }

@@ -16,19 +16,86 @@ knitr::opts_chunk$set(
   fig.height=4,
   eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
 )
-oldoption <- options(scipen = 9999)
-options(scipen = 9999)
+oldoption <- options()
+options(scipen = 9999,
+        rmarkdown.html_vignette.check_title = FALSE,
+        "rgdal_show_exportToProj4_warnings"="none")
 ```
 ```{r data_dir_setup, echo=FALSE, include=FALSE}
 temp_dir <- tempdir()
 dir.create(temp_dir)
+library(rosm)
+set_default_cachedir(tempfile())
+library(nhdplusTools)
 ```
 
 # Plotting with nhdplusTools
 
 The goal of this vignette is to demonstrate a simple and lightweight approach to building maps with NHDPlus data. 
 
+## The `plot_nhdplus` function
+
+**`plot_nhdplus` is a work in progress. Not all inputs in the function have been implemented as of 11/18/2019 and additional functionality will be added later. Please leave feature requests and issues you find in an [issue here](https://github.com/USGS-R/nhdplusTools/pulls).**
+
+`plot_nhdplus` is a function that makes getting a simple plot of NHDPlus data as easy as possible. It works with other functions from `nhdplusTools` for identifying and retrieving watershed outlet locations. See the `plot_nhdplus` documentation for more info.
+
+If we pass `plot_nhdplus` a single NWIS site id, `nhdplusTools` uses web services to get data and we get a plot like this:
+
+```{r nwis_simple1, message=FALSE} 
+plot_nhdplus("05428500")
+```
+
+If we want to add other watersheds, we can use any outlet available from the Network Linked Data Index. See "nldi" functions elsewhere in `nhdplusTools`.
+
+```{r nwis_simple2, message=FALSE} 
+plot_nhdplus(list(list("nwissite", "USGS-05428500"),
+                  list("huc12pp", "070900020602")))
+```
+
+```{r two_outlets, message=FALSE} 
+plot_nhdplus(list(list("nwissite", "USGS-05428500"),
+                  list("huc12pp", "070900020602")))
+```
+
+If we don't know a site id, we can just pass in one or more latitude / longitude locations.
+
+```{r point_location, message=FALSE}
+start_point <- sf::st_as_sf(data.frame(x = -89.36, y = 43.09), 
+                            coords = c("x", "y"), crs = 4326)
+
+plot_nhdplus(start_point)
+```
+
+`plot_nhdplus` also allows modification of streamorder (if you have data available locally) and styles. This plot request shows how to get a subset of data for a plot and the range of options. See documentation for more details.
+
+```{r plot_styles, message=FALSE} 
+sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+plot_nhdplus(list(list("comid", "13293970"),
+                  list("nwissite", "USGS-05428500"),
+                  list("huc12pp", "070900020603"),
+                  list("huc12pp", "070900020602")),
+             streamorder = 2,
+             nhdplus_data = sample_data,
+             plot_config = list(basin = list(lwd = 2),
+                                outlets = list(huc12pp = list(cex = 1.5),
+                                               comid = list(col = "green"))),
+             stoponlargerequest = FALSE)
+```
+
+We can also plot NHDPlus data without an outlet at all. 
+
+```{r bbox_plotting, message=FALSE}
+bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
+                    crs = "+proj=longlat +datum=WGS84 +no_defs")
+plot_nhdplus(bbox = bbox)
+```
+
+The plots above are all in the EPSG:3857 projection to be compatible with background tiles. 
+Any data added to these plots must be projected to this coordinate system to be added to the plot.
+
 ## Getting Data
+
+What follows shows how to use `nhdplusTools` to create plots without the `plot_nhdplus` function. While super convenient, we all know the "easy button" is never quite right, the description below should help get you started.
 
 For this example, we'll start from an outlet NWIS Site. Note that other options are possible with `discover_nhdplus_id` and `discover_nldi_sources`.
 
@@ -45,7 +112,7 @@ flowline <- navigate_nldi(nwissite,
 nhdplus <- subset_nhdplus(comids = flowline$nhdplus_comid,
                           output_file = file.path(temp_dir, "nhdplus.gpkg"),
                           nhdplus_data = "download",
-                          overwrite = TRUE)
+                          overwrite = TRUE, return_data = FALSE)
 
 flowline <- read_sf(nhdplus, "NHDFlowline_Network")
 
@@ -113,7 +180,7 @@ The `prettymapr::prettymap()` function isn't strictly necessary, but it gives us
 prep_layer <- function(x) st_geometry(st_transform(x, 3857))
 
 prettymapr::prettymap({
-  rosm::osm.plot(sp_bbox, type = "stamenwatercolor", quiet = TRUE)
+  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, progress = "none", cachedir = tempfile())
   
   plot(prep_layer(basin), 
        lwd = 2, add = TRUE)
@@ -142,14 +209,18 @@ prettymapr::prettymap({
 
 Below is a very similar example using [`ggmap`](https://github.com/dkahle/ggmap) and [`ggplot2` `geom_sf`](https://ggplot2.tidyverse.org/reference/ggsf.html). Note that ggmap takes case of projections for us, which should either make you happy because it _just works_ or very nervous because it _just works_. 
 
-```{r ggmap}
+```{r ggmap, message=FALSE, warning=FALSE}
 library(ggmap)
 library(ggplot2)
 
-upstream_nwis[c("lon", "lat")] <- sf::st_coordinates(upstream_nwis)
+upstream_nwis <- dplyr::bind_cols(upstream_nwis,
+                           dplyr::rename(dplyr::as_tibble(sf::st_coordinates(upstream_nwis)), 
+                                         lat = Y, lon = X))
 
-basemap_toner <- get_map(source = "stamen", maptype = "toner", location = ggmap_bbox, zoom = 11)
-basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", location = ggmap_bbox, zoom = 11)
+basemap_toner <- get_map(source = "stamen", maptype = "toner", 
+                         location = ggmap_bbox, zoom = 11, messaging = FALSE)
+basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", 
+                           location = ggmap_bbox, zoom = 11, messaging = FALSE)
 toner_map <- ggmap(basemap_toner)
 terrain_map <- ggmap(basemap_terrain)
 

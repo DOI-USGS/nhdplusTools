@@ -16,6 +16,7 @@ the path to the local e00 file
 }
 \description{
 This function downloads and decompresses staged RF1 data.
+See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.
 }
 \examples{
 \dontrun{

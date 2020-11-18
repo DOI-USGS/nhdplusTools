@@ -1,0 +1,456 @@
+
+<style type="text/css">
+.small-code pre code {
+  font-size: 1em;
+}
+
+.reveal h1, .reveal h2, .reveal h3 {
+  background: #E8E8E880;
+}
+
+.footer {
+    color: black;
+    background: #E8E8E880;
+    position: fixed;
+    top: 90%;
+    text-align:left;
+    width:95%;
+}
+
+.white_black {
+    color: black;
+    background: #E8E8E880;
+    text-align:left;
+    width:100%;
+}
+
+.section .reveal .state-background {
+    background: url(https://upload.wikimedia.org/wikipedia/commons/8/8f/Weber_river_cutt.jpg);
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+</style>
+
+R for Water Resources
+========================================================
+autosize: true
+
+<div><br><br><br><br><br><br><br><br></div>
+
+<div class="white_black">
+Dave Blodgett and Laura DeCicco<br>
+2019 AWRA National Meeting, 11/4/2019</div>
+
+<div class="footer"><small>Cutthroat trout caught in the Weber River. (credit: <a href = "https://www.flickr.com/photos/coreyk/334714683/in/set-72157594282816025/" target = "_blank">Corey Kruitbosch</a><br>
+Use arrow keys or click the arrows to advance.</small></div>
+</style>
+
+========================================================
+**Introduction**
+
+These slides provide resources and examples for two
+common water resources applications in the R programming
+language. 
+
+A companion workflow to get all the data and perform
+processing operations is <a href = "https://github.com/USGS-R/nhdplusTools/blob/master/docs/awra_2019/get_data.R" target = "_blank">available here.</a>
+
+***
+  
+<br>
+- Introduction to examples
+- Background and resources
+- Data access
+- Data visualization
+- Spatial intersection
+- Water budget analysis
+- Trend analysis
+- Synthesis
+
+
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+source("get_data.R")
+```
+
+========================================================
+left: 40%
+
+**Application 1:**  
+**Water Budget**  
+
+<small>Access and compare precip, actual ET, and 
+streamflow.</small>  
+```{r wb_example_map, echo = FALSE, fig.height = 5}
+loadd(plot_sseb)
+loadd(plot_gridmet)
+loadd(flowline)
+loadd(outlet_name)
+plot_gridmet$diff <- plot_gridmet$sum - plot_sseb$sum
+plot(plot_gridmet["diff"], main = NULL, reset = FALSE)
+title(main = paste("Difference of Precip and ET,", outlet_name, "(mm)"), cex.main = 1.5)
+plot(sf::st_geometry(flowline), lwd = flowline$streamorde - 0.5, col = "darkblue", add = TRUE)
+```
+***
+
+```{r wb_example_plot, echo = FALSE}
+loadd(wb_summary)
+plot(wb_summary$t, units::set_units(wb_summary$q, "in"), ylab = "inches", xlab = "date",
+     main = paste("Water Balance", outlet_name), 
+     cex.main = 1.5, cex.lab = 1.5, ylim = c(-5,25), col = NA)
+lines(wb_summary$t, units::set_units(wb_summary$q, "in"), col = "blue", lwd = 2)
+lines(wb_summary$t, units::set_units(wb_summary$e, "in"), col = "orange", lwd = 2)
+lines(wb_summary$t, units::set_units(wb_summary$p, "in"), col = "green", lwd = 2)
+lines(wb_summary$t, units::set_units(wb_summary$x, "in"), col = "black", lwd = 2)
+legend("topleft", legend = c("Precipitation", "Evapotranspiration", "Streamflow", "Residual"), lwd = 2, col = c("green", "orange", "blue", "black"))
+```  
+Data sourced from web services using R packages shown later.
+
+========================================================
+left: 30%
+
+**Application 2: Trends and Plotting**  
+
+```{r trend2, echo = FALSE}
+library(EGRET)
+library(drake)
+loadd(eList)
+plotConcHist(eList)
+```
+***
+<small>Exploration and Graphics for RivEr Trends (<a href="http://usgs-r.github.io/EGRET/" target = "_blank">EGRET</a>): A package for analysis of long-term changes in water quality and streamflow.</small>
+```{r trend1, echo = FALSE}
+plot(eList)
+```
+
+========================================================
+
+**Background:**
+<small>
+* R hydro tools build on <a href="https://cran.r-project.org/web/packages/available_packages_by_name.html" target="_blank">many community packages</a>.
+* <a href="https://www.tidyverse.org/" target="_blank">tidyverse</a>, <a href="https://www.r-spatial.org/" target="_blank">r-spatial</a>, etc.
+* Plotting with <a href="https://rstudio-pubs-static.s3.amazonaws.com/84527_6b8334fd3d9348579681b24d156e7e9d.html" target="_blank">base-r</a> and <a href="https://ggplot2.tidyverse.org/" target="_blank">ggplot2</a>.
+* Many <a href="https://cran.r-project.org/web/views/TimeSeries.html" target="_blank">timeseries packages</a>.
+* Lots of <a href="https://cran.r-project.org/web/views/" target="_blank">CRAN "task views"!</a>
+* **Web-search is your friend!**
+</small>
+
+***
+
+**Resources:**
+* <a href="https://github.com/USGS-R" target="_blank">Github USGS-R</a>
+* <a href="https://owi.usgs.gov/R/" target="_blank">USGS Resources</a>
+* <a href="https://waterdata.usgs.gov/blog/tags/r/" target="_blank">USGS Blogs</a>
+* <a href="https://cran.r-project.org/web/views/Hydrology.html" target="_blank">Hydro CRAN Task View</a>
+* <a href="https://bookdown.org/robinlovelace/geocompr/intro.html" target="_blank">Geocomputation with R</a>
+* <a href="https://www.hydrol-earth-syst-sci.net/23/2939/2019/hess-23-2939-2019.pdf" target="_blank">Use of R in Hydrology</a>
+* <a href="https://towardsdatascience.com/from-r-vs-python-to-r-and-python-aa25db33ce17" target="_blank">R and Python</a>
+</small>
+
+Spatial Data Access 
+========================================================
+class: small-code
+
+<a href="https://usgs-r.github.io/nhdplusTools/articles/nhdplusTools.html" target="_blank">**See a nhdplusTools tutorial here.**</a>
+
+```{r spatial, eval = FALSE, echo = TRUE}
+library(nhdplusTools)
+site <- list(featureSource = "nwissite", 
+             featureID = "USGS-10128500")
+
+line <- navigate_nldi(site, "UT", "")
+site <- navigate_nldi(site, "UT", "nwissite")
+
+nhdp <- subset_nhdplus(ut$nhdplus_comid, 
+                       "nhdp_subset.gpkg", 
+                       "download")
+```
+
+========================================================
+```{r plot simple, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8}
+library(sf)
+library(prettymapr)
+library(rosm)
+loadd(flowline)
+loadd(catchment)
+loadd(simple_UT_site)
+loadd(boundary)
+loadd(plot_box)
+
+gt <- function(x) st_geometry(st_transform(x, 3857))
+
+prettymap({
+  osm.plot(plot_box, type = "cartolight", quiet = TRUE)
+  plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
+  plot(gt(boundary), lwd = 1, col = NA, border = "black", add = TRUE)
+  plot(gt(flowline), lwd = flowline$streamorde - 0.5, col = "blue", add = TRUE)
+  plot(gt(simple_UT_site), col = "red", pch = 17, add = TRUE)
+}, drawarrow = TRUE, scale.label.cex = 2, arrow.scale = 2)
+title(paste("NHDPlus Upstream of Gage:", simple_UT_site$name), cex.main = 2)
+```
+
+Observations Data Access 
+========================================================
+class: small-code
+
+Get USGS and EPA water data. <a href="https://owi.usgs.gov/R/dataRetrieval.html#1" target = "_blank">**See a dataRetrieval tutorial here.**</a>
+
+```{r observations,   eval = FALSE, echo = TRUE}
+library(dataRetrieval)
+flow <- readNWISdv("10128500", "00060")
+```
+
+```{r observationsRun,   eval = TRUE, echo = FALSE, fig.width = 12, fig.height = 5}
+loadd(flowData)
+parameterInfo <- attr(flowData, "variableInfo")
+siteInfo <- attr(flowData, "siteInfo")
+
+unescape_html <- function(str){
+  fancy_chars <- regmatches(str, gregexpr("&#\\d{3};",str)) 
+
+  unescaped <- xml2::xml_text(xml2::read_html(paste0("<x>", fancy_chars, "</x>")))
+
+  fancy_chars <- gsub(pattern = "&#\\d{3};", 
+                      replacement = unescaped, x = str)
+
+  fancy_chars <- gsub("Â","", fancy_chars)
+  return(fancy_chars)
+}
+
+par(mar = c(5, 4.2, 4, 2) + 0.1)
+plot(flowData$Date, flowData$X_00060_00003,
+     xlab = "Date", pch = ".", col="red",
+     ylab = unescape_html (parameterInfo$variableName),
+     main = paste("Streamflow for", outlet_name), cex.main = 1.5, cex.lab = 1.5)
+
+```
+
+========================================================
+class: small-code
+
+Spatial data visualization can be accomplished in several ways. 
+This example uses base R plotting and the `prettymapr` and `rosm` packages. 
+Output is shown on the next slide.
+```{r obs_map_code, eval = FALSE}
+prettymap(title = paste("NHDPlus and NLDI data for the", outlet_name), 
+          scale.label.cex = 2, scale.padin = c(0.25, 0.25),
+          drawarrow = TRUE, arrow.scale = 2,
+          mai = c(0.5, 0, 0, 0), { # margin for legend 
+  osm.plot(nhd_bbox, type = "cartolight", quiet = TRUE, progress = "none")
+  plot(gt(nhd_cat), lwd = 0.5, col = NA, border = "grey", add = TRUE)
+  plot(gt(nhd_basin), lwd = 1, col = NA, border = "black", add = TRUE)
+  plot(gt(nhd_fline), lwd = streamorder, col = "blue", add = TRUE)
+  plot(gt(nhd_area), col = "lightblue", border = "lightblue", add = TRUE)
+  plot(gt(nhd_wbody), col = "lightblue", border = "lightblue",add = TRUE)
+  plot(gt(wqpsite), col = "red", pch = 46, cex = 1.25, add = TRUE)
+  plot(gt(nwissite), col = "black", bg = "lightgrey", pch = 24, add = TRUE)})
+```
+<small>See the <a href = "https://github.com/USGS-R/nhdplusTools/tree/master/docs/awra_2019" target = "_blank">project source code</a> for legend code.  
+While extremely configurable, base-R plotting can be tedious. `ggplot2` offers a different approach to plotting that some find more convenient.</small>
+
+========================================================
+```{r spatial_map, echo = FALSE, fig.width = 12, fig.height = 8, dpi = 200}
+loadd(nhd_fline)
+loadd(nhd_cat)
+loadd(nhd_area)
+loadd(nhd_wbody)
+loadd(nhd_basin)
+loadd(nhd_bbox)
+loadd(nwissite)
+loadd(wqpsite)
+loadd(outlet_name)
+lb <- "white" #legend background
+
+streamorder <- nhd_fline$streamorde/2
+
+prettymap(drawarrow = TRUE, 
+          title = paste("NHDPlus and NLDI data for the", outlet_name), 
+          scale.label.cex = 2,
+          scale.padin = c(0.25, 0.25),
+          arrow.scale = 2,
+          mai = c(0.5, 0, 0, 0), {
+  osm.plot(nhd_bbox, type = "cartolight", quiet = TRUE, progress = "none")
+  plot(gt(nhd_cat), lwd = 0.5, col = NA, border = "grey", add = TRUE)
+  plot(gt(nhd_basin), lwd = 1, col = NA, border = "black", add = TRUE)
+  plot(gt(nhd_fline), lwd = streamorder, col = "blue", add = TRUE)
+  plot(gt(nhd_area), col = "lightblue", border = "lightblue", add = TRUE)
+  plot(gt(nhd_wbody), col = "lightblue", border = "lightblue",add = TRUE)
+  plot(gt(wqpsite), col = "red", pch = 46, cex = 1.25, add = TRUE)
+  plot(gt(nwissite), col = "black", bg = "lightgrey", pch = 24, add = TRUE)})
+
+xrange <- abs(par()$usr[1] - par()$usr[2])
+legend_text <- c("Flowlines", "Catchments", "Drainage Basin", 
+                 "Waterbodies", "Streamflow Sites", "Water Quality Sites")
+xcoords <- c(0, 7, 16, 26, 36, 47) * xrange / 100
+secondvector <- (1:length(legend_text))-1
+textwidths <- xcoords/secondvector
+textwidths[1] <- 0
+
+legend(x = par()$usr[1], y = par()$usr[3],
+         legend = legend_text,
+         fill = c(NA, lb, lb, "lightblue", NA, NA),
+         border = c(lb, "grey", "black", "lightblue", NA, NA),
+         lwd = c(1, NA, NA, NA, NA, NA),
+         pch = c(NA, NA, NA, NA, 24, 20),
+         col = c("blue", NA, NA, NA, "black", "red"),
+         pt.bg = c(NA, NA, NA, NA, "lightgrey", "red"),
+         bg = lb, horiz = TRUE, xpd = TRUE, seg.len = 2, 
+         text.width = textwidths, box.col = NA)
+
+```
+
+Index Sites to Flowlines
+========================================================
+class: small-code
+`nhdplusTools` can attach sites to NHD flowlines using a <a href="http://www.cs.umd.edu/~mount/ANN/" target="_blank">nearest neighbor search</a> with sites and geometry nodes.
+```{r get_flowline_index, eval = FALSE}
+nhdplusTools::get_flowline_index(
+    points = sites,
+    flines = flowline, 
+    search_radius = 100, # units of flowlines
+    precision = 10), # maximum node spacing
+```
+```{r print_flowline_index, eval = TRUE, echo = FALSE}
+loadd(indexed_sites)
+knitr::kable(head(indexed_sites, 5), format = "html", digits = 1)
+```
+
+Spatial Intersection
+========================================================
+class: small-code
+
+The code below shows the anatomy of an <a href="https://github.com/USGS-R/intersectr" target="_blank">`intersectr`</a> workflow. It uses <a href="https://cida.usgs.gov/thredds/dodsC/UofIMETDATA.html" target="_blank">an OPeNDAP service</a> to access remote data the same way it could a local NetCDF file.  
+```{r intersectr, eval = FALSE}
+library(intersectr)
+cells <- create_cell_geometry(x_coords, y_coords, nc_projection, catchment)
+
+poly <- sf::st_as_sf(dplyr::select(catchment, ID = featureid))
+
+weights <- calculate_area_intersection_weights(cells, poly)
+
+dap_uri <- "https://cida.usgs.gov/thredds/dodsC/UofIMETDATA"
+execute_intersection(nc_file = dap_uri,
+                     variable_name = "precipitation_amount",
+                     intersection_weights = weights,
+                     cell_geometry = data_source_cells,
+                     x_var = x_coord, y_var = y_coord, t_var = t_coord,
+                     start_datetime = "2009-10-01 00:00:00", 
+                     end_datetime = "2010-10-01 00:00:00")
+```
+<div class="footer">`intersectr` is a highly scalable and adaptible workflow component. It is still an "in development" package.
+
+========================================================
+```{r intersectr_plot, echo = FALSE, fig.width = 6, fig.height = 4}
+loadd(plot_sseb)
+loadd(plot_gridmet)
+loadd(flowline)
+library(dplyr, warn.conflicts = FALSE)
+
+br <- seq(300, 1000, 100)
+plot(plot_gridmet["sum"], main = "Sum of precipitation, (mm)", key.pos = NULL, reset = FALSE, breaks = br)
+plot(sf::st_geometry(flowline), lwd = flowline$streamorde - 0.5, col = "darkblue", add = TRUE)
+
+plot(plot_sseb["sum"], main = "Sum of evapotranspiration, (mm)", key.pos = 3, reset = FALSE, breaks = br)
+plot(sf::st_geometry(flowline), lwd = flowline$streamorde - 0.5, col = "darkblue", add = TRUE)
+```
+<div class = "footer">Precipitation sourced from 
+<a href="http://www.climatologylab.org/gridmet.html" taget="_blank">gridMet</a>
+<br>
+Evapotranspiration sourced from 
+<a href = "https://cida.usgs.gov/thredds/catalog.html?dataset=cida.usgs.gov/ssebopeta/monthly" target="_blank">SSEBop ETa</a>
+</div>
+***
+Results of intersection shown individually on the left and differenced below.  
+Runoff and Infiltration?
+
+```{r intersectr_plot_real, echo = FALSE, fig.width = 6, fig.height = 5}
+plot_gridmet$diff <- plot_gridmet$sum - plot_sseb$sum
+plot(plot_gridmet["diff"], main = "Difference of Precipitation and Evapotranspiration, (mm)", key.pos = 3, reset = FALSE)
+plot(sf::st_geometry(flowline), lwd = flowline$streamorde - 0.5, col = "darkblue", add = TRUE)
+```
+
+Water Budget Analysis
+========================================================
+```{r wb, echo = FALSE, fig.width = 12, fig.height = 8}
+loadd(wb_summary)
+plot(wb_summary$t, units::set_units(wb_summary$q, "in"), ylab = "inches", xlab = "date",
+     main = paste("Water Balance", outlet_name), 
+     cex.main = 1.5, cex.lab = 1.5, ylim = c(-5,25), col = NA)
+lines(wb_summary$t, units::set_units(wb_summary$q, "in"), col = "blue", lwd = 2)
+lines(wb_summary$t, units::set_units(wb_summary$e, "in"), col = "orange", lwd = 2)
+lines(wb_summary$t, units::set_units(wb_summary$p, "in"), col = "green", lwd = 2)
+lines(wb_summary$t, units::set_units(wb_summary$x, "in"), col = "black", lwd = 2)
+legend("topleft", legend = c("Precipitation", "Evapotranspiration", "Streamflow", "Residual"), lwd = 2, col = c("green", "orange", "blue", "black"), cex = 1.5)
+```
+
+
+Trend Analysis with EGRET
+========================================================
+class: small-code
+
+EGRET includes a function to calculate a weighted regrestion on time, discharge, and season (WRTDS).
+
+```{r egret,  echo = TRUE, eval = FALSE}
+library(EGRET)
+Daily <- readNWISDaily(siteNumber = "10128500")
+
+Sample = readNWISSample(siteNumber = "10128500",
+                        parameterCd = "00095",
+                        endDate = "2018-01-01")
+
+INFO = readNWISInfo(siteNumber = "10128500",
+                    parameterCd = "00095",
+                    interactive = FALSE)
+
+eList = mergeReport(INFO = INFO,
+                    Daily = Daily,
+                    Sample = Sample) %>% 
+    modelEstimation()
+```
+<small>Gets daily flow, sampled concentration, and site information. `mergeReport` prepares data for `modelEstimation` which performs a Weighted Regrerssions on Time, Discharge, and Season model fit, returning timeseries and flow-concentration surfaces.</small>
+
+========================================================
+class: small-code
+
+This plot is the WRTDS model result of specific conductance concentration over time and discharge.
+```{r summary, fig.height = 6, echo = FALSE}
+plotContours(eList, 1980, 2012, flowDuration = FALSE)
+```
+***
+This plot uses the model to show how June concentration changes over time at specific discharge conditions.
+```{r summary2, fig.height = 6, echo = FALSE}
+plotConcTimeSmooth(eList, 2, 5, 20, centerDate = "06-01", yearStart = 1980, yearEnd = 2010)
+```
+
+========================================================
+left: 40%
+
+**Summary**
+<small>
+- Two applications: budgets, trends
+- Both spatial and observational
+- All data from web services
+- All functionality in the open source
+- Check out the <a href="https://cran.r-project.org/web/views/Hydrology.html" target="_blank">CRAN Hydro-task view</a>
+- <a href="https://owi.usgs.gov/R/index.html" target="_blank">USGS-R is a great place to learn more!</a>
+</small>
+
+***
+
+```{r summary3, fig.height = 4.25, echo = FALSE}
+plot(flowData$Date, flowData$X_00060_00003,
+     xlab = "Date", pch = ".", col="red",
+     ylab = unescape_html (parameterInfo$variableName), 
+     main = paste("Streamflow for", outlet_name), cex.main = 1.5)
+
+plot(plot_gridmet["diff"], main = paste("Difference of Precip and ET,", outlet_name, "(mm)"), cex.main = 1.5, key.pos = 4, reset = FALSE)
+plot(sf::st_geometry(flowline), lwd = flowline$streamorde - 0.5, col = "darkblue", add = TRUE, reset = TRUE)
+```
+
+Questions?
+========================================================
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Winter_at_Bonneville_Salt_Flats.jpg">
+
+<div class="footer"><small><a href="https://commons.wikimedia.org/w/index.php?curid=30988413" target="_blank">Photo credit: Ricraider</a></p></small></div>

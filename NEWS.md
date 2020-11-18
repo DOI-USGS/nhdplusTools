@@ -1,3 +1,56 @@
+nhdplusTools 0.3.16
+==========
+* `subset_nhdplus()` now validates geometry and ensures all outputs are in NAD83
+* `subset_nhdplus()` queries the NHDPlus database rather than loading then filtering
+* `get_levelpaths()` rewritten for performance. Package now uses `data.table`.
+
+nhdplusTools 0.3.15
+==========
+* Added `discover_nldi_characteristics()` and `get_nldi_characteristics()`
+* Changed `navigate_nldi()` to use the new NLDI navigation end point. Distance is now required.
+* Fixed a bug in `get_flowline_index()` to handle multipart lines.
+* Added flowline_only input to `plot_nhdplus()` to improve scalability
+* Added streamorder filtering to `subset_nhdplus()` for download filtering.
+* Default behavior of `plot_nhdplus()` updated to improve scalability of large downloads.
+
+nhdplusTools 0.3.14
+==========
+* Added `get_node()` to get top and bottom of a flowline.
+* Switched geospatial data dependency to use labs.waterdata.usgs.gov
+* Added `subset_rpu()` to enable subsetting the NHD by Raster Processing Unit
+* Added `get_waterbody_index()` to find associations between point locations and waterbodys.
+* Added ability to get multiple matches from `get_flowline_index()` with `max_matches` parameter.
+* Added ability to download flowlines in `get_flowline_index()` rather than requiring data to be loaded locally.
+
+nhdplusTools 0.3.13
+==========
+* tested with dplyr 1.0 and sf 0.9. 
+
+nhdplusTools 0.3.12
+==========
+* Added `plot_nhdplus()` with both outlet-based and bbox based data subsetting as well as rudimentary style modification capabilities.
+* Implemented stream order and Pfafstetter code generators (`get_streamorder()` and `get_pfaf()`) for dendritic networks.
+* `subset_nhdplus()` can now return data without writing a file to disk.
+* NLDI feature specification is more flexible, doesn't require names anymore.
+* `get_nhdplushr()` has been updated to modify terminal path and other identifiers making nhdplusHR subsets "stand alone". A function `make_standalone()` is now exported.
+* Added `get_terminal()` and `get_pathlength()` functions to generate nhdplus network attributes.
+
+nhdplusTools 0.3.11
+==========
+* Updated link to NHDPlusHR data
+* Empty tibble rather than NULL response from empty NLDI result
+* Slides from AWRA National 2019, link in README
+
+nhdplusTools 0.3.10
+==========
+* Added name alignment function
+* Added ability to sort response of network navigation
+
+nhdplusTools 0.3.9
+==========
+* Added downloader functions for more hydrography datasets
+* Change navigations to exclude requested catchment
+
 nhdplusTools 0.3.8
 ==========
 * Modified vignettes and examples to avoid web-service calls breaking CRAN build.

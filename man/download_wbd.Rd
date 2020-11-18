@@ -6,8 +6,9 @@
 \usage{
 download_wbd(
   outdir,
- 
-    url = "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/WBD/National/GDB/WBD_National_GDB.zip"
+
+  url = paste0("https://prd-tnm.s3.amazonaws.com/StagedProducts/",
+    "Hydrography/WBD/National/GDB/WBD_National_GDB.zip")
 )
 }
 \arguments{
@@ -20,6 +21,9 @@ the path to the local geodatabase
 }
 \description{
 This function downloads and decompresses staged seamless WBD data.
+Please see:
+https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/WBD/National/GDB/WBD_National_GDB.xml
+for metadata.
 }
 \examples{
 \dontrun{

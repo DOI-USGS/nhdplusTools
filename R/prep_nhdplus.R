@@ -15,8 +15,9 @@
 #' or not.
 #' @param warn boolean controls whether warning an status messages are printed
 #' @param error boolean controls whether to return potentially invalid data with a warning rather than an error
+#' @param skip_toCOMID boolean if TRUE, toCOMID will not be added to output.
 #' @return data.frame ready to be used with the refactor_flowlines function.
-#' @importFrom dplyr select filter left_join
+#' @importFrom dplyr select filter left_join group_split group_by bind_rows
 #' @family refactor functions
 #' @export
 #' @examples
@@ -33,7 +34,8 @@ prepare_nhdplus <- function(flines,
                             min_path_size = 0,
                             purge_non_dendritic = TRUE,
                             warn = TRUE,
-                            error = TRUE) {
+                            error = TRUE,
+                            skip_toCOMID = FALSE) {
 
   flines <- check_names(flines, "prepare_nhdplus")
 
@@ -96,12 +98,26 @@ prepare_nhdplus <- function(flines,
                   min_path_size))
   }
 
-  # Join ToNode and FromNode along with COMID and Length to
-  # get downstream attributes.
-  flines <- left_join(flines, select(flines,
-                                     toCOMID = .data$COMID,
-                                     .data$FromNode),
-                      by = c("ToNode" = "FromNode"))
+  if(skip_toCOMID) return(select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
+                                 -StreamOrde, -StreamCalc, -TerminalPa,
+                                 -FTYPE, -Pathlength, -Divergence))
+
+  if(nrow(flines) > 0) {
+    # Join ToNode and FromNode along with COMID and Length to
+    # get downstream attributes. This is done grouped by
+    # terminalpathID becasue duplicate node ids were encountered
+    # accross basins.
+    flines <- group_by(flines, TerminalPa)
+    flines <- group_split(flines)
+
+    flines <- lapply(flines, function(x){
+      left_join(x, select(x,
+                          toCOMID = .data$COMID,
+                          .data$FromNode),
+                by = c("ToNode" = "FromNode"))})
+
+    flines <- bind_rows(flines)
+  }
 
   if (!all(flines[["TerminalFl"]][which(is.na(flines$toCOMID))] == 1)) {
     warn <- paste("FromNode - ToNode imply terminal flowlines that are not\n",

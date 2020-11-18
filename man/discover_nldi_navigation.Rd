@@ -9,7 +9,7 @@ discover_nldi_navigation(nldi_feature, tier = "prod")
 \arguments{
 \item{nldi_feature}{length 2 list list with optional names `featureSource`
 and `featureID` where `featureSource` is derived from the "source" column of
-the response of discover_nldi_sources() and the `featureSource` is a known identifier
+the response of dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`. e.g. list("nwissite", "USGS-08279500")}
 
 \item{tier}{character optional "prod" or "test"}
@@ -23,7 +23,7 @@ given feature source and id.
 }
 \examples{
 \donttest{
-discover_nldi_sources()
+dataRetrieval::get_nldi_sources()
 
 nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 

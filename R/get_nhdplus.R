@@ -4,7 +4,7 @@
 #' sf::st_sfc(sf::st_point(..,..), crs)
 #' @param nldi_feature list with names `featureSource` and `featureID` where
 #' `featureSource` is derived from the "source" column of  the response of
-#' discover_nldi_sources() and the `featureSource` is a known identifier
+#' \link[dataRetrieval]{get_nldi_sources} and the `featureSource` is a known identifier
 #' from the specified `featureSource`.
 #' @return integer COMID
 #' @export

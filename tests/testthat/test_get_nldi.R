@@ -4,7 +4,7 @@ test_that("nldi basics work", {
 
   skip_on_cran()
 
-  nldi_sources <- discover_nldi_sources()
+  nldi_sources <- dataRetrieval::get_nldi_sources()
 
   expect_equal(class(nldi_sources), "data.frame")
 

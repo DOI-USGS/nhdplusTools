@@ -97,7 +97,7 @@ Any data added to these plots must be projected to this coordinate system to be 
 
 What follows shows how to use `nhdplusTools` to create plots without the `plot_nhdplus` function. While super convenient, we all know the "easy button" is never quite right, the description below should help get you started.
 
-For this example, we'll start from an outlet NWIS Site. Note that other options are possible with `discover_nhdplus_id` and `discover_nldi_sources`.
+For this example, we'll start from an outlet NWIS Site. Note that other options are possible with `discover_nhdplus_id` and `dataRetrieval::get_nldi_sources`.
 
 ```{r get data}
 library(sf)

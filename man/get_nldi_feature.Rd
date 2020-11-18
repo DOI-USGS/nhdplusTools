@@ -9,7 +9,7 @@ get_nldi_feature(nldi_feature, tier = "prod")
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-discover_nldi_sources() and the `featureSource` is a known identifier
+dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.}
 
 \item{tier}{character optional "prod" or "test"}

@@ -198,7 +198,7 @@ start_comid
 
 The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these "featureSources". We can query the NLDI for an identifier of a given feature from any of its "featureSources" and find out what our navigation options are as shown below.
 ```{r discover_nldi}
-discover_nldi_sources()$source
+dataRetrieval::get_nldi_sources()$source
 
 nldi_feature <- list(featureSource = "comid", featureID = start_comid)
 discover_nldi_navigation(nldi_feature)

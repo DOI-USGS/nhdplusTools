@@ -17,9 +17,3 @@ path to cached data
 \description{
 downloads and caches data on your computer
 }
-\examples{
-\donttest{
-NOTE: path = tempfile() for demo only.
-download_vaa(path = tempfile())
-}
-}

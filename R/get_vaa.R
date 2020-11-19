@@ -48,19 +48,22 @@ get_vaa_names <- function(){
 #' @examples
 #' \donttest{
 #' # NOTE: path = tempfile() for demo only.
-#' get_vaa("slope", path = tempfile())
-#' get_vaa(c("slope", "lengthkm"), path = tempfile())
+#' temp <- tempfile()
+#' get_vaa("slope", path = temp)
+#' get_vaa(c("slope", "lengthkm"), path = temp)
 #' }
 #' @importFrom fst read.fst
 
-get_vaa <- function(atts = NULL, path = get_vaa_path(), download = TRUE) {
+get_vaa <- function(atts = NULL, path = get_vaa_path(),
+                    download = TRUE) {
 
   if(!file.exists(path)){
     if(download) {
       message("didn't find data, downloading.")
       path <- download_vaa(path = path)
+    } else {
+      stop("need to download data: run `download_vaa()`")
     }
-    stop("need to download data: run `download_vaa()`")
   }
 
   if(is.null(atts)){
@@ -79,11 +82,7 @@ get_vaa <- function(atts = NULL, path = get_vaa_path(), download = TRUE) {
 #' @return path to cached data
 #' @export
 #' @importFrom httr GET progress write_disk
-#' @examples
-#' \donttest{
-#' NOTE: path = tempfile() for demo only.
-#' download_vaa(path = tempfile())
-#' }
+#'
 download_vaa <- function(path = get_vaa_path()) {
 
   if (file.exists(path)) {

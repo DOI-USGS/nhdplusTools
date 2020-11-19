@@ -665,11 +665,25 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE) {
   }
 }
 
-drop_geometry <- function(x) {
-  if("sf" %in% class(x)) {
-    sf::st_drop_geometry(x)
+#' @noRd
+get_nhdplus_byid <- function(comids, layer, streamorder = NULL) {
+
+  if(layer == "nhdflowline_network"){
+    query_usgs_geoserver(ids = comids, type = "nhd", filter = streamorder_filter(streamorder))
+  } else if(layer == "catchmentsp"){
+    query_usgs_geoserver(ids = comids, type = "catchment")
   } else {
-    x
+    stop("Layer must be one of catchmentsp, nhdflowline_network")
   }
 }
 
+#' @noRd
+get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
+
+  if(!layer %in% c("nhdarea", "nhdwaterbody", "nhdflowline_network", "catchmentsp")) {
+    stop("Layer must be one of nhdarea, nhdwaterbody")
+  }
+
+  query_usgs_geoserver(AOI = box, type = dplyr::filter(query_usgs_geoserver(),
+                                                       geoserver == layer)$user_call)
+}

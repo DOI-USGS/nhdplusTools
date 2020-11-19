@@ -25,7 +25,8 @@ Return requested NHDPlusv2 Attributes
 \examples{
 \donttest{
 # NOTE: path = tempfile() for demo only.
-get_vaa("slope", path = tempfile())
-get_vaa(c("slope", "lengthkm"), path = tempfile())
+temp <- tempfile()
+get_vaa("slope", path = temp)
+get_vaa(c("slope", "lengthkm"), path = temp)
 }
 }

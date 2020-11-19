@@ -7,6 +7,10 @@
 get_gagesII(AOI = NULL, id = NULL)
 }
 \arguments{
+\item{AOI}{sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
+be given as either a location (sf POINT) or area (sf POLYGON)
+in any coordinate reference system.}
+
 \item{id}{Search for gagesII locations by NWIS siteID}
 }
 \value{

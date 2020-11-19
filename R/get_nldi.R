@@ -57,12 +57,12 @@ type_check <- function(type) {
 #' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 #'
 #' navigate_nldi(nldi_feature = nldi_nwis,
-#'               mode = "upstreamTributaries") %>%
+#'               mode = "upstreamTributaries")$UT %>%
 #'   st_geometry() %>%
 #'   plot()
 #'
 #' navigate_nldi(nldi_feature = nldi_nwis,
-#'               mode = "UM") %>%
+#'               mode = "UM")$UM %>%
 #'   st_geometry() %>%
 #'   plot(col = "blue", add = TRUE)
 #'
@@ -70,7 +70,7 @@ type_check <- function(type) {
 #'
 #' nwissite <- navigate_nldi(nldi_feature = nldi_nwis,
 #'                           mode = "UT",
-#'                           data_source = "nwissite")
+#'                           data_source = "nwissite")$UT_nwissite
 #'
 #' st_geometry(nwissite) %>%
 #'   plot(col = "green", add = TRUE)
@@ -165,19 +165,19 @@ get_nldi_feature <- function(nldi_feature) {
 #' chars <- get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
 #' names(chars)
 #' head(chars$local, 10)
-get_nldi_characteristics <- function(nldi_feature, type="local", tier = "prod") {
+get_nldi_characteristics <- function(nldi_feature, type="local") {
 
   tc <- type_check(type)
 
   nldi_feature <- check_nldi_feature(nldi_feature, convert = FALSE)
 
-  out <- lapply(tc$type_options[[type]], function(x, tier) {
+  out <- lapply(tc$type_options[[type]], function(x) {
     o <- query_nldi(paste(nldi_feature[["featureSource"]],
                           nldi_feature[["featureID"]],
                           x,
-                          sep = "/"), tier = tier)
+                          sep = "/"))
     o$characteristics
-  }, tier = tier)
+  })
 
   names(out) <- tc$char_names
 

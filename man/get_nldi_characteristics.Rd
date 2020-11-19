@@ -4,7 +4,7 @@
 \alias{get_nldi_characteristics}
 \title{Get Catchment Characteristics}
 \usage{
-get_nldi_characteristics(nldi_feature, type = "local", tier = "prod")
+get_nldi_characteristics(nldi_feature, type = "local")
 }
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where

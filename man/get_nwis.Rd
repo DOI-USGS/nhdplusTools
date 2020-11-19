@@ -6,6 +6,11 @@
 \usage{
 get_nwis(AOI = NULL)
 }
+\arguments{
+\item{AOI}{sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
+be given as either a location (sf POINT) or area (sf POLYGON)
+in any coordinate reference system.}
+}
 \value{
 sf object
 }

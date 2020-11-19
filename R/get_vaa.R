@@ -46,7 +46,7 @@ get_vaa_names <- function(){
 #' @return data.frame
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # NOTE: path = tempfile() for demo only.
 #' temp <- tempfile()
 #' get_vaa("slope", path = temp)

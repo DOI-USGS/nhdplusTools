@@ -685,5 +685,5 @@ get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
   }
 
   query_usgs_geoserver(AOI = box, type = dplyr::filter(query_usgs_geoserver(),
-                                                       geoserver == layer)$user_call)
+                                                       .data$geoserver == layer)$user_call)
 }

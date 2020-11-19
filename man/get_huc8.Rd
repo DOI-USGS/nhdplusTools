@@ -7,6 +7,10 @@
 get_huc8(AOI = NULL, id = NULL)
 }
 \arguments{
+\item{AOI}{sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
+be given as either a location (sf POINT) or area (sf POLYGON)
+in any coordinate reference system.}
+
 \item{id}{WBD HUC08 ID(s)}
 }
 \value{

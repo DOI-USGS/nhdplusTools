@@ -145,7 +145,7 @@ query_usgs_geoserver <- function(AOI = NULL, ids = NULL,
          call. = FALSE)
   }
 
-  here = dplyr::filter(df, user_call == !!type)
+  here = dplyr::filter(df, .data$user_call == !!type)
 
   URL      <- paste0("https://labs.waterdata.usgs.gov/geoserver/",
                      here$server,

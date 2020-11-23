@@ -17,7 +17,7 @@ Depends:
     R (>= 3.5.0)
 Imports: dplyr, sf, RANN, units, magrittr, jsonlite, httr, igraph, xml2, R.utils, utils, tidyr, methods, rosm, prettymapr, fst, dataRetrieval, rappdirs
 Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table
-Remotes: dblodgett-usgs/dataRetrieval
+Remotes: usgs-r/dataRetrieval
 License: CC0
 Encoding: UTF-8
 LazyData: true

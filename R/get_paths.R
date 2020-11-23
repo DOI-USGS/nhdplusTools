@@ -5,6 +5,9 @@
 #' the weight column, this will match the behavior of NHDPlus. Any numeric value can be
 #' included in this column and the largest value will be followed when no nameID is available.
 #' @param x data.frame with ID, toID, nameID, and weight columns.
+#' @param override_factor numeric factor to use to override nameID.
+#' If `weight` is `numeric_factor` times larger on a path, it will be followed
+#' regardless of the nameID indication.
 #' @param status boolean if status updates should be printed.
 #' @return data.frame with ID, outletID, topo_sort, and levelpath columns.
 #' See details for more info.
@@ -35,7 +38,7 @@
 #' get_levelpaths(test_flowline)
 #'
 #'
-get_levelpaths <- function(x, status = FALSE) {
+get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
 
   x <- check_names(x, "get_levelpaths")
 
@@ -64,7 +67,7 @@ get_levelpaths <- function(x, status = FALSE) {
     x_tail_ind <- which(x$topo_sort == min(flc$topo_sort))
     sortID <- x$topo_sort[x_tail_ind]
 
-    pathIDs <- get_path(flc, tailID, status)
+    pathIDs <- get_path(flc, tailID, override_factor, status)
 
     x <- mutate(x,
                 levelpath = ifelse(.data$ID %in% pathIDs,
@@ -94,8 +97,10 @@ get_levelpaths <- function(x, status = FALSE) {
 #' or, if no nameID exists, maximum weight column.
 #' @param x data.frame with ID, toID, nameID and weight columns.
 #' @param tailID integer or numeric ID of outlet catchment.
+#' @param override_factor numeric follow weight if this many times larger
+#' @param status print status?
 #'
-get_path <- function(x, tailID, status) {
+get_path <- function(x, tailID, override_factor, status) {
 
   keep_going <- TRUE
   tracker <- rep(NA, nrow(x))
@@ -116,7 +121,8 @@ get_path <- function(x, tailID, status) {
 
     if(nrow(next_tails) > 1) { # need to find dominant
 
-      next_tails <- get_next_tail(next_tails, x$nameID[x$ID == tailID][1])
+      next_tails <- get_next_tail(next_tails, x$nameID[x$ID == tailID][1],
+                                  override_factor)
 
     }
 
@@ -143,23 +149,32 @@ get_path <- function(x, tailID, status) {
 
 .datatable.aware <- TRUE
 
-get_next_tail <- function(next_tails, cur_name) {
+get_next_tail <- function(next_tails, cur_name, override_factor) {
+
+  max_weight <- max(next_tails$weight)
 
     if(any(next_tails$nameID != " ")) { # If any of the candidates are named.
+      pick <- next_tails
 
-      if(cur_name %in% next_tails$nameID) {
-        next_tails <- # pick the matching one.
-          next_tails[next_tails$nameID == cur_name, ]
+      if(cur_name %in% pick$nameID) {
+        pick <- # pick the matching one.
+          pick[pick$nameID == cur_name, ]
       }
 
-      if(nrow(next_tails) > 1) {
-        next_tails <- # pick the named one.
-          next_tails[next_tails$nameID != " ", ]
+      if(nrow(pick) > 1) {
+        pick <- # pick the named one.
+          pick[pick$nameID != " ", ]
       }
+
+      if(!is.null(override_factor) && max_weight / override_factor > pick$weight) {
+        pick <- next_tails[next_tails$weight == max_weight, ]
+      }
+
+      next_tails <- pick
     }
 
     if(nrow(next_tails) > 1) { # If the above didn't result in one row.
-      next_tails <- next_tails[next_tails$weight == max(next_tails$weight), ]
+      next_tails <- next_tails[next_tails$weight == max_weight, ]
     }
 
     if(nrow(next_tails) > 1) {

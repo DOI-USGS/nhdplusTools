@@ -1,8 +1,11 @@
 on:
   push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
+
 
 name: R-CMD-check
 
@@ -20,6 +23,7 @@ jobs:
           - { os: ubuntu-latest, r: "release" }
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@master
@@ -67,6 +71,7 @@ jobs:
           deps[["installed"]] <- vapply(deps[["package"]], remotes:::local_sha, character(1))
           update(deps)
           remotes::install_cran("rcmdcheck")
+          remotes::install_cran("covr")
         shell: Rscript {0}
 
       - name: Check
@@ -79,3 +84,7 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
+
+      - name: Test coverage
+        run: covr::coveralls()
+        shell: Rscript {0}

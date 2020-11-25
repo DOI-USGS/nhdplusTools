@@ -15,6 +15,8 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       _R_CHECK_TESTS_NLINES_: 0
+      COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+      CI_NAME: github-actions
     steps:
       - uses: actions/checkout@v2
 
@@ -75,4 +77,8 @@ jobs:
 
       - name: Test coverage
         run: covr::codecov()
+        shell: Rscript {0}
+
+      - name: Test coverage
+        run: covr::coveralls()
         shell: Rscript {0}

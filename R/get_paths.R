@@ -166,8 +166,10 @@ get_next_tail <- function(next_tails, cur_name, override_factor) {
           pick[pick$nameID != " ", ]
       }
 
-      if(!is.null(override_factor) && max_weight / override_factor > pick$weight) {
-        pick <- next_tails[next_tails$weight == max_weight, ]
+      if(!is.null(override_factor)) {
+        if(any((max_weight / override_factor) > pick$weight)) {
+          pick <- next_tails[next_tails$weight == max_weight, ]
+        }
       }
 
       next_tails <- pick

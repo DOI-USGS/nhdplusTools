@@ -16,5 +16,5 @@ code.json
 tests/testthat/data/03
 rosm.cache
 pkgdown
-.gitlab-ci.yaml
+.gitlab-ci.yml
 .github

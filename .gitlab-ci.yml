@@ -1,6 +1,7 @@
 variables:
   _R_CHECK_CRAN_INCOMING_: "false"
   _R_CHECK_FORCE_SUGGESTS_: "true"
+  _R_CHECK_DONTTEST_EXAMPLES_: "false"
   APT_PKGS: "libudunits2-dev libgdal-dev libgeos-dev libproj-dev libcurl4-openssl-dev libssh2-1-dev libssl-dev libxml2-dev zlib1g-dev git p7zip-full"
 
 before_script:

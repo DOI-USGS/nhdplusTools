@@ -1,7 +1,7 @@
 variables:
   _R_CHECK_CRAN_INCOMING_: "false"
   _R_CHECK_FORCE_SUGGESTS_: "true"
-  APT_PKGS: "libudunits2-dev libgdal-dev libgeos-dev libproj-dev libcurl4-openssl-dev libssh2-1-dev libssl-dev libxml2-dev zlib1g-dev git"
+  APT_PKGS: "libudunits2-dev libgdal-dev libgeos-dev libproj-dev libcurl4-openssl-dev libssh2-1-dev libssl-dev libxml2-dev zlib1g-dev git p7zip-full"
 
 before_script:
   - wget --no-check-certificate -O /usr/local/share/ca-certificates/DOIRootCA2.crt https://raw.githubusercontent.com/dblodgett-usgs/hydrogeoenv/master/linux/DOIRootCA2.cer

@@ -22,8 +22,9 @@ test:
   image: code.chs.usgs.gov:5001/wma/hydrogeoenv:rocker-geospatial
   script:
     - r -e 'devtools::check(check_dir = ".")'
-    - r -e 'covr::report(file = "covr.html")'
+    - r -e 'capture.output(print(covr::package_coverage(".", c("tests", "examples"))), "covr.txt")'
+    - pandoc
   artifacts:
     paths:
       - "*.Rcheck"
-      - "covr.html"
+      - "covr.txt"

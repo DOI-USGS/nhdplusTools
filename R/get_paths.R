@@ -263,8 +263,13 @@ get_pathlength <- function(x) {
 
   sorted <- as(get_sorted(x[, c("ID", "toID")]),
                class(x$ID))
-  x <- left_join(data.frame(ID = sorted[length(sorted):1], stringsAsFactors = FALSE),
-                 x, by = "ID")
+
+  sorted <- sorted[length(sorted):1]
+
+  sorted <- sorted[!is.na(sorted)]
+
+  x <- left_join(data.frame(ID = sorted),
+                   x, by = "ID")
 
   x <- x[!is.na(x$ID), ]
 
@@ -280,6 +285,5 @@ get_pathlength <- function(x) {
       leo[i] <- le[r] + leo[r]
     }
   }
-  return(data.frame(ID = id, pathlength = leo,
-                    stringsAsFactors = FALSE))
+  return(data.frame(ID = id, pathlength = leo))
 }

@@ -4,19 +4,35 @@
 \alias{get_nwis}
 \title{Discover USGS NWIS Stream Gages}
 \usage{
-get_nwis(AOI = NULL)
+get_nwis(AOI = NULL, t_srs = NULL, buffer = 20000)
 }
 \arguments{
 \item{AOI}{sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
-be given as either a location (sf POINT) or area (sf POLYGON)
-in any coordinate reference system.}
+be provided as either a location (sf POINT) or area (sf POLYGON)
+in any Spatial Reference System.}
+
+\item{t_srs}{character (PROJ string or EPSG code) or numeric (EPSG code).
+A user specified Spatial Reference System (SRS/CRS) for returned objects.
+Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.}
+
+\item{buffer}{numeric. The amount (in meters) to buffer a POINT AOI by
+for an extended search. Default = 20,000. Returned results are arrange
+by distance from POINT AOI}
 }
 \value{
-sf object
+a simple features (sf) object
 }
 \description{
 Returns a POINT feature class of active, stream network,
-NWIS gages for an Area of Interest. If a POINT is given as the AOI,
-a 20km2 bounding box is searched and the nearest feature (euclidian)
-is returned. Data is accessed through the NWIS web portal.
+NWIS gages for an Area of Interest. If a POINT feature is used as an AOI,
+then the returned sites within the requested buffer, are sorted by distance (in meters) from that POINT.
+}
+\details{
+The returned object(s) will have the same
+Spatial Reference System (SRS) as the input AOI. If a individual or set of
+IDs are used to query, then the default geoserver CRS of EPSG:4326 is
+preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
+which will override all previous SRS's (either input or default).
+All buffer operations are handeled internally using in
+EPSG:5070 Albers Equal Area CONUS.
 }

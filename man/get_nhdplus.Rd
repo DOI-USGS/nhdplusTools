@@ -2,25 +2,26 @@
 % Please edit documentation in R/get_nhdplus.R
 \name{get_nhdplus}
 \alias{get_nhdplus}
-\title{Get National Hydrography Subsets (Multirealization)}
+\title{Get National Hydrography Dataset V2 Subsets (Multirealization)}
 \usage{
 get_nhdplus(
   AOI = NULL,
   comid = NULL,
   nwis = NULL,
   realization = "flowline",
-  streamorder = NULL
+  streamorder = NULL,
+  t_srs = NULL
 )
 }
 \arguments{
 \item{AOI}{sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
-be given as either a location (sf POINT) or area (sf POLYGON)
-in any coordinate reference system.}
+be provided as either a location (sf POINT) or area (sf POLYGON)
+in any Spatial Reference System.}
 
 \item{comid}{numeric or character. Search for NHD features by COMID(s)}
 
 \item{nwis}{numeric or character. Search for NHD features by
-colocated NWIS identifiers}
+collocated NWIS identifiers}
 
 \item{realization}{character. What realization to return.
 Default is flowline and options include: outlet, flowline, catchment,
@@ -30,14 +31,27 @@ and all}
 streamorder greater then or equal to this value
 for input value and higher.
 Only usable with AOI and flowline realizations.}
+
+\item{t_srs}{character (PROJ string or EPSG code) or numeric (EPSG code).
+A user specified Spatial Reference System (SRS/CRS) for returned objects.
+Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.}
 }
 \value{
-a single, or list, or simple feature objects
+a single, or list, of simple feature objects
 }
 \description{
-Subsets NHD features by location (POINT), area (POLYGON),
+Subsets NHDPlusV2 features by location (POINT), area (POLYGON),
 or set of COMIDs. Multi realizations are supported allowing you to query
 for flowlines, catchments, or outlets.
+}
+\details{
+The returned object(s) will have the same
+Spatial Reference System (SRS) as the input AOI. If a individual or set of
+IDs are used to query, then the default geoserver CRS of EPSG:4326 is
+preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
+which will override all previous SRS's (either input or default).
+All buffer operations are handeled internally using in
+EPSG:5070 Albers Equal Area CONUS.
 }
 \examples{
  point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)

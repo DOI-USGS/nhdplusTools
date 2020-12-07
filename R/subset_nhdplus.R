@@ -522,6 +522,8 @@ clean_bbox <- function(x) {
 
 check_valid <- function(x, out_prj) {
 
+  if(is.null(x)){return(NULL)}
+
   x <- sf::st_zm(x)
 
   if (!all(sf::st_is_valid(x))) {

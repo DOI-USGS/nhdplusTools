@@ -441,12 +441,7 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
       layer_name <- "NHDFlowline"
     }
 
-
-
-    fline <- sf::read_sf(nhdplus_data, layer_name,
-                         query = get_query(nhdplus_data, layer_name,
-                                           "COMID", comids))
-    fline <- align_nhdplus_names(fline)
+    fline <- get_nhd_data(nhdplus_data,layer_name, comids, "COMID")
 
   }
 
@@ -461,6 +456,29 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
   out[layer_name] <- list(fline)
 
   return(out)
+}
+
+get_nhd_data <- function(nhdplus_data, layer_name, comids, id) {
+
+  sets <- lapply(1:ceiling(length(comids) / 1000), function(x) {
+    start <- 1000 * (x - 1) + 1
+
+    end <- 1000 * x
+
+    end <- ifelse(end > length(comids), length(comids), end)
+
+    comids[start:end]
+  })
+
+  out <- lapply(sets, function(x) {
+    align_nhdplus_names(
+      sf::read_sf(nhdplus_data, layer_name,
+                  query = get_query(nhdplus_data, layer_name,
+                                    id, x)))
+  })
+
+  do.call(rbind, out)
+
 }
 
 get_query <- function(nhdplus_data, layer_name, id, comids) {
@@ -492,11 +510,7 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
 
   } else {
 
-    catchment <- sf::read_sf(nhdplus_data, layer_name,
-                             query = get_query(nhdplus_data, layer_name,
-                                               "FEATUREID", comids))
-
-    catchment <- align_nhdplus_names(catchment)
+    catchment <- get_nhd_data(nhdplus_data,layer_name, comids, "FEATUREID")
 
   }
 

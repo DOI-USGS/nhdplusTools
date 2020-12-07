@@ -49,21 +49,35 @@ test_that("calculate level path", {
     weight = walker_flowline$ArbolateSu,
     stringsAsFactors = FALSE)
 
-  test_flowline <- left_join(test_flowline,
+  test_flowline_out <- left_join(test_flowline,
                              get_levelpaths(test_flowline, status = TRUE), by = "ID")
 
   nhdp_lp <- sort(unique(walker_flowline$LevelPathI))
-  nhdt_lp <- sort(unique(test_flowline$levelpath))
+  nhdt_lp <- sort(unique(test_flowline_out$levelpath))
 
   expect_true(length(nhdp_lp) == length(nhdt_lp))
 
   for(lp in seq_along(nhdp_lp)) {
     nhdp <- filter(walker_flowline, LevelPathI == nhdp_lp[lp])
     outlet_comid <- filter(nhdp, Hydroseq == min(Hydroseq))$COMID
-    nhdt <- filter(test_flowline, outletID == outlet_comid)
+    nhdt <- filter(test_flowline_out, outletID == outlet_comid)
     expect(all(nhdp$COMID %in% nhdt$ID), paste("Mismatch in", nhdp_lp[lp],
                                                "level path from NHDPlus."))
   }
+
+  # break the data
+  test_flowline$nameID[test_flowline$ID == 5329293] <- " "
+  test_flowline$nameID[test_flowline$ID == 5329295] <- "255208"
+  test_flowline_out2 <- left_join(test_flowline,
+                                  get_levelpaths(test_flowline, status = TRUE), by = "ID")
+
+  expect_equal(test_flowline_out2$levelpath[test_flowline_out2$ID == 5329295], 1)
+
+  test_flowline_out2 <- left_join(test_flowline,
+                                  get_levelpaths(test_flowline, override_factor = 10,
+                                                 status = TRUE), by = "ID")
+
+  expect_equal(test_flowline_out$levelpath, test_flowline_out2$levelpath)
 })
 
 test_that("calculate level path", {

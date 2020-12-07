@@ -97,7 +97,7 @@ test_that("subset runs as expected", {
                          overwrite = TRUE,
                          status = TRUE))
 
-  expect_equal(length(messages), 15)
+  expect_equal(length(messages), 17)
 
   check_layers <- function() {
     expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
@@ -136,7 +136,7 @@ test_that("subset runs as expected", {
                        overwrite = FALSE,
                        status = FALSE,
                        flowline_only = FALSE),
-                 "No features found in this AOI from layer, nhdarea")
+                 "No nhdarea features found")
 
   check_layers()
 

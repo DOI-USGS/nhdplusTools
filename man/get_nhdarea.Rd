@@ -14,7 +14,7 @@ in any Spatial Reference System.}
 \item{id}{NHD Area COMID(s)}
 
 \item{t_srs}{character (PROJ string or EPSG code) or numeric (EPSG code).
-A user specified Spatial Reference System (SRS/CRS) for returned objects.
+A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.
 Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.}
 
 \item{buffer}{numeric. The amount (in meters) to buffer a POINT AOI by for an
@@ -33,6 +33,6 @@ Spatial Reference System (SRS) as the input AOI. If a individual or set of
 IDs are used to query, then the default geoserver CRS of EPSG:4326 is
 preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
 which will override all previous SRS's (either input or default).
-All buffer operations are handeled internally using in
-EPSG:5070 Albers Equal Area CONUS.
+All buffer and distance operations are handled internally using in
+EPSG:5070 Albers Equal Area projection
 }

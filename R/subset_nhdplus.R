@@ -217,7 +217,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
       layer <- sf::st_transform(envelope, 4326) %>%
         get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
 
-      if(!is.null(layer) && nrow(layer) > 0) {
+      if(!is.null(nrow(layer)) && nrow(layer) > 0) {
         layer <- check_valid(layer, out_prj)
 
         if(return_data) {
@@ -441,7 +441,7 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
       layer_name <- "NHDFlowline"
     }
 
-    fline <- get_nhd_data(nhdplus_data,layer_name, comids, "COMID")
+    fline <- get_nhd_data(nhdplus_data,layer_name, comids, "COMID", status)
 
   }
 
@@ -458,7 +458,7 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
   return(out)
 }
 
-get_nhd_data <- function(nhdplus_data, layer_name, comids, id) {
+get_nhd_data <- function(nhdplus_data, layer_name, comids, id, status) {
 
   sets <- lapply(1:ceiling(length(comids) / 1000), function(x) {
     start <- 1000 * (x - 1) + 1
@@ -470,12 +470,22 @@ get_nhd_data <- function(nhdplus_data, layer_name, comids, id) {
     comids[start:end]
   })
 
-  out <- lapply(sets, function(x) {
+  cur_count_secret <<- 0
+
+  out <- lapply(sets, function(x, total) {
+    if(status) {
+
+      cur_count_secret <<- cur_count_secret + length(x)
+
+      message(paste(cur_count_secret, "comids of", total))
+
+    }
+
     align_nhdplus_names(
       sf::read_sf(nhdplus_data, layer_name,
                   query = get_query(nhdplus_data, layer_name,
                                     id, x)))
-  })
+  }, total = sum(lengths(sets)))
 
   do.call(rbind, out)
 
@@ -510,7 +520,7 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
 
   } else {
 
-    catchment <- get_nhd_data(nhdplus_data,layer_name, comids, "FEATUREID")
+    catchment <- get_nhd_data(nhdplus_data,layer_name, comids, "FEATUREID", status)
 
   }
 
@@ -567,7 +577,7 @@ check_valid <- function(x, out_prj) {
       cast_to <- paste0("MULTI", cast_to)
     }
 
-    tryCatch(x <- sf::st_cast(x, cast_to),
+    tryCatch(x <- suppressWarnings(sf::st_cast(x, cast_to)),
              error = function(e) {
                warning(paste0("\n\n Failed to unify output geometry type. \n\n",
                              e,

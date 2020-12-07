@@ -15,6 +15,16 @@ NHDPlusV2 attribute data sans geometry. This function returns the
 file path to the cached file. Will use the user cache dir indicated
 by \link[rappdirs]{user_cache_dir}.
 }
+\details{
+The VAA data is a aggregate table of information from the NHDPlusV2
+elevslope.dbf(s), PlusFlowlineVAA.dbf(s); and NHDFlowlines. All data
+originates from the EPA NHDPlus Homepage
+\href{https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data}{here}.
+To see the location of cached data on your machine use
+\code{\link{get_vaa_path()}}.
+To view aggregate data and documentation, see
+\href{https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/}{here}
+}
 \examples{
 get_vaa_path()
 }

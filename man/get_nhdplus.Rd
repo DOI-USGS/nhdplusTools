@@ -33,7 +33,7 @@ for input value and higher.
 Only usable with AOI and flowline realizations.}
 
 \item{t_srs}{character (PROJ string or EPSG code) or numeric (EPSG code).
-A user specified Spatial Reference System (SRS/CRS) for returned objects.
+A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.
 Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.}
 }
 \value{
@@ -50,8 +50,8 @@ Spatial Reference System (SRS) as the input AOI. If a individual or set of
 IDs are used to query, then the default geoserver CRS of EPSG:4326 is
 preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
 which will override all previous SRS's (either input or default).
-All buffer operations are handeled internally using in
-EPSG:5070 Albers Equal Area CONUS.
+All buffer and distance operations are handled internally using in
+EPSG:5070 Albers Equal Area projection
 }
 \examples{
  point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)
@@ -64,4 +64,5 @@ EPSG:5070 Albers Equal Area CONUS.
  ymax = 34.42439, ymin = 34.40473), crs = 4326))
  get_nhdplus(area)
  get_nhdplus(area, realization = "flowline", streamorder = 3)
+
 }

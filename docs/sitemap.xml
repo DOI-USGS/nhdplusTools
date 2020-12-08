@@ -19,12 +19,6 @@
     <loc>https://usgs-r.github.io/nhdplusTools//reference/discover_nldi_characteristics.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools//reference/discover_nldi_navigation.html</loc>
-  </url>
-  <url>
-    <loc>https://usgs-r.github.io/nhdplusTools//reference/discover_nldi_sources.html</loc>
-  </url>
-  <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/download_nhdplushr.html</loc>
   </url>
   <url>
@@ -32,6 +26,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/download_rf1.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/download_vaa.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/download_wbd.html</loc>
@@ -46,10 +43,25 @@
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_flowline_index.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_gagesII.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_hr_data.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_huc12.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_huc8.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_levelpaths.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_nhdarea.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_nhdplus.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_nhdplushr.html</loc>
@@ -65,6 +77,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_node.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_nwis.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_pathlength.html</loc>
@@ -85,6 +100,18 @@
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_UT.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_vaa.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_vaa_names.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_vaa_path.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/get_waterbodies.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/get_waterbody_index.html</loc>
   </url>
   <url>
@@ -101,6 +128,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/prepare_nhdplus.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/query_usgs_geoserver.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/stage_national_data.html</loc>

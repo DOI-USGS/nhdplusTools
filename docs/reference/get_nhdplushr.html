@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -149,16 +149,16 @@
     <p>Get NHDPlus HiRes</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_nhdplushr</span>(
-  <span class='no'>hr_dir</span>,
-  <span class='kw'>out_gpkg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>layers</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"NHDFlowline"</span>, <span class='st'>"NHDPlusCatchment"</span>),
-  <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>".*GDB.gdb$"</span>,
-  <span class='kw'>check_terminals</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>keep_cols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>get_nhdplushr</span><span class='op'>(</span>
+  <span class='va'>hr_dir</span>,
+  out_gpkg <span class='op'>=</span> <span class='cn'>NULL</span>,
+  layers <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"NHDFlowline"</span>, <span class='st'>"NHDPlusCatchment"</span><span class='op'>)</span>,
+  pattern <span class='op'>=</span> <span class='st'>".*GDB.gdb$"</span>,
+  check_terminals <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  keep_cols <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -224,9 +224,10 @@ Set layers to "NULL" to get all layers.</p>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='co'># Note this will download a lot of data to a temp directory.</span>
 <span class='co'># Change 'tempdir()' to your directory of choice.</span>
-<span class='no'>download_dir</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='download_nhdplushr.html'>download_nhdplushr</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"0302"</span>, <span class='st'>"0303"</span>))
+<span class='va'>download_dir</span> <span class='op'>&lt;-</span> <span class='fu'><a href='download_nhdplushr.html'>download_nhdplushr</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"0302"</span>, <span class='st'>"0303"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>get_nhdplushr</span>(<span class='no'>download_dir</span>, <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>download_dir</span>, <span class='st'>"nhdplus_0302-03.gpkg"</span>))</div><div class='output co'>#&gt; $NHDFlowline
+<span class='fu'>get_nhdplushr</span><span class='op'>(</span><span class='va'>download_dir</span>, <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>download_dir</span>, <span class='st'>"nhdplus_0302-03.gpkg"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $NHDFlowline
 #&gt; Simple feature collection with 211528 features and 57 fields (with 2150 geometries empty)
 #&gt; geometry type:  MULTILINESTRING
 #&gt; dimension:      XY
@@ -281,9 +282,10 @@ Set layers to "NULL" to get all layers.</p>
 #&gt; </span><span style='color: #555555;'>10</span><span>   1.50</span><span style='color: #555555;'>e</span><span>13 NHDPlus~    </span><span style='text-decoration: underline;'>12</span><span>043   0.357  0302       0.041</span><span style='text-decoration: underline;'>5</span><span>  0.000</span><span style='text-decoration: underline;'>035</span><span>9 
 #&gt; </span><span style='color: #555555;'># ... with 185,936 more rows, and 1 more variable: SHAPE </span><span style='color: #555555;font-style: italic;'>&lt;MULTIPOLYGON [°]&gt;</span><span>
 #&gt; </div><div class='input'>
-<span class='fu'>get_nhdplushr</span>(<span class='no'>download_dir</span>,
-              <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>download_dir</span>, <span class='st'>"nhdplus_0302-03.gpkg"</span>),
-              <span class='kw'>layers</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: GDAL Message 1: organizePolygons() received a polygon with more than 100 parts. The processing may be really slow.  You can skip the processing by setting METHOD=SKIP, or only make it analyze counter-clock wise parts by setting METHOD=ONLY_CCW if you can assume that the outline of holes is counter-clock wise defined</span></div><div class='output co'>#&gt; $NHDPlusBurnLineEvent
+<span class='fu'>get_nhdplushr</span><span class='op'>(</span><span class='va'>download_dir</span>,
+              <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>download_dir</span>, <span class='st'>"nhdplus_0302-03.gpkg"</span><span class='op'>)</span>,
+              layers <span class='op'>=</span> <span class='cn'>NULL</span>, overwrite <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: GDAL Message 1: organizePolygons() received a polygon with more than 100 parts. The processing may be really slow.  You can skip the processing by setting METHOD=SKIP, or only make it analyze counter-clock wise parts by setting METHOD=ONLY_CCW if you can assume that the outline of holes is counter-clock wise defined</span></div><div class='output co'>#&gt; $NHDPlusBurnLineEvent
 #&gt; Simple feature collection with 186937 features and 12 fields
 #&gt; geometry type:  MULTILINESTRING
 #&gt; dimension:      XY
@@ -709,10 +711,11 @@ Set layers to "NULL" to get all layers.</p>
 #&gt; </span><span style='color: #555555;'>10</span><span>       1 (-79.21457 36.05783)
 #&gt; </span><span style='color: #555555;'># ... with 205,940 more rows</span><span>
 #&gt; </div><div class='input'>
-<span class='fu'>get_nhdplushr</span>(<span class='no'>download_dir</span>,
-              <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>download_dir</span>, <span class='st'>"nhdplus_0302-03.gpkg"</span>),
-              <span class='kw'>layers</span> <span class='kw'>=</span> <span class='st'>"NHDFlowline"</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-              <span class='kw'>min_size_sqkm</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>simp</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>proj</span> <span class='kw'>=</span> <span class='st'>"+init=epsg:5070"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: GDAL Message 1: +init=epsg:XXXX syntax is deprecated. It might return a CRS with a non-EPSG compliant axis order.</span></div><div class='output co'>#&gt; $NHDFlowline
+<span class='fu'>get_nhdplushr</span><span class='op'>(</span><span class='va'>download_dir</span>,
+              <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>download_dir</span>, <span class='st'>"nhdplus_0302-03.gpkg"</span><span class='op'>)</span>,
+              layers <span class='op'>=</span> <span class='st'>"NHDFlowline"</span>, overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>,
+              min_size_sqkm <span class='op'>=</span> <span class='fl'>10</span>, simp <span class='op'>=</span> <span class='fl'>10</span>, proj <span class='op'>=</span> <span class='st'>"+init=epsg:5070"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: GDAL Message 1: +init=epsg:XXXX syntax is deprecated. It might return a CRS with a non-EPSG compliant axis order.</span></div><div class='output co'>#&gt; $NHDFlowline
 #&gt; Simple feature collection with 45242 features and 57 fields
 #&gt; geometry type:  LINESTRING
 #&gt; dimension:      XY
@@ -746,7 +749,7 @@ Set layers to "NULL" to get all layers.</p>
 #&gt; </span><span style='color: #555555;'>#   MaxElevSmo </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, MinElevSmo </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Slope </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, SlopeLenKm </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   ElevFixed </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, HWType </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span style='color: #555555;'>, HWNodeSqKm </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, StatusFlag </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>
 #&gt; </div><div class='input'>
-# }
+<span class='co'># }</span>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -763,7 +766,7 @@ Set layers to "NULL" to get all layers.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -153,8 +153,8 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-data-and-package-helpers" class="hasAnchor"><a href="#section-data-and-package-helpers" class="anchor"></a>Data and Package Helpers</h2>
-          <p class="section-desc"><p>Functions that make the package easier to work with.</p></p>
+          <h2 id="section-data-access" class="hasAnchor"><a href="#section-data-access" class="anchor"></a>Data Access</h2>
+          <p class="section-desc"><p>Functions that help get ahold of NHDPlus data.</p></p>
         </th>
       </tr>
       
@@ -165,39 +165,15 @@
       <tr>
         
         <td>
-          <p><code><a href="nhdplus_path.html">nhdplus_path()</a></code> </p>
-        </td>
-        <td><p>NHDPlus Data Path</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="stage_national_data.html">stage_national_data()</a></code> </p>
-        </td>
-        <td><p>Stage NHDPlus National Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_nhdplus.html">plot_nhdplus()</a></code> </p>
-        </td>
-        <td><p>Plot NHDPlus</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="subset_nhdplus.html">subset_nhdplus()</a></code> </p>
-        </td>
-        <td><p>Subset NHDPlus</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="prepare_nhdplus.html">prepare_nhdplus()</a></code> </p>
-        </td>
-        <td><p>Prep NHDPlus Data</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="download_nhdplushr.html">download_nhdplushr()</a></code> </p>
         </td>
         <td><p>Download NHDPlus HiRes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_nhdplus.html">get_nhdplus()</a></code> </p>
+        </td>
+        <td><p>Get National Hydrography Dataset V2 Subsets (Multirealization)</p></td>
       </tr><tr>
         
         <td>
@@ -231,9 +207,167 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="download_vaa.html">download_vaa()</a></code> </p>
+        </td>
+        <td><p>Download nhdplusVAA data from HydroShare</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_vaa.html">get_vaa()</a></code> </p>
+        </td>
+        <td><p>NHDPlusV2 Attribute Subset</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-discovery-and-subsetting" class="hasAnchor"><a href="#section-discovery-and-subsetting" class="anchor"></a>Discovery and Subsetting</h2>
+          <p class="section-desc"><p>Functions for finding and saving the part of the NHDPlus you are interested in working with.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="subset_nhdplus.html">subset_nhdplus()</a></code> </p>
+        </td>
+        <td><p>Subset NHDPlus</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="subset_rpu.html">subset_rpu()</a></code> </p>
+        </td>
+        <td><p>Subset by Raster Processing Unit.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="discover_nhdplus_id.html">discover_nhdplus_id()</a></code> </p>
+        </td>
+        <td><p>Discover NHDPlus ID</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_nhdplus.html">get_nhdplus()</a></code> </p>
+        </td>
+        <td><p>Get National Hydrography Dataset V2 Subsets (Multirealization)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_gagesII.html">get_gagesII()</a></code> </p>
+        </td>
+        <td><p>Find GAGESII Features</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_huc12.html">get_huc12()</a></code> </p>
+        </td>
+        <td><p>Find WBD HUC 12 unit subsets</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_huc8.html">get_huc8()</a></code> </p>
+        </td>
+        <td><p>Find WBD HUC 08 unit subsets</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_nhdarea.html">get_nhdarea()</a></code> </p>
+        </td>
+        <td><p>Find NHD Areas</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_waterbodies.html">get_waterbodies()</a></code> </p>
+        </td>
+        <td><p>Find NHD Water Bodies</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_nwis.html">get_nwis()</a></code> </p>
+        </td>
+        <td><p>Discover USGS NWIS Stream Gages</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="discover_nldi_characteristics.html">discover_nldi_characteristics()</a></code> </p>
+        </td>
+        <td><p>Discover Characteristics Metadata</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_nldi_characteristics.html">get_nldi_characteristics()</a></code> </p>
+        </td>
+        <td><p>Get Catchment Characteristics</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_nldi_basin.html">get_nldi_basin()</a></code> </p>
+        </td>
+        <td><p>Get NLDI Basin Boundary</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_nldi_feature.html">get_nldi_feature()</a></code> </p>
+        </td>
+        <td><p>Get NLDI Feature</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-package-helpers" class="hasAnchor"><a href="#section-package-helpers" class="anchor"></a>Package Helpers</h2>
+          <p class="section-desc"><p>Functions that make the package easier to work with.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="nhdplus_path.html">nhdplus_path()</a></code> </p>
+        </td>
+        <td><p>NHDPlus Data Path</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="stage_national_data.html">stage_national_data()</a></code> </p>
+        </td>
+        <td><p>Stage NHDPlus National Data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_nhdplus.html">plot_nhdplus()</a></code> </p>
+        </td>
+        <td><p>Plot NHDPlus</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="align_nhdplus_names.html">align_nhdplus_names()</a></code> </p>
         </td>
         <td><p>Align NHD Dataset Names</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="prepare_nhdplus.html">prepare_nhdplus()</a></code> </p>
+        </td>
+        <td><p>Prep NHDPlus Data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_vaa_names.html">get_vaa_names()</a></code> </p>
+        </td>
+        <td><p>Available NHDPlusV2 Attributes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_vaa_path.html">get_vaa_path()</a></code> </p>
+        </td>
+        <td><p>File path to value added attribute (vaa) Cache</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -299,8 +433,8 @@
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-discovery-and-subsetting" class="hasAnchor"><a href="#section-discovery-and-subsetting" class="anchor"></a>Discovery and Subsetting</h2>
-          <p class="section-desc"><p>Functions for finding and saving the part of the NHDPlus you are interested in working with.</p></p>
+          <h2 id="section-indexing-and-network-navigation" class="hasAnchor"><a href="#section-indexing-and-network-navigation" class="anchor"></a>Indexing and Network Navigation</h2>
+          <p class="section-desc"><p>Functions to index and match data to NHDPlus features.</p></p>
         </th>
       </tr>
       
@@ -309,66 +443,6 @@
       
       
       <tr>
-        
-        <td>
-          <p><code><a href="discover_nhdplus_id.html">discover_nhdplus_id()</a></code> </p>
-        </td>
-        <td><p>Discover NHDPlus ID</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="discover_nldi_sources.html">discover_nldi_sources()</a></code> </p>
-        </td>
-        <td><p>Discover NLDI Sources</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="discover_nldi_navigation.html">discover_nldi_navigation()</a></code> </p>
-        </td>
-        <td><p>Discover NLDI Navigation Options</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="discover_nldi_characteristics.html">discover_nldi_characteristics()</a></code> </p>
-        </td>
-        <td><p>Discover Characteristics Metadata</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_nldi_characteristics.html">get_nldi_characteristics()</a></code> </p>
-        </td>
-        <td><p>Get Catchment Characteristics</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_nldi_basin.html">get_nldi_basin()</a></code> </p>
-        </td>
-        <td><p>Get NLDI Basin Boundary</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_nldi_feature.html">get_nldi_feature()</a></code> </p>
-        </td>
-        <td><p>Get NLDI Feature</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="navigate_nldi.html">navigate_nldi()</a></code> </p>
-        </td>
-        <td><p>Navigate NLDI</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="subset_nhdplus.html">subset_nhdplus()</a></code> </p>
-        </td>
-        <td><p>Subset NHDPlus</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="subset_rpu.html">subset_rpu()</a></code> </p>
-        </td>
-        <td><p>Subset by Raster Processing Unit.</p></td>
-      </tr><tr>
         
         <td>
           <p><code><a href="get_DD.html">get_DD()</a></code> </p>
@@ -392,20 +466,13 @@
           <p><code><a href="get_UT.html">get_UT()</a></code> </p>
         </td>
         <td><p>Navigate Upstream with Tributaries</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-indexing" class="hasAnchor"><a href="#section-indexing" class="anchor"></a>Indexing</h2>
-          <p class="section-desc"><p>Functions to index and match data to NHDPlus features.</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="navigate_nldi.html">navigate_nldi()</a></code> </p>
+        </td>
+        <td><p>Navigate NLDI</p></td>
+      </tr><tr>
         
         <td>
           <p><code><a href="get_flowline_index.html">get_flowline_index()</a></code> </p>
@@ -442,7 +509,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -39,7 +39,7 @@ Terms used for hydrologic units:
 ### Data:
 
 [A National Dataset of NHDPlusV2.1 is available here.](https://www.epa.gov/waterdata/nhdplus-national-data)  
-Also see: [`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html) and [`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
+Also see: [`get_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html), [`subset_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html), [`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html) and [`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
 
 ## Package Vision
 

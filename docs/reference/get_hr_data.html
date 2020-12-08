@@ -81,7 +81,7 @@ See get_nhdplushr for examples." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -151,14 +151,14 @@ See get_nhdplushr for examples." />
 See <a href='get_nhdplushr.html'>get_nhdplushr</a> for examples.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_hr_data</span>(
-  <span class='no'>gdb</span>,
-  <span class='kw'>layer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>min_size_sqkm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>simp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>proj</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>rename</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>get_hr_data</span><span class='op'>(</span>
+  <span class='va'>gdb</span>,
+  layer <span class='op'>=</span> <span class='cn'>NULL</span>,
+  min_size_sqkm <span class='op'>=</span> <span class='cn'>NULL</span>,
+  simp <span class='op'>=</span> <span class='cn'>NULL</span>,
+  proj <span class='op'>=</span> <span class='cn'>NULL</span>,
+  rename <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,7 +169,7 @@ See <a href='get_nhdplushr.html'>get_nhdplushr</a> for examples.</p>
     </tr>
     <tr>
       <th>layer</th>
-      <td><p>character layer name from geodatabase found with <a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></p></td>
+      <td><p>character layer name from geodatabase found with <a href='https://r-spatial.github.io/sf/reference/st_layers.html'>st_layers</a></p></td>
     </tr>
     <tr>
       <th>min_size_sqkm</th>
@@ -181,7 +181,7 @@ See <a href='get_nhdplushr.html'>get_nhdplushr</a> for examples.</p>
     </tr>
     <tr>
       <th>proj</th>
-      <td><p>a projection specification compatible with <a href='https://rdrr.io/pkg/sf/man/st_crs.html'>st_crs</a></p></td>
+      <td><p>a projection specification compatible with <a href='https://r-spatial.github.io/sf/reference/st_crs.html'>st_crs</a></p></td>
     </tr>
     <tr>
       <th>rename</th>
@@ -206,7 +206,7 @@ be applied.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

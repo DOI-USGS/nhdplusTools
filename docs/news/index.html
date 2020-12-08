@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -143,9 +143,53 @@
       <small>Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="nhdplustools-040" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.0">
+<a href="#nhdplustools-040" class="anchor"></a>nhdplusTools 0.4.0<small> Unreleased </small>
+</h1>
+<p>Version 0.4.0 adds new functionality for data access via web services and updates the usability and flexibility of data discovery and subsetting functions. This release includes significant rework of functions related to network navigation and web-service data subsetting.</p>
+<ul>
+<li>Previsouly, <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> included internal functionality for downloading data via web service. This code for subsetting NHDPlus via web service was completely rewritten and a number of new web-service data access functions were added. The <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> function has been added and is for web-service data access only. <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code>, which will output a subset to a local <code>.gpkg</code> file, now uses <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> for download functionality.</li>
+<li>
+<code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> and most other <a href="https://waterdata.usgs.gov/blog/nldi-intro/">NLDI</a> functions are now based on an NLDI client in the <a href="https://code.usgs.gov/water/dataRetrieval"><code>dataRetrieval</code></a> package. Functionality has been maintained backward compatible with <code>nhdplusTools</code> v0.3 as much as possible with some minor modifications to accomadate changes in dataRetrieval. The response format from <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> has been changed slightly in v0.4, it now includes both the origin feature and navigation type(s) as a list. Two un-needed nldi discovery functions were removed.</li>
+<li>Functions to download and cache all NHDPlus VAAs (in a 195mb <code>.fst</code> file) for use in network navigation and other applications have been added. These can be used with any nhdplusTools functions that do not require geometry.</li>
+<li>
+<code><a href="../reference/get_levelpaths.html">get_levelpaths()</a></code> now has an <code>override_factor</code> parameter that will cause stream leveling to follow the weight rather than the name input if the weight is <code>override_factor</code> times larger than the name indication.</li>
+</ul>
+<p><em>Functions Added</em></p>
+<ul>
+<li><code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code></li>
+<li><code><a href="../reference/get_nhdarea.html">get_nhdarea()</a></code></li>
+<li><code><a href="../reference/get_waterbodies.html">get_waterbodies()</a></code></li>
+<li><code><a href="../reference/get_gagesII.html">get_gagesII()</a></code></li>
+<li><code><a href="../reference/get_huc12.html">get_huc12()</a></code></li>
+<li><code><a href="../reference/get_huc8.html">get_huc8()</a></code></li>
+<li><code><a href="../reference/download_vaa.html">download_vaa()</a></code></li>
+<li><code><a href="../reference/get_vaa.html">get_vaa()</a></code></li>
+<li><code><a href="../reference/get_vaa_names.html">get_vaa_names()</a></code></li>
+<li><code><a href="../reference/get_vaa_path.html">get_vaa_path()</a></code></li>
+</ul>
+<p><em>Functions Removed</em></p>
+<ul>
+<li><code>discover_nldi_navigation()</code></li>
+<li><code>discover_nldi_sources()</code></li>
+</ul>
+<p><em>Functions Deprecated</em></p>
+<ul>
+<li><code><a href="../reference/stage_national_data.html">stage_national_data()</a></code></li>
+</ul>
+<p><em>Functions with Consolodated Internals</em></p>
+<ul>
+<li><code><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id()</a></code></li>
+<li><code><a href="../reference/get_nldi_basin.html">get_nldi_basin()</a></code></li>
+<li><code><a href="../reference/get_nldi_feature.html">get_nldi_feature()</a></code></li>
+<li><code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code></li>
+<li><code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code></li>
+</ul>
+</div>
     <div id="nhdplustools-0316" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.16">
-<a href="#nhdplustools-0316" class="anchor"></a>nhdplusTools 0.3.16<small> Unreleased </small>
+<a href="#nhdplustools-0316" class="anchor"></a>nhdplusTools 0.3.16<small> 2020-11-13 </small>
 </h1>
 <ul>
 <li>
@@ -269,7 +313,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

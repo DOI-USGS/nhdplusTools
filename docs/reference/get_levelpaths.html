@@ -84,7 +84,7 @@ included in this column and the largest value will be followed when no nameID is
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -157,7 +157,7 @@ the weight column, this will match the behavior of NHDPlus. Any numeric value ca
 included in this column and the largest value will be followed when no nameID is available.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_levelpaths</span>(<span class='no'>x</span>, <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>x</span>, override_factor <span class='op'>=</span> <span class='cn'>NULL</span>, status <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -165,6 +165,12 @@ included in this column and the largest value will be followed when no nameID is
     <tr>
       <th>x</th>
       <td><p>data.frame with ID, toID, nameID, and weight columns.</p></td>
+    </tr>
+    <tr>
+      <th>override_factor</th>
+      <td><p>numeric factor to use to override nameID.
+If `weight` is `numeric_factor` times larger on a path, it will be followed
+regardless of the nameID indication.</p></td>
     </tr>
     <tr>
       <th>status</th>
@@ -192,19 +198,21 @@ See details for more info.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='no'>test_flowline</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span>(<span class='no'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: removing geometry</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 0 flowlines that don't apply.</span>
+<span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span><span class='op'>(</span><span class='va'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: removing geometry</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 0 flowlines that don't apply.</span>
 #&gt; <span class='warning'> Includes: Coastlines, non-dendritic paths, </span>
 #&gt; <span class='warning'>and networks with drainage area less than 0 sqkm, and drainage basins smaller than FALSE</span></div><div class='input'>
-<span class='no'>test_flowline</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
-  <span class='kw'>ID</span> <span class='kw'>=</span> <span class='no'>test_flowline</span>$<span class='no'>COMID</span>,
-  <span class='kw'>toID</span> <span class='kw'>=</span> <span class='no'>test_flowline</span>$<span class='no'>toCOMID</span>,
-  <span class='kw'>nameID</span> <span class='kw'>=</span> <span class='no'>walker_flowline</span>$<span class='no'>GNIS_ID</span>,
-  <span class='kw'>weight</span> <span class='kw'>=</span> <span class='no'>walker_flowline</span>$<span class='no'>ArbolateSu</span>,
-  <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  ID <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>COMID</span>,
+  toID <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>toCOMID</span>,
+  nameID <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>GNIS_ID</span>,
+  weight <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>ArbolateSu</span>,
+  stringsAsFactors <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='fu'>get_levelpaths</span>(<span class='no'>test_flowline</span>)</div><div class='output co'>#&gt;         ID outletID topo_sort levelpath
+<span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>test_flowline</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;         ID outletID topo_sort levelpath
 #&gt; 1  5329435  5329303        62         1
 #&gt; 2  5329347  5329347        61        61
 #&gt; 3  5329291  5329291        60        60
@@ -284,7 +292,7 @@ See details for more info.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -111,8 +111,8 @@
 <a href="#installation" class="anchor"></a>Installation:</h3>
 <pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("nhdplusTools")</a></code></pre>
 <p>For the latest development:</p>
-<pre><code>install.packages("devtools")
-devtools::install_github("USGS-R/nhdplusTools")</code></pre>
+<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")
+devtools::install_github("USGS-R/nhdplusTools")</a></code></pre>
 </div>
 <div id="resources" class="section level3">
 <h3 class="hasAnchor">
@@ -131,7 +131,7 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 <h3 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data:</h3>
 <p><a href="https://www.epa.gov/waterdata/nhdplus-national-data">A National Dataset of NHDPlusV2.1 is available here.</a><br>
-Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html"><code>download_nhdplushr</code></a> and <a href="https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html"><code>get_nhdplushr</code></a></p>
+Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html"><code>get_nhdplus</code></a>, <a href="https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html"><code>subset_nhdplus</code></a>, <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html"><code>download_nhdplushr</code></a> and <a href="https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html"><code>get_nhdplushr</code></a></p>
 </div>
 </div>
 <div id="package-vision" class="section level2">
@@ -202,8 +202,9 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdp
 <a href="#build-notes" class="anchor"></a>Build notes:</h3>
 <p>This package uses a convention to avoid building vignettes on CRAN. The <code>BUILD_VIGNETTES</code> environment variable must be set to <code>TRUE</code>. This is done with a .Renviron file in the package directory with the line <code>BUILD_VIGNETTES=TRUE</code>.</p>
 <p>Given this, the package should be built locally to include vignettes using:</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/build_vignettes.html">build_vignettes</a></span>(<span class="kw">install</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/build.html">build</a></span>(<span class="kw">vignettes</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/build_vignettes.html">build_vignettes</a></span><span class="op">(</span>install <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/build.html">build</a></span><span class="op">(</span>vignettes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="contributing" class="section level3">
 <h3 class="hasAnchor">
@@ -270,8 +271,7 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdp
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/USGS-R/nhdplusTools"><img src="https://travis-ci.org/USGS-R/nhdplusTools.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://coveralls.io/github/USGS-R/nhdplusTools?branch=master"><img src="https://coveralls.io/repos/github/USGS-R/nhdplusTools/badge.svg?branch=master" alt="Coverage Status"></a></li>
+<li><a href="https://codecov.io/gh/usgs-r/nhdplusTools"><img src="https://codecov.io/gh/usgs-r/nhdplusTools/branch/master/graph/badge.svg" alt="codecov"></a></li>
 <li><a href="https://cran.r-project.org/package=nhdplusTools"><img src="https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools" alt="CRAN Downloads"></a></li>
 <li><a href="https://cran.r-project.org/package=nhdplusTools"><img src="https://www.r-pkg.org/badges/version/nhdplusTools" alt="CRAN"></a></li>
 </ul>
@@ -285,7 +285,7 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdp
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

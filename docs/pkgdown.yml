@@ -1,12 +1,12 @@
 pandoc: 2.10.1
-pkgdown: 1.5.1
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   nhdplushr: nhdplushr.html
   nhdplusTools: nhdplusTools.html
   plot_nhdplus: plot_nhdplus.html
   point_indexing: point_indexing.html
-last_built: 2020-11-13T16:32Z
+last_built: 2020-12-08T20:04Z
 urls:
   reference: https://usgs-r.github.io/nhdplusTools//reference
   article: https://usgs-r.github.io/nhdplusTools//articles

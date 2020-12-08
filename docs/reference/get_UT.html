@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -149,7 +149,7 @@
     <p>Traverse NHDPlus network upstream with tributaries</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_UT</span>(<span class='no'>network</span>, <span class='no'>comid</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>get_UT</span><span class='op'>(</span><span class='va'>network</span>, <span class='va'>comid</span>, distance <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -176,17 +176,20 @@ returned. The COMID that exceeds the distance specified is returned.</p></td>
 starting COMID.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)
-<span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-spatial.github.io/sf/'>sf</a></span><span class='op'>)</span>
+<span class='va'>sample_flines</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>,
                                      <span class='st'>"petapsco_flowlines.gpkg"</span>,
-                                     <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
-<span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>(<span class='no'>sample_flines</span>$<span class='no'>geom</span>)</div><div class='input'><span class='no'>start_COMID</span> <span class='kw'>&lt;-</span> <span class='fl'>11690196</span>
-<span class='no'>UT_COMIDs</span> <span class='kw'>&lt;-</span> <span class='fu'>get_UT</span>(<span class='no'>sample_flines</span>, <span class='no'>start_COMID</span>)
-<span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>UT_COMIDs</span>)$<span class='no'>geom</span>,
-     <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
-<span class='no'>UT_COMIDs</span> <span class='kw'>&lt;-</span> <span class='fu'>get_UT</span>(<span class='no'>sample_flines</span>, <span class='no'>start_COMID</span>, <span class='kw'>distance</span> <span class='kw'>=</span> <span class='fl'>50</span>)
-<span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>UT_COMIDs</span>)$<span class='no'>geom</span>,
-     <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='get_UT-1.png' alt='' width='700' height='433' /></div><div class='input'>
+                                     package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>sample_flines</span><span class='op'>$</span><span class='va'>geom</span><span class='op'>)</span>
+</div><div class='input'><span class='va'>start_COMID</span> <span class='op'>&lt;-</span> <span class='fl'>11690196</span>
+<span class='va'>UT_COMIDs</span> <span class='op'>&lt;-</span> <span class='fu'>get_UT</span><span class='op'>(</span><span class='va'>sample_flines</span>, <span class='va'>start_COMID</span><span class='op'>)</span>
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>sample_flines</span>, <span class='va'>COMID</span> <span class='op'>%in%</span> <span class='va'>UT_COMIDs</span><span class='op'>)</span><span class='op'>$</span><span class='va'>geom</span>,
+     col <span class='op'>=</span> <span class='st'>"red"</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='input'>
+<span class='va'>UT_COMIDs</span> <span class='op'>&lt;-</span> <span class='fu'>get_UT</span><span class='op'>(</span><span class='va'>sample_flines</span>, <span class='va'>start_COMID</span>, distance <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span>
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>sample_flines</span>, <span class='va'>COMID</span> <span class='op'>%in%</span> <span class='va'>UT_COMIDs</span><span class='op'>)</span><span class='op'>$</span><span class='va'>geom</span>,
+     col <span class='op'>=</span> <span class='st'>"blue"</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='img'><img src='get_UT-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -203,7 +206,7 @@ starting COMID.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

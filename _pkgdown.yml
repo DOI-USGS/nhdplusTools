@@ -1,14 +1,10 @@
 url: https://usgs-r.github.io/nhdplusTools/
 
 reference:
-  - title: Data and Package Helpers
+  - title: Data Access
     desc: >
-      Functions that make the package easier to work with.
+      Functions that help get ahold of NHDPlus data.
     contents:
-      - '`nhdplus_path`'
-      - '`stage_national_data`'
-      - '`plot_nhdplus`'
-      - '`prepare_nhdplus`'
       - '`download_nhdplushr`'
       - '`get_nhdplus`'
       - '`get_nhdplushr`'
@@ -18,9 +14,36 @@ reference:
       - '`download_wbd`'
       - '`download_vaa`'
       - '`get_vaa`'
+  - title: Discovery and Subsetting
+    desc: >
+      Functions for finding and saving the part of the NHDPlus you are
+      interested in working with.
+    contents:
+      - '`subset_nhdplus`'
+      - '`subset_rpu`'
+      - '`discover_nhdplus_id`'
+      - '`get_nhdplus`'
+      - '`get_gagesII`'
+      - '`get_huc12`'
+      - '`get_huc8`'
+      - '`get_nhdarea`'
+      - '`get_waterbodies`'
+      - '`get_nwis`'
+      - '`discover_nldi_characteristics`'
+      - '`get_nldi_characteristics`'
+      - '`get_nldi_basin`'
+      - '`get_nldi_feature`'
+  - title: Package Helpers
+    desc: >
+      Functions that make the package easier to work with.
+    contents:
+      - '`nhdplus_path`'
+      - '`stage_national_data`'
+      - '`plot_nhdplus`'
+      - '`align_nhdplus_names`'
+      - '`prepare_nhdplus`'
       - '`get_vaa_names`'
       - '`get_vaa_path`'
-      - '`align_nhdplus_names`'
   - title: Network Attributes
     desc: >
       Functions that generate common river network attributes.
@@ -33,25 +56,6 @@ reference:
       - '`get_streamorder`'
       - '`get_pfaf`'
       - '`make_standalone`'
-  - title: Discovery and Subsetting
-    desc: >
-      Functions for finding and saving the part of the NHDPlus you are
-      interested in working with.
-    contents:
-      - '`discover_nhdplus_id`'
-      - '`get_nhdplus`'
-      - '`get_gagesII`'
-      - '`get_huc12`'
-      - '`get_huc8`''
-      - '`get_nhdplus`'
-      - '`get_nhdarea`'
-      - '`get_waterbodies`'
-      - '`discover_nldi_characteristics`'
-      - '`get_nldi_characteristics`'
-      - '`get_nldi_basin`'
-      - '`get_nldi_feature`'
-      - '`subset_nhdplus`'
-      - '`subset_rpu`'
   - title: Indexing and Network Navigation
     desc: >
       Functions to index and match data to NHDPlus features.

@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -149,13 +149,12 @@
     <p>Navigate the Network Linked Data Index network.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>navigate_nldi</span>(
-  <span class='no'>nldi_feature</span>,
-  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"upstreamMain"</span>,
-  <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>"flowlines"</span>,
-  <span class='kw'>distance_km</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>tier</span> <span class='kw'>=</span> <span class='st'>"prod"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>navigate_nldi</span><span class='op'>(</span>
+  <span class='va'>nldi_feature</span>,
+  mode <span class='op'>=</span> <span class='st'>"upstreamMain"</span>,
+  data_source <span class='op'>=</span> <span class='st'>"flowlines"</span>,
+  distance_km <span class='op'>=</span> <span class='fl'>10</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,26 +163,21 @@
       <th>nldi_feature</th>
       <td><p>list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-discover_nldi_sources() and the `featureSource` is a known identifier
+dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.</p></td>
     </tr>
     <tr>
       <th>mode</th>
-      <td><p>character chosen from names, URLs, or url parameters
-returned by discover_nldi_navigation(nldi_feature). See examples.</p></td>
+      <td><p>character chosen from ("UM", "UT", DM", "DD"). See examples.</p></td>
     </tr>
     <tr>
       <th>data_source</th>
       <td><p>character chosen from "source" column of the response
-of discover_nldi_sources() or empty string for flowline geometry.</p></td>
+of dataRetrieval::get_nldi_sources() or empty string for flowline geometry.</p></td>
     </tr>
     <tr>
       <th>distance_km</th>
       <td><p>numeric distance in km to stop navigating.</p></td>
-    </tr>
-    <tr>
-      <th>tier</th>
-      <td><p>character optional "prod" or "test"</p></td>
     </tr>
     </table>
 
@@ -193,38 +187,41 @@ of discover_nldi_sources() or empty string for flowline geometry.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-spatial.github.io/sf/'>sf</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
 
-<span class='no'>nldi_nwis</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>featureSource</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>, <span class='kw'>featureID</span> <span class='kw'>=</span> <span class='st'>"USGS-05428500"</span>)
+<span class='va'>nldi_nwis</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>featureSource <span class='op'>=</span> <span class='st'>"nwissite"</span>, featureID <span class='op'>=</span> <span class='st'>"USGS-05428500"</span><span class='op'>)</span>
 
-<span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
-              <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"upstreamTributaries"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>()</div><div class='input'>
-<span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
-              <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"UM"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"blue"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
+<span class='fu'>navigate_nldi</span><span class='op'>(</span>nldi_feature <span class='op'>=</span> <span class='va'>nldi_nwis</span>,
+              mode <span class='op'>=</span> <span class='st'>"upstreamTributaries"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>UT</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='input'>
+<span class='fu'>navigate_nldi</span><span class='op'>(</span>nldi_feature <span class='op'>=</span> <span class='va'>nldi_nwis</span>,
+              mode <span class='op'>=</span> <span class='st'>"UM"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>UM</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"blue"</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='input'>
 
 
-<span class='no'>nwissite</span> <span class='kw'>&lt;-</span> <span class='fu'>navigate_nldi</span>(<span class='kw'>nldi_feature</span> <span class='kw'>=</span> <span class='no'>nldi_nwis</span>,
-                          <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"UT"</span>,
-                          <span class='kw'>data_source</span> <span class='kw'>=</span> <span class='st'>"nwissite"</span>)
+<span class='va'>nwissite</span> <span class='op'>&lt;-</span> <span class='fu'>navigate_nldi</span><span class='op'>(</span>nldi_feature <span class='op'>=</span> <span class='va'>nldi_nwis</span>,
+                          mode <span class='op'>=</span> <span class='st'>"UT"</span>,
+                          data_source <span class='op'>=</span> <span class='st'>"nwissite"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>UT_nwissite</span>
 
-<span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>nwissite</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/sf/man/plot.html'>plot</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"green"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='navigate_nldi-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='no'>nwissite</span></div><div class='output co'>#&gt; Simple feature collection with 2 features and 7 fields
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>nwissite</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"green"</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='img'><img src='navigate_nldi-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='va'>nwissite</span>
+</div><div class='output co'>#&gt; Simple feature collection with 2 features and 5 fields
 #&gt; geometry type:  POINT
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: -89.37012 ymin: 43.08944 xmax: -89.36083 ymax: 43.095
 #&gt; geographic CRS: WGS 84
-#&gt; <span style='color: #555555;'># A tibble: 2 x 8</span><span>
-#&gt;   source sourceName identifier name  uri   comid navigation
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     
-#&gt; </span><span style='color: #555555;'>1</span><span> nwiss~ NWIS Sites USGS-0542~ LAKE~ http~ 1329~ https://l~
-#&gt; </span><span style='color: #555555;'>2</span><span> nwiss~ NWIS Sites USGS-0542~ YAHA~ http~ 1329~ https://l~
-#&gt; </span><span style='color: #555555;'># ... with 1 more variable: geometry </span><span style='color: #555555;font-style: italic;'>&lt;POINT [°]&gt;</span><span></div><div class='input'># }
+#&gt; <span style='color: #555555;'># A tibble: 2 x 6</span><span>
+#&gt;   sourceName identifier comid        X     Y             geometry
+#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;POINT [°]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> NWIS Sites 05428000   13294312 -</span><span style='color: #BB0000;'>89.4</span><span>  43.1   (-89.37012 43.095)
+#&gt; </span><span style='color: #555555;'>2</span><span> NWIS Sites 05428500   13293750 -</span><span style='color: #BB0000;'>89.4</span><span>  43.1 (-89.36083 43.08944)</div><div class='input'><span class='co'># }</span>
 
 </div></span></pre>
   </div>
@@ -242,7 +239,7 @@ of discover_nldi_sources() or empty string for flowline geometry.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

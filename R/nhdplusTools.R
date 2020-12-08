@@ -1,3 +1,7 @@
+# Primary HydroShare Data Resource
+vaa_hydroshare <-
+  'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
+
 nhdplusTools_env <- new.env()
 
 # NHDPlus Attributes
@@ -141,8 +145,10 @@ assign("get_waterbody_index_waterbodies_attributes",
        c("COMID"), envir = nhdplusTools_env)
 
 assign("get_waterbody_index_flines_attributes",
-       c("COMID", "WBAREACOMI", "Hydroseq"))
+       c("COMID", "WBAREACOMI", "Hydroseq"), envir = nhdplusTools_env)
 
+# assigned here for record keeping. Used as a status counter in apply functions.
+assign("cur_count", 0, envir = nhdplusTools_env)
 
 check_names <- function(x, function_name) {
   x <- align_nhdplus_names(x)
@@ -256,4 +262,13 @@ align_nhdplus_names <- function(x){
 
   return(x)
 
+}
+
+
+drop_geometry <- function(x) {
+  if("sf" %in% class(x)) {
+    sf::st_drop_geometry(x)
+  } else {
+    x
+  }
 }

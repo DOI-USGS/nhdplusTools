@@ -97,7 +97,7 @@ test_that("subset runs as expected", {
                          overwrite = TRUE,
                          status = TRUE))
 
-  expect_equal(length(messages), 15)
+  expect_equal(length(messages), 17)
 
   check_layers <- function() {
     expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
@@ -130,12 +130,13 @@ test_that("subset runs as expected", {
   skip_on_cran()
 
   # download option
-  fi <- subset_nhdplus(comids = comids,
+  expect_warning(fi <- subset_nhdplus(comids = comids,
                        output_file = out_file,
                        nhdplus_data = "download",
                        overwrite = FALSE,
                        status = FALSE,
-                       flowline_only = FALSE)
+                       flowline_only = FALSE),
+                 "No nhdarea features found")
 
   check_layers()
 

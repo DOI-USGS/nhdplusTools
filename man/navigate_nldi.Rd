@@ -8,25 +8,21 @@ navigate_nldi(
   nldi_feature,
   mode = "upstreamMain",
   data_source = "flowlines",
-  distance_km = 10,
-  tier = "prod"
+  distance_km = 10
 )
 }
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-discover_nldi_sources() and the `featureSource` is a known identifier
+dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.}
 
-\item{mode}{character chosen from names, URLs, or url parameters
-returned by discover_nldi_navigation(nldi_feature). See examples.}
+\item{mode}{character chosen from ("UM", "UT", DM", "DD"). See examples.}
 
 \item{data_source}{character chosen from "source" column of the response
-of discover_nldi_sources() or empty string for flowline geometry.}
+of dataRetrieval::get_nldi_sources() or empty string for flowline geometry.}
 
 \item{distance_km}{numeric distance in km to stop navigating.}
-
-\item{tier}{character optional "prod" or "test"}
 }
 \value{
 sf data.frame with result
@@ -42,12 +38,12 @@ library(dplyr)
 nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 
 navigate_nldi(nldi_feature = nldi_nwis,
-              mode = "upstreamTributaries") \%>\%
+              mode = "upstreamTributaries")$UT \%>\%
   st_geometry() \%>\%
   plot()
 
 navigate_nldi(nldi_feature = nldi_nwis,
-              mode = "UM") \%>\%
+              mode = "UM")$UM \%>\%
   st_geometry() \%>\%
   plot(col = "blue", add = TRUE)
 
@@ -55,7 +51,7 @@ navigate_nldi(nldi_feature = nldi_nwis,
 
 nwissite <- navigate_nldi(nldi_feature = nldi_nwis,
                           mode = "UT",
-                          data_source = "nwissite")
+                          data_source = "nwissite")$UT_nwissite
 
 st_geometry(nwissite) \%>\%
   plot(col = "green", add = TRUE)

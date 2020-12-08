@@ -81,7 +81,7 @@ COMID of dominant artificial path" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -151,7 +151,7 @@ COMID of dominant artificial path" />
 COMID of dominant artificial path</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_waterbody_index</span>(<span class='no'>waterbodies</span>, <span class='no'>points</span>, <span class='kw'>flines</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>search_radius</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</pre>
+    <pre class="usage"><span class='fu'>get_waterbody_index</span><span class='op'>(</span><span class='va'>waterbodies</span>, <span class='va'>points</span>, flines <span class='op'>=</span> <span class='cn'>NULL</span>, search_radius <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,13 +183,14 @@ units of provided projection</p></td>
 near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>sample</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/sample_natseamless.gpkg"</span>,
-                      <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>)
+    <pre class="examples"><div class='input'><span class='va'>sample</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_natseamless.gpkg"</span>,
+                      package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span>
 
-<span class='no'>waterbodies</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='no'>sample</span>, <span class='st'>"NHDWaterbody"</span>)
-<span class='fu'>get_waterbody_index</span>(<span class='no'>waterbodies</span>,
-                    <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>89.356086</span>, <span class='fl'>43.079943</span>)),
-                               <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>, <span class='kw'>dim</span> <span class='kw'>=</span> <span class='st'>"XY"</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: st_transform points to match waterbodies</span></div><div class='output co'>#&gt;   near_wb_COMID near_wb_dist in_wb_COMID
+<span class='va'>waterbodies</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span><span class='va'>sample</span>, <span class='st'>"NHDWaterbody"</span><span class='op'>)</span>
+<span class='fu'>get_waterbody_index</span><span class='op'>(</span><span class='va'>waterbodies</span>,
+                    <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>89.356086</span>, <span class='fl'>43.079943</span><span class='op'>)</span><span class='op'>)</span>,
+                               crs <span class='op'>=</span> <span class='fl'>4326</span>, dim <span class='op'>=</span> <span class='st'>"XY"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: st_transform points to match waterbodies</span></div><div class='output co'>#&gt;   near_wb_COMID near_wb_dist in_wb_COMID
 #&gt; 1     167120949  0.002622833   167120949</div><div class='input'>
 </div></pre>
   </div>
@@ -207,7 +208,7 @@ near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projectio
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

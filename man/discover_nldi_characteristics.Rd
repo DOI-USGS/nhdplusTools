@@ -4,12 +4,10 @@
 \alias{discover_nldi_characteristics}
 \title{Discover Characteristics Metadata}
 \usage{
-discover_nldi_characteristics(type = "all", tier = "prod")
+discover_nldi_characteristics(type = "all")
 }
 \arguments{
 \item{type}{character "all", "local", "total", or "divergence_routed".}
-
-\item{tier}{character optional "prod" or "test"}
 }
 \description{
 Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.

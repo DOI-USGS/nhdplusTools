@@ -1,6 +1,9 @@
 #' @title Subset NHDPlus
 #' @description Saves a subset of the National Seamless database or other
 #' nhdplusTools compatible data based on a specified collection of COMIDs.
+#' This function uses \code{\link{get_nhdplus}} for the "download" data
+#' source but returns data consistent with local data subsets in a subset
+#' file.
 #' @param comids integer vector of COMIDs to include.
 #' @param output_file character path to save the output to defaults
 #' to the directory of the nhdplus_data.
@@ -217,7 +220,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
       layer <- sf::st_transform(envelope, 4326) %>%
         get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
 
-      if(nrow(layer) > 0) {
+      if(!is.null(nrow(layer)) && nrow(layer) > 0) {
         layer <- check_valid(layer, out_prj)
 
         if(return_data) {
@@ -290,7 +293,7 @@ intersection_write <- function(layer_name, data_path, envelope,
   }
 }
 
-#' @title Stage NHDPlus National Data
+#' @title Stage NHDPlus National Data (deprecated)
 #' @description Breaks down the national geo database into a collection
 #' of quick to access R binary files.
 #' @param include character vector containing one or more of:
@@ -441,12 +444,7 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
       layer_name <- "NHDFlowline"
     }
 
-
-
-    fline <- sf::read_sf(nhdplus_data, layer_name,
-                         query = get_query(nhdplus_data, layer_name,
-                                           "COMID", comids))
-    fline <- align_nhdplus_names(fline)
+    fline <- get_nhd_data(nhdplus_data,layer_name, comids, "COMID", status)
 
   }
 
@@ -461,6 +459,42 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
   out[layer_name] <- list(fline)
 
   return(out)
+}
+
+get_nhd_data <- function(nhdplus_data, layer_name, comids, id, status) {
+
+  sets <- lapply(1:ceiling(length(comids) / 1000), function(x) {
+    start <- 1000 * (x - 1) + 1
+
+    end <- 1000 * x
+
+    end <- ifelse(end > length(comids), length(comids), end)
+
+    comids[start:end]
+  })
+
+  assign("cur_count", 0, envir = nhdplusTools_env)
+
+  out <- lapply(sets, function(x, total) {
+    if(status) {
+
+      cur_count <-
+        get("cur_count", envir = nhdplusTools_env) + length(x)
+
+      assign("cur_count", cur_count, envir = nhdplusTools_env)
+
+      message(paste(cur_count, "comids of", total))
+
+    }
+
+    align_nhdplus_names(
+      sf::read_sf(nhdplus_data, layer_name,
+                  query = get_query(nhdplus_data, layer_name,
+                                    id, x)))
+  }, total = sum(lengths(sets)))
+
+  do.call(rbind, out)
+
 }
 
 get_query <- function(nhdplus_data, layer_name, id, comids) {
@@ -492,11 +526,7 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
 
   } else {
 
-    catchment <- sf::read_sf(nhdplus_data, layer_name,
-                             query = get_query(nhdplus_data, layer_name,
-                                               "FEATUREID", comids))
-
-    catchment <- align_nhdplus_names(catchment)
+    catchment <- get_nhd_data(nhdplus_data,layer_name, comids, "FEATUREID", status)
 
   }
 
@@ -521,6 +551,8 @@ clean_bbox <- function(x) {
 }
 
 check_valid <- function(x, out_prj) {
+
+  if(is.null(x)){return(NULL)}
 
   x <- sf::st_zm(x)
 
@@ -551,7 +583,7 @@ check_valid <- function(x, out_prj) {
       cast_to <- paste0("MULTI", cast_to)
     }
 
-    tryCatch(x <- sf::st_cast(x, cast_to),
+    tryCatch(x <- suppressWarnings(sf::st_cast(x, cast_to)),
              error = function(e) {
                warning(paste0("\n\n Failed to unify output geometry type. \n\n",
                              e,
@@ -665,11 +697,25 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE) {
   }
 }
 
-drop_geometry <- function(x) {
-  if("sf" %in% class(x)) {
-    sf::st_drop_geometry(x)
+#' @noRd
+get_nhdplus_byid <- function(comids, layer, streamorder = NULL) {
+
+  if(layer == "nhdflowline_network"){
+    query_usgs_geoserver(ids = comids, type = "nhd", filter = streamorder_filter(streamorder))
+  } else if(layer == "catchmentsp"){
+    query_usgs_geoserver(ids = comids, type = "catchment")
   } else {
-    x
+    stop("Layer must be one of catchmentsp, nhdflowline_network")
   }
 }
 
+#' @noRd
+get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
+
+  if(!layer %in% c("nhdarea", "nhdwaterbody", "nhdflowline_network", "catchmentsp")) {
+    stop("Layer must be one of nhdarea, nhdwaterbody")
+  }
+
+  query_usgs_geoserver(AOI = box, type = dplyr::filter(query_usgs_geoserver(),
+                                                       .data$geoserver == layer)$user_call)
+}

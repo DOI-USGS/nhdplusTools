@@ -4,15 +4,13 @@
 \alias{get_nldi_feature}
 \title{Get NLDI Feature}
 \usage{
-get_nldi_feature(nldi_feature, tier = "prod")
+get_nldi_feature(nldi_feature)
 }
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-discover_nldi_sources() and the `featureSource` is a known identifier
+dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.}
-
-\item{tier}{character optional "prod" or "test"}
 }
 \value{
 sf feature collection with one feature

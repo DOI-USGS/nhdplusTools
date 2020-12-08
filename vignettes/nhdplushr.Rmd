@@ -3,7 +3,7 @@ title: "Working with NHDPlusHR"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{NHDPlusHR}
+  %\VignetteIndexEntry{Working with NHDPlusHR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

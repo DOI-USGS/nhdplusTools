@@ -81,7 +81,7 @@ and measure for each." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -151,13 +151,13 @@ and measure for each." />
 and measure for each.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_flowline_index</span>(
-  <span class='no'>flines</span>,
-  <span class='no'>points</span>,
-  <span class='kw'>search_radius</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>max_matches</span> <span class='kw'>=</span> <span class='fl'>1</span>
-)</pre>
+    <pre class="usage"><span class='fu'>get_flowline_index</span><span class='op'>(</span>
+  <span class='va'>flines</span>,
+  <span class='va'>points</span>,
+  search_radius <span class='op'>=</span> <span class='fl'>0.1</span>,
+  precision <span class='op'>=</span> <span class='cn'>NA</span>,
+  max_matches <span class='op'>=</span> <span class='fl'>1</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -210,37 +210,41 @@ handling of precision parameter.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>,
+<span class='va'>sample_flines</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>,
                                          <span class='st'>"petapsco_flowlines.gpkg"</span>,
-                                         <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
-<span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
-                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.87479</span>,
-                                             <span class='fl'>39.48233</span>)),
-                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
+                                         package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>get_flowline_index</span><span class='op'>(</span><span class='va'>sample_flines</span>,
+                   <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>76.87479</span>,
+                                             <span class='fl'>39.48233</span><span class='op'>)</span><span class='op'>)</span>,
+                              crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
 #&gt;      id    COMID REACHCODE      REACH_meas   offset
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472       51.5 0.000</span><span style='text-decoration: underline;'>301</span><span></div><div class='input'>
-<span class='fu'>get_flowline_index</span>(<span class='st'>"download_nhdplusv2"</span>,
-                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.87479</span>,
-                                             <span class='fl'>39.48233</span>)),
-                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: crs of lines and points don't match. attempting st_transform of points</span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 1 x 5</span><span>
+<span class='fu'>get_flowline_index</span><span class='op'>(</span><span class='st'>"download_nhdplusv2"</span>,
+                   <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>76.87479</span>,
+                                             <span class='fl'>39.48233</span><span class='op'>)</span><span class='op'>)</span>,
+                              crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: st_buffer does not correctly buffer longitude/latitude data</span></div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_intersects assumes that they are planar</span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 1 x 5</span><span>
 #&gt;      id    COMID REACHCODE      REACH_meas   offset
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472       51.5 0.000</span><span style='text-decoration: underline;'>311</span><span></div><div class='input'>
-<span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
-                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.87479</span>,
-                                             <span class='fl'>39.48233</span>)),
-                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>), <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>30</span>)</div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1</span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 1 x 5</span><span>
+<span class='fu'>get_flowline_index</span><span class='op'>(</span><span class='va'>sample_flines</span>,
+                   <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>76.87479</span>,
+                                             <span class='fl'>39.48233</span><span class='op'>)</span><span class='op'>)</span>,
+                              crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>, precision <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 1 x 5</span><span>
 #&gt;      id    COMID REACHCODE      REACH_meas    offset
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472       52.3 0.000</span><span style='text-decoration: underline;'>045</span><span>8</div><div class='input'>
-<span class='fu'>get_flowline_index</span>(<span class='no'>sample_flines</span>,
-                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.86934</span>, <span class='fl'>39.49328</span>)),
-                                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.91711</span>, <span class='fl'>39.40884</span>)),
-                                   <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>76.88081</span>, <span class='fl'>39.36354</span>))),
-                              <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>),
-                   <span class='kw'>search_radius</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-                   <span class='kw'>max_matches</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 30 x 5</span><span>
+<span class='fu'>get_flowline_index</span><span class='op'>(</span><span class='va'>sample_flines</span>,
+                   <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>76.86934</span>, <span class='fl'>39.49328</span><span class='op'>)</span><span class='op'>)</span>,
+                                   <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>76.91711</span>, <span class='fl'>39.40884</span><span class='op'>)</span><span class='op'>)</span>,
+                                   <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>76.88081</span>, <span class='fl'>39.36354</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,
+                              crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>,
+                   search_radius <span class='op'>=</span> <span class='fl'>0.2</span>,
+                   max_matches <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 30 x 5</span><span>
 #&gt;       id    COMID REACHCODE      REACH_meas    offset
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span>     1 11</span><span style='text-decoration: underline;'>688</span><span>298 02060003000579        0   0.000</span><span style='text-decoration: underline;'>060</span><span>3
@@ -254,7 +258,7 @@ handling of precision parameter.</p>
 #&gt; </span><span style='color: #555555;'> 9</span><span>     1 11</span><span style='text-decoration: underline;'>690</span><span>490 02060003000580        0   0.002</span><span style='text-decoration: underline;'>85</span><span>  
 #&gt; </span><span style='color: #555555;'>10</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>948 02060003000516        0   0.003</span><span style='text-decoration: underline;'>21</span><span>  
 #&gt; </span><span style='color: #555555;'># ... with 20 more rows</span><span></div><div class='input'>
-# }
+<span class='co'># }</span>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -271,7 +275,7 @@ handling of precision parameter.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -1,195 +1,107 @@
-#' @title Discover NHDPlus ID
-#' @description Multipurpose function to find a COMID of interest.
-#' @param point An sf POINT including crs as created by:
-#' sf::st_sfc(sf::st_point(..,..), crs)
-#' @param nldi_feature list with names `featureSource` and `featureID` where
-#' `featureSource` is derived from the "source" column of  the response of
-#' discover_nldi_sources() and the `featureSource` is a known identifier
-#' from the specified `featureSource`.
-#' @return integer COMID
-#' @export
+#' @title Get National Hydrography Dataset V2 Subsets (Multirealization)
+#' @description Subsets NHDPlusV2 features by location (POINT), area (POLYGON),
+#' or set of COMIDs. Multi realizations are supported allowing you to query
+#' for flowlines, catchments, or outlets.
+#' @inherit query_usgs_geoserver details
+#' @inheritParams query_usgs_geoserver
+#' @param comid numeric or character. Search for NHD features by COMID(s)
+#' @param nwis  numeric or character. Search for NHD features by
+#' collocated NWIS identifiers
+#' @param streamorder numeric or character. Only return NHD flowlines with a
+#' streamorder greater then or equal to this value
+#' for input value and higher.
+#' Only usable with AOI and flowline realizations.
+#' @param realization character. What realization to return.
+#' Default is flowline and options include: outlet, flowline, catchment,
+#' and all
+#' @return a single, or list, of simple feature objects
 #' @examples
-#' \donttest{
-#' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
-#' discover_nhdplus_id(point)
-#'
-#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
-#' discover_nhdplus_id(nldi_feature = nldi_nwis)
-#' }
-discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
+#'  point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)
+#'  get_nhdplus(point)
+#'  get_nhdplus(point, realization = "catchment")
+#'  get_nhdplus(point, realization = "all")
 
-  ows_url <- get("geoserver_ows_root", envir = nhdplusTools_env)
+#'  get_nhdplus(comid = 101)
+#'  get_nhdplus(nwis  = c(11120000, 11120500))
 
-  if (!is.null(point)) {
+#'  area <- sf::st_as_sfc(sf::st_bbox(c(xmin = -119.8851, xmax =-119.8361,
+#'  ymax = 34.42439, ymin = 34.40473), crs = 4326))
 
-    url_base <- paste0(ows_url,
-                       "?service=WFS",
-                       "&version=1.0.0",
-                       "&request=GetFeature",
-                       "&typeName=wmadata:catchmentsp",
-                       "&outputFormat=application%2Fjson",
-                       "&srsName=EPSG:4326")
+#'  get_nhdplus(area)
+#'  get_nhdplus(area, realization = "flowline", streamorder = 3)
+#' @importFrom methods is
+#' @importFrom sf st_filter st_crs st_transform
+#' @export
 
-    p_crd <- sf::st_coordinates(sf::st_transform(point, 4326))
+get_nhdplus <- function(AOI = NULL,
+                        comid = NULL, nwis = NULL,
+                        realization = "flowline",
+                        streamorder = NULL,
+                        t_srs = NULL){
 
-    url <- paste0(url_base, "&CQL_FILTER=INTERSECTS%28the_geom,%20POINT%20%28",
-                  p_crd[1], "%20", p_crd[2], "%29%29")
 
-    req_data <- httr::RETRY("GET", url, times = 3, pause_cap = 60)
+  if(!is.null(AOI)){
 
-    catchment <- make_web_sf(req_data)
-
-    if (nrow(catchment) > 1) {
-      warning("point too close to edge of catchment found multiple")
+    if(all(!methods::is(AOI,"sf"), !methods::is(AOI,"sfc"))){
+      stop("AOI must be of class sf.", .call = FALSE)
     }
 
-    return(as.integer(catchment$featureid))
-
-  } else if (!is.null(nldi_feature)) {
-
-    check_nldi_feature(nldi_feature)
-
-    if (is.null(nldi_feature[["tier"]])) nldi_feature[["tier"]] <- "prod"
-
-    nldi <- get_nldi_feature(nldi_feature,
-                             nldi_feature[["tier"]])
-
-    return(as.integer(nldi$comid))
-
-  } else {
-
-    stop("Must provide point or nldi_feature input.")
-
+    if(st_geometry_type(AOI) == "POINT"){
+      # This is here is here so that if a POINT location is requested,
+      # a COMID is used to extract the NHD data/realization
+      # This overrides the default behavior of query_usgs_geoserver
+      # which buffers a POINT by 1/2 meter
+      comid  <- discover_nhdplus_id(AOI)
+      AOI    <- NULL
+    }
   }
+
+  if(!is.null(AOI) & !is.null(c(nwis, comid))){
+    stop("Either IDs (comid, nwis) or a spatial AOI can be passed.",.call = FALSE)
+  } else if(is.null(AOI) & is.null(c(nwis, comid))){
+    stop("IDs (comid, nwis) or a spatial AOI must be passed.",.call = FALSE)
+  }
+
+  hy_realizations = c("flowline", "catchment", 'outlet')
+
+  if("all" %in% realization){ realization = hy_realizations}
+
+  if(any(!realization %in% hy_realizations)){
+    stop(paste(realization, "not valid.\n Select from", paste(hy_realizations, collapse = ", ")))
+  }
+
+  geoms = list()
+
+  if(!is.null(nwis)){
+    comid = c(unlist(lapply(nwis, extact_comid_nwis)), comid)
+  }
+
+  if("catchment" %in% realization){
+    geoms$catchment   <- query_usgs_geoserver(AOI = AOI, ids = comid,
+                                              type = "catchment",
+                                              t_srs = t_srs)
+  }
+
+  if(any(c("flowline", "outlet") %in% realization)){
+    geoms$flowline    <- query_usgs_geoserver(AOI = AOI, ids = comid, type = 'nhd',
+                                                filter = streamorder_filter(streamorder),
+                                                t_srs = t_srs)
+
+    if("outlet" %in% realization){
+      geoms$outlet          <- geoms$flowline
+      geoms$outlet$geometry <- st_geometry(
+        get_node(geoms$outlet,
+                 position = "end")
+      )
+    }
+  }
+
+  geoms = tc(geoms)
+
+  geoms = geoms[names(geoms) %in% realization]
+
+  if(length(geoms) == 1){ geoms = geoms[[1]]}
+
+  return(geoms)
 }
 
-#' @noRd
-get_nhdplus_byid <- function(comids, layer, streamorder = NULL) {
-
-  ows_url <- get("geoserver_ows_root", envir = nhdplusTools_env)
-
-
-  id_name <- list(catchmentsp = "featureid", nhdflowline_network = "comid")
-
-  if (!any(names(id_name) %in% layer)) {
-    stop(paste("Layer must be one of",
-               paste(names(id_name),
-                     collapse = ", ")))
-  }
-
-  # nolint start
-
-  filter_1 <- paste0('<?xml version="1.0"?>',
-                     '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                     '<wfs:Query xmlns:feature="http://wmadata" typeName="feature:',
-                     layer, '" srsName="EPSG:4326">',
-                     '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">',
-                     '<ogc:Or>',
-                     '<ogc:PropertyIsEqualTo>',
-                     '<ogc:PropertyName>',
-                     id_name[[layer]],
-                     '</ogc:PropertyName>',
-                     '<ogc:Literal>')
-
-  filter_2 <- paste0('</ogc:Literal>',
-                     '</ogc:PropertyIsEqualTo>',
-                     '<ogc:PropertyIsEqualTo>',
-                     '<ogc:PropertyName>',
-                     id_name[[layer]],
-                     '</ogc:PropertyName>',
-                     '<ogc:Literal>')
-
-  filter_3 <- paste0('</ogc:Literal>',
-                     '</ogc:PropertyIsEqualTo>',
-                     '</ogc:Or>',
-                     '</ogc:Filter>',
-                     '</wfs:Query>',
-                     '</wfs:GetFeature>')
-
-  filter_xml <- paste0(filter_1, paste0(comids, collapse = filter_2), filter_3)
-
-  # nolint end
-
-  req_data <- httr::RETRY("POST", ows_url, body = filter_xml, times = 3, pause_cap = 60)
-
-  return(make_web_sf(req_data))
-}
-
-#' @noRd
-get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
-
-  valid_layers <- c("nhdarea", "nhdwaterbody", "catchmentsp", "nhdflowline_network")
-
-  if (!layer %in% valid_layers) {
-    stop(paste("Layer must be one of",
-               paste(valid_layers,
-                     collapse = ", ")))
-  }
-
-  bbox <- sf::st_bbox(sf::st_transform(box, 4326))
-
-  post_url <- get("geoserver_ows_root", envir = nhdplusTools_env)
-
-  # nolint start
-
-  filter_1 <- paste0('<?xml version="1.0"?>',
-                     '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                     '<wfs:Query xmlns:feature="http://wmadata" typeName="feature:',
-                     layer, '" srsName="EPSG:4326">',
-                     '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">')
-
-  bbox_xml <- paste0('<ogc:BBOX>',
-                     '<ogc:PropertyName>the_geom</ogc:PropertyName>',
-                     '<gml:Envelope>',
-                     '<gml:lowerCorner>',bbox[2]," ",bbox[1],'</gml:lowerCorner>',
-                     '<gml:upperCorner>',bbox[4]," ",bbox[3],'</gml:upperCorner>',
-                     '</gml:Envelope>',
-                     '</ogc:BBOX>')
-
-  filter_2 <- paste0('</ogc:Filter>',
-                     '</wfs:Query>',
-                     '</wfs:GetFeature>')
-
-  if(is.null(streamorder)) {
-    filter_xml <- paste0(filter_1,
-                         bbox_xml,
-                         filter_2)
-  } else {
-    filter_xml <- paste0(filter_1,
-                         '<ogc:And>',
-                         '<ogc:PropertyIsGreaterThanOrEqualTo>',
-                         '<ogc:PropertyName>',
-                         'streamorde',
-                         '</ogc:PropertyName>',
-                         '<ogc:Literal>',
-                         streamorder,
-                         '</ogc:Literal>',
-                         '</ogc:PropertyIsGreaterThanOrEqualTo>',
-                         bbox_xml,
-                         '</ogc:And>',
-                         filter_2)
-  }
-
-  # nolint end
-
-  req_data <- httr::RETRY("POST", post_url, body = filter_xml, times = 3, pause_cap = 60)
-
-  return(make_web_sf(req_data))
-
-}
-
-make_web_sf <- function(content) {
-  if(content$status_code == 200) {
-    tryCatch(sf::read_sf(rawToChar(content$content)),
-             error = function(e) {
-               message(paste("Something went wrong with a web request.\n", e))
-             }, warning = function(w) {
-               message(paste("Something went wrong with a web request.\n", w))
-             })
-  } else {
-    message(paste("Something went wrong with a web request.\n", content$url,
-                  "\n", "returned",
-                  content$status_code))
-    data.frame()
-  }
-}

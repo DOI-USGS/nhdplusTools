@@ -2,8 +2,10 @@ context("plot tests")
 
 sample_data <- system.file("extdata/sample_natseamless.gpkg",
                            package = "nhdplusTools")
-options("rgdal_show_exportToProj4_warnings"="none")
+
 test_that("basics work", {
+  options("rgdal_show_exportToProj4_warnings"="none")
+
   skip_on_cran()
   tempd <- tempdir(check = TRUE)
 
@@ -17,7 +19,7 @@ test_that("basics work", {
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
                c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody"))
-  expect_equal(l$features, c(433, 402, 1, 90))
+  expect_equal(l$features, c(431, 402, 1, 90))
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
@@ -83,6 +85,8 @@ test_that("basics work", {
 })
 
 test_that("local data", {
+
+  options("rgdal_show_exportToProj4_warnings"="none")
 
   testthat::skip_on_cran()
 

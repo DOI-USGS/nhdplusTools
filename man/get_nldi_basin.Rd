@@ -4,15 +4,13 @@
 \alias{get_nldi_basin}
 \title{Get NLDI Basin Boundary}
 \usage{
-get_nldi_basin(nldi_feature, tier = "prod")
+get_nldi_basin(nldi_feature)
 }
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-discover_nldi_sources() and the `featureSource` is a known identifier
+dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.}
-
-\item{tier}{character optional "prod" or "test"}
 }
 \value{
 sf data.frame with result basin boundary

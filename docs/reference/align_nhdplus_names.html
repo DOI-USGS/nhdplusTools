@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -149,7 +149,7 @@
     <p>this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>align_nhdplus_names</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>align_nhdplus_names</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -165,9 +165,10 @@
     <p>a renamed <code>sf</code> object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/new_hope_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/new_hope_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>new_hope_flowline</span>)</div><div class='output co'>#&gt;   [1] "COMID"      "FDATE"      "RESOLUTION" "GNIS_ID"    "GNIS_NAME" 
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   [1] "COMID"      "FDATE"      "RESOLUTION" "GNIS_ID"    "GNIS_NAME" 
 #&gt;   [6] "LENGTHKM"   "REACHCODE"  "FLOWDIR"    "WBAREACOMI" "FTYPE"     
 #&gt;  [11] "FCODE"      "StreamLeve" "StreamOrde" "StreamCalc" "FromNode"  
 #&gt;  [16] "ToNode"     "Hydroseq"   "LevelPathI" "Pathlength" "TerminalPa"
@@ -195,11 +196,12 @@
 #&gt; [126] "QC_12"      "VC_12"      "QE_12"      "VE_12"      "LakeFract" 
 #&gt; [131] "SurfArea"   "RAreaHLoad" "RPUID"      "VPUID"      "Enabled"   
 #&gt; [136] "geom"      </div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>new_hope_flowline</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/chartr.html'>tolower</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>new_hope_flowline</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/chartr.html'>tolower</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='no'>new_hope_flowline</span> <span class='kw'>&lt;-</span> <span class='fu'>align_nhdplus_names</span>(<span class='no'>new_hope_flowline</span>)
+<span class='va'>new_hope_flowline</span> <span class='op'>&lt;-</span> <span class='fu'>align_nhdplus_names</span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>new_hope_flowline</span>)</div><div class='output co'>#&gt;   [1] "COMID"      "fdate"      "resolution" "gnis_id"    "gnis_name" 
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   [1] "COMID"      "fdate"      "resolution" "gnis_id"    "gnis_name" 
 #&gt;   [6] "LENGTHKM"   "REACHCODE"  "flowdir"    "wbareacomi" "FTYPE"     
 #&gt;  [11] "fcode"      "streamleve" "StreamOrde" "StreamCalc" "FromNode"  
 #&gt;  [16] "ToNode"     "Hydroseq"   "LevelPathI" "Pathlength" "TerminalPa"
@@ -243,7 +245,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

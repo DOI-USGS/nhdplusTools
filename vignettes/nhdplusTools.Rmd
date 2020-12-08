@@ -3,7 +3,7 @@ title: "Introduction to nhdplusTools"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{nhdplusTools}
+  %\VignetteIndexEntry{Introduction to nhdplusTools}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -39,7 +39,7 @@ flowline <- navigate_nldi(list(featureSource = "comid",
                           distance_km = 1000)
 
 subset_file <- tempfile(fileext = ".gpkg")
-subset <- subset_nhdplus(comids = flowline$nhdplus_comid,
+subset <- subset_nhdplus(comids = flowline$UT$nhdplus_comid,
                          output_file = subset_file,
                          nhdplus_data = "download", 
                          flowline_only = FALSE,
@@ -198,13 +198,14 @@ start_comid
 
 The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these "featureSources". We can query the NLDI for an identifier of a given feature from any of its "featureSources" and find out what our navigation options are as shown below.
 ```{r discover_nldi}
-discover_nldi_sources()$source
+dataRetrieval::get_nldi_sources()$source
 
 nldi_feature <- list(featureSource = "comid", featureID = start_comid)
-discover_nldi_navigation(nldi_feature)
+
+get_nldi_feature(nldi_feature)
 ```
 
-The `discover_nldi_navigation` function is a handy way to make sure the featureID is available for the chosen "featureSource" as well as find valid navigation modes to be used with `navigate_nldi`. Now that we know the NLDI has our comid, we can use the "upstreamTributaries" navigation option to get all the flowlines upstream or all the features from any of the "featureSources" as shown below. 
+We can use `get_nldi_feature()` as a way to make sure the featureID is available for the chosen "featureSource". Now that we know the NLDI has our comid, we can use the "upstreamTributaries" navigation option to get all the flowlines upstream or all the features from any of the "featureSources" as shown below. 
 
 ```{r navigate_nldi}
 
@@ -213,7 +214,8 @@ flowline_nldi <- navigate_nldi(nldi_feature,
                                distance_km = 1000)
 
 plot(sf::st_geometry(flowline), lwd = 3, col = "black")
-plot(sf::st_geometry(flowline_nldi), lwd = 1, col = "red", add = TRUE)
+plot(sf::st_geometry(flowline_nldi$origin), lwd = 3, col = "red", add = TRUE)
+plot(sf::st_geometry(flowline_nldi$UT), lwd = 1, col = "red", add = TRUE)
 ```
 
 What is not shown here is that the NLDI only provided geometry and a comid for each of the flowlines. The `subset_nhdplus` function has a "download" option that allows us to download four layers and all attributes as shown below. 
@@ -221,7 +223,7 @@ What is not shown here is that the NLDI only provided geometry and a comid for e
 ```{r subset_nhdplus_download}
 output_file_download <- file.path(temp_dir, "subset_download.gpkg")
 
-output_file_download <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
+output_file_download <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
                              output_file = output_file_download,
                              nhdplus_data = "download", return_data = FALSE)
 
@@ -233,7 +235,7 @@ flowline_download <- sf::read_sf(file.path(temp_dir, "subset_download.gpkg"),
 plot(sf::st_geometry(dplyr::filter(flowline_download, 
                                    streamorde > 2)), 
      lwd = 7, col = "darkgrey")
-plot(sf::st_geometry(flowline_nldi), 
+plot(sf::st_geometry(flowline_nldi$UT), 
      lwd = 3, col = "red", add = TRUE)
 ```
 
@@ -252,7 +254,7 @@ flowline_nldi <- navigate_nldi(nldi_feature,
 
 output_file_nwis <- file.path(temp_dir, "subset_download_nwis.gpkg")
 
-output_file_nwis <-subset_nhdplus(comids = flowline_nldi$nhdplus_comid,
+output_file_nwis <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
                                   output_file = output_file_nwis,
                                   nhdplus_data = "download",
                                   return_data = FALSE)
@@ -269,7 +271,7 @@ upstream_nwis <- navigate_nldi(nldi_feature,
 
 plot(sf::st_geometry(flowline_nwis), 
      lwd = 3, col = "blue")
-plot(sf::st_geometry(upstream_nwis), 
+plot(sf::st_geometry(upstream_nwis$UT_nwissite), 
      cex = 1, lwd = 2, col = "red", add = TRUE)
 ```
 

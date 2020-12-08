@@ -4,7 +4,7 @@ pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
                                    package = "nhdplusTools")) %>%
   align_nhdplus_names()
 
-cida <- sf::read_sf("data/cida_flowlines.gpkg") %>%
+cida <- sf::read_sf(list.files(pattern = "cida_flowlines.gpkg", full.names = TRUE, recursive = TRUE)) %>%
   align_nhdplus_names()
 
 test_that("get_DM works normal", {

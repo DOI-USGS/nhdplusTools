@@ -104,13 +104,15 @@ get_flowline_index <- function(flines, points,
 
   if(is.character(flines) && flines == "download_nhdplusv2") {
 
-    flines <- subset_nhdplus(bbox = sf::st_bbox(sf::st_transform(points, 4326)),
-                             nhdplus_data = "download",
-                             status = FALSE,
-                             return_data = TRUE,
-                             flowline_only = TRUE)
+    if((!is.null(nrow(points)) && nrow(points)) == 1 | length(points) == 1) {
+      req <- suppressMessages(sf::st_buffer(points, 0.01))
+    } else {
+      req <- points
+    }
 
-    flines <- align_nhdplus_names(flines$NHDFlowline_Network)
+    flines <- align_nhdplus_names(
+      get_nhdplus(AOI = sf::st_transform(req, 4326),
+                  realization = "flowline"))
 
   }
 

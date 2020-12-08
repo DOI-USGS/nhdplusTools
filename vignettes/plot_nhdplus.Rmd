@@ -3,7 +3,7 @@ title: "Plotting with nhdplusTools"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{plot_nhdplus}
+  %\VignetteIndexEntry{Plotting with nhdplusTools}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -97,7 +97,7 @@ Any data added to these plots must be projected to this coordinate system to be 
 
 What follows shows how to use `nhdplusTools` to create plots without the `plot_nhdplus` function. While super convenient, we all know the "easy button" is never quite right, the description below should help get you started.
 
-For this example, we'll start from an outlet NWIS Site. Note that other options are possible with `discover_nhdplus_id` and `discover_nldi_sources`.
+For this example, we'll start from an outlet NWIS Site. Note that other options are possible with `discover_nhdplus_id` and `dataRetrieval::get_nldi_sources`.
 
 ```{r get data}
 library(sf)
@@ -107,9 +107,9 @@ nwissite <- list(featureSource = "nwissite",
 
 flowline <- navigate_nldi(nwissite, 
                           mode = "upstreamTributaries", 
-                          data_source = "")
+                          data_source = "flowlines")
 
-nhdplus <- subset_nhdplus(comids = flowline$nhdplus_comid,
+nhdplus <- subset_nhdplus(comids = flowline$UT$nhdplus_comid,
                           output_file = file.path(temp_dir, "nhdplus.gpkg"),
                           nhdplus_data = "download",
                           overwrite = TRUE, return_data = FALSE)
@@ -131,7 +131,7 @@ names(flowline)
 names(upstream_nwis)
 names(basin)
 class(st_geometry(flowline))
-class(st_geometry(upstream_nwis))
+class(st_geometry(upstream_nwis$UT_nwissite))
 class(st_geometry(basin))
 ```
 
@@ -213,8 +213,8 @@ Below is a very similar example using [`ggmap`](https://github.com/dkahle/ggmap)
 library(ggmap)
 library(ggplot2)
 
-upstream_nwis <- dplyr::bind_cols(upstream_nwis,
-                           dplyr::rename(dplyr::as_tibble(sf::st_coordinates(upstream_nwis)), 
+upstream_nwis <- dplyr::bind_cols(upstream_nwis$UT_nwissite,
+                           dplyr::rename(dplyr::as_tibble(sf::st_coordinates(upstream_nwis$UT_nwissite)), 
                                          lat = Y, lon = X))
 
 basemap_toner <- get_map(source = "stamen", maptype = "toner", 

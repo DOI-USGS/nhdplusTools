@@ -1,3 +1,38 @@
+nhdplusTools 0.4.0
+==========
+Version 0.4.0 adds new functionality for data access via web services and updates the usability and flexibility of data discovery and subsetting functions. This release includes significant rework of functions related to network navigation and web-service data subsetting. 
+
+* Previsouly, `subset_nhdplus()` included internal functionality for downloading data via web service. This code for subsetting NHDPlus via web service was completely rewritten and a number of new web-service data access functions were added. The `get_nhdplus()` function has been added and is for web-service data access only. `subset_nhdplus()`, which will output a subset to a local `.gpkg` file, now uses `get_nhdplus()` for download functionality.
+* `navigate_nldi()` and most other [NLDI](https://waterdata.usgs.gov/blog/nldi-intro/) functions are now based on an NLDI client in the [`dataRetrieval`](https://code.usgs.gov/water/dataRetrieval) package. Functionality has been maintained backward compatible with `nhdplusTools` v0.3 as much as possible with some minor modifications to accomadate changes in dataRetrieval. The response format from `navigate_nldi()` has been changed slightly in v0.4, it now includes both the origin feature and navigation type(s) as a list. Two un-needed nldi discovery functions were removed.
+* Functions to download and cache all NHDPlus VAAs (in a 195mb `.fst` file) for use in network navigation and other applications have been added. These can be used with any nhdplusTools functions that do not require geometry.
+* `get_levelpaths()` now has an `override_factor` parameter that will cause stream leveling to follow the weight rather than the name input if the weight is `override_factor` times larger than the name indication.
+
+*Functions Added*
+* `get_nhdplus()`
+* `get_nhdarea()`
+* `get_waterbodies()`
+* `get_gagesII()`
+* `get_huc12()`
+* `get_huc8()`
+* `download_vaa()`
+* `get_vaa()`
+* `get_vaa_names()`
+* `get_vaa_path()`
+
+*Functions Removed*
+* `discover_nldi_navigation()`
+* `discover_nldi_sources()`
+
+*Functions Deprecated*
+* `stage_national_data()`
+
+*Functions with Consolodated Internals*
+* `discover_nhdplus_id()`
+* `get_nldi_basin()`
+* `get_nldi_feature()`
+* `subset_nhdplus()`
+* `plot_nhdplus()`
+
 nhdplusTools 0.3.16
 ==========
 * `subset_nhdplus()` now validates geometry and ensures all outputs are in NAD83

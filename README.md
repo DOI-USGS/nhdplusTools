@@ -1,6 +1,6 @@
 # nhdplusTools <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
-[![Build Status](https://travis-ci.org/USGS-R/nhdplusTools.svg?branch=master)](https://travis-ci.org/USGS-R/nhdplusTools) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/nhdplusTools/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/nhdplusTools?branch=master) [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools) [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
+![R-CMD-check](https://github.com/usgs-r/nhdplusTools/workflows/R-CMD-check/badge.svg) [![codecov](https://codecov.io/gh/usgs-r/nhdplusTools/branch/master/graph/badge.svg)](https://codecov.io/gh/usgs-r/nhdplusTools) [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools) [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 
 ## nhdplusTools: Tools for Accessing and Working with the NHDPlus
 
@@ -39,7 +39,7 @@ Terms used for hydrologic units:
 ### Data:
 
 [A National Dataset of NHDPlusV2.1 is available here.](https://www.epa.gov/waterdata/nhdplus-national-data)  
-Also see: [`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html) and [`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
+Also see: [`get_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html), [`subset_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html), [`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html) and [`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
 
 ## Package Vision
 

@@ -426,7 +426,7 @@ as_outlets <- function(o) {
         out <- c(out, make_comid_nldi_feature(discover_nhdplus_id(sf::st_geometry(o)[i])))
       }
     }
-    return(list(check_nldi_feature(out)))
+    return(list(check_nldi_feature(out, convert = FALSE)))
   }, error = function(f) {
     stop(paste0("Error trying to interpret outlet specification. Original error was:\n\n", f))
   })
@@ -445,7 +445,7 @@ individual_outlets <- function(o) {
 
   if(is.list(o) && !"sf" %in% class(o)) {
     if(length(o) == 2 && !is.list(o[[1]])) o <- as.list(o)
-    return(check_nldi_feature(o))
+    return(check_nldi_feature(o, convert = FALSE))
   }
 }
 

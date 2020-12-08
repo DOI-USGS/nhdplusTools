@@ -81,7 +81,7 @@ nhdplusTools compatible data based on a specified collection of COMIDs." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -151,19 +151,19 @@ nhdplusTools compatible data based on a specified collection of COMIDs." />
 nhdplusTools compatible data based on a specified collection of COMIDs.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>subset_nhdplus</span>(
-  <span class='kw'>comids</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>simplified</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>return_data</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>flowline_only</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>streamorder</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>out_prj</span> <span class='kw'>=</span> <span class='fl'>4269</span>
-)</pre>
+    <pre class="usage"><span class='fu'>subset_nhdplus</span><span class='op'>(</span>
+  comids <span class='op'>=</span> <span class='cn'>NULL</span>,
+  output_file <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nhdplus_data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  simplified <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  return_data <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  status <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  flowline_only <span class='op'>=</span> <span class='cn'>NULL</span>,
+  streamorder <span class='op'>=</span> <span class='cn'>NULL</span>,
+  out_prj <span class='op'>=</span> <span class='fl'>4269</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -238,36 +238,40 @@ be available permenently.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='no'>sample_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/sample_natseamless.gpkg"</span>,
-                           <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>)
+<span class='va'>sample_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_natseamless.gpkg"</span>,
+                           package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span>
 
-<span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span>(<span class='no'>sample_data</span>)
+<span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span><span class='op'>(</span><span class='va'>sample_data</span><span class='op'>)</span>
 
-<span class='no'>staged_nhdplus</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span>(<span class='kw'>output_path</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+<span class='va'>staged_nhdplus</span> <span class='op'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span><span class='op'>(</span>output_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: attributes file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: flowline file exists</span></div><div class='output co'>#&gt; <span class='warning'>Warning: catchment already exists.</span></div><div class='input'>
+<span class='va'>sample_flines</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>staged_nhdplus</span><span class='op'>$</span><span class='va'>flowline</span><span class='op'>)</span>
 
-<span class='no'>sample_flines</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='no'>staged_nhdplus</span>$<span class='no'>flowline</span>)
+<span class='va'>geom_col</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>sample_flines</span>, <span class='st'>"sf_column"</span><span class='op'>)</span>
 
-<span class='no'>geom_col</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>sample_flines</span>, <span class='st'>"sf_column"</span>)
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>sample_flines</span><span class='op'>[[</span><span class='va'>geom_col</span><span class='op'>]</span><span class='op'>]</span>,
+     lwd <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='input'>
+<span class='va'>start_point</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>89.362239</span>, <span class='fl'>43.090266</span><span class='op'>)</span><span class='op'>)</span>,
+                          crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>sample_flines</span><span class='kw'>[[</span><span class='no'>geom_col</span>]],
-     <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>3</span>)</div><div class='input'>
-<span class='no'>start_point</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st.html'>st_point</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>89.362239</span>, <span class='fl'>43.090266</span>)),
-                          <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>start_point</span>, cex <span class='op'>=</span> <span class='fl'>1.5</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, col <span class='op'>=</span> <span class='st'>"red"</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='input'>
+<span class='va'>start_comid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='discover_nhdplus_id.html'>discover_nhdplus_id</a></span><span class='op'>(</span><span class='va'>start_point</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>start_point</span>, <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
-<span class='no'>start_comid</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='discover_nhdplus_id.html'>discover_nhdplus_id</a></span>(<span class='no'>start_point</span>)
+<span class='va'>comids</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_UT.html'>get_UT</a></span><span class='op'>(</span><span class='va'>sample_flines</span>, <span class='va'>start_comid</span><span class='op'>)</span>
 
-<span class='no'>comids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_UT.html'>get_UT</a></span>(<span class='no'>sample_flines</span>, <span class='no'>start_comid</span>)
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>sample_flines</span>, <span class='va'>COMID</span> <span class='op'>%in%</span> <span class='va'>comids</span><span class='op'>)</span><span class='op'>[[</span><span class='va'>geom_col</span><span class='op'>]</span><span class='op'>]</span>,
+     add<span class='op'>=</span><span class='cn'>TRUE</span>, col <span class='op'>=</span> <span class='st'>"red"</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='input'>
+<span class='va'>output_file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span>fileext <span class='op'>=</span> <span class='st'>".gpkg"</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>sample_flines</span>, <span class='no'>COMID</span> <span class='kw'>%in%</span> <span class='no'>comids</span>)<span class='kw'>[[</span><span class='no'>geom_col</span>]],
-     <span class='kw'>add</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='input'>
-<span class='no'>output_file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='kw'>fileext</span> <span class='kw'>=</span> <span class='st'>".gpkg"</span>)
-
-<span class='fu'>subset_nhdplus</span>(<span class='kw'>comids</span> <span class='kw'>=</span> <span class='no'>comids</span>,
-               <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>output_file</span>,
-               <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>sample_data</span>,
-               <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading Gage</span></div><div class='output co'>#&gt; <span class='message'>Writing Gage</span></div><div class='output co'>#&gt; <span class='message'>Reading Sink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in Sink</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; $NHDFlowline_Network
+<span class='fu'>subset_nhdplus</span><span class='op'>(</span>comids <span class='op'>=</span> <span class='va'>comids</span>,
+               output_file <span class='op'>=</span> <span class='va'>output_file</span>,
+               nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>,
+               overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>,
+               status <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>168 comids of 168</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Reading CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>168 comids of 168</span></div><div class='output co'>#&gt; <span class='message'>Writing CatchmentSP</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading Gage</span></div><div class='output co'>#&gt; <span class='message'>Writing Gage</span></div><div class='output co'>#&gt; <span class='message'>Reading Sink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in Sink</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_NonNetwork</span></div><div class='output co'>#&gt; $NHDFlowline_Network
 #&gt; Simple feature collection with 168 features and 136 fields
 #&gt; geometry type:  LINESTRING
 #&gt; dimension:      XY
@@ -346,7 +350,8 @@ be available permenently.</p>
 #&gt; $NHDFlowline_NonNetwork
 #&gt; [1] "NHDFlowline_NonNetwork"
 #&gt; </div><div class='input'>
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
+<span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_layers.html'>st_layers</a></span><span class='op'>(</span><span class='va'>output_file</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Driver: GPKG 
 #&gt; Available layers:
 #&gt;               layer_name geometry_type features fields
 #&gt; 1    NHDFlowline_Network   Line String      168    136
@@ -355,23 +360,27 @@ be available permenently.</p>
 #&gt; 4           NHDWaterbody       Polygon       90     21
 #&gt; 5                   Gage         Point       33     19
 #&gt; 6 NHDFlowline_NonNetwork   Line String       45     12</div><div class='input'>
-<span class='no'>catchment</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='no'>output_file</span>, <span class='st'>"CatchmentSP"</span>)
+<span class='va'>catchment</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span><span class='va'>output_file</span>, <span class='st'>"CatchmentSP"</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>catchment</span><span class='kw'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>catchment</span>, <span class='st'>"sf_column"</span>)]], <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'>
-<span class='no'>waterbody</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>read_sf</a></span>(<span class='no'>output_file</span>, <span class='st'>"NHDWaterbody"</span>)
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>catchment</span><span class='op'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>catchment</span>, <span class='st'>"sf_column"</span><span class='op'>)</span><span class='op'>]</span><span class='op'>]</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='input'>
+<span class='va'>waterbody</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span><span class='va'>output_file</span>, <span class='st'>"NHDWaterbody"</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>waterbody</span><span class='kw'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>waterbody</span>, <span class='st'>"sf_column"</span>)]],
-     <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/rgb.html'>rgb</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>), <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='subset_nhdplus-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>waterbody</span><span class='op'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>waterbody</span>, <span class='st'>"sf_column"</span><span class='op'>)</span><span class='op'>]</span><span class='op'>]</span>,
+     col <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/rgb.html'>rgb</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, alpha <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='img'><img src='subset_nhdplus-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Cleanup temp</span>
-<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span>(<span class='no'>staged_nhdplus</span>, <span class='no'>unlink</span>)</div><div class='output co'>#&gt; attributes   flowline  catchment 
-#&gt;          0          0          0 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>output_file</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>staged_nhdplus</span>, <span class='va'>unlink</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; attributes   flowline  catchment 
+#&gt;          0          0          0 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>output_file</span><span class='op'>)</span>
 
 <span class='co'># Download Option:</span>
-<span class='fu'>subset_nhdplus</span>(<span class='kw'>comids</span> <span class='kw'>=</span> <span class='no'>comids</span>,
-               <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>output_file</span>,
-               <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='st'>"download"</span>,
-               <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-               <span class='kw'>status</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; $NHDFlowline_Network
+<span class='fu'>subset_nhdplus</span><span class='op'>(</span>comids <span class='op'>=</span> <span class='va'>comids</span>,
+               output_file <span class='op'>=</span> <span class='va'>output_file</span>,
+               nhdplus_data <span class='op'>=</span> <span class='st'>"download"</span>,
+               overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>,
+               status <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline_Network</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline_Network</span></div><div class='output co'>#&gt; $NHDFlowline_Network
 #&gt; Simple feature collection with 168 features and 139 fields
 #&gt; geometry type:  LINESTRING
 #&gt; dimension:      XY
@@ -414,30 +423,38 @@ be available permenently.</p>
 #&gt; </span><span style='color: #555555;'>#   qc_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ve_07 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qa_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   va_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qc_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, vc_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, qe_08 </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, ...</span><span>
 #&gt; </div><div class='input'>
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>output_file</span>)</div><div class='output co'>#&gt; Driver: GPKG 
+<span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_layers.html'>st_layers</a></span><span class='op'>(</span><span class='va'>output_file</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Driver: GPKG 
 #&gt; Available layers:
 #&gt;            layer_name geometry_type features fields
 #&gt; 1 NHDFlowline_Network   Line String      168    139</div><div class='input'>
 <span class='co'># NHDPlusHR</span>
-<span class='fu'><a href='https://rdrr.io/r/base/source.html'>source</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/nhdplushr_data.R"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nhdplusTools"</span>))
+<span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/nhdplushr_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='no'>up_ids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_UT.html'>get_UT</a></span>(<span class='no'>hr_data</span>$<span class='no'>NHDFlowline</span>, <span class='fl'>15000500028335</span>)
+<span class='va'>up_ids</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_UT.html'>get_UT</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='fl'>15000500028335</span><span class='op'>)</span>
 
-<span class='no'>sub_gpkg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>work_dir</span>, <span class='st'>"sub.gpkg"</span>)
-<span class='no'>sub_nhdhr</span> <span class='kw'>&lt;-</span> <span class='fu'>subset_nhdplus</span>(<span class='no'>up_ids</span>, <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='no'>sub_gpkg</span>,
-                            <span class='kw'>nhdplus_data</span> <span class='kw'>=</span> <span class='no'>hr_gpkg</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Found invalid geometry, attempting to fix.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: only first part of geometrycollection is retained</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusSink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in NHDPlusSink</span></div><div class='input'>
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_layers.html'>st_layers</a></span>(<span class='no'>sub_gpkg</span>)</div><div class='output co'>#&gt; Driver: GPKG 
+<span class='va'>sub_gpkg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>work_dir</span>, <span class='st'>"sub.gpkg"</span><span class='op'>)</span>
+<span class='va'>sub_nhdhr</span> <span class='op'>&lt;-</span> <span class='fu'>subset_nhdplus</span><span class='op'>(</span><span class='va'>up_ids</span>, output_file <span class='op'>=</span> <span class='va'>sub_gpkg</span>,
+                            nhdplus_data <span class='op'>=</span> <span class='va'>hr_gpkg</span>, overwrite <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>1000 comids of 1427</span></div><div class='output co'>#&gt; <span class='message'>1427 comids of 1427</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>1000 comids of 1427</span></div><div class='output co'>#&gt; <span class='message'>1427 comids of 1427</span></div><div class='output co'>#&gt; <span class='message'>Found invalid geometry, attempting to fix.</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusSink</span></div><div class='output co'>#&gt; <span class='message'>No features to write in NHDPlusSink</span></div><div class='input'>
+<span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_layers.html'>st_layers</a></span><span class='op'>(</span><span class='va'>sub_gpkg</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Driver: GPKG 
 #&gt; Available layers:
 #&gt;         layer_name geometry_type features fields
 #&gt; 1      NHDFlowline   Line String     1427     57
 #&gt; 2 NHDPlusCatchment                   1361      7
 #&gt; 3          NHDArea       Polygon        8     14
-#&gt; 4     NHDWaterbody       Polygon      741     15</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>sub_nhdhr</span>)</div><div class='output co'>#&gt; [1] "NHDFlowline"      "NHDPlusCatchment" "NHDArea"          "NHDWaterbody"    
+#&gt; 4     NHDWaterbody       Polygon      741     15</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>sub_nhdhr</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "NHDFlowline"      "NHDPlusCatchment" "NHDArea"          "NHDWaterbody"    
 #&gt; [5] "NHDPlusSink"     </div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>hr_data</span>$<span class='no'>NHDFlowline</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>sub_nhdhr</span>$<span class='no'>NHDFlowline</span>), <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.6</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='subset_nhdplus-2.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>output_file</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>sub_gpkg</span>)
-<span class='co'># }</span></div></span></pre>
+<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>sub_nhdhr</span><span class='op'>$</span><span class='va'>NHDFlowline</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>0.6</span>, col <span class='op'>=</span> <span class='st'>"red"</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='img'><img src='subset_nhdplus-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>output_file</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>sub_gpkg</span><span class='op'>)</span>
+<span class='co'># }</span>
+
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -453,7 +470,7 @@ be available permenently.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

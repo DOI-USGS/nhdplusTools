@@ -18,7 +18,7 @@ elevslope.dbf(s), PlusFlowlineVAA.dbf(s); and NHDFlowlines. All data
 originates from the EPA NHDPlus Homepage
 \href{https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data}{here}.
 To see the location of cached data on your machine use
-\code{\link{get_vaa_path()}}.
+\code{\link{get_vaa_path}}.
 To view aggregate data and documentation, see
 \href{https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/}{here}
 }

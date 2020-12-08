@@ -83,11 +83,11 @@ get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @inherit query_usgs_geoserver return
 #' @importFrom xml2 xml_root xml_children xml_attr read_xml
 #' @importFrom sf st_geometry_type st_transform st_buffer st_as_sf
-#' st_bbox st_nearest_feature
+#' st_bbox st_nearest_feature st_distance
 #' @importFrom dplyr filter
 #' @export
 
-get_nwis = function(AOI = NULL, t_srs = NULL, buffer = 20000){
+get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 
   # If t_src is not provided set to AOI CRS
   if(is.null(t_srs)){ t_srs  <- sf::st_crs(AOI)}
@@ -144,9 +144,9 @@ get_nwis = function(AOI = NULL, t_srs = NULL, buffer = 20000){
 
     if(AOI_type == "POINT"){
       sites_sf <- sites_sf %>%
-          mutate(distance_m =
-          st_distance(st_transform(., 5070),  st_transform(pt, 5070))) %>%
-          arrange(distance_m)
+        mutate(distance_m = st_distance(st_transform(., 5070),
+                                        st_transform(pt, 5070))) %>%
+        arrange(.data$distance_m)
     }
 
     return(st_transform(sites_sf, t_srs))

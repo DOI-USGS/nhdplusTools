@@ -145,8 +145,10 @@ assign("get_waterbody_index_waterbodies_attributes",
        c("COMID"), envir = nhdplusTools_env)
 
 assign("get_waterbody_index_flines_attributes",
-       c("COMID", "WBAREACOMI", "Hydroseq"))
+       c("COMID", "WBAREACOMI", "Hydroseq"), envir = nhdplusTools_env)
 
+# assigned here for record keeping. Used as a status counter in apply functions.
+assign("cur_count", 0, envir = nhdplusTools_env)
 
 check_names <- function(x, function_name) {
   x <- align_nhdplus_names(x)

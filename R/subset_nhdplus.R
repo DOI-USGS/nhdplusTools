@@ -470,14 +470,17 @@ get_nhd_data <- function(nhdplus_data, layer_name, comids, id, status) {
     comids[start:end]
   })
 
-  cur_count_secret <<- 0
+  assign("cur_count", 0, envir = nhdplusTools_env)
 
   out <- lapply(sets, function(x, total) {
     if(status) {
 
-      cur_count_secret <<- cur_count_secret + length(x)
+      cur_count <-
+        get("cur_count", envir = nhdplusTools_env) + length(x)
 
-      message(paste(cur_count_secret, "comids of", total))
+      assign("cur_count", cur_count, envir = nhdplusTools_env)
+
+      message(paste(cur_count, "comids of", total))
 
     }
 

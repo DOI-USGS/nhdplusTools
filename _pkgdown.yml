@@ -8,14 +8,18 @@ reference:
       - '`nhdplus_path`'
       - '`stage_national_data`'
       - '`plot_nhdplus`'
-      - '`subset_nhdplus`'
       - '`prepare_nhdplus`'
       - '`download_nhdplushr`'
+      - '`get_nhdplus`'
       - '`get_nhdplushr`'
       - '`get_hr_data`'
       - '`download_nhdplusv2`'
       - '`download_rf1`'
       - '`download_wbd`'
+      - '`download_vaa`'
+      - '`get_vaa`'
+      - '`get_vaa_names`'
+      - '`get_vaa_path`'
       - '`align_nhdplus_names`'
   - title: Network Attributes
     desc: >
@@ -35,21 +39,28 @@ reference:
       interested in working with.
     contents:
       - '`discover_nhdplus_id`'
+      - '`get_nhdplus`'
+      - '`get_gagesII`'
+      - '`get_huc12`'
+      - '`get_huc8`''
+      - '`get_nhdplus`'
+      - '`get_nhdarea`'
+      - '`get_waterbodies`'
       - '`discover_nldi_characteristics`'
       - '`get_nldi_characteristics`'
       - '`get_nldi_basin`'
       - '`get_nldi_feature`'
-      - '`navigate_nldi`'
       - '`subset_nhdplus`'
       - '`subset_rpu`'
+  - title: Indexing and Network Navigation
+    desc: >
+      Functions to index and match data to NHDPlus features.
+    contents:
       - '`get_DD`'
       - '`get_DM`'
       - '`get_UM`'
       - '`get_UT`'
-  - title: Indexing
-    desc: >
-      Functions to index and match data to NHDPlus features.
-    contents:
+      - '`navigate_nldi`'
       - '`get_flowline_index`'
       - '`get_waterbody_index`'
       - '`get_node`'

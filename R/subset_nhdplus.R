@@ -1,6 +1,9 @@
 #' @title Subset NHDPlus
 #' @description Saves a subset of the National Seamless database or other
 #' nhdplusTools compatible data based on a specified collection of COMIDs.
+#' This function uses \code{\link{get_nhdplus}} for the "download" data
+#' source but returns data consistent with local data subsets in a subset
+#' file.
 #' @param comids integer vector of COMIDs to include.
 #' @param output_file character path to save the output to defaults
 #' to the directory of the nhdplus_data.
@@ -290,7 +293,7 @@ intersection_write <- function(layer_name, data_path, envelope,
   }
 }
 
-#' @title Stage NHDPlus National Data
+#' @title Stage NHDPlus National Data (deprecated)
 #' @description Breaks down the national geo database into a collection
 #' of quick to access R binary files.
 #' @param include character vector containing one or more of:

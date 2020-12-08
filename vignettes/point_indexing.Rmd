@@ -3,7 +3,7 @@ title: "Indexing and Referencing"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{point_indexing}
+  %\VignetteIndexEntry{Indexing and Referencing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -57,6 +57,9 @@ path to the saved subset geopackage
 \description{
 Saves a subset of the National Seamless database or other
 nhdplusTools compatible data based on a specified collection of COMIDs.
+This function uses \code{\link{get_nhdplus}} for the "download" data
+source but returns data consistent with local data subsets in a subset
+file.
 }
 \details{
 This function relies on the National Seamless Geodatabase or Geopackage.

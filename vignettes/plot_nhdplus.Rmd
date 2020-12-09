@@ -16,10 +16,9 @@ knitr::opts_chunk$set(
   fig.height=4,
   eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
 )
-oldoption <- options()
-options(scipen = 9999,
-        rmarkdown.html_vignette.check_title = FALSE,
-        "rgdal_show_exportToProj4_warnings"="none")
+oldoption <-
+  options(scipen = 9999,
+          "rgdal_show_exportToProj4_warnings"="none")
 ```
 ```{r data_dir_setup, echo=FALSE, include=FALSE}
 temp_dir <- tempdir()

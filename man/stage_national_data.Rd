@@ -2,7 +2,7 @@
 % Please edit documentation in R/subset_nhdplus.R
 \name{stage_national_data}
 \alias{stage_national_data}
-\title{Stage NHDPlus National Data}
+\title{Stage NHDPlus National Data (deprecated)}
 \usage{
 stage_national_data(
   include = c("attribute", "flowline", "catchment"),

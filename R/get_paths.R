@@ -269,7 +269,7 @@ get_pathlength <- function(x) {
   sorted <- sorted[!is.na(sorted)]
 
   x <- left_join(data.frame(ID = sorted),
-                   x, by = "ID")
+                 x, by = "ID")
 
   x <- x[!is.na(x$ID), ]
 
@@ -278,11 +278,13 @@ get_pathlength <- function(x) {
   le <- x$length
   leo <- rep(0, length(le))
 
+  toids <- match(toid, id)
+
   for(i in seq_len(length(id))) {
     if(!is.na(tid <- toid[i])) {
-      r <- which(id == tid)
 
-      leo[i] <- le[r] + leo[r]
+      leo[i] <- le[toids[i]] + leo[toids[i]]
+
     }
   }
   return(data.frame(ID = id, pathlength = leo))

@@ -57,6 +57,37 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
   x[["topo_sort"]] <- seq(nrow(x), 1)
   x[["levelpath"]] <- rep(0, nrow(x))
 
+  x <- x %>%
+    left_join(select(x, ID, ds_nameID = nameID), by = c("toID" = "ID")) %>%
+    mutate(ds_nameID = ifelse(is.na(ds_nameID), " ", ds_nameID),
+           orig_weight = weight) %>%
+    group_by(toID)
+
+  x <- x %>%
+    mutate(weight = ifelse(toID == 0, 0, weight))
+
+  x_hasname <- x %>%
+    filter(any(nameID == ds_nameID & ds_nameID != " ")) %>%
+    mutate(weight = ifelse(nameID == ds_nameID & nameID != " ", weight, 0)) %>%
+    mutate(main = weight == max(weight))
+
+  x_notname <- x %>%
+    filter(!ID %in% x_hasname$ID) %>%
+    mutate(main = weight == max(weight))
+
+  x <- bind_rows(x_hasname, x_notname)
+
+  if(!is.null(override_factor)) {
+    x <- x %>%
+      mutate(orig_weight = ifelse(ds_nameID != " " & nameID == ds_nameID,
+                                  orig_weight * override_factor, orig_weight)) %>%
+      mutate(main = orig_weight == max(orig_weight))
+  }
+
+    x <- x %>%
+    ungroup() %>%
+    select(ID, toID, topo_sort, levelpath, main)
+
   flc <- x
   diff = 1
   checker <- 0
@@ -67,7 +98,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
     x_tail_ind <- which(x$topo_sort == min(flc$topo_sort))
     sortID <- x$topo_sort[x_tail_ind]
 
-    pathIDs <- get_path(flc, tailID, override_factor, status)
+    pathIDs <- get_path(flc, tailID, status)
 
     x <- mutate(x,
                 levelpath = ifelse(.data$ID %in% pathIDs,
@@ -97,10 +128,9 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
 #' or, if no nameID exists, maximum weight column.
 #' @param x data.frame with ID, toID, nameID and weight columns.
 #' @param tailID integer or numeric ID of outlet catchment.
-#' @param override_factor numeric follow weight if this many times larger
 #' @param status print status?
 #'
-get_path <- function(x, tailID, override_factor, status) {
+get_path <- function(x, tailID, status) {
 
   keep_going <- TRUE
   tracker <- rep(NA, nrow(x))
@@ -119,10 +149,9 @@ get_path <- function(x, tailID, override_factor, status) {
       next_tails <- filter(x, .data$toID == tailID)
     }
 
-    if(nrow(next_tails) > 1) { # need to find dominant
+    if(nrow(next_tails) > 1) {
 
-      next_tails <- get_next_tail(next_tails, x$nameID[x$ID == tailID][1],
-                                  override_factor)
+      next_tails <- next_tails[main==TRUE, ]
 
     }
 
@@ -149,7 +178,7 @@ get_path <- function(x, tailID, override_factor, status) {
 
 .datatable.aware <- TRUE
 
-get_next_tail <- function(next_tails, cur_name, override_factor) {
+get_next_tail <- function(next_tails, cur_name) {
 
   max_weight <- max(next_tails$weight)
 
@@ -268,8 +297,9 @@ get_pathlength <- function(x) {
 
   sorted <- sorted[!is.na(sorted)]
 
-  x <- left_join(data.frame(ID = sorted),
-                 x, by = "ID")
+  order <- match(sorted, x$ID)
+
+  x <- x[order, ]
 
   x <- x[!is.na(x$ID), ]
 

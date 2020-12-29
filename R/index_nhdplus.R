@@ -3,7 +3,7 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 
   matched <- nn2(data = coords[, 1:2],
                  query = matrix(points[, c("X", "Y")], ncol = 2),
-                 k = ifelse(max_matches > 1, nrow(coords), 1),
+                 k = ifelse(max_matches > 1, 1000, 1),
                  searchtype = "radius",
                  radius = search_radius)
 

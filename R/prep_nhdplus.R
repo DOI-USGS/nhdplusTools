@@ -1,7 +1,7 @@
 #' @title Prep NHDPlus Data
 #' @description Function to prep NHDPlus data for use by nhdplusTools functions
 #' @param flines data.frame NHDPlus flowlines including:
-#' COMID, LENGTHKM, FTYPE, TerminalFl, FromNode, ToNode, TotDASqKM,
+#' COMID, LENGTHKM, FTYPE (or FCODE), TerminalFl, FromNode, ToNode, TotDASqKM,
 #' StartFlag, StreamOrde, StreamCalc, TerminalPa, Pathlength,
 #' and Divergence variables.
 #' @param min_network_size numeric Minimum size (sqkm) of drainage network
@@ -46,7 +46,9 @@ prepare_nhdplus <- function(flines,
 
   orig_rows <- nrow(flines)
 
-  flines <- select(flines, COMID, LENGTHKM, FTYPE, TerminalFl,
+  flines <- filter_coastal(flines)
+
+  flines <- select(flines, COMID, LENGTHKM, TerminalFl,
                    FromNode, ToNode, TotDASqKM, StartFlag,
                    StreamOrde, StreamCalc, TerminalPa, Pathlength,
                    Divergence, Hydroseq, LevelPathI)
@@ -62,10 +64,8 @@ prepare_nhdplus <- function(flines,
   }
 
   if (purge_non_dendritic) {
-    flines <- filter(flines, (FTYPE != "Coastline" | FTYPE != 566) &
-                       StreamOrde == StreamCalc)
+    flines <- filter(flines, StreamOrde == StreamCalc)
   } else {
-    flines <- filter(flines, (FTYPE != "Coastline" | FTYPE != 566))
     flines[["FromNode"]][which(flines$Divergence == 2)] <- NA
   }
 
@@ -100,7 +100,7 @@ prepare_nhdplus <- function(flines,
 
   if(skip_toCOMID) return(select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
                                  -StreamOrde, -StreamCalc, -TerminalPa,
-                                 -FTYPE, -Pathlength, -Divergence))
+                                 -Pathlength, -Divergence))
 
   if(nrow(flines) > 0) {
     # Join ToNode and FromNode along with COMID and Length to
@@ -131,5 +131,16 @@ prepare_nhdplus <- function(flines,
 
   select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
          -StreamOrde, -StreamCalc, -TerminalPa,
-         -FTYPE, -Pathlength, -Divergence)
+         -Pathlength, -Divergence)
+}
+
+
+filter_coastal <- function(flines) {
+  if("FCODE" %in% names(flines)) {
+    flines <- filter(flines, (FCODE != 566600))
+  } else if("FTYPE" %in% names(flines)) {
+    flines <- filter(flines, (FTYPE != "Coastline" | FTYPE != 566))
+  } else {
+    stop("must provide FCODE and/or FTYPE to filter coastline.")
+  }
 }

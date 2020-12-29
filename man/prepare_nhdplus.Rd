@@ -17,7 +17,7 @@ prepare_nhdplus(
 }
 \arguments{
 \item{flines}{data.frame NHDPlus flowlines including:
-COMID, LENGTHKM, FTYPE, TerminalFl, FromNode, ToNode, TotDASqKM,
+COMID, LENGTHKM, FTYPE (or FCODE), TerminalFl, FromNode, ToNode, TotDASqKM,
 StartFlag, StreamOrde, StreamCalc, TerminalPa, Pathlength,
 and Divergence variables.}
 

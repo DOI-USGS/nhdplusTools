@@ -26,6 +26,7 @@ Divergence <- "Divergence"
 TerminalPa <- "TerminalPa"
 StartFlag <- "StartFlag"
 FTYPE <- "FTYPE"
+FCODE <- "FCODE"
 FromMeas <- "FromMeas"
 ToMeas <- "ToMeas"
 REACHCODE <- "REACHCODE"
@@ -59,6 +60,7 @@ nhdplus_attributes <- list(
   TerminalPa = TerminalPa,
   StartFlag = StartFlag,
   FTYPE = FTYPE, FType = FTYPE,
+  FCODE = FCODE, FCode = FCODE,
   FromMeas = FromMeas,
   ToMeas = ToMeas,
   REACHCODE = REACHCODE, ReachCode = REACHCODE,
@@ -74,7 +76,7 @@ assign("geoserver_ows_root", "https://labs.waterdata.usgs.gov/geoserver/ows",
        envir = nhdplusTools_env)
 
 assign("prepare_nhdplus_attributes",
-       c("COMID", "LENGTHKM", "FTYPE", "TerminalFl",
+       c("COMID", "LENGTHKM", "TerminalFl",
          "FromNode", "ToNode", "TotDASqKM",
          "StartFlag", "StreamOrde", "StreamCalc",
          "TerminalPa", "Pathlength", "Divergence", "Hydroseq",

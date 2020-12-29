@@ -57,53 +57,49 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
   x[["topo_sort"]] <- seq(nrow(x), 1)
   x[["levelpath"]] <- rep(0, nrow(x))
 
-  x <- x %>%
+  x <- x %>% # get downstream name ID added
     left_join(select(x, ID, ds_nameID = nameID), by = c("toID" = "ID")) %>%
-    mutate(ds_nameID = ifelse(is.na(ds_nameID), " ", ds_nameID),
-           orig_weight = weight) %>%
-    group_by(toID)
-
-  x <- x %>%
-    mutate(weight = ifelse(toID == 0, 0, weight))
-
-  x_hasname <- x %>%
-    filter(any(nameID == ds_nameID & ds_nameID != " ")) %>%
-    mutate(weight = ifelse(nameID == ds_nameID & nameID != " ", weight, 0)) %>%
-    mutate(main = weight == max(weight))
-
-  x_notname <- x %>%
-    filter(!ID %in% x_hasname$ID) %>%
-    mutate(main = weight == max(weight))
-
-  x <- bind_rows(x_hasname, x_notname)
-
-  if(!is.null(override_factor)) {
-    x <- x %>%
-      mutate(orig_weight = ifelse(ds_nameID != " " & nameID == ds_nameID,
-                                  orig_weight * override_factor, orig_weight)) %>%
-      mutate(main = orig_weight == max(orig_weight))
-  }
-
-    x <- x %>%
+    # if it's na, we need it to be an empty string
+    mutate(ds_nameID = ifelse(is.na(ds_nameID), " ", ds_nameID)) %>%
+    # group on toID so we can operate on upstream choices
+    group_by(toID) %>%
+    # reweight sets up ranked upstream paths
+    dplyr::group_modify(reweight, override_factor = override_factor)%>%
     ungroup() %>%
-    select(ID, toID, topo_sort, levelpath, main)
+    select(ID, toID, topo_sort, levelpath, weight)
 
-  flc <- x
   diff = 1
   checker <- 0
-  while(nrow(flc) > 0 & checker < 10000000) {
-    tail_ind <- which(flc$topo_sort == min(flc$topo_sort))
-    tailID <- flc$ID[tail_ind]
+  done <- 0
 
-    x_tail_ind <- which(x$topo_sort == min(flc$topo_sort))
-    sortID <- x$topo_sort[x_tail_ind]
+  x <- arrange(x, topo_sort)
 
-    pathIDs <- get_path(flc, tailID, status)
+  topo_sort <- x$topo_sort
 
-    x <- mutate(x,
-                levelpath = ifelse(.data$ID %in% pathIDs,
-                                   sortID, .data$levelpath))
-    flc <- filter(flc, !.data$ID %in% pathIDs)
+  matcher <- sapply(x$ID, function(id, x) {
+    which(x$toID == id)
+  }, x = x)
+
+  names(matcher) <- x$ID
+
+  while(done < nrow(x) & checker < 10000000) {
+    tail_topo <- min(topo_sort, na.rm = TRUE)
+
+    pathIDs <- get_path(x = x,
+                         tailID = x$ID[x$topo_sort == tail_topo],
+                         matcher = matcher,
+                         status = status)
+
+    reset <- x$ID %in% pathIDs
+
+    x$levelpath[reset] <- tail_topo
+
+    n_reset <- sum(reset)
+
+    done <- done + n_reset
+
+    topo_sort[reset] <- rep(NA, n_reset)
+
     checker <- checker + 1
 
     if(status && checker %% 1000 == 0) {
@@ -128,30 +124,24 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
 #' or, if no nameID exists, maximum weight column.
 #' @param x data.frame with ID, toID, nameID and weight columns.
 #' @param tailID integer or numeric ID of outlet catchment.
+#' @param override_factor numeric follow weight if this many times larger
 #' @param status print status?
 #'
-get_path <- function(x, tailID, status) {
+get_path <- function(x, tailID, matcher, status) {
 
   keep_going <- TRUE
   tracker <- rep(NA, nrow(x))
   counter <- 1
 
-  if(dt <- requireNamespace("data.table", quietly = TRUE)) {
-    x <- data.table::data.table(x)
-  }
-
   toID <- NULL
+
   while(keep_going) {
-    # May be more than 1
-    if(dt) {
-      next_tails <- x[toID == tailID]
-    } else {
-      next_tails <- filter(x, .data$toID == tailID)
-    }
+
+    next_tails <- x[matcher[[as.character(tailID)]], ]
 
     if(nrow(next_tails) > 1) {
 
-      next_tails <- next_tails[main==TRUE, ]
+      next_tails <- next_tails[next_tails$weight == max(next_tails$weight), ]
 
     }
 
@@ -176,44 +166,73 @@ get_path <- function(x, tailID, status) {
   return(tracker[!is.na(tracker)])
 }
 
-.datatable.aware <- TRUE
+reweight <- function(x, ..., override_factor) {
 
-get_next_tail <- function(next_tails, cur_name) {
+  if(nrow(x) > 1) {
 
-  max_weight <- max(next_tails$weight)
+    cur_name <- x$ds_nameID[1]
 
-    if(any(next_tails$nameID != " ")) { # If any of the candidates are named.
-      pick <- next_tails
+    max_weight <- max(x$weight)
 
-      if(cur_name %in% pick$nameID) {
-        pick <- # pick the matching one.
-          pick[pick$nameID == cur_name, ]
+    rank <- 1
+
+    total <- nrow(x)
+
+    out <- x
+
+    if(any(x$nameID != " ")) { # If any of the candidates are named.
+      if(cur_name != " " & cur_name %in% x$nameID) {
+        sub <- arrange(x[x$nameID == cur_name, ], desc(weight))
+
+        out[1:nrow(sub), ] <- sub
+
+        rank <- rank + nrow(sub)
+
+        x <- x[!x$ID %in% sub$ID, ]
       }
 
-      if(nrow(pick) > 1) {
-        pick <- # pick the named one.
-          pick[pick$nameID != " ", ]
-      }
+      if(rank <= total) {
+        if(any(x$nameID != " ")) {
+          sub <-
+            arrange(x[x$nameID != " ", ], desc(weight))
 
-      if(!is.null(override_factor)) {
-        if(any((max_weight / override_factor) > pick$weight)) {
-          pick <- next_tails[next_tails$weight == max_weight, ]
+          out[rank:(rank + nrow(sub) - 1), ] <- sub
+
+          rank <- rank + nrow(sub)
+
+          x <- x[!x$ID %in% sub$ID, ]
+
         }
+
+        if(rank <= total) {
+          out[rank:total, ] <- x
+        }
+
       }
-
-      next_tails <- pick
     }
 
-    if(nrow(next_tails) > 1) { # If the above didn't result in one row.
-      next_tails <- next_tails[next_tails$weight == max_weight, ]
+    if(!is.null(override_factor)) {
+      out$weight <- out$weight * override_factor
     }
 
-    if(nrow(next_tails) > 1) {
-      next_tails <- next_tails[1, ]
+    if(rank < nrow(out)) {
+      out[rank:nrow(out), ] <- arrange(x, desc(weight))
     }
 
-    return(next_tails)
+    if(!is.null(override_factor)) {
+      out <- arrange(out, desc(weight))
+    }
+
+    x <- out
+
+  }
+
+  x$weight <- seq(nrow(x), 1)
+
+  x
 }
+
+.datatable.aware <- TRUE
 
 #' @noRd
 #' @param x data.frame if an identifier and to identifier in the

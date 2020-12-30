@@ -62,9 +62,9 @@ test_that("navigation works", {
                        data_source = "dumb",
                        distance_km = 1)
 
-  expect_equal(nav$origin$sourceName, "NWIS Sites")
+  expect_equal(nav$sourceName, "NWIS Sites")
 
-  expect_equal(class(nav$UM$nhdplus_comid), "character")
+  expect_equal(class(nav$comid), "character")
 
   nav <- navigate_nldi(nldi_feature = nldi_nwis,
                        mode = "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",

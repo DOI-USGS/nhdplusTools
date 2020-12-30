@@ -152,7 +152,7 @@ get_nldi_basin <- function(nldi_feature) {
 get_nldi_feature <- function(nldi_feature) {
   nldi_feature <- check_nldi_feature(nldi_feature)
 
-  return(dataRetrieval::findNLDI(origin = nldi_feature)$origin)
+  return(dataRetrieval::findNLDI(origin = nldi_feature))
 }
 
 #' @title Get Catchment Characteristics

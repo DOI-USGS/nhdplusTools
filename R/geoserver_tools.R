@@ -300,7 +300,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL) {
   if (!is.null(point)) {
     coords = sf::st_coordinates(point)
     comid  = dataRetrieval::findNLDI(location = c(X = coords[1],
-                                                  Y = coords[2]))$origin$identifier
+                                                  Y = coords[2]))$identifier
     return(as.integer(comid))
   } else if (!is.null(nldi_feature)) {
 

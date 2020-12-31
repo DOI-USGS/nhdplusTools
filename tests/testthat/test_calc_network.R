@@ -126,12 +126,16 @@ test_that("hr levelpath", {
     st_sf() %>%
     select(ID = COMID, toID = toCOMID, weight = ArbolateSu, nameID = GNIS_Name)
 
-  lp <- get_levelpaths(sf::st_set_geometry(fl, NULL))
+  lp <- get_levelpaths(sf::st_set_geometry(fl, NULL), cores = 2)
 
-  expect_equal(length(unique(hr_flowline$LevelPathI)), length(unique(lp$levelpath)))
+  cores <- parallel::makeCluster(2)
+
+  lp <- get_levelpaths(sf::st_set_geometry(fl, NULL), cores = cores)
+
+  expect_error(get_levelpaths(sf::st_set_geometry(fl, NULL), cores = "char"))
 
   # Same number of total flowlines
-  hr_flowline[hr_flowline$COMID == 15000500039693, ]$LevelPathI
+  expect_equal(length(unique(hr_flowline$LevelPathI)), length(unique(lp$levelpath)))
 
   # follows a semi tricky mainstem the same as HI
   expect_equal(lp[lp$ID == 15000500039693, ]$levelpath, lp[lp$ID == 15000500039696, ]$levelpath)

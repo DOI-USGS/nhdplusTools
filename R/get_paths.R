@@ -9,6 +9,7 @@
 #' If `weight` is `numeric_factor` times larger on a path, it will be followed
 #' regardless of the nameID indication.
 #' @param status boolean if status updates should be printed.
+#' @param cores numeric number of cores to use in initial path ranking calculations.
 #' @return data.frame with ID, outletID, topo_sort, and levelpath columns.
 #' See details for more info.
 #' @details
@@ -38,7 +39,7 @@
 #' get_levelpaths(test_flowline)
 #'
 #'
-get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
+get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NULL) {
 
   x <- check_names(x, "get_levelpaths")
 
@@ -57,22 +58,54 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
   x[["topo_sort"]] <- seq(nrow(x), 1)
   x[["levelpath"]] <- rep(0, nrow(x))
 
+  stop_cluster <- FALSE
+  cl <- NULL
+
+  if(!is.null(cores)) {
+    if(!requireNamespace("parallel", quietly = TRUE)) {
+      stop("parallel required if using cores input")
+    }
+    if(is.numeric(cores)) {
+      cl <- parallel::makeCluster(cores)
+      stop_cluster <- TRUE
+    } else {
+      if(!"cluster" %in% class(cores)) {
+        stop("cores must be numeric or a cluster object")
+      }
+    }
+  }
+
   x <- x %>% # get downstream name ID added
-    left_join(select(x, ID, ds_nameID = nameID), by = c("toID" = "ID")) %>%
+    left_join(select(x, .data$ID, ds_nameID = .data$nameID),
+              by = c("toID" = "ID")) %>%
     # if it's na, we need it to be an empty string
-    mutate(ds_nameID = ifelse(is.na(ds_nameID), " ", ds_nameID)) %>%
+    mutate(ds_nameID = ifelse(is.na(.data$ds_nameID),
+                              " ", .data$ds_nameID)) %>%
     # group on toID so we can operate on upstream choices
-    group_by(toID) %>%
-    # reweight sets up ranked upstream paths
-    dplyr::group_modify(reweight, override_factor = override_factor)%>%
-    ungroup() %>%
-    select(ID, toID, topo_sort, levelpath, weight)
+    group_by(.data$toID) %>%
+    dplyr::group_split()
+
+  # reweight sets up ranked upstream paths
+  if(!is.null(cl)) {
+    x <- parallel::parLapply(cl, x, reweight, override_factor = override_factor)
+  } else {
+    x <- lapply(x, reweight, override_factor = override_factor)
+  }
+
+  x <- x %>%
+    bind_rows() %>%
+    select(.data$ID, .data$toID, .data$topo_sort,
+           .data$levelpath, .data$weight)
+
+  if(stop_cluster) {
+    parallel::stopCluster(cl)
+  }
 
   diff = 1
   checker <- 0
   done <- 0
 
-  x <- arrange(x, topo_sort)
+  x <- arrange(x, .data$topo_sort)
 
   topo_sort <- x$topo_sort
 
@@ -103,7 +136,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
     checker <- checker + 1
 
     if(status && checker %% 1000 == 0) {
-      message(paste(nrow(flc), "of", nrow(x), "remaining."))
+      message(paste(done, "of", nrow(x), "remaining."))
     }
   }
 
@@ -182,7 +215,7 @@ reweight <- function(x, ..., override_factor) {
 
     if(any(x$nameID != " ")) { # If any of the candidates are named.
       if(cur_name != " " & cur_name %in% x$nameID) {
-        sub <- arrange(x[x$nameID == cur_name, ], desc(weight))
+        sub <- arrange(x[x$nameID == cur_name, ], desc(.data$weight))
 
         out[1:nrow(sub), ] <- sub
 
@@ -194,7 +227,7 @@ reweight <- function(x, ..., override_factor) {
       if(rank <= total) {
         if(any(x$nameID != " ")) {
           sub <-
-            arrange(x[x$nameID != " ", ], desc(weight))
+            arrange(x[x$nameID != " ", ], desc(.data$weight))
 
           out[rank:(rank + nrow(sub) - 1), ] <- sub
 
@@ -216,11 +249,11 @@ reweight <- function(x, ..., override_factor) {
     }
 
     if(rank < nrow(out)) {
-      out[rank:nrow(out), ] <- arrange(x, desc(weight))
+      out[rank:nrow(out), ] <- arrange(x, desc(.data$weight))
     }
 
     if(!is.null(override_factor)) {
-      out <- arrange(out, desc(weight))
+      out <- arrange(out, desc(.data$weight))
     }
 
     x <- out

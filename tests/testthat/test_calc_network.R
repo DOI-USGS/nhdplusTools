@@ -112,6 +112,36 @@ test_that("calculate level path", {
   expect_equal(pt_data$order, pt_data$StreamOrde)
 })
 
+test_that("hr levelpath", {
+
+  suppressMessages(
+    source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
+  hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
+
+  suppressWarnings(
+    fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE))
+
+  fl <- select(hr_flowline, COMID, ArbolateSu, GNIS_Name) %>%
+    left_join(fl, by = "COMID") %>%
+    st_sf() %>%
+    select(ID = COMID, toID = toCOMID, weight = ArbolateSu, nameID = GNIS_Name)
+
+  lp <- get_levelpaths(sf::st_set_geometry(fl, NULL), cores = 2)
+
+  cores <- parallel::makeCluster(2)
+
+  lp <- get_levelpaths(sf::st_set_geometry(fl, NULL), cores = cores)
+
+  expect_error(get_levelpaths(sf::st_set_geometry(fl, NULL), cores = "char"))
+
+  # Same number of total flowlines
+  expect_equal(length(unique(hr_flowline$LevelPathI)), length(unique(lp$levelpath)))
+
+  # follows a semi tricky mainstem the same as HI
+  expect_equal(lp[lp$ID == 15000500039693, ]$levelpath, lp[lp$ID == 15000500039696, ]$levelpath)
+
+})
+
 test_that("get_pfaf", {
   suppressMessages(
   source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
@@ -125,7 +155,7 @@ test_that("get_pfaf", {
     st_sf() %>%
     select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
-  fl$nameID = ""
+  fl$nameID = " "
   fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
   fl <- left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),
                                                    weight = totda)), by = "ID")

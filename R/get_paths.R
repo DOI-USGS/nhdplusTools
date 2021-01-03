@@ -9,6 +9,7 @@
 #' If `weight` is `numeric_factor` times larger on a path, it will be followed
 #' regardless of the nameID indication.
 #' @param status boolean if status updates should be printed.
+#' @param cores numeric number of cores to use in initial path ranking calculations.
 #' @return data.frame with ID, outletID, topo_sort, and levelpath columns.
 #' See details for more info.
 #' @details
@@ -38,7 +39,7 @@
 #' get_levelpaths(test_flowline)
 #'
 #'
-get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
+get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NULL) {
 
   x <- check_names(x, "get_levelpaths")
 
@@ -57,26 +58,85 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
   x[["topo_sort"]] <- seq(nrow(x), 1)
   x[["levelpath"]] <- rep(0, nrow(x))
 
-  flc <- x
+  stop_cluster <- FALSE
+  cl <- NULL
+
+  if(!is.null(cores)) {
+    if(!requireNamespace("parallel", quietly = TRUE)) {
+      stop("parallel required if using cores input")
+    }
+    if(is.numeric(cores)) {
+      cl <- parallel::makeCluster(cores)
+      stop_cluster <- TRUE
+    } else {
+      if(!"cluster" %in% class(cores)) {
+        stop("cores must be numeric or a cluster object")
+      }
+    }
+  }
+
+  x <- x %>% # get downstream name ID added
+    left_join(select(x, .data$ID, ds_nameID = .data$nameID),
+              by = c("toID" = "ID")) %>%
+    # if it's na, we need it to be an empty string
+    mutate(ds_nameID = ifelse(is.na(.data$ds_nameID),
+                              " ", .data$ds_nameID)) %>%
+    # group on toID so we can operate on upstream choices
+    group_by(.data$toID) %>%
+    dplyr::group_split()
+
+  # reweight sets up ranked upstream paths
+  if(!is.null(cl)) {
+    x <- parallel::parLapply(cl, x, reweight, override_factor = override_factor)
+  } else {
+    x <- lapply(x, reweight, override_factor = override_factor)
+  }
+
+  x <- x %>%
+    bind_rows() %>%
+    select(.data$ID, .data$toID, .data$topo_sort,
+           .data$levelpath, .data$weight)
+
+  if(stop_cluster) {
+    parallel::stopCluster(cl)
+  }
+
   diff = 1
   checker <- 0
-  while(nrow(flc) > 0 & checker < 10000000) {
-    tail_ind <- which(flc$topo_sort == min(flc$topo_sort))
-    tailID <- flc$ID[tail_ind]
+  done <- 0
 
-    x_tail_ind <- which(x$topo_sort == min(flc$topo_sort))
-    sortID <- x$topo_sort[x_tail_ind]
+  x <- arrange(x, .data$topo_sort)
 
-    pathIDs <- get_path(flc, tailID, override_factor, status)
+  topo_sort <- x$topo_sort
 
-    x <- mutate(x,
-                levelpath = ifelse(.data$ID %in% pathIDs,
-                                   sortID, .data$levelpath))
-    flc <- filter(flc, !.data$ID %in% pathIDs)
+  matcher <- sapply(x$ID, function(id, x) {
+    which(x$toID == id)
+  }, x = x)
+
+  names(matcher) <- x$ID
+
+  while(done < nrow(x) & checker < 10000000) {
+    tail_topo <- min(topo_sort, na.rm = TRUE)
+
+    pathIDs <- get_path(x = x,
+                         tailID = x$ID[x$topo_sort == tail_topo],
+                         matcher = matcher,
+                         status = status)
+
+    reset <- x$ID %in% pathIDs
+
+    x$levelpath[reset] <- tail_topo
+
+    n_reset <- sum(reset)
+
+    done <- done + n_reset
+
+    topo_sort[reset] <- rep(NA, n_reset)
+
     checker <- checker + 1
 
     if(status && checker %% 1000 == 0) {
-      message(paste(nrow(flc), "of", nrow(x), "remaining."))
+      message(paste(done, "of", nrow(x), "remaining."))
     }
   }
 
@@ -100,29 +160,21 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE) {
 #' @param override_factor numeric follow weight if this many times larger
 #' @param status print status?
 #'
-get_path <- function(x, tailID, override_factor, status) {
+get_path <- function(x, tailID, matcher, status) {
 
   keep_going <- TRUE
   tracker <- rep(NA, nrow(x))
   counter <- 1
 
-  if(dt <- requireNamespace("data.table", quietly = TRUE)) {
-    x <- data.table::data.table(x)
-  }
-
   toID <- NULL
+
   while(keep_going) {
-    # May be more than 1
-    if(dt) {
-      next_tails <- x[toID == tailID]
-    } else {
-      next_tails <- filter(x, .data$toID == tailID)
-    }
 
-    if(nrow(next_tails) > 1) { # need to find dominant
+    next_tails <- x[matcher[[as.character(tailID)]], ]
 
-      next_tails <- get_next_tail(next_tails, x$nameID[x$ID == tailID][1],
-                                  override_factor)
+    if(nrow(next_tails) > 1) {
+
+      next_tails <- next_tails[next_tails$weight == max(next_tails$weight), ]
 
     }
 
@@ -147,44 +199,73 @@ get_path <- function(x, tailID, override_factor, status) {
   return(tracker[!is.na(tracker)])
 }
 
-.datatable.aware <- TRUE
+reweight <- function(x, ..., override_factor) {
 
-get_next_tail <- function(next_tails, cur_name, override_factor) {
+  if(nrow(x) > 1) {
 
-  max_weight <- max(next_tails$weight)
+    cur_name <- x$ds_nameID[1]
 
-    if(any(next_tails$nameID != " ")) { # If any of the candidates are named.
-      pick <- next_tails
+    max_weight <- max(x$weight)
 
-      if(cur_name %in% pick$nameID) {
-        pick <- # pick the matching one.
-          pick[pick$nameID == cur_name, ]
+    rank <- 1
+
+    total <- nrow(x)
+
+    out <- x
+
+    if(any(x$nameID != " ")) { # If any of the candidates are named.
+      if(cur_name != " " & cur_name %in% x$nameID) {
+        sub <- arrange(x[x$nameID == cur_name, ], desc(.data$weight))
+
+        out[1:nrow(sub), ] <- sub
+
+        rank <- rank + nrow(sub)
+
+        x <- x[!x$ID %in% sub$ID, ]
       }
 
-      if(nrow(pick) > 1) {
-        pick <- # pick the named one.
-          pick[pick$nameID != " ", ]
-      }
+      if(rank <= total) {
+        if(any(x$nameID != " ")) {
+          sub <-
+            arrange(x[x$nameID != " ", ], desc(.data$weight))
 
-      if(!is.null(override_factor)) {
-        if(any((max_weight / override_factor) > pick$weight)) {
-          pick <- next_tails[next_tails$weight == max_weight, ]
+          out[rank:(rank + nrow(sub) - 1), ] <- sub
+
+          rank <- rank + nrow(sub)
+
+          x <- x[!x$ID %in% sub$ID, ]
+
         }
+
+        if(rank <= total) {
+          out[rank:total, ] <- x
+        }
+
       }
-
-      next_tails <- pick
     }
 
-    if(nrow(next_tails) > 1) { # If the above didn't result in one row.
-      next_tails <- next_tails[next_tails$weight == max_weight, ]
+    if(!is.null(override_factor)) {
+      out$weight <- out$weight * override_factor
     }
 
-    if(nrow(next_tails) > 1) {
-      next_tails <- next_tails[1, ]
+    if(rank < nrow(out)) {
+      out[rank:nrow(out), ] <- arrange(x, desc(.data$weight))
     }
 
-    return(next_tails)
+    if(!is.null(override_factor)) {
+      out <- arrange(out, desc(.data$weight))
+    }
+
+    x <- out
+
+  }
+
+  x$weight <- seq(nrow(x), 1)
+
+  x
 }
+
+.datatable.aware <- TRUE
 
 #' @noRd
 #' @param x data.frame if an identifier and to identifier in the
@@ -268,8 +349,9 @@ get_pathlength <- function(x) {
 
   sorted <- sorted[!is.na(sorted)]
 
-  x <- left_join(data.frame(ID = sorted),
-                   x, by = "ID")
+  order <- match(sorted, x$ID)
+
+  x <- x[order, ]
 
   x <- x[!is.na(x$ID), ]
 
@@ -278,11 +360,13 @@ get_pathlength <- function(x) {
   le <- x$length
   leo <- rep(0, length(le))
 
+  toids <- match(toid, id)
+
   for(i in seq_len(length(id))) {
     if(!is.na(tid <- toid[i])) {
-      r <- which(id == tid)
 
-      leo[i] <- le[r] + leo[r]
+      leo[i] <- le[toids[i]] + leo[toids[i]]
+
     }
   }
   return(data.frame(ID = id, pathlength = leo))

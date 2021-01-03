@@ -53,7 +53,7 @@ download_nhdplusv2 <- function(outdir,
 #' @param url the location of the online resource
 #' @return the path to the local geodatabase
 #' @export
-#' @importFrom utils unzip
+#' @importFrom zip unzip
 #' @examples
 #' \dontrun{
 #'   download_wbd("./data/wbd/")
@@ -67,7 +67,7 @@ download_wbd <- function(outdir,
 
   message("Extracting data ...")
 
-  suppressWarnings(utils::unzip(file, exdir = outdir, overwrite = F))
+  try(suppressWarnings(zip::unzip(file, exdir = outdir, overwrite = FALSE)))
 
   path <- list.dirs(outdir)[grepl("gdb", list.dirs(outdir))]
   path <- path[grepl("WBD", path)]
@@ -84,7 +84,6 @@ download_wbd <- function(outdir,
 #' @param url the location of the online resource
 #' @return the path to the local e00 file
 #' @export
-#' @importFrom utils unzip
 #' @examples
 #' \dontrun{
 #'   download_wbd("./data/rf1/")

@@ -41,14 +41,17 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   source <- data.frame(server = 'wmadata',
                        user_call  = c('huc08','huc12',
                                       'nhd','catchment', 'nhdarea',
+                                      'nonnetwork',
                                       'waterbodies',
                                       'gagesII'),
                        geoserver  = c("huc08","huc12",
                                       "nhdflowline_network", "catchmentsp", 'nhdarea',
+                                      "nhdflowline_nonnetwork",
                                       "nhdwaterbody",
                                       "gagesii"),
                        ids        = c("huc8", "huc12",
                                       "comid", "featureid", "comid",
+                                      "comid",
                                       "comid",
                                       "staid"))
 
@@ -77,7 +80,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
   here     <- dplyr::filter(source, .data$user_call == !!type)
 
-  URL      <- paste0("https://labs.waterdata.usgs.gov/geoserver/",
+  URL      <- paste0(get("geoserver_root", envir = nhdplusTools_env),
                      here$server,
                      "/ows")
 

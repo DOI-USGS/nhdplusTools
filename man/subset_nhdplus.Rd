@@ -126,7 +126,7 @@ subset_nhdplus(comids = comids,
                output_file = output_file,
                nhdplus_data = "download",
                overwrite = TRUE,
-               status = TRUE)
+               status = TRUE, flowline_only = FALSE)
 
 sf::st_layers(output_file)
 

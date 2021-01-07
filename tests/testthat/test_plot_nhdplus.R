@@ -18,8 +18,8 @@ test_that("basics work", {
   expect_true(all(c("comid", "type") %in% names(d$outlets)))
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
-               c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody"))
-  expect_equal(l$features, c(431, 402, 1, 90))
+               c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody", "NHDFlowline_NonNetwork"))
+  expect_equal(l$features, c(431, 402, 1, 90, 45))
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
@@ -50,8 +50,8 @@ test_that("basics work", {
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
                c("NHDFlowline_Network", "CatchmentSP", "NHDArea", "NHDWaterbody",
-                 "Gage", "NHDFlowline_NonNetwork"))
-  expect_equal(l$features, c(251, 250, 3, 117, 44, 48))
+                 "NHDFlowline_NonNetwork", "Gage"))
+  expect_equal(l$features, c(251, 250, 3, 117, 48, 44))
 
   expect_true(file.exists(tempf))
   unlink(tempf)
@@ -69,8 +69,8 @@ test_that("basics work", {
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
                c("NHDFlowline_Network", "CatchmentSP", "NHDArea", "NHDWaterbody",
-                 "Gage", "NHDFlowline_NonNetwork"))
-  expect_equal(l$features, c(168, 167, 1, 90, 33, 45))
+                 "NHDFlowline_NonNetwork", "Gage"))
+  expect_equal(l$features, c(168, 167, 1, 90, 45, 33))
 
   expect_true(file.exists(tempf))
   unlink(tempf)

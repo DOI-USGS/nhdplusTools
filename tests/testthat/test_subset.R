@@ -58,8 +58,8 @@ test_that("subset runs as expected", {
                        status = FALSE)
 
   expect_equal(names(fi), c("NHDFlowline_Network", "CatchmentSP", "NHDArea",
-                            "NHDWaterbody", "Gage", "Sink",
-                            "NHDFlowline_NonNetwork"))
+                            "NHDWaterbody", "NHDFlowline_NonNetwork", "Gage", "Sink"))
+
   expect_equal(nrow(fi$CatchmentSP), 4)
   expect_equal(nrow(fi$NHDWaterbody), 1)
 

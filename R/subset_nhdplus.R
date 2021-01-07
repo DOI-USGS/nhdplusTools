@@ -93,7 +93,7 @@
 #'                output_file = output_file,
 #'                nhdplus_data = "download",
 #'                overwrite = TRUE,
-#'                status = TRUE)
+#'                status = TRUE, flowline_only = FALSE)
 #'
 #' sf::st_layers(output_file)
 #'
@@ -180,7 +180,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
         envelope <- sf::st_transform(sf::st_as_sfc(sf::st_bbox(out_list[[catch_layer]])),
                                      4326)
 
-        intersection_names <- c("NHDArea", "NHDWaterbody")
+        intersection_names <- c("NHDArea", "NHDWaterbody", "NHDFlowline_NonNetwork")
       }, error = function(e) {
         warning(paste("error getting catchment from nhdplus_data\n", e))
       })
@@ -209,7 +209,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
     intersection_names <- c(get_catchment_layer_name(simplified, nhdplus_data),
                             get_flowline_layer_name(nhdplus_data),
-                            "NHDArea", "NHDWaterbody")
+                            "NHDArea", "NHDWaterbody", "NHDFlowline_NonNetwork")
 
     if(flowline_only) intersection_names <- get_flowline_layer_name(nhdplus_data)
   }
@@ -236,7 +236,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
   } else {
     if(!flowline_only) {
       if("Gage" %in% st_layers(nhdplus_data)$name) {
-        intersection_names <- c(intersection_names, "Gage", "Sink", "NHDFlowline_NonNetwork")
+        intersection_names <- c(intersection_names, "Gage", "Sink")
       } else {
         intersection_names <- c(intersection_names, "NHDPlusSink")
         intersection_names <- intersection_names[which(intersection_names %in% st_layers(nhdplus_data)$name)]
@@ -712,7 +712,8 @@ get_nhdplus_byid <- function(comids, layer, streamorder = NULL) {
 #' @noRd
 get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
 
-  if(!layer %in% c("nhdarea", "nhdwaterbody", "nhdflowline_network", "catchmentsp")) {
+  if(!layer %in% c("nhdarea", "nhdwaterbody", "nhdflowline_network",
+                   "nhdflowline_nonnetwork", "catchmentsp")) {
     stop("Layer must be one of nhdarea, nhdwaterbody")
   }
 

@@ -236,7 +236,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
   } else {
     if(!flowline_only) {
       if("Gage" %in% st_layers(nhdplus_data)$name) {
-        intersection_names <- c(intersection_names, "Gage", "Sink", "NHDFlowline_NonNetwork")
+        intersection_names <- c(intersection_names, "Gage", "Sink")
       } else {
         intersection_names <- c(intersection_names, "NHDPlusSink")
         intersection_names <- intersection_names[which(intersection_names %in% st_layers(nhdplus_data)$name)]

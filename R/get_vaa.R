@@ -60,8 +60,10 @@ get_vaa <- function(atts = NULL,
     }
   }
 
-  bad_atts = atts[!atts %in% get_vaa_names()]
-  atts = atts[atts %in% get_vaa_names()]
+  avaliable_names = get_vaa_names()[["columnNames"]]
+
+  bad_atts = atts[!atts %in% avaliable_names]
+  atts      = atts[atts %in% avaliable_names]
   if(length(bad_atts) > 0){
     message(paste(bad_atts, collapse = ", "), " not in vaa data. Ignoring...")
   }
@@ -70,8 +72,8 @@ get_vaa <- function(atts = NULL,
     return(fst::read.fst(path))
   }
 
-  if(all(atts %in% get_vaa_names())){
-    return(fst::read.fst(path, c('comid', atts)))
+  if(all(atts %in% avaliable_names)){
+    return(fst::read_fst(path, c('comid', atts)))
   }
 
 }
@@ -110,5 +112,4 @@ download_vaa <- function(path = get_vaa_path(), force = FALSE) {
   # return file path
   return(path)
 }
-
 

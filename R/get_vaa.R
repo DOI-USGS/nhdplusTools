@@ -18,23 +18,13 @@ get_vaa_path <- function() {
 #' @description Find variables available from the NHDPlusV2 attribute data.frame
 #' @inherit download_vaa details
 #' @return character vector
-#' @examples
-#' get_vaa_names()
+#' @importFrom fst metadata_fst
 #' @export
 #' @examples
 #' get_vaa_names()
 
 get_vaa_names <- function(){
-  # Build with: dput(names(get_vaa()))
-  c("comid", "streamleve", "streamorde", "streamcalc", "fromnode",
-    "tonode", "hydroseq", "levelpathi", "pathlength", "terminalpa",
-    "arbolatesu", "divergence", "startflag", "terminalfl", "dnlevel",
-    "thinnercod", "uplevelpat", "uphydroseq", "dnlevelpat", "dnminorhyd",
-    "dndraincou", "dnhydroseq", "frommeas", "tomeas", "reachcode",
-    "lengthkm", "fcode", "vpuin", "vpuout", "areasqkm", "totdasqkm",
-    "divdasqkm", "totma", "wbareatype", "pathtimema", "slope", "slopelenkm",
-    "ftype", "gnis_name", "gnis_id", "wbareacomi", "hwnodesqkm",
-    "rpuid", "vpuid")
+ fst::metadata_fst(get_vaa_path())
 }
 
 #' @title NHDPlusV2 Attribute Subset

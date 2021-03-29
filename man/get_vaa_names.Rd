@@ -24,5 +24,4 @@ To view aggregate data and documentation, see
 }
 \examples{
 get_vaa_names()
-get_vaa_names()
 }

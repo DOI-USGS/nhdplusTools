@@ -18,23 +18,13 @@ get_vaa_path <- function() {
 #' @description Find variables available from the NHDPlusV2 attribute data.frame
 #' @inherit download_vaa details
 #' @return character vector
-#' @examples
-#' get_vaa_names()
+#' @importFrom fst metadata_fst
 #' @export
 #' @examples
 #' get_vaa_names()
 
 get_vaa_names <- function(){
-  # Build with: dput(names(get_vaa()))
-  c("comid", "streamleve", "streamorde", "streamcalc", "fromnode",
-    "tonode", "hydroseq", "levelpathi", "pathlength", "terminalpa",
-    "arbolatesu", "divergence", "startflag", "terminalfl", "dnlevel",
-    "thinnercod", "uplevelpat", "uphydroseq", "dnlevelpat", "dnminorhyd",
-    "dndraincou", "dnhydroseq", "frommeas", "tomeas", "reachcode",
-    "lengthkm", "fcode", "vpuin", "vpuout", "areasqkm", "totdasqkm",
-    "divdasqkm", "totma", "wbareatype", "pathtimema", "slope", "slopelenkm",
-    "ftype", "gnis_name", "gnis_id", "wbareacomi", "hwnodesqkm",
-    "rpuid", "vpuid")
+ fst::metadata_fst(get_vaa_path())
 }
 
 #' @title NHDPlusV2 Attribute Subset
@@ -70,8 +60,10 @@ get_vaa <- function(atts = NULL,
     }
   }
 
-  bad_atts = atts[!atts %in% get_vaa_names()]
-  atts = atts[atts %in% get_vaa_names()]
+  avaliable_names = get_vaa_names()[["columnNames"]]
+
+  bad_atts = atts[!atts %in% avaliable_names]
+  atts      = atts[atts %in% avaliable_names]
   if(length(bad_atts) > 0){
     message(paste(bad_atts, collapse = ", "), " not in vaa data. Ignoring...")
   }
@@ -80,8 +72,8 @@ get_vaa <- function(atts = NULL,
     return(fst::read.fst(path))
   }
 
-  if(all(atts %in% get_vaa_names())){
-    return(fst::read.fst(path, c('comid', atts)))
+  if(all(atts %in% avaliable_names)){
+    return(fst::read_fst(path, c('comid', atts)))
   }
 
 }
@@ -120,5 +112,4 @@ download_vaa <- function(path = get_vaa_path(), force = FALSE) {
   # return file path
   return(path)
 }
-
 

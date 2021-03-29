@@ -97,10 +97,6 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
     select(.data$ID, .data$toID, .data$topo_sort,
            .data$levelpath, .data$weight)
 
-  if(stop_cluster) {
-    parallel::stopCluster(cl)
-  }
-
   diff = 1
   checker <- 0
   done <- 0
@@ -109,35 +105,61 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
 
   topo_sort <- x$topo_sort
 
-  matcher <- sapply(x$ID, function(id, x) {
-    which(x$toID == id)
-  }, x = x)
+  if(!is.null(cl)) {
+    matcher <- parallel::parSapply(cl = cl, X = x$ID,
+                                   FUN = function(id, df) {
+      which(x$toID == id)
+    }, df = x)
+  } else {
+    matcher <- sapply(x$ID, function(id, df) {
+      which(x$toID == id)
+    }, df = x)
+  }
 
   names(matcher) <- x$ID
 
+  x$done <- rep(FALSE, nrow(x))
+
+  outlets <- filter(x, .data$toID == 0)
+
   while(done < nrow(x) & checker < 10000000) {
-    tail_topo <- min(topo_sort, na.rm = TRUE)
+    tail_topo <- outlets$topo_sort
 
-    pathIDs <- get_path(x = x,
-                         tailID = x$ID[x$topo_sort == tail_topo],
-                         matcher = matcher,
+    pathIDs <- if(!is.null(cl)) {
+      parallel::parApply(cl = cl,
+                         outlets[sample(nrow(outlets)), ], 1, par_get_path,
+                         x_in = x, matcher = matcher,
                          status = status)
+    } else {
+      apply(outlets, 1, par_get_path,
+             x_in = x, matcher = matcher,
+             status = status)
+    }
 
-    reset <- x$ID %in% pathIDs
+    pathIDs <- do.call(rbind, pathIDs)
 
-    x$levelpath[reset] <- tail_topo
+    reset <- match(pathIDs$ID, x$ID)
 
-    n_reset <- sum(reset)
+    x$levelpath[reset] <- pathIDs$levelpath
+
+    n_reset <- length(reset)
 
     done <- done + n_reset
 
-    topo_sort[reset] <- rep(NA, n_reset)
+    x$done[reset] <- rep(TRUE, n_reset)
+
+    outlets <- x[x$toID %in% pathIDs$ID &
+                   !x$ID %in% pathIDs$ID, ]
 
     checker <- checker + 1
 
     if(status && checker %% 1000 == 0) {
       message(paste(done, "of", nrow(x), "remaining."))
     }
+  }
+
+  if(stop_cluster) {
+    parallel::stopCluster(cl)
   }
 
   outlets <- x %>%
@@ -149,6 +171,12 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   x <- left_join(x, outlets, by = "levelpath")
 
   return(select(x, .data$ID, .data$outletID, .data$topo_sort, .data$levelpath))
+}
+
+par_get_path <- function(outlet, x_in, matcher, status) {
+  out <- get_path(x = x_in, tailID = outlet[names(outlet) == "ID"],
+                  matcher = matcher, status = status)
+  data.frame(ID = out, levelpath = rep(outlet[names(outlet) == "topo_sort"], length(out)))
 }
 
 #' get level path
@@ -245,7 +273,9 @@ reweight <- function(x, ..., override_factor) {
     }
 
     if(!is.null(override_factor)) {
-      out$weight <- out$weight * override_factor
+      out <- dplyr::mutate(out, weight = ifelse(nameID == ds_nameID,
+                                                weight * override_factor,
+                                                weight))
     }
 
     if(rank < nrow(out)) {

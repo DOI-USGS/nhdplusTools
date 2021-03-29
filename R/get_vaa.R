@@ -23,8 +23,12 @@ get_vaa_path <- function() {
 #' @examples
 #' get_vaa_names()
 
-get_vaa_names <- function(){
- fst::metadata_fst(get_vaa_path())
+get_vaa_names <- function() {
+  path <- get_vaa_path()
+
+  check_vaa_path(path, TRUE)
+
+  fst::metadata_fst(path)
 }
 
 #' @title NHDPlusV2 Attribute Subset
@@ -51,14 +55,7 @@ get_vaa <- function(atts = NULL,
                     path = get_vaa_path(),
                     download = TRUE) {
 
-  if(!file.exists(path)){
-    if(download) {
-      message("didn't find data, downloading.")
-      path <- download_vaa(path = path)
-    } else {
-      stop("need to download data: run `download_vaa()`")
-    }
-  }
+  check_vaa_path(path, download)
 
   avaliable_names = get_vaa_names()[["columnNames"]]
 
@@ -76,6 +73,17 @@ get_vaa <- function(atts = NULL,
     return(fst::read_fst(path, c('comid', atts)))
   }
 
+}
+
+check_vaa_path <- function(path = get_vaa_path(), download = TRUE) {
+  if(!file.exists(path)){
+    if(download) {
+      message("didn't find data, downloading.")
+      path <- download_vaa(path = path)
+    } else {
+      stop("need to download data: run `download_vaa()`")
+    }
+  }
 }
 
 #' @title Download nhdplusVAA data from HydroShare

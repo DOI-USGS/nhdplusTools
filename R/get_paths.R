@@ -273,9 +273,9 @@ reweight <- function(x, ..., override_factor) {
     }
 
     if(!is.null(override_factor)) {
-      out <- dplyr::mutate(out, weight = ifelse(nameID == ds_nameID,
-                                                weight * override_factor,
-                                                weight))
+      out <- dplyr::mutate(out, weight = ifelse(.data$nameID == .data$ds_nameID,
+                                                .data$weight * override_factor,
+                                                .data$weight))
     }
 
     if(rank < nrow(out)) {

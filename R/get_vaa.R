@@ -28,7 +28,7 @@ get_vaa_names <- function() {
 
   check_vaa_path(path, TRUE)
 
-  fst::metadata_fst(path)
+  fst::metadata_fst(path)[["columnNames"]]
 }
 
 #' @title NHDPlusV2 Attribute Subset
@@ -57,7 +57,7 @@ get_vaa <- function(atts = NULL,
 
   check_vaa_path(path, download)
 
-  avaliable_names = get_vaa_names()[["columnNames"]]
+  avaliable_names = get_vaa_names()
 
   bad_atts = atts[!atts %in% avaliable_names]
   atts      = atts[atts %in% avaliable_names]

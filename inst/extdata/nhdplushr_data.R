@@ -1,25 +1,27 @@
 # nolint start
-work_dir <- file.path(tempdir(check = TRUE), "hr_temp")
+work_dir <- file.path(rappdirs::user_data_dir(), "nhdplusTools")
 
-dir.create(work_dir, showWarnings = FALSE)
+if(!file.exists(file.path(work_dir, "03_sub.gpkg"))) {
 
-unlink(file.path(work_dir, "*"), recursive = TRUE)
+  dir.create(work_dir, showWarnings = FALSE)
 
-hr_source <- file.path(work_dir, "temp.zip")
+  hr_source <- file.path(work_dir, "temp.zip")
 
-project_file <- c("../../docs/data/03_sub.zip", "docs/data/03_sub.zip")
-project_file <- project_file[file.exists(project_file)]
+  project_file <- c("../../docs/data/03_sub.zip", "docs/data/03_sub.zip")
+  project_file <- project_file[file.exists(project_file)]
 
-if(length(project_file) > 0 &&
-          file.exists(project_file[1])) {
-  file.copy(project_file, hr_source, overwrite = TRUE)
-} else {
-  url <- "https://usgs-r.github.io/nhdplusTools/data/03_sub.zip"
-  invisible(httr::RETRY("GET", url, httr::write_disk(hr_source, overwrite=TRUE),
-                        times = 3, pause_cap = 20))
+  if(length(project_file) > 0 &&
+     file.exists(project_file[1])) {
+    file.copy(project_file, hr_source, overwrite = TRUE)
+  } else {
+    url <- "https://usgs-r.github.io/nhdplusTools/data/03_sub.zip"
+    invisible(httr::RETRY("GET", url, httr::write_disk(hr_source, overwrite=TRUE),
+                          times = 3, pause_cap = 20))
+  }
+
+  zip::unzip(hr_source, exdir = work_dir)
+
 }
-
-unzip(hr_source, exdir = work_dir)
 
 hr_source <- file.path(work_dir, "03_sub.gpkg")
 hr_gpkg <- file.path(work_dir, "hr_data.gpkg")

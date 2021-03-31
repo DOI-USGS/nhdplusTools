@@ -3,7 +3,7 @@
     "name": "nhdplusTools",
     "organization": "U.S. Geological Survey",
     "description": "Tools for Using NHDPlus Data",
-    "version": "0.3.15",
+    "version": "0.4.0",
     "status": "Production",
 
     "permissions": {
@@ -22,7 +22,7 @@
     "repositoryURL": "https://code.usgs.gov/water/nhdplusTools.git",
     "vcs": "git",
 
-    "laborHours": 500,
+    "laborHours": 1000,
 
     "tags": [
       "R",
@@ -41,7 +41,7 @@
     },
 
     "date": {
-      "metadataLastUpdated": "2020-11-04"
+      "metadataLastUpdated": "2021-03-30"
     }
   }
 ]

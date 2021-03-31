@@ -54,6 +54,7 @@ All buffer and distance operations are handled internally using in
 EPSG:5070 Albers Equal Area projection
 }
 \examples{
+\donttest{
  point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)
  get_nhdplus(point)
  get_nhdplus(point, realization = "catchment")
@@ -64,4 +65,5 @@ EPSG:5070 Albers Equal Area projection
  ymax = 34.42439, ymin = 34.40473), crs = 4326))
  get_nhdplus(area)
  get_nhdplus(area, realization = "flowline", streamorder = 3)
+ }
 }

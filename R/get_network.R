@@ -11,9 +11,7 @@
 #' @export
 #' @examples
 #' library(sf)
-#' sample_flines <- read_sf(system.file("extdata",
-#'                                      "petapsco_flowlines.gpkg",
-#'                                      package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 #' plot(sample_flines$geom)
 #' start_COMID <- 11690196
 #' UT_COMIDs <- get_UT(sample_flines, start_COMID)
@@ -95,9 +93,9 @@ private_get_UT <- function(network, comid) {
 #' @export
 #' @examples
 #' library(sf)
-#' sample_flines <- read_sf(system.file("extdata",
-#'                                      "petapsco_flowlines.gpkg",
-#'                                      package = "nhdplusTools"))
+#'
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
 #' plot(sample_flines$geom)
 #' start_COMID <- 11690196
 #' UM_COMIDs <- get_UM(sample_flines, start_COMID)
@@ -156,9 +154,9 @@ get_UM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 #' @export
 #' @examples
 #' library(sf)
-#' sample_flines <- read_sf(system.file("extdata",
-#'                                      "petapsco_flowlines.gpkg",
-#'                                      package = "nhdplusTools"))
+#'
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
 #' plot(sample_flines$geom)
 #' start_COMID <- 11690092
 #' DM_COMIDs <- get_DM(sample_flines, start_COMID)
@@ -258,9 +256,9 @@ private_get_DM <- function(network, comid) {
 #' @examples
 #' library(sf)
 #' start_COMID <- 11688818
-#' sample_flines <- read_sf(system.file("extdata",
-#'                                      "petapsco_flowlines.gpkg",
-#'                                      package = "nhdplusTools"))
+#'
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
 #' DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
 #' plot(dplyr::filter(sample_flines, COMID %in% DD_COMIDs)$geom,
 #'      col = "red", lwd = 2)

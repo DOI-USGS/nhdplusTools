@@ -8,9 +8,10 @@
 #' @importFrom dplyr select group_by filter row_number n ungroup
 #' @examples
 #'
-#' fline <- sf::read_sf(system.file("extdata/sample_natseamless.gpkg",
-#'                              package = "nhdplusTools"),
-#'                  "NHDFlowline_Network")
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#'
+#' fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
+#'
 #' start <- get_node(fline, "start")
 #' end <- get_node(fline, "end")
 #'

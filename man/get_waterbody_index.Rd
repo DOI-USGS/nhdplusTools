@@ -27,10 +27,12 @@ given an sf point geometry column, return waterbody id, and
 COMID of dominant artificial path
 }
 \examples{
-sample <- system.file("extdata/sample_natseamless.gpkg",
-                      package = "nhdplusTools")
 
-waterbodies <- sf::read_sf(sample, "NHDWaterbody")
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
+
+waterbodies <- sf::read_sf(sample_data, "NHDWaterbody")
+
 get_waterbody_index(waterbodies,
                     sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
                                crs = 4326, dim = "XY"))

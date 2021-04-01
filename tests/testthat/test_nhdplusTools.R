@@ -1,7 +1,8 @@
 context("package setup")
 
-pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
-                                   package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+pt_data <- sample_flines
 
 test_that("nhdplus_data path sets and gets right", {
   expect_equal(nhdplus_path(), "../NHDPlusV21_National_Seamless.gdb")

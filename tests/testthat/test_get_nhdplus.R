@@ -1,7 +1,8 @@
 context("get_nhdplus")
 
-pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
-                                   package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+pt_data <- sample_flines
 
 test_that("get_nhdplus_byid", {
   skip_on_cran()

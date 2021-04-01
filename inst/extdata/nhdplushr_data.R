@@ -1,25 +1,11 @@
 # nolint start
+source(system.file("extdata", "utils.R", package = "nhdplusTools"))
+
 work_dir <- file.path(rappdirs::user_data_dir(), "nhdplusTools")
 
 if(!file.exists(file.path(work_dir, "03_sub.gpkg"))) {
 
-  dir.create(work_dir, showWarnings = FALSE)
-
-  hr_source <- file.path(work_dir, "temp.zip")
-
-  project_file <- c("../../docs/data/03_sub.zip", "docs/data/03_sub.zip")
-  project_file <- project_file[file.exists(project_file)]
-
-  if(length(project_file) > 0 &&
-     file.exists(project_file[1])) {
-    file.copy(project_file, hr_source, overwrite = TRUE)
-  } else {
-    url <- "https://usgs-r.github.io/nhdplusTools/data/03_sub.zip"
-    invisible(httr::RETRY("GET", url, httr::write_disk(hr_source, overwrite=TRUE),
-                          times = 3, pause_cap = 20))
-  }
-
-  zip::unzip(hr_source, exdir = work_dir)
+  download_pkg_data("03_sub.zip", "https://usgs-r.github.io/nhdplusTools/data/03_sub.zip", work_dir)
 
 }
 

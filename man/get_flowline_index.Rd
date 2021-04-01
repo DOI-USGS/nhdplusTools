@@ -55,9 +55,9 @@ handling of precision parameter.
 }
 \examples{
 \donttest{
-sample_flines <- sf::read_sf(system.file("extdata",
-                                         "petapsco_flowlines.gpkg",
-                                         package = "nhdplusTools"))
+
+source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
 get_flowline_index(sample_flines,
                    sf::st_sfc(sf::st_point(c(-76.87479,
                                              39.48233)),

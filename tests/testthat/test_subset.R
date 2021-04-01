@@ -29,8 +29,7 @@ test_that("subset runs as expected", {
   temp_dir <- tempdir()
   dir.create(temp_dir, recursive = TRUE, showWarnings = FALSE)
 
-  sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                             package = "nhdplusTools")
+  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
   expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, sample_data), "CatchmentSP")
   expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, "download"), "CatchmentSP")
@@ -184,8 +183,7 @@ test_that("subset works with HR", {
 })
 
 test_that("subset by bounding box", {
-  sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                             package = "nhdplusTools")
+  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
   bbox <- sf::st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = sf::st_crs(4326))
 
@@ -260,8 +258,9 @@ test_that("prep_nhdplus runs as expected", {
 
   sample_gpkg <- file.path(temp_dir, "sample_natseamless.gpkg")
 
-  file.copy(system.file("extdata/sample_natseamless.gpkg",
-                        package = "nhdplusTools"), sample_gpkg)
+  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
+  file.copy(sample_data, sample_gpkg)
 
   nhdplus_path(sample_gpkg)
 
@@ -304,8 +303,7 @@ test_that("prep_nhdplus runs as expected", {
 })
 
 test_that("by rpu", {
-  sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                             package = "nhdplusTools")
+  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
   nhdplus_path(sample_data)
 

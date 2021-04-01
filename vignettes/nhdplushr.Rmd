@@ -29,7 +29,8 @@ library(nhdplusTools)
 library(sf)
 
 work_dir <- tempdir(check = TRUE)
-sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 hr_gpkg <- file.path(work_dir, "hr_data.gpkg")
 

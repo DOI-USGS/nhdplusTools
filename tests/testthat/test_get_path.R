@@ -54,6 +54,7 @@ test_that("calculate level path", {
 })
 
 test_that("calculate level path", {
+  skip_on_cran()
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
   test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
@@ -68,8 +69,9 @@ test_that("calculate level path", {
 
   expect_equal(walker_flowline$order, walker_flowline$StreamOrde)
 
-  pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
-                                     package = "nhdplusTools"))
+  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+  pt_data <- sample_flines
 
   test_flowline <- prepare_nhdplus(pt_data, 0, 0, FALSE, warn = FALSE)
 

@@ -1,5 +1,5 @@
 test_that("index to waterbodies", {
-sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 wb <- sf::read_sf(sample_data, "NHDWaterbody")
 gage <- sf::read_sf(sample_data, "Gage")

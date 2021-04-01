@@ -28,9 +28,9 @@ Traverse NHDPlus network downstream main stem
 }
 \examples{
 library(sf)
-sample_flines <- read_sf(system.file("extdata",
-                                     "petapsco_flowlines.gpkg",
-                                     package = "nhdplusTools"))
+
+source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
 plot(sample_flines$geom)
 start_COMID <- 11690092
 DM_COMIDs <- get_DM(sample_flines, start_COMID)

@@ -69,9 +69,9 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #' @export
 #' @examples
 #' \donttest{
-#' sample_flines <- sf::read_sf(system.file("extdata",
-#'                                          "petapsco_flowlines.gpkg",
-#'                                          package = "nhdplusTools"))
+#'
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
 #' get_flowline_index(sample_flines,
 #'                    sf::st_sfc(sf::st_point(c(-76.87479,
 #'                                              39.48233)),
@@ -235,10 +235,12 @@ get_flowline_index <- function(flines, points,
 #' @importFrom dplyr select mutate bind_cols
 #' @export
 #' @examples
-#' sample <- system.file("extdata/sample_natseamless.gpkg",
-#'                       package = "nhdplusTools")
 #'
-#' waterbodies <- sf::read_sf(sample, "NHDWaterbody")
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#'
+#'
+#' waterbodies <- sf::read_sf(sample_data, "NHDWaterbody")
+#'
 #' get_waterbody_index(waterbodies,
 #'                     sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
 #'                                crs = 4326, dim = "XY"))

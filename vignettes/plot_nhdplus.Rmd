@@ -68,7 +68,9 @@ plot_nhdplus(start_point)
 `plot_nhdplus` also allows modification of streamorder (if you have data available locally) and styles. This plot request shows how to get a subset of data for a plot and the range of options. See documentation for more details.
 
 ```{r plot_styles, message=FALSE} 
-sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
 plot_nhdplus(list(list("comid", "13293970"),
                   list("nwissite", "USGS-05428500"),
                   list("huc12pp", "070900020603"),

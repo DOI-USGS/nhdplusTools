@@ -146,7 +146,8 @@ This package uses a convention to avoid building vignettes on CRAN. The `BUILD_V
 Given this, the package should be built locally to include vignettes using:
 
 ```r
-devtools::build_vignettes(install = FALSE)
+devtools::build_vignettes()
+file.copy("doc", "inst", recursive=TRUE)
 devtools::build(vignettes = FALSE)
 ```
 

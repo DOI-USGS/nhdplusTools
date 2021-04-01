@@ -2,8 +2,11 @@ context("point indexing")
 
 test_that("point indexing to nearest existing node works as expected", {
     skip_on_cran()
-    flines_in <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
-                                         package = "nhdplusTools"))
+
+    source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+    flines_in <- sample_flines
+
     flines_in <- sf::st_transform(flines_in, 4269)
 
     point <- sf::st_sfc(sf::st_point(c(-76.86876, 39.49345)), crs = 4269)
@@ -44,8 +47,10 @@ test_that("point indexing to nearest existing node works as expected", {
 
 test_that("point indexing to for multiple points works", {
   skip_on_cran()
-  flines_in <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
-                                       package = "nhdplusTools"))
+  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+  flines_in <- sample_flines
+
   flines_in <- sf::st_transform(flines_in, 4269)
 
   point <- sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),

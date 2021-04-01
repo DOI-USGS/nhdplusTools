@@ -1,7 +1,6 @@
 context("plot tests")
 
-sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                           package = "nhdplusTools")
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 test_that("basics work", {
   options("rgdal_show_exportToProj4_warnings"="none")

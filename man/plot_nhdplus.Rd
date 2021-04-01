@@ -92,7 +92,8 @@ plot_nhdplus("05428500", streamorder = 2)
 
 plot_nhdplus(list(13293970, 13293750))
 
-sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
 plot_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
 
 plot_nhdplus(list(list("comid", "13293970"),

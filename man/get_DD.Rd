@@ -28,9 +28,9 @@ For reference, the lower Mississippi will take over a minute.
 \examples{
 library(sf)
 start_COMID <- 11688818
-sample_flines <- read_sf(system.file("extdata",
-                                     "petapsco_flowlines.gpkg",
-                                     package = "nhdplusTools"))
+
+source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
 DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
 plot(dplyr::filter(sample_flines, COMID \%in\% DD_COMIDs)$geom,
      col = "red", lwd = 2)

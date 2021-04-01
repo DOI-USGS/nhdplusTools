@@ -27,11 +27,14 @@ First we'll load up some data. In this case, we use flowlines from the NHDPlus s
 ```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
 library(dplyr, warn.conflicts = FALSE)
 
+mapview::mapviewOptions(fgb = FALSE)
+
 temp_dir <- tempdir()
 dir.create(temp_dir)
 
-file.copy(system.file("extdata/sample_natseamless.gpkg", 
-                      package = "nhdplusTools"),
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
+file.copy(sample_data,
           file.path(temp_dir, "natseamless.gpkg"))
 ```
 

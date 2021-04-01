@@ -20,8 +20,8 @@ that the result can be used in downstream processing. Has been tested to work
 against the entire NHDPlusV2 domain and satisfies a number of edge cases.
 }
 \examples{
-sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                           package = "nhdplusTools")
+
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 nhdplus_path(sample_data)
 

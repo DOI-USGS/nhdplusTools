@@ -39,8 +39,8 @@
 #' @export
 #' @examples
 #' \donttest{
-#' sample_data <- system.file("extdata/sample_natseamless.gpkg",
-#'                            package = "nhdplusTools")
+#'
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 #'
 #' nhdplus_path(sample_data)
 #'
@@ -317,8 +317,8 @@ intersection_write <- function(layer_name, data_path, envelope,
 #' @return list containing paths to the .rds files.
 #' @export
 #' @examples
-#' sample_data <- system.file("extdata/sample_natseamless.gpkg",
-#'                            package = "nhdplusTools")
+#'
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 #'
 #' stage_national_data(nhdplus_data = sample_data, output_path = tempdir())
 #'
@@ -640,8 +640,8 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #' @importFrom dplyr filter arrange summarize
 #' @importFrom sf st_sf st_drop_geometry
 #' @examples
-#' sample_data <- system.file("extdata/sample_natseamless.gpkg",
-#'                            package = "nhdplusTools")
+#'
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 #'
 #' nhdplus_path(sample_data)
 #'

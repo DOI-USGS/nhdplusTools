@@ -1,20 +1,19 @@
 # See hyRefactor package for how this data was created.
 # nolint start
-extdata <- system.file("extdata", package = "nhdplusTools")
+source(system.file("extdata", "utils.R", package = "nhdplusTools"))
 
 data_dir <- file.path(rappdirs::user_data_dir(), "nhdplusTools")
 
-dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
+f <- "walker.gpkg"
 
-if(!file.exists(file.path(data_dir, "walker.gpkg"))) {
-  zip::unzip(file.path(extdata, "walker.gpkg.zip"),
-             files = "walker.gpkg", exdir = data_dir)
+if(!file.exists(file.path(data_dir, f))) {
+  download_pkg_data(f, "https://usgs-r.github.io/nhdplusTools/data/walker.gpkg", data_dir)
 }
 
 proj <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
-walker_catchment <- sf::read_sf(file.path(data_dir, "walker.gpkg"), "CatchmentSP")
+walker_catchment <- sf::read_sf(file.path(data_dir, f), "CatchmentSP")
 walker_catchment <- sf::st_transform(walker_catchment, proj)
-walker_flowline <- sf::read_sf(file.path(data_dir, "walker.gpkg"), "NHDFlowline_Network")
+walker_flowline <- sf::read_sf(file.path(data_dir, f), "NHDFlowline_Network")
 walker_flowline <- sf::st_transform(walker_flowline, proj)
 # nolint end
 # walker_fline_ref <- sf::read_sf(file.path(data_dir, "walker_refactor.gpkg"))

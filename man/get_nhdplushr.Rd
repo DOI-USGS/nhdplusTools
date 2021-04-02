@@ -60,8 +60,10 @@ Set layers to "NULL" to get all layers.
 \examples{
 \donttest{
 # Note this will download a lot of data to a temp directory.
-# Change 'tempdir()' to your directory of choice.
-download_dir <- download_nhdplushr(tempdir(), c("0302", "0303"))
+# Change 'temp_dir' to your directory of choice.
+temp_dir <- file.path(rappdirs::user_cache_dir("nhdplusTools"), "hr_cache")
+
+download_dir <- download_nhdplushr(temp_dir, c("0302", "0303"))
 
 get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
 

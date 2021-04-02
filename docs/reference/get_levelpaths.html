@@ -92,7 +92,7 @@ included in this column and the largest value will be followed when no nameID is
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -127,7 +127,7 @@ included in this column and the largest value will be followed when no nameID is
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/usgs-r/nhdplusTools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -157,7 +157,7 @@ the weight column, this will match the behavior of NHDPlus. Any numeric value ca
 included in this column and the largest value will be followed when no nameID is available.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>x</span>, override_factor <span class='op'>=</span> <span class='cn'>NULL</span>, status <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>x</span>, override_factor <span class='op'>=</span> <span class='cn'>NULL</span>, status <span class='op'>=</span> <span class='cn'>FALSE</span>, cores <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,6 +175,10 @@ regardless of the nameID indication.</p></td>
     <tr>
       <th>status</th>
       <td><p>boolean if status updates should be printed.</p></td>
+    </tr>
+    <tr>
+      <th>cores</th>
+      <td><p>numeric number of cores to use in initial path ranking calculations.</p></td>
     </tr>
     </table>
 
@@ -212,71 +216,22 @@ See details for more info.</p>
   stringsAsFactors <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>test_flowline</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;         ID outletID topo_sort levelpath
-#&gt; 1  5329435  5329303        62         1
-#&gt; 2  5329347  5329347        61        61
-#&gt; 3  5329291  5329291        60        60
-#&gt; 4  5329359  5329363        59        28
-#&gt; 5  5329333  5329333        58        58
-#&gt; 6  5329371  5329371        57        57
-#&gt; 7  5329377  5329377        56        56
-#&gt; 8  5329399  5329375        55        29
-#&gt; 9  5329405  5329405        54        54
-#&gt; 10 5329427  5329427        53        53
-#&gt; 11 5329413  5329413        52        52
-#&gt; 12 5329419  5329419        51        51
-#&gt; 13 5329407  5329407        50        50
-#&gt; 14 5329387  5329387        49        49
-#&gt; 15 5329415  5329845        48        35
-#&gt; 16 5329355  5329355        47        47
-#&gt; 17 5329337  5329337        46        46
-#&gt; 18 5329345  5329335        45        33
-#&gt; 19 5329341  5329341        44        44
-#&gt; 20 5329815  5329313        43        15
-#&gt; 21 5329319  5329319        42        42
-#&gt; 22 5329309  5329309        41        41
-#&gt; 23 5329307  5329307        40        40
-#&gt; 24 5329297  5329299        39        31
-#&gt; 25 5329295  5329295        38        38
-#&gt; 26 5329871  5329391        37        22
-#&gt; 27 5329379  5329375        36        29
-#&gt; 28 5329845  5329845        35        35
-#&gt; 29 5329819  5329363        34        28
-#&gt; 30 5329335  5329335        33        33
-#&gt; 31 5329841  5329313        32        15
-#&gt; 32 5329299  5329299        31        31
-#&gt; 33 5329383  5329391        30        22
-#&gt; 34 5329375  5329375        29        29
-#&gt; 35 5329363  5329363        28        28
-#&gt; 36 5329321  5329313        27        15
-#&gt; 37 5329849  5329391        26        22
-#&gt; 38 5329325  5329313        25        15
-#&gt; 39 5329393  5329391        24        22
-#&gt; 40 5329327  5329313        23        15
-#&gt; 41 5329391  5329391        22        22
-#&gt; 42 5329323  5329313        21        15
-#&gt; 43 5329389  5329303        20         1
-#&gt; 44 5329817  5329313        19        15
-#&gt; 45 5329397  5329303        18         1
-#&gt; 46 5329311  5329313        17        15
-#&gt; 47 5329395  5329303        16         1
-#&gt; 48 5329313  5329313        15        15
-#&gt; 49 5329821  5329303        14         1
-#&gt; 50 5329385  5329303        13         1
-#&gt; 51 5329847  5329303        12         1
-#&gt; 52 5329843  5329303        11         1
-#&gt; 53 5329373  5329303        10         1
-#&gt; 54 5329365  5329303         9         1
-#&gt; 55 5329357  5329303         8         1
-#&gt; 56 5329343  5329303         7         1
-#&gt; 57 5329339  5329303         6         1
-#&gt; 58 5329315  5329303         5         1
-#&gt; 59 5329317  5329303         4         1
-#&gt; 60 5329305  5329303         3         1
-#&gt; 61 5329293  5329303         2         1
-#&gt; 62 5329303  5329303         1         1</div><div class='input'>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 62 x 4</span><span>
+#&gt;         ID outletID topo_sort levelpath
+#&gt;      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>303  5</span><span style='text-decoration: underline;'>329</span><span>303         1         1
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>293  5</span><span style='text-decoration: underline;'>329</span><span>303         2         1
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>305  5</span><span style='text-decoration: underline;'>329</span><span>303         3         1
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>317  5</span><span style='text-decoration: underline;'>329</span><span>303         4         1
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>315  5</span><span style='text-decoration: underline;'>329</span><span>303         5         1
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>339  5</span><span style='text-decoration: underline;'>329</span><span>303         6         1
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>343  5</span><span style='text-decoration: underline;'>329</span><span>303         7         1
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>357  5</span><span style='text-decoration: underline;'>329</span><span>303         8         1
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>365  5</span><span style='text-decoration: underline;'>329</span><span>303         9         1
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>373  5</span><span style='text-decoration: underline;'>329</span><span>303        10         1
+#&gt; </span><span style='color: #949494;'># ... with 52 more rows</span><span></div><div class='input'>
 
-</div></pre>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

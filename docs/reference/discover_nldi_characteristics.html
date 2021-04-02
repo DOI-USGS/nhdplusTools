@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -123,7 +123,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/usgs-r/nhdplusTools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -166,70 +166,70 @@
 <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>chars</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "local"             "total"             "divergence_routed"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>chars</span><span class='op'>$</span><span class='va'>local</span>, <span class='fl'>10</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    characteristic_id
-#&gt; 1            CAT_BFI
-#&gt; 2        CAT_CONTACT
-#&gt; 3             CAT_ET
-#&gt; 4            CAT_EWT
-#&gt; 5            CAT_HGA
-#&gt; 6           CAT_HGAC
-#&gt; 7           CAT_HGAD
-#&gt; 8            CAT_HGB
-#&gt; 9           CAT_HGBC
-#&gt; 10          CAT_HGBD
-#&gt;                                                                                                                                                                                                                                                       characteristic_description
-#&gt; 1                 Base Flow Index (BFI), The BFI is a ratio of base flow to total streamflow, expressed as a percentage and ranging from 0 to 100. Base flow is the sustained, slowly varying component of streamflow, usually attributed to ground-water discharge to a stream.
-#&gt; 2                                                           Subsurface flow contact time index. The subsurface contact time index estimates the number of days that infiltrated water resides in the saturated subsurface zone of the basin before discharging into the stream. 
-#&gt; 3                                                                                                                                                                  Mean-annual actual evapotranspiration (ET), estimated using regression equation of Sanford and Selnick (2013)
-#&gt; 4                                                                                                                                                                                                              Average depth to water table relatice to the land surface(meters)
-#&gt; 5                                                          Percentage of Hydrologic Group A soil. -9999 denotes NODATA, usually water. Hydrologic group A soils have high infiltration rates. Soils are deep and well drained and, typically, have high sand and gravel content.
-#&gt; 6           Percentage of Hydrologic Group AC soil. -9999 denotes NODATA, usually water. Hydrologic group AC soils have group A characteristics (high infiltration rates) when artificially drained and have group C characteristics (slow infiltration rates) when not drained.
-#&gt; 7      Percentage of Hydrologic Group AD soil. -9999 denotes NODATA, usually water. Hydrologic group AD soils have group A characteristics (high infiltration rates) when artificially drained and have group D characteristics (very slow infiltration rates) when not drained.
-#&gt; 8                                                   Percentage of Hydrologic Group B soil. -9999 denotes NODATA, usually water. Hydrologic group B soils have moderate infiltration rates. Soils are moderately deep, moderately well drained, and moderately coarse in texture.
-#&gt; 9       Percentage of Hydrologic Group BC soil. -9999 denotes NODATA, usually water. Hydrologic group BC soils have group B characteristics (moderate infiltration rates) when artificially drained and have group C characteristics (slow infiltration rates) when not drained.
-#&gt; 10 Percentage of Hydrologic Group BD soil. -9999 denotes NODATA, usually water. Hydrologic group BD soils have group B characteristics (moderate infiltration rates) when artificially drained and have group D characteristics (very slow infiltration rates) when not drained.
+#&gt; 1            CAT_HGC
+#&gt; 2           CAT_HGCD
+#&gt; 3            CAT_HGD
+#&gt; 4          CAT_HGVAR
+#&gt; 5   CAT_ROCKTYPE_999
+#&gt; 6            CAT_BFI
+#&gt; 7        CAT_CONTACT
+#&gt; 8            CAT_EWT
+#&gt; 9             CAT_ET
+#&gt; 10          CAT_HGAD
+#&gt;                                                                                                                                                                                                                                                   characteristic_description
+#&gt; 1         Percentage of Hydrologic Group C soil. -9999 denotes NODATA, usually water. Hydrologic group C soils have slow soil infiltration rates. The soil profiles include layers impeding downward movement of water and, typically, have moderately fine or fine texture.
+#&gt; 2  Percentage of Hydrologic Group CD soil. -9999 denotes NODATA, usually water. Hydrologic group CD soils have group C characteristics (slow infiltration rates) when artificially drained and have group D characteristics (very slow infiltration rates) when not drained.
+#&gt; 3                                                     Percentage of Hydrologic Group D soil. -9999 denotes NODATA, usually water. Hydrologic group D soils have very slow infiltration rates. Soils are clayey, have a high water table, or have a shallow impervious layer.
+#&gt; 4                                                                                                                           Percentage of Hydrologic Group VAR soil. -9999 denotes NODATA, usually water. Hydrologic group VAR soils have variable drainage characteristics.
+#&gt; 5                                                                                                                                                                          Estimated percent of catchment that is underlain by the Principal Aquifer rock type, Other rocks.
+#&gt; 6             Base Flow Index (BFI), The BFI is a ratio of base flow to total streamflow, expressed as a percentage and ranging from 0 to 100. Base flow is the sustained, slowly varying component of streamflow, usually attributed to ground-water discharge to a stream.
+#&gt; 7                                                       Subsurface flow contact time index. The subsurface contact time index estimates the number of days that infiltrated water resides in the saturated subsurface zone of the basin before discharging into the stream. 
+#&gt; 8                                                                                                                                                                                                          Average depth to water table relatice to the land surface(meters)
+#&gt; 9                                                                                                                                                              Mean-annual actual evapotranspiration (ET), estimated using regression equation of Sanford and Selnick (2013)
+#&gt; 10 Percentage of Hydrologic Group AD soil. -9999 denotes NODATA, usually water. Hydrologic group AD soils have group A characteristics (high infiltration rates) when artificially drained and have group D characteristics (very slow infiltration rates) when not drained.
 #&gt;      units dataset_label
 #&gt; 1  percent              
-#&gt; 2     days              
-#&gt; 3  mm/year              
-#&gt; 4   meters              
+#&gt; 2  percent              
+#&gt; 3  percent              
+#&gt; 4  percent              
 #&gt; 5  percent              
 #&gt; 6  percent              
-#&gt; 7  percent              
-#&gt; 8  percent              
-#&gt; 9  percent              
+#&gt; 7     days              
+#&gt; 8   meters              
+#&gt; 9  mm/year              
 #&gt; 10 percent              
 #&gt;                                                          dataset_url
-#&gt; 1  https://www.sciencebase.gov/catalog/item/5669a8e3e4b08895842a1d4f
-#&gt; 2  https://www.sciencebase.gov/catalog/item/56f96fc5e4b0a6037df06b12
-#&gt; 3  https://www.sciencebase.gov/catalog/item/5705491be4b0d4e2b756cf8a
-#&gt; 4  https://www.sciencebase.gov/catalog/item/56f97456e4b0a6037df06b50
-#&gt; 5  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
-#&gt; 6  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
-#&gt; 7  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
-#&gt; 8  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
-#&gt; 9  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 1  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 2  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 3  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 4  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
+#&gt; 5  https://www.sciencebase.gov/catalog/item/582b3855e4b0c253be05fc81
+#&gt; 6  https://www.sciencebase.gov/catalog/item/5669a8e3e4b08895842a1d4f
+#&gt; 7  https://www.sciencebase.gov/catalog/item/56f96fc5e4b0a6037df06b12
+#&gt; 8  https://www.sciencebase.gov/catalog/item/56f97456e4b0a6037df06b50
+#&gt; 9  https://www.sciencebase.gov/catalog/item/5705491be4b0d4e2b756cf8a
 #&gt; 10 https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
 #&gt;    theme_label
-#&gt; 1   Hydrologic
-#&gt; 2   Hydrologic
-#&gt; 3      Climate
-#&gt; 4   Hydrologic
-#&gt; 5        Soils
-#&gt; 6        Soils
-#&gt; 7        Soils
-#&gt; 8        Soils
-#&gt; 9        Soils
+#&gt; 1        Soils
+#&gt; 2        Soils
+#&gt; 3        Soils
+#&gt; 4        Soils
+#&gt; 5      Geology
+#&gt; 6   Hydrologic
+#&gt; 7   Hydrologic
+#&gt; 8   Hydrologic
+#&gt; 9      Climate
 #&gt; 10       Soils
 #&gt;                                                            theme_url
-#&gt; 1  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
-#&gt; 2  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
-#&gt; 3  https://www.sciencebase.gov/catalog/item/566ef828e4b09cfe53ca76f7
-#&gt; 4  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
-#&gt; 5  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
-#&gt; 6  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
-#&gt; 7  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
-#&gt; 8  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
-#&gt; 9  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 1  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 2  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 3  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 4  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
+#&gt; 5  https://www.sciencebase.gov/catalog/item/5703c816e4b0328dcb82295a
+#&gt; 6  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
+#&gt; 7  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
+#&gt; 8  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c
+#&gt; 9  https://www.sciencebase.gov/catalog/item/566ef828e4b09cfe53ca76f7
 #&gt; 10 https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
 #&gt;    characteristic_type
 #&gt; 1      localCatch_name

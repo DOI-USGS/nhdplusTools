@@ -89,7 +89,7 @@ of quick to access R binary files." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -124,7 +124,7 @@ of quick to access R binary files." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/usgs-r/nhdplusTools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -198,18 +198,18 @@ superfluous Z information dropped.</p>
 as "national_data".</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>sample_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_natseamless.gpkg"</span>,
-                           package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'>
+<span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='fu'>stage_national_data</span><span class='op'>(</span>nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>, output_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $attributes
-#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpKAR0yE/nhdplus_flowline_attributes.rds"
+#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpwRRPy6/nhdplus_flowline_attributes.rds"
 #&gt; 
 #&gt; $flowline
-#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpKAR0yE/nhdplus_flowline.rds"
+#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpwRRPy6/nhdplus_flowline.rds"
 #&gt; 
 #&gt; $catchment
-#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpKAR0yE/nhdplus_catchment.rds"
+#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpwRRPy6/nhdplus_catchment.rds"
 #&gt; </div><div class='input'>
 </div></pre>
   </div>

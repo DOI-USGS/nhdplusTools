@@ -33,6 +33,8 @@ Version 0.4.0 adds new functionality for data access via web services and update
 * `subset_nhdplus()`
 * `plot_nhdplus()`
 
+Finally, the handling of data and caching in the package has been overhauled. These changes are non-functional, but aim to decrease data downloads by caching rather than using temp directories.
+
 nhdplusTools 0.3.16
 ==========
 * `subset_nhdplus()` now validates geometry and ensures all outputs are in NAD83

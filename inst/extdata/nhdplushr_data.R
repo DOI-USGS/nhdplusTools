@@ -1,7 +1,7 @@
 # nolint start
 source(system.file("extdata", "utils.R", package = "nhdplusTools"))
 
-work_dir <- file.path(rappdirs::user_data_dir(), "nhdplusTools")
+work_dir <- file.path(tempdir(check = TRUE), "nhdplusTools")
 
 if(!file.exists(file.path(work_dir, "03_sub.gpkg"))) {
 

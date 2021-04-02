@@ -2,7 +2,7 @@
 # nolint start
 source(system.file("extdata", "utils.R", package = "nhdplusTools"))
 
-data_dir <- file.path(rappdirs::user_data_dir(), "nhdplusTools")
+data_dir <- file.path(tempdir(check = TRUE), "nhdplusTools")
 
 f <- "walker.gpkg"
 

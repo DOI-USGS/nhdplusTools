@@ -4,7 +4,7 @@ author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Plotting with nhdplusTools}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width=6, 
   fig.height=4,
-  eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
+  eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
+  cache=TRUE
 )
 oldoption <-
   options(scipen = 9999,

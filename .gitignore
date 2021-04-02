@@ -6,7 +6,7 @@
 tests/testthat/data/temp/*
 inst/doc
 *.log
-*.cache
+*cache
 doc
 Meta
 .drake*

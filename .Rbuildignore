@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^.*cache
 LICENSE
 .travis.yml
 .lintr
@@ -18,3 +19,4 @@ rosm.cache
 pkgdown
 .gitlab-ci.yml
 .github
+

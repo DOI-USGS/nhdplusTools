@@ -4,7 +4,7 @@ author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Indexing and Referencing}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -14,7 +14,9 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width=6, 
   fig.height=4,
-  eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
+  eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
+  cache=TRUE,
+  cache.path=(rappdirs::user_cache_dir("nhdplusTools"))
 )
 oldoption <- options(scipen = 9999,
                      "rgdal_show_exportToProj4_warnings"="none")
@@ -26,8 +28,6 @@ First we'll load up some data. In this case, we use flowlines from the NHDPlus s
 
 ```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
 library(dplyr, warn.conflicts = FALSE)
-
-mapview::mapviewOptions(fgb = FALSE)
 
 temp_dir <- tempdir()
 dir.create(temp_dir)
@@ -62,7 +62,9 @@ indexes <- left_join(sf::st_sf(id = c(1:nrow(gages)),
                                geom = sf::st_geometry(gages)), 
                      indexes, by = "id")
 
-mapview::mapview(list(flowlines, indexes))
+plot(sf::st_geometry(sf::st_zm(flowlines)))
+plot(sf::st_geometry(indexes), add = TRUE)
+
 ```
 
 
@@ -169,7 +171,10 @@ gages <- sf::st_drop_geometry(gages) %>%
   dplyr::filter(!is.na(LonSite)) %>%
   sf::st_as_sf(coords = c("LonSite", "LatSite"), crs = 4326)
 
-mapview::mapview(list(gages, flowlines, waterbody))
+plot(sf::st_geometry(sf::st_zm(flowlines)))
+plot(sf::st_geometry(waterbody), add = TRUE)
+plot(sf::st_geometry(gages), add = TRUE)
+
 ```
 
 This next block shows how to call `get_flowline_index()` and `get_waterbody_index()` and what the output looks like. 
@@ -194,8 +199,9 @@ indexed_gages <- cbind(dplyr::select(gages,
                           st_drop_geometry(flowlines), 
                           search_radius = 200))
 
-
-mapview::mapview(list(indexed_gages, flowlines, waterbody))
+plot(sf::st_geometry(sf::st_zm(flowlines)))
+plot(sf::st_geometry(waterbody), add = TRUE)
+plot(sf::st_geometry(indexed_gages), add = TRUE)
 
 dplyr::select(sf::st_drop_geometry(indexed_gages), near_wb_COMID, near_wb_dist, in_wb_COMID, outlet_fline_COMID)
 

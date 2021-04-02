@@ -1,6 +1,6 @@
 source(system.file("extdata", "utils.R", package = "nhdplusTools"))
 
-data_dir <- file.path(rappdirs::user_data_dir(), "nhdplusTools")
+data_dir <- file.path(tempdir(check = TRUE), "nhdplusTools")
 
 download_pkg_data("sample_natseamless.gpkg",
                   "https://usgs-r.github.io/nhdplusTools/data/sample_natseamless.gpkg",

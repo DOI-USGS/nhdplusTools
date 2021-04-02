@@ -118,7 +118,9 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 
     prettymapr::prettymap({
       if(!add) {
-        rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE, progress = "none", ...)
+        rosm::osm.plot(pd$plot_bbox, type = "cartolight",
+                       quiet = TRUE, progress = "none",
+                       cachedir = osm_cache_dir(), ...)
       }
       # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
       if(!is.null(pd$basin))
@@ -140,6 +142,22 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
   }
   return(invisible(pd))
 }
+
+osm_cache_dir <- function() {
+  osm_dir <- file.path(rappdirs::user_cache_dir(), "osm.cache")
+
+  test_dir <- file.path(osm_dir, "test")
+
+  dir.create(test_dir, recursive = TRUE, showWarnings = FALSE)
+
+  if(!dir.exists(test_dir)) {
+    return(file.path(tempdir(check = TRUE), "osm.cache"))
+  } else {
+    unlink(test_dir, recursive = TRUE)
+    return(osm_dir)
+  }
+}
+
 
 get_styles <- function(plot_config) {
   conf <- list(basin = list(lwd = 1, col = NA, border = "black"),

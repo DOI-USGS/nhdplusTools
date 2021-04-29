@@ -9,7 +9,6 @@ COMID <- "COMID"
 FEATUREID <- "FEATUREID"
 Hydroseq <- "Hydroseq"
 DnHydroseq <- "DnHydroseq"
-UpHydroseq <- "UpHydroseq"
 DnMinorHyd <- "DnMinorHyd"
 LevelPathI <- "LevelPathI"
 DnLevelPat <- "DnLevelPat"
@@ -43,7 +42,6 @@ nhdplus_attributes <- list(
   FEATUREID = FEATUREID,
   Hydroseq = Hydroseq, HydroSeq = Hydroseq,
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
-  UpHydroseq = UpHydroseq,
   DnMinorHyd = DnMinorHyd,
   LevelPathI = LevelPathI,
   DnLevelPat = DnLevelPat,
@@ -102,7 +100,7 @@ assign("get_UT_attributes",
 
 assign("get_UM_attributes",
        c("COMID", "Pathlength", "LevelPathI",
-         "UpHydroseq", "Hydroseq"),
+         "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("get_DM_attributes",

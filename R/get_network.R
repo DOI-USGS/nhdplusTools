@@ -81,7 +81,7 @@ private_get_UT <- function(network, comid) {
 #' @title Navigate Upstream Mainstem
 #' @description Traverse NHDPlus network upstream main stem
 #' @param network data.frame NHDPlus flowlines including at a minimum:
-#' COMID,Pathlength, LevelPathI, UpHydroseq, and Hydroseq.
+#' COMID,Pathlength, LevelPathI, and Hydroseq.
 #' @param comid integer identifier to start navigating from.
 #' @param distance numeric distance in km to limit how many COMIDs are
 #' @param sort if TRUE, the returned COMID vector will be sorted in order of distance from the input COMID (nearest to farthest)

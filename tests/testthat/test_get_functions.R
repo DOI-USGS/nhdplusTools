@@ -1,5 +1,4 @@
 context("get_*()...")
-library(sf)
 
 # TESTING UNITS
 # ==============================================================================
@@ -22,7 +21,7 @@ pt2 = data.frame(loc = "ucsb", geometry = "POINT (-119.8458 34.4146)") %>%
 
 test_that("query water labs...",{
   #available?
-  df = query_usgs_geoserver()
+  df = nhdplusTools:::query_usgs_geoserver()
   expect_equal(ncol(df), 4)
 
   # errors
@@ -48,7 +47,7 @@ test_that("query water labs...",{
 
 test_that("huc8", {
   #Point
-  ptHUC8 = get_huc8(AOI = pt)
+  ptHUC8 = nhdplusTools:::get_huc8(AOI = pt)
   expect_equal(nrow(ptHUC8), 1)
   expect_equal(ptHUC8$huc8, "17010101")
   expect_equal(st_crs(ptHUC8)$epsg, 4326)

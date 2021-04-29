@@ -137,8 +137,12 @@ assign("get_pfaf_attributes",
        c("ID", "toID", "totda", "outletID", "topo_sort", "levelpath"),
        envir = nhdplusTools_env)
 
-assign("make_standalone_attributes",
+assign("make_standalone_tonode_attributes",
        c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
+         "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+
+assign("make_standalone_tocomid_attributes",
+       c("COMID", "toCOMID", "Hydroseq", "TerminalPa",
          "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
 
 assign("get_waterbody_index_waterbodies_attributes",

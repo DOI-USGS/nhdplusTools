@@ -9,6 +9,7 @@
 #'
 #' @param outdir The folder path where data should be downloaded and extracted
 #' @param url the location of the online resource
+#' @param progress boolean display download progress?
 #' @return the path to the local geodatabase
 #' @export
 #' @examples
@@ -24,9 +25,10 @@
 download_nhdplusv2 <- function(outdir,
                                url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
                                             "Data/NationalData/NHDPlusV21_NationalData_Seamless",
-                                            "_Geodatabase_Lower48_07.7z")) {
+                                            "_Geodatabase_Lower48_07.7z"),
+                               progress = TRUE) {
 
-  file <- downloader(outdir, url, "nhdplusV2")
+  file <- downloader(outdir, url, "nhdplusV2", progress)
 
   check7z()
 
@@ -49,8 +51,7 @@ download_nhdplusv2 <- function(outdir,
 #' Please see:
 #' https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/WBD/National/GDB/WBD_National_GDB.xml
 #' for metadata.
-#' @param outdir The folder path where data should be downloaded and extracted
-#' @param url the location of the online resource
+#' @inheritParams download_nhdplusv2
 #' @return the path to the local geodatabase
 #' @export
 #' @importFrom zip unzip
@@ -61,9 +62,10 @@ download_nhdplusv2 <- function(outdir,
 
 download_wbd <- function(outdir,
                          url = paste0("https://prd-tnm.s3.amazonaws.com/StagedProducts/",
-                                      "Hydrography/WBD/National/GDB/WBD_National_GDB.zip")) {
+                                      "Hydrography/WBD/National/GDB/WBD_National_GDB.zip"),
+                         progress = TRUE) {
 
-  file <- downloader(outdir, url, "WBD")
+  file <- downloader(outdir, url, "WBD", progress)
 
   message("Extracting data ...")
 
@@ -80,8 +82,7 @@ download_wbd <- function(outdir,
 #' @title Download the seamless Reach File (RF1) Database
 #' @description This function downloads and decompresses staged RF1 data.
 #' See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.
-#' @param outdir The folder path where data should be downloaded and extracted
-#' @param url the location of the online resource
+#' @inheritParams download_nhdplusv2
 #' @return the path to the local e00 file
 #' @export
 #' @examples
@@ -90,9 +91,10 @@ download_wbd <- function(outdir,
 #' }
 
 download_rf1 <- function(outdir,
-                         url = "https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz"){
+                         url = "https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz",
+                         progress = TRUE){
 
-  file <- downloader(outdir, url, "RF1")
+  file <- downloader(outdir, url, "RF1", progress)
 
   message("Extracting data ...")
 
@@ -115,7 +117,7 @@ download_rf1 <- function(outdir,
 #' @return the downloaded file path
 #' @importFrom httr GET write_disk progress
 #' @noRd
-downloader <- function(dir, url, type){
+downloader <- function(dir, url, type, progress = TRUE){
 
   if (!dir.exists(dir)) {
     dir.create(dir, recursive = T)
@@ -127,9 +129,14 @@ downloader <- function(dir, url, type){
 
     message("Downloading ", basename(url))
 
-    resp <-  httr::GET(url,
-                     httr::write_disk(file, overwrite = TRUE),
-                     httr::progress())
+    if(progress) {
+      resp <-  httr::GET(url,
+                         httr::write_disk(file, overwrite = TRUE),
+                         httr::progress())
+    } else {
+      resp <-  httr::GET(url,
+                         httr::write_disk(file, overwrite = TRUE))
+    }
 
     if (resp$status_code != 200) {
       stop("Download unsuccessfull :(")

@@ -114,14 +114,19 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
                 with requested height of 4.6 degrees."))
   }
 
-  url <- paste0("https://waterservices.usgs.gov/nwis/site/?format=mapper&bBox=",
+  u <- paste0("https://waterservices.usgs.gov/nwis/site/?format=mapper&bBox=",
                 bb$xmin, ",", bb$ymin, ",",
                 bb$xmax, ",", bb$ymax,
                 "&siteType=ST&siteStatus=active")
 
-  resp <- tryCatch({read_xml(url) },
-                   error   = function(e)   { NULL }
-  )
+  get_xml <- function(u) {
+    u <- suppressWarnings(url(u, "rb"))
+    out <- read_xml(u)
+    close(u)
+    out
+  }
+
+  resp <- tryCatch(get_xml(u), error = function(e) NULL)
 
   if(is.null(resp)){
     if(AOI_type == "POINT"){

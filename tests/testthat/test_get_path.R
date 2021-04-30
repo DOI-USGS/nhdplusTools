@@ -107,6 +107,8 @@ test_that("hr levelpath", {
 
   lp <- get_levelpaths(sf::st_set_geometry(fl, NULL), cores = cores)
 
+  parallel::stopCluster(cores)
+
   expect_error(get_levelpaths(sf::st_set_geometry(fl, NULL), cores = "char"))
 
   # Same number of total flowlines

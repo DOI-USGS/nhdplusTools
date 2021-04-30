@@ -1,5 +1,5 @@
 context("get_*()...")
-
+library(sf)
 # TESTING UNITS
 # ==============================================================================
 # area = AOI::aoi_get("Eureka, Montana")

@@ -4,12 +4,18 @@
 \alias{download_rf1}
 \title{Download the seamless Reach File (RF1) Database}
 \usage{
-download_rf1(outdir, url = "https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz")
+download_rf1(
+  outdir,
+  url = "https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz",
+  progress = TRUE
+)
 }
 \arguments{
 \item{outdir}{The folder path where data should be downloaded and extracted}
 
 \item{url}{the location of the online resource}
+
+\item{progress}{boolean display download progress?}
 }
 \value{
 the path to the local e00 file

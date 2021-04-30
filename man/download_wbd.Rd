@@ -7,13 +7,16 @@
 download_wbd(
   outdir,
   url = paste0("https://prd-tnm.s3.amazonaws.com/StagedProducts/",
-    "Hydrography/WBD/National/GDB/WBD_National_GDB.zip")
+    "Hydrography/WBD/National/GDB/WBD_National_GDB.zip"),
+  progress = TRUE
 )
 }
 \arguments{
 \item{outdir}{The folder path where data should be downloaded and extracted}
 
 \item{url}{the location of the online resource}
+
+\item{progress}{boolean display download progress?}
 }
 \value{
 the path to the local geodatabase

@@ -9,7 +9,6 @@ COMID <- "COMID"
 FEATUREID <- "FEATUREID"
 Hydroseq <- "Hydroseq"
 DnHydroseq <- "DnHydroseq"
-UpHydroseq <- "UpHydroseq"
 DnMinorHyd <- "DnMinorHyd"
 LevelPathI <- "LevelPathI"
 DnLevelPat <- "DnLevelPat"
@@ -43,7 +42,6 @@ nhdplus_attributes <- list(
   FEATUREID = FEATUREID,
   Hydroseq = Hydroseq, HydroSeq = Hydroseq,
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
-  UpHydroseq = UpHydroseq,
   DnMinorHyd = DnMinorHyd,
   LevelPathI = LevelPathI,
   DnLevelPat = DnLevelPat,
@@ -102,7 +100,7 @@ assign("get_UT_attributes",
 
 assign("get_UM_attributes",
        c("COMID", "Pathlength", "LevelPathI",
-         "UpHydroseq", "Hydroseq"),
+         "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("get_DM_attributes",
@@ -139,8 +137,12 @@ assign("get_pfaf_attributes",
        c("ID", "toID", "totda", "outletID", "topo_sort", "levelpath"),
        envir = nhdplusTools_env)
 
-assign("make_standalone_attributes",
+assign("make_standalone_tonode_attributes",
        c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
+         "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+
+assign("make_standalone_tocomid_attributes",
+       c("COMID", "toCOMID", "Hydroseq", "TerminalPa",
          "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
 
 assign("get_waterbody_index_waterbodies_attributes",

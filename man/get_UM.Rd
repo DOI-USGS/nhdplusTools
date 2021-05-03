@@ -8,7 +8,7 @@ get_UM(network, comid, distance = NULL, sort = FALSE, include = TRUE)
 }
 \arguments{
 \item{network}{data.frame NHDPlus flowlines including at a minimum:
-COMID,Pathlength, LevelPathI, UpHydroseq, and Hydroseq.}
+COMID,Pathlength, LevelPathI, and Hydroseq.}
 
 \item{comid}{integer identifier to start navigating from.}
 

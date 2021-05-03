@@ -299,25 +299,40 @@ cull_cols <- function(x, keep_cols) {
 #'}
 make_standalone <- function(flowlines) {
 
-  flowlines <- check_names(flowlines, "make_standalone")
+  if("toCOMID" %in% names(flowlines)) {
+    flowlines <- check_names(flowlines, "make_standalone_tocomid")
 
-  # Remove non-terminal coastal flowlines
-  flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$TerminalFl != 1), ]
+    # Remove non-terminal coastal flowlines
+    flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$Hydroseq != flowlines$TerminalPa), ]
 
-  outlets <- select(st_drop_geometry(flowlines),
-                    .data$COMID, .data$ToNode,
-                    .data$FromNode, .data$TerminalFl,
-                    .data$Hydroseq, .data$TerminalPa,
-                    .data$LevelPathI)
+    outlets <- select(st_drop_geometry(flowlines),
+                      .data$COMID, .data$toCOMID,
+                      .data$Hydroseq, .data$TerminalPa,
+                      .data$LevelPathI)
 
-  outlets <- left_join(outlets,
-                       select(outlets,
-                              toCOMID = .data$COMID, .data$FromNode),
-                       by = c("ToNode" = "FromNode"))
+    outlets <- filter(outlets,
+                      (is.na(.data$toCOMID) | .data$toCOMID == 0)
+                      & .data$Hydroseq != .data$TerminalPa)
+  } else {
+    flowlines <- check_names(flowlines, "make_standalone_tonode")
 
-  outlets <- filter(outlets,
-                    is.na(.data$toCOMID) & .data$TerminalFl == 0)
+    # Remove non-terminal coastal flowlines
+    flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$TerminalFl != 1), ]
 
+    outlets <- select(st_drop_geometry(flowlines),
+                      .data$COMID, .data$ToNode,
+                      .data$FromNode, .data$TerminalFl,
+                      .data$Hydroseq, .data$TerminalPa,
+                      .data$LevelPathI)
+
+    outlets <- left_join(outlets,
+                         select(outlets,
+                                toCOMID = .data$COMID, .data$FromNode),
+                         by = c("ToNode" = "FromNode"))
+
+    outlets <- filter(outlets,
+                      is.na(.data$toCOMID) & .data$TerminalFl == 0)
+  }
   outlets <- select(outlets, .data$Hydroseq, .data$LevelPathI, .data$COMID)
 
   for(i in seq_len(nrow(outlets))) {
@@ -336,9 +351,10 @@ fix_term <- function(term, flowlines) {
   old_term_levelpath <- flowlines$LevelPathI[flowlines$Hydroseq == term_hydroseq]
   old_term_levelpath <- old_term_levelpath[!is.na(old_term_levelpath)]
 
-  # Set the terminal flag of the new basin outlet.
-  flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1
-
+  if("TerminalFl" %in% names(flowlines)) {
+    # Set the terminal flag of the new basin outlet.
+    flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1
+  }
   # Change all terminal path IDs to match the new Termal ID of the basin.
   ut <- get_UT(flowlines, term_comid)
   flowlines$TerminalPa[flowlines$COMID %in% ut] <- term_hydroseq
@@ -346,15 +362,18 @@ fix_term <- function(term, flowlines) {
   # Change the mainstem levelpath ID to match the new Terminal ID of the basin.
   flowlines$LevelPathI[flowlines$LevelPathI == old_term_levelpath] <- term_hydroseq
 
-  # Change the old Down Level Paths so they point to the new mainstem levelpath ID
-  flowlines$DnLevelPat[flowlines$DnLevelPat == old_term_levelpath] <- term_hydroseq
+  if("DnLevelPat" %in% names(flowlines)) {
+    # Change the old Down Level Paths so they point to the new mainstem levelpath ID
+    flowlines$DnLevelPat[flowlines$DnLevelPat == old_term_levelpath] <- term_hydroseq
 
-  # Change olf Up Level Path to point to the new mainstem levelpath ID
-  flowlines$UpLevelPat[flowlines$UpLevelPat == old_term_levelpath] <- term_hydroseq
+    # Change olf Up Level Path to point to the new mainstem levelpath ID
+    flowlines$UpLevelPat[flowlines$UpLevelPat == old_term_levelpath] <- term_hydroseq
 
-  # Make the Down Hydrosequence and Down Level and Path look like an outlet.
-  flowlines$DnLevel[flowlines$Hydroseq == term_hydroseq] <- 0
-  flowlines$DnLevelPat[flowlines$Hydroseq == term_hydroseq] <- 0
+    # Make the Down Hydrosequence and Down Level and Path look like an outlet.
+    flowlines$DnLevel[flowlines$Hydroseq == term_hydroseq] <- 0
+    flowlines$DnLevelPat[flowlines$Hydroseq == term_hydroseq] <- 0
+  }
+
   flowlines$DnHydroseq[flowlines$Hydroseq == term_hydroseq] <- 0
 
   return(flowlines)

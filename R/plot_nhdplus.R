@@ -49,7 +49,6 @@
 #' @examples
 #' \donttest{
 #' options("rgdal_show_exportToProj4_warnings"="none")
-#' rosm::set_default_cachedir(tempfile())
 #'
 #' plot_nhdplus("05428500")
 #'
@@ -104,6 +103,9 @@
 #'              plot_config = list(flowline = list(lwd = 0.5)))
 #' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
 #'              plot_config = list(flowline = list(col = "darkblue")))
+#'
+#' # Cleanup downloaded open street map cache if desired.
+#' unlink(nhdplusTools:::osm_cache_dir(), recursive = TRUE)
 #' }
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
@@ -144,7 +146,8 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 }
 
 osm_cache_dir <- function() {
-  osm_dir <- file.path(rappdirs::user_cache_dir(), "osm.cache")
+  osm_dir <- file.path(rappdirs::user_cache_dir("nhdplusTools"),
+                       "osm.cache")
 
   test_dir <- file.path(osm_dir, "test")
 

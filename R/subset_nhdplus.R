@@ -724,6 +724,9 @@ get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
     stop("Layer must be one of nhdarea, nhdwaterbody")
   }
 
-  query_usgs_geoserver(AOI = box, type = dplyr::filter(query_usgs_geoserver(),
-                                                       .data$geoserver == layer)$user_call)
+  type <- dplyr::filter(query_usgs_geoserver(),
+                        .data$geoserver == layer)$user_call
+
+  query_usgs_geoserver(AOI = box,
+                       type = type)
 }

@@ -20,6 +20,7 @@ pt2 = data.frame(loc = "ucsb", geometry = "POINT (-119.8458 34.4146)") %>%
 
 
 test_that("query water labs...",{
+  testthat::skip_on_cran()
   #available?
   df = nhdplusTools:::query_usgs_geoserver()
   expect_equal(ncol(df), 4)
@@ -46,6 +47,7 @@ test_that("query water labs...",{
 # ==============================================================================
 
 test_that("huc8", {
+  testthat::skip_on_cran()
   #Point
   ptHUC8 = nhdplusTools:::get_huc8(AOI = pt)
   expect_equal(nrow(ptHUC8), 1)
@@ -66,6 +68,7 @@ test_that("huc8", {
 # ==============================================================================
 
 test_that("huc12", {
+  testthat::skip_on_cran()
   #Point
   ptHUC12 = get_huc12(AOI = pt)
   expect_equal(nrow(ptHUC12), 1)
@@ -85,6 +88,7 @@ test_that("huc12", {
 # ==============================================================================
 
 test_that("get_nhdplus...", {
+  testthat::skip_on_cran()
   #POINT, Flowlines
   fl = get_nhdplus(AOI = pt, realization = 'flowline')
   expect_equal(nrow(fl), 1)
@@ -151,6 +155,7 @@ test_that("get_nhdplus...", {
 # ==============================================================================
 
 test_that("nhdarea", {
+  testthat::skip_on_cran()
   # No intersecting point here...
   expect_warning(get_nhdarea(AOI  = pt))
   # Buffer it out ...
@@ -164,6 +169,7 @@ test_that("nhdarea", {
 # ==============================================================================
 
 test_that("nhdwaterbody", {
+  testthat::skip_on_cran()
   wb = get_waterbodies(AOI  = pt, buffer = 2e3)
   expect_equal(nrow(wb), 3)
   expect_equal(st_crs(wb)$epsg, 4326)
@@ -176,6 +182,7 @@ test_that("nhdwaterbody", {
 # ==============================================================================
 
 test_that("gagesii", {
+  testthat::skip_on_cran()
   gages2 = get_gagesII(AOI  = pt, buffer = 3e3)
   expect_equal(nrow(gages2), 1)
 })
@@ -183,12 +190,14 @@ test_that("gagesii", {
 # ==============================================================================
 
 test_that("discover_nhdplus_id", {
+  testthat::skip_on_cran()
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
   discover_nhdplus_id(nldi_feature = nldi_nwis)
   expect_error(discover_nhdplus_id(nldi_feature = NULL, point = NULL))
 })
 
 test_that("get_nwis", {
+  testthat::skip_on_cran()
   areaSearch = get_nwis(AOI = area)
   expect(nrow(areaSearch), 1)
   expect_equal(st_crs(areaSearch)$epsg, 4326)

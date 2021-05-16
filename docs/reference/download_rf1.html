@@ -81,7 +81,7 @@ See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata." /
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -151,7 +151,11 @@ See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata." /
 See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>download_rf1</span><span class='op'>(</span><span class='va'>outdir</span>, url <span class='op'>=</span> <span class='st'>"https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>download_rf1</span><span class='op'>(</span>
+  <span class='va'>outdir</span>,
+  url <span class='op'>=</span> <span class='st'>"https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz"</span>,
+  progress <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,6 +168,10 @@ See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.</p
       <th>url</th>
       <td><p>the location of the online resource</p></td>
     </tr>
+    <tr>
+      <th>progress</th>
+      <td><p>boolean display download progress?</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -171,10 +179,15 @@ See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.</p
     <p>the path to the local e00 file</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+    <pre class="examples">download_rf1,Download the seamless Reach File (RF1) Database,Download the seamless Reach File (RF1) Database — download_rf1,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/downloading_tools.R'><code>R/downloading_tools.R</code></a>,download_rf1.Rd,character(0),download_rf1,character(0),list(title = "Description", contents = "<p>This function downloads and decompresses staged RF1 data.\nSee: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "This function downloads and decompresses staged RF1 data.\nSee: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata."),<span class='fu'>download_rf1</span><span class='op'>(</span>
+  <span class='va'>outdir</span>,
+  url <span class='op'>=</span> <span class='st'>"https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz"</span>,
+  progress <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>,list(list(name = "outdir", description = "<p>The folder path where data should be downloaded and extracted</p>"), list(name = "url", description = "<p>the location of the online resource</p>"), list(name = "progress", description = "<p>boolean display download progress?</p>")),TRUE,<div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
   <span class='fu'><a href='download_wbd.html'>download_wbd</a></span><span class='op'>(</span><span class='st'>"./data/rf1/"</span><span class='op'>)</span>
 <span class='op'>}</span>
-</div></pre>
+</div>,list(list(title = "Value", contents = "<p>the path to the local e00 file</p>", slug = "value")),2021,list(name = "nhdplusTools", version = "0.4.1", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
+    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -11,7 +11,7 @@
 #' get_vaa_path()
 
 get_vaa_path <- function() {
-  user_cache_dir("nhdplus-vaa/nhdplusVAA.fst")
+  file.path(rappdirs::user_cache_dir(), "nhdplus-vaa/nhdplusVAA.fst")
 }
 
 #' @title Available NHDPlusV2 Attributes
@@ -21,8 +21,12 @@ get_vaa_path <- function() {
 #' @importFrom fst metadata_fst
 #' @export
 #' @examples
+#' \donttest{
 #' get_vaa_names()
-
+#'
+#' #cleanup if desired
+#' unlink(get_vaa_path(), recursive = TRUE)
+#' }
 get_vaa_names <- function() {
   path <- get_vaa_path()
 
@@ -43,11 +47,12 @@ get_vaa_names <- function() {
 #' @return data.frame
 #' @export
 #' @examples
-#' \dontrun{
-#' # NOTE: path = tempfile() for demo only.
-#' temp <- tempfile()
-#' get_vaa("slope", path = temp)
-#' get_vaa(c("slope", "lengthkm"), path = temp)
+#' \donttest{
+#' get_vaa("slope")
+#' get_vaa(c("slope", "lengthkm"))
+#'
+#' #cleanup if desired
+#' unlink(get_vaa_path(), recursive = TRUE)
 #' }
 #' @importFrom fst read.fst
 

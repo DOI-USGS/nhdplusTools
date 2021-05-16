@@ -33,10 +33,11 @@ To view aggregate data and documentation, see
 \href{https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/}{here}
 }
 \examples{
-\dontrun{
-# NOTE: path = tempfile() for demo only.
-temp <- tempfile()
-get_vaa("slope", path = temp)
-get_vaa(c("slope", "lengthkm"), path = temp)
+\donttest{
+get_vaa("slope")
+get_vaa(c("slope", "lengthkm"))
+
+#cleanup if desired
+unlink(get_vaa_path(), recursive = TRUE)
 }
 }

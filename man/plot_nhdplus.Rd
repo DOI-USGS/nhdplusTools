@@ -84,7 +84,6 @@ If adding additional layers to the plot, data must be projected to EPSG:3857 wit
 \examples{
 \donttest{
 options("rgdal_show_exportToProj4_warnings"="none")
-rosm::set_default_cachedir(tempfile())
 
 plot_nhdplus("05428500")
 
@@ -139,5 +138,8 @@ plot_nhdplus(bbox = bbox, nhdplus_data = sample_data,
              plot_config = list(flowline = list(lwd = 0.5)))
 plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
              plot_config = list(flowline = list(col = "darkblue")))
+
+# Cleanup downloaded open street map cache if desired.
+unlink(nhdplusTools:::osm_cache_dir(), recursive = TRUE)
 }
 }

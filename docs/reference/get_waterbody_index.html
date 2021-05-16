@@ -81,7 +81,7 @@ COMID of dominant artificial path" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -183,7 +183,7 @@ units of provided projection</p></td>
 near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples">get_waterbody_index,Get Waterbody Index,Get Waterbody Index — get_waterbody_index,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/index_nhdplus.R'><code>R/index_nhdplus.R</code></a>,get_waterbody_index.Rd,character(0),get_waterbody_index,character(0),list(title = "Description", contents = "<p>given an sf point geometry column, return waterbody id, and\nCOMID of dominant artificial path</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "given an sf point geometry column, return waterbody id, and\nCOMID of dominant artificial path"),<span class='fu'>get_waterbody_index</span><span class='op'>(</span><span class='va'>waterbodies</span>, <span class='va'>points</span>, flines <span class='op'>=</span> <span class='cn'>NULL</span>, search_radius <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span>,list(list(name = "waterbodies", description = "<p>sf data.frame of type POLYGON or MULTIPOLYGON including\nCOMID attributes.</p>"), list(name = "points", description = "<p>sfc of type POINT</p>"), list(name = "flines", description = "<p>sf data.frame of type LINESTRING or MULTILINESTRING including\nCOMID, WBAREACOMI, and Hydroseq attributes</p>"), list(name = "search_radius", description = "<p>numeric how far to search for a waterbody boundary in\nunits of provided projection</p>")),TRUE,<div class='input'>
 <span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
 
 
@@ -194,7 +194,8 @@ near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projectio
                                crs <span class='op'>=</span> <span class='fl'>4326</span>, dim <span class='op'>=</span> <span class='st'>"XY"</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: st_transform points to match waterbodies</span></div><div class='output co'>#&gt;   near_wb_COMID near_wb_dist in_wb_COMID
 #&gt; 1     167120949  0.002622833   167120949</div><div class='input'>
-</div></pre>
+</div>,list(list(title = "Value", contents = "<p>data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,\nnear_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.</p>", slug = "value")),2021,list(name = "nhdplusTools", version = "0.4.1", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
+    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

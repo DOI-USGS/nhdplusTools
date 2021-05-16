@@ -23,5 +23,10 @@ To view aggregate data and documentation, see
 \href{https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/}{here}
 }
 \examples{
+\donttest{
 get_vaa_names()
+
+#cleanup if desired
+unlink(get_vaa_path(), recursive = TRUE)
+}
 }

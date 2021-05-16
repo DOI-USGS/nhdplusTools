@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -221,10 +221,21 @@ Names are not modified from the NHDPlusHR geodatabase.
 Set layers to "NULL" to get all layers.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+    <pre class="examples">get_nhdplushr,Get NHDPlus HiRes,Get NHDPlus HiRes — get_nhdplushr,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_nhdplushr.R'><code>R/get_nhdplushr.R</code></a>,get_nhdplushr.Rd,character(0),get_nhdplushr,character(0),list(title = "Description", contents = "<p>Get NHDPlus HiRes</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Get NHDPlus HiRes"),<span class='fu'>get_nhdplushr</span><span class='op'>(</span>
+  <span class='va'>hr_dir</span>,
+  out_gpkg <span class='op'>=</span> <span class='cn'>NULL</span>,
+  layers <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"NHDFlowline"</span>, <span class='st'>"NHDPlusCatchment"</span><span class='op'>)</span>,
+  pattern <span class='op'>=</span> <span class='st'>".*GDB.gdb$"</span>,
+  check_terminals <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  keep_cols <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>,list(list(name = "hr_dir", description = "<p>character directory with geodatabases (gdb search is recursive)</p>"), list(name = "out_gpkg", description = "<p>character path to write output geopackage</p>"), list(name = "layers", description = "<p>character vector with desired layers to return.\nc(\"NHDFlowline\", \"NHDPlusCatchment\") is default.\nChoose from:\nc(\"NHDFlowline\", \"NHDPlusCatchment\", \"NHDWaterbody\", \"NHDArea\", \"NHDLine\",\n\"NHDPlusSink\", \"NHDPlusWall\", \"NHDPoint\", \"NHDPlusBurnWaterbody\",\n\"NHDPlusBurnLineEvent\", \"HYDRO_NET_Junctions\",\n\"WBDHU2\", \"WBDHU4\",\"WBDHU6\", \"WBDHU8\" \"WBDHU10\", \"WBDHU12\", \"WBDLine\")\nSet to NULL to get all available.</p>"), 
+    list(name = "pattern", description = "<p>character optional regex to select certain files in hr_dir</p>"), list(name = "check_terminals", description = "<p>boolean if TRUE, run <a href='make_standalone.html'>make_standalone</a> on output.</p>"), list(name = "overwrite", description = "<p>boolean should the output overwrite? If false and the output layer\nexists, it will be read and returned so this function will always return data even\nif called a second time for the same output. This is useful for workflows. Note that\nthis will NOT delete the entire Geopackage. It will overwrite on a per layer basis.</p>"), 
+    list(name = "keep_cols", description = "<p>character vector of column names to keep in the output. If NULL,\nall will be kept.</p>"), list(name = "...", description = "<p>parameters passed along to <a href='get_hr_data.html'>get_hr_data</a>\nfor \"NHDFlowline\" layers.</p>")),TRUE,<div class='input'><span class='co'># \donttest{</span>
 <span class='co'># Note this will download a lot of data to a temp directory.</span>
 <span class='co'># Change 'temp_dir' to your directory of choice.</span>
-<span class='va'>temp_dir</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='fu'>rappdirs</span><span class='fu'>::</span><span class='fu'><a href='https://rappdirs.r-lib.org/reference/user_cache_dir.html'>user_cache_dir</a></span><span class='op'>(</span><span class='st'>"nhdplusTools"</span><span class='op'>)</span>, <span class='st'>"hr_cache"</span><span class='op'>)</span>
+<span class='va'>temp_dir</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='fu'>rappdirs</span><span class='fu'>::</span><span class='fu'><a href='https://rappdirs.r-lib.org/reference/user_cache_dir.html'>user_cache_dir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"temp_hr_cache"</span><span class='op'>)</span>
 
 <span class='va'>download_dir</span> <span class='op'>&lt;-</span> <span class='fu'><a href='download_nhdplushr.html'>download_nhdplushr</a></span><span class='op'>(</span><span class='va'>temp_dir</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"0302"</span>, <span class='st'>"0303"</span><span class='op'>)</span><span class='op'>)</span>
 
@@ -256,7 +267,7 @@ Set layers to "NULL" to get all layers.</p>
 #&gt; </span><span style='color: #949494;'>#   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   Divergence &lt;int&gt;, StartFlag &lt;int&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   UpHydroseq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span><span>
+#&gt; </span><span style='color: #949494;'>#   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;int&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   RtnDiv &lt;int&gt;, Thinner &lt;int&gt;, VPUIn &lt;int&gt;, VPUOut &lt;int&gt;, AreaSqKM &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span><span>
@@ -465,7 +476,7 @@ Set layers to "NULL" to get all layers.</p>
 #&gt; </span><span style='color: #949494;'>#   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   Divergence &lt;int&gt;, StartFlag &lt;int&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   UpHydroseq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span><span>
+#&gt; </span><span style='color: #949494;'>#   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;int&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   RtnDiv &lt;int&gt;, Thinner &lt;int&gt;, VPUIn &lt;int&gt;, VPUOut &lt;int&gt;, AreaSqKM &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span><span>
@@ -744,15 +755,19 @@ Set layers to "NULL" to get all layers.</p>
 #&gt; </span><span style='color: #949494;'>#   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   Divergence &lt;int&gt;, StartFlag &lt;int&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   UpHydroseq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span><span>
+#&gt; </span><span style='color: #949494;'>#   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;int&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   RtnDiv &lt;int&gt;, Thinner &lt;int&gt;, VPUIn &lt;int&gt;, VPUOut &lt;int&gt;, AreaSqKM &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   ElevFixed &lt;int&gt;, HWType &lt;int&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</span><span>
 #&gt; </div><div class='input'>
+<span class='co'># Cleanup</span>
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>temp_dir</span>, recursive <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
 <span class='co'># }</span>
-</div></span></pre>
+</div></span>,list(list(title = "Value", contents = "<p>Response is a list of sf data.frames containing output that may also be written\nto a geopackage for later use.</p>", slug = "value"), list(title = "Details", contents = "<p>NHDFlowline is joined to value added attributes prior to being\nreturned.\nNames are not modified from the NHDPlusHR geodatabase.\nSet layers to \"NULL\" to get all layers.</p>", slug = "details")),2021,list(name = "nhdplusTools", version = "0.4.1", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
+    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

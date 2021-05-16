@@ -81,7 +81,7 @@ total drainage area, levelpath, and topo_sort attributes." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -178,7 +178,7 @@ unexpected behavior may occur.</p></td>
     <p>data.frame with ID and pfaf columns.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+    <pre class="examples">get_pfaf,Get Pfafstetter Codes (Experimental),Get Pfafstetter Codes (Experimental) — get_pfaf,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_codes.R'><code>R/get_codes.R</code></a>,get_pfaf.Rd,character(0),get_pfaf,character(0),list(title = "Description", contents = "<p>Determines Pfafstetter codes for a dendritic network with\ntotal drainage area, levelpath, and topo_sort attributes.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Determines Pfafstetter codes for a dendritic network with\ntotal drainage area, levelpath, and topo_sort attributes."),<span class='fu'>get_pfaf</span><span class='op'>(</span><span class='va'>x</span>, max_level <span class='op'>=</span> <span class='fl'>2</span>, status <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>,list(list(name = "x", description = "<p>sf data.frame with ID, toID, totda, outletID, topo_sort,\nand levelpath attributes.</p>"), list(name = "max_level", description = "<p>integer number of pfaf levels to attempt to calculate.\nIf the network doesn't have resolution to support the desired level,\nunexpected behavior may occur.</p>"), list(name = "status", description = "<p>boolean print status or not</p>")),TRUE,<div class='input'><span class='co'># \donttest{</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/nhdplushr_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>hr_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='align_nhdplus_names.html'>align_nhdplus_names</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span><span class='op'>)</span>
@@ -233,7 +233,8 @@ unexpected behavior may occur.</p></td>
 
 <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>fl</span><span class='op'>[</span><span class='st'>"pf_level_2"</span><span class='op'>]</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 </div><div class='img'><img src='get_pfaf-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># }</span>
-</div></pre>
+</div>,list(list(title = "Value", contents = "<p>data.frame with ID and pfaf columns.</p>", slug = "value")),2021,list(name = "nhdplusTools", version = "0.4.1", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
+    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

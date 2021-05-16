@@ -82,7 +82,7 @@ for flowlines, catchments, or outlets." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -215,7 +215,15 @@ All buffer and distance operations are handled internally using in
 EPSG:5070 Albers Equal Area projection</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+    <pre class="examples">get_nhdplus,Get National Hydrography Dataset V2 Subsets (Multirealization),Get National Hydrography Dataset V2 Subsets (Multirealization) — get_nhdplus,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_nhdplus.R'><code>R/get_nhdplus.R</code></a>,get_nhdplus.Rd,character(0),get_nhdplus,character(0),list(title = "Description", contents = "<p>Subsets NHDPlusV2 features by location (POINT), area (POLYGON),\nor set of COMIDs. Multi realizations are supported allowing you to query\nfor flowlines, catchments, or outlets.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Subsets NHDPlusV2 features by location (POINT), area (POLYGON),\nor set of COMIDs. Multi realizations are supported allowing you to query\nfor flowlines, catchments, or outlets."),<span class='fu'>get_nhdplus</span><span class='op'>(</span>
+  AOI <span class='op'>=</span> <span class='cn'>NULL</span>,
+  comid <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nwis <span class='op'>=</span> <span class='cn'>NULL</span>,
+  realization <span class='op'>=</span> <span class='st'>"flowline"</span>,
+  streamorder <span class='op'>=</span> <span class='cn'>NULL</span>,
+  t_srs <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>,list(list(name = "AOI", description = "<p>sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can\nbe provided as either a location (sf POINT) or area (sf POLYGON)\nin any Spatial Reference System.</p>"), list(name = "comid", description = "<p>numeric or character. Search for NHD features by COMID(s)</p>"), list(name = "nwis", description = "<p>numeric or character. Search for NHD features by\ncollocated NWIS identifiers</p>"), list(name = "realization", description = "<p>character. What realization to return.\nDefault is flowline and options include: outlet, flowline, catchment,\nand all</p>"), 
+    list(name = "streamorder", description = "<p>numeric or character. Only return NHD flowlines with a\nstreamorder greater then or equal to this value\nfor input value and higher.\nOnly usable with AOI and flowline realizations.</p>"), list(name = "t_srs", description = "<p>character (PROJ string or EPSG code) or numeric (EPSG code).\nA user specified - target -Spatial Reference System (SRS/CRS) for returned objects.\nWill default to the CRS of the input AOI if provided, and to 4326 for ID requests.</p>")),TRUE,<div class='input'><span class='co'># \donttest{</span>
  <span class='va'>point</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>119.845</span>, <span class='fl'>34.4146</span><span class='op'>)</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>
  <span class='fu'>get_nhdplus</span><span class='op'>(</span><span class='va'>point</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Simple feature collection with 1 feature and 138 fields
@@ -496,7 +504,9 @@ EPSG:5070 Albers Equal Area projection</p>
 #&gt; </span><span style='color: #949494;'>#   qa_07 &lt;dbl&gt;, va_07 &lt;int&gt;, qc_07 &lt;dbl&gt;, vc_07 &lt;int&gt;, qe_07 &lt;dbl&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   ve_07 &lt;int&gt;, qa_08 &lt;dbl&gt;, va_08 &lt;int&gt;, qc_08 &lt;dbl&gt;, vc_08 &lt;int&gt;,</span><span>
 #&gt; </span><span style='color: #949494;'>#   qe_08 &lt;dbl&gt;, ...</span><span></div><div class='input'> <span class='co'># }</span>
-</div></span></pre>
+</div></span>,list(list(title = "Value", contents = "<p>a single, or list, of simple feature objects</p>", slug = "value"), list(title = "Details", contents = "<p>The returned object(s) will have the same\nSpatial Reference System (SRS) as the input AOI. If a individual or set of\nIDs are used to query, then the default geoserver CRS of EPSG:4326 is\npreserved. In all cases, a user-defined SRS can be passed to <code>t_srs</code>\nwhich will override all previous SRS's (either input or default).\nAll buffer and distance operations are handled internally using in\nEPSG:5070 Albers Equal Area projection</p>", 
+    slug = "details")),2021,list(name = "nhdplusTools", version = "0.4.1", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
+    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

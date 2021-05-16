@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -194,16 +194,16 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"natseamless.gpkg"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpEZIUtP/natseamless.gpkg"</span></code></pre></div>
+<span class="co">#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpgzJmiK/natseamless.gpkg"</span></code></pre></div>
 <p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatedly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">staged_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stage_national_data.html">stage_national_data</a></span><span class="op">(</span>output_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">staged_data</span><span class="op">)</span>
 <span class="co">#&gt; List of 3</span>
-<span class="co">#&gt;  $ attributes: chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpEZIUtP/nhdplus_flowline_attributes.rds"</span>
-<span class="co">#&gt;  $ flowline  : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpEZIUtP/nhdplus_flowline.rds"</span>
-<span class="co">#&gt;  $ catchment : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpEZIUtP/nhdplus_catchment.rds"</span></code></pre></div>
+<span class="co">#&gt;  $ attributes: chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpgzJmiK/nhdplus_flowline_attributes.rds"</span>
+<span class="co">#&gt;  $ flowline  : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpgzJmiK/nhdplus_flowline.rds"</span>
+<span class="co">#&gt;  $ catchment : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpgzJmiK/nhdplus_catchment.rds"</span></code></pre></div>
 <p>As you can see, <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are <a href="https://r-spatial.github.io/sf/"><code>sf</code></a> <code>data.frame</code>s and attributes is a plain <code>data.frame</code> with the attributes from <code>flowline</code>. Note that this introduction uses a small subset of the national seamless database as shown in the plot.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="va">staged_data</span><span class="op">$</span><span class="va">flowline</span><span class="op">)</span>
@@ -291,7 +291,8 @@
 <p>The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these “featureSources”. We can query the NLDI for an identifier of a given feature from any of its “featureSources” and find out what our navigation options are as shown below.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html">get_nldi_sources</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">source</span>
-<span class="co">#&gt; [1] "comid"    "huc12pp"  "nwissite" "ref_gage" "wade"     "WQP"</span>
+<span class="co">#&gt; [1] "comid"      "ca_gages"   "gfv11_pois" "huc12pp"    "nwissite"  </span>
+<span class="co">#&gt; [6] "ref_gage"   "wade"       "WQP"</span>
 
 <span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, featureID <span class="op">=</span> <span class="va">start_comid</span><span class="op">)</span>
 

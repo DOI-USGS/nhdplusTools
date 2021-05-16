@@ -84,7 +84,7 @@ file." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -243,7 +243,22 @@ and subject to revision. It does not include as many layers and may not
 be available permenently.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+    <pre class="examples">subset_nhdplus,Subset NHDPlus,Subset NHDPlus — subset_nhdplus,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/subset_nhdplus.R'><code>R/subset_nhdplus.R</code></a>,subset_nhdplus.Rd,character(0),subset_nhdplus,character(0),list(title = "Description", contents = "<p>Saves a subset of the National Seamless database or other\nnhdplusTools compatible data based on a specified collection of COMIDs.\nThis function uses <code><a href='get_nhdplus.html'>get_nhdplus</a></code> for the \"download\" data\nsource but returns data consistent with local data subsets in a subset\nfile.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Saves a subset of the National Seamless database or other\nnhdplusTools compatible data based on a specified collection of COMIDs.\nThis function uses get_nhdplus for the \"download\" data\nsource but returns data consistent with local data subsets in a subset\nfile."),<span class='fu'>subset_nhdplus</span><span class='op'>(</span>
+  comids <span class='op'>=</span> <span class='cn'>NULL</span>,
+  output_file <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nhdplus_data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  simplified <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  return_data <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  status <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  flowline_only <span class='op'>=</span> <span class='cn'>NULL</span>,
+  streamorder <span class='op'>=</span> <span class='cn'>NULL</span>,
+  out_prj <span class='op'>=</span> <span class='fl'>4269</span>
+<span class='op'>)</span>,list(list(name = "comids", description = "<p>integer vector of COMIDs to include.</p>"), list(name = "output_file", description = "<p>character path to save the output to defaults\nto the directory of the nhdplus_data.</p>"), list(name = "nhdplus_data", description = "<p>character path to the .gpkg or .gdb containing\nthe national seamless database, a subset of NHDPlusHR,\nor \"download\" to use a web service to download NHDPlusV2.1 data.\nNot required if <code><a href='nhdplus_path.html'>nhdplus_path</a></code> has been set or the default\nhas been adopted. See details for more.</p>"), 
+    list(name = "bbox", description = "<p>object of class \"bbox\" as returned by sf::st_bbox in Latitude/Longitude.\nIf no CRS is present, will be assumed to be in WGS84 Latitude Longitude.</p>"), list(name = "simplified", description = "<p>boolean if TRUE (the default) the CatchmentSP layer\nwill be included. Not relevant to the \"download\" option or NHDPlusHR data.</p>"), list(name = "overwrite", description = "<p>boolean should the output file be overwritten</p>"), list(name = "return_data", 
+        description = "<p>boolean if FALSE path to output file is returned silently otherwise\ndata is returned in a list.</p>"), list(name = "status", description = "<p>boolean should the function print status messages</p>"), list(name = "flowline_only", description = "<p>boolean WARNING: experimental\nif TRUE only the flowline network and attributes will be returned</p>"), list(name = "streamorder", description = "<p>integer only streams of order greater than or equal will be downloaded.\nNot implemented for local data.</p>"), 
+    list(name = "out_prj", description = "<p>character override the default output CRS of NAD83 lat/lon (EPSG:4269)</p>")),TRUE,<div class='input'><span class='co'># \donttest{</span>
 
 <span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
 
@@ -547,7 +562,8 @@ be available permenently.</p>
 <span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>sub_gpkg</span><span class='op'>)</span>
 <span class='co'># }</span>
 
-</div></span></pre>
+</div></span>,list(list(title = "Value", contents = "<p>path to the saved subset geopackage</p>", slug = "value"), list(title = "Details", contents = "<p>This function relies on the National Seamless Geodatabase or Geopackage.\nIt can be downloaded\n<a href='https://www.epa.gov/waterdata/nhdplus-national-data'>here.</a></p>\n<p>The \"download\" option of this function should be considered preliminary\nand subject to revision. It does not include as many layers and may not\nbe available permenently.</p>", slug = "details")),2021,list(name = "nhdplusTools", version = "0.4.1", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
+    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -1,3 +1,9 @@
+nhdplusTools 0.4.1
+==========
+Version 0.4.1 is a minor release with bug fixes and updates for CRAN policy.
+
+A noteable addition is handling for strictly dendritic topology encoded using a "tocomid" attribute rather than "fromnode" and "tonode" attributes. This functionality was added in subsetting functions and is backward compatible with previous versions.
+
 nhdplusTools 0.4.0
 ==========
 Version 0.4.0 adds new functionality for data access via web services and updates the usability and flexibility of data discovery and subsetting functions. This release includes significant rework of functions related to network navigation and web-service data subsetting. 

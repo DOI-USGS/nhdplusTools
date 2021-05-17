@@ -276,3 +276,18 @@ drop_geometry <- function(x) {
     x
   }
 }
+
+get_cl <- function(cores) {
+  if(!is.null(cores)) {
+    if(!requireNamespace("parallel", quietly = TRUE)) {
+      stop("parallel required if using cores input")
+    }
+    if(is.numeric(cores)) {
+      cl <- parallel::makeCluster(cores)
+    } else {
+      if(!"cluster" %in% class(cores)) {
+        stop("cores must be numeric or a cluster object")
+      }
+    }
+  }
+}

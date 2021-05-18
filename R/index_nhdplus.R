@@ -219,6 +219,107 @@ get_flowline_index <- function(flines, points,
   return(matched)
 }
 
+#' @title Disambiguate Flowline Indexes
+#' @description Given a set of flowline indexes and numeric criteria,
+#' return closest match.
+#' @param indexes data.frame as output from \link{get_flowline_index} with more than
+#' one hydrologic location per indexed point.
+#' @param flowpath data.frame with two columns. The first should join to the COMID
+#' field of the indexes and the second should be the numeric metric such as drainage
+#' area. Names are not used.
+#' @param hydro_location data.frame with two columns. The first should join to the
+#' id field of the indexes and the second should be the numeric metric such as drainage
+#' area. Names are not used.
+#' @return The indexes data.frame deduplicated according to the minimum difference
+#' between the values in the metric columns. If two or more result in the same "minimum"
+#' value, duplicates will be returned.
+#' @export
+#' @examples
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
+#' hydro_location <- sf::st_sf(id = c(1, 2, 3),
+#'                             geom = sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
+#'                                                    sf::st_point(c(-76.91711, 39.40884)),
+#'                                                    sf::st_point(c(-76.88081, 39.36354))),
+#'                                               crs = 4326),
+#'                             totda = c(23.6, 7.3, 427.9),
+#'                             nameid = c("Patapsco", "", "Falls Run River"))
+#'
+#' flowpath <- dplyr::select(sample_flines,
+#'                           comid = COMID,
+#'                           totda = TotDASqKM,
+#'                           nameid = GNIS_NAME,
+#'                           REACHCODE,
+#'                           ToMeas,
+#'                           FromMeas)
+#'
+#' indexes <- get_flowline_index(flowpath,
+#'                               hydro_location,
+#'                               search_radius = 0.2,
+#'                               max_matches = 10)
+#'
+#' disambiguate_flowline_indexes(indexes,
+#'                               dplyr::select(flowpath, comid, totda),
+#'                               dplyr::select(hydro_location, id, totda))
+#'
+#' result <- disambiguate_flowline_indexes(indexes,
+#'                                         dplyr::select(flowpath, comid, nameid),
+#'                                         dplyr::select(hydro_location, id, nameid))
+#'
+#' result[result$id == 1, ]
+#'
+#' result[result$id == 2, ]
+#'
+#' result[result$id == 3, ]
+#'
+disambiguate_flowline_indexes <- function(indexes, flowpath, hydro_location) {
+  check_names(indexes, "disambiguate_flowline_indexes")
+
+  flowpath <- drop_geometry(flowpath)
+  hydro_location <- drop_geometry(hydro_location)
+
+  if(ncol(flowpath) != 2 | ncol(hydro_location) != 2) {
+    stop("flowpath and hydrolocation must be two-column data.frames")
+  }
+
+  names(flowpath) <- c("comid", "metric_fp")
+
+  names(hydro_location) <- c('id', "metric_hl")
+
+  if(is.numeric(flowpath$metric_fp) & is.numeric(hydro_location$metric_hl)) {
+
+    indexes %>%
+      left_join(flowpath, by = c("COMID" = "comid")) %>%
+      left_join(hydro_location, by = "id") %>%
+      mutate(metric_diff = abs(.data$metric_fp - .data$metric_hl)) %>%
+      group_by(.data$id) %>%
+      filter(.data$metric_diff == min(.data$metric_diff)) %>%
+      ungroup() %>%
+      select(-.data$metric_hl, -.data$metric_fp, -.data$metric_diff)
+
+  } else if(is.character(flowpath$metric_fp) & is.character(hydro_location$metric_hl)) {
+
+    indexes %>%
+      left_join(flowpath, by = c("COMID" = "comid")) %>%
+      left_join(hydro_location, by = "id") %>%
+      mutate(metric_diff = sapply(mapply(c, .data$metric_fp, .data$metric_hl,
+                                         USE.NAMES = FALSE, SIMPLIFY = FALSE),
+                                  string_score)) %>%
+      group_by(.data$id) %>%
+      filter(.data$metric_diff == max(.data$metric_diff)) %>%
+      ungroup() %>%
+      select(-.data$metric_hl, -.data$metric_fp, -.data$metric_diff)
+
+  } else  stop("flowpath and hydrolocation metrics must both be numeric or character")
+
+}
+
+string_score <- function(x) {
+  raw_score <- as.numeric(utils::adist(x[[1]], x[[2]], ignore.case = TRUE))
+
+  (1 - (raw_score) / max(c(nchar(x[[1]]), nchar(x[[2]]))))
+}
+
 #' @title Get Waterbody Index
 #' @description given an sf point geometry column, return waterbody id, and
 #' COMID of dominant artificial path

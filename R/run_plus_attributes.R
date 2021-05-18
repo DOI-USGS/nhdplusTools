@@ -199,7 +199,7 @@ add_plus_network_attributes <- function(net, override = 5,
   )
 
   net <- net %>%
-    group_by(terminalpa) %>%
+    group_by(.data$terminalpa) %>%
     mutate(terminalfl = ifelse(.data$hydroseq == min(.data$hydroseq), 1, 0)) %>%
     ungroup()
 

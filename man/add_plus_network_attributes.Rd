@@ -13,9 +13,9 @@ add_plus_network_attributes(
 )
 }
 \arguments{
-\item{net}{data.frame containing comid, tocomid, nameID, lengthkm, and areasqkm. 
-Additional attributes will be passed through unchanged. 
-tocomid == 0 is the convention used for outlets. 
+\item{net}{data.frame containing comid, tocomid, nameID, lengthkm, and areasqkm.
+Additional attributes will be passed through unchanged.
+tocomid == 0 is the convention used for outlets.
 If a "weight" column is provided, it will be used in \link{get_levelpaths}
 otherwise, arbolate sum is calculated for the network and used as the weight.}
 
@@ -30,9 +30,9 @@ rather than recreated.}
 \item{status}{logical should progress be printed?}
 }
 \description{
-Given a river network with required base attributes, adds the 
+Given a river network with required base attributes, adds the
 NHDPlus network attributes: hydrosequence, levelpath, terminalpath, pathlength,
-down levelpath, down hydroseq, total drainage area, and terminalflag. 
+down levelpath, down hydroseq, total drainage area, and terminalflag.
 The function implements two parallelization schemes for small and large basins
 respectively. If a number of cores is specified, parallel execution will be used.
 }

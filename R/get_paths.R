@@ -63,7 +63,9 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
 
   if(!is.null(cores)) {
     cl <- get_cl(cores)
-    on.exit(parallel::stopCluster(cl))
+    if(!inherits(cores, "cluster")) {
+      on.exit(parallel::stopCluster(cl))
+    }
   }
 
   x <- x %>% # get downstream name ID added

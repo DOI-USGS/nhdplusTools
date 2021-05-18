@@ -3,17 +3,17 @@ par_make_subnet <- function(out, g, vs, net_new) {
   dfs <- igraph::dfs(g, which(vs == as.character(out)),
                      "in", unreachable = FALSE)
 
-  subnet <- dplyr::filter(net_new, comid %in% as.integer(names(dfs$order[!is.na(dfs$order)])))
+  subnet <- dplyr::filter(net_new, .data$comid %in% as.integer(names(dfs$order[!is.na(dfs$order)])))
 
 
-  dplyr::mutate(dplyr::select(subnet, ID = comid, toID = tocomid,
-                              nameID = nameID, weight = weight),
-                nameID = as.character(nameID))
+  dplyr::mutate(dplyr::select(subnet, ID = .data$comid, toID = .data$tocomid,
+                              nameID = .data$nameID, weight = .data$weight),
+                nameID = as.character(.data$nameID))
 }
 
 split_network <- function(net, cl = NULL) {
 
-  g <- igraph::graph_from_data_frame(select(net, comid, tocomid), directed = TRUE)
+  g <- igraph::graph_from_data_frame(select(net, .data$comid, .data$tocomid), directed = TRUE)
 
   vs <- names(igraph::V(g))
 

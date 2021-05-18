@@ -62,16 +62,9 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   cl <- NULL
 
   if(!is.null(cores)) {
-    if(!requireNamespace("parallel", quietly = TRUE)) {
-      stop("parallel required if using cores input")
-    }
-    if(is.numeric(cores)) {
-      cl <- parallel::makeCluster(cores)
-      stop_cluster <- TRUE
-    } else {
-      if(!"cluster" %in% class(cores)) {
-        stop("cores must be numeric or a cluster object")
-      }
+    cl <- get_cl(cores)
+    if(!inherits(cores, "cluster")) {
+      on.exit(parallel::stopCluster(cl))
     }
   }
 
@@ -156,10 +149,6 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
     if(status && checker %% 1000 == 0) {
       message(paste(done, "of", nrow(x), "remaining."))
     }
-  }
-
-  if(stop_cluster) {
-    parallel::stopCluster(cl)
   }
 
   outlets <- x %>%
@@ -372,12 +361,16 @@ get_terminal <- function(x, outlets) {
 #'
 get_pathlength <- function(x) {
 
+  if(any(x$ID == 0)) stop("ID 0 must not be present. It is used as the outlet ID.")
+
+  x$toID[is.na(x$toID)] <- 0
+
   sorted <- as(get_sorted(x[, c("ID", "toID")]),
                class(x$ID))
 
   sorted <- sorted[length(sorted):1]
 
-  sorted <- sorted[!is.na(sorted)]
+  sorted <- sorted[(!sorted == 0)]
 
   order <- match(sorted, x$ID)
 
@@ -393,7 +386,7 @@ get_pathlength <- function(x) {
   toids <- match(toid, id)
 
   for(i in seq_len(length(id))) {
-    if(!is.na(tid <- toid[i])) {
+    if((tid <- toid[i]) != 0) {
 
       leo[i] <- le[toids[i]] + leo[toids[i]]
 

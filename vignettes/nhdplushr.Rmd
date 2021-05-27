@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   fig.height=8,
   eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
   cache=TRUE,
-  cache.path=(rappdirs::user_cache_dir("nhdplusTools"))
+  cache.path=(file.path(nhdplusTools_data_dir(), "hr_v_cache"))
 )
 oldoption <- options(scipen = 9999,
                      "rgdal_show_exportToProj4_warnings"="none")
@@ -30,7 +30,7 @@ _Note: For consistency, identifiers from NHDPlusV2 are used with HiRes data. A f
 library(nhdplusTools)
 library(sf)
 
-work_dir <- file.path(rappdirs::user_cache_dir("nhdplusTools"), "hr_v_cache")
+work_dir <- file.path(nhdplusTools_data_dir(), "hr_v_cache")
 
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
@@ -189,5 +189,8 @@ plot(st_geometry(standalone))
 
 ```{r teardown, include=FALSE}
 options(oldoption)
-unlink(rappdirs::user_cache_dir("nhdplusTools"), recursive = TRUE)
+
+if(!Sys.getenv("BUILD_VIGNETTES")) {
+  unlink(work_dir, recursive = TRUE)
+}
 ```

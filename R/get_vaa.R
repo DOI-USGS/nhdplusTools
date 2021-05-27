@@ -1,17 +1,16 @@
 #' @title File path to value added attribute (vaa) Cache
 #' @description nhdplusTools will download and cache an `fst` file with
 #' NHDPlusV2 attribute data sans geometry. This function returns the
-#' file path to the cached file. Will use the user cache dir indicated
-#' by \link[rappdirs]{user_cache_dir}.
+#' file path to the cached file. Will use the user data dir indicated
+#' by \link{nhdplusTools_data_dir}.
 #' @inherit download_vaa details
 #' @return file.path character
-#' @importFrom rappdirs user_cache_dir
 #' @export
 #' @examples
 #' get_vaa_path()
 
 get_vaa_path <- function() {
-  file.path(rappdirs::user_cache_dir(), "nhdplus-vaa/nhdplusVAA.fst")
+  file.path(nhdplusTools_data_dir(), "nhdplus-vaa/nhdplusVAA.fst")
 }
 
 #' @title Available NHDPlusV2 Attributes
@@ -40,7 +39,7 @@ get_vaa_names <- function() {
 #' @inherit download_vaa details
 #' @param atts character The variable names you would like, always includes comid
 #' @param path character path where the file should be saved. Default is a
-#' persistent system cache as retrieved by \link[rappdirs]{user_cache_dir}.
+#' persistent system data as retrieved by \link{nhdplusTools_data_dir}.
 #' Also see: \link{get_vaa_path}
 #' @param download logical if TRUE, the default, will download VAA table if not
 #' found at path.

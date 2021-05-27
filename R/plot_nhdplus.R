@@ -146,7 +146,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 }
 
 osm_cache_dir <- function() {
-  osm_dir <- file.path(rappdirs::user_cache_dir("nhdplusTools"),
+  osm_dir <- file.path(nhdplusTools_data_dir(),
                        "osm.cache")
 
   test_dir <- file.path(osm_dir, "test")

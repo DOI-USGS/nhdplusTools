@@ -12,8 +12,8 @@ file.path character
 \description{
 nhdplusTools will download and cache an `fst` file with
 NHDPlusV2 attribute data sans geometry. This function returns the
-file path to the cached file. Will use the user cache dir indicated
-by \link[rappdirs]{user_cache_dir}.
+file path to the cached file. Will use the user data dir indicated
+by \link{nhdplusTools_data_dir}.
 }
 \details{
 The VAA data is a aggregate table of information from the NHDPlusV2

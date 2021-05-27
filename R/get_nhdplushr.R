@@ -1,75 +1,3 @@
-#' Download NHDPlus HiRes
-#' @param nhd_dir character directory to save output into
-#' @param hu_list character vector of hydrologic region(s) to download
-#' @param download_files boolean if FALSE, only URLs to files will be returned
-#' can be hu02s and/or hu04s
-#'
-#' @return Paths to geodatabases created.
-#' @importFrom xml2 read_xml xml_ns_strip xml_find_all xml_text
-#' @importFrom utils download.file
-#' @importFrom zip unzip
-#' @export
-#' @examples
-#' \donttest{
-#' download_nhdplushr(tempdir(), c("01", "0203"), download_files = FALSE)
-#' }
-download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
-
-  nhdhr_bucket <- get("nhdhr_bucket", envir = nhdplusTools_env)
-  nhdhr_file_list <- get("nhdhr_file_list", envir = nhdplusTools_env)
-
-  hu02_list <- unique(substr(hu_list, 1, 2))
-  hu04_list <- hu_list[which(nchar(hu_list) == 4)]
-  subset_hu02 <- sapply(hu02_list, function(x)
-    sapply(x, function(y) any(grepl(y, hu04_list))))
-
-  out <- c()
-
-  for(h in 1:length(hu02_list)) {
-    hu02 <- hu02_list[h]
-
-    if(download_files) {
-      out <- c(out, file.path(nhd_dir, hu02))
-    }
-
-    if(download_files) {
-      dir.create(out[length(out)], recursive = TRUE, showWarnings = FALSE)
-    }
-
-    file_list <- read_xml(paste0(nhdhr_bucket, nhdhr_file_list,
-                                 "NHDPLUS_H_", hu02)) %>%
-      xml_ns_strip() %>%
-      xml_find_all(xpath = "//Key") %>%
-      xml_text()
-
-    file_list <- file_list[grepl("_GDB.zip", file_list)]
-
-    if(subset_hu02[h]) {
-      file_list <- file_list[sapply(file_list, function(f)
-        any(sapply(hu04_list, grepl, x = f)))]
-    }
-
-    for(key in file_list) {
-      dir_out <- ifelse(is.null(out[length(out)]), "", out[length(out)])
-      out_file <- file.path(dir_out, basename(key))
-      url <- paste0(nhdhr_bucket, key)
-
-      hu04 <- regexec("[0-9][0-9][0-9][0-9]", out_file)[[1]]
-      hu04 <- substr(out_file, hu04, hu04 + 3)
-
-      if(download_files & !dir.exists(gsub(".zip", ".gdb", out_file)) &
-         !dir.exists(file.path(dirname(out_file), paste0(hu04, ".gdb")))) {
-        download.file(url, out_file)
-        zip::unzip(out_file, exdir = out[length(out)])
-        unlink(out_file)
-      } else if(!download_files) {
-        out <- c(out, url)
-      }
-    }
-  }
-  return(out)
-}
-
 #' Get NHDPlus HiRes
 #' @param hr_dir character directory with geodatabases (gdb search is recursive)
 #' @param out_gpkg character path to write output geopackage
@@ -105,7 +33,7 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' \donttest{
 #' # Note this will download a lot of data to a temp directory.
 #' # Change 'temp_dir' to your directory of choice.
-#' temp_dir <- file.path(rappdirs::user_cache_dir(), "temp_hr_cache")
+#' temp_dir <- file.path(nhdplusTools_data_dir(), "temp_hr_cache")
 #'
 #' download_dir <- download_nhdplushr(temp_dir, c("0302", "0303"))
 #'
@@ -314,7 +242,7 @@ make_standalone <- function(flowlines) {
                       .data$LevelPathI)
 
     outlets <- filter(outlets,
-                      (is.na(.data$toCOMID) | .data$toCOMID == 0)
+                      (is.na(.data$toCOMID) | .data$toCOMID == 0 | !.data$toCOMID %in% .data$COMID)
                       & .data$Hydroseq != .data$TerminalPa)
   } else {
     flowlines <- check_names(flowlines, "make_standalone_tonode")

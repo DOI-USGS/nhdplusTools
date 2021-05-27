@@ -105,3 +105,55 @@ test_that("multipart indexing", {
   expect_true(all(index$COMID == 51664))
 
 })
+
+test_that("disambiguate", {
+
+  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+  hydro_location <- sf::st_sf(id = c(1, 2, 3),
+                              geom = sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
+                                                     sf::st_point(c(-76.91711, 39.40884)),
+                                                     sf::st_point(c(-76.88081, 39.36354))),
+                                                crs = 4326),
+                              totda = c(23.6, 7.3, 427.9),
+                              nameid = c("Patapsco", "", "Falls Run River"))
+
+  flowpath <- dplyr::select(sample_flines,
+                            comid = COMID,
+                            totda = TotDASqKM,
+                            nameid = GNIS_NAME,
+                            REACHCODE,
+                            ToMeas,
+                            FromMeas)
+
+  indexes <- get_flowline_index(flowpath,
+                                hydro_location,
+                                search_radius = 0.2,
+                                max_matches = 10)
+
+  result <- disambiguate_flowline_indexes(indexes,
+                                          dplyr::select(flowpath, comid, totda),
+                                          dplyr::select(hydro_location, id, totda))
+
+  expect_equal(nrow(result), 3)
+
+  result <- disambiguate_flowline_indexes(indexes,
+                                          dplyr::select(flowpath, comid, nameid),
+                                          dplyr::select(hydro_location, id, nameid))
+
+  expect_equal(nrow(result[result$id == 1, ]), 3)
+
+  expect_equal(nrow(result[result$id == 2, ]), 10)
+
+  expect_equal(nrow(result[result$id == 3, ]), 1)
+
+  expect_error(disambiguate_flowline_indexes(indexes,
+                                             dplyr::select(flowpath, comid, nameid),
+                                             hydro_location),
+               "flowpath and hydrolocation must be two-column data.frames")
+
+  expect_error(disambiguate_flowline_indexes(indexes,
+                                             dplyr::select(flowpath, comid, nameid),
+                                             dplyr::select(hydro_location, id, totda)),
+               "flowpath and hydrolocation metrics must both be numeric or character")
+})

@@ -9,23 +9,26 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(nhdplusTools)
+local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width=6, 
   fig.height=4,
-  eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
-  cache=TRUE
+  eval=local,
+  cache=local,
+  cache.path=(file.path(nhdplusTools_data_dir(), "plot_v_cache"))
 )
 oldoption <-
   options(scipen = 9999,
           "rgdal_show_exportToProj4_warnings"="none")
 ```
 ```{r data_dir_setup, echo=FALSE, include=FALSE}
-temp_dir <- tempdir()
-dir.create(temp_dir)
+work_dir <- file.path(nhdplusTools_data_dir(), "plot_v_cache")
+dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
 library(rosm)
-set_default_cachedir(tempfile())
+set_default_cachedir(work_dir)
 library(nhdplusTools)
 ```
 
@@ -112,7 +115,7 @@ flowline <- navigate_nldi(nwissite,
                           data_source = "flowlines")
 
 nhdplus <- subset_nhdplus(comids = flowline$UT$nhdplus_comid,
-                          output_file = file.path(temp_dir, "nhdplus.gpkg"),
+                          output_file = file.path(work_dir, "nhdplus.gpkg"),
                           nhdplus_data = "download",
                           overwrite = TRUE, return_data = FALSE)
 
@@ -182,7 +185,8 @@ The `prettymapr::prettymap()` function isn't strictly necessary, but it gives us
 prep_layer <- function(x) st_geometry(st_transform(x, 3857))
 
 prettymapr::prettymap({
-  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, progress = "none", cachedir = tempfile())
+  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, 
+                 progress = "none", cachedir = work_dir)
   
   plot(prep_layer(basin), 
        lwd = 2, add = TRUE)
@@ -246,4 +250,8 @@ Hopefully these examples give a good head start to plotting NHDPlus data. Please
 
 ```{r teardown, include=FALSE}
 options(oldoption)
+
+if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
+  unlink(work_dir, recursive = TRUE)
+}
 ```

@@ -9,12 +9,14 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(nhdplusTools)
+local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 knitr::opts_chunk$set(
   comment = "#>",
   fig.width=8.5, 
   fig.height=8,
-  eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
-  cache=TRUE,
+  eval=local,
+  cache=local,
   cache.path=(file.path(nhdplusTools_data_dir(), "hr_v_cache"))
 )
 oldoption <- options(scipen = 9999,
@@ -190,7 +192,7 @@ plot(st_geometry(standalone))
 ```{r teardown, include=FALSE}
 options(oldoption)
 
-if(!Sys.getenv("BUILD_VIGNETTES")) {
+if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
   unlink(work_dir, recursive = TRUE)
 }
 ```

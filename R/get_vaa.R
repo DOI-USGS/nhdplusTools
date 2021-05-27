@@ -24,7 +24,7 @@ get_vaa_path <- function() {
 #' get_vaa_names()
 #'
 #' #cleanup if desired
-#' unlink(get_vaa_path(), recursive = TRUE)
+#' unlink(dirname(get_vaa_path()), recursive = TRUE)
 #' }
 get_vaa_names <- function() {
   path <- get_vaa_path()
@@ -51,7 +51,7 @@ get_vaa_names <- function() {
 #' get_vaa(c("slope", "lengthkm"))
 #'
 #' #cleanup if desired
-#' unlink(get_vaa_path(), recursive = TRUE)
+#' unlink(dirname(get_vaa_path()), recursive = TRUE)
 #' }
 #' @importFrom fst read.fst
 

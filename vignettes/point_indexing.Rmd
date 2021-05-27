@@ -9,13 +9,15 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(nhdplusTools)
+local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width=6, 
   fig.height=4,
-  eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
-  cache=TRUE,
+  eval=local,
+  cache=local,
   cache.path=(file.path(nhdplusTools_data_dir(), "index_v"))
 )
 oldoption <- options(scipen = 9999,
@@ -209,7 +211,7 @@ dplyr::select(sf::st_drop_geometry(indexed_gages), near_wb_COMID, near_wb_dist, 
 
 ```{r teardown, include=FALSE}
 options(oldoption)
-if(!Sys.getenv("BUILD_VIGNETTES")) {
+if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
   unlink(work_dir, recursive = TRUE)
 }
 ```

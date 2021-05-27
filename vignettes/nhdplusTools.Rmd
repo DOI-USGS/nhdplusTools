@@ -9,13 +9,16 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(nhdplusTools)
+local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width=6, 
   fig.height=4,
-  eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
-  cache=TRUE
+  eval=local,
+  cache=local,
+  cache.path=(file.path(nhdplusTools_data_dir(), "nhdpt_v_cache"))
 )
 oldoption <- options(scipen = 9999,
                      "rgdal_show_exportToProj4_warnings"="none")
@@ -100,17 +103,17 @@ The first thing you are going to need to do is go get some data to work with. `n
 If you are working with the whole National Seamless database, `nhdplusTools` has some convenience functions you should be aware of. Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the `nhdplus_path()` function.
 
 ```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
-temp_dir <- tempdir()
+work_dir <- file.path(nhdplusTools_data_dir(), "nhdpt_v_cache")
 
-dir.create(temp_dir)
+dir.create(work_dir, showWarnings = FALSE, recursive = TRUE)
 
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 file.copy(sample_data,
-          file.path(temp_dir, "natseamless.gpkg"))
+          file.path(work_dir, "natseamless.gpkg"))
 ```
 ```{r nhdplus_path, echo=TRUE}
-nhdplus_path(file.path(temp_dir, "natseamless.gpkg"))
+nhdplus_path(file.path(work_dir, "natseamless.gpkg"))
 
 nhdplus_path()
 ```
@@ -223,7 +226,7 @@ plot(sf::st_geometry(flowline_nldi$UT), lwd = 1, col = "red", add = TRUE)
 What is not shown here is that the NLDI only provided geometry and a comid for each of the flowlines. The `subset_nhdplus` function has a "download" option that allows us to download four layers and all attributes as shown below. 
 
 ```{r subset_nhdplus_download}
-output_file_download <- file.path(temp_dir, "subset_download.gpkg")
+output_file_download <- file.path(work_dir, "subset_download.gpkg")
 
 output_file_download <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
                              output_file = output_file_download,
@@ -231,7 +234,7 @@ output_file_download <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
 
 sf::st_layers(output_file_download)
 
-flowline_download <- sf::read_sf(file.path(temp_dir, "subset_download.gpkg"), 
+flowline_download <- sf::read_sf(file.path(work_dir, "subset_download.gpkg"), 
                                  "NHDFlowline_Network")
 
 plot(sf::st_geometry(dplyr::filter(flowline_download, 
@@ -254,7 +257,7 @@ flowline_nldi <- navigate_nldi(nldi_feature,
                                mode = "upstreamTributaries", 
                                distance_km = 1000)
 
-output_file_nwis <- file.path(temp_dir, "subset_download_nwis.gpkg")
+output_file_nwis <- file.path(work_dir, "subset_download_nwis.gpkg")
 
 output_file_nwis <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
                                   output_file = output_file_nwis,
@@ -298,7 +301,7 @@ plot(sf::st_geometry(dplyr::filter(flowline, COMID %in% UT_comids)),
 Say you want to save the network subset for later use in R or in some other GIS. The `subset_nhdplus() function is your friend. If you have the whole national seamless database downloaded, you can pull out large subsets of it like shown below. If you don't have the whole national seamless, look at the second example in this section.
 
 ```{r subset_nhdplus}
-output_file <- file.path(temp_dir, "subset.gpkg")
+output_file <- file.path(work_dir, "subset.gpkg")
 
 output_file <-subset_nhdplus(comids = UT_comids,
                              output_file = output_file,
@@ -350,4 +353,8 @@ The NHDPlus tools package has been developed in support of an experimental NHDPl
 
 ```{r teardown, include=FALSE}
 options(oldoption)
+
+if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
+  unlink(work_dir, recursive = TRUE)
+}
 ```

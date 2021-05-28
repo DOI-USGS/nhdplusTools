@@ -194,6 +194,7 @@ assign("nhdpt_dat_dir",
 #' as returned by \link[rappdirs]{user_data_dir} for this package.
 #' @param dir path of desired data directory
 #' @return path of data directory (silent when setting)
+#' @importFrom rappdirs user_data_dir
 #' @export
 #' @examples
 #' nhdplusTools_data_dir()

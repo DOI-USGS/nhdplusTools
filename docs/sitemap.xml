@@ -4,6 +4,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools//index.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/add_plus_network_attributes.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/align_nhdplus_names.html</loc>
   </url>
   <url>
@@ -11,6 +14,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/calculate_total_drainage_area.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/disambiguate_flowline_indexes.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/discover_nhdplus_id.html</loc>
@@ -119,6 +125,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/navigate_nldi.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools//reference/nhdplusTools_data_dir.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools//reference/nhdplus_path.html</loc>

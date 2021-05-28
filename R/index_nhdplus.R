@@ -220,16 +220,19 @@ get_flowline_index <- function(flines, points,
 }
 
 #' @title Disambiguate Flowline Indexes
-#' @description Given a set of flowline indexes and numeric criteria,
-#' return closest match.
+#' @description Given a set of flowline indexes and numeric or ascii criteria,
+#' return closest match. If numeric criteria are used, the minimum difference
+#' in the numeric attribute is used for disambiguation. If ascii criteria are used,
+#' the \link[utils]{adist} function is used with the following algorithm:
+#' `1 - adist_score / max_string_length`. Comparisons ignore case.
 #' @param indexes data.frame as output from \link{get_flowline_index} with more than
 #' one hydrologic location per indexed point.
 #' @param flowpath data.frame with two columns. The first should join to the COMID
-#' field of the indexes and the second should be the numeric metric such as drainage
-#' area. Names are not used.
+#' field of the indexes and the second should be the numeric or ascii metric such as drainage
+#' area or GNIS Name. Names of this data.frame are not used.
 #' @param hydro_location data.frame with two columns. The first should join to the
-#' id field of the indexes and the second should be the numeric metric such as drainage
-#' area. Names are not used.
+#' id field of the indexes and the second should be the numeric or ascii metric such as drainage
+#' area or GNIS Name.. Names of this data,frame are not used.
 #' @return The indexes data.frame deduplicated according to the minimum difference
 #' between the values in the metric columns. If two or more result in the same "minimum"
 #' value, duplicates will be returned.

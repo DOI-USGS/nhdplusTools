@@ -47,7 +47,7 @@ subset <- subset_nhdplus(comids = flowline$UT$nhdplus_comid,
                          output_file = subset_file,
                          nhdplus_data = "download", 
                          flowline_only = FALSE,
-                         return_data = TRUE)
+                         return_data = TRUE, overwrite = TRUE)
 
 flowline <- subset$NHDFlowline_Network
 catchment <- subset$CatchmentSP
@@ -229,8 +229,9 @@ What is not shown here is that the NLDI only provided geometry and a comid for e
 output_file_download <- file.path(work_dir, "subset_download.gpkg")
 
 output_file_download <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
-                             output_file = output_file_download,
-                             nhdplus_data = "download", return_data = FALSE)
+                                      output_file = output_file_download,
+                                      nhdplus_data = "download", return_data = FALSE,
+                                      overwrite = TRUE)
 
 sf::st_layers(output_file_download)
 
@@ -262,7 +263,7 @@ output_file_nwis <- file.path(work_dir, "subset_download_nwis.gpkg")
 output_file_nwis <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
                                   output_file = output_file_nwis,
                                   nhdplus_data = "download",
-                                  return_data = FALSE)
+                                  return_data = FALSE, overwrite = TRUE)
 
 sf::st_layers(output_file_download)
 
@@ -306,7 +307,7 @@ output_file <- file.path(work_dir, "subset.gpkg")
 output_file <-subset_nhdplus(comids = UT_comids,
                              output_file = output_file,
                              nhdplus_data = nhdplus_path(), 
-                             return_data = FALSE)
+                             return_data = FALSE, overwrite = TRUE)
 
 sf::st_layers(output_file)
 ```

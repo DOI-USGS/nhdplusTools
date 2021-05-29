@@ -56,6 +56,8 @@ the domain is independently complete." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -67,9 +69,16 @@ the domain is independently complete." />
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -90,12 +99,6 @@ the domain is independently complete." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -155,7 +158,7 @@ domain is labeled as a terminal path and attributes are propagated upstream such
 the domain is independently complete.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>make_standalone</span><span class='op'>(</span><span class='va'>flowlines</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>make_standalone</span><span class='op'>(</span><span class='va'>flowlines</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,91 +171,113 @@ the domain is independently complete.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">make_standalone,Make isolated NHDPlusHR region a standalone dataset,Make isolated NHDPlusHR region a standalone dataset — make_standalone,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_nhdplushr.R'><code>R/get_nhdplushr.R</code></a>,make_standalone.Rd,character(0),make_standalone,character(0),list(title = "Description", contents = "<p>Cleans up and prepares NHDPlusHR regional data for use as complete NHDPlus\ndata. The primary modification applied is to ensure that any flowpath that exits the\ndomain is labeled as a terminal path and attributes are propagated upstream such that\nthe domain is independently complete.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Cleans up and prepares NHDPlusHR regional data for use as complete NHDPlus\ndata. The primary modification applied is to ensure that any flowpath that exits the\ndomain is labeled as a terminal path and attributes are propagated upstream such that\nthe domain is independently complete."),<span class='fu'>make_standalone</span><span class='op'>(</span><span class='va'>flowlines</span><span class='op'>)</span>,list(list(name = "flowlines", description = "<p>sf data.frame of NHDPlusHR flowlines.</p>")),TRUE,<div class='input'><span class='co'># \donttest{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-spatial.github.io/sf/'>sf</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/nhdplushr_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='op'>(</span><span class='va'>outlet</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>Hydroseq</span> <span class='op'>==</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Simple feature collection with 1 feature and 57 fields
-#&gt; Geometry type: LINESTRING
-#&gt; Dimension:     XY
-#&gt; Bounding box:  xmin: -79.01402 ymin: 35.79464 xmax: -79.00523 ymax: 35.80153
-#&gt; Geodetic CRS:  GRS 1980(IUGG, 1980)
-#&gt; <span style='color: #949494;'># A tibble: 1 x 58</span><span>
-#&gt;   Permanent_Identif~ FDate               Resolution GNIS_ID GNIS_Name   LENGTHKM
-#&gt; </span><span style='color: #BCBCBC;'>*</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> 46353268           2012-03-11 </span><span style='color: #949494;'>06:52:19</span><span>          2 009910~ New Hope C~     1.10
-#&gt; </span><span style='color: #949494;'># ... with 52 more variables: REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   geom &lt;LINESTRING [°]&gt;, StreamLeve &lt;dbl&gt;, StreamOrde &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   StreamCalc &lt;dbl&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;dbl&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   RtnDiv &lt;dbl&gt;, Thinner &lt;dbl&gt;, VPUIn &lt;dbl&gt;, VPUOut &lt;dbl&gt;, AreaSqKM &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   ElevFixed &lt;dbl&gt;, HWType &lt;dbl&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</span><span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>TerminalPa</span> <span class='op'>==</span> <span class='va'>outlet</span><span class='op'>$</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 2691</div><div class='input'>
-<span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span> <span class='op'>&lt;-</span> <span class='fu'>make_standalone</span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span><span class='op'>)</span>
-
-<span class='op'>(</span><span class='va'>outlet</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>Hydroseq</span> <span class='op'>==</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Simple feature collection with 1 feature and 57 fields
-#&gt; Geometry type: LINESTRING
-#&gt; Dimension:     XY
-#&gt; Bounding box:  xmin: -79.01402 ymin: 35.79464 xmax: -79.00523 ymax: 35.80153
-#&gt; Geodetic CRS:  GRS 1980(IUGG, 1980)
-#&gt; </span><span style='color: #949494;'># A tibble: 1 x 58</span><span>
-#&gt;   Permanent_Identif~ FDate               Resolution GNIS_ID GNIS_Name   LENGTHKM
-#&gt; </span><span style='color: #BCBCBC;'>*</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> 46353268           2012-03-11 </span><span style='color: #949494;'>06:52:19</span><span>          2 009910~ New Hope C~     1.10
-#&gt; </span><span style='color: #949494;'># ... with 52 more variables: REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   geom &lt;LINESTRING [°]&gt;, StreamLeve &lt;dbl&gt;, StreamOrde &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   StreamCalc &lt;dbl&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;dbl&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   RtnDiv &lt;dbl&gt;, Thinner &lt;dbl&gt;, VPUIn &lt;dbl&gt;, VPUOut &lt;dbl&gt;, AreaSqKM &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   ElevFixed &lt;dbl&gt;, HWType &lt;dbl&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</span><span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>TerminalPa</span> <span class='op'>==</span> <span class='va'>outlet</span><span class='op'>$</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 2691</div><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/nhdplushr_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Remove mainstem and non-dendritic stuff.</span>
-<span class='va'>subset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>,
-                        <span class='va'>StreamLeve</span> <span class='op'>&gt;</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span><span class='op'>$</span><span class='va'>StreamLeve</span><span class='op'>)</span> <span class='op'>&amp;</span>
-                          <span class='va'>StreamOrde</span> <span class='op'>==</span> <span class='va'>StreamCalc</span><span class='op'>)</span>
-
-<span class='va'>subset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subset_nhdplus.html'>subset_nhdplus</a></span><span class='op'>(</span><span class='va'>subset</span><span class='op'>$</span><span class='va'>COMID</span>, nhdplus_data <span class='op'>=</span> <span class='va'>hr_gpkg</span><span class='op'>)</span><span class='op'>$</span><span class='va'>NHDFlowline</span>
-</div><div class='output co'>#&gt; <span class='message'>All intersections performed in latitude/longitude.</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>1000 comids of 2182</span></div><div class='output co'>#&gt; <span class='message'>2000 comids of 2182</span></div><div class='output co'>#&gt; <span class='message'>2182 comids of 2182</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDFlowline</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>1000 comids of 2182</span></div><div class='output co'>#&gt; <span class='message'>2000 comids of 2182</span></div><div class='output co'>#&gt; <span class='message'>2182 comids of 2182</span></div><div class='output co'>#&gt; <span class='message'>Found invalid geometry, attempting to fix.</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDPlusCatchment</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDArea</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDWaterbody</span></div><div class='output co'>#&gt; <span class='message'>Reading NHDPlusSink</span></div><div class='output co'>#&gt; <span class='message'>Writing NHDPlusSink</span></div><div class='input'>
-<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='input'>
-<span class='va'>flowline_mod</span> <span class='op'>&lt;-</span> <span class='fu'>make_standalone</span><span class='op'>(</span><span class='va'>subset</span><span class='op'>)</span>
-
-<span class='va'>terminals</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='va'>flowline_mod</span><span class='op'>$</span><span class='va'>TerminalPa</span><span class='op'>)</span>
-
-<span class='va'>colors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>hcl.colors</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>terminals</span><span class='op'>)</span>, palette <span class='op'>=</span> <span class='st'>"Zissou 1"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='kw'>for</span><span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>terminals</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='va'>fl</span> <span class='op'>&lt;-</span> <span class='va'>flowline_mod</span><span class='op'>[</span><span class='va'>flowline_mod</span><span class='op'>$</span><span class='va'>TerminalPa</span> <span class='op'>==</span> <span class='va'>terminals</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, <span class='op'>]</span>
-  <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>fl</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='va'>colors</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div><div class='input'>
-<span class='va'>ol</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>flowline_mod</span>, <span class='va'>TerminalFl</span> <span class='op'>==</span> <span class='fl'>1</span> <span class='op'>&amp;</span> <span class='va'>TerminalPa</span> <span class='op'>%in%</span> <span class='va'>terminals</span><span class='op'>)</span>
-
-<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>ol</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='img'><img src='make_standalone-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># }</span>
-</div></span>,list(),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-spatial.github.io/sf/'>sf</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/nhdplushr_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='op'>(</span><span class='va'>outlet</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>Hydroseq</span> <span class='op'>==</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Simple feature collection with 1 feature and 57 fields</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Geometry type: LINESTRING</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Dimension:     XY</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Bounding box:  xmin: -79.01402 ymin: 35.79464 xmax: -79.00523 ymax: 35.80153</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Geodetic CRS:  GRS 1980(IUGG, 1980)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 58</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Permanent_Identif~ FDate               Resolution GNIS_ID GNIS_Name   LENGTHKM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>*</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span> 46353268           2012-03-11 </span><span style='color: #949494;'>06:52:19</span><span>          2 009910~ New Hope C~     1.10</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 52 more variables: REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   geom &lt;LINESTRING [°]&gt;, StreamLeve &lt;dbl&gt;, StreamOrde &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   StreamCalc &lt;dbl&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;dbl&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   RtnDiv &lt;dbl&gt;, Thinner &lt;dbl&gt;, VPUIn &lt;dbl&gt;, VPUOut &lt;dbl&gt;, AreaSqKM &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   ElevFixed &lt;dbl&gt;, HWType &lt;dbl&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>TerminalPa</span> <span class='op'>==</span> <span class='va'>outlet</span><span class='op'>$</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2691</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span> <span class='op'>&lt;-</span> <span class='fu'>make_standalone</span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='op'>(</span><span class='va'>outlet</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>Hydroseq</span> <span class='op'>==</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Simple feature collection with 1 feature and 57 fields</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Geometry type: LINESTRING</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Dimension:     XY</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Bounding box:  xmin: -79.01402 ymin: 35.79464 xmax: -79.00523 ymax: 35.80153</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Geodetic CRS:  GRS 1980(IUGG, 1980)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 58</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Permanent_Identif~ FDate               Resolution GNIS_ID GNIS_Name   LENGTHKM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>*</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span> 46353268           2012-03-11 </span><span style='color: #949494;'>06:52:19</span><span>          2 009910~ New Hope C~     1.10</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 52 more variables: REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   geom &lt;LINESTRING [°]&gt;, StreamLeve &lt;dbl&gt;, StreamOrde &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   StreamCalc &lt;dbl&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;dbl&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   RtnDiv &lt;dbl&gt;, Thinner &lt;dbl&gt;, VPUIn &lt;dbl&gt;, VPUOut &lt;dbl&gt;, AreaSqKM &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   ElevFixed &lt;dbl&gt;, HWType &lt;dbl&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>TerminalPa</span> <span class='op'>==</span> <span class='va'>outlet</span><span class='op'>$</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2691</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/nhdplushr_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Remove mainstem and non-dendritic stuff.</span></span>
+<span class='r-in'><span class='va'>subset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>,</span>
+<span class='r-in'>                        <span class='va'>StreamLeve</span> <span class='op'>&gt;</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span><span class='op'>$</span><span class='va'>StreamLeve</span><span class='op'>)</span> <span class='op'>&amp;</span></span>
+<span class='r-in'>                          <span class='va'>StreamOrde</span> <span class='op'>==</span> <span class='va'>StreamCalc</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>subset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subset_nhdplus.html'>subset_nhdplus</a></span><span class='op'>(</span><span class='va'>subset</span><span class='op'>$</span><span class='va'>COMID</span>, nhdplus_data <span class='op'>=</span> <span class='va'>hr_gpkg</span><span class='op'>)</span><span class='op'>$</span><span class='va'>NHDFlowline</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> All intersections performed in latitude/longitude.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Reading NHDFlowline</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> 1000 comids of 2182</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> 2000 comids of 2182</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> 2182 comids of 2182</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing NHDFlowline</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Reading NHDPlusCatchment</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> 1000 comids of 2182</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> 2000 comids of 2182</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> 2182 comids of 2182</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found invalid geometry, attempting to fix.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing NHDPlusCatchment</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Reading NHDArea</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing NHDArea</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Reading NHDWaterbody</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing NHDWaterbody</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Reading NHDPlusSink</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Writing NHDPlusSink</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>flowline_mod</span> <span class='op'>&lt;-</span> <span class='fu'>make_standalone</span><span class='op'>(</span><span class='va'>subset</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>terminals</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='va'>flowline_mod</span><span class='op'>$</span><span class='va'>TerminalPa</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>colors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>hcl.colors</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>terminals</span><span class='op'>)</span>, palette <span class='op'>=</span> <span class='st'>"Zissou 1"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'>for</span><span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>terminals</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>  <span class='va'>fl</span> <span class='op'>&lt;-</span> <span class='va'>flowline_mod</span><span class='op'>[</span><span class='va'>flowline_mod</span><span class='op'>$</span><span class='va'>TerminalPa</span> <span class='op'>==</span> <span class='va'>terminals</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, <span class='op'>]</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>fl</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='va'>colors</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>ol</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>flowline_mod</span>, <span class='va'>TerminalFl</span> <span class='op'>==</span> <span class='fl'>1</span> <span class='op'>&amp;</span> <span class='va'>TerminalPa</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='va'>terminals</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>ol</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-plt'><img src='make_standalone-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='co'># }</span></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -264,11 +289,11 @@ the domain is independently complete.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -276,6 +301,8 @@ the domain is independently complete.</p>
 
   
 
+
+  
 
   </body>
 </html>

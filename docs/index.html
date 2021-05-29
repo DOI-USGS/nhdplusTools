@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -44,12 +46,6 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/nhdplusTools.html">Get started</a>
 </li>
@@ -99,145 +95,145 @@
   <div class="contents col-md-9">
 <div id="nhdplustools-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#nhdplustools-" class="anchor"></a>nhdplusTools <img src="reference/figures/logo.png" align="right" alt="" width="120">
+<a href="#nhdplustools-" class="anchor" aria-hidden="true"></a>nhdplusTools <img src="reference/figures/logo.png" align="right" alt="" width="120">
 </h1></div>
 
 <div id="nhdplustools-tools-for-accessing-and-working-with-the-nhdplus" class="section level2">
 <h2 class="hasAnchor">
-<a href="#nhdplustools-tools-for-accessing-and-working-with-the-nhdplus" class="anchor"></a>nhdplusTools: Tools for Accessing and Working with the NHDPlus</h2>
+<a href="#nhdplustools-tools-for-accessing-and-working-with-the-nhdplus" class="anchor" aria-hidden="true"></a>nhdplusTools: Tools for Accessing and Working with the NHDPlus</h2>
 <p>This package is a growing set of tools for manipulation of hydrographic data using the NHDPlus data model. There is no specific funding or plan to continue development of this package long term but ongoing support is available due to use of the package in project work.</p>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation:</h3>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("nhdplusTools")</a></code></pre>
+<a href="#installation" class="anchor" aria-hidden="true"></a>Installation:</h3>
+<pre><code>install.packages("nhdplusTools")</code></pre>
 <p>For the latest development:</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")
-devtools::install_github("USGS-R/nhdplusTools")</a></code></pre>
+<pre><code>install.packages("devtools")
+devtools::install_github("USGS-R/nhdplusTools")</code></pre>
 </div>
 <div id="resources" class="section level3">
 <h3 class="hasAnchor">
-<a href="#resources" class="anchor"></a>Resources</h3>
+<a href="#resources" class="anchor" aria-hidden="true"></a>Resources</h3>
 <p>See the <a href="https://usgs-r.github.io/nhdplusTools/articles/nhdplusTools.html">“Get Started”</a> vignette showing the gneral workflow and functionality of nhdplusTools.<br>
 See a set of <a href="https://usgs-r.github.io/nhdplusTools/awra_2019/">slides</a> illustrating how to use nhdplusTools with other USGS-R packages.</p>
 </div>
 <div id="terminology" class="section level3">
 <h3 class="hasAnchor">
-<a href="#terminology" class="anchor"></a>Terminology:</h3>
+<a href="#terminology" class="anchor" aria-hidden="true"></a>Terminology:</h3>
 <p>The following definitions have been used as much as possible throughout the package.<br>
 Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic representation of a flowing body of water. Flowline is generally used when referring to geometry.<br><strong>Flowpath:</strong> The HY_Features name for a hydrologic feature that is the primary path water follows through a catchment; either from headwater to outlet or inlet to outlet. Flowpath is used when describing aspects of the abstract flowpath featuretype, generally in relation to a flowpath’s relationship to a catchment.</p>
 <p>Terms used for hydrologic units:<br><strong>Catchment:</strong> The most abstract unit of hydrology in HY_Features is the catchment. It is a physiographic unit with zero or one inlets and one outlet. It does not inherently have any conceptual realizations. Rather, a given catchment can be realized in a number of ways; flowpath, divide, and networks of flowpaths and divides are the primary realizations.<br><strong>Catchment divide:</strong> NHD “catchment” polygons are more accurately described as “catchment divide” features. Because of the overlap with the HY_Features abstract “catchment” feature type, “catchment divide” is used for polygon representations of catchments.</p>
 </div>
 <div id="data" class="section level3">
 <h3 class="hasAnchor">
-<a href="#data" class="anchor"></a>Data:</h3>
-<p><a href="https://www.epa.gov/waterdata/nhdplus-national-data">A National Dataset of NHDPlusV2.1 is available here.</a><br>
+<a href="#data" class="anchor" aria-hidden="true"></a>Data:</h3>
+<p><a href="https://www.epa.gov/waterdata/nhdplus-national-data" class="external-link">A National Dataset of NHDPlusV2.1 is available here.</a><br>
 Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html"><code>get_nhdplus</code></a>, <a href="https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html"><code>subset_nhdplus</code></a>, <a href="https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html"><code>download_nhdplushr</code></a> and <a href="https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html"><code>get_nhdplushr</code></a></p>
 </div>
 </div>
 <div id="package-vision" class="section level2">
 <h2 class="hasAnchor">
-<a href="#package-vision" class="anchor"></a>Package Vision</h2>
+<a href="#package-vision" class="anchor" aria-hidden="true"></a>Package Vision</h2>
 <p>The <code>nhdplusTools</code> package is intended to provide a reusable set of tools to subset and relate data to NHDPlus data.</p>
-<p>It implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus">NHDPlus</a> and <a href="http://opengeospatial.github.io/HY_Features/">HY_Features</a>. The package aims to provide a set of tools with minimal dependencies that can be used to build workflows using NHDPlus data.</p>
+<p>It implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus" class="external-link">NHDPlus</a> and <a href="http://opengeospatial.github.io/HY_Features/" class="external-link">HY_Features</a>. The package aims to provide a set of tools with minimal dependencies that can be used to build workflows using NHDPlus data.</p>
 <p><strong>This vision is intended as a guide to contributors – conveying what kinds of contributions are of interest to the package’s long term vision. It is a reflection of the current thinking and is open to discussion and modification.</strong></p>
 <div id="functional-vision" class="section level3">
 <h3 class="hasAnchor">
-<a href="#functional-vision" class="anchor"></a>Functional Vision</h3>
+<a href="#functional-vision" class="anchor" aria-hidden="true"></a>Functional Vision</h3>
 <p>The following describe a vision for the functionality that should be included in the package in the long run.</p>
 <div id="subsetting" class="section level5">
 <h5 class="hasAnchor">
-<a href="#subsetting" class="anchor"></a>Subsetting</h5>
+<a href="#subsetting" class="anchor" aria-hidden="true"></a>Subsetting</h5>
 <p>The NHDPlus is a very large dataset both spatially and in terms of the number of attributes it contains. Subsetting utilities will provide network location discovery, network navigation, and data export utilities to generate spatial and attribute subsets of the NHDPlus dataset.</p>
 </div>
 <div id="indexing" class="section level5">
 <h5 class="hasAnchor">
-<a href="#indexing" class="anchor"></a>Indexing</h5>
+<a href="#indexing" class="anchor" aria-hidden="true"></a>Indexing</h5>
 <p>One of the most important roles of the NHDPlus is as a connecting network for ancillary data and models. The first step in any workflow that uses the network like this is indexing relevant data to the network. A number of methods for indexing exist, they can be broken into two main categories: linear referencing and catchment indexing. Both operate on features represented by points, lines, and polygons. <code>nhdplusTools</code> should eventually support both linear and catchment indexing.</p>
 </div>
 </div>
 <div id="data-model" class="section level3">
 <h3 class="hasAnchor">
-<a href="#data-model" class="anchor"></a>Data Model</h3>
+<a href="#data-model" class="anchor" aria-hidden="true"></a>Data Model</h3>
 <p>Given that <code>nhdplusTools</code> is focused on working with NHDPlus data, the NHDPlus data model will largely govern the data model the package is designed to work with. That said, much of the package functionality also uses concepts from the HY_Features standard.</p>
-<p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a holistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can <em>only</em> be characterized fully through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given NHD flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as an identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a collection of data that together fully describe an NHDPlus catchment. <a href="http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1">See the NHDPlus mapping to HY_Features in the HY_Features specification.</a></p>
+<p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a holistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can <em>only</em> be characterized fully through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given NHD flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as an identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a collection of data that together fully describe an NHDPlus catchment. <a href="http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1" class="external-link">See the NHDPlus mapping to HY_Features in the HY_Features specification.</a></p>
 <p>Below is a description of the expected scope of data to be used by the <code>nhdplusTools</code> package. While other data and attributes may come into scope, it should only be done as a naive pass-through, as in data subsetting, or with considerable deliberation.</p>
 <div id="flowlines-and-waterbodies" class="section level5">
 <h5 class="hasAnchor">
-<a href="#flowlines-and-waterbodies" class="anchor"></a>Flowlines and Waterbodies</h5>
+<a href="#flowlines-and-waterbodies" class="anchor" aria-hidden="true"></a>Flowlines and Waterbodies</h5>
 <p>Flowline geometry is a mix of 1-d streams and 1-d “artificial paths”. In order to complete the set of features meant to represent water, we need to include waterbody and potentially NHDArea polygons (double line stream overlays).</p>
 </div>
 <div id="catchment-polygons" class="section level5">
 <h5 class="hasAnchor">
-<a href="#catchment-polygons" class="anchor"></a>Catchment Polygons</h5>
+<a href="#catchment-polygons" class="anchor" aria-hidden="true"></a>Catchment Polygons</h5>
 <p>Catchment polygons are the result of a complete elevation derived hydrography process with hydro-enforcement applied with both Watershed Boundary Dataset Hydrologic Units and NHD reaches.</p>
 </div>
 <div id="network-attributes" class="section level5">
 <h5 class="hasAnchor">
-<a href="#network-attributes" class="anchor"></a>Network Attributes</h5>
+<a href="#network-attributes" class="anchor" aria-hidden="true"></a>Network Attributes</h5>
 <p>The NHDPlus includes numerous attributes that are built using the network and allow a wide array of capabilities that would require excessive iteration or sophisticated and complex graph-oriented data structures and algorithms.</p>
 </div>
 </div>
 <div id="architecture" class="section level3">
 <h3 class="hasAnchor">
-<a href="#architecture" class="anchor"></a>Architecture</h3>
+<a href="#architecture" class="anchor" aria-hidden="true"></a>Architecture</h3>
 <p>The NHDPlus is a very large dataset. The architecture of this package as it relates to handling data and what dependencies are used will be very important.</p>
 <div id="web-vs-local-data" class="section level5">
 <h5 class="hasAnchor">
-<a href="#web-vs-local-data" class="anchor"></a>Web vs Local Data</h5>
-<p>Web services will generally be avoided. However, applications that would require loading significant amounts of data to perform something that can be accomplished with a web service very quickly will be considered. Systems like the <a href="https://waterdata.usgs.gov/blog/nldi-intro/">Network Linked Data Index</a> are used for data discovery.</p>
+<a href="#web-vs-local-data" class="anchor" aria-hidden="true"></a>Web vs Local Data</h5>
+<p>Web services will generally be avoided. However, applications that would require loading significant amounts of data to perform something that can be accomplished with a web service very quickly will be considered. Systems like the <a href="https://waterdata.usgs.gov/blog/nldi-intro/" class="external-link">Network Linked Data Index</a> are used for data discovery.</p>
 </div>
 <div id="nhdplus-version" class="section level5">
 <h5 class="hasAnchor">
-<a href="#nhdplus-version" class="anchor"></a>NHDPlus Version</h5>
-<p>Initial package development focused on the <a href="https://www.epa.gov/waterdata/nhdplus-national-data">National Seamless NHDPlus</a> database. <a href="https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution">NHDPlus High Resolution</a> is also supported.</p>
+<a href="#nhdplus-version" class="anchor" aria-hidden="true"></a>NHDPlus Version</h5>
+<p>Initial package development focused on the <a href="https://www.epa.gov/waterdata/nhdplus-national-data" class="external-link">National Seamless NHDPlus</a> database. <a href="https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution" class="external-link">NHDPlus High Resolution</a> is also supported.</p>
 </div>
 </div>
 <div id="related-similar-packages" class="section level3">
 <h3 class="hasAnchor">
-<a href="#related-similar-packages" class="anchor"></a>Related similar packages:</h3>
-<p><a href="https://github.com/mbtyers/riverdist" class="uri">https://github.com/mbtyers/riverdist</a><br><a href="https://github.com/jsta/nhdR" class="uri">https://github.com/jsta/nhdR</a><br><a href="https://github.com/lawinslow/hydrolinks" class="uri">https://github.com/lawinslow/hydrolinks</a><br><a href="https://github.com/mikejohnson51/HydroData" class="uri">https://github.com/mikejohnson51/HydroData</a><br><a href="https://github.com/ropensci/FedData" class="uri">https://github.com/ropensci/FedData</a><br><a href="https://github.com/cheginit/hydrodata" class="uri">https://github.com/cheginit/hydrodata</a> … others – please suggest additions?</p>
+<a href="#related-similar-packages" class="anchor" aria-hidden="true"></a>Related similar packages:</h3>
+<p><a href="https://github.com/mbtyers/riverdist" class="external-link uri">https://github.com/mbtyers/riverdist</a><br><a href="https://github.com/jsta/nhdR" class="external-link uri">https://github.com/jsta/nhdR</a><br><a href="https://github.com/lawinslow/hydrolinks" class="external-link uri">https://github.com/lawinslow/hydrolinks</a><br><a href="https://github.com/mikejohnson51/HydroData" class="external-link uri">https://github.com/mikejohnson51/HydroData</a><br><a href="https://github.com/ropensci/FedData" class="external-link uri">https://github.com/ropensci/FedData</a><br><a href="https://github.com/cheginit/hydrodata" class="external-link uri">https://github.com/cheginit/hydrodata</a> … others – please suggest additions?</p>
 </div>
 <div id="build-notes" class="section level3">
 <h3 class="hasAnchor">
-<a href="#build-notes" class="anchor"></a>Build notes:</h3>
+<a href="#build-notes" class="anchor" aria-hidden="true"></a>Build notes:</h3>
 <p>This package uses a convention to avoid building vignettes on CRAN. The <code>BUILD_VIGNETTES</code> environment variable must be set to <code>TRUE</code>. This is done with a .Renviron file in the package directory with the line <code>BUILD_VIGNETTES=TRUE</code>.</p>
 <p>Given this, the package should be built locally to include vignettes using:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/build.html">build</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/build.html" class="external-link">build</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="contributing" class="section level3">
 <h3 class="hasAnchor">
-<a href="#contributing" class="anchor"></a>Contributing:</h3>
+<a href="#contributing" class="anchor" aria-hidden="true"></a>Contributing:</h3>
 <p>First, thanks for considering a contribution! I hope to make this package a community created resource for us all to gain from and won’t be able to do that without your help!</p>
-<p>1) Contributions should be thoroughly tested with <a href="https://testthat.r-lib.org/">testthat</a>.<br>
-2) Code style should attempt to follow the <a href="https://style.tidyverse.org/">tidyverse style guide.</a><br>
-3) Please attempt to describe what you want to do prior to contributing by submitting an issue.<br>
-4) Please follow the typical github <a href="https://gist.github.com/Chaser324/ce0505fbed06b947d962">fork - pull-request workflow.</a><br>
-5) Make sure you use roxygen and run Check before contributing. More on this front as the package matures.</p>
-<p>Other notes:</p>
-<ul>
-<li>consider running <code>lintr</code> prior to contributing.</li>
-<li>consider running <code>goodpractice::gp()</code> on the package before contributing.</li>
-<li>consider running <code><a href="https://devtools.r-lib.org//reference/spell_check.html">devtools::spell_check()</a></code> if you wrote documentation.</li>
-<li>this package may end up using pkgdown running <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code> will refresh it.</li>
-</ul>
+<ol style="list-style-type: decimal">
+<li>Contributions should be thoroughly tested with <a href="https://testthat.r-lib.org/" class="external-link">testthat</a>.<br>
+</li>
+<li>Code style should attempt to follow the <a href="https://style.tidyverse.org/" class="external-link">tidyverse style guide.</a><br>
+</li>
+<li>Please attempt to describe what you want to do prior to contributing by submitting an issue.<br>
+</li>
+<li>Please follow the typical github <a href="https://gist.github.com/Chaser324/ce0505fbed06b947d962" class="external-link">fork - pull-request workflow.</a><br>
+</li>
+<li>Make sure you use roxygen and run Check before contributing. More on this front as the package matures.</li>
+</ol>
+<p>Other notes: - consider running <code>lintr</code> prior to contributing. - consider running <code>goodpractice::gp()</code> on the package before contributing. - consider running <code><a href="https://devtools.r-lib.org//reference/spell_check.html" class="external-link">devtools::spell_check()</a></code> if you wrote documentation. - this package may end up using pkgdown running <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> will refresh it.</p>
 </div>
 </div>
 <div id="disclaimer" class="section level2">
 <h2 class="hasAnchor">
-<a href="#disclaimer" class="anchor"></a>Disclaimer</h2>
+<a href="#disclaimer" class="anchor" aria-hidden="true"></a>Disclaimer</h2>
 <p>This information is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The information has not received final approval by the U.S. Geological Survey (USGS) and is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the information.</p>
-<p>This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at <a href="https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits">https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits</a></p>
+<p>This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at <a href="https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits" class="external-link">https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits</a></p>
 <p>Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.</p>
 <p>This software is provided “AS IS.”</p>
-<p><a href="https://creativecommons.org/publicdomain/zero/1.0/"><img src="https://i.creativecommons.org/p/zero/1.0/88x31.png" alt="CC0"></a></p>
+<p><a href="https://creativecommons.org/publicdomain/zero/1.0/" class="external-link"><img src="https://i.creativecommons.org/p/zero/1.0/88x31.png" alt="CC0"></a></p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=nhdplusTools">https://​cloud.r-project.org/​package=nhdplusTools</a>
 </li>
@@ -247,44 +243,51 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.h
 </li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>CC0</li>
 </ul>
 </div>
+
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
 <li><a href="authors.html">Citing nhdplusTools</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>David Blodgett <br><small class="roles"> Author, maintainer </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html">More on authors...</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://codecov.io/gh/usgs-r/nhdplusTools"><img src="https://codecov.io/gh/usgs-r/nhdplusTools/branch/master/graph/badge.svg" alt="codecov"></a></li>
-<li><a href="https://cran.r-project.org/package=nhdplusTools"><img src="https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools" alt="CRAN Downloads"></a></li>
-<li><a href="https://cran.r-project.org/package=nhdplusTools"><img src="https://www.r-pkg.org/badges/version/nhdplusTools" alt="CRAN"></a></li>
+<li><a href="https://codecov.io/gh/usgs-r/nhdplusTools" class="external-link"><img src="https://codecov.io/gh/usgs-r/nhdplusTools/branch/master/graph/badge.svg" alt="codecov"></a></li>
+<li><a href="https://cran.r-project.org/package=nhdplusTools" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools" alt="CRAN Downloads"></a></li>
+<li><a href="https://cran.r-project.org/package=nhdplusTools" class="external-link"><img src="https://www.r-pkg.org/badges/version/nhdplusTools" alt="CRAN"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p></p>
+<p>Developed by David Blodgett.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
 
       </footer>
@@ -292,6 +295,8 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.h
 
   
 
+
+  
 
   </body>
 </html>

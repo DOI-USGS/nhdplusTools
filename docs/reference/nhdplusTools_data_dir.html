@@ -54,6 +54,8 @@ as returned by user_data_dir for this package." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -65,9 +67,16 @@ as returned by user_data_dir for this package." />
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -88,12 +97,6 @@ as returned by user_data_dir for this package." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -151,7 +154,7 @@ as returned by user_data_dir for this package." />
 as returned by <a href='https://rappdirs.r-lib.org/reference/user_data_dir.html'>user_data_dir</a> for this package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span>dir <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span>dir <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,13 +170,13 @@ as returned by <a href='https://rappdirs.r-lib.org/reference/user_data_dir.html'
     <p>path of data directory (silent when setting)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">nhdplusTools_data_dir,get or set nhdplusTools data directory,get or set nhdplusTools data directory — nhdplusTools_data_dir,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a>,nhdplusTools_data_dir.Rd,character(0),nhdplusTools_data_dir,character(0),list(title = "Description", contents = "<p>if left unset, will return the user data dir\nas returned by <a href='https://rappdirs.r-lib.org/reference/user_data_dir.html'>user_data_dir</a> for this package.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "if left unset, will return the user data dir\nas returned by user_data_dir for this package."),<span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span>dir <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>,list(list(name = "dir", description = "<p>path of desired data directory</p>")),TRUE,<div class='input'><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local/usgs_r/nhdplusTools"</div><div class='input'>
-<span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span><span class='st'>"demo"</span><span class='op'>)</span>
-
-<span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span><span class='fu'>rappdirs</span><span class='fu'>::</span><span class='fu'><a href='https://rappdirs.r-lib.org/reference/user_data_dir.html'>user_data_dir</a></span><span class='op'>(</span><span class='st'>"nhdplusTools"</span>, <span class='st'>"usgs_r"</span><span class='op'>)</span><span class='op'>)</span>
-</div>,list(list(title = "Value", contents = "<p>path of data directory (silent when setting)</p>", slug = "value")),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "C:\\Users\\DBLODG~1\\AppData\\Local/usgs_r/nhdplusTools"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span><span class='st'>"demo"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span><span class='fu'>rappdirs</span><span class='fu'>::</span><span class='fu'><a href='https://rappdirs.r-lib.org/reference/user_data_dir.html'>user_data_dir</a></span><span class='op'>(</span><span class='st'>"nhdplusTools"</span>, <span class='st'>"usgs_r"</span><span class='op'>)</span><span class='op'>)</span></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -185,11 +188,11 @@ as returned by <a href='https://rappdirs.r-lib.org/reference/user_data_dir.html'
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -197,6 +200,8 @@ as returned by <a href='https://rappdirs.r-lib.org/reference/user_data_dir.html'
 
   
 
+
+  
 
   </body>
 </html>

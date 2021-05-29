@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -44,12 +46,6 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
@@ -80,7 +76,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/usgs-r/nhdplusTools/">
+  <a href="https://github.com/usgs-r/nhdplusTools/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -95,14 +91,14 @@
 
       
 
-      </header><script src="nhdplusTools_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="nhdplusTools_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to nhdplusTools</h1>
-                        <h4 class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
+                        <h4 data-toc-skip class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/master/vignettes/nhdplusTools.Rmd"><code>vignettes/nhdplusTools.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/master/vignettes/nhdplusTools.Rmd" class="external-link"><code>vignettes/nhdplusTools.Rmd</code></a></small>
       <div class="hidden name"><code>nhdplusTools.Rmd</code></div>
 
     </div>
@@ -111,24 +107,24 @@
     
 <div id="tldr" class="section level2">
 <h2 class="hasAnchor">
-<a href="#tldr" class="anchor"></a>TL;DR</h2>
+<a href="#tldr" class="anchor" aria-hidden="true"></a>TL;DR</h2>
 <p>First, pick an outlet location and download some data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Uncomment to install!</span>
 <span class="co"># install.packages("nhdplusTools")</span>
 
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>
 
-<span class="va">start_point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">89.362239</span>, <span class="fl">43.090266</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4269</span><span class="op">)</span>
+<span class="va">start_point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">89.362239</span>, <span class="fl">43.090266</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4269</span><span class="op">)</span>
 <span class="va">start_comid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span><span class="op">(</span><span class="va">start_point</span><span class="op">)</span>
 
-<span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, 
+<span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, 
                                featureID <span class="op">=</span> <span class="va">start_comid</span><span class="op">)</span>, 
                           mode <span class="op">=</span> <span class="st">"upstreamTributaries"</span>, 
                           distance_km <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 
-<span class="va">subset_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".gpkg"</span><span class="op">)</span>
+<span class="va">subset_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".gpkg"</span><span class="op">)</span>
 <span class="va">subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span>comids <span class="op">=</span> <span class="va">flowline</span><span class="op">$</span><span class="va">UT</span><span class="op">$</span><span class="va">nhdplus_comid</span>,
                          output_file <span class="op">=</span> <span class="va">subset_file</span>,
                          nhdplus_data <span class="op">=</span> <span class="st">"download"</span>, 
@@ -149,21 +145,21 @@
 
 <span class="co">## Or:</span>
 
-<span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">subset_file</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span>
-<span class="va">catchment</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">subset_file</span>, <span class="st">"CatchmentSP"</span><span class="op">)</span>
-<span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">subset_file</span>, <span class="st">"NHDWaterbody"</span><span class="op">)</span>
+<span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">subset_file</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span>
+<span class="va">catchment</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">subset_file</span>, <span class="st">"CatchmentSP"</span><span class="op">)</span>
+<span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">subset_file</span>, <span class="st">"NHDWaterbody"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">catchment</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">waterbody</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">catchment</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">waterbody</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/tldr-1.png" width="576"></p>
-<p>Read on to see how NHDPlusTools will help you index data to the network you just retrieved and refactor (split, collapse, and aggregate) the catchments into a different set of catchments. Please consider registering <a href="https://github.com/dblodgett-usgs/nhdplusTools/issues">issues and feature suggestions on github</a>.</p>
+<p>Read on to see how NHDPlusTools will help you index data to the network you just retrieved and refactor (split, collapse, and aggregate) the catchments into a different set of catchments. Please consider registering <a href="https://github.com/dblodgett-usgs/nhdplusTools/issues" class="external-link">issues and feature suggestions on github</a>.</p>
 </div>
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The <code>nhdplusTools</code> package is intended to provide a reusable set of tools to subset, relate data to, and refactor (collapse, split, and aggregate) NHDPlus data. It implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus">NHDPlus</a> and <a href="http://opengeospatial.github.io/HY_Features/">HY_Features</a>. The package aims to provide a set of tools with minimal dependencies that can be used to build workflows using NHDPlus data.</p>
+<a href="#introduction" class="anchor" aria-hidden="true"></a>Introduction</h2>
+<p>The <code>nhdplusTools</code> package is intended to provide a reusable set of tools to subset, relate data to, and refactor (collapse, split, and aggregate) NHDPlus data. It implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus" class="external-link">NHDPlus</a> and <a href="http://opengeospatial.github.io/HY_Features/" class="external-link">HY_Features</a>. The package aims to provide a set of tools with minimal dependencies that can be used to build workflows using NHDPlus data.</p>
 <p>The package has three types of functionality:</p>
 <ol style="list-style-type: decimal">
 <li><a href="#discovery_subsetting">Discovery and Subsetting</a></li>
@@ -174,59 +170,59 @@
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<a href="#installation" class="anchor" aria-hidden="true"></a>Installation</h2>
 <p>The easiest way to install <code>nhdplusTools</code> is with the <code>devtools</code> package like this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="co"># devtools::install_github("usgs-r/nhdplusTools")</span></code></pre></div>
 <p>Then you can load up nhdplusTools:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span></code></pre></div>
 </div>
 <div id="data-and-package-basics" class="section level2">
 <h2 class="hasAnchor">
-<a href="#data-and-package-basics" class="anchor"></a>Data and Package Basics</h2>
-<p>The first thing you are going to need to do is go get some data to work with. <code>nhdplusTools</code> provides the ability to download small subsets of the NHDPlus as described in the <a href="#discovery_subsetting">Discovery and Subsetting</a> section. For large subsets, greater than a few thousand square kilometers, you can download the <a href="https://www.epa.gov/waterdata/nhdplus-national-data">National Seamless database at this web page.</a> You will need <a href="https://www.7-zip.org/">7z</a> or the <a href="https://github.com/jimhester/archive"><code>archive</code> package</a> to extract it.</p>
+<a href="#data-and-package-basics" class="anchor" aria-hidden="true"></a>Data and Package Basics</h2>
+<p>The first thing you are going to need to do is go get some data to work with. <code>nhdplusTools</code> provides the ability to download small subsets of the NHDPlus as described in the <a href="#discovery_subsetting">Discovery and Subsetting</a> section. For large subsets, greater than a few thousand square kilometers, you can download the <a href="https://www.epa.gov/waterdata/nhdplus-national-data" class="external-link">National Seamless database at this web page.</a> You will need <a href="https://www.7-zip.org/" class="external-link">7z</a> or the <a href="https://github.com/jimhester/archive" class="external-link"><code>archive</code> package</a> to extract it.</p>
 <p>If you are working with the whole National Seamless database, <code>nhdplusTools</code> has some convenience functions you should be aware of. Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the <code><a href="../reference/nhdplus_path.html">nhdplus_path()</a></code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"natseamless.gpkg"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"natseamless.gpkg"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local/usgs_r/nhdplusTools/nhdpt_v_cache/natseamless.gpkg"</span></code></pre></div>
 <p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatedly, the <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">staged_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stage_national_data.html">stage_national_data</a></span><span class="op">(</span>output_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">staged_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stage_national_data.html">stage_national_data</a></span><span class="op">(</span>output_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">staged_data</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">staged_data</span><span class="op">)</span>
 <span class="co">#&gt; List of 3</span>
-<span class="co">#&gt;  $ attributes: chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpWoLtst/nhdplus_flowline_attributes.rds"</span>
-<span class="co">#&gt;  $ flowline  : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpWoLtst/nhdplus_flowline.rds"</span>
-<span class="co">#&gt;  $ catchment : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpWoLtst/nhdplus_catchment.rds"</span></code></pre></div>
-<p>As you can see, <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are <a href="https://r-spatial.github.io/sf/"><code>sf</code></a> <code>data.frame</code>s and attributes is a plain <code>data.frame</code> with the attributes from <code>flowline</code>. Note that this introduction uses a small subset of the national seamless database as shown in the plot.</p>
+<span class="co">#&gt;  $ attributes: chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpKeO6lA/nhdplus_flowline_attributes.rds"</span>
+<span class="co">#&gt;  $ flowline  : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpKeO6lA/nhdplus_flowline.rds"</span>
+<span class="co">#&gt;  $ catchment : chr "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpKeO6lA/nhdplus_catchment.rds"</span></code></pre></div>
+<p>As you can see, <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code> assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are <a href="https://r-spatial.github.io/sf/" class="external-link"><code>sf</code></a> <code>data.frame</code>s and attributes is a plain <code>data.frame</code> with the attributes from <code>flowline</code>. Note that this introduction uses a small subset of the national seamless database as shown in the plot.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="va">staged_data</span><span class="op">$</span><span class="va">flowline</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>
+<code class="sourceCode R"><span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">staged_data</span><span class="op">$</span><span class="va">flowline</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>
 <span class="co">#&gt;  [1] "COMID"      "FDATE"      "RESOLUTION" "GNIS_ID"    "GNIS_NAME" </span>
 <span class="co">#&gt;  [6] "LENGTHKM"   "REACHCODE"  "FLOWDIR"    "WBAREACOMI" "FTYPE"</span>
 
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/staged_data-1.png" width="576"><a id="discovery_subsetting"></a></p>
 <div id="nhdplus-hires" class="section level3">
 <h3 class="hasAnchor">
-<a href="#nhdplus-hires" class="anchor"></a>NHDPlus HiRes</h3>
+<a href="#nhdplus-hires" class="anchor" aria-hidden="true"></a>NHDPlus HiRes</h3>
 <p>(6/16/2019) NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, <code>nhdplusTools</code> will have complete support for NHDPlus HiRes. So far, <code>nhdplusTools</code> will help download and interface NHDPlus HiRes data with existing <code>nhdplusTools</code> functionality. It’s important to note that <code>nhdplusTools</code> was primarily implemented using NHDPlusV2 and any use of HiRes (which is still “beta data” as of writing this) should be subject to significant scrutiny. Never the less, here’s a short summary of how to work with NHDPlus HiRes.</p>
 <p>For the demo below, a small sample of HiRes data that has been loaded into <code>nhdplusTools</code> is used. The first line shows how you can download additional data (just change <code>download_files</code> to <code>TRUE</code>).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span><span class="op">(</span>nhd_dir <span class="op">=</span> <span class="st">"download_dir"</span>, 
-                   hu_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"0101"</span><span class="op">)</span>, <span class="co"># can mix hu02 and hu04 codes.</span>
+                   hu_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0101"</span><span class="op">)</span>, <span class="co"># can mix hu02 and hu04 codes.</span>
                    download_files <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># TRUE will download files.</span>
 <span class="co">#&gt; [1] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0101_HU4_GDB.zip"</span>
 
-<span class="va">out_gpkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"nhd_hr.gpkg"</span><span class="op">)</span>
+<span class="va">out_gpkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"nhd_hr.gpkg"</span><span class="op">)</span>
 <span class="va">hr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, 
                          out_gpkg <span class="op">=</span> <span class="va">out_gpkg</span><span class="op">)</span>
-<span class="op">(</span><span class="va">layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html">st_layers</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span><span class="op">)</span>
+<span class="op">(</span><span class="va">layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Driver: GPKG </span>
 <span class="co">#&gt; Available layers:</span>
 <span class="co">#&gt;         layer_name geometry_type features fields</span>
@@ -237,14 +233,14 @@
 <span class="co">#&gt; 5         NHDPoint      3D Point        7     10</span>
 <span class="co">#&gt; 6      NHDFlowline   Line String     2691     57</span>
 <span class="co">#&gt; 7 NHDPlusCatchment Multi Polygon     2603      7</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">)</span>
 <span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/unlink.html">unlink</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span>
 
 <span class="va">hr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, 
                          out_gpkg <span class="op">=</span> <span class="va">out_gpkg</span>, 
                          layers <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="op">(</span><span class="va">layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html">st_layers</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span><span class="op">)</span>
+<span class="op">(</span><span class="va">layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Driver: GPKG </span>
 <span class="co">#&gt; Available layers:</span>
 <span class="co">#&gt;         layer_name geometry_type features fields</span>
@@ -255,7 +251,7 @@
 <span class="co">#&gt; 5          NHDLine   Line String      142     12</span>
 <span class="co">#&gt; 6      NHDPlusSink         Point        1     10</span>
 <span class="co">#&gt; 7         NHDPoint      3D Point        7     10</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">)</span>
 <span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment" "NHDWaterbody"     "NHDArea"         </span>
 <span class="co">#&gt; [5] "NHDLine"          "NHDPlusSink"      "NHDPoint"</span></code></pre></div>
 <p>Other functionality in the package, such as the <code>get_UT/UM/DM/DD</code> functions, subsetting, indexing, etc. also work now or will soon! Stay tuned for a dedicated NHDPlus HiRes vignette and submit issues as you find them!</p>
@@ -263,7 +259,7 @@
 </div>
 <div id="discovery-and-subsetting" class="section level2">
 <h2 class="hasAnchor">
-<a href="#discovery-and-subsetting" class="anchor"></a>Discovery and Subsetting</h2>
+<a href="#discovery-and-subsetting" class="anchor" aria-hidden="true"></a>Discovery and Subsetting</h2>
 <p>One of the primary workflows <code>nhdplusTools</code> is designed to accomplish can be described in three steps:</p>
 <ol style="list-style-type: decimal">
 <li>what NHDPlus catchment is at the outlet of a watershed,</li>
@@ -275,11 +271,11 @@
 <code class="sourceCode R"><span class="va">lon</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">89.362239</span>
 <span class="va">lat</span> <span class="op">&lt;-</span> <span class="fl">43.090266</span>
 
-<span class="va">start_point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">lon</span>, <span class="va">lat</span><span class="op">)</span><span class="op">)</span>,
+<span class="va">start_point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">lon</span>, <span class="va">lat</span><span class="op">)</span><span class="op">)</span>,
                           crs <span class="op">=</span> <span class="fl">4269</span><span class="op">)</span>
 
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/point-1.png" width="576"></p>
 <p>OK, so we have a point location near a river and we want to figure out what catchment is at its outlet. We can use the <code><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id()</a></code> function which calls out to a web service and returns an NHDPlus catchment identifier, typically called a COMID.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -289,15 +285,15 @@
 <p><strong>If you have the whole National Seamless database and want to work at regional to national scales, skip down the the Local Data Subsetting section.</strong></p>
 <div id="web-service-data-subsetting" class="section level3">
 <h3 class="hasAnchor">
-<a href="#web-service-data-subsetting" class="anchor"></a>Web Service Data Subsetting</h3>
-<p><code>nhdplusTools</code> supports discovery and data subsetting using web services made available through the <a href="https://waterdata.usgs.gov/blog/nldi-intro/">Network Linked Data Index</a> (NLDI) and the <a href="https://labs.waterdata.usgs.gov/geoserver">National Water Census Geoserver.</a> The code below shows how to use the NLDI functions to build a dataset upstream of our <code>start_comid</code> that we found above.</p>
+<a href="#web-service-data-subsetting" class="anchor" aria-hidden="true"></a>Web Service Data Subsetting</h3>
+<p><code>nhdplusTools</code> supports discovery and data subsetting using web services made available through the <a href="https://waterdata.usgs.gov/blog/nldi-intro/" class="external-link">Network Linked Data Index</a> (NLDI) and the <a href="https://labs.waterdata.usgs.gov/geoserver" class="external-link">National Water Census Geoserver.</a> The code below shows how to use the NLDI functions to build a dataset upstream of our <code>start_comid</code> that we found above.</p>
 <p>The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these “featureSources”. We can query the NLDI for an identifier of a given feature from any of its “featureSources” and find out what our navigation options are as shown below.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html">get_nldi_sources</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">source</span>
+<code class="sourceCode R"><span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">get_nldi_sources</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">source</span>
 <span class="co">#&gt; [1] "comid"      "ca_gages"   "gfv11_pois" "huc12pp"    "nwissite"  </span>
 <span class="co">#&gt; [6] "ref_gage"   "wade"       "WQP"</span>
 
-<span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, featureID <span class="op">=</span> <span class="va">start_comid</span><span class="op">)</span>
+<span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, featureID <span class="op">=</span> <span class="va">start_comid</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/get_nldi_feature.html">get_nldi_feature</a></span><span class="op">(</span><span class="va">nldi_feature</span><span class="op">)</span>
 <span class="co">#&gt; Simple feature collection with 1 feature and 3 fields</span>
@@ -316,13 +312,13 @@
                                mode <span class="op">=</span> <span class="st">"upstreamTributaries"</span>, 
                                distance_km <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline_nldi</span><span class="op">$</span><span class="va">origin</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline_nldi</span><span class="op">$</span><span class="va">UT</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline_nldi</span><span class="op">$</span><span class="va">origin</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline_nldi</span><span class="op">$</span><span class="va">UT</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/navigate_nldi-1.png" width="576"></p>
 <p>What is not shown here is that the NLDI only provided geometry and a comid for each of the flowlines. The <code>subset_nhdplus</code> function has a “download” option that allows us to download four layers and all attributes as shown below.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">output_file_download</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset_download.gpkg"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">output_file_download</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset_download.gpkg"</span><span class="op">)</span>
 
 <span class="va">output_file_download</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span>comids <span class="op">=</span> <span class="va">flowline_nldi</span><span class="op">$</span><span class="va">UT</span><span class="op">$</span><span class="va">nhdplus_comid</span>,
                                       output_file <span class="op">=</span> <span class="va">output_file_download</span>,
@@ -332,32 +328,32 @@
 <span class="co">#&gt; Reading NHDFlowline_Network</span>
 <span class="co">#&gt; Writing NHDFlowline_Network</span>
 
-<span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span>
+<span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span>
 <span class="co">#&gt; Driver: GPKG </span>
 <span class="co">#&gt; Available layers:</span>
 <span class="co">#&gt;            layer_name geometry_type features fields</span>
 <span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    138</span>
 
-<span class="va">flowline_download</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset_download.gpkg"</span><span class="op">)</span>, 
+<span class="va">flowline_download</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset_download.gpkg"</span><span class="op">)</span>, 
                                  <span class="st">"NHDFlowline_Network"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">flowline_download</span>, 
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline_download</span>, 
                                    <span class="va">streamorde</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
      lwd <span class="op">=</span> <span class="fl">7</span>, col <span class="op">=</span> <span class="st">"darkgrey"</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline_nldi</span><span class="op">$</span><span class="va">UT</span><span class="op">)</span>, 
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline_nldi</span><span class="op">$</span><span class="va">UT</span><span class="op">)</span>, 
      lwd <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/subset_nhdplus_download-1.png" width="576"></p>
 <p>This plot illustrates the kind of thing that’s possible (filtering to specific stream orders) using the attributes that are downloaded.</p>
 <p>Notice that the data downloaded above only has four layers where the subset we build below has more. This functionality should be considered beta in nature, but may be useful for some applications so has been included.</p>
 <p>Before moving on, one more demonstration of what can be done using the NLDI. Say we knew the USGS gage ID that we want NHDPlus data upstream of. We can use the NLDI to navigate from the gage the same as we did our comid. We can also get back all the nwis sites the NLDI knows about upstream of the one we chose!</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span>
 
 <span class="va">flowline_nldi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span><span class="op">(</span><span class="va">nldi_feature</span>, 
                                mode <span class="op">=</span> <span class="st">"upstreamTributaries"</span>, 
                                distance_km <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 
-<span class="va">output_file_nwis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset_download_nwis.gpkg"</span><span class="op">)</span>
+<span class="va">output_file_nwis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset_download_nwis.gpkg"</span><span class="op">)</span>
 
 <span class="va">output_file_nwis</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span>comids <span class="op">=</span> <span class="va">flowline_nldi</span><span class="op">$</span><span class="va">UT</span><span class="op">$</span><span class="va">nhdplus_comid</span>,
                                   output_file <span class="op">=</span> <span class="va">output_file_nwis</span>,
@@ -367,13 +363,13 @@
 <span class="co">#&gt; Reading NHDFlowline_Network</span>
 <span class="co">#&gt; Writing NHDFlowline_Network</span>
 
-<span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span>
+<span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span>
 <span class="co">#&gt; Driver: GPKG </span>
 <span class="co">#&gt; Available layers:</span>
 <span class="co">#&gt;            layer_name geometry_type features fields</span>
 <span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    138</span>
 
-<span class="va">flowline_nwis</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">output_file_nwis</span>, 
+<span class="va">flowline_nwis</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file_nwis</span>, 
                                  <span class="st">"NHDFlowline_Network"</span><span class="op">)</span>
 
 <span class="va">upstream_nwis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span><span class="op">(</span><span class="va">nldi_feature</span>,
@@ -381,15 +377,15 @@
                                data_source <span class="op">=</span> <span class="st">"nwissite"</span>, 
                                distance_km <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline_nwis</span><span class="op">)</span>, 
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline_nwis</span><span class="op">)</span>, 
      lwd <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">$</span><span class="va">UT_nwissite</span><span class="op">)</span>, 
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">$</span><span class="va">UT_nwissite</span><span class="op">)</span>, 
      cex <span class="op">=</span> <span class="fl">1</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/nldi_nwissite-1.png" width="576"></p>
 </div>
 <div id="local-data-subsetting" class="section level3">
 <h3 class="hasAnchor">
-<a href="#local-data-subsetting" class="anchor"></a>Local Data Subsetting</h3>
+<a href="#local-data-subsetting" class="anchor" aria-hidden="true"></a>Local Data Subsetting</h3>
 <p>With the starting COMID we found with <code>discover_nhdplus_id</code> above, we can use one of the network navigation functions, <code>get_UM</code>, <code>get_UT</code>, <code>get_DM</code>, or <code>get_DD</code> to retrieve a collection of comids along the upstream mainstem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we’ll use upstream with tributaries.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">UT_comids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">start_comid</span><span class="op">)</span>
@@ -420,14 +416,14 @@
 <span class="co">#&gt; [162]  13294116  13294120  13293570  13294114  13293418  13293410  13293590</span></code></pre></div>
 <p>If you are familiar with the NHDPlus, you will recognize that now that we have this list of COMIDs, we could go off and do all sorts of things with the various flowline attributes. For now, let’s just use the COMID list to filter our <code>fline</code> <code>sf</code> <code>data.frame</code> and plot it with our other layers.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">COMID</span> <span class="op">%in%</span> <span class="va">UT_comids</span><span class="op">)</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">UT_comids</span><span class="op">)</span><span class="op">)</span>,
      add<span class="op">=</span><span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/plot_fline_subset-1.png" width="576"></p>
 <p>Say you want to save the network subset for later use in R or in some other GIS. The `subset_nhdplus() function is your friend. If you have the whole national seamless database downloaded, you can pull out large subsets of it like shown below. If you don’t have the whole national seamless, look at the second example in this section.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset.gpkg"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset.gpkg"</span><span class="op">)</span>
 
 <span class="va">output_file</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span>comids <span class="op">=</span> <span class="va">UT_comids</span>,
                              output_file <span class="op">=</span> <span class="va">output_file</span>,
@@ -451,7 +447,7 @@
 <span class="co">#&gt; Reading Sink</span>
 <span class="co">#&gt; No features to write in Sink</span>
 
-<span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html">st_layers</a></span><span class="op">(</span><span class="va">output_file</span><span class="op">)</span>
+<span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file</span><span class="op">)</span>
 <span class="co">#&gt; Driver: GPKG </span>
 <span class="co">#&gt; Available layers:</span>
 <span class="co">#&gt;               layer_name geometry_type features fields</span>
@@ -463,22 +459,22 @@
 <span class="co">#&gt; 6                   Gage         Point       33     19</span></code></pre></div>
 <p>Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other layers as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">catchment</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"CatchmentSP"</span><span class="op">)</span>
-<span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"NHDWaterbody"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">catchment</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"CatchmentSP"</span><span class="op">)</span>
+<span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"NHDWaterbody"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">COMID</span> <span class="op">%in%</span> <span class="va">UT_comids</span><span class="op">)</span><span class="op">)</span>,
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">UT_comids</span><span class="op">)</span><span class="op">)</span>,
      add<span class="op">=</span><span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">catchment</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">waterbody</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">catchment</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">waterbody</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/plot_result-1.png" width="576"></p>
 <p><a id="indexing"></a></p>
 </div>
 </div>
 <div id="indexing" class="section level2">
 <h2 class="hasAnchor">
-<a href="#indexing" class="anchor"></a>Indexing</h2>
+<a href="#indexing" class="anchor" aria-hidden="true"></a>Indexing</h2>
 <p>Expect more in this space as <code>nhdplustTools</code> progresses. Right now, one indexing method has been implemented. Using the data above, we can use the <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> function to get the comid, reachcode, and measure of our starting point like this.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">start_point</span><span class="op">)</span>
@@ -490,9 +486,9 @@
 <span class="co">#&gt; 1     1 13293750 07090002007373       53.1 0.000421</span></code></pre></div>
 <p><code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> will work with a list of points too. For demonstration purposes, we can use the gages in our subset from above.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gage</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"Gage"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">gage</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"Gage"</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">gage</span><span class="op">)</span>, precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gage</span><span class="op">)</span>, precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 <span class="co">#&gt; Warning in get_flowline_index(flowline, sf::st_geometry(gage), precision = 10):</span>
 <span class="co">#&gt; crs of lines and points don't match. attempting st_transform of points</span>
 <span class="co">#&gt; # A tibble: 33 x 5</span>
@@ -514,8 +510,8 @@
 </div>
 <div id="refactoring" class="section level2">
 <h2 class="hasAnchor">
-<a href="#refactoring" class="anchor"></a>Refactoring</h2>
-<p>The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be <a href="https://dblodgett-usgs.github.io/hyRefactor/dev/">found here</a>.</p>
+<a href="#refactoring" class="anchor" aria-hidden="true"></a>Refactoring</h2>
+<p>The NHDPlus tools package has been developed in support of an experimental NHDPlus refactoring workflow to normalize the size of catchments and resolve particular network locations. If this work is of interest, it can be <a href="https://dblodgett-usgs.github.io/hyRefactor/dev/" class="external-link">found here</a>.</p>
 </div>
   </div>
 
@@ -530,11 +526,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p></p>
+<p>Developed by David Blodgett.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
 
       </footer>
@@ -542,6 +540,8 @@
 
   
 
+
+  
 
   </body>
 </html>

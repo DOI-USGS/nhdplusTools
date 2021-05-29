@@ -38,6 +38,6 @@ get_vaa("slope")
 get_vaa(c("slope", "lengthkm"))
 
 #cleanup if desired
-unlink(get_vaa_path(), recursive = TRUE)
+unlink(dirname(get_vaa_path()), recursive = TRUE)
 }
 }

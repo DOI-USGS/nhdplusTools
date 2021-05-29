@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -44,12 +46,6 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
@@ -80,7 +76,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/usgs-r/nhdplusTools/">
+  <a href="https://github.com/usgs-r/nhdplusTools/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -95,14 +91,14 @@
 
       
 
-      </header><script src="plot_nhdplus_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="plot_nhdplus_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Plotting with nhdplusTools</h1>
-                        <h4 class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
+                        <h4 data-toc-skip class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/master/vignettes/plot_nhdplus.Rmd"><code>vignettes/plot_nhdplus.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/master/vignettes/plot_nhdplus.Rmd" class="external-link"><code>vignettes/plot_nhdplus.Rmd</code></a></small>
       <div class="hidden name"><code>plot_nhdplus.Rmd</code></div>
 
     </div>
@@ -111,12 +107,12 @@
     
 <div id="plotting-with-nhdplustools" class="section level1">
 <h1 class="hasAnchor">
-<a href="#plotting-with-nhdplustools" class="anchor"></a>Plotting with nhdplusTools</h1>
+<a href="#plotting-with-nhdplustools" class="anchor" aria-hidden="true"></a>Plotting with nhdplusTools</h1>
 <p>The goal of this vignette is to demonstrate a simple and lightweight approach to building maps with NHDPlus data.</p>
 <div id="the-plot_nhdplus-function" class="section level2">
 <h2 class="hasAnchor">
-<a href="#the-plot_nhdplus-function" class="anchor"></a>The <code>plot_nhdplus</code> function</h2>
-<p><strong><code>plot_nhdplus</code> is a work in progress. Not all inputs in the function have been implemented as of 11/18/2019 and additional functionality will be added later. Please leave feature requests and issues you find in an <a href="https://github.com/USGS-R/nhdplusTools/pulls">issue here</a>.</strong></p>
+<a href="#the-plot_nhdplus-function" class="anchor" aria-hidden="true"></a>The <code>plot_nhdplus</code> function</h2>
+<p><strong><code>plot_nhdplus</code> is a work in progress. Not all inputs in the function have been implemented as of 11/18/2019 and additional functionality will be added later. Please leave feature requests and issues you find in an <a href="https://github.com/USGS-R/nhdplusTools/pulls" class="external-link">issue here</a>.</strong></p>
 <p><code>plot_nhdplus</code> is a function that makes getting a simple plot of NHDPlus data as easy as possible. It works with other functions from <code>nhdplusTools</code> for identifying and retrieving watershed outlet locations. See the <code>plot_nhdplus</code> documentation for more info.</p>
 <p>If we pass <code>plot_nhdplus</code> a single NWIS site id, <code>nhdplusTools</code> uses web services to get data and we get a plot like this:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -124,39 +120,39 @@
 <p><img src="plot_nhdplus_files/figure-html/nwis_simple1-1.png" width="576"></p>
 <p>If we want to add other watersheds, we can use any outlet available from the Network Linked Data Index. See “nldi” functions elsewhere in <code>nhdplusTools</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>,
-                  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>,
+                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/nwis_simple2-1.png" width="576"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>,
-                  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>,
+                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/two_outlets-1.png" width="576"></p>
 <p>If we don’t know a site id, we can just pass in one or more latitude / longitude locations.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">start_point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">89.36</span>, y <span class="op">=</span> <span class="fl">43.09</span><span class="op">)</span>, 
-                            coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">start_point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">89.36</span>, y <span class="op">=</span> <span class="fl">43.09</span><span class="op">)</span>, 
+                            coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="va">start_point</span><span class="op">)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/point_location-1.png" width="576"></p>
 <p><code>plot_nhdplus</code> also allows modification of streamorder (if you have data available locally) and styles. This plot request shows how to get a subset of data for a plot and the range of options. See documentation for more details.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"comid"</span>, <span class="st">"13293970"</span><span class="op">)</span>,
-                  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>,
-                  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"huc12pp"</span>, <span class="st">"070900020603"</span><span class="op">)</span>,
-                  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span><span class="op">)</span><span class="op">)</span>,
+<span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"comid"</span>, <span class="st">"13293970"</span><span class="op">)</span>,
+                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>,
+                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"huc12pp"</span>, <span class="st">"070900020603"</span><span class="op">)</span>,
+                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span><span class="op">)</span><span class="op">)</span>,
              streamorder <span class="op">=</span> <span class="fl">2</span>,
              nhdplus_data <span class="op">=</span> <span class="va">sample_data</span>,
-             plot_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>basin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
-                                outlets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>huc12pp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>,
-                                               comid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
+             plot_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>basin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
+                                outlets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>huc12pp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>,
+                                               comid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
              stoponlargerequest <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/plot_styles-1.png" width="576"></p>
 <p>We can also plot NHDPlus data without an outlet at all.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="op">-</span><span class="fl">89.56684</span>, ymin <span class="op">=</span> <span class="fl">42.99816</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">89.24681</span>, ymax <span class="op">=</span> <span class="fl">43.17192</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="op">-</span><span class="fl">89.56684</span>, ymin <span class="op">=</span> <span class="fl">42.99816</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">89.24681</span>, ymax <span class="op">=</span> <span class="fl">43.17192</span><span class="op">)</span>,
                     crs <span class="op">=</span> <span class="st">"+proj=longlat +datum=WGS84 +no_defs"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span><span class="op">)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/bbox_plotting-1.png" width="576"></p>
@@ -164,13 +160,13 @@
 </div>
 <div id="getting-data" class="section level2">
 <h2 class="hasAnchor">
-<a href="#getting-data" class="anchor"></a>Getting Data</h2>
+<a href="#getting-data" class="anchor" aria-hidden="true"></a>Getting Data</h2>
 <p>What follows shows how to use <code>nhdplusTools</code> to create plots without the <code>plot_nhdplus</code> function. While super convenient, we all know the “easy button” is never quite right, the description below should help get you started.</p>
-<p>For this example, we’ll start from an outlet NWIS Site. Note that other options are possible with <code>discover_nhdplus_id</code> and <code><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html">dataRetrieval::get_nldi_sources</a></code>.</p>
+<p>For this example, we’ll start from an outlet NWIS Site. Note that other options are possible with <code>discover_nhdplus_id</code> and <code><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">dataRetrieval::get_nldi_sources</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span>
-<span class="va">nwissite</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, 
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span>
+<span class="va">nwissite</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, 
                      featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span>
 
 <span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span><span class="op">(</span><span class="va">nwissite</span>, 
@@ -178,14 +174,14 @@
                           data_source <span class="op">=</span> <span class="st">"flowlines"</span><span class="op">)</span>
 
 <span class="va">nhdplus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span>comids <span class="op">=</span> <span class="va">flowline</span><span class="op">$</span><span class="va">UT</span><span class="op">$</span><span class="va">nhdplus_comid</span>,
-                          output_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"nhdplus.gpkg"</span><span class="op">)</span>,
+                          output_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"nhdplus.gpkg"</span><span class="op">)</span>,
                           nhdplus_data <span class="op">=</span> <span class="st">"download"</span>,
                           overwrite <span class="op">=</span> <span class="cn">TRUE</span>, return_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; All intersections performed in latitude/longitude.</span>
 <span class="co">#&gt; Reading NHDFlowline_Network</span>
 <span class="co">#&gt; Writing NHDFlowline_Network</span>
 
-<span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">nhdplus</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span>
+<span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">nhdplus</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span>
 
 <span class="va">upstream_nwis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span><span class="op">(</span><span class="va">nwissite</span>,
                                mode <span class="op">=</span> <span class="st">"upstreamTributaries"</span>,
@@ -194,12 +190,12 @@
 <span class="va">basin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nldi_basin.html">get_nldi_basin</a></span><span class="op">(</span><span class="va">nwissite</span><span class="op">)</span></code></pre></div>
 <p>Now we have a file at the path held in the variable <code>nhdplus</code> and three <code>sf</code> <code>data.frame</code>s with contents that look like:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html">st_layers</a></span><span class="op">(</span><span class="va">nhdplus</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">nhdplus</span><span class="op">)</span>
 <span class="co">#&gt; Driver: GPKG </span>
 <span class="co">#&gt; Available layers:</span>
 <span class="co">#&gt;            layer_name geometry_type features fields</span>
 <span class="co">#&gt; 1 NHDFlowline_Network   Line String       10    138</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>
 <span class="co">#&gt;   [1] "id"           "comid"        "fdate"        "resolution"   "gnis_id"     </span>
 <span class="co">#&gt;   [6] "gnis_name"    "lengthkm"     "reachcode"    "flowdir"      "wbareacomi"  </span>
 <span class="co">#&gt;  [11] "ftype"        "fcode"        "shape_length" "streamleve"   "streamorde"  </span>
@@ -228,90 +224,90 @@
 <span class="co">#&gt; [126] "ve_11"        "qa_12"        "va_12"        "qc_12"        "vc_12"       </span>
 <span class="co">#&gt; [131] "qe_12"        "ve_12"        "lakefract"    "surfarea"     "rareahload"  </span>
 <span class="co">#&gt; [136] "rpuid"        "vpuid"        "enabled"      "geom"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">)</span>
 <span class="co">#&gt; [1] "origin"      "UT_nwissite"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span>
 <span class="co">#&gt; [1] "geometry"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "sfc_LINESTRING" "sfc"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">$</span><span class="va">UT_nwissite</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">$</span><span class="va">UT_nwissite</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "sfc_POINT" "sfc"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "sfc_POLYGON" "sfc"</span></code></pre></div>
 <p>Our file has four layers: network flowlines, simplified catchments, nhd area features, and nhd waterbody features.</p>
-<p>The flowlines have a large set of attributes from the NHDPlus dataset. And the nwis sites have a few attributes that came from the NLDI. Attributes for NWIS sites can be found using the <a href="https://owi.usgs.gov/R/dataRetrieval.html">dataRetrieval package.</a></p>
-<p>See the NHDPlus user guide <a href="https://www.epa.gov/waterdata/learn-more#Documentation">linked here</a> for more on what these layers are and what the flowline attributes entail.</p>
+<p>The flowlines have a large set of attributes from the NHDPlus dataset. And the nwis sites have a few attributes that came from the NLDI. Attributes for NWIS sites can be found using the <a href="https://owi.usgs.gov/R/dataRetrieval.html" class="external-link">dataRetrieval package.</a></p>
+<p>See the NHDPlus user guide <a href="https://www.epa.gov/waterdata/learn-more#Documentation" class="external-link">linked here</a> for more on what these layers are and what the flowline attributes entail.</p>
 </div>
 </div>
 <div id="bounding-boxes" class="section level1">
 <h1 class="hasAnchor">
-<a href="#bounding-boxes" class="anchor"></a>Bounding Boxes</h1>
+<a href="#bounding-boxes" class="anchor" aria-hidden="true"></a>Bounding Boxes</h1>
 <p>First, a side note on bounding boxes. With the ongoing transition from the <code>sp</code> package to the <code>sf</code> package, there are a few stumbling blocks. Bounding boxes are one of them. As shown below, the <code>sf</code> bbox format is a named vector of class “bbox”. The <code>sp</code> bbox format is a matrix with named dimensions. Many packages expect the sp format. the <code>ggmap</code> package expects yet another bbox format, much like <code>sf</code> but with different names.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/edzer/sp/">sp</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/edzer/sp/" class="external-link">sp</a></span><span class="op">)</span>
 
-<span class="va">sf_bbox</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span>
+<span class="va">sf_bbox</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span>
 <span class="va">sf_bbox</span>
 <span class="co">#&gt;      xmin      ymin      xmax      ymax </span>
 <span class="co">#&gt; -89.60465  43.03507 -89.20378  43.36607</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">sf_bbox</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">sf_bbox</span><span class="op">)</span>
 <span class="co">#&gt; [1] "bbox"</span>
 
-<span class="va">sp_bbox</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/bbox.html">bbox</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/coerce-methods.html">as_Spatial</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span><span class="op">)</span>
+<span class="va">sp_bbox</span> <span class="op">&lt;-</span> <span class="fu">sp</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/bbox.html" class="external-link">bbox</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/coerce-methods.html" class="external-link">as_Spatial</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span><span class="op">)</span>
 <span class="va">sp_bbox</span>
 <span class="co">#&gt;         min       max</span>
 <span class="co">#&gt; x -89.60465 -89.20378</span>
 <span class="co">#&gt; y  43.03507  43.36607</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">sp_bbox</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">sp_bbox</span><span class="op">)</span>
 <span class="co">#&gt; [1] "matrix" "array"</span>
 
 <span class="co"># Or without the sp::bbox</span>
-<span class="va">sp_bbox</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">sf_bbox</span>, 
+<span class="va">sp_bbox</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">sf_bbox</span>, 
                   byrow <span class="op">=</span> <span class="cn">FALSE</span>, 
                   ncol <span class="op">=</span> <span class="fl">2</span>, 
-                  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, 
-                                  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+                  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, 
+                                  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">sp_bbox</span>
 <span class="co">#&gt;         min       max</span>
 <span class="co">#&gt; x -89.60465 -89.20378</span>
 <span class="co">#&gt; y  43.03507  43.36607</span>
 
-<span class="va">ggmap_bbox</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">sf_bbox</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"bottom"</span>, <span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">ggmap_bbox</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">sf_bbox</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"bottom"</span>, <span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">ggmap_bbox</span>
 <span class="co">#&gt;      left    bottom     right       top </span>
 <span class="co">#&gt; -89.60465  43.03507 -89.20378  43.36607</span></code></pre></div>
 <div id="base-r-plotting" class="section level2">
 <h2 class="hasAnchor">
-<a href="#base-r-plotting" class="anchor"></a>Base R Plotting</h2>
+<a href="#base-r-plotting" class="anchor" aria-hidden="true"></a>Base R Plotting</h2>
 <p>In order to maximize flexibility and make sure we understand what’s going on with coordinate reference systems, the demonstration below shows how to use base R plotting with the package <code>prettymappr</code> and <code>rosm</code>.</p>
-<p>In this example, we have to plot just the geometry, extracted with <code>st_geometry</code> and we need to project the geometry into the plotting coordinate reference system, <a href="https://en.wikipedia.org/wiki/Web_Mercator">EPSG:3857 also known as “web mercator”</a>. The reason we have to make this transformation is that practically all basemap tiles are in this projection and reprojection of pre-rendered tiles doesn’t look good. We do this with a simple <code>prep_layer</code> function.</p>
-<p>The <code><a href="https://rdrr.io/pkg/prettymapr/man/prettymap.html">prettymapr::prettymap()</a></code> function isn’t strictly necessary, but it gives us nice margins, a scale bar, and a north arrow. The <code><a href="https://rdrr.io/pkg/rosm/man/osm.plot.html">rosm::osm.plot</a></code> and base <code>plot</code> commands put data onto the R plotting device so the first to be plotted is on the bottom. A couple hints here. <code>lwd</code> is line width. <code>pch</code> is point style. <code>cex</code> is an expansion factor. Colors shown below are <a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf">basic R colors.</a> the <code>rgb</code> function is handy for creating colors with transparency if that’s of interest.</p>
+<p>In this example, we have to plot just the geometry, extracted with <code>st_geometry</code> and we need to project the geometry into the plotting coordinate reference system, <a href="https://en.wikipedia.org/wiki/Web_Mercator" class="external-link">EPSG:3857 also known as “web mercator”</a>. The reason we have to make this transformation is that practically all basemap tiles are in this projection and reprojection of pre-rendered tiles doesn’t look good. We do this with a simple <code>prep_layer</code> function.</p>
+<p>The <code><a href="https://rdrr.io/pkg/prettymapr/man/prettymap.html" class="external-link">prettymapr::prettymap()</a></code> function isn’t strictly necessary, but it gives us nice margins, a scale bar, and a north arrow. The <code><a href="https://rdrr.io/pkg/rosm/man/osm.plot.html" class="external-link">rosm::osm.plot</a></code> and base <code>plot</code> commands put data onto the R plotting device so the first to be plotted is on the bottom. A couple hints here. <code>lwd</code> is line width. <code>pch</code> is point style. <code>cex</code> is an expansion factor. Colors shown below are <a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf" class="external-link">basic R colors.</a> the <code>rgb</code> function is handy for creating colors with transparency if that’s of interest.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">prep_layer</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3857</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">prep_layer</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3857</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu">prettymapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prettymapr/man/prettymap.html">prettymap</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="fu">rosm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rosm/man/osm.plot.html">osm.plot</a></span><span class="op">(</span><span class="va">sp_bbox</span>, type <span class="op">=</span> <span class="st">"cartolight"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span>, 
+<span class="fu">prettymapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/prettymapr/man/prettymap.html" class="external-link">prettymap</a></span><span class="op">(</span><span class="op">{</span>
+  <span class="fu">rosm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rosm/man/osm.plot.html" class="external-link">osm.plot</a></span><span class="op">(</span><span class="va">sp_bbox</span>, type <span class="op">=</span> <span class="st">"cartolight"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span>, 
                  progress <span class="op">=</span> <span class="st">"none"</span>, cachedir <span class="op">=</span> <span class="va">work_dir</span><span class="op">)</span>
   
-  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">prep_layer</span><span class="op">(</span><span class="va">basin</span><span class="op">)</span>, 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">prep_layer</span><span class="op">(</span><span class="va">basin</span><span class="op">)</span>, 
        lwd <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   
-  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">prep_layer</span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>, 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">prep_layer</span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>, 
        lwd <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="st">"deepskyblue"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   
-  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu">prep_layer</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">streamorde</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">prep_layer</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">streamorde</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, 
        lwd <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"darkblue"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   
   <span class="va">us_nwis_layer</span> <span class="op">&lt;-</span> <span class="fu">prep_layer</span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">)</span>
   
-  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">us_nwis_layer</span>, 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">us_nwis_layer</span>, 
        pch <span class="op">=</span> <span class="fl">17</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="st">"yellow"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   
-  <span class="va">label_pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates</a></span><span class="op">(</span><span class="va">us_nwis_layer</span><span class="op">)</span>
+  <span class="va">label_pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="va">us_nwis_layer</span><span class="op">)</span>
   
-  <span class="fu"><a href="https://rdrr.io/pkg/sp/man/gridlines.html">text</a></span><span class="op">(</span><span class="va">label_pos</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,<span class="va">label_pos</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, 
+  <span class="fu"><a href="https://rdrr.io/pkg/sp/man/gridlines.html" class="external-link">text</a></span><span class="op">(</span><span class="va">label_pos</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,<span class="va">label_pos</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, 
        <span class="va">upstream_nwis</span><span class="op">$</span><span class="va">identifier</span>, 
-       adj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>
+       adj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>
   
 <span class="op">}</span>, drawarrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; Zoom: 10</span>
@@ -321,38 +317,38 @@
 </div>
 <div id="plotting-with-ggplot2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#plotting-with-ggplot2" class="anchor"></a>Plotting with ggplot2</h2>
-<p>Below is a very similar example using <a href="https://github.com/dkahle/ggmap"><code>ggmap</code></a> and <a href="https://ggplot2.tidyverse.org/reference/ggsf.html"><code>ggplot2</code> <code>geom_sf</code></a>. Note that ggmap takes case of projections for us, which should either make you happy because it <em>just works</em> or very nervous because it <em>just works</em>.</p>
+<a href="#plotting-with-ggplot2" class="anchor" aria-hidden="true"></a>Plotting with ggplot2</h2>
+<p>Below is a very similar example using <a href="https://github.com/dkahle/ggmap" class="external-link"><code>ggmap</code></a> and <a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link"><code>ggplot2</code> <code>geom_sf</code></a>. Note that ggmap takes case of projections for us, which should either make you happy because it <em>just works</em> or very nervous because it <em>just works</em>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dkahle/ggmap">ggmap</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dkahle/ggmap" class="external-link">ggmap</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
 
-<span class="va">upstream_nwis</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">$</span><span class="va">UT_nwissite</span>,
-                           <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">$</span><span class="va">UT_nwissite</span><span class="op">)</span><span class="op">)</span>, 
+<span class="va">upstream_nwis</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">$</span><span class="va">UT_nwissite</span>,
+                           <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="va">upstream_nwis</span><span class="op">$</span><span class="va">UT_nwissite</span><span class="op">)</span><span class="op">)</span>, 
                                          lat <span class="op">=</span> <span class="va">Y</span>, lon <span class="op">=</span> <span class="va">X</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">basemap_toner</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/get_map.html">get_map</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"stamen"</span>, maptype <span class="op">=</span> <span class="st">"toner"</span>, 
+<span class="va">basemap_toner</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/get_map.html" class="external-link">get_map</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"stamen"</span>, maptype <span class="op">=</span> <span class="st">"toner"</span>, 
                          location <span class="op">=</span> <span class="va">ggmap_bbox</span>, zoom <span class="op">=</span> <span class="fl">11</span>, messaging <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">basemap_terrain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/get_map.html">get_map</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"stamen"</span>, maptype <span class="op">=</span> <span class="st">"terrain-lines"</span>, 
+<span class="va">basemap_terrain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/get_map.html" class="external-link">get_map</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"stamen"</span>, maptype <span class="op">=</span> <span class="st">"terrain-lines"</span>, 
                            location <span class="op">=</span> <span class="va">ggmap_bbox</span>, zoom <span class="op">=</span> <span class="fl">11</span>, messaging <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">toner_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span><span class="op">(</span><span class="va">basemap_toner</span><span class="op">)</span>
-<span class="va">terrain_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html">ggmap</a></span><span class="op">(</span><span class="va">basemap_terrain</span><span class="op">)</span>
+<span class="va">toner_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html" class="external-link">ggmap</a></span><span class="op">(</span><span class="va">basemap_toner</span><span class="op">)</span>
+<span class="va">terrain_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmap/man/ggmap.html" class="external-link">ggmap</a></span><span class="op">(</span><span class="va">basemap_terrain</span><span class="op">)</span>
 
 <span class="va">toner_map</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/ggmap-1.png" width="576"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">terrain_map</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">basin</span>,
+<span class="va">terrain_map</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">basin</span>,
                         inherit.aes <span class="op">=</span> <span class="cn">FALSE</span>,
                         color <span class="op">=</span> <span class="st">"black"</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">flowline</span>,
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">flowline</span>,
           inherit.aes <span class="op">=</span> <span class="cn">FALSE</span>,
           color <span class="op">=</span> <span class="st">"deepskyblue"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">streamorde</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">)</span>,
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">streamorde</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">)</span>,
           inherit.aes <span class="op">=</span> <span class="cn">FALSE</span>,
           color <span class="op">=</span> <span class="st">"darkblue"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">upstream_nwis</span>, inherit.aes <span class="op">=</span> <span class="cn">FALSE</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">upstream_nwis</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">identifier</span>, x <span class="op">=</span> <span class="va">lon</span>, y <span class="op">=</span> <span class="va">lat</span><span class="op">)</span>,
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">upstream_nwis</span>, inherit.aes <span class="op">=</span> <span class="cn">FALSE</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">upstream_nwis</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">identifier</span>, x <span class="op">=</span> <span class="va">lon</span>, y <span class="op">=</span> <span class="va">lat</span><span class="op">)</span>,
             hjust <span class="op">=</span> <span class="fl">0</span>, size<span class="op">=</span><span class="fl">2.5</span>, nudge_x <span class="op">=</span> <span class="fl">0.02</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/ggmap-2.png" width="576"></p>
 <p>Hopefully these examples give a good head start to plotting NHDPlus data. Please submit questions via github issues for more!! Pull requests on this vignette are more than welcome if you have additions or suggestions.</p>
@@ -371,11 +367,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p></p>
+<p>Developed by David Blodgett.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
 
       </footer>
@@ -383,6 +381,8 @@
 
   
 
+
+  
 
   </body>
 </html>

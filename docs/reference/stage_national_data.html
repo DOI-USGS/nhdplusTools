@@ -54,6 +54,8 @@ of quick to access R binary files." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -65,9 +67,16 @@ of quick to access R binary files." />
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -88,12 +97,6 @@ of quick to access R binary files." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -151,12 +154,12 @@ of quick to access R binary files." />
 of quick to access R binary files.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>stage_national_data</span><span class='op'>(</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>stage_national_data</span><span class='op'>(</span>
   include <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"attribute"</span>, <span class='st'>"flowline"</span>, <span class='st'>"catchment"</span><span class='op'>)</span>,
   output_path <span class='op'>=</span> <span class='cn'>NULL</span>,
   nhdplus_data <span class='op'>=</span> <span class='cn'>NULL</span>,
   simplified <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,28 +201,21 @@ superfluous Z information dropped.</p>
 as "national_data".</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">stage_national_data,Stage NHDPlus National Data (deprecated),Stage NHDPlus National Data (deprecated) — stage_national_data,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/subset_nhdplus.R'><code>R/subset_nhdplus.R</code></a>,stage_national_data.Rd,character(0),stage_national_data,character(0),list(title = "Description", contents = "<p>Breaks down the national geo database into a collection\nof quick to access R binary files.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Breaks down the national geo database into a collection\nof quick to access R binary files."),<span class='fu'>stage_national_data</span><span class='op'>(</span>
-  include <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"attribute"</span>, <span class='st'>"flowline"</span>, <span class='st'>"catchment"</span><span class='op'>)</span>,
-  output_path <span class='op'>=</span> <span class='cn'>NULL</span>,
-  nhdplus_data <span class='op'>=</span> <span class='cn'>NULL</span>,
-  simplified <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span>,list(list(name = "include", description = "<p>character vector containing one or more of:\n\"attributes\", \"flowline\", \"catchment\".</p>"), list(name = "output_path", description = "<p>character path to save the output to defaults\nto the directory of the nhdplus_data.</p>"), list(name = "nhdplus_data", description = "<p>character path to the .gpkg or .gdb\ncontaining the national seamless dataset. Not required if\n<code><a href='nhdplus_path.html'>nhdplus_path</a></code> has been set.</p>"), 
-    list(name = "simplified", description = "<p>boolean if TRUE (the default) the CatchmentSP layer\nwill be included.</p>")),TRUE,<div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='fu'>stage_national_data</span><span class='op'>(</span>nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>, output_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $attributes
-#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpgFVZSX/nhdplus_flowline_attributes.rds"
-#&gt; 
-#&gt; $flowline
-#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpgFVZSX/nhdplus_flowline.rds"
-#&gt; 
-#&gt; $catchment
-#&gt; [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpgFVZSX/nhdplus_catchment.rds"
-#&gt; </div><div class='input'>
-</div>,list(list(title = "Value", contents = "<p>list containing paths to the .rds files.</p>", slug = "value"), list(title = "Details", contents = "<p>\"attributes\" will save `NHDFlowline_Network` attributes\nas a separate data.frame without the geometry. The others will save\nthe `NHDFlowline_Network` and `Catchment` or `CatchmentSP`\n(per the `simplified` parameter) as sf data.frames with\nsuperfluous Z information dropped.</p>\n<p>The returned list of paths is also added to the nhdplusTools_env\nas \"national_data\".</p>", 
-    slug = "details")),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>stage_national_data</span><span class='op'>(</span>nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>, output_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $attributes</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpQVXGN1/nhdplus_flowline_attributes.rds"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $flowline</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpQVXGN1/nhdplus_flowline.rds"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $catchment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpQVXGN1/nhdplus_catchment.rds"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -231,11 +227,11 @@ as "national_data".</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -243,6 +239,8 @@ as "national_data".</p>
 
   
 
+
+  
 
   </body>
 </html>

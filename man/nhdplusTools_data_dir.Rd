@@ -22,4 +22,5 @@ nhdplusTools_data_dir()
 nhdplusTools_data_dir("demo")
 
 nhdplusTools_data_dir(rappdirs::user_data_dir("nhdplusTools", "usgs_r"))
+
 }

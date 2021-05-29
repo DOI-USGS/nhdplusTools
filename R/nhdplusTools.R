@@ -202,6 +202,7 @@ assign("nhdpt_dat_dir",
 #' nhdplusTools_data_dir("demo")
 #'
 #' nhdplusTools_data_dir(rappdirs::user_data_dir("nhdplusTools", "usgs_r"))
+#'
 nhdplusTools_data_dir <- function(dir = NULL) {
 
   if(is.null(dir)) {

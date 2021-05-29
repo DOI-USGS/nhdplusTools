@@ -57,6 +57,8 @@ included in this column and the largest value will be followed when no nameID is
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -68,9 +70,16 @@ included in this column and the largest value will be followed when no nameID is
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -91,12 +100,6 @@ included in this column and the largest value will be followed when no nameID is
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -157,7 +160,7 @@ the weight column, this will match the behavior of NHDPlus. Any numeric value ca
 included in this column and the largest value will be followed when no nameID is available.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>x</span>, override_factor <span class='op'>=</span> <span class='cn'>NULL</span>, status <span class='op'>=</span> <span class='cn'>FALSE</span>, cores <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>x</span>, override_factor <span class='op'>=</span> <span class='cn'>NULL</span>, status <span class='op'>=</span> <span class='cn'>FALSE</span>, cores <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -202,38 +205,39 @@ See details for more info.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">get_levelpaths,Get Level Paths,Get Level Paths — get_levelpaths,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_paths.R'><code>R/get_paths.R</code></a>,get_levelpaths.Rd,character(0),get_levelpaths,character(0),list(title = "Description", contents = "<p>Calculates level paths using the stream-leveling approach of\nNHD and NHDPlus. In addition to a levelpath identifier, a topological sort and\nlevelpath outlet identifier is provided in output. If arbolate sum is provided in\nthe weight column, this will match the behavior of NHDPlus. Any numeric value can be\nincluded in this column and the largest value will be followed when no nameID is available.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Calculates level paths using the stream-leveling approach of\nNHD and NHDPlus. In addition to a levelpath identifier, a topological sort and\nlevelpath outlet identifier is provided in output. If arbolate sum is provided in\nthe weight column, this will match the behavior of NHDPlus. Any numeric value can be\nincluded in this column and the largest value will be followed when no nameID is available."),<span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>x</span>, override_factor <span class='op'>=</span> <span class='cn'>NULL</span>, status <span class='op'>=</span> <span class='cn'>FALSE</span>, cores <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>,list(list(name = "x", description = "<p>data.frame with ID, toID, nameID, and weight columns.</p>"), list(name = "override_factor", description = "<p>numeric factor to use to override nameID.\nIf `weight` is `numeric_factor` times larger on a path, it will be followed\nregardless of the nameID indication.</p>"), list(name = "status", description = "<p>boolean if status updates should be printed.</p>"), list(name = "cores", description = "<p>numeric number of cores to use in initial path ranking calculations.</p>")),TRUE,<div class='input'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span><span class='op'>(</span><span class='va'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: removing geometry</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 0 flowlines that don't apply.</span>
-#&gt; <span class='warning'> Includes: Coastlines, non-dendritic paths, </span>
-#&gt; <span class='warning'>and networks with drainage area less than 0 sqkm, and drainage basins smaller than FALSE</span></div><div class='input'>
-<span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
-  ID <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>COMID</span>,
-  toID <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>toCOMID</span>,
-  nameID <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>GNIS_ID</span>,
-  weight <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>ArbolateSu</span>,
-  stringsAsFactors <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-
-<span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>test_flowline</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 62 x 4</span><span>
-#&gt;         ID outletID topo_sort levelpath
-#&gt;      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>303  5</span><span style='text-decoration: underline;'>329</span><span>303         1         1
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>293  5</span><span style='text-decoration: underline;'>329</span><span>303         2         1
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>305  5</span><span style='text-decoration: underline;'>329</span><span>303         3         1
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>317  5</span><span style='text-decoration: underline;'>329</span><span>303         4         1
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>315  5</span><span style='text-decoration: underline;'>329</span><span>303         5         1
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>339  5</span><span style='text-decoration: underline;'>329</span><span>303         6         1
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>343  5</span><span style='text-decoration: underline;'>329</span><span>303         7         1
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>357  5</span><span style='text-decoration: underline;'>329</span><span>303         8         1
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>365  5</span><span style='text-decoration: underline;'>329</span><span>303         9         1
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>373  5</span><span style='text-decoration: underline;'>329</span><span>303        10         1
-#&gt; </span><span style='color: #949494;'># ... with 52 more rows</span><span></div><div class='input'>
-
-</div></span>,list(list(title = "Value", contents = "<p>data.frame with ID, outletID, topo_sort, and levelpath columns.\nSee details for more info.</p>", slug = "value"), list(title = "Details", contents = "\n<ol>\n<li><p>levelpath provides an identifier for the collection of flowlines\n  that make up the single mainstem flowpath of a total upstream aggregate catchment.</p></li>\n<li><p>outletID is the catchment ID (COMID in the case of NHDPlus) for the catchment\n  at the outlet of the levelpath the catchment is part of.</p></li>\n<li><p>topo_sort is similar to Hydroseq in NHDPlus in that large topo_sort values\n  are upstream of small topo_sort values. Note that there are many valid topological\n  sort orders of a directed graph. The sort order output by this function is generated\n  using `igraph::topo_sort`.</p></li>\n</ol>\n", 
-    slug = "details")),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span><span class='op'>(</span><span class='va'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>removing geometry</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Removed 0 flowlines that don't apply.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span>  Includes: Coastlines, non-dendritic paths, </span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> and networks with drainage area less than 0 sqkm, and drainage basins smaller than FALSE</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>  ID <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>COMID</span>,</span>
+<span class='r-in'>  toID <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>toCOMID</span>,</span>
+<span class='r-in'>  nameID <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>GNIS_ID</span>,</span>
+<span class='r-in'>  weight <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>ArbolateSu</span>,</span>
+<span class='r-in'>  stringsAsFactors <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>test_flowline</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 62 x 4</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         ID outletID topo_sort levelpath</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      <span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>303  5</span><span style='text-decoration: underline;'>329</span><span>303         1         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>293  5</span><span style='text-decoration: underline;'>329</span><span>303         2         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>305  5</span><span style='text-decoration: underline;'>329</span><span>303         3         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>317  5</span><span style='text-decoration: underline;'>329</span><span>303         4         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>315  5</span><span style='text-decoration: underline;'>329</span><span>303         5         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>339  5</span><span style='text-decoration: underline;'>329</span><span>303         6         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>343  5</span><span style='text-decoration: underline;'>329</span><span>303         7         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>357  5</span><span style='text-decoration: underline;'>329</span><span>303         8         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>365  5</span><span style='text-decoration: underline;'>329</span><span>303         9         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>373  5</span><span style='text-decoration: underline;'>329</span><span>303        10         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 52 more rows</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -245,11 +249,11 @@ See details for more info.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -257,6 +261,8 @@ See details for more info.</p>
 
   
 
+
+  
 
   </body>
 </html>

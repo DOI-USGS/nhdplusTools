@@ -47,8 +47,11 @@
 
 
 <meta property="og:title" content="Disambiguate Flowline Indexes — disambiguate_flowline_indexes" />
-<meta property="og:description" content="Given a set of flowline indexes and numeric criteria,
-return closest match." />
+<meta property="og:description" content="Given a set of flowline indexes and numeric or ascii criteria,
+return closest match. If numeric criteria are used, the minimum difference
+in the numeric attribute is used for disambiguation. If ascii criteria are used,
+the adist function is used with the following algorithm:
+`1 - adist_score / max_string_length`. Comparisons ignore case." />
 <meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 
 
@@ -150,8 +153,11 @@ return closest match." />
     </div>
 
     <div class="ref-description">
-    <p>Given a set of flowline indexes and numeric criteria,
-return closest match.</p>
+    <p>Given a set of flowline indexes and numeric or ascii criteria,
+return closest match. If numeric criteria are used, the minimum difference
+in the numeric attribute is used for disambiguation. If ascii criteria are used,
+the <a href='https://rdrr.io/r/utils/adist.html'>adist</a> function is used with the following algorithm:
+`1 - adist_score / max_string_length`. Comparisons ignore case.</p>
     </div>
 
     <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>disambiguate_flowline_indexes</span><span class='op'>(</span><span class='va'>indexes</span>, <span class='va'>flowpath</span>, <span class='va'>hydro_location</span><span class='op'>)</span></code></pre></div>
@@ -167,14 +173,14 @@ one hydrologic location per indexed point.</p></td>
     <tr>
       <th>flowpath</th>
       <td><p>data.frame with two columns. The first should join to the COMID
-field of the indexes and the second should be the numeric metric such as drainage
-area. Names are not used.</p></td>
+field of the indexes and the second should be the numeric or ascii metric such as drainage
+area or GNIS Name. Names of this data.frame are not used.</p></td>
     </tr>
     <tr>
       <th>hydro_location</th>
       <td><p>data.frame with two columns. The first should join to the
-id field of the indexes and the second should be the numeric metric such as drainage
-area. Names are not used.</p></td>
+id field of the indexes and the second should be the numeric or ascii metric such as drainage
+area or GNIS Name.. Names of this data,frame are not used.</p></td>
     </tr>
     </table>
 
@@ -214,9 +220,9 @@ value, duplicates will be returned.</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 3 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>      id    COMID REACHCODE      REACH_meas    offset</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>688</span><span>298 02060003000579        0   0.000</span><span style='text-decoration: underline;'>060</span><span>3</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>808 02060003000519       53.6 0.000</span><span style='text-decoration: underline;'>564</span><span> </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>950 02060003000254       18.5 0.001</span><span style='text-decoration: underline;'>13</span><span>  </span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>688</span><span>298 02060003000579   1.42</span><span style='color: #949494;'>e</span><span style='color: #BB0000;'>-14</span><span> 0.000</span><span style='text-decoration: underline;'>060</span><span>3</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>808 02060003000519   5.36</span><span style='color: #949494;'>e</span><span>+ 1 0.000</span><span style='text-decoration: underline;'>564</span><span> </span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>950 02060003000254   1.85</span><span style='color: #949494;'>e</span><span>+ 1 0.001</span><span style='text-decoration: underline;'>13</span><span>  </span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'>disambiguate_flowline_indexes</span><span class='op'>(</span><span class='va'>indexes</span>,</span>
 <span class='r-in'>                                        <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>flowpath</span>, <span class='va'>comid</span>, <span class='va'>nameid</span><span class='op'>)</span>,</span>
@@ -226,9 +232,9 @@ value, duplicates will be returned.</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 3 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>      id    COMID REACHCODE      REACH_meas  offset</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>928 02060003001468          0 0.002</span><span style='text-decoration: underline;'>03</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472        100 0.002</span><span style='text-decoration: underline;'>03</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span><span>     1 11</span><span style='text-decoration: underline;'>690</span><span>532 02060003000256          0 0.004</span><span style='text-decoration: underline;'>51</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>928 02060003001468   1.42</span><span style='color: #949494;'>e</span><span style='color: #BB0000;'>-14</span><span> 0.002</span><span style='text-decoration: underline;'>03</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472   1   </span><span style='color: #949494;'>e</span><span>+ 2 0.002</span><span style='text-decoration: underline;'>03</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span><span>     1 11</span><span style='text-decoration: underline;'>690</span><span>532 02060003000256   0   </span><span style='color: #949494;'> </span><span>    0.004</span><span style='text-decoration: underline;'>51</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>result</span><span class='op'>[</span><span class='va'>result</span><span class='op'>$</span><span class='va'>id</span> <span class='op'>==</span> <span class='fl'>2</span>, <span class='op'>]</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 10 x 5</span></span>

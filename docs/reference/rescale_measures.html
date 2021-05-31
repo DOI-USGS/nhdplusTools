@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>get or set nhdplusTools data directory — nhdplusTools_data_dir • nhdplusTools</title>
+<title>Rescale reachcode measure to comid flowline measure. — rescale_measures • nhdplusTools</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,16 @@
 
 
 
-<meta property="og:title" content="get or set nhdplusTools data directory — nhdplusTools_data_dir" />
-<meta property="og:description" content="if left unset, will return the user data dir
-as returned by user_data_dir for this package." />
+<meta property="og:title" content="Rescale reachcode measure to comid flowline measure. — rescale_measures" />
+<meta property="og:description" content="Given a reachcode measure and the from and to measure for a
+comid flowline, returns the measure along the comid flowline. This is
+a utility specific to the NHDPlus data model where many comid flowlines make
+up a single reachcode / reach. &quot;Measures&quot; are typically referenced to
+reaches. Flowlines have a stated from-measure / to-measure. In some cases
+it is useful to rescale the measure such that it is relative only to the
+flowline.
+from is downstream -- 0 is the outlet
+to is upstream -- 100 is the inlet" />
 <meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png" />
 
 
@@ -144,38 +151,48 @@ as returned by user_data_dir for this package." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>get or set nhdplusTools data directory</h1>
-    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a></small>
-    <div class="hidden name"><code>nhdplusTools_data_dir.Rd</code></div>
+    <h1>Rescale reachcode measure to comid flowline measure.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/index_nhdplus.R'><code>R/index_nhdplus.R</code></a></small>
+    <div class="hidden name"><code>rescale_measures.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>if left unset, will return the user data dir
-as returned by <a href='https://rappdirs.r-lib.org/reference/user_data_dir.html'>user_data_dir</a> for this package.</p>
+    <p>Given a reachcode measure and the from and to measure for a
+comid flowline, returns the measure along the comid flowline. This is
+a utility specific to the NHDPlus data model where many comid flowlines make
+up a single reachcode / reach. "Measures" are typically referenced to
+reaches. Flowlines have a stated from-measure / to-measure. In some cases
+it is useful to rescale the measure such that it is relative only to the
+flowline.</p>
+<p>from is downstream -- 0 is the outlet
+to is upstream -- 100 is the inlet</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span>dir <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>rescale_measures</span><span class='op'>(</span><span class='va'>measure</span>, <span class='va'>from</span>, <span class='va'>to</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dir</th>
-      <td><p>path of desired data directory</p></td>
+      <th>measure</th>
+      <td><p>numeric reach measure between 0 and 100</p></td>
+    </tr>
+    <tr>
+      <th>from</th>
+      <td><p>numeric flowline from-measure relative to the reach</p></td>
+    </tr>
+    <tr>
+      <th>to</th>
+      <td><p>numeric flowline to-measure relative to the reach</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>path of data directory (silent when setting)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "C:\\Users\\DBLODG~1\\AppData\\Local/usgs_r/nhdplusTools"</span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span><span class='st'>"demo"</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'>nhdplusTools_data_dir</span><span class='op'>(</span><span class='fu'>rappdirs</span><span class='fu'>::</span><span class='fu'><a href='https://rappdirs.r-lib.org/reference/user_data_dir.html'>user_data_dir</a></span><span class='op'>(</span><span class='st'>"nhdplusTools"</span>, <span class='st'>"usgs_r"</span><span class='op'>)</span><span class='op'>)</span></span>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='fu'>rescale_measures</span><span class='op'>(</span><span class='fl'>40</span>, <span class='fl'>0</span>, <span class='fl'>50</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 80</span>
+<span class='r-in'><span class='fu'>rescale_measures</span><span class='op'>(</span><span class='fl'>60</span>, <span class='fl'>50</span>, <span class='fl'>100</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 20</span>
 <span class='r-in'></span>
 </code></pre></div>
   </div>

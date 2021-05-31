@@ -68,6 +68,8 @@ reference:
       - '`get_UT`'
       - '`navigate_nldi`'
       - '`get_flowline_index`'
+      - '`get_hydro_location`'
       - '`get_waterbody_index`'
       - '`get_node`'
+      - '`rescale_measures`'
       - '`disambiguate_flowline_indexes`'

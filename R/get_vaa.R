@@ -10,7 +10,7 @@
 #' get_vaa_path()
 
 get_vaa_path <- function() {
-  file.path(nhdplusTools_data_dir(), "nhdplus-vaa/nhdplusVAA.fst")
+  file.path(nhdplusTools_data_dir(), "nhdplusVAA.fst")
 }
 
 #' @title Available NHDPlusV2 Attributes

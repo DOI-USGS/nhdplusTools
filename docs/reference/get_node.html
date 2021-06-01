@@ -54,6 +54,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -65,9 +67,16 @@
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -88,12 +97,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -151,7 +154,7 @@
   a particular node from the flowline.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_node</span><span class='op'>(</span><span class='va'>x</span>, position <span class='op'>=</span> <span class='st'>"end"</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>get_node</span><span class='op'>(</span><span class='va'>x</span>, position <span class='op'>=</span> <span class='st'>"end"</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,24 +171,25 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">get_node,Get flowline node,Get flowline node — get_node,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_geometry.R'><code>R/get_geometry.R</code></a>,get_node.Rd,character(0),get_node,character(0),list(title = "Description", contents = "<p>Given one or more flowlines, returns\n  a particular node from the flowline.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Given one or more flowlines, returns\n  a particular node from the flowline."),<span class='fu'>get_node</span><span class='op'>(</span><span class='va'>x</span>, position <span class='op'>=</span> <span class='st'>"end"</span><span class='op'>)</span>,list(list(name = "x", description = "<p>sf data.frame with one or more flowlines</p>"), list(name = "position", description = "<p>character either \"start\" or \"end\"</p>")),TRUE,<div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>fline</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span><span class='va'>sample_data</span>, <span class='st'>"NHDFlowline_Network"</span><span class='op'>)</span>
-
-<span class='va'>start</span> <span class='op'>&lt;-</span> <span class='fu'>get_node</span><span class='op'>(</span><span class='va'>fline</span>, <span class='st'>"start"</span><span class='op'>)</span>
-<span class='va'>end</span> <span class='op'>&lt;-</span> <span class='fu'>get_node</span><span class='op'>(</span><span class='va'>fline</span>, <span class='st'>"end"</span><span class='op'>)</span>
-
-<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_zm.html'>st_zm</a></span><span class='op'>(</span><span class='va'>fline</span><span class='op'>$</span><span class='va'>geom</span><span class='op'>)</span>,
-     lwd <span class='op'>=</span> <span class='va'>fline</span><span class='op'>$</span><span class='va'>StreamOrde</span>, col <span class='op'>=</span> <span class='st'>"blue"</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>start</span><span class='op'>)</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='img'><img src='get_node-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_zm.html'>st_zm</a></span><span class='op'>(</span><span class='va'>fline</span><span class='op'>$</span><span class='va'>geom</span><span class='op'>)</span>,
-     lwd <span class='op'>=</span> <span class='va'>fline</span><span class='op'>$</span><span class='va'>StreamOrde</span>, col <span class='op'>=</span> <span class='st'>"blue"</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>end</span><span class='op'>)</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='img'><img src='get_node-2.png' alt='' width='700' height='433' /></div><div class='input'>
-</div>,list(),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>fline</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span><span class='va'>sample_data</span>, <span class='st'>"NHDFlowline_Network"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>start</span> <span class='op'>&lt;-</span> <span class='fu'>get_node</span><span class='op'>(</span><span class='va'>fline</span>, <span class='st'>"start"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>end</span> <span class='op'>&lt;-</span> <span class='fu'>get_node</span><span class='op'>(</span><span class='va'>fline</span>, <span class='st'>"end"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_zm.html'>st_zm</a></span><span class='op'>(</span><span class='va'>fline</span><span class='op'>$</span><span class='va'>geom</span><span class='op'>)</span>,</span>
+<span class='r-in'>     lwd <span class='op'>=</span> <span class='va'>fline</span><span class='op'>$</span><span class='va'>StreamOrde</span>, col <span class='op'>=</span> <span class='st'>"blue"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>start</span><span class='op'>)</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-plt'><img src='get_node-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_zm.html'>st_zm</a></span><span class='op'>(</span><span class='va'>fline</span><span class='op'>$</span><span class='va'>geom</span><span class='op'>)</span>,</span>
+<span class='r-in'>     lwd <span class='op'>=</span> <span class='va'>fline</span><span class='op'>$</span><span class='va'>StreamOrde</span>, col <span class='op'>=</span> <span class='st'>"blue"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>end</span><span class='op'>)</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-plt'><img src='get_node-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -197,11 +201,11 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -209,6 +213,8 @@
 
   
 
+
+  
 
   </body>
 </html>

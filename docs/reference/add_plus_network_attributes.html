@@ -57,6 +57,8 @@ respectively. If a number of cores is specified, parallel execution will be used
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -68,9 +70,16 @@ respectively. If a number of cores is specified, parallel execution will be used
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -91,12 +100,6 @@ respectively. If a number of cores is specified, parallel execution will be used
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -157,13 +160,13 @@ The function implements two parallelization schemes for small and large basins
 respectively. If a number of cores is specified, parallel execution will be used.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>add_plus_network_attributes</span><span class='op'>(</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>add_plus_network_attributes</span><span class='op'>(</span>
   <span class='va'>net</span>,
   override <span class='op'>=</span> <span class='fl'>5</span>,
   cores <span class='op'>=</span> <span class='cn'>NULL</span>,
   split_temp <span class='op'>=</span> <span class='cn'>NULL</span>,
   status <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,44 +201,39 @@ rather than recreated.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">add_plus_network_attributes,Add NHDPlus Network Attributes to a provided network.,Add NHDPlus Network Attributes to a provided network. — add_plus_network_attributes,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/run_plus_attributes.R'><code>R/run_plus_attributes.R</code></a>,add_plus_network_attributes.Rd,character(0),add_plus_network_attributes,character(0),list(title = "Description", contents = "<p>Given a river network with required base attributes, adds the\nNHDPlus network attributes: hydrosequence, levelpath, terminalpath, pathlength,\ndown levelpath, down hydroseq, total drainage area, and terminalflag.\nThe function implements two parallelization schemes for small and large basins\nrespectively. If a number of cores is specified, parallel execution will be used.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Given a river network with required base attributes, adds the\nNHDPlus network attributes: hydrosequence, levelpath, terminalpath, pathlength,\ndown levelpath, down hydroseq, total drainage area, and terminalflag.\nThe function implements two parallelization schemes for small and large basins\nrespectively. If a number of cores is specified, parallel execution will be used."),<span class='fu'>add_plus_network_attributes</span><span class='op'>(</span>
-  <span class='va'>net</span>,
-  override <span class='op'>=</span> <span class='fl'>5</span>,
-  cores <span class='op'>=</span> <span class='cn'>NULL</span>,
-  split_temp <span class='op'>=</span> <span class='cn'>NULL</span>,
-  status <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span>,list(list(name = "net", description = "<p>data.frame containing comid, tocomid, nameID, lengthkm, and areasqkm.\nAdditional attributes will be passed through unchanged.\ntocomid == 0 is the convention used for outlets.\nIf a \"weight\" column is provided, it will be used in <a href='get_levelpaths.html'>get_levelpaths</a>\notherwise, arbolate sum is calculated for the network and used as the weight.</p>"), list(name = "override", description = "<p>numeric factor to be passed to <a href='get_levelpaths.html'>get_levelpaths</a></p>"), 
-    list(name = "cores", description = "<p>integer number of processes to spawn if run in parallel.</p>"), list(name = "split_temp", description = "<p>character path to optional temporary copy of the network\nsplit into independent sub-networks. If it exists, it will be read from disk\nrather than recreated.</p>"), list(name = "status", description = "<p>logical should progress be printed?</p>")),TRUE,<div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span><span class='op'>(</span><span class='va'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: removing geometry</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 0 flowlines that don't apply.</span>
-#&gt; <span class='warning'> Includes: Coastlines, non-dendritic paths, </span>
-#&gt; <span class='warning'>and networks with drainage area less than 0 sqkm, and drainage basins smaller than FALSE</span></div><div class='input'>
-<span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
-  comid <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>COMID</span>,
-  tocomid <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>toCOMID</span>,
-  nameID <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>GNIS_ID</span>,
-  lengthkm <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>LENGTHKM</span>,
-  areasqkm <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>AreaSqKM</span><span class='op'>)</span>
-
-<span class='fu'>add_plus_network_attributes</span><span class='op'>(</span><span class='va'>test_flowline</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 62 x 14</span><span>
-#&gt;     comid tocomid nameID lengthkm areasqkm weight terminalpa hydroseq levelpathi
-#&gt;     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6       0 255208    1.20     0.868  137.           1        1          1
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>303 255208    0.582    0.260  133.           1        2          1
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>293 255208    4.02     3.76   127.           1        3          1
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>305 255208    4.44     4.51   120.           1        4          1
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>317 255208    2.68     3.64   112.           1        5          1
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>315 255208    4.79     5.96    75.3          1        6          1
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>339 255208    1.03     1.27    67.4          1        7          1
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>343 255208    3.60     6.94    61.9          1        8          1
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>357 255208    3.14     5.13    51.1          1        9          1
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>365 254577    1.46     1.69    37.8          1       10          1
-#&gt; </span><span style='color: #949494;'># ... with 52 more rows, and 5 more variables: pathlength &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   dnlevelpat &lt;dbl&gt;, dnhydroseq &lt;dbl&gt;, totdasqkm &lt;dbl&gt;, terminalfl &lt;dbl&gt;</span><span></div></span>,list(),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"walker_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='prepare_nhdplus.html'>prepare_nhdplus</a></span><span class='op'>(</span><span class='va'>walker_flowline</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>removing geometry</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Removed 0 flowlines that don't apply.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span>  Includes: Coastlines, non-dendritic paths, </span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> and networks with drainage area less than 0 sqkm, and drainage basins smaller than FALSE</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>test_flowline</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>  comid <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>COMID</span>,</span>
+<span class='r-in'>  tocomid <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>toCOMID</span>,</span>
+<span class='r-in'>  nameID <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>GNIS_ID</span>,</span>
+<span class='r-in'>  lengthkm <span class='op'>=</span> <span class='va'>test_flowline</span><span class='op'>$</span><span class='va'>LENGTHKM</span>,</span>
+<span class='r-in'>  areasqkm <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>AreaSqKM</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>add_plus_network_attributes</span><span class='op'>(</span><span class='va'>test_flowline</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 62 x 14</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     comid tocomid nameID lengthkm areasqkm weight terminalpa hydroseq levelpathi</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     <span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6       0 255208    1.20     0.868  137.           1        1          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>303 255208    0.582    0.260  133.           1        2          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>293 255208    4.02     3.76   127.           1        3          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>305 255208    4.44     4.51   120.           1        4          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>317 255208    2.68     3.64   112.           1        5          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>315 255208    4.79     5.96    75.3          1        6          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>339 255208    1.03     1.27    67.4          1        7          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>343 255208    3.60     6.94    61.9          1        8          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>357 255208    3.14     5.13    51.1          1        9          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span><span> 5.33</span><span style='color: #949494;'>e</span><span>6 5</span><span style='text-decoration: underline;'>329</span><span>365 254577    1.46     1.69    37.8          1       10          1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 52 more rows, and 5 more variables: pathlength &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   dnlevelpat &lt;dbl&gt;, dnhydroseq &lt;dbl&gt;, totdasqkm &lt;dbl&gt;, terminalfl &lt;dbl&gt;</span></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -247,11 +245,11 @@ rather than recreated.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -259,6 +257,8 @@ rather than recreated.</p></td>
 
   
 
+
+  
 
   </body>
 </html>

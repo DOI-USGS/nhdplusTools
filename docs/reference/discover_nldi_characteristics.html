@@ -53,6 +53,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -64,9 +66,16 @@
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -87,12 +96,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -149,7 +152,7 @@
     <p>Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>discover_nldi_characteristics</span><span class='op'>(</span>type <span class='op'>=</span> <span class='st'>"all"</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>discover_nldi_characteristics</span><span class='op'>(</span>type <span class='op'>=</span> <span class='st'>"all"</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,98 +165,99 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">discover_nldi_characteristics,Discover Characteristics Metadata,Discover Characteristics Metadata — discover_nldi_characteristics,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/get_nldi.R'><code>R/get_nldi.R</code></a>,discover_nldi_characteristics.Rd,character(0),discover_nldi_characteristics,character(0),list(title = "Description", contents = "<p>Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`."),<span class='fu'>discover_nldi_characteristics</span><span class='op'>(</span>type <span class='op'>=</span> <span class='st'>"all"</span><span class='op'>)</span>,list(list(name = "type", description = "<p>character \"all\", \"local\", \"total\", or \"divergence_routed\".</p>")),TRUE,<div class='input'><span class='va'>chars</span> <span class='op'>&lt;-</span> <span class='fu'>discover_nldi_characteristics</span><span class='op'>(</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>chars</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "local"             "total"             "divergence_routed"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>chars</span><span class='op'>$</span><span class='va'>local</span>, <span class='fl'>10</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;    characteristic_id
-#&gt; 1            CAT_HGC
-#&gt; 2           CAT_HGCD
-#&gt; 3            CAT_HGD
-#&gt; 4          CAT_HGVAR
-#&gt; 5      CAT_NLCD01_43
-#&gt; 6      CAT_NLCD01_52
-#&gt; 7      CAT_NLCD01_71
-#&gt; 8      CAT_NLCD01_81
-#&gt; 9      CAT_NLCD01_82
-#&gt; 10     CAT_NLCD01_90
-#&gt;                                                                                                                                                                                                                                                   characteristic_description
-#&gt; 1         Percentage of Hydrologic Group C soil. -9999 denotes NODATA, usually water. Hydrologic group C soils have slow soil infiltration rates. The soil profiles include layers impeding downward movement of water and, typically, have moderately fine or fine texture.
-#&gt; 2  Percentage of Hydrologic Group CD soil. -9999 denotes NODATA, usually water. Hydrologic group CD soils have group C characteristics (slow infiltration rates) when artificially drained and have group D characteristics (very slow infiltration rates) when not drained.
-#&gt; 3                                                     Percentage of Hydrologic Group D soil. -9999 denotes NODATA, usually water. Hydrologic group D soils have very slow infiltration rates. Soils are clayey, have a high water table, or have a shallow impervious layer.
-#&gt; 4                                                                                                                           Percentage of Hydrologic Group VAR soil. -9999 denotes NODATA, usually water. Hydrologic group VAR soils have variable drainage characteristics.
-#&gt; 5                                                                                                                                                                                                                                                                    unknown
-#&gt; 6                                                                                                                                                                                                                                                                    unknown
-#&gt; 7                                                                                                                                                                                                                                                                    unknown
-#&gt; 8                                                                                                                                                                                                                                                                    unknown
-#&gt; 9                                                                                                                                                                                                                                                                    unknown
-#&gt; 10                                                                                                                                                                                                                                                                   unknown
-#&gt;      units
-#&gt; 1  percent
-#&gt; 2  percent
-#&gt; 3  percent
-#&gt; 4  percent
-#&gt; 5  unknown
-#&gt; 6  unknown
-#&gt; 7  unknown
-#&gt; 8  unknown
-#&gt; 9  unknown
-#&gt; 10 unknown
-#&gt;                                                                                                                                                                                                                                                                 dataset_label
-#&gt; 1                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.
-#&gt; 2                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.
-#&gt; 3                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.
-#&gt; 4                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.
-#&gt; 5  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.
-#&gt; 6  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.
-#&gt; 7  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.
-#&gt; 8  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.
-#&gt; 9  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.
-#&gt; 10 2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.
-#&gt;                                                          dataset_url
-#&gt; 1  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
-#&gt; 2  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
-#&gt; 3  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
-#&gt; 4  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f
-#&gt; 5  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae
-#&gt; 6  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae
-#&gt; 7  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae
-#&gt; 8  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae
-#&gt; 9  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae
-#&gt; 10 https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae
-#&gt;    theme_label
-#&gt; 1        Soils
-#&gt; 2        Soils
-#&gt; 3        Soils
-#&gt; 4        Soils
-#&gt; 5   Land Cover
-#&gt; 6   Land Cover
-#&gt; 7   Land Cover
-#&gt; 8   Land Cover
-#&gt; 9   Land Cover
-#&gt; 10  Land Cover
-#&gt;                                                            theme_url
-#&gt; 1  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
-#&gt; 2  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
-#&gt; 3  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
-#&gt; 4  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7
-#&gt; 5                                                            unknown
-#&gt; 6                                                            unknown
-#&gt; 7                                                            unknown
-#&gt; 8                                                            unknown
-#&gt; 9                                                            unknown
-#&gt; 10                                                           unknown
-#&gt;    characteristic_type
-#&gt; 1      localCatch_name
-#&gt; 2      localCatch_name
-#&gt; 3      localCatch_name
-#&gt; 4      localCatch_name
-#&gt; 5      localCatch_name
-#&gt; 6      localCatch_name
-#&gt; 7      localCatch_name
-#&gt; 8      localCatch_name
-#&gt; 9      localCatch_name
-#&gt; 10     localCatch_name</div>,list(),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='va'>chars</span> <span class='op'>&lt;-</span> <span class='fu'>discover_nldi_characteristics</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>chars</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "local"             "total"             "divergence_routed"</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>chars</span><span class='op'>$</span><span class='va'>local</span>, <span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    characteristic_id</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1            CAT_HGC</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2           CAT_HGCD</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3            CAT_HGD</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4          CAT_HGVAR</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5      CAT_NLCD01_43</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6      CAT_NLCD01_52</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7      CAT_NLCD01_71</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8      CAT_NLCD01_81</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9      CAT_NLCD01_82</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10     CAT_NLCD01_90</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                                                                                                                                                                                                                   characteristic_description</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1         Percentage of Hydrologic Group C soil. -9999 denotes NODATA, usually water. Hydrologic group C soils have slow soil infiltration rates. The soil profiles include layers impeding downward movement of water and, typically, have moderately fine or fine texture.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  Percentage of Hydrologic Group CD soil. -9999 denotes NODATA, usually water. Hydrologic group CD soils have group C characteristics (slow infiltration rates) when artificially drained and have group D characteristics (very slow infiltration rates) when not drained.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3                                                     Percentage of Hydrologic Group D soil. -9999 denotes NODATA, usually water. Hydrologic group D soils have very slow infiltration rates. Soils are clayey, have a high water table, or have a shallow impervious layer.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4                                                                                                                           Percentage of Hydrologic Group VAR soil. -9999 denotes NODATA, usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5                                                                                                                                                                                                                                                                    unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6                                                                                                                                                                                                                                                                    unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7                                                                                                                                                                                                                                                                    unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8                                                                                                                                                                                                                                                                    unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9                                                                                                                                                                                                                                                                    unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10                                                                                                                                                                                                                                                                   unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      units</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  percent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  percent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  percent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  percent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6  unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7  unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8  unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9  unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10 unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                                                                                                                                                                                                                                 dataset_label</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10 2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                          dataset_url</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10 https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    theme_label</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1        Soils</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2        Soils</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3        Soils</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4        Soils</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5   Land Cover</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6   Land Cover</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7   Land Cover</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8   Land Cover</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9   Land Cover</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10  Land Cover</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                            theme_url</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5                                                            unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6                                                            unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7                                                            unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8                                                            unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9                                                            unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10                                                           unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    characteristic_type</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1      localCatch_name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2      localCatch_name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3      localCatch_name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4      localCatch_name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5      localCatch_name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6      localCatch_name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7      localCatch_name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8      localCatch_name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9      localCatch_name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10     localCatch_name</span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -265,11 +269,11 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -277,6 +281,8 @@
 
   
 
+
+  
 
   </body>
 </html>

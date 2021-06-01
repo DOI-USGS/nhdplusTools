@@ -55,6 +55,8 @@ against the entire NHDPlusV2 domain and satisfies a number of edge cases." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -66,9 +68,16 @@ against the entire NHDPlusV2 domain and satisfies a number of edge cases." />
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -89,12 +98,6 @@ against the entire NHDPlusV2 domain and satisfies a number of edge cases." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -153,7 +156,7 @@ that the result can be used in downstream processing. Has been tested to work
 against the entire NHDPlusV2 domain and satisfies a number of edge cases.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>subset_rpu</span><span class='op'>(</span><span class='va'>fline</span>, <span class='va'>rpu</span>, run_make_standalone <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>subset_rpu</span><span class='op'>(</span><span class='va'>fline</span>, <span class='va'>rpu</span>, run_make_standalone <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,58 +178,58 @@ LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">subset_rpu,Subset by Raster Processing Unit.,Subset by Raster Processing Unit. — subset_rpu,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/subset_nhdplus.R'><code>R/subset_nhdplus.R</code></a>,subset_rpu.Rd,character(0),subset_rpu,character(0),list(title = "Description", contents = "<p>Given flowlines and an rpu_code, performs a network-safe subset such\nthat the result can be used in downstream processing. Has been tested to work\nagainst the entire NHDPlusV2 domain and satisfies a number of edge cases.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Given flowlines and an rpu_code, performs a network-safe subset such\nthat the result can be used in downstream processing. Has been tested to work\nagainst the entire NHDPlusV2 domain and satisfies a number of edge cases."),<span class='fu'>subset_rpu</span><span class='op'>(</span><span class='va'>fline</span>, <span class='va'>rpu</span>, run_make_standalone <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,list(list(name = "fline", description = "<p>sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM, and Hydroseq.\nLevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.</p>"), list(name = "rpu", description = "<p>character e.g. \"01a\"</p>"), list(name = "run_make_standalone", description = "<p>boolean should the run_make_standalone function be run on result?</p>")),TRUE,<div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span><span class='op'>(</span><span class='va'>sample_data</span><span class='op'>)</span>
-
-<span class='va'>staged_nhdplus</span> <span class='op'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span><span class='op'>(</span>output_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>sample_flines</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>staged_nhdplus</span><span class='op'>$</span><span class='va'>flowline</span><span class='op'>)</span>
-
-<span class='fu'>subset_rpu</span><span class='op'>(</span><span class='va'>sample_flines</span>, rpu <span class='op'>=</span> <span class='st'>"07b"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Simple feature collection with 267 features and 138 fields
-#&gt; Geometry type: MULTILINESTRING
-#&gt; Dimension:     XY
-#&gt; Bounding box:  xmin: -89.58537 ymin: 42.95163 xmax: -89.19935 ymax: 43.30179
-#&gt; Geodetic CRS:  GRS 1980(IUGG, 1980)
-#&gt; <span style='color: #949494;'># A tibble: 267 x 139</span><span>
-#&gt;      COMID FDATE               RESOLUTION GNIS_ID GNIS_NAME  LENGTHKM REACHCODE 
-#&gt;  </span><span style='color: #BCBCBC;'>*</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    0.091 070900020~
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 2009-05-01 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    2.85  070900020~
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 2009-05-01 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    0.041 070900020~
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-29 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    0.096 070900020~
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-29 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    1.72  070900020~
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span> </span><span style='color: #949494;'>"</span><span>     </span><span style='color: #949494;'>"</span><span> </span><span style='color: #949494;'>"</span><span>           4.59  070900020~
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15606~ </span><span style='color: #949494;'>"</span><span>Murphys ~    4.53  070900020~
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15606~ </span><span style='color: #949494;'>"</span><span>Murphys ~    2.70  070900020~
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-29 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15751~ </span><span style='color: #949494;'>"</span><span>Swan Cre~    0.111 070900020~
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15751~ </span><span style='color: #949494;'>"</span><span>Swan Cre~    1.44  070900020~
-#&gt; </span><span style='color: #949494;'># ... with 257 more rows, and 132 more variables: FLOWDIR &lt;chr&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   WBAREACOMI &lt;int&gt;, FTYPE &lt;chr&gt;, FCODE &lt;int&gt;, Shape_Length &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;, StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, Divergence &lt;int&gt;, StartFlag &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   TerminalFl &lt;dbl&gt;, DnLevel &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;, UpHydroseq &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   DnLevelPat &lt;dbl&gt;, DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;int&gt;, DnHydroseq &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;, RtnDiv &lt;int&gt;, VPUIn &lt;int&gt;, VPUOut &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   AreaSqKM &lt;dbl&gt;, TotDASqKM &lt;dbl&gt;, DivDASqKM &lt;dbl&gt;, Tidal &lt;int&gt;, TOTMA &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   WBAreaType &lt;chr&gt;, HWNodeSqKM &lt;dbl&gt;, MAXELEVRAW &lt;dbl&gt;, MINELEVRAW &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   MAXELEVSMO &lt;dbl&gt;, MINELEVSMO &lt;dbl&gt;, SLOPE &lt;dbl&gt;, ELEVFIXED &lt;chr&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   HWTYPE &lt;chr&gt;, SLOPELENKM &lt;dbl&gt;, QA_MA &lt;dbl&gt;, VA_MA &lt;dbl&gt;, QC_MA &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   VC_MA &lt;dbl&gt;, QE_MA &lt;dbl&gt;, VE_MA &lt;dbl&gt;, QA_01 &lt;dbl&gt;, VA_01 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   QC_01 &lt;dbl&gt;, VC_01 &lt;dbl&gt;, QE_01 &lt;dbl&gt;, VE_01 &lt;dbl&gt;, QA_02 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   VA_02 &lt;dbl&gt;, QC_02 &lt;dbl&gt;, VC_02 &lt;dbl&gt;, QE_02 &lt;dbl&gt;, VE_02 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   QA_03 &lt;dbl&gt;, VA_03 &lt;dbl&gt;, QC_03 &lt;dbl&gt;, VC_03 &lt;dbl&gt;, QE_03 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   VE_03 &lt;dbl&gt;, QA_04 &lt;dbl&gt;, VA_04 &lt;dbl&gt;, QC_04 &lt;dbl&gt;, VC_04 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   QE_04 &lt;dbl&gt;, VE_04 &lt;dbl&gt;, QA_05 &lt;dbl&gt;, VA_05 &lt;dbl&gt;, QC_05 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   VC_05 &lt;dbl&gt;, QE_05 &lt;dbl&gt;, VE_05 &lt;dbl&gt;, QA_06 &lt;dbl&gt;, VA_06 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   QC_06 &lt;dbl&gt;, VC_06 &lt;dbl&gt;, QE_06 &lt;dbl&gt;, VE_06 &lt;dbl&gt;, QA_07 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   VA_07 &lt;dbl&gt;, QC_07 &lt;dbl&gt;, VC_07 &lt;dbl&gt;, QE_07 &lt;dbl&gt;, VE_07 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   QA_08 &lt;dbl&gt;, VA_08 &lt;dbl&gt;, QC_08 &lt;dbl&gt;, VC_08 &lt;dbl&gt;, QE_08 &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   VE_08 &lt;dbl&gt;, QA_09 &lt;dbl&gt;, ...</span><span></div></span>,list(),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='nhdplus_path.html'>nhdplus_path</a></span><span class='op'>(</span><span class='va'>sample_data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>staged_nhdplus</span> <span class='op'>&lt;-</span> <span class='fu'><a href='stage_national_data.html'>stage_national_data</a></span><span class='op'>(</span>output_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>sample_flines</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='va'>staged_nhdplus</span><span class='op'>$</span><span class='va'>flowline</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>subset_rpu</span><span class='op'>(</span><span class='va'>sample_flines</span>, rpu <span class='op'>=</span> <span class='st'>"07b"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Simple feature collection with 267 features and 138 fields</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Geometry type: MULTILINESTRING</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Dimension:     XY</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Bounding box:  xmin: -89.58537 ymin: 42.95163 xmax: -89.19935 ymax: 43.30179</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Geodetic CRS:  GRS 1980(IUGG, 1980)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 267 x 139</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      COMID FDATE               RESOLUTION GNIS_ID GNIS_NAME  LENGTHKM REACHCODE </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  <span style='color: #BCBCBC;'>*</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    0.091 070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 2009-05-01 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    2.85  070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 2009-05-01 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    0.041 070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-29 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    0.096 070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-29 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15770~ </span><span style='color: #949494;'>"</span><span>Yahara R~    1.72  070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span> </span><span style='color: #949494;'>"</span><span>     </span><span style='color: #949494;'>"</span><span> </span><span style='color: #949494;'>"</span><span>           4.59  070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15606~ </span><span style='color: #949494;'>"</span><span>Murphys ~    4.53  070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15606~ </span><span style='color: #949494;'>"</span><span>Murphys ~    2.70  070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-29 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15751~ </span><span style='color: #949494;'>"</span><span>Swan Cre~    0.111 070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span><span>  1.33</span><span style='color: #949494;'>e</span><span>7 1999-10-15 </span><span style='color: #949494;'>00:00:00</span><span> Medium     </span><span style='color: #949494;'>"</span><span>15751~ </span><span style='color: #949494;'>"</span><span>Swan Cre~    1.44  070900020~</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 257 more rows, and 132 more variables: FLOWDIR &lt;chr&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   WBAREACOMI &lt;int&gt;, FTYPE &lt;chr&gt;, FCODE &lt;int&gt;, Shape_Length &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;, StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, Divergence &lt;int&gt;, StartFlag &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   TerminalFl &lt;dbl&gt;, DnLevel &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;, UpHydroseq &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   DnLevelPat &lt;dbl&gt;, DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;int&gt;, DnHydroseq &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;, RtnDiv &lt;int&gt;, VPUIn &lt;int&gt;, VPUOut &lt;int&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   AreaSqKM &lt;dbl&gt;, TotDASqKM &lt;dbl&gt;, DivDASqKM &lt;dbl&gt;, Tidal &lt;int&gt;, TOTMA &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   WBAreaType &lt;chr&gt;, HWNodeSqKM &lt;dbl&gt;, MAXELEVRAW &lt;dbl&gt;, MINELEVRAW &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   MAXELEVSMO &lt;dbl&gt;, MINELEVSMO &lt;dbl&gt;, SLOPE &lt;dbl&gt;, ELEVFIXED &lt;chr&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   HWTYPE &lt;chr&gt;, SLOPELENKM &lt;dbl&gt;, QA_MA &lt;dbl&gt;, VA_MA &lt;dbl&gt;, QC_MA &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   VC_MA &lt;dbl&gt;, QE_MA &lt;dbl&gt;, VE_MA &lt;dbl&gt;, QA_01 &lt;dbl&gt;, VA_01 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   QC_01 &lt;dbl&gt;, VC_01 &lt;dbl&gt;, QE_01 &lt;dbl&gt;, VE_01 &lt;dbl&gt;, QA_02 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   VA_02 &lt;dbl&gt;, QC_02 &lt;dbl&gt;, VC_02 &lt;dbl&gt;, QE_02 &lt;dbl&gt;, VE_02 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   QA_03 &lt;dbl&gt;, VA_03 &lt;dbl&gt;, QC_03 &lt;dbl&gt;, VC_03 &lt;dbl&gt;, QE_03 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   VE_03 &lt;dbl&gt;, QA_04 &lt;dbl&gt;, VA_04 &lt;dbl&gt;, QC_04 &lt;dbl&gt;, VC_04 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   QE_04 &lt;dbl&gt;, VE_04 &lt;dbl&gt;, QA_05 &lt;dbl&gt;, VA_05 &lt;dbl&gt;, QC_05 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   VC_05 &lt;dbl&gt;, QE_05 &lt;dbl&gt;, VE_05 &lt;dbl&gt;, QA_06 &lt;dbl&gt;, VA_06 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   QC_06 &lt;dbl&gt;, VC_06 &lt;dbl&gt;, QE_06 &lt;dbl&gt;, VE_06 &lt;dbl&gt;, QA_07 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   VA_07 &lt;dbl&gt;, QC_07 &lt;dbl&gt;, VC_07 &lt;dbl&gt;, QE_07 &lt;dbl&gt;, VE_07 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   QA_08 &lt;dbl&gt;, VA_08 &lt;dbl&gt;, QC_08 &lt;dbl&gt;, VC_08 &lt;dbl&gt;, QE_08 &lt;dbl&gt;,</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   VE_08 &lt;dbl&gt;, QA_09 &lt;dbl&gt;, ...</span></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -238,11 +241,11 @@ LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -250,6 +253,8 @@ LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.</p></td>
 
   
 
+
+  
 
   </body>
 </html>

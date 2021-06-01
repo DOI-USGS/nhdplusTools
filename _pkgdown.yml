@@ -38,6 +38,7 @@ reference:
       Functions that make the package easier to work with.
     contents:
       - '`nhdplus_path`'
+      - '`nhdplusTools_data_dir`'
       - '`stage_national_data`'
       - '`plot_nhdplus`'
       - '`align_nhdplus_names`'
@@ -48,6 +49,7 @@ reference:
     desc: >
       Functions that generate common river network attributes.
     contents:
+      - '`add_plus_network_attributes`'
       - '`calculate_total_drainage_area`'
       - '`calculate_arbolate_sum`'
       - '`get_levelpaths`'
@@ -66,5 +68,8 @@ reference:
       - '`get_UT`'
       - '`navigate_nldi`'
       - '`get_flowline_index`'
+      - '`get_hydro_location`'
       - '`get_waterbody_index`'
       - '`get_node`'
+      - '`rescale_measures`'
+      - '`disambiguate_flowline_indexes`'

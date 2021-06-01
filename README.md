@@ -149,6 +149,13 @@ Given this, the package should be built locally to include vignettes using:
 devtools::build()
 ```
 
+### Check notes:
+In addition to typical R package checking, a Dockerfile is included in this repository. Once built, it can be run with the following command.
+
+```
+docker run --rm -it -v %cd%:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ && cp /src/.Rbuildignore /check/ && cd /check && Rscript -e 'devtools::build()' && R CMD check --as-cran ../nhdplusTools_*"
+```
+
 ### Contributing:
 
 First, thanks for considering a contribution! I hope to make this package a community created resource

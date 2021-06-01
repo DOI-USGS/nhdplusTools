@@ -27,6 +27,6 @@ To view aggregate data and documentation, see
 get_vaa_names()
 
 #cleanup if desired
-unlink(get_vaa_path(), recursive = TRUE)
+unlink(dirname(get_vaa_path()), recursive = TRUE)
 }
 }

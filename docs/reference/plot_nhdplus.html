@@ -54,6 +54,8 @@ EPSG:3857 Web Mercator Projection." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -65,9 +67,16 @@ EPSG:3857 Web Mercator Projection." />
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -88,12 +97,6 @@ EPSG:3857 Web Mercator Projection." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -151,7 +154,7 @@ EPSG:3857 Web Mercator Projection." />
 EPSG:3857 Web Mercator Projection.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_nhdplus</span><span class='op'>(</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>plot_nhdplus</span><span class='op'>(</span>
   outlets <span class='op'>=</span> <span class='cn'>NULL</span>,
   bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
   streamorder <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -163,7 +166,7 @@ EPSG:3857 Web Mercator Projection.</p>
   overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>,
   flowline_only <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -236,97 +239,148 @@ is used to convert the outlet formats as described below.</p><ol>
 
 <p>The <code>plot_config</code> parameter is a list with names "basin", "flowline" and "outlets".
 The following shows the defaults that can be altered.</p><ol>
-<li><p>basin <code><a href='https://rdrr.io/r/base/list.html'>list(lwd = 1, col = NA, border = "black")</a></code></p></li>
-<li><p>flowline <code><a href='https://rdrr.io/r/base/list.html'>list(lwd = 1, col = "blue")</a></code></p></li>
-<li><p>outlets</p><pre>
+<li><p>basin <code>list(lwd = 1, col = NA, border = "black")</code></p></li>
+<li><p>flowline <code>list(lwd = 1, col = "blue")</code></p></li>
+<li><p>outlets</p><pre class='sourceCode r'><code>
    <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>default <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"black"</span>, border <span class='op'>=</span> <span class='cn'>NA</span>, pch <span class='op'>=</span> <span class='fl'>19</span>, cex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
         nwissite <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"grey40"</span>, border <span class='op'>=</span> <span class='cn'>NA</span>, pch <span class='op'>=</span> <span class='fl'>17</span>, cex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
         huc12pp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"white"</span>, border <span class='op'>=</span> <span class='st'>"black"</span>, pch <span class='op'>=</span> <span class='fl'>22</span>, cex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
         wqp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"red"</span>, border <span class='op'>=</span> <span class='cn'>NA</span>, pch <span class='op'>=</span> <span class='fl'>20</span>, cex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
-        </pre></li>
+        </code></pre></li>
 </ol>
 
 <p>If adding additional layers to the plot, data must be projected to EPSG:3857 with
 `sf::st_transform(x, 3857)` prior to adding to the plot.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">plot_nhdplus,Plot NHDPlus,Plot NHDPlus — plot_nhdplus,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/plot_nhdplus.R'><code>R/plot_nhdplus.R</code></a>,plot_nhdplus.Rd,character(0),plot_nhdplus,character(0),list(title = "Description", contents = "<p>Given a list of outlets, get their basin boundaries and network and return a plot in\nEPSG:3857 Web Mercator Projection.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "Given a list of outlets, get their basin boundaries and network and return a plot in\nEPSG:3857 Web Mercator Projection."),<span class='fu'>plot_nhdplus</span><span class='op'>(</span>
-  outlets <span class='op'>=</span> <span class='cn'>NULL</span>,
-  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
-  streamorder <span class='op'>=</span> <span class='cn'>NULL</span>,
-  nhdplus_data <span class='op'>=</span> <span class='cn'>NULL</span>,
-  gpkg <span class='op'>=</span> <span class='cn'>NULL</span>,
-  plot_config <span class='op'>=</span> <span class='cn'>NULL</span>,
-  add <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  actually_plot <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  flowline_only <span class='op'>=</span> <span class='cn'>NULL</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>,list(list(name = "outlets", description = "<p>list of nldi outlets. Other inputs are coerced into nldi outlets, see details.</p>"), list(name = "bbox", description = "<p>object of class bbox with a defined crs. See examples.</p>"), list(name = "streamorder", description = "<p>integer only streams of order greater than or equal will be returned</p>"), list(name = "nhdplus_data", description = "<p>geopackage containing source nhdplus data (omit to download)</p>"), list(name = "gpkg", description = "<p>path and file with .gpkg ending. If omitted, no file is written.</p>"), 
-    list(name = "plot_config", description = "<p>list containing plot configuration, see details.</p>"), list(name = "add", description = "<p>boolean should this plot be added to an already built map.</p>"), list(name = "actually_plot", description = "<p>boolean actually draw the plot? Use to get data subset only.</p>"), list(name = "overwrite", description = "<p>passed on the <a href='subset_nhdplus.html'>subset_nhdplus</a>.</p>"), list(name = "flowline_only", description = "<p>boolean only subset and plot flowlines?</p>"), 
-    list(name = "...", description = "<p>parameters passed on to rosm.</p>")),TRUE,<div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span><span class='op'>(</span><span class='st'>"rgdal_show_exportToProj4_warnings"</span><span class='op'>=</span><span class='st'>"none"</span><span class='op'>)</span>
-
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='st'>"05428500"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_intersects assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='st'>"05428500"</span>, streamorder <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_intersects assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-2.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>13293970</span>, <span class='fl'>13293750</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_intersects assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-3.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>13293970</span>, <span class='fl'>13293750</span><span class='op'>)</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-4.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"comid"</span>, <span class='st'>"13293970"</span><span class='op'>)</span>,
-                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"nwissite"</span>, <span class='st'>"USGS-05428500"</span><span class='op'>)</span>,
-                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"huc12pp"</span>, <span class='st'>"070900020603"</span><span class='op'>)</span>,
-                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"huc12pp"</span>, <span class='st'>"070900020602"</span><span class='op'>)</span><span class='op'>)</span>,
-             streamorder <span class='op'>=</span> <span class='fl'>2</span>,
-             nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-5.png' alt='' width='700' height='433' /></div><div class='input'>
-
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_as_sf.html'>st_as_sf</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='op'>-</span><span class='fl'>89.36083</span>,
-                                     y <span class='op'>=</span> <span class='fl'>43.08944</span><span class='op'>)</span>,
-                          coords <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x"</span>, <span class='st'>"y"</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>,
-             streamorder <span class='op'>=</span> <span class='fl'>2</span>,
-             nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-6.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"comid"</span>, <span class='st'>"13293970"</span><span class='op'>)</span>,
-                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"nwissite"</span>, <span class='st'>"USGS-05428500"</span><span class='op'>)</span>,
-                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"huc12pp"</span>, <span class='st'>"070900020603"</span><span class='op'>)</span>,
-                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"huc12pp"</span>, <span class='st'>"070900020602"</span><span class='op'>)</span><span class='op'>)</span>,
-             streamorder <span class='op'>=</span> <span class='fl'>2</span>,
-             nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>,
-             plot_config <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>basin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>,
-                                outlets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>huc12pp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>cex <span class='op'>=</span> <span class='fl'>1.5</span><span class='op'>)</span>,
-                                               comid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"green"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-7.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='va'>bbox</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_bbox.html'>st_bbox</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>xmin <span class='op'>=</span> <span class='op'>-</span><span class='fl'>89.43</span>, ymin <span class='op'>=</span> <span class='fl'>43</span>, xmax <span class='op'>=</span> <span class='op'>-</span><span class='fl'>89.28</span>, ymax <span class='op'>=</span> <span class='fl'>43.1</span><span class='op'>)</span>,
-                    crs <span class='op'>=</span> <span class='st'>"+proj=longlat +datum=WGS84 +no_defs"</span><span class='op'>)</span>
-
-<span class='va'>fline</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span><span class='va'>sample_data</span>, <span class='st'>"NHDFlowline_Network"</span><span class='op'>)</span>
-<span class='va'>comids</span> <span class='op'>&lt;-</span> <span class='fu'>nhdplusTools</span><span class='fu'>::</span><span class='fu'><a href='get_UT.html'>get_UT</a></span><span class='op'>(</span><span class='va'>fline</span>, <span class='fl'>13293970</span><span class='op'>)</span>
-
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='va'>comids</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Zoom: 11</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-8.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'>#' # With Local Data</span>
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span>bbox <span class='op'>=</span> <span class='va'>bbox</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Zoom: 13</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-9.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># With downloaded data</span>
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span>bbox <span class='op'>=</span> <span class='va'>bbox</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_intersects assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>Zoom: 13</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-10.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># Can also plot on top of the previous!</span>
-<span class='fu'>plot_nhdplus</span><span class='op'>(</span>bbox <span class='op'>=</span> <span class='va'>bbox</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>,
-             plot_config <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>flowline <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>lwd <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Zoom: 13</span></div><div class='output co'>#&gt; <span class='message'>Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='input'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='va'>comids</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span>,
-             plot_config <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>flowline <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"darkblue"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>although coordinates are longitude/latitude, st_union assumes that they are planar</span></div><div class='output co'>#&gt; <span class='message'>Audotdetect projection: assuming Google Mercator (epsg 3857)</span></div><div class='img'><img src='plot_nhdplus-11.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># Cleanup downloaded open street map cache if desired.</span>
-<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='fu'>nhdplusTools</span><span class='fu'>:::</span><span class='fu'>osm_cache_dir</span><span class='op'>(</span><span class='op'>)</span>, recursive <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='co'># }</span>
-</div>,list(list(title = "Value", contents = "<p>plot data is returned invisibly in NAD83 Lat/Lon.</p>", slug = "value"), list(title = "Details", contents = "<p>plot_nhdplus supports several input specifications. An unexported function \"as_outlet\"\nis used to convert the outlet formats as described below.</p><ol>\n<li><p>if outlets is omitted, the bbox input is required and all nhdplus data\n  in the bounding box is plotted.</p></li>\n<li><p>If outlets is a list of integers, it is assumed to be NHDPlus IDs (comids)\n  and all upstream tributaries are plotted.</p></li>\n<li><p>if outlets is an integer vector, it is assumed to be all NHDPlus IDs (comids)\n  that should be plotted. Allows custom filtering.</p></li>\n<li><p>If outlets is a character vector, it is assumed to be NWIS site ids.</p></li>\n<li><p>if outlets is a list containing only characters, it is assumed to be a list\n  of nldi features and all upstream tributaries are plotted.</p></li>\n<li><p>if outlets is a data.frame with point geometry, a point in polygon match\n  is performed and upstream with tributaries from the identified catchments is plotted.</p></li>\n</ol>\n\n<p>The <code>plot_config</code> parameter is a list with names \"basin\", \"flowline\" and \"outlets\".\nThe following shows the defaults that can be altered.</p><ol>\n<li><p>basin <code><a href='https://rdrr.io/r/base/list.html'>list(lwd = 1, col = NA, border = \"black\")</a></code></p></li>\n<li><p>flowline <code><a href='https://rdrr.io/r/base/list.html'>list(lwd = 1, col = \"blue\")</a></code></p></li>\n<li><p>outlets</p><pre>\n   <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>default <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>\"black\"</span>, border <span class='op'>=</span> <span class='cn'>NA</span>, pch <span class='op'>=</span> <span class='fl'>19</span>, cex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,\n        nwissite <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>\"grey40\"</span>, border <span class='op'>=</span> <span class='cn'>NA</span>, pch <span class='op'>=</span> <span class='fl'>17</span>, cex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,\n        huc12pp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>\"white\"</span>, border <span class='op'>=</span> <span class='st'>\"black\"</span>, pch <span class='op'>=</span> <span class='fl'>22</span>, cex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,\n        wqp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>\"red\"</span>, border <span class='op'>=</span> <span class='cn'>NA</span>, pch <span class='op'>=</span> <span class='fl'>20</span>, cex <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>\n        </pre></li>\n</ol>\n\n<p>If adding additional layers to the plot, data must be projected to EPSG:3857 with\n`sf::st_transform(x, 3857)` prior to adding to the plot.</p>", 
-    slug = "details")),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span><span class='op'>(</span><span class='st'>"rgdal_show_exportToProj4_warnings"</span><span class='op'>=</span><span class='st'>"none"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='st'>"05428500"</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 1 seconds...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 3 seconds...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 2.4 seconds...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 6.1 seconds...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 5.8 seconds...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 40.8 seconds...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='st'>"05428500"</span>, streamorder <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>13293970</span>, <span class='fl'>13293750</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-3.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>13293970</span>, <span class='fl'>13293750</span><span class='op'>)</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-4.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"comid"</span>, <span class='st'>"13293970"</span><span class='op'>)</span>,</span>
+<span class='r-in'>                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"nwissite"</span>, <span class='st'>"USGS-05428500"</span><span class='op'>)</span>,</span>
+<span class='r-in'>                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"huc12pp"</span>, <span class='st'>"070900020603"</span><span class='op'>)</span>,</span>
+<span class='r-in'>                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"huc12pp"</span>, <span class='st'>"070900020602"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>             streamorder <span class='op'>=</span> <span class='fl'>2</span>,</span>
+<span class='r-in'>             nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-5.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_as_sf.html'>st_as_sf</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='op'>-</span><span class='fl'>89.36083</span>,</span>
+<span class='r-in'>                                     y <span class='op'>=</span> <span class='fl'>43.08944</span><span class='op'>)</span>,</span>
+<span class='r-in'>                          coords <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x"</span>, <span class='st'>"y"</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>,</span>
+<span class='r-in'>             streamorder <span class='op'>=</span> <span class='fl'>2</span>,</span>
+<span class='r-in'>             nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-6.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"comid"</span>, <span class='st'>"13293970"</span><span class='op'>)</span>,</span>
+<span class='r-in'>                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"nwissite"</span>, <span class='st'>"USGS-05428500"</span><span class='op'>)</span>,</span>
+<span class='r-in'>                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"huc12pp"</span>, <span class='st'>"070900020603"</span><span class='op'>)</span>,</span>
+<span class='r-in'>                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"huc12pp"</span>, <span class='st'>"070900020602"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>             streamorder <span class='op'>=</span> <span class='fl'>2</span>,</span>
+<span class='r-in'>             nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>,</span>
+<span class='r-in'>             plot_config <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>basin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                outlets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>huc12pp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>cex <span class='op'>=</span> <span class='fl'>1.5</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                               comid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"green"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-7.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>bbox</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_bbox.html'>st_bbox</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>xmin <span class='op'>=</span> <span class='op'>-</span><span class='fl'>89.43</span>, ymin <span class='op'>=</span> <span class='fl'>43</span>, xmax <span class='op'>=</span> <span class='op'>-</span><span class='fl'>89.28</span>, ymax <span class='op'>=</span> <span class='fl'>43.1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    crs <span class='op'>=</span> <span class='st'>"+proj=longlat +datum=WGS84 +no_defs"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>fline</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span><span class='va'>sample_data</span>, <span class='st'>"NHDFlowline_Network"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>comids</span> <span class='op'>&lt;-</span> <span class='fu'>nhdplusTools</span><span class='fu'>::</span><span class='fu'><a href='get_UT.html'>get_UT</a></span><span class='op'>(</span><span class='va'>fline</span>, <span class='fl'>13293970</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='va'>comids</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-8.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#' # With Local Data</span></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span>bbox <span class='op'>=</span> <span class='va'>bbox</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 13</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-9.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># With downloaded data</span></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span>bbox <span class='op'>=</span> <span class='va'>bbox</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 13</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-10.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Can also plot on top of the previous!</span></span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span>bbox <span class='op'>=</span> <span class='va'>bbox</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>,</span>
+<span class='r-in'>             plot_config <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>flowline <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>lwd <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 13</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='va'>comids</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span class='r-in'>             plot_config <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>flowline <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"darkblue"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
+<span class='r-plt'><img src='plot_nhdplus-11.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Cleanup downloaded open street map cache if desired.</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='fu'>nhdplusTools</span><span class='fu'>:::</span><span class='fu'>osm_cache_dir</span><span class='op'>(</span><span class='op'>)</span>, recursive <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># }</span></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -338,11 +392,11 @@ The following shows the defaults that can be altered.</p><ol>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -350,6 +404,8 @@ The following shows the defaults that can be altered.</p><ol>
 
   
 
+
+  
 
   </body>
 </html>

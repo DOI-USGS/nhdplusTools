@@ -53,6 +53,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -64,9 +66,16 @@
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -87,12 +96,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/nhdplusTools.html">Get started</a>
 </li>
 <li>
@@ -149,7 +152,7 @@
     <p>this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>align_nhdplus_names</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>align_nhdplus_names</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -165,72 +168,73 @@
     <p>a renamed <code>sf</code> object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">align_nhdplus_names,Align NHD Dataset Names,Align NHD Dataset Names — align_nhdplus_names,Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/R/nhdplusTools.R'><code>R/nhdplusTools.R</code></a>,align_nhdplus_names.Rd,character(0),align_nhdplus_names,character(0),list(title = "Description", contents = "<p>this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.</p>"),list(image = list(src = "https://usgs-r.github.io/nhdplusTools/logo.png"), description = "this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools."),<span class='fu'>align_nhdplus_names</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>,list(list(name = "x", description = "<p>a <code>sf</code> object of nhdplus flowlines</p>")),TRUE,<div class='input'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/new_hope_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   [1] "COMID"      "FDATE"      "RESOLUTION" "GNIS_ID"    "GNIS_NAME" 
-#&gt;   [6] "LENGTHKM"   "REACHCODE"  "FLOWDIR"    "WBAREACOMI" "FTYPE"     
-#&gt;  [11] "FCODE"      "StreamLeve" "StreamOrde" "StreamCalc" "FromNode"  
-#&gt;  [16] "ToNode"     "Hydroseq"   "LevelPathI" "Pathlength" "TerminalPa"
-#&gt;  [21] "ArbolateSu" "Divergence" "StartFlag"  "TerminalFl" "DnLevel"   
-#&gt;  [26] "UpLevelPat" "UpHydroseq" "DnLevelPat" "DnMinorHyd" "DnDrainCou"
-#&gt;  [31] "DnHydroseq" "FromMeas"   "ToMeas"     "RtnDiv"     "VPUIn"     
-#&gt;  [36] "VPUOut"     "AreaSqKM"   "TotDASqKM"  "DivDASqKM"  "Tidal"     
-#&gt;  [41] "TOTMA"      "WBAreaType" "HWNodeSqKM" "MAXELEVRAW" "MINELEVRAW"
-#&gt;  [46] "MAXELEVSMO" "MINELEVSMO" "SLOPE"      "ELEVFIXED"  "HWTYPE"    
-#&gt;  [51] "SLOPELENKM" "QA_MA"      "VA_MA"      "QC_MA"      "VC_MA"     
-#&gt;  [56] "QE_MA"      "VE_MA"      "QA_01"      "VA_01"      "QC_01"     
-#&gt;  [61] "VC_01"      "QE_01"      "VE_01"      "QA_02"      "VA_02"     
-#&gt;  [66] "QC_02"      "VC_02"      "QE_02"      "VE_02"      "QA_03"     
-#&gt;  [71] "VA_03"      "QC_03"      "VC_03"      "QE_03"      "VE_03"     
-#&gt;  [76] "QA_04"      "VA_04"      "QC_04"      "VC_04"      "QE_04"     
-#&gt;  [81] "VE_04"      "QA_05"      "VA_05"      "QC_05"      "VC_05"     
-#&gt;  [86] "QE_05"      "VE_05"      "QA_06"      "VA_06"      "QC_06"     
-#&gt;  [91] "VC_06"      "QE_06"      "VE_06"      "QA_07"      "VA_07"     
-#&gt;  [96] "QC_07"      "VC_07"      "QE_07"      "VE_07"      "QA_08"     
-#&gt; [101] "VA_08"      "QC_08"      "VC_08"      "QE_08"      "VE_08"     
-#&gt; [106] "QA_09"      "VA_09"      "QC_09"      "VC_09"      "QE_09"     
-#&gt; [111] "VE_09"      "QA_10"      "VA_10"      "QC_10"      "VC_10"     
-#&gt; [116] "QE_10"      "VE_10"      "QA_11"      "VA_11"      "QC_11"     
-#&gt; [121] "VC_11"      "QE_11"      "VE_11"      "QA_12"      "VA_12"     
-#&gt; [126] "QC_12"      "VC_12"      "QE_12"      "VE_12"      "LakeFract" 
-#&gt; [131] "SurfArea"   "RAreaHLoad" "RPUID"      "VPUID"      "Enabled"   
-#&gt; [136] "geom"      </div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/chartr.html'>tolower</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>new_hope_flowline</span> <span class='op'>&lt;-</span> <span class='fu'>align_nhdplus_names</span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   [1] "COMID"      "fdate"      "resolution" "gnis_id"    "gnis_name" 
-#&gt;   [6] "LENGTHKM"   "REACHCODE"  "flowdir"    "wbareacomi" "FTYPE"     
-#&gt;  [11] "FCODE"      "streamleve" "StreamOrde" "StreamCalc" "FromNode"  
-#&gt;  [16] "ToNode"     "Hydroseq"   "LevelPathI" "Pathlength" "TerminalPa"
-#&gt;  [21] "arbolatesu" "Divergence" "StartFlag"  "TerminalFl" "dnlevel"   
-#&gt;  [26] "uplevelpat" "uphydroseq" "DnLevelPat" "DnMinorHyd" "dndraincou"
-#&gt;  [31] "DnHydroseq" "FromMeas"   "ToMeas"     "rtndiv"     "vpuin"     
-#&gt;  [36] "vpuout"     "AreaSqKM"   "TotDASqKM"  "divdasqkm"  "tidal"     
-#&gt;  [41] "totma"      "wbareatype" "hwnodesqkm" "maxelevraw" "minelevraw"
-#&gt;  [46] "maxelevsmo" "minelevsmo" "slope"      "elevfixed"  "hwtype"    
-#&gt;  [51] "slopelenkm" "qa_ma"      "va_ma"      "qc_ma"      "vc_ma"     
-#&gt;  [56] "qe_ma"      "ve_ma"      "qa_01"      "va_01"      "qc_01"     
-#&gt;  [61] "vc_01"      "qe_01"      "ve_01"      "qa_02"      "va_02"     
-#&gt;  [66] "qc_02"      "vc_02"      "qe_02"      "ve_02"      "qa_03"     
-#&gt;  [71] "va_03"      "qc_03"      "vc_03"      "qe_03"      "ve_03"     
-#&gt;  [76] "qa_04"      "va_04"      "qc_04"      "vc_04"      "qe_04"     
-#&gt;  [81] "ve_04"      "qa_05"      "va_05"      "qc_05"      "vc_05"     
-#&gt;  [86] "qe_05"      "ve_05"      "qa_06"      "va_06"      "qc_06"     
-#&gt;  [91] "vc_06"      "qe_06"      "ve_06"      "qa_07"      "va_07"     
-#&gt;  [96] "qc_07"      "vc_07"      "qe_07"      "ve_07"      "qa_08"     
-#&gt; [101] "va_08"      "qc_08"      "vc_08"      "qe_08"      "ve_08"     
-#&gt; [106] "qa_09"      "va_09"      "qc_09"      "vc_09"      "qe_09"     
-#&gt; [111] "ve_09"      "qa_10"      "va_10"      "qc_10"      "vc_10"     
-#&gt; [116] "qe_10"      "ve_10"      "qa_11"      "va_11"      "qc_11"     
-#&gt; [121] "vc_11"      "qe_11"      "ve_11"      "qa_12"      "va_12"     
-#&gt; [126] "qc_12"      "vc_12"      "qe_12"      "ve_12"      "lakefract" 
-#&gt; [131] "surfarea"   "rareahload" "rpuid"      "vpuid"      "enabled"   
-#&gt; [136] "geom"      </div><div class='input'>
-</div>,list(list(title = "Value", contents = "<p>a renamed <code>sf</code> object</p>", slug = "value")),2021,list(name = "nhdplusTools", version = "0.4.2", authors = "David Blodgett"),list(destination = "dev", mode = "release", version_label = "default", version_tooltip = "Released version", in_dev = FALSE),list(root = "../", title = "nhdplusTools"),list(),list(type = "default", left = "<li>\n  <a href=\"../index.html\">\n    <span class=\"fas fa-home fa-lg\"></span>\n     \n  </a>\n</li>\n<li>\n  <a href=\"../articles/nhdplusTools.html\">Get started</a>\n</li>\n<li>\n  <a href=\"../reference/index.html\">Reference</a>\n</li>\n<li class=\"dropdown\">\n  <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n    Articles\n     \n    <span class=\"caret\"></span>\n  </a>\n  <ul class=\"dropdown-menu\" role=\"menu\">\n    <li>\n      <a href=\"../articles/nhdplushr.html\">Working with NHDPlusHR</a>\n    </li>\n    <li>\n      <a href=\"../articles/plot_nhdplus.html\">Plotting with nhdplusTools</a>\n    </li>\n    <li>\n      <a href=\"../articles/point_indexing.html\">Indexing and Referencing</a>\n    </li>\n  </ul>\n</li>\n<li>\n  <a href=\"../news/index.html\">Changelog</a>\n</li>", 
-    right = "<li>\n  <a href=\"https://github.com/usgs-r/nhdplusTools/\">\n    <span class=\"fab fa-github fa-lg\"></span>\n     \n  </a>\n</li>"),list(.present = TRUE),list(version = "1.6.1"),TRUE</pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/new_hope_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [1] "COMID"      "FDATE"      "RESOLUTION" "GNIS_ID"    "GNIS_NAME" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [6] "LENGTHKM"   "REACHCODE"  "FLOWDIR"    "WBAREACOMI" "FTYPE"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [11] "FCODE"      "StreamLeve" "StreamOrde" "StreamCalc" "FromNode"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [16] "ToNode"     "Hydroseq"   "LevelPathI" "Pathlength" "TerminalPa"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [21] "ArbolateSu" "Divergence" "StartFlag"  "TerminalFl" "DnLevel"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [26] "UpLevelPat" "UpHydroseq" "DnLevelPat" "DnMinorHyd" "DnDrainCou"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [31] "DnHydroseq" "FromMeas"   "ToMeas"     "RtnDiv"     "VPUIn"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [36] "VPUOut"     "AreaSqKM"   "TotDASqKM"  "DivDASqKM"  "Tidal"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [41] "TOTMA"      "WBAreaType" "HWNodeSqKM" "MAXELEVRAW" "MINELEVRAW"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [46] "MAXELEVSMO" "MINELEVSMO" "SLOPE"      "ELEVFIXED"  "HWTYPE"    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [51] "SLOPELENKM" "QA_MA"      "VA_MA"      "QC_MA"      "VC_MA"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [56] "QE_MA"      "VE_MA"      "QA_01"      "VA_01"      "QC_01"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [61] "VC_01"      "QE_01"      "VE_01"      "QA_02"      "VA_02"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [66] "QC_02"      "VC_02"      "QE_02"      "VE_02"      "QA_03"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [71] "VA_03"      "QC_03"      "VC_03"      "QE_03"      "VE_03"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [76] "QA_04"      "VA_04"      "QC_04"      "VC_04"      "QE_04"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [81] "VE_04"      "QA_05"      "VA_05"      "QC_05"      "VC_05"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [86] "QE_05"      "VE_05"      "QA_06"      "VA_06"      "QC_06"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [91] "VC_06"      "QE_06"      "VE_06"      "QA_07"      "VA_07"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [96] "QC_07"      "VC_07"      "QE_07"      "VE_07"      "QA_08"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [101] "VA_08"      "QC_08"      "VC_08"      "QE_08"      "VE_08"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [106] "QA_09"      "VA_09"      "QC_09"      "VC_09"      "QE_09"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [111] "VE_09"      "QA_10"      "VA_10"      "QC_10"      "VC_10"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [116] "QE_10"      "VE_10"      "QA_11"      "VA_11"      "QC_11"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [121] "VC_11"      "QE_11"      "VE_11"      "QA_12"      "VA_12"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [126] "QC_12"      "VC_12"      "QE_12"      "VE_12"      "LakeFract" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [131] "SurfArea"   "RAreaHLoad" "RPUID"      "VPUID"      "Enabled"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [136] "geom"      </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/chartr.html'>tolower</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>new_hope_flowline</span> <span class='op'>&lt;-</span> <span class='fu'>align_nhdplus_names</span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>new_hope_flowline</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [1] "COMID"      "fdate"      "resolution" "gnis_id"    "gnis_name" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [6] "LENGTHKM"   "REACHCODE"  "flowdir"    "wbareacomi" "FTYPE"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [11] "FCODE"      "streamleve" "StreamOrde" "StreamCalc" "FromNode"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [16] "ToNode"     "Hydroseq"   "LevelPathI" "Pathlength" "TerminalPa"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [21] "arbolatesu" "Divergence" "StartFlag"  "TerminalFl" "dnlevel"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [26] "uplevelpat" "uphydroseq" "DnLevelPat" "DnMinorHyd" "dndraincou"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [31] "DnHydroseq" "FromMeas"   "ToMeas"     "rtndiv"     "vpuin"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [36] "vpuout"     "AreaSqKM"   "TotDASqKM"  "divdasqkm"  "tidal"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [41] "totma"      "wbareatype" "hwnodesqkm" "maxelevraw" "minelevraw"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [46] "maxelevsmo" "minelevsmo" "slope"      "elevfixed"  "hwtype"    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [51] "slopelenkm" "qa_ma"      "va_ma"      "qc_ma"      "vc_ma"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [56] "qe_ma"      "ve_ma"      "qa_01"      "va_01"      "qc_01"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [61] "vc_01"      "qe_01"      "ve_01"      "qa_02"      "va_02"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [66] "qc_02"      "vc_02"      "qe_02"      "ve_02"      "qa_03"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [71] "va_03"      "qc_03"      "vc_03"      "qe_03"      "ve_03"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [76] "qa_04"      "va_04"      "qc_04"      "vc_04"      "qe_04"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [81] "ve_04"      "qa_05"      "va_05"      "qc_05"      "vc_05"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [86] "qe_05"      "ve_05"      "qa_06"      "va_06"      "qc_06"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [91] "vc_06"      "qe_06"      "ve_06"      "qa_07"      "va_07"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [96] "qc_07"      "vc_07"      "qe_07"      "ve_07"      "qa_08"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [101] "va_08"      "qc_08"      "vc_08"      "qe_08"      "ve_08"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [106] "qa_09"      "va_09"      "qc_09"      "vc_09"      "qe_09"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [111] "ve_09"      "qa_10"      "va_10"      "qc_10"      "vc_10"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [116] "qe_10"      "ve_10"      "qa_11"      "va_11"      "qc_11"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [121] "vc_11"      "qe_11"      "ve_11"      "qa_12"      "va_12"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [126] "qc_12"      "vc_12"      "qe_12"      "ve_12"      "lakefract" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [131] "surfarea"   "rareahload" "rpuid"      "vpuid"      "enabled"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [136] "geom"      </span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -242,11 +246,11 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Blodgett.</p>
+  <p><p>Developed by David Blodgett.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -254,6 +258,8 @@
 
   
 
+
+  
 
   </body>
 </html>

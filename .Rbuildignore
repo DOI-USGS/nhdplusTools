@@ -19,4 +19,4 @@ rosm.cache
 pkgdown
 .gitlab-ci.yml
 .github
-
+Dockerfile

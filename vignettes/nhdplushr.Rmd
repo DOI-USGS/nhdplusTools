@@ -10,17 +10,27 @@ vignette: >
 
 ```{r setup, include = FALSE}
 library(nhdplusTools)
+
 local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
+if(local) {
+  cache_path <- file.path(nhdplusTools_data_dir(), "hr_v_cache")
+} else {
+  cache_path <- tempdir()
+}
+
 knitr::opts_chunk$set(
+  collapse = TRUE,
   comment = "#>",
-  fig.width=8.5, 
-  fig.height=8,
+  fig.width=6, 
+  fig.height=4,
   eval=local,
   cache=local,
-  cache.path=(file.path(nhdplusTools_data_dir(), "hr_v_cache"))
+  cache.path=(cache_path)
 )
+
 oldoption <- options(scipen = 9999,
                      "rgdal_show_exportToProj4_warnings"="none")
+
 ```
 
 ## TL;DR;

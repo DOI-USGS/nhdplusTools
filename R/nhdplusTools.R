@@ -34,6 +34,7 @@ HUC12 <- "HUC12"
 TOHUC <- "TOHUC"
 ReachCode <- "ReachCode"
 VPUID <- "VPUID"
+toCOMID = "toCOMID"
 
 
 # List of input names that should be changed to replacement names
@@ -64,7 +65,8 @@ nhdplus_attributes <- list(
   REACHCODE = REACHCODE, ReachCode = REACHCODE,
   REACH_meas = REACH_meas,
   HUC12 = HUC12,
-  TOHUC = TOHUC)
+  TOHUC = TOHUC,
+  toCOMID = toCOMID)
 
 .data <- . <- NULL
 

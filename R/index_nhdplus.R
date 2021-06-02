@@ -105,7 +105,7 @@ get_flowline_index <- function(flines, points,
   if(is.character(flines) && flines == "download_nhdplusv2") {
 
     if((!is.null(nrow(points)) && nrow(points)) == 1 | length(points) == 1) {
-      req <- suppressMessages(sf::st_buffer(points, 0.01))
+      req <- suppressMessages(sf::st_buffer(points, ifelse(sf::sf_use_s2(), 200, 0.01)))
     } else {
       req <- points
     }

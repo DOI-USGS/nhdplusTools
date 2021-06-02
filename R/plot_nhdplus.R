@@ -384,7 +384,7 @@ make_basin <- function(x, catchment_layer, comids = NULL) {
   if(!is.null(comids)) {
     x <- x[x$FEATUREID %in% comids, ]
   }
-  sf::st_precision(x) <- 10000 # kills slivers
+  sf::st_precision(x) <- ifelse(sf::sf_use_s2(), 1e8, 10000) # kills slivers -- doesn't work with s2?
   sf::st_sf(geom = sf::st_union(sf::st_geometry(x)))
 }
 

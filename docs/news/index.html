@@ -8,13 +8,6 @@
 
 <title>Changelog • nhdplusTools</title>
 
-<!-- favicons -->
-<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -150,8 +143,10 @@
 <h1 class="page-header" data-toc-text="0.4.2">
 <a href="#nhdplustools-042" class="anchor" aria-hidden="true"></a>nhdplusTools 0.4.2<small> Unreleased </small></h1>
 <p>Version 0.4.2 further cleans up temporary and cache data functionality for CRAN policy.</p>
-<p>New functionality was added to indexing functionality. When multiple flowlines are returned, <code>disambiguate_flowline_index()</code> supports for disambiguating them based on numeric or text attributes that should match. This functionality is not heavily tested, but forms a basis for expansion of this functionality going forward.</p>
-</div>
+<p>New functionality was added to indexing functionality.</p>
+<ul><li>When multiple flowlines are returned, <code>disambiguate_flowline_index()</code> supports for disambiguating them based on numeric or text attributes that should match. This functionality is not heavily tested, but forms a basis for expansion of this functionality going forward.</li>
+<li>A function to find the point location of a flowline index, <code><a href="../reference/get_hydro_location.html">get_hydro_location()</a></code> was added. It will return point geometry given a geometry identifier and measure along that identifier.</li>
+</ul></div>
     <div id="nhdplustools-041" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.1">
 <a href="#nhdplustools-041" class="anchor" aria-hidden="true"></a>nhdplusTools 0.4.1<small> 2021-05-16 </small></h1>

@@ -58,7 +58,7 @@ Names are not modified from the NHDPlusHR geodatabase.
 Set layers to "NULL" to get all layers.
 }
 \examples{
-\donttest{
+\dontrun{
 # Note this will download a lot of data to a temp directory.
 # Change 'temp_dir' to your directory of choice.
 temp_dir <- file.path(nhdplusTools_data_dir(), "temp_hr_cache")

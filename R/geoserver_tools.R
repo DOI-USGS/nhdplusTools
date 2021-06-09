@@ -74,7 +74,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
     if(sf::st_geometry_type(AOI) == "POINT"){
       # If input is a POINT, buffer by 1/2 meter (in equal area projection)
       AOI = sf::st_buffer(sf::st_transform(AOI, 5070), buffer) %>%
-        sf::st_bbox() %>% sf::st_as_sfc()
+        sf::st_bbox() %>% sf::st_as_sfc() %>% sf::st_make_valid()
     }
   }
 
@@ -118,7 +118,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                                 times = 10,
                                 pause_cap = 240)$content)
 
-  out = tryCatch({sf::st_zm(sf::read_sf(resp))},
+  out <- tryCatch({check_valid(sf::st_zm(sf::read_sf(resp)), out_prj = t_srs)},
                  error   = function(e){ return(NULL) })
 
   if(any(is.null(out), nrow(out) == 0)) {
@@ -135,7 +135,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   }
 
   if(!is.null(out)) {
-    return(check_valid(out, out_prj = t_srs))
+    return(out)
   } else {
     warning(paste("No", here$user_call, "features found"), call. = FALSE)
   }

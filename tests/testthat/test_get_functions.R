@@ -103,7 +103,7 @@ test_that("get_nhdplus...", {
   cat = get_nhdplus(AOI = pt, realization = 'catchment')
   expect_equal(nrow(cat), 1)
   expect_equal(st_crs(cat)$epsg, 4326)
-  expect_equal(as.character(st_geometry_type(cat)), 'MULTIPOLYGON')
+  expect_true(grepl('POLYGON', as.character(st_geometry_type(cat))))
 
   # test t_srs to override CRS
   catch5070 = get_nhdplus(AOI = pt, realization = 'catchment', t_srs = 5070)
@@ -121,7 +121,7 @@ test_that("get_nhdplus...", {
   expect_equal(nrow(areaNHD$flowline), nrow(areaNHD$catchment), nrow(areaNHD$outlet))
   expect_equal(as.character(st_geometry_type(areaNHD$outlet))[1], 'POINT')
   expect_equal(as.character(st_geometry_type(areaNHD$flowline))[1], 'LINESTRING')
-  expect_equal(as.character(st_geometry_type(areaNHD$catchment))[1], 'POLYGON')
+  expect_true(grepl('POLYGON', as.character(st_geometry_type(areaNHD$catchment))[1]))
 
   # ID
   # forcing "no attributes found" for bad COMID

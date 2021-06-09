@@ -17,7 +17,7 @@ Also see: \link{get_vaa_path}}
 found at path.}
 }
 \value{
-data.frame
+data.frame containing requested VAA data
 }
 \description{
 Return requested NHDPlusv2 Attributes
@@ -33,7 +33,9 @@ To view aggregate data and documentation, see
 \href{https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/}{here}
 }
 \examples{
-\donttest{
+\dontrun{
+# This will download the vaa file to the path from get_vaa_path()
+
 get_vaa("slope")
 get_vaa(c("slope", "lengthkm"))
 

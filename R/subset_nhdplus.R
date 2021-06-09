@@ -550,7 +550,18 @@ clean_bbox <- function(x) {
   return(x)
 }
 
-check_valid <- function(x, out_prj) {
+fix_g_type <- function(g, type = "POLYGON", orig_type = "MULTIPOLYGON") {
+
+  tryCatch({
+    sf::st_cast(sf::st_sfc(g[grepl(type, sapply(g, sf::st_geometry_type))]),
+                orig_type)
+  }, error = function(e) {
+    sf::st_sfc(g)
+  })
+
+}
+
+check_valid <- function(x, out_prj = sf::st_crs(x)) {
 
   if(is.null(x)){return(NULL)}
 
@@ -560,7 +571,26 @@ check_valid <- function(x, out_prj) {
 
     message("Found invalid geometry, attempting to fix.")
 
-    try(x <- sf::st_make_valid(x))
+    orig_type <- unique(as.character(sf::st_geometry_type(x)))
+
+    orig_type <- orig_type[grepl("POLY|LINE", orig_type)]
+
+    try({
+      x <- sf::st_make_valid(x)
+
+      if(!all(sf::st_geometry_type(x) == orig_type)) {
+        if(any(grepl("^GEOMETRY", sf::st_geometry_type(x)))) {
+
+          sf::st_geometry(x) <-
+            sf::st_sfc(do.call(c, lapply(sf::st_geometry(x), fix_g_type,
+                                         type = gsub("^MULTI", "", orig_type))),
+                       crs = sf::st_crs(x))
+
+          x <- sf::st_cast(x, orig_type)
+
+        }
+      }
+    })
   }
 
   if (any(grepl("POLYGON", class(sf::st_geometry(x))))) {

@@ -30,7 +30,7 @@
 #' @importFrom sf st_layers read_sf st_sf write_sf
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Note this will download a lot of data to a temp directory.
 #' # Change 'temp_dir' to your directory of choice.
 #' temp_dir <- file.path(nhdplusTools_data_dir(), "temp_hr_cache")

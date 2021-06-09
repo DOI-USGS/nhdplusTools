@@ -20,7 +20,8 @@ get_vaa_path <- function() {
 #' @importFrom fst metadata_fst
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
+#' # This will download the vaa file to the path from get_vaa_path()
 #' get_vaa_names()
 #'
 #' #cleanup if desired
@@ -43,17 +44,19 @@ get_vaa_names <- function() {
 #' Also see: \link{get_vaa_path}
 #' @param download logical if TRUE, the default, will download VAA table if not
 #' found at path.
-#' @return data.frame
+#' @return data.frame containing requested VAA data
+#' @importFrom fst read.fst
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
+#' # This will download the vaa file to the path from get_vaa_path()
+#'
 #' get_vaa("slope")
 #' get_vaa(c("slope", "lengthkm"))
 #'
 #' #cleanup if desired
 #' unlink(dirname(get_vaa_path()), recursive = TRUE)
 #' }
-#' @importFrom fst read.fst
 
 get_vaa <- function(atts = NULL,
                     path = get_vaa_path(),

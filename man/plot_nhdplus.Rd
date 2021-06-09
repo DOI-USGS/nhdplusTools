@@ -139,7 +139,8 @@ plot_nhdplus(bbox = bbox, nhdplus_data = sample_data,
 plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
              plot_config = list(flowline = list(col = "darkblue")))
 
-# Cleanup downloaded open street map cache if desired.
-unlink(nhdplusTools:::osm_cache_dir(), recursive = TRUE)
+# Cleanup downloaded open street map cache and temp data dir if desired.
+# This is included for CRAN checks primarily.
+unlink(nhdplusTools::nhdplusTools_data_dir(), recursive = TRUE)
 }
 }

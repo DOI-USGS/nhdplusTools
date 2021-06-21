@@ -8,13 +8,6 @@
 
 <title>Plot NHDPlus — plot_nhdplus • nhdplusTools</title>
 
-<!-- favicons -->
-<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -257,12 +250,6 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span><span class='op'>(</span><span class='st'>"rgdal_show_exportToProj4_warnings"</span><span class='op'>=</span><span class='st'>"none"</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='st'>"05428500"</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 1 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 3 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 2.4 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 6.1 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 5.8 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 40.8 seconds...</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
@@ -377,8 +364,9 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
 <span class='r-plt'><img src='plot_nhdplus-11.png' alt='' width='700' height='433' /></span>
 <span class='r-in'></span>
-<span class='r-in'><span class='co'># Cleanup downloaded open street map cache if desired.</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='fu'>nhdplusTools</span><span class='fu'>:::</span><span class='fu'>osm_cache_dir</span><span class='op'>(</span><span class='op'>)</span>, recursive <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># Cleanup downloaded open street map cache and temp data dir if desired.</span></span>
+<span class='r-in'><span class='co'># This is included for CRAN checks primarily.</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='fu'>nhdplusTools</span><span class='fu'>::</span><span class='fu'><a href='nhdplusTools_data_dir.html'>nhdplusTools_data_dir</a></span><span class='op'>(</span><span class='op'>)</span>, recursive <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
 <span class='r-in'><span class='co'># }</span></span>
 </code></pre></div>
   </div>

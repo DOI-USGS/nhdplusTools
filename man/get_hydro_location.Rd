@@ -7,12 +7,10 @@
 get_hydro_location(indexes, flowpath)
 }
 \arguments{
-\item{indexes}{data.frame as output from \link{get_flowline_index} with more than
-one hydrologic location per indexed point.}
+\item{indexes}{data.frame as output from \link{get_flowline_index}.}
 
 \item{flowpath}{data.frame with two columns. The first should join to the COMID
-field of the indexes and the second should be the numeric or ascii metric such as drainage
-area or GNIS Name. Names of this data.frame are not used.}
+field of the indexes and the second should be linear geometry.}
 }
 \description{
 given a flowline index, returns the hydrologic location (point)

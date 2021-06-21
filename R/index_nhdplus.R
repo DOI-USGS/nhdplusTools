@@ -427,7 +427,9 @@ match_crs <- function(x, y, warn_text = "") {
 #' get hydro location
 #' @description given a flowline index, returns the hydrologic location (point)
 #' along the specific linear element referenced by the index.
-#' @inheritParams disambiguate_flowline_indexes
+#' @param indexes data.frame as output from \link{get_flowline_index}.
+#' @param flowpath data.frame with two columns. The first should join to the COMID
+#' field of the indexes and the second should be linear geometry.
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
@@ -460,6 +462,11 @@ get_hydro_location_single <- function(x) {
   m <- rescale_measures(x[[1]], x[[2]]$FromMeas, x[[2]]$ToMeas)
 
   nus <- nrow(coords) - sum(coords$measure <= m)
+
+  if(nus == 0) {
+    nus <- 1
+  }
+
   nds <- ifelse(nus < nrow(coords), nus + 1, nus)
 
   if(nds == nus) {

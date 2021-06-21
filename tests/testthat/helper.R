@@ -3,6 +3,8 @@ options("rgdal_show_exportToProj4_warnings"="none")
 library("sf")
 library("dplyr")
 
+sf::sf_use_s2(TRUE)
+
 unlink(file.path(tempdir(check = TRUE), "*"), recursive = TRUE)
 
 get_test_file <- function(temp_dir) {

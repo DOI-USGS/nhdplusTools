@@ -187,23 +187,22 @@ assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
 
 assign("nhdpt_dat_dir",
-       rappdirs::user_data_dir(appname = "nhdplusTools",
-                               appauthor = "usgs_r"),
+       tools::R_user_dir("usgs_r/nhdplusTools"),
        envir = nhdplusTools_env)
 
 #' get or set nhdplusTools data directory
 #' @description if left unset, will return the user data dir
-#' as returned by \link[rappdirs]{user_data_dir} for this package.
+#' as returned by \link[tools]{R_user_dir} for this package.
 #' @param dir path of desired data directory
 #' @return path of data directory (silent when setting)
-#' @importFrom rappdirs user_data_dir
+#' @importFrom tools R_user_dir
 #' @export
 #' @examples
 #' nhdplusTools_data_dir()
 #'
 #' nhdplusTools_data_dir("demo")
 #'
-#' nhdplusTools_data_dir(rappdirs::user_data_dir("nhdplusTools", "usgs_r"))
+#' nhdplusTools_data_dir(tools::R_user_dir("usgs_r/nhdplusTools"))
 #'
 nhdplusTools_data_dir <- function(dir = NULL) {
 

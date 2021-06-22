@@ -14,6 +14,9 @@ from the specified `featureSource`.}
 
 \item{type}{character "all", "local", "total", or "divergence_routed".}
 }
+\value{
+data.frame contianing requested characteristics
+}
 \description{
 Retrieves catchment characteristics from the Network Linked Data Index.
 Metadata for these characteristics can be found using `discover_nldi_characteristics()`.

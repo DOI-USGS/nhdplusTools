@@ -19,7 +19,7 @@ id field of the indexes and the second should be the numeric or ascii metric suc
 area or GNIS Name.. Names of this data,frame are not used.}
 }
 \value{
-The indexes data.frame deduplicated according to the minimum difference
+data.frame indexes deduplicated according to the minimum difference
 between the values in the metric columns. If two or more result in the same "minimum"
 value, duplicates will be returned.
 }

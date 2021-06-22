@@ -11,6 +11,9 @@ get_terminal(x, outlets)
 
 \item{outlets}{IDs of outlet flowlines}
 }
+\value{
+data.frame containing the terminal ID for each outlet
+}
 \description{
 Get the ID of the basin outlet for each flowline.
 }

@@ -6,7 +6,7 @@
 #' @param download_files boolean if FALSE, only URLs to files will be returned
 #' can be hu02s and/or hu04s
 #'
-#' @return Paths to geodatabases created.
+#' @return character Paths to geodatabases created.
 #' @importFrom xml2 read_xml xml_ns_strip xml_find_all xml_text
 #' @importFrom utils download.file
 #' @importFrom zip unzip
@@ -88,7 +88,7 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' @param outdir The folder path where data should be downloaded and extracted
 #' @param url the location of the online resource
 #' @param progress boolean display download progress?
-#' @return the path to the local geodatabase
+#' @return character path to the local geodatabase
 #' @export
 #' @examples
 #' \dontrun{
@@ -130,7 +130,7 @@ download_nhdplusv2 <- function(outdir,
 #' https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/WBD/National/GDB/WBD_National_GDB.xml
 #' for metadata.
 #' @inheritParams download_nhdplusv2
-#' @return the path to the local geodatabase
+#' @return character path to the local geodatabase
 #' @export
 #' @importFrom zip unzip
 #' @examples
@@ -161,7 +161,7 @@ download_wbd <- function(outdir,
 #' @description This function downloads and decompresses staged RF1 data.
 #' See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.
 #' @inheritParams download_nhdplusv2
-#' @return the path to the local e00 file
+#' @return character path to the local e00 file
 #' @export
 #' @examples
 #' \dontrun{

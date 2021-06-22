@@ -4,6 +4,7 @@
 #' @param x sf data.frame with one or more flowlines
 #' @param position character either "start" or "end"
 #' @export
+#' @return sf data.frame containing requested nodes
 #' @importFrom sf st_crs st_coordinates st_as_sf
 #' @importFrom dplyr select group_by filter row_number n ungroup
 #' @examples

@@ -29,6 +29,9 @@ rather than recreated.}
 
 \item{status}{logical should progress be printed?}
 }
+\value{
+data.frame with added attributes
+}
 \description{
 Given a river network with required base attributes, adds the
 NHDPlus network attributes: hydrosequence, levelpath, terminalpath, pathlength,

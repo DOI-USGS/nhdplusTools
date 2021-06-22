@@ -85,6 +85,7 @@ combine_networks <- function(lp) {
 #' split into independent sub-networks. If it exists, it will be read from disk
 #' rather than recreated.
 #' @param status logical should progress be printed?
+#' @return data.frame with added attributes
 #' @export
 #' @examples
 #'

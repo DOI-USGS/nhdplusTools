@@ -10,7 +10,7 @@ align_nhdplus_names(x)
 \item{x}{a \code{sf} object of nhdplus flowlines}
 }
 \value{
-a renamed \code{sf} object
+data.frame renamed \code{sf} object
 }
 \description{
 this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.

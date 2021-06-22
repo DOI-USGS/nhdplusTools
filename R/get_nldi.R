@@ -2,6 +2,7 @@
 #' @description Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.
 #' @param type character "all", "local", "total", or "divergence_routed".
 #' @export
+#' @return data.frame containing available characteristics
 #' @examples
 #' chars <- discover_nldi_characteristics()
 #' names(chars)
@@ -143,7 +144,7 @@ get_nldi_basin <- function(nldi_feature) {
 #' @title Get NLDI Feature
 #' @description Get a single feature from the NLDI
 #' @inheritParams navigate_nldi
-#' @return sf feature collection with one feature
+#' @return sf data.frame with one feature
 #' @examples
 #' \donttest{
 #' get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
@@ -160,6 +161,7 @@ get_nldi_feature <- function(nldi_feature) {
 #' Metadata for these characteristics can be found using `discover_nldi_characteristics()`.
 #' @inheritParams navigate_nldi
 #' @inheritParams discover_nldi_characteristics
+#' @return data.frame contianing requested characteristics
 #' @export
 #' @examples
 #' chars <- get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))

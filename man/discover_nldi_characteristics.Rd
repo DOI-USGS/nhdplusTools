@@ -9,6 +9,9 @@ discover_nldi_characteristics(type = "all")
 \arguments{
 \item{type}{character "all", "local", "total", or "divergence_routed".}
 }
+\value{
+data.frame containing available characteristics
+}
 \description{
 Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.
 }

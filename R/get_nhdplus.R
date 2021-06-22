@@ -14,7 +14,7 @@
 #' @param realization character. What realization to return.
 #' Default is flowline and options include: outlet, flowline, catchment,
 #' and all
-#' @return a single, or list, of simple feature objects
+#' @return sfc a single, or list, of simple feature objects
 #' @examples
 #' \donttest{
 #'  point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)

@@ -12,7 +12,7 @@
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
 #' @param flowline_only boolean only subset and plot flowlines?
 #' @param ... parameters passed on to rosm.
-#' @return plot data is returned invisibly in NAD83 Lat/Lon.
+#' @return data.frame plot data is returned invisibly in NAD83 Lat/Lon.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
 #' \enumerate{

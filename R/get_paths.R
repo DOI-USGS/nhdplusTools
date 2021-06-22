@@ -301,6 +301,7 @@ get_sorted <- function(x) {
 #' @param x two column data.frame with IDs and toIDs. Names are ignored.
 #' @param outlets IDs of outlet flowlines
 #' @export
+#' @return data.frame containing the terminal ID for each outlet
 #' @importFrom igraph dfs graph_from_data_frame V
 #' @importFrom sf st_drop_geometry
 #' @importFrom tidyr unnest
@@ -351,6 +352,7 @@ get_terminal <- function(x, outlets) {
 #' @importFrom dplyr arrange
 #' @importFrom methods as
 #' @export
+#' @return data.frame containing levelpaths for each ID
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #'

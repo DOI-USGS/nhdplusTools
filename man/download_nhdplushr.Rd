@@ -17,7 +17,7 @@ and four digit codes.}
 can be hu02s and/or hu04s}
 }
 \value{
-Paths to geodatabases created.
+character Paths to geodatabases created.
 }
 \description{
 Download NHDPlus HiRes

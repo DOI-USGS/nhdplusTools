@@ -27,6 +27,9 @@ get_hr_data(
 \item{rename}{boolean if TRUE, nhdplusTools standard attribute values will
 be applied.}
 }
+\value{
+sf data.frame containing requested data
+}
 \description{
 Use to remove unwanted detail NHDPlusHR data
 See \link{get_nhdplushr} for examples.

@@ -42,7 +42,7 @@ plot_nhdplus(
 \item{...}{parameters passed on to rosm.}
 }
 \value{
-plot data is returned invisibly in NAD83 Lat/Lon.
+data.frame plot data is returned invisibly in NAD83 Lat/Lon.
 }
 \description{
 Given a list of outlets, get their basin boundaries and network and return a plot in

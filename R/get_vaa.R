@@ -4,7 +4,7 @@
 #' file path to the cached file. Will use the user data dir indicated
 #' by \link{nhdplusTools_data_dir}.
 #' @inherit download_vaa details
-#' @return file.path character
+#' @return character file path
 #' @export
 #' @examples
 #' get_vaa_path()
@@ -105,7 +105,7 @@ check_vaa_path <- function(path = get_vaa_path(), download = TRUE) {
 #' \href{https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/}{here}
 #' @inheritParams  get_vaa
 #' @param force logical. Force data re-download. Default = FALSE
-#' @return path to cached data
+#' @return character path to cached data
 #' @export
 #' @importFrom httr GET progress write_disk
 

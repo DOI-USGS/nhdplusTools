@@ -13,7 +13,7 @@ dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
 from the specified `featureSource`.}
 }
 \value{
-sf feature collection with one feature
+sf data.frame with one feature
 }
 \description{
 Get a single feature from the NLDI

@@ -10,7 +10,7 @@ nhdplusTools_data_dir(dir = NULL)
 \item{dir}{path of desired data directory}
 }
 \value{
-path of data directory (silent when setting)
+character path of data directory (silent when setting)
 }
 \description{
 if left unset, will return the user data dir

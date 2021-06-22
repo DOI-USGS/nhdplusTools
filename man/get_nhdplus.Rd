@@ -37,7 +37,7 @@ A user specified - target -Spatial Reference System (SRS/CRS) for returned objec
 Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.}
 }
 \value{
-a single, or list, of simple feature objects
+sfc a single, or list, of simple feature objects
 }
 \description{
 Subsets NHDPlusV2 features by location (POINT), area (POLYGON),

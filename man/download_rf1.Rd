@@ -18,7 +18,7 @@ download_rf1(
 \item{progress}{boolean display download progress?}
 }
 \value{
-the path to the local e00 file
+character path to the local e00 file
 }
 \description{
 This function downloads and decompresses staged RF1 data.

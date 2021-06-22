@@ -52,6 +52,8 @@ the flowlines.
 
 Note 4: See `dfMaxLength` input to sf::st_segmentize() for details of
 handling of precision parameter.
+
+Note 5: "from" is downstream -- 0 is the outlet "to" is upstream -- 100 is the inlet
 }
 \examples{
 \donttest{

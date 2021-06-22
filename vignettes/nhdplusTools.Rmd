@@ -107,7 +107,7 @@ library(nhdplusTools)
 
 ## Data and Package Basics
 
-The first thing you are going to need to do is go get some data to work with. `nhdplusTools` provides the ability to download small subsets of the NHDPlus as described in the [Discovery and Subsetting](#discovery_subsetting) section. For large subsets, greater than a few thousand square kilometers, you can download the [National Seamless database at this web page.](https://www.epa.gov/waterdata/nhdplus-national-data) You will need [7z](https://www.7-zip.org/) or the [`archive` package](https://github.com/jimhester/archive) to extract it. 
+The first thing you are going to need to do is go get some data to work with. `nhdplusTools` provides the ability to download small subsets of the NHDPlus as described in the [Discovery and Subsetting](#discovery_subsetting) section. For large subsets, greater than a few thousand square kilometers, you can download the [National Seamless database at this web page.](https://www.epa.gov/waterdata/nhdplus-national-data) You will need [7z](https://www.7-zip.org/) or the [`archive` package](https://github.com/r-lib/archive) to extract it. 
 
 If you are working with the whole National Seamless database, `nhdplusTools` has some convenience functions you should be aware of. Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the `nhdplus_path()` function.
 

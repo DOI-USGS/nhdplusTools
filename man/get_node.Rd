@@ -11,6 +11,9 @@ get_node(x, position = "end")
 
 \item{position}{character either "start" or "end"}
 }
+\value{
+sf data.frame containing requested nodes
+}
 \description{
 Given one or more flowlines, returns
   a particular node from the flowline.

@@ -35,7 +35,7 @@
 #' and subject to revision. It does not include as many layers and may not
 #' be available permenently.
 #'
-#' @return path to the saved subset geopackage
+#' @return character path to the saved subset geopackage
 #' @export
 #' @examples
 #' \donttest{
@@ -667,6 +667,7 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #' @param rpu character e.g. "01a"
 #' @param run_make_standalone boolean should the run_make_standalone function be run on result?
 #' @export
+#' @return data.frame containing subset network
 #' @importFrom dplyr filter arrange summarize
 #' @importFrom sf st_sf st_drop_geometry
 #' @examples

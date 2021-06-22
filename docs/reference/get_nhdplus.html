@@ -199,7 +199,7 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a single, or list, of simple feature objects</p>
+    <p>sfc a single, or list, of simple feature objects</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The returned object(s) will have the same
@@ -250,7 +250,7 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Simple feature collection with 1 feature and 7 fields</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Geometry type: POLYGON</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Dimension:     XY</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Bounding box:  xmin: -119.8822 ymin: 34.4042 xmax: -119.8252 ymax: 34.4178</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Bounding box:  xmin: -119.8822 ymin: 34.40399 xmax: -119.8251 ymax: 34.41803</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 8</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   id              gridcode featureid sourcefc   areasqkm shape_length shape_area</span>
@@ -262,7 +262,7 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Simple feature collection with 1 feature and 7 fields</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Geometry type: POLYGON</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Dimension:     XY</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Bounding box:  xmin: -119.8822 ymin: 34.4042 xmax: -119.8252 ymax: 34.4178</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Bounding box:  xmin: -119.8822 ymin: 34.40399 xmax: -119.8251 ymax: 34.41803</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 8</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   id              gridcode featureid sourcefc   areasqkm shape_length shape_area</span>
@@ -408,7 +408,7 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class='r-in'> <span class='va'>area</span> <span class='op'>&lt;-</span> <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_as_sfc.html'>st_as_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_bbox.html'>st_bbox</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>xmin <span class='op'>=</span> <span class='op'>-</span><span class='fl'>119.8851</span>, xmax <span class='op'>=</span><span class='op'>-</span><span class='fl'>119.8361</span>,</span>
 <span class='r-in'> ymax <span class='op'>=</span> <span class='fl'>34.42439</span>, ymin <span class='op'>=</span> <span class='fl'>34.40473</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'> <span class='fu'>get_nhdplus</span><span class='op'>(</span><span class='va'>area</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Simple feature collection with 19 features and 138 fields</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Geometry type: LINESTRING</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Dimension:     XY</span>
@@ -460,7 +460,7 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   ve_07 &lt;dbl&gt;, qa_08 &lt;dbl&gt;, va_08 &lt;dbl&gt;, qc_08 &lt;dbl&gt;, vc_08 &lt;dbl&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   qe_08 &lt;dbl&gt;, ...</span></span>
 <span class='r-in'> <span class='fu'>get_nhdplus</span><span class='op'>(</span><span class='va'>area</span>, realization <span class='op'>=</span> <span class='st'>"flowline"</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Simple feature collection with 8 features and 138 fields</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Geometry type: LINESTRING</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Dimension:     XY</span>

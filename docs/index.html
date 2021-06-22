@@ -201,6 +201,12 @@ Also see: <a href="https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.h
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/build.html" class="external-link">build</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
+<div id="check-notes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#check-notes" class="anchor" aria-hidden="true"></a>Check notes:</h3>
+<p>In addition to typical R package checking, a Dockerfile is included in this repository. Once built, it can be run with the following command.</p>
+<pre><code>docker run --rm -it -v %cd%:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ &amp;&amp; cp /src/.Rbuildignore /check/ &amp;&amp; cd /check &amp;&amp; Rscript -e 'devtools::build()' &amp;&amp; R CMD check --as-cran ../nhdplusTools_*"</code></pre>
+</div>
 <div id="contributing" class="section level3">
 <h3 class="hasAnchor">
 <a href="#contributing" class="anchor" aria-hidden="true"></a>Contributing:</h3>

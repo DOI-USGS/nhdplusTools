@@ -169,13 +169,12 @@ can be hu02s and/or hu04s</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Paths to geodatabases created.</p>
+    <p>character Paths to geodatabases created.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># \donttest{</span></span>
 <span class='r-in'><span class='va'>hu</span> <span class='op'>&lt;-</span> <span class='fu'>nhdplusTools</span><span class='fu'>::</span><span class='fu'><a href='get_huc8.html'>get_huc8</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>73</span>, <span class='fl'>42</span><span class='op'>)</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Found invalid geometry, attempting to fix.</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='op'>(</span><span class='va'>hu</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/substr.html'>substr</a></span><span class='op'>(</span><span class='va'>hu</span><span class='op'>$</span><span class='va'>huc8</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "01"</span>

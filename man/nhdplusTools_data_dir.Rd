@@ -10,17 +10,17 @@ nhdplusTools_data_dir(dir = NULL)
 \item{dir}{path of desired data directory}
 }
 \value{
-path of data directory (silent when setting)
+character path of data directory (silent when setting)
 }
 \description{
 if left unset, will return the user data dir
-as returned by \link[rappdirs]{user_data_dir} for this package.
+as returned by \link[tools]{R_user_dir} for this package.
 }
 \examples{
 nhdplusTools_data_dir()
 
 nhdplusTools_data_dir("demo")
 
-nhdplusTools_data_dir(rappdirs::user_data_dir("nhdplusTools", "usgs_r"))
+nhdplusTools_data_dir(tools::R_user_dir("usgs_r/nhdplusTools"))
 
 }

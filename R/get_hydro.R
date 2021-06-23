@@ -1,10 +1,9 @@
 #' @title Find WBD HUC 08 unit subsets
 #' @description Subsets the WBD level 08 features by location (POINT),
 #' area (POLYGON), or set of IDs.
-#' @inherit query_usgs_geoserver details
+#' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id WBD HUC08 ID(s)
-#' @inherit query_usgs_geoserver return
 #' @export
 
 get_huc8 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
@@ -15,10 +14,9 @@ get_huc8 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @title Find WBD HUC 12 unit subsets
 #' @description Subsets the WBD level 12 features by location (POINT),
 #' area (POLYGON), or set of IDs.
-#' @inherit query_usgs_geoserver details
+#' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id WBD HUC12 ID(s)
-#' @inherit query_usgs_geoserver return
 #' @export
 
 get_huc12 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
@@ -29,10 +27,9 @@ get_huc12 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @title Find NHD Water Bodies
 #' @description Subsets NHD waterbody features by location (POINT),
 #' area (POLYGON), or set of IDs.
-#' @inherit query_usgs_geoserver details
+#' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id NHD Waterbody COMID(s)
-#' @inherit query_usgs_geoserver return
 #' @export
 
 get_waterbodies <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
@@ -45,10 +42,9 @@ get_waterbodies <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @title Find NHD Areas
 #' @description Subsets NHD Area features by location (POINT),
 #' area (POLYGON), or set of IDs.
-#' @inherit query_usgs_geoserver details
+#' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id NHD Area COMID(s)
-#' @inherit query_usgs_geoserver return
 #' @export
 
 get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
@@ -60,10 +56,9 @@ get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @title Find GAGESII Features
 #' @description Subsets the gagesII dataset by location (POINT),
 #' area (POLYGON), or set of IDs.
-#' @inherit query_usgs_geoserver details
+#' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id NWIS Gage ID(s)
-#' @inherit query_usgs_geoserver return
 #' @export
 
 get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
@@ -75,12 +70,11 @@ get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @description Returns a POINT feature class of active, stream network,
 #' NWIS gages for an Area of Interest. If a POINT feature is used as an AOI,
 #' then the returned sites within the requested buffer, are sorted by distance (in meters) from that POINT.
-#' @inherit query_usgs_geoserver details
+#' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param buffer numeric. The amount (in meters) to buffer a POINT AOI by
 #' for an extended search. Default = 20,000. Returned results are arrange
 #' by distance from POINT AOI
-#' @inherit query_usgs_geoserver return
 #' @importFrom xml2 xml_root xml_children xml_attr read_xml
 #' @importFrom sf st_geometry_type st_transform st_buffer st_as_sf
 #' st_bbox st_nearest_feature st_distance

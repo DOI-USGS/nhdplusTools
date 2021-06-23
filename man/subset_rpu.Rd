@@ -14,6 +14,9 @@ LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.}
 
 \item{run_make_standalone}{boolean should the run_make_standalone function be run on result?}
 }
+\value{
+data.frame containing subset network
+}
 \description{
 Given flowlines and an rpu_code, performs a network-safe subset such
 that the result can be used in downstream processing. Has been tested to work

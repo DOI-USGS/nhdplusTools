@@ -13,6 +13,9 @@ rescale_measures(measure, from, to)
 
 \item{to}{numeric flowline to-measure relative to the reach}
 }
+\value{
+numeric rescaled measure
+}
 \description{
 Given a reachcode measure and the from and to measure for a
 comid flowline, returns the measure along the comid flowline. This is

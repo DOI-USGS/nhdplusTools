@@ -17,8 +17,7 @@ test_that("nhdplus_data path sets and gets right", {
 })
 
 test_that("nhdplusTools_data_path works", {
-  check <- rappdirs::user_data_dir(appname = "nhdplusTools",
-                                   appauthor = "usgs_r")
+  check <- tools::R_user_dir("usgs_r/nhdplusTools")
 
   expect_equal(nhdplusTools_data_dir(),
                check)

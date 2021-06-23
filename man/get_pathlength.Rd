@@ -9,6 +9,9 @@ get_pathlength(x)
 \arguments{
 \item{x}{data.frame with ID, toID, length columns.}
 }
+\value{
+data.frame containing levelpaths for each ID
+}
 \description{
 Generates the main path length to a basin's
 terminal path.

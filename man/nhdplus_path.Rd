@@ -12,7 +12,7 @@ nhdplus_path(path = NULL, warn = FALSE)
 \item{warn}{boolean controls whether warning an status messages are printed}
 }
 \value{
-1 if set successfully, the path if no input.
+0 (invisibly) if set successfully, character path if no input.
 }
 \description{
 Allows specification of a custom path to a source dataset.

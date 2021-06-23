@@ -45,7 +45,7 @@ all will be kept.}
 for "NHDFlowline" layers.}
 }
 \value{
-Response is a list of sf data.frames containing output that may also be written
+sf data.frames containing output that may also be written
 to a geopackage for later use.
 }
 \description{

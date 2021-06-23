@@ -187,23 +187,22 @@ assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
 
 assign("nhdpt_dat_dir",
-       rappdirs::user_data_dir(appname = "nhdplusTools",
-                               appauthor = "usgs_r"),
+       tools::R_user_dir("usgs_r/nhdplusTools"),
        envir = nhdplusTools_env)
 
 #' get or set nhdplusTools data directory
 #' @description if left unset, will return the user data dir
-#' as returned by \link[rappdirs]{user_data_dir} for this package.
+#' as returned by \link[tools]{R_user_dir} for this package.
 #' @param dir path of desired data directory
-#' @return path of data directory (silent when setting)
-#' @importFrom rappdirs user_data_dir
+#' @return character path of data directory (silent when setting)
+#' @importFrom tools R_user_dir
 #' @export
 #' @examples
 #' nhdplusTools_data_dir()
 #'
 #' nhdplusTools_data_dir("demo")
 #'
-#' nhdplusTools_data_dir(rappdirs::user_data_dir("nhdplusTools", "usgs_r"))
+#' nhdplusTools_data_dir(tools::R_user_dir("usgs_r/nhdplusTools"))
 #'
 nhdplusTools_data_dir <- function(dir = NULL) {
 
@@ -231,7 +230,7 @@ nhdplusTools_data_dir <- function(dir = NULL) {
 #' geodatabase or geopackage format.
 #' @param path character path ending in .gdb or .gpkg
 #' @param warn boolean controls whether warning an status messages are printed
-#' @return 1 if set successfully, the path if no input.
+#' @return 0 (invisibly) if set successfully, character path if no input.
 #' @export
 #' @examples
 #' nhdplus_path("/data/NHDPlusV21_National_Seamless.gdb")
@@ -261,7 +260,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' @title Align NHD Dataset Names
 #' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.
 #' @param x a \code{sf} object of nhdplus flowlines
-#' @return a renamed \code{sf} object
+#' @return data.frame renamed \code{sf} object
 #' @export
 #' @examples
 #' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))

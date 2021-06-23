@@ -19,7 +19,7 @@ download_nhdplusv2(
 \item{progress}{boolean display download progress?}
 }
 \value{
-the path to the local geodatabase
+character path to the local geodatabase
 }
 \description{
 This function downloads and decompresses staged seamless NHDPlusV2 data.

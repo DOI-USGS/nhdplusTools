@@ -19,7 +19,7 @@
 #' all will be kept.
 #' @param ... parameters passed along to \link{get_hr_data}
 #' for "NHDFlowline" layers.
-#' @return Response is a list of sf data.frames containing output that may also be written
+#' @return sf data.frames containing output that may also be written
 #' to a geopackage for later use.
 #' @details
 #' NHDFlowline is joined to value added attributes prior to being
@@ -115,6 +115,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 #' @param rename boolean if TRUE, nhdplusTools standard attribute values will
 #' be applied.
 #' @export
+#' @return sf data.frame containing requested data
 #' @importFrom sf st_transform st_simplify st_crs st_drop_geometry st_geometry
 #' @importFrom sf st_cast st_multilinestring st_zm st_geometry<-
 #' @importFrom dplyr select group_by filter ungroup distinct
@@ -187,6 +188,7 @@ cull_cols <- function(x, keep_cols) {
 #' @param flowlines sf data.frame of NHDPlusHR flowlines.
 #' @importFrom sf st_zm write_sf st_drop_geometry
 #' @importFrom dplyr group_by filter select
+#' @return sf data.frame containing standalone network
 #' @export
 #' @examples
 #' \donttest{

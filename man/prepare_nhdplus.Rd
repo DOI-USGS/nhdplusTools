@@ -56,4 +56,3 @@ prepare_nhdplus(sample_flines,
                 warn = FALSE)
 
 }
-\concept{refactor functions}

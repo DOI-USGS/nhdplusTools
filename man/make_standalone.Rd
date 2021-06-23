@@ -9,6 +9,9 @@ make_standalone(flowlines)
 \arguments{
 \item{flowlines}{sf data.frame of NHDPlusHR flowlines.}
 }
+\value{
+sf data.frame containing standalone network
+}
 \description{
 Cleans up and prepares NHDPlusHR regional data for use as complete NHDPlus
 data. The primary modification applied is to ensure that any flowpath that exits the

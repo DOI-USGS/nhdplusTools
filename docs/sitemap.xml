@@ -22,6 +22,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools/authors.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/awra_2019/index.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools/DISCLAIMER.html</loc>
   </url>
   <url>
@@ -89,6 +92,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_huc8.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_hydro_location.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_levelpaths.html</loc>
@@ -173,6 +179,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/query_usgs_geoserver.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/rescale_measures.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/stage_national_data.html</loc>

@@ -52,7 +52,7 @@ Not implemented for local data.}
 \item{out_prj}{character override the default output CRS of NAD83 lat/lon (EPSG:4269)}
 }
 \value{
-path to the saved subset geopackage
+character path to the saved subset geopackage
 }
 \description{
 Saves a subset of the National Seamless database or other

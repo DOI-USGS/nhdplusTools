@@ -7,7 +7,7 @@
 get_vaa_path()
 }
 \value{
-file.path character
+character file path
 }
 \description{
 nhdplusTools will download and cache an `fst` file with

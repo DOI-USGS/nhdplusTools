@@ -8,13 +8,6 @@
 
 <title>Plot NHDPlus — plot_nhdplus • nhdplusTools</title>
 
-<!-- favicons -->
-<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -219,7 +212,7 @@ EPSG:3857 Web Mercator Projection.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>plot data is returned invisibly in NAD83 Lat/Lon.</p>
+    <p>data.frame plot data is returned invisibly in NAD83 Lat/Lon.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>plot_nhdplus supports several input specifications. An unexported function "as_outlet"
@@ -257,27 +250,21 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span><span class='op'>(</span><span class='st'>"rgdal_show_exportToProj4_warnings"</span><span class='op'>=</span><span class='st'>"none"</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='st'>"05428500"</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 1 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 3 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 2.4 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 6.1 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 5.8 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Request failed [503]. Retrying in 40.8 seconds...</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
 <span class='r-plt'><img src='plot_nhdplus-1.png' alt='' width='700' height='433' /></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='st'>"05428500"</span>, streamorder <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
 <span class='r-plt'><img src='plot_nhdplus-2.png' alt='' width='700' height='433' /></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>13293970</span>, <span class='fl'>13293750</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -286,8 +273,6 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/source.html'>source</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sample_data.R"</span>, package <span class='op'>=</span> <span class='st'>"nhdplusTools"</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>13293970</span>, <span class='fl'>13293750</span><span class='op'>)</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -299,10 +284,6 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-in'>                  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"huc12pp"</span>, <span class='st'>"070900020602"</span><span class='op'>)</span><span class='op'>)</span>,</span>
 <span class='r-in'>             streamorder <span class='op'>=</span> <span class='fl'>2</span>,</span>
 <span class='r-in'>             nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -314,7 +295,6 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-in'>                          coords <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x"</span>, <span class='st'>"y"</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>,</span>
 <span class='r-in'>             streamorder <span class='op'>=</span> <span class='fl'>2</span>,</span>
 <span class='r-in'>             nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -329,10 +309,6 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-in'>             plot_config <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>basin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>,</span>
 <span class='r-in'>                                outlets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>huc12pp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>cex <span class='op'>=</span> <span class='fl'>1.5</span><span class='op'>)</span>,</span>
 <span class='r-in'>                                               comid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"green"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -345,6 +321,7 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-in'><span class='va'>comids</span> <span class='op'>&lt;-</span> <span class='fu'>nhdplusTools</span><span class='fu'>::</span><span class='fu'><a href='get_UT.html'>get_UT</a></span><span class='op'>(</span><span class='va'>fline</span>, <span class='fl'>13293970</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='va'>comids</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 11</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -359,7 +336,7 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># With downloaded data</span></span>
 <span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span>bbox <span class='op'>=</span> <span class='va'>bbox</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Zoom: 13</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -373,12 +350,12 @@ The following shows the defaults that can be altered.</p><ol>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
 <span class='r-in'><span class='fu'>plot_nhdplus</span><span class='op'>(</span><span class='va'>comids</span>, nhdplus_data <span class='op'>=</span> <span class='va'>sample_data</span>, streamorder <span class='op'>=</span> <span class='fl'>3</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
 <span class='r-in'>             plot_config <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>flowline <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>col <span class='op'>=</span> <span class='st'>"darkblue"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> although coordinates are longitude/latitude, st_union assumes that they are planar</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
 <span class='r-plt'><img src='plot_nhdplus-11.png' alt='' width='700' height='433' /></span>
 <span class='r-in'></span>
-<span class='r-in'><span class='co'># Cleanup downloaded open street map cache if desired.</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='fu'>nhdplusTools</span><span class='fu'>:::</span><span class='fu'>osm_cache_dir</span><span class='op'>(</span><span class='op'>)</span>, recursive <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># Cleanup downloaded open street map cache and temp data dir if desired.</span></span>
+<span class='r-in'><span class='co'># This is included for CRAN checks primarily.</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='fu'>nhdplusTools</span><span class='fu'>::</span><span class='fu'><a href='nhdplusTools_data_dir.html'>nhdplusTools_data_dir</a></span><span class='op'>(</span><span class='op'>)</span>, recursive <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
 <span class='r-in'><span class='co'># }</span></span>
 </code></pre></div>
   </div>

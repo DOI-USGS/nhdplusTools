@@ -62,6 +62,8 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #' Note 4: See `dfMaxLength` input to sf::st_segmentize() for details of
 #' handling of precision parameter.
 #'
+#' Note 5: "from" is downstream -- 0 is the outlet "to" is upstream -- 100 is the inlet
+#'
 #' @importFrom dplyr filter select mutate right_join left_join
 #' @importFrom dplyr group_by summarise distinct desc lag n arrange
 #' @importFrom RANN nn2
@@ -229,7 +231,7 @@ get_flowline_index <- function(flines, points,
 #' @param hydro_location data.frame with two columns. The first should join to the
 #' id field of the indexes and the second should be the numeric or ascii metric such as drainage
 #' area or GNIS Name.. Names of this data,frame are not used.
-#' @return The indexes data.frame deduplicated according to the minimum difference
+#' @return data.frame indexes deduplicated according to the minimum difference
 #' between the values in the metric columns. If two or more result in the same "minimum"
 #' value, duplicates will be returned.
 #' @export
@@ -427,7 +429,9 @@ match_crs <- function(x, y, warn_text = "") {
 #' get hydro location
 #' @description given a flowline index, returns the hydrologic location (point)
 #' along the specific linear element referenced by the index.
-#' @inheritParams disambiguate_flowline_indexes
+#' @param indexes data.frame as output from \link{get_flowline_index}.
+#' @param flowpath data.frame with two columns. The first should join to the COMID
+#' field of the indexes and the second should be linear geometry.
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
@@ -460,6 +464,11 @@ get_hydro_location_single <- function(x) {
   m <- rescale_measures(x[[1]], x[[2]]$FromMeas, x[[2]]$ToMeas)
 
   nus <- nrow(coords) - sum(coords$measure <= m)
+
+  if(nus == 0) {
+    nus <- 1
+  }
+
   nds <- ifelse(nus < nrow(coords), nus + 1, nus)
 
   if(nds == nus) {
@@ -510,6 +519,7 @@ add_len <- function(x) {
 #' @param measure numeric reach measure between 0 and 100
 #' @param from numeric flowline from-measure relative to the reach
 #' @param to numeric flowline to-measure relative to the reach
+#' @return numeric rescaled measure
 #' @export
 #' @examples
 #' rescale_measures(40, 0, 50)

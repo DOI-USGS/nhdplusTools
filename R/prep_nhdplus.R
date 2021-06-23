@@ -18,7 +18,6 @@
 #' @param skip_toCOMID boolean if TRUE, toCOMID will not be added to output.
 #' @return data.frame ready to be used with the refactor_flowlines function.
 #' @importFrom dplyr select filter left_join group_split group_by bind_rows
-#' @family refactor functions
 #' @export
 #' @examples
 #'

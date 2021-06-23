@@ -4,7 +4,7 @@ Version 0.4.2 further cleans up temporary and cache data functionality for CRAN 
 
 New functionality was added to indexing functionality. 
 
-* When multiple flowlines are returned, `disambiguate_flowline_index()` supports for disambiguating them based on numeric or text attributes that should match. This functionality is not heavily tested, but forms a basis for expansion of this functionality going forward.
+* When multiple flowlines are returned, `disambiguate_flowline_indexes()` supports for disambiguating them based on numeric or text attributes that should match. This functionality is not heavily tested, but forms a basis for expansion of this functionality going forward.
 * A function to find the point location of a flowline index, `get_hydro_location()` was added. It will return point geometry given a geometry identifier and measure along that identifier.
 
 nhdplusTools 0.4.1

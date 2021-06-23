@@ -1,9 +1,11 @@
 
 matcher <- function(coords, points, search_radius, max_matches = 1) {
 
+  max_match_ <- ifelse(nrow(coords < 1000), nrow(coords), 1000)
+
   matched <- nn2(data = coords[, 1:2],
                  query = matrix(points[, c("X", "Y")], ncol = 2),
-                 k = ifelse(max_matches > 1, 1000, 1),
+                 k = ifelse(max_matches > 1, max_match_, 1),
                  searchtype = "radius",
                  radius = search_radius)
 
@@ -203,8 +205,9 @@ get_flowline_index <- function(flines, points,
     add_len() %>%
     left_join(select(matched, .data$L1, .data$COMID), by = "L1") %>%
     left_join(select(fline_atts, -.data$index), by = "COMID") %>%
-    mutate(REACH_meas = .data$FromMeas +
-             (.data$ToMeas - .data$FromMeas) * (.data$measure / 100)) %>%
+    mutate(REACH_meas = round(
+      .data$FromMeas + (.data$ToMeas - .data$FromMeas) * (.data$measure / 100),
+      digits = 4)) %>%
     ungroup() %>% distinct()
 
   matched <- select(matched, .data$id, node = .data$nn.idx, offset = .data$nn.dists, .data$COMID)

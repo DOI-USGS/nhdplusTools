@@ -351,3 +351,13 @@ test_that("projection check", {
   expect_equal(mr$basin, NULL)
 
 })
+
+test_that("extras", {
+  expect_equal(nhdplusTools:::get_empty("POLYGON"), sf::st_polygon())
+  expect_equal(nhdplusTools:::get_empty("LINESTRING"), sf::st_linestring())
+  expect_equal(nhdplusTools:::get_empty("MULTIPOLYGON"), sf::st_multipolygon())
+  expect_equal(nhdplusTools:::get_empty("MULTILINESTRING"), sf::st_multilinestring())
+  expect_equal(nhdplusTools:::get_empty("POINT"), sf::st_point())
+  expect_equal(nhdplusTools:::get_empty("MULTIPOINT"), sf::st_multipoint())
+  expect_error(nhdplusTools:::get_empty("BORKED"), "unexpected geometry type")
+})

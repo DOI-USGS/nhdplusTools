@@ -135,6 +135,10 @@ assign("get_streamorder_attributes",
        c("ID", "toID"),
        envir = nhdplusTools_env)
 
+assign("get_streamlevel_attributes",
+       c("LevelPathI", "DnLevelPat"),
+       envir = nhdplusTools_env)
+
 assign("get_pfaf_attributes",
        c("ID", "toID", "totda", "outletID", "topo_sort", "levelpath"),
        envir = nhdplusTools_env)

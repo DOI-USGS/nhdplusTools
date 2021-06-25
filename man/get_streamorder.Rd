@@ -4,10 +4,12 @@
 \alias{get_streamorder}
 \title{Get Streamorder}
 \usage{
-get_streamorder(x)
+get_streamorder(x, status = FALSE)
 }
 \arguments{
 \item{x}{data.frame with dendritic ID and toID columns.}
+
+\item{status}{logical emit progress update messages?}
 }
 \value{
 numeric stream order in same order as input

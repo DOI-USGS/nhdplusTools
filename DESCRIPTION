@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 0.4.2
+Version: 0.4.3
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -16,7 +16,7 @@ BugReports: https://github.com/usgs-r/nhdplusTools/issues/
 Depends:
     R (>= 4.0)
 Imports: dplyr, sf, RANN, units, magrittr, jsonlite, httr, igraph, xml2, R.utils, utils, tidyr, methods, rosm, prettymapr, fst, dataRetrieval, tools, zip, pbapply
-Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel
+Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2
 License: CC0
 Encoding: UTF-8
 RoxygenNote: 7.1.1

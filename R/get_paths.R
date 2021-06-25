@@ -296,6 +296,32 @@ get_sorted <- function(x) {
   names(x)
 }
 
+#' @noRd
+#' @param x data.frame with ID and toID
+#' @param rev logical if TRUE (default) top down
+topo_sort_network <- function(x, reverse = TRUE) {
+
+  if(any(x$ID == 0)) stop("ID 0 must not be present. It is used as the outlet ID.")
+
+  x$toID[is.na(x$toID)] <- 0
+
+  sorted <- as(get_sorted(x[, c("ID", "toID")]),
+               class(x$ID))
+
+  if(reverse) {
+    sorted <- sorted[length(sorted):1]
+  }
+
+  sorted <- sorted[(!sorted == 0)]
+
+  order <- match(sorted, x$ID)
+
+  x <- x[order, ]
+
+  x[!is.na(x$ID), ]
+
+}
+
 #' Get Terminal ID
 #' @description Get the ID of the basin outlet for each flowline.
 #' @param x two column data.frame with IDs and toIDs. Names are ignored.
@@ -363,22 +389,7 @@ get_terminal <- function(x, outlets) {
 #'
 get_pathlength <- function(x) {
 
-  if(any(x$ID == 0)) stop("ID 0 must not be present. It is used as the outlet ID.")
-
-  x$toID[is.na(x$toID)] <- 0
-
-  sorted <- as(get_sorted(x[, c("ID", "toID")]),
-               class(x$ID))
-
-  sorted <- sorted[length(sorted):1]
-
-  sorted <- sorted[(!sorted == 0)]
-
-  order <- match(sorted, x$ID)
-
-  x <- x[order, ]
-
-  x <- x[!is.na(x$ID), ]
+  x <- topo_sort_network(x)
 
   id <- x$ID
   toid <- x$toID

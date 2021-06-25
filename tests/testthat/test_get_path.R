@@ -53,40 +53,6 @@ test_that("calculate level path", {
   expect_equal(test_flowline_out$levelpath, test_flowline_out2$levelpath)
 })
 
-test_that("calculate level path", {
-  skip_on_cran()
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-
-  test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
-
-  test_flowline <- data.frame(
-    ID = test_flowline$COMID,
-    toID = test_flowline$toCOMID)
-
-  test_flowline$order <- get_streamorder(test_flowline)
-
-  walker_flowline <- left_join(walker_flowline, test_flowline, by = c("COMID" = "ID"))
-
-  expect_equal(walker_flowline$order, walker_flowline$StreamOrde)
-
-  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-
-  pt_data <- sample_flines
-
-  test_flowline <- prepare_nhdplus(pt_data, 0, 0, FALSE, warn = FALSE)
-
-  test_flowline <- data.frame(
-    ID = test_flowline$COMID,
-    toID = test_flowline$toCOMID)
-
-  test_flowline$order <- get_streamorder(test_flowline)
-
-  pt_data <- left_join(filter(pt_data, COMID %in% test_flowline$ID),
-                       test_flowline, by = c("COMID" = "ID"))
-
-  expect_equal(pt_data$order, pt_data$StreamOrde)
-})
-
 test_that("hr levelpath", {
 
   suppressMessages(

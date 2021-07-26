@@ -34,7 +34,7 @@ HUC12 <- "HUC12"
 TOHUC <- "TOHUC"
 ReachCode <- "ReachCode"
 VPUID <- "VPUID"
-toCOMID = "toCOMID"
+toCOMID <- "toCOMID"
 
 
 # List of input names that should be changed to replacement names
@@ -160,6 +160,10 @@ assign("get_waterbody_index_flines_attributes",
 
 assign("disambiguate_flowline_indexes_attributes",
        c("id", "COMID", "REACHCODE", "REACH_meas", "offset"),
+       envir = nhdplusTools_env)
+
+assign("aggregate_network_attributes",
+       c("ID", "toID", "LevelPathID", "Hydroseq"),
        envir = nhdplusTools_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.

@@ -113,6 +113,8 @@ get_streamlevel <- function(x) {
 
   check_names(x, "get_streamlevel")
 
+  x$dnlevelpat[is.na(x$dnlevelpat)] <- 0
+
   l <- x %>%
     dplyr::filter(.data$levelpathi != .data$dnlevelpat) %>%
     dplyr::rename(ID = .data$levelpathi,

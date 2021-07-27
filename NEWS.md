@@ -2,6 +2,7 @@ nhdplusTools 0.4.2
 ==========
 Version 0.4.2 further cleans up temporary and cache data functionality for CRAN policy. 
 
+
 New functionality was added to indexing functionality. 
 
 * When multiple flowlines are returned, `disambiguate_flowline_indexes()` supports for disambiguating them based on numeric or text attributes that should match. This functionality is not heavily tested, but forms a basis for expansion of this functionality going forward.

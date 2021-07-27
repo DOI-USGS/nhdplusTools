@@ -34,10 +34,6 @@ divergences as part of the main stem, so the da_thresh may still be needed to
 eliminate small tributary catchments introduced by divergences near confluences.}
 
 \item{post_mortem_file}{rda file to dump environment to in case of error}
-
-\item{zero_order}{list of vectors containing IDs to be aggregated into 0-order catchments.}
-
-\item{coastal_cats}{sf data.frame with coastal catchments to be used with zero order.}
 }
 \description{
 Aggregates a catchment network according to a set of outlet.

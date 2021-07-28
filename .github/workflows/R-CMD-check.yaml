@@ -77,7 +77,3 @@ jobs:
       - name: Test coverage
         run: covr::codecov()
         shell: Rscript {0}
-
-      - name: debug
-        if: failure()
-        uses: mxschmitt/action-tmate@v3

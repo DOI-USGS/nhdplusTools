@@ -94,7 +94,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   checker <- 0
   done <- 0
 
-  x <- arrange(x, .data$topo_sort)
+  x <- dplyr::arrange(x, .data$topo_sort)
 
   topo_sort <- x$topo_sort
 
@@ -232,7 +232,7 @@ reweight <- function(x, ..., override_factor) {
 
     if(any(x$nameID != " ")) { # If any of the candidates are named.
       if(cur_name != " " & cur_name %in% x$nameID) {
-        sub <- arrange(x[x$nameID == cur_name, ], desc(.data$weight))
+        sub <- dplyr::arrange(x[x$nameID == cur_name, ], desc(.data$weight))
 
         out[1:nrow(sub), ] <- sub
 
@@ -244,7 +244,7 @@ reweight <- function(x, ..., override_factor) {
       if(rank <= total) {
         if(any(x$nameID != " ")) {
           sub <-
-            arrange(x[x$nameID != " ", ], desc(.data$weight))
+            dplyr::arrange(x[x$nameID != " ", ], desc(.data$weight))
 
           out[rank:(rank + nrow(sub) - 1), ] <- sub
 
@@ -268,11 +268,11 @@ reweight <- function(x, ..., override_factor) {
     }
 
     if(rank < nrow(out)) {
-      out[rank:nrow(out), ] <- arrange(x, desc(.data$weight))
+      out[rank:nrow(out), ] <- dplyr::arrange(x, desc(.data$weight))
     }
 
     if(!is.null(override_factor)) {
-      out <- arrange(out, desc(.data$weight))
+      out <- dplyr::arrange(out, desc(.data$weight))
     }
 
     x <- out

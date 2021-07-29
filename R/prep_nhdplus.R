@@ -37,21 +37,47 @@ prepare_nhdplus <- function(flines,
                             error = TRUE,
                             skip_toCOMID = FALSE) {
 
+  req_names <- c("COMID", "LENGTHKM", "TerminalFl",
+            "Hydroseq", "TotDASqKM", "StartFlag", "TerminalPa",
+            "Pathlength", "Divergence",
+            "LevelPathI")
+
+  dend <- c("StreamOrde", "StreamCalc")
+  sz <- c("TotDASqKM", "Hydroseq", "LevelPathI")
+  tocomid <- c("ToNode", "FromNode")
+
+  dont_return <- c("ToNode", "FromNode", "TerminalFl",
+                   "StartFlag", "StreamOrde", "StreamCalc",
+                   "TerminalPa", "Pathlength", "Divergence")
+
+  if(purge_non_dendritic) {
+    req_names <- c(req_names, dend)
+  }
+
+  if(min_path_size > 0 | min_network_size > 0 | min_path_length > 0) {
+    req_names <- c(req_names, sz)
+  }
+
+  if(!skip_toCOMID) {
+    req_names <- c(req_names, tocomid)
+  }
+
+  assign("prepare_nhdplus_attributes",
+         unique(req_names),
+         envir = nhdplusTools_env)
+
   flines <- check_names(flines, "prepare_nhdplus")
 
   if ("sf" %in% class(flines)) {
     if (warn) warning("removing geometry")
-    flines <- sf::st_set_geometry(flines, NULL)
+    flines <- drop_geometry(flines)
   }
 
   orig_rows <- nrow(flines)
 
   flines <- filter_coastal(flines)
 
-  flines <- select(flines, COMID, LENGTHKM, TerminalFl,
-                   FromNode, ToNode, TotDASqKM, StartFlag,
-                   StreamOrde, StreamCalc, TerminalPa, Pathlength,
-                   Divergence, Hydroseq, LevelPathI)
+  flines <- flines[ , names(flines) %in% req_names]
 
   if (!any(flines$TerminalFl == 1)) {
     warning("Got NHDPlus data without a Terminal catchment. Attempting to find it.")
@@ -64,31 +90,42 @@ prepare_nhdplus <- function(flines,
   }
 
   if (purge_non_dendritic) {
+
     flines <- filter(flines, StreamOrde == StreamCalc)
+
   } else {
-    flines[["FromNode"]][which(flines$Divergence == 2)] <- NA
+    if(!skip_toCOMID) {
+      flines[["FromNode"]][which(flines$Divergence == 2)] <- NA
+    }
   }
 
   if(min_path_size > 0) {
+
     remove_paths <- group_by(flines, LevelPathI)
     remove_paths <- filter(remove_paths, Hydroseq == min(Hydroseq))
     remove_paths <- filter(remove_paths, TotDASqKM < min_path_size & TotDASqKM >= 0)$LevelPathI
     flines <- filter(flines, !LevelPathI %in% remove_paths)
+
   }
 
-  terminal_filter <- flines$TerminalFl == 1 &
-    flines$TotDASqKM < min_network_size
-  start_filter <- flines$StartFlag == 1 &
-    flines$Pathlength < min_path_length
+  if(min_network_size > 0 | min_path_length > 0) {
 
-  if (any(terminal_filter, na.rm = TRUE) | any(start_filter, na.rm = TRUE)) {
+    terminal_filter <- flines$TerminalFl == 1 &
+      flines$TotDASqKM < min_network_size
+    start_filter <- flines$StartFlag == 1 &
+      flines$Pathlength < min_path_length
 
-    tiny_networks <- rbind(filter(flines, terminal_filter),
-                           filter(flines, start_filter))
+    if (any(terminal_filter, na.rm = TRUE) | any(start_filter, na.rm = TRUE)) {
 
-    flines <- filter(flines, !flines$TerminalPa %in%
-                       unique(tiny_networks$TerminalPa))
+      tiny_networks <- rbind(filter(flines, terminal_filter),
+                             filter(flines, start_filter))
+
+      flines <- filter(flines, !flines$TerminalPa %in%
+                         unique(tiny_networks$TerminalPa))
+
+    }
   }
+
   if (warn) {
     warning(paste("Removed", orig_rows - nrow(flines),
                   "flowlines that don't apply.\n",
@@ -98,9 +135,10 @@ prepare_nhdplus <- function(flines,
                   min_path_size))
   }
 
-  if(skip_toCOMID) return(select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
-                                 -StreamOrde, -StreamCalc, -TerminalPa,
-                                 -Pathlength, -Divergence))
+  if(skip_toCOMID) {
+    return(flines[ , !names(flines) %in%
+                     dont_return])
+  }
 
   if(nrow(flines) > 0) {
     # Join ToNode and FromNode along with COMID and Length to
@@ -129,9 +167,8 @@ prepare_nhdplus <- function(flines,
     }
   }
 
-  select(flines, -ToNode, -FromNode, -TerminalFl, -StartFlag,
-         -StreamOrde, -StreamCalc, -TerminalPa,
-         -Pathlength, -Divergence)
+  flines[ , !names(flines) %in%
+            dont_return]
 }
 
 

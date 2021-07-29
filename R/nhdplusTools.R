@@ -34,7 +34,7 @@ HUC12 <- "HUC12"
 TOHUC <- "TOHUC"
 ReachCode <- "ReachCode"
 VPUID <- "VPUID"
-toCOMID = "toCOMID"
+toCOMID <- "toCOMID"
 
 
 # List of input names that should be changed to replacement names
@@ -73,14 +73,6 @@ nhdplus_attributes <- list(
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
 assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
-       envir = nhdplusTools_env)
-
-assign("prepare_nhdplus_attributes",
-       c("COMID", "LENGTHKM", "TerminalFl",
-         "FromNode", "ToNode", "TotDASqKM",
-         "StartFlag", "StreamOrde", "StreamCalc",
-         "TerminalPa", "Pathlength", "Divergence", "Hydroseq",
-         "LevelPathI"),
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",
@@ -135,6 +127,10 @@ assign("get_streamorder_attributes",
        c("ID", "toID"),
        envir = nhdplusTools_env)
 
+assign("get_streamlevel_attributes",
+       c("LevelPathI", "DnLevelPat"),
+       envir = nhdplusTools_env)
+
 assign("get_pfaf_attributes",
        c("ID", "toID", "totda", "outletID", "topo_sort", "levelpath"),
        envir = nhdplusTools_env)
@@ -158,11 +154,17 @@ assign("disambiguate_flowline_indexes_attributes",
        c("id", "COMID", "REACHCODE", "REACH_meas", "offset"),
        envir = nhdplusTools_env)
 
+assign("add_plus_network_attributes_attributes",
+       c("comid", "tocomid", "nameID", "lengthkm", "areasqkm"),
+       envir = nhdplusTools_env)
+
 # assigned here for record keeping. Used as a status counter in apply functions.
 assign("cur_count", 0, envir = nhdplusTools_env)
 
-check_names <- function(x, function_name) {
-  x <- align_nhdplus_names(x)
+check_names <- function(x, function_name, align = TRUE) {
+  if(align) {
+    x <- align_nhdplus_names(x)
+  }
   names_x <- names(x)
   expect_names <- get(paste0(function_name, "_attributes"),
                       envir = nhdplusTools_env)

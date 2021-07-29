@@ -4,6 +4,7 @@
 #' maximum upstream order then the downstream flowpath is assigned the maximum
 #' upstream order plus one. Otherwise it is assigned the max upstream order.
 #' @param x data.frame with dendritic ID and toID columns.
+#' @param status logical emit progress update messages?
 #' @return numeric stream order in same order as input
 #' @importFrom dplyr left_join select
 #' @export
@@ -22,7 +23,7 @@
 #'
 #' plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$order, col = "blue")
 #'
-get_streamorder <- function(x) {
+get_streamorder <- function(x, status = FALSE) {
   check_names(x, "get_streamorder")
 
   o_sort <- select(x, .data$ID)
@@ -34,26 +35,118 @@ get_streamorder <- function(x) {
   x <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "0"])),
                  x, by = "ID")
 
-  ID <- as.numeric(x$ID)
-  toID <- as.numeric(x$toID)
-  order <- rep(1, length(ID))
+  ID <- as.integer(x$ID)
+
+  toID <- as.integer(x$toID)
+
+  order <- rep(as.integer(1), max(ID))
+
+  froms <- lapply(ID, get_fromIDs, edge_list = data.frame(ID = ID, toID = toID))
+  names(froms) <- ID
 
   for(i in seq(1, length(ID))) {
-    from <- toID == ID[i]
-    if(any(from, na.rm = TRUE)) {
+
+    from <- froms[[as.character(ID[i])]]
+
+    if(length(from) > 0) {
       orders <- order[from]
 
       m <- max(orders)
 
       if(length(orders[orders == m]) > 1) {
-        order[i] <- m + 1
+        order[ID[i]] <- m + 1
       } else {
-        order[i] <- m
+        order[ID[i]] <- m
       }
+    }
+
+    if(i %% 1000 == 0) message(paste("ID", i, "of", length(ID)))
+
+  }
+
+  distinct(left_join(o_sort, data.frame(ID = ID, order = order[ID]), by = "ID"))[["order"]]
+
+}
+
+get_fromIDs <- function(id, edge_list) {
+  edge_list$ID[edge_list$toID == id]
+}
+
+#' @title Get Streamlevel
+#' @description Applies a topological sort and calculates stream level.
+#' Algorithm: Terminal level paths are assigned level 1 (see note 1).
+#' Paths that terminate at a level 1 are assigned level 2. This pattern is
+#' repeated until no paths remain.
+#'
+#' If a TRUE/FALSE coastal attribute is included, coastal terminal paths
+#' begin at 1 and internal terminal paths begin at 4 as is implemented by
+#' the NHD stream leveling rules.
+#'
+#' @param x data.frame with levelpathi, dnlevelpat, and optionally a
+#' coastal flag. If no coastal flag is included, all terminal paths are
+#' assumed to be coastal.
+#'
+#' @return numeric stream order in same order as input
+#' @export
+#' @examples
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#'
+#' test_flowline <- data.frame(
+#'  levelpathi = walker_flowline$LevelPathI,
+#'  dnlevelpat = walker_flowline$DnLevelPat)
+#'
+#'  test_flowline$dnlevelpat[1] <- 0
+#'
+#' (level <- get_streamlevel(test_flowline))
+#'
+#' walker_flowline$level <- level
+#'
+#' plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$level, col = "blue")
+#'
+#' test_flowline$coastal <- rep(FALSE, nrow(test_flowline))
+#' (level <- get_streamlevel(test_flowline))
+#'
+#' test_flowline$coastal[!test_flowline$dnlevelpat %in% test_flowline$levelpathi] <- TRUE
+#' (level <- get_streamlevel(test_flowline))
+#'
+get_streamlevel <- function(x) {
+
+  check_names(x, "get_streamlevel")
+
+  x$dnlevelpat[is.na(x$dnlevelpat)] <- 0
+
+  l <- x %>%
+    dplyr::filter(.data$levelpathi != .data$dnlevelpat) %>%
+    dplyr::rename(ID = .data$levelpathi,
+                  toID = .data$dnlevelpat) %>%
+    topo_sort_network(reverse = TRUE) %>%
+    dplyr::distinct()
+
+  l$level <- rep(0, nrow(l))
+
+  l$level[!l$toID %in% l$ID] <- 1
+
+  if("coastal" %in% names(l)) {
+    l$level[l$level == 1 & !l$coastal] <- 4
+  }
+
+  id <- l$ID
+  toid <- l$toID
+  level <- l$level
+
+  toids <- match(toid, id)
+
+  # walk the network from bottom path up
+  for(i in seq_len(length(id))) {
+    if(!is.na(toids[i])) {
+
+      level[i] <- # level at current
+        level[toids[i]] + 1 # level of downstream + 1
+
     }
   }
 
-  distinct(left_join(o_sort, data.frame(ID = ID, order = order), by = "ID"))[["order"]]
+  left_join(x, data.frame(levelpathi = id, out = level), by = "levelpathi")$out
 
 }
 

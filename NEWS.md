@@ -1,3 +1,8 @@
+nhdplusTools 0.4.3
+==========
+
+- New function added: `get_streamlevel()` calculates stream level, a bottom up level path order used by nhdplus to categorize complete river levels.
+
 nhdplusTools 0.4.2
 ==========
 Version 0.4.2 further cleans up temporary and cache data functionality for CRAN policy. 

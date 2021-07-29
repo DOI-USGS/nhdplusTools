@@ -94,7 +94,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   checker <- 0
   done <- 0
 
-  x <- arrange(x, .data$topo_sort)
+  x <- dplyr::arrange(x, .data$topo_sort)
 
   topo_sort <- x$topo_sort
 
@@ -232,7 +232,7 @@ reweight <- function(x, ..., override_factor) {
 
     if(any(x$nameID != " ")) { # If any of the candidates are named.
       if(cur_name != " " & cur_name %in% x$nameID) {
-        sub <- arrange(x[x$nameID == cur_name, ], desc(.data$weight))
+        sub <- dplyr::arrange(x[x$nameID == cur_name, ], desc(.data$weight))
 
         out[1:nrow(sub), ] <- sub
 
@@ -244,7 +244,7 @@ reweight <- function(x, ..., override_factor) {
       if(rank <= total) {
         if(any(x$nameID != " ")) {
           sub <-
-            arrange(x[x$nameID != " ", ], desc(.data$weight))
+            dplyr::arrange(x[x$nameID != " ", ], desc(.data$weight))
 
           out[rank:(rank + nrow(sub) - 1), ] <- sub
 
@@ -268,11 +268,11 @@ reweight <- function(x, ..., override_factor) {
     }
 
     if(rank < nrow(out)) {
-      out[rank:nrow(out), ] <- arrange(x, desc(.data$weight))
+      out[rank:nrow(out), ] <- dplyr::arrange(x, desc(.data$weight))
     }
 
     if(!is.null(override_factor)) {
-      out <- arrange(out, desc(.data$weight))
+      out <- dplyr::arrange(out, desc(.data$weight))
     }
 
     x <- out
@@ -294,6 +294,32 @@ get_sorted <- function(x) {
   x <- graph_from_data_frame(x, directed = TRUE)
   x <- topo_sort(x, mode = "out")
   names(x)
+}
+
+#' @noRd
+#' @param x data.frame with ID and toID
+#' @param rev logical if TRUE (default) top down
+topo_sort_network <- function(x, reverse = TRUE) {
+
+  if(any(x$ID == 0)) stop("ID 0 must not be present. It is used as the outlet ID.")
+
+  x$toID[is.na(x$toID)] <- 0
+
+  sorted <- as(get_sorted(x[, c("ID", "toID")]),
+               class(x$ID))
+
+  if(reverse) {
+    sorted <- sorted[length(sorted):1]
+  }
+
+  sorted <- sorted[(!sorted == 0)]
+
+  order <- match(sorted, x$ID)
+
+  x <- x[order, ]
+
+  x[!is.na(x$ID), ]
+
 }
 
 #' Get Terminal ID
@@ -363,22 +389,7 @@ get_terminal <- function(x, outlets) {
 #'
 get_pathlength <- function(x) {
 
-  if(any(x$ID == 0)) stop("ID 0 must not be present. It is used as the outlet ID.")
-
-  x$toID[is.na(x$toID)] <- 0
-
-  sorted <- as(get_sorted(x[, c("ID", "toID")]),
-               class(x$ID))
-
-  sorted <- sorted[length(sorted):1]
-
-  sorted <- sorted[(!sorted == 0)]
-
-  order <- match(sorted, x$ID)
-
-  x <- x[order, ]
-
-  x <- x[!is.na(x$ID), ]
+  x <- topo_sort_network(x)
 
   id <- x$ID
   toid <- x$toID

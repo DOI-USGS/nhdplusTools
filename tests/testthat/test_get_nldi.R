@@ -62,7 +62,7 @@ test_that("navigation works", {
                        data_source = "dumb",
                        distance_km = 1)
 
-  expect_equal(nav$sourceName, "NWIS Sites")
+  expect_equal(nav$sourceName, "NWIS Surface Water Sites")
 
   expect_equal(class(nav$comid), "character")
 
@@ -100,13 +100,13 @@ test_that("get feature works", {
 
   expect_equal(nrow(f), 1)
   expect_equal(ncol(f), 6)
-  expect_equal(f$identifier, "05428500")
+  expect_equal(f$identifier, "USGS-05428500")
 
   f <- get_nldi_feature(list("nwissite", "USGS-05428500"))
 
   expect_equal(nrow(f), 1)
   expect_equal(ncol(f), 6)
-  expect_equal(f$identifier, "05428500")
+  expect_equal(f$identifier, "USGS-05428500")
 
 })
 

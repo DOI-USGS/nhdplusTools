@@ -106,6 +106,8 @@ add_plus_network_attributes <- function(net, override = 5,
                                         cores = NULL, split_temp = NULL,
                                         status = TRUE) {
 
+  check_names(net, "add_plus_network_attributes", align = FALSE)
+
   if(!status) {
     old_opt <- pbapply::pboptions(type = "none")
     on.exit(pbapply::pboptions(type = old_opt$type))

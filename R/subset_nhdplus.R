@@ -488,7 +488,7 @@ get_nhd_data <- function(nhdplus_data, layer_name, comids, id, status) {
     }
 
     align_nhdplus_names(
-      sf::read_sf(nhdplus_data, layer_name,
+      sf::read_sf(nhdplus_data,
                   query = get_query(nhdplus_data, layer_name,
                                     id, x)))
   }, total = sum(lengths(sets)))
@@ -498,7 +498,7 @@ get_nhd_data <- function(nhdplus_data, layer_name, comids, id, status) {
 }
 
 get_query <- function(nhdplus_data, layer_name, id, comids) {
-  layer_atts <- sf::read_sf(nhdplus_data, layer_name,
+  layer_atts <- sf::read_sf(nhdplus_data,
                             query = paste0("SELECT * FROM ",
                                            layer_name, " LIMIT 1"))
 

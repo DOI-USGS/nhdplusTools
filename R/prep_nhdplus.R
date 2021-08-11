@@ -174,7 +174,7 @@ prepare_nhdplus <- function(flines,
 
 filter_coastal <- function(flines) {
   if("FCODE" %in% names(flines)) {
-    flines <- filter(flines, (FCODE != 566600))
+    flines <- filter(flines, (FCODE != 56600))
   } else if("FTYPE" %in% names(flines)) {
     flines <- filter(flines, (FTYPE != "Coastline" | FTYPE != 566))
   } else {

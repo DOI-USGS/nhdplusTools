@@ -43,10 +43,14 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
 #' @description Uses a raindrop trace web service to trace the
 #' nhdplus digital elevation model to the nearest downslop flowline.
 #' @param point sfg point to trace from
+#' @param direction character \code{"up"}, \code{"down"}, or \code{"none"}.
+#' Controls the portion of the split flowline that is returned along with
+#' the raindrop trace line.
 #' @return sf data.frame containing raindrop trace and requested
 #' portion of flowline.
 #' @export
 #' @examples
+#' \donttest{
 #' point <- sf::st_point(x = c(-89.2158, 42.9561), dim = "XY")
 #'
 #' (trace <- get_raindrop_trace(point))
@@ -58,10 +62,11 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 #' plot(sf::st_transform(sf::st_geometry(trace)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_geometry(trace)[2], 3857), add = TRUE, col = "black")
-
+#' }
+#'
 get_raindrop_trace <- function(point, direction = "down") {
 
-  url_base <- "https://labs.dev-wma.chs.usgs.gov/api/nldi/pygeoapi/processes/"
+  url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
 
   url <- paste0(url_base, "nldi-flowtrace/jobs?response=document")
 
@@ -71,11 +76,74 @@ get_raindrop_trace <- function(point, direction = "down") {
     stop(paste("direction must be in",
                allowed_direction))
 
+  return(sf_post(url, make_json_input_trace(point, direction = direction)))
+
+}
+
+#' Get split catchment
+#' @description Uses catchment splitting web service to retrieve
+#' the portion of a catchment upstream of the point provided.
+#' @param point sfg point to trace from
+#' @param upstream logical If TRUE, the entire drainage basin upstream
+#' of the point provided is returned in addition to the local catchment.
+#' @return sf data.frame containing the local catchment, the split portion
+#' and optionally the total dranage basin.
+#' @export
+#' @examples
+#' \donttest{
+#' point <- sf::st_point(x = c(-89.2158, 42.9561), dim = "XY")
+#'
+#' trace <- get_raindrop_trace(point)
+#'
+#' (snap_point <- trace$intersectionPoint[[1]][2:1])
+#'
+#' (catchment <- get_split_catchment(snap_point))
+#'
+#' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
+#'
+#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#'
+#' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
+#' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
+#' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE, col = "white")
+#'
+#' (catchment <- get_split_catchment(snap_point, upstream = FALSE))
+#'
+#' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
+#'
+#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#'
+#' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
+#' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
+#' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE, col = "white")
+#'
+#' pour_point <- sf::st_point(x = c(-89.25619, 42.98646), dim = "XY")
+#'
+#' (catchment <- get_split_catchment(pour_point, upstream = FALSE))
+#'
+#' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
+#'
+#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#'
+#' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
+#' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
+#' plot(sf::st_transform(sf::st_sfc(pour_point, crs = 4326), 3857), add = TRUE, col = "white")
+#'}
+#'
+get_split_catchment <- function(point, upstream = TRUE) {
+  url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
+
+  url <- paste0(url_base, "nldi-splitcatchment/jobs?response=document")
+
+  return(sf_post(url, make_json_input_split(point, upstream)))
+}
+
+sf_post <- function(url, json) {
   tryCatch({
 
     out <- httr::RETRY("POST", url, httr::accept_json(),
-                      httr::content_type_json(),
-                      body = make_json_input_trace(point, direction = direction))
+                       httr::content_type_json(),
+                       body = json)
 
     if(out$status_code == 200) {
       sf::read_sf(rawToChar(out$content))
@@ -87,7 +155,6 @@ get_raindrop_trace <- function(point, direction = "down") {
     message("Error calling processing service. \n Original error: \n", e)
     NULL
   })
-
 }
 
 make_json_input_trace <- function(p, raindrop = TRUE, direction = "down") {

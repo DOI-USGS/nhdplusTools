@@ -8,6 +8,10 @@ get_raindrop_trace(point, direction = "down")
 }
 \arguments{
 \item{point}{sfg point to trace from}
+
+\item{direction}{character \code{"up"}, \code{"down"}, or \code{"none"}.
+Controls the portion of the split flowline that is returned along with
+the raindrop trace line.}
 }
 \value{
 sf data.frame containing raindrop trace and requested
@@ -18,6 +22,7 @@ Uses a raindrop trace web service to trace the
 nhdplus digital elevation model to the nearest downslop flowline.
 }
 \examples{
+\donttest{
 point <- sf::st_point(x = c(-89.2158, 42.9561), dim = "XY")
 
 (trace <- get_raindrop_trace(point))
@@ -29,4 +34,6 @@ nhdplusTools::plot_nhdplus(bbox = bbox)
 plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 plot(sf::st_transform(sf::st_geometry(trace)[1], 3857), add = TRUE, col = "red")
 plot(sf::st_transform(sf::st_geometry(trace)[2], 3857), add = TRUE, col = "black")
+}
+
 }

@@ -33,6 +33,8 @@ reference:
       - '`get_nldi_characteristics`'
       - '`get_nldi_basin`'
       - '`get_nldi_feature`'
+      - '`get_split_catchment`'
+      - '`get_raindrop_trace`'
   - title: Package Helpers
     desc: >
       Functions that make the package easier to work with.
@@ -58,6 +60,7 @@ reference:
       - '`get_streamorder`'
       - '`get_pfaf`'
       - '`make_standalone`'
+      - '`get_streamlevel`'
   - title: Indexing and Network Navigation
     desc: >
       Functions to index and match data to NHDPlus features.

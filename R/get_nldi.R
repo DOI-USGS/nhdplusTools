@@ -215,17 +215,6 @@ query_nldi <- function(query, tier = "prod", base_path = "/linked-data", parse_j
 }
 
 #' @noRd
-get_nldi_url <- function(tier = "prod") {
-  if (tier == "prod") {
-    "https://labs.waterdata.usgs.gov/api/nldi"
-  } else if (tier == "test") {
-    "https://labs-beta.waterdata.usgs.gov/api/nldi"
-  } else {
-    stop("only prod or test allowed.")
-  }
-}
-
-#' @noRd
 check_nldi_feature <- function(nldi_feature, convert = TRUE) {
   expect_names <- c("featureSource", "featureID")
   if (!all(expect_names %in% names(nldi_feature))) {

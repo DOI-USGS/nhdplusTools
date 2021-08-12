@@ -192,6 +192,17 @@ assign("nhdpt_dat_dir",
        tools::R_user_dir("usgs_r/nhdplusTools"),
        envir = nhdplusTools_env)
 
+#' @noRd
+get_nldi_url <- function(tier = "prod") {
+  if (tier == "prod") {
+    "https://labs.waterdata.usgs.gov/api/nldi"
+  } else if (tier == "test") {
+    "https://labs-beta.waterdata.usgs.gov/api/nldi"
+  } else {
+    stop("only prod or test allowed.")
+  }
+}
+
 #' get or set nhdplusTools data directory
 #' @description if left unset, will return the user data dir
 #' as returned by \link[tools]{R_user_dir} for this package.

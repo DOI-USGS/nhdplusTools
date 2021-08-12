@@ -145,3 +145,86 @@ test_that("characteristics", {
 
   expect_equal(names(chars), "total")
 })
+
+test_that("raindrop", {
+
+  skip_on_cran()
+
+  point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
+
+  trace <- get_raindrop_trace(point)
+
+  expect_equal(trace$id[1], 'downstreamFlowline')
+
+  expect_equal(trace$id[2], "raindropPath")
+
+  expect_equal(nrow(trace), 2)
+
+  expect_true(inherits(trace, "sf"))
+
+  expect_is(trace$intersectionPoint, "list")
+
+  trace2 <- get_raindrop_trace(point, direction = "up")
+
+  expect_equal(trace2$id[1], 'upstreamFlowline')
+
+  trace3 <- get_raindrop_trace(point, direction = "none")
+
+  expect_equal(trace3$id[1], "nhdFlowline")
+
+  expect_equal(length(trace3$intersectionPoint[[1]]), 2)
+
+  expect_equal(length(trace3$intersectionPoint[[2]]), 0)
+
+  expect_error(get_raindrop_trace(point, direction = "borked"),
+               "direction must be in up, down, none")
+
+})
+
+test_that("split", {
+
+  skip_on_cran()
+
+  point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
+
+  trace <- get_raindrop_trace(point)
+
+  snap_point <- sf::st_sfc(sf::st_point(trace$intersectionPoint[[1]][2:1]),
+                           crs = 4326)
+
+  catchment <- get_split_catchment(snap_point, upstream = TRUE)
+
+  area <- sf::st_area(catchment)
+
+  expect_true(area[1] < units::set_units(7000000, "m^2"))
+
+  expect_true(area[2] > units::set_units(900000000, "m^2"))
+
+  catchment2 <- get_split_catchment(snap_point, upstream = FALSE)
+
+  area <- sf::st_area(catchment2)
+
+  expect_true(area[1] < units::set_units(7000000, "m^2"))
+
+  expect_true(area[2] < units::set_units(900000000, "m^2"))
+
+  pour_point <- sf::st_sfc(sf::st_point(x = c(-89.25619, 42.98646)), crs = 4326)
+
+  catchment3 <- get_split_catchment(pour_point, upstream = FALSE)
+
+  area <- sf::st_area(catchment3)
+
+  expect_true(area[1] < units::set_units(7000000, "m^2"))
+
+  expect_true(area[2] < units::set_units(40000, "m^2"))
+
+})
+
+test_that("coverage", {
+  expect_error(nhdplusTools:::get_nldi_url(tier = "borked"),
+               "only prod or test allowed.")
+
+  test <- nhdplusTools:::get_nldi_url(tier = "test")
+
+  expect_equal(test, "https://labs-beta.waterdata.usgs.gov/api/nldi")
+})

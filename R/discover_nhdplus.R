@@ -39,16 +39,87 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
   }
 }
 
-get_raindrop_trace <- function(point) {
+#' Get Raindrop Trace
+#' @description Uses a raindrop trace web service to trace the
+#' nhdplus digital elevation model to the nearest downslop flowline.
+#' @param point sfg point to trace from
+#' @return sf data.frame containing raindrop trace and requested
+#' portion of flowline.
+#' @export
+#' @examples
+#' point <- sf::st_point(x = c(-89.2158, 42.9561), dim = "XY")
+#'
+#' (trace <- get_raindrop_trace(point))
+#'
+#' bbox <- sf::st_bbox(trace) + c(-0.005, -0.005, 0.005, 0.005)
+#'
+#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#'
+#' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
+#' plot(sf::st_transform(sf::st_geometry(trace)[1], 3857), add = TRUE, col = "red")
+#' plot(sf::st_transform(sf::st_geometry(trace)[2], 3857), add = TRUE, col = "black")
+
+get_raindrop_trace <- function(point, direction = "down") {
+
+  url_base <- "https://labs.dev-wma.chs.usgs.gov/api/nldi/pygeoapi/processes/"
+
+  url <- paste0(url_base, "nldi-flowtrace/jobs?response=document")
+
+  allowed_direction <- c("up", "down", "none")
+
+  if(!direction %in% allowed_direction)
+    stop(paste("direction must be in",
+               allowed_direction))
+
+  tryCatch({
+
+    out <- httr::RETRY("POST", url, httr::accept_json(),
+                      httr::content_type_json(),
+                      body = make_json_input_trace(point, direction = direction))
+
+    if(out$status_code == 200) {
+      sf::read_sf(rawToChar(out$content))
+    } else {
+      stop(rawToChar(out$content))
+    }
+
+  }, error = function(e) {
+    message("Error calling processing service. \n Original error: \n", e)
+    NULL
+  })
 
 }
 
-make_json_input <- function(p) {
+make_json_input_trace <- function(p, raindrop = TRUE, direction = "down") {
+
   jsonlite::toJSON(list(inputs = list(list(id = "lat",
                                            type = "text/plain",
                                            value = p[2]),
-                                      list(id = "lng",
+                                      list(id = "lon",
                                            type = "text/plain",
-                                           value = p[1]))),
+                                           value = p[1]),
+                                      list(id = "raindroptrace",
+                                           type = "text/plain",
+                                           value = ifelse(raindrop,
+                                                          "true", "false")),
+                                      list(id = "direction",
+                                           type = "text/plain",
+                                           value = direction))),
                    pretty = TRUE, auto_unbox = TRUE)
+}
+
+make_json_input_split <- function(p, upstream = TRUE) {
+
+  jsonlite::toJSON(list(inputs = list(list(id = "lat",
+                                           type = "text/plain",
+                                           value = p[2]),
+                                      list(id = "lon",
+                                           type = "text/plain",
+                                           value = p[1]),
+                                      list(id = "upstream",
+                                           type = "text/plain",
+                                           value = ifelse(upstream,
+                                                          "true", "false")))),
+                   pretty = TRUE, auto_unbox = TRUE)
+
 }

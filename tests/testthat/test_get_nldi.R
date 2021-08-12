@@ -150,7 +150,7 @@ test_that("raindrop", {
 
   skip_on_cran()
 
-  point <- sf::st_point(x = c(-89.2158, 42.9561), dim = "XY")
+  point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
 
   trace <- get_raindrop_trace(point)
 
@@ -176,17 +176,21 @@ test_that("raindrop", {
 
   expect_equal(length(trace3$intersectionPoint[[2]]), 0)
 
+  expect_error(get_raindrop_trace(point, direction = "borked"),
+               "direction must be in up, down, none")
+
 })
 
 test_that("split", {
 
   skip_on_cran()
 
-  point <- sf::st_point(x = c(-89.2158, 42.9561), dim = "XY")
+  point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
 
   trace <- get_raindrop_trace(point)
 
-  snap_point <- trace$intersectionPoint[[1]][2:1]
+  snap_point <- sf::st_sfc(sf::st_point(trace$intersectionPoint[[1]][2:1]),
+                           crs = 4326)
 
   catchment <- get_split_catchment(snap_point, upstream = TRUE)
 
@@ -214,4 +218,13 @@ test_that("split", {
 
   expect_true(area[2] < units::set_units(40000, "m^2"))
 
+})
+
+test_that("coverage", {
+  expect_error(nhdplusTools:::get_nldi_url(tier = "borked"),
+               "only prod or test allowed.")
+
+  test <- nhdplusTools:::get_nldi_url(tier = "test")
+
+  expect_equal(test, "https://labs-beta.waterdata.usgs.gov/api/nldi")
 })

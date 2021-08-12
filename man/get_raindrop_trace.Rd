@@ -7,7 +7,8 @@
 get_raindrop_trace(point, direction = "down")
 }
 \arguments{
-\item{point}{sfg point to trace from}
+\item{point}{sfc POINT including crs as created by:
+\code{sf::st_sfc(sf::st_point(.. ,..), crs)}}
 
 \item{direction}{character \code{"up"}, \code{"down"}, or \code{"none"}.
 Controls the portion of the split flowline that is returned along with
@@ -23,7 +24,7 @@ nhdplus digital elevation model to the nearest downslop flowline.
 }
 \examples{
 \donttest{
-point <- sf::st_point(x = c(-89.2158, 42.9561), dim = "XY")
+point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
 
 (trace <- get_raindrop_trace(point))
 

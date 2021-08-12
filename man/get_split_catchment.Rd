@@ -7,7 +7,8 @@
 get_split_catchment(point, upstream = TRUE)
 }
 \arguments{
-\item{point}{sfg point to trace from}
+\item{point}{scf POINT including crs as created by:
+\code{sf::st_sfc(sf::st_point(.. ,..), crs)}}
 
 \item{upstream}{logical If TRUE, the entire drainage basin upstream
 of the point provided is returned in addition to the local catchment.}
@@ -22,11 +23,12 @@ the portion of a catchment upstream of the point provided.
 }
 \examples{
 \donttest{
-point <- sf::st_point(x = c(-89.2158, 42.9561), dim = "XY")
+point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
 
 trace <- get_raindrop_trace(point)
 
-(snap_point <- trace$intersectionPoint[[1]][2:1])
+(snap_point <- sf::st_sfc(sf::st_point(trace$intersectionPoint[[1]][2:1]),
+                          crs = 4326))
 
 (catchment <- get_split_catchment(snap_point))
 
@@ -48,7 +50,7 @@ plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "r
 plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
 plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE, col = "white")
 
-pour_point <- sf::st_point(x = c(-89.25619, 42.98646), dim = "XY")
+pour_point <- sf::st_sfc(sf::st_point(x = c(-89.25619, 42.98646)), crs = 4326)
 
 (catchment <- get_split_catchment(pour_point, upstream = FALSE))
 

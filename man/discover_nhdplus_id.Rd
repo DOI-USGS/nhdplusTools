@@ -7,8 +7,8 @@
 discover_nhdplus_id(point = NULL, nldi_feature = NULL, raindrop = FALSE)
 }
 \arguments{
-\item{point}{An sf POINT including crs as created by:
-sf::st_sfc(sf::st_point(..,..), crs)}
+\item{point}{sfc POINT including crs as created by:
+\code{sf::st_sfc(sf::st_point(.. ,..), crs)}}
 
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
@@ -16,9 +16,7 @@ sf::st_sfc(sf::st_point(..,..), crs)}
 from the specified `featureSource`.}
 
 \item{raindrop}{logical if \code{TRUE} will call a raindrop trace web service and
-return will be a \code{list} containing the COMID and a \code{sfg} linestring trace
-to the nearest flowline. Ignored if \code{nldi_feature} is supplied rather than
-\code{point}.}
+return will be the same as \link{get_raindrop_trace} with direction "none".}
 }
 \value{
 integer COMID or list containing COMID and raindrop trace.
@@ -28,8 +26,10 @@ Multipurpose function to find a COMID of interest.
 }
 \examples{
 \donttest{
-point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
+point <- sf::st_sfc(sf::st_point(c(-76.874, 39.482)), crs = 4326)
 discover_nhdplus_id(point)
+
+discover_nhdplus_id(point, raindrop = TRUE)
 
 nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 discover_nhdplus_id(nldi_feature = nldi_nwis)

@@ -208,7 +208,7 @@ test_that("split", {
 
   expect_true(area[2] < units::set_units(900000000, "m^2"))
 
-  pour_point <- sf::st_point(x = c(-89.25619, 42.98646), dim = "XY")
+  pour_point <- sf::st_sfc(sf::st_point(x = c(-89.25619, 42.98646)), crs = 4326)
 
   catchment3 <- get_split_catchment(pour_point, upstream = FALSE)
 

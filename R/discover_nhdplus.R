@@ -177,6 +177,8 @@ sf_post <- function(url, json) {
 check_point <- function(p) {
   mess <- "Point must be of type sfc and have a CRS declared."
 
+  if(inherits(p, "sf")) p <- sf::st_geometry(p)
+
   if(!inherits(p, "sfc")) stop(mess)
 
   tryCatch({

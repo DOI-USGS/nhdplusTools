@@ -30,7 +30,8 @@
 #'   is performed and upstream with tributaries from the identified catchments is plotted.
 #' }
 #'
-#' The \code{plot_config} parameter is a list with names "basin", "flowline" and "outlets".
+#' The \code{plot_config} parameter is a list with names "basin", "flowline", "outlets",
+#'  "network_wbd", and "off_network_wbd".
 #' The following shows the defaults that can be altered.
 #' \enumerate{
 #'   \item basin \code{list(lwd = 1, col = NA, border = "black")}
@@ -39,8 +40,10 @@
 #'    list(default = list(col = "black", border = NA, pch = 19, cex = 1),
 #'         nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
 #'         huc12pp = list(col = "white", border = "black", pch = 22, cex = 1),
-#'         wqp = list(col = "red", border = NA, pch = 20, cex = 1))
-#'         }
+#'         wqp = list(col = "red", border = NA, pch = 20, cex = 1))}
+#'   \item network_wbd  \code{list(lwd = 1, col = "lightblue", border = "black")}
+#'   \item off_network_wbd  \code{list(lwd = 1, col = "darkblue", border = "black")}
+#'
 #' }
 #'
 #' If adding additional layers to the plot, data must be projected to EPSG:3857 with
@@ -114,7 +117,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
                          add = FALSE, actually_plot = TRUE, overwrite = TRUE,
                          flowline_only = NULL, plot_waterbodies = TRUE, ...) {
-
+  # browser()
   pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg, overwrite, flowline_only)
 
   if(actually_plot) {
@@ -236,7 +239,6 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
                           gpkg = NULL, overwrite = TRUE, flowline_only = NULL, ...) {
 
   if(!is.null(outlets) & !is.null(bbox)) stop("Both bbox and outlets not supported.")
-
   if(!is.null(nhdplus_data)) {
     if(!file.exists(nhdplus_data)) {
       if(!is.null(gpkg) && nhdplus_data != gpkg)
@@ -248,6 +250,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   }
 
   if(!is.null(bbox)) {
+    browser()
     flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg, overwrite, streamorder = streamorder)
     catchment <- flowline$catchment
     basin <- flowline$basin
@@ -393,6 +396,10 @@ dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorde
               flowline = d$NHDFlowline_Network,
               waterbody = d$NHDWaterbody,
               nexus = NULL, basin = NULL))
+  test <- list(catchment = d$CatchmentSP,
+               flowline = d$NHDFlowline_Network,
+               waterbody = d$NHDWaterbody,
+               nexus = NULL, basin = NULL)
 }
 
 gt <- function(x) sf::st_geometry(sf::st_transform(x, 3857))
@@ -510,4 +517,29 @@ on_network <- function(waterbody) {
 off_network <- function(waterbody) {
   off_network_wbdarea <- dplyr::filter(waterbody, !COMID %in% flowline$flowline$wbareacomi)
   return(off_network_wbdarea)
+}
+
+#' Get Waterbody Outlet
+#' @param x integer COMID that can be found in \code{waterbodies} input.
+#' @param waterbodies data.frame of waterbodies containing {insert required attributes}
+#' @param network data.frame of network features containing {insert required attributes}
+#' @examples
+#' \donttest{
+#'
+#'
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
+#' wtbdy <- sf::read_sf(sample_data, "NHDWaterbody")
+#' lake_COMID <- wtbdy$COMID[wtbdy$GNIS_NAME=='Lake Mendota 254']
+#' wb_outlet <- get_wb_outlet(13293262, fline)
+#' }
+get_wb_outlet <- function(lake_COMID, network) {
+  if (lake_COMID %in% network$WBAREACOMI){
+    outlet <- network %>%
+      dplyr::filter(WBAREACOMI == lake_COMID) %>%
+      dplyr::group_by(WBAREACOMI) %>%
+      dplyr::filter(Hydroseq == min(Hydroseq))
+  } else {
+    stop("Lake COMID is not associated with NHDPlus flowlines and no outlet")
+  }
 }

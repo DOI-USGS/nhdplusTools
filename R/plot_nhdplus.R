@@ -130,6 +130,12 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
       if(!is.null(pd$basin))
         graphics::plot(gt(pd$basin), lwd = st$basin$lwd, col = st$basin$col,
                        border = st$basin$border, add = TRUE)
+      if(!is.null(pd$network_wbd))
+        graphics::plot(gt(pd$network_wbd), lwd = st$network_wbd$lwd, col = st$on_network$col,
+                       border = st$network_wbd$border, add = TRUE)
+      if(!is.null(pd$off_network_wbd))
+        graphics::plot(gt(pd$off_network_wbd), lwd = st$ooff_network_wbd$lwd, col = st$off_network$col,
+                       border = st$off_network_wbd$border, add = TRUE)
       graphics::plot(gt(pd$flowline), lwd = st$flowline$lwd, col = st$flowline$col,
                      add = TRUE)
       if(!is.null(pd$outlets)) {
@@ -167,6 +173,8 @@ osm_cache_dir <- function() {
 get_styles <- function(plot_config) {
   conf <- list(basin = list(lwd = 1, col = NA, border = "black"),
                flowline = list(lwd = 1, col = "blue"),
+               network_wbd = list(lwd = 1, col = "lightblue", border = "black"),
+               off_network_wbd = list(lwd = 1, col = "darkblue", border = "black"),
                outlets = list(default = list(col = "black", bg = NA, pch = 19, cex = 1),
                               nwissite = list(col = "grey40", bg = NA, pch = 17, cex = 1),
                               huc12pp = list(col = "black", bg = "white", pch = 22, cex = 1),
@@ -194,14 +202,20 @@ get_styles <- function(plot_config) {
 validate_plot_config <- function(plot_config) {
   if(is.null(plot_config)) return(invisible(NULL))
 
-  if(!all(names(plot_config) %in% c("basin", "flowline", "outlets")))
-    stop(paste('Expected one or more of "basin", "flowline", or "outlets" in plot_config, got:',
+  if(!all(names(plot_config) %in% c("basin", "flowline", "outlets", "waterbody")))
+    stop(paste('Expected one or more of "basin", "flowline","outlets", or "waterbody" in plot_config, got:',
                names(plot_config)))
 
   if("basin" %in% names(plot_config)) {
     if(!all(names(plot_config$basin) %in% c("lwd", "col", "border")))
       stop('Expected one ore more of "lwd", "col", or "border" in basins plot_config, got:',
            names(plot_config$basin))
+  }
+
+  if("waterbody" %in% names(plot_config)) {
+    if(!all(names(plot_config$waterbody) %in% c("lwd", "col", "border")))
+      stop('Expected one ore more of "lwd", "col", or "border" in basins plot_config, got:',
+           names(plot_config$waterbody))
   }
 
   if("flowline" %in% names(plot_config)) {
@@ -238,7 +252,11 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
     catchment <- flowline$catchment
     basin <- flowline$basin
     nexus <- flowline$nexus
+    wtbdy <- flowline$waterbody
+    network_wbd <- on_network(wtbdy)
+    off_network_wbd <- off_network(wtbdy)
     flowline <- flowline$flowline
+
   }
 
   comids <- NULL
@@ -306,6 +324,8 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
     }))
 
     catchment <- nhd_data$catchment
+    network_wbd <- on_network(nhd_data$waterbody)
+    off_network_wbd <- off_network(nhd_data$waterbody)
   }
 
   if(!is.null(comids)) {
@@ -343,7 +363,8 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   }
 
   return(list(plot_bbox = bbox, outlets = nexus, flowline = flowline,
-              basin = basin, catchment = catchment))
+              basin = basin, catchment = catchment, network_wbd=network_wbd,
+              off_network_wbd=off_network_wbd))
 }
 
 dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorder = NULL, flowline_only = NULL) {
@@ -370,6 +391,7 @@ dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorde
 
   return(list(catchment = d$CatchmentSP,
               flowline = d$NHDFlowline_Network,
+              waterbody = d$NHDWaterbody,
               nexus = NULL, basin = NULL))
 }
 
@@ -476,4 +498,16 @@ individual_outlets <- function(o) {
 all_int <- function(o) {
   tryCatch(all(sapply(o, function(x) x %% 1) == 0),
            error = function(f) FALSE)
+}
+
+# Define on-network and off-network waterbodies
+on_network <- function(waterbody) {
+  network_wbdarea <- dplyr::filter(waterbody,
+                                   COMID %in% flowline$flowline$wbareacomi)
+  return(network_wbdarea)
+}
+
+off_network <- function(waterbody) {
+  off_network_wbdarea <- dplyr::filter(waterbody, !COMID %in% flowline$flowline$wbareacomi)
+  return(off_network_wbdarea)
 }

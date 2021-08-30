@@ -692,14 +692,69 @@ get_flowline_layer_name <- function(nhdplus_data) {
   layer_name
 }
 
+#' Subset by Vector Processing Unit
+#' @description Calls \link{subset_rpu} for all raster processing units for the
+#' requested vector processing unit.
+#' @param fline sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM,
+#' Hydroseq, LevelPathI, RPUID, VPUID, ToNode, FromNode, and ArbolateSu.
+#' @param vpu character e.g. "01"
+#' @param include_null_rpuid logical default TRUE. Note that there are some
+#' flowlines that may have a NULL rpuid but be included in the vector
+#' processing unit.
+#' @param run_make_standalone logical default TRUE
+#' should the run_make_standalone function be run on result?
+#' @export
+#' @importFrom dplyr filter select
+#' @return data.frame containing subset network
+#' @examples
+#'
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#'
+#' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
+#'
+#' subset_vpu(sample_flines, "07")
+#'
+subset_vpu <- function(fline, vpu,
+                       include_null_rpuid = TRUE,
+                       run_make_standalone = TRUE) {
+
+  fline <- check_names(fline, "subset_vpu")
+
+  fline <- drop_geometry(fline)
+
+  all_rpuid <- unique(filter(fline, .data$VPUID == vpu)[["RPUID"]])
+
+  all_rpuid <- all_rpuid[(!is.na(all_rpuid) & !is.null(all_rpuid))]
+
+  all_vpu <- lapply(all_rpuid,
+                    function(x, fline, run_ms) {
+                      subset_rpu(fline, x, run_ms)
+                    }, fline = fline, run_ms = run_make_standalone)
+
+  all_vpu <- do.call(rbind, all_vpu)
+
+  if(include_null_rpuid) {
+
+    all_vpu <- rbind(all_vpu, filter(fline, .data$VPUID == vpu &
+                                       (is.null(RPUID) | is.na(RPUID))))
+
+  }
+
+  return(all_vpu)
+
+}
+
+
+
 #' Subset by Raster Processing Unit.
 #' @description Given flowlines and an rpu_code, performs a network-safe subset such
 #' that the result can be used in downstream processing. Has been tested to work
 #' against the entire NHDPlusV2 domain and satisfies a number of edge cases.
-#' @param fline sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM, and Hydroseq.
-#' LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.
+#' @param fline sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM,
+#' Hydroseq, LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.
 #' @param rpu character e.g. "01a"
-#' @param run_make_standalone boolean should the run_make_standalone function be run on result?
+#' @param run_make_standalone logical default TRUE
+#' should the run_make_standalone function be run on result?
 #' @export
 #' @return data.frame containing subset network
 #' @importFrom dplyr filter arrange summarize
@@ -716,24 +771,27 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #'
 #' subset_rpu(sample_flines, rpu = "07b")
 subset_rpu <- function(fline, rpu, run_make_standalone = TRUE) {
+  fline <- check_names(fline, "subset_rpu")
+
   # Find all outlets of current rpu and sort by size
   # !ToNode %in% FromNode finds non-terminal flowlines that exit the domain.
-  outlets <- filter(fline, .data$RPUID %in% rpu)
+  outlets <- filter(drop_geometry(fline), .data$RPUID %in% rpu)
 
   if("tocomid" %in% names(outlets)) outlets <- dplyr::rename(outlets, toCOMID = .data$tocomid)
 
   if(any(c("tocomid", "toCOMID") %in% names(outlets))) {
-    outlets <- st_sf(filter(outlets, .data$Hydroseq == .data$TerminalPa |
-                              !.data$toCOMID %in% .data$COMID))
+    outlets <- filter(outlets, .data$Hydroseq == .data$TerminalPa |
+                        !.data$toCOMID %in% .data$COMID)
   } else {
 
-    outlets <- st_sf(filter(outlets, .data$TerminalFl == 1 |
-                              !.data$ToNode %in% .data$FromNode))
+    outlets <- filter(outlets, .data$TerminalFl == 1 |
+                        !.data$ToNode %in% .data$FromNode)
   }
+
   outlets <- arrange(outlets, desc(.data$ArbolateSu))
 
   # run nhdplusTools::get_UT for all outlets and concatenate.
-  network <- lapply(outlets$COMID,
+  network <- pbapply::pblapply(outlets$COMID,
                     function(x, fline) get_UT(fline, x),
                     fline = fline)
   network <- do.call(c, network)
@@ -761,6 +819,8 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE) {
 
   fline <- ungroup(filter(fline, .data$Hydroseq >= .data$lp_bot &
                             .data$Hydroseq <= .data$lp_top))
+
+  fline <- select(fline, -.data$lp_top, -.data$lp_bot)
 
   if(run_make_standalone) {
     make_standalone(fline)

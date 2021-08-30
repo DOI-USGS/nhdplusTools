@@ -18,6 +18,7 @@ TotDASqKM <- "TotDASqKM"
 AreaSqKM <- "AreaSqKM"
 LENGTHKM <- "LENGTHKM"
 Pathlength <- "Pathlength"
+ArbolateSu <- "ArbolateSu"
 StreamCalc <- "StreamCalc"
 StreamOrde <- "StreamOrde"
 TerminalFl <- "TerminalFl"
@@ -34,12 +35,15 @@ HUC12 <- "HUC12"
 TOHUC <- "TOHUC"
 ReachCode <- "ReachCode"
 VPUID <- "VPUID"
+RPUID <- "RPUID"
 toCOMID <- "toCOMID"
 
 
 # List of input names that should be changed to replacement names
 nhdplus_attributes <- list(
   COMID = COMID, NHDPlusID = COMID,
+  RPUID = RPUID,
+  VPUID = VPUID,
   FEATUREID = FEATUREID,
   Hydroseq = Hydroseq, HydroSeq = Hydroseq,
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
@@ -51,6 +55,7 @@ nhdplus_attributes <- list(
   TotDASqKM = TotDASqKM, TotDASqKm = TotDASqKM,
   AreaSqKM = AreaSqKM, AreaSqKm = AreaSqKM,
   LENGTHKM = LENGTHKM, LengthKM = LENGTHKM,
+  ArbolateSu = ArbolateSu,
   Pathlength = Pathlength, PathLength = Pathlength,
   StreamCalc = StreamCalc,
   StreamOrde = StreamOrde,
@@ -156,6 +161,16 @@ assign("disambiguate_flowline_indexes_attributes",
 
 assign("add_plus_network_attributes_attributes",
        c("comid", "tocomid", "nameID", "lengthkm", "areasqkm"),
+       envir = nhdplusTools_env)
+
+assign("subset_rpu_attributes",
+       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
+         "ToNode", "FromNode", "ArbolateSu"),
+       envir = nhdplusTools_env)
+
+assign("subset_vpu_attributes",
+       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
+         "VPUID", "ToNode", "FromNode", "ArbolateSu"),
        envir = nhdplusTools_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.

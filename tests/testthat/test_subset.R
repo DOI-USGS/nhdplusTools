@@ -322,6 +322,8 @@ test_that("by rpu", {
 
   expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
   expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = FALSE)), 267)
+
+  expect(nrow(subset_vpu(sample_flines, rpu = "07b")), 267)
 })
 
 

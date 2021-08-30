@@ -342,6 +342,23 @@ drop_geometry <- function(x) {
   }
 }
 
+#' make spatial inputs compatible
+#' @description makes sf1 compatible with sf2 by projecting into
+#' the projection of 2 and ensuring that the geometry columns are the
+#' same name.
+#' @param sf1 sf data.frame
+#' @param sf2 sf data.frame
+#' @noRd
+compatibalize <- function(sf1, sf2) {
+  sf1 <- st_transform(sf1, st_crs(sf2))
+
+  g <- attr(sf1, "sf_column")
+  gp <- attr(sf2, "sf_column")
+  names(sf1)[names(sf1) == g] <- gp
+  attr(sf1, "sf_column") <- gp
+  sf1
+}
+
 get_cl <- function(cl) {
   if(!is.null(cl)) {
     if(!requireNamespace("parallel", quietly = TRUE)) {

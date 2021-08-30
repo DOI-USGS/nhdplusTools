@@ -348,8 +348,20 @@ drop_geometry <- function(x) {
 #' same name.
 #' @param sf1 sf data.frame
 #' @param sf2 sf data.frame
-#' @noRd
-compatibalize <- function(sf1, sf2) {
+#' @export
+#' @examples
+#'
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
+#' (one <- dplyr::select(sample_flines))
+#' (two <- sf::st_transform(one, 5070))
+#'
+#' attr(one, "sf_column") <- "geotest"
+#' names(one)[names(one) == "geom"] <- "geotest"
+#'
+#' st_compatibalize(one, two)
+#'
+st_compatibalize <- function(sf1, sf2) {
   sf1 <- st_transform(sf1, st_crs(sf2))
 
   g <- attr(sf1, "sf_column")

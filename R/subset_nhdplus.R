@@ -720,9 +720,8 @@ subset_vpu <- function(fline, vpu,
 
   fline <- check_names(fline, "subset_vpu")
 
-  fline <- drop_geometry(fline)
-
-  all_rpuid <- unique(filter(fline, .data$VPUID == vpu)[["RPUID"]])
+  all_rpuid <- unique(filter(drop_geometry(fline),
+                             .data$VPUID == vpu)[["RPUID"]])
 
   all_rpuid <- all_rpuid[(!is.na(all_rpuid) & !is.null(all_rpuid))]
 
@@ -780,15 +779,24 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE) {
   if("tocomid" %in% names(outlets)) outlets <- dplyr::rename(outlets, toCOMID = .data$tocomid)
 
   if(any(c("tocomid", "toCOMID") %in% names(outlets))) {
+
     outlets <- filter(outlets, .data$Hydroseq == .data$TerminalPa |
                         !.data$toCOMID %in% .data$COMID)
   } else {
+
+    if(!all(c("ToNode", "FromNode") %in% names(outlets)))
+      stop("must include toCOMID of ToNode and FromNode")
 
     outlets <- filter(outlets, .data$TerminalFl == 1 |
                         !.data$ToNode %in% .data$FromNode)
   }
 
   outlets <- arrange(outlets, desc(.data$ArbolateSu))
+
+  if(nrow(outlets) < 100) {
+    old_opt <- pbapply::pboptions(type = "none")
+    on.exit(pbapply::pboptions(type = old_opt$type))
+  }
 
   # run nhdplusTools::get_UT for all outlets and concatenate.
   network <- pbapply::pblapply(outlets$COMID,

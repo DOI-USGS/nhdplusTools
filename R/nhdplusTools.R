@@ -165,12 +165,12 @@ assign("add_plus_network_attributes_attributes",
 
 assign("subset_rpu_attributes",
        c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
-         "ToNode", "FromNode", "ArbolateSu"),
+         "ArbolateSu"),
        envir = nhdplusTools_env)
 
 assign("subset_vpu_attributes",
        c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
-         "VPUID", "ToNode", "FromNode", "ArbolateSu"),
+         "VPUID", "ArbolateSu"),
        envir = nhdplusTools_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.

@@ -150,7 +150,7 @@ test_that("compatibalize", {
 
   two <- sf::st_transform(pt_data, 5070)
 
-  three <- nhdplusTools:::compatibalize(one, two)
+  three <- st_compatibalize(one, two)
 
   expect_equal(sf::st_crs(two), sf::st_crs(three))
 

@@ -238,7 +238,7 @@ make_standalone <- function(flowlines) {
     # Remove non-terminal coastal flowlines
     flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$Hydroseq != flowlines$TerminalPa), ]
 
-    outlets <- select(st_drop_geometry(flowlines),
+    outlets <- select(drop_geometry(flowlines),
                       .data$COMID, .data$toCOMID,
                       .data$Hydroseq, .data$TerminalPa,
                       .data$LevelPathI)
@@ -252,7 +252,7 @@ make_standalone <- function(flowlines) {
     # Remove non-terminal coastal flowlines
     flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$TerminalFl != 1), ]
 
-    outlets <- select(st_drop_geometry(flowlines),
+    outlets <- select(drop_geometry(flowlines),
                       .data$COMID, .data$ToNode,
                       .data$FromNode, .data$TerminalFl,
                       .data$Hydroseq, .data$TerminalPa,

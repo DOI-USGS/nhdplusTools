@@ -142,3 +142,18 @@ test_that("prep_nhdplus removes small drainage basins", {
   expect_equal(nrow(flines), 303)
 })
 
+test_that("compatibalize", {
+  one <- pt_data
+
+  attr(one, "sf_column") <- "geotest"
+  names(one)[names(one) == "geom"] <- "geotest"
+
+  two <- sf::st_transform(pt_data, 5070)
+
+  three <- st_compatibalize(one, two)
+
+  expect_equal(sf::st_crs(two), sf::st_crs(three))
+
+  expect_true(all(names(two) == names(three)))
+
+})

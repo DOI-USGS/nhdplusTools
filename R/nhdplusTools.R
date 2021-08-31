@@ -18,6 +18,7 @@ TotDASqKM <- "TotDASqKM"
 AreaSqKM <- "AreaSqKM"
 LENGTHKM <- "LENGTHKM"
 Pathlength <- "Pathlength"
+ArbolateSu <- "ArbolateSu"
 StreamCalc <- "StreamCalc"
 StreamOrde <- "StreamOrde"
 TerminalFl <- "TerminalFl"
@@ -34,12 +35,15 @@ HUC12 <- "HUC12"
 TOHUC <- "TOHUC"
 ReachCode <- "ReachCode"
 VPUID <- "VPUID"
+RPUID <- "RPUID"
 toCOMID <- "toCOMID"
 
 
 # List of input names that should be changed to replacement names
 nhdplus_attributes <- list(
   COMID = COMID, NHDPlusID = COMID,
+  RPUID = RPUID,
+  VPUID = VPUID,
   FEATUREID = FEATUREID,
   Hydroseq = Hydroseq, HydroSeq = Hydroseq,
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
@@ -51,6 +55,7 @@ nhdplus_attributes <- list(
   TotDASqKM = TotDASqKM, TotDASqKm = TotDASqKM,
   AreaSqKM = AreaSqKM, AreaSqKm = AreaSqKM,
   LENGTHKM = LENGTHKM, LengthKM = LENGTHKM,
+  ArbolateSu = ArbolateSu,
   Pathlength = Pathlength, PathLength = Pathlength,
   StreamCalc = StreamCalc,
   StreamOrde = StreamOrde,
@@ -156,6 +161,16 @@ assign("disambiguate_flowline_indexes_attributes",
 
 assign("add_plus_network_attributes_attributes",
        c("comid", "tocomid", "nameID", "lengthkm", "areasqkm"),
+       envir = nhdplusTools_env)
+
+assign("subset_rpu_attributes",
+       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
+         "ArbolateSu"),
+       envir = nhdplusTools_env)
+
+assign("subset_vpu_attributes",
+       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
+         "VPUID", "ArbolateSu"),
        envir = nhdplusTools_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.
@@ -325,6 +340,35 @@ drop_geometry <- function(x) {
   } else {
     x
   }
+}
+
+#' make spatial inputs compatible
+#' @description makes sf1 compatible with sf2 by projecting into
+#' the projection of 2 and ensuring that the geometry columns are the
+#' same name.
+#' @param sf1 sf data.frame
+#' @param sf2 sf data.frame
+#' @export
+#' @examples
+#'
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
+#' (one <- dplyr::select(sample_flines))
+#' (two <- sf::st_transform(one, 5070))
+#'
+#' attr(one, "sf_column") <- "geotest"
+#' names(one)[names(one) == "geom"] <- "geotest"
+#'
+#' st_compatibalize(one, two)
+#'
+st_compatibalize <- function(sf1, sf2) {
+  sf1 <- st_transform(sf1, st_crs(sf2))
+
+  g <- attr(sf1, "sf_column")
+  gp <- attr(sf2, "sf_column")
+  names(sf1)[names(sf1) == g] <- gp
+  attr(sf1, "sf_column") <- gp
+  sf1
 }
 
 get_cl <- function(cl) {

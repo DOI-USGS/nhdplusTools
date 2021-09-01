@@ -314,6 +314,8 @@ test_that("by rpu", {
   expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
   expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = TRUE)), 267)
 
+  expect_equal(nrow(subset_vpu(sample_flines, vpu = "07")), 267)
+
   suppressWarnings(sample_flines <- dplyr::left_join(
     dplyr::select(sample_flines, COMID, RPUID, TerminalPa,
                   ArbolateSu, DnHydroseq, Pathlength, FTYPE),
@@ -322,6 +324,7 @@ test_that("by rpu", {
 
   expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
   expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = FALSE)), 267)
+
 })
 
 

@@ -7,12 +7,13 @@
 subset_rpu(fline, rpu, run_make_standalone = TRUE)
 }
 \arguments{
-\item{fline}{sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM, and Hydroseq.
-LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.}
+\item{fline}{sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM,
+Hydroseq, LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.}
 
 \item{rpu}{character e.g. "01a"}
 
-\item{run_make_standalone}{boolean should the run_make_standalone function be run on result?}
+\item{run_make_standalone}{logical default TRUE
+should the run_make_standalone function be run on result?}
 }
 \value{
 data.frame containing subset network

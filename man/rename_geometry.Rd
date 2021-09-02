@@ -15,3 +15,9 @@ rename_geometry(g, name)
 correctly renames the geometry column
 of a sf object.
 }
+\examples{
+
+(g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2))))
+rename_geometry(g, "geometry")
+
+}

@@ -8,10 +8,14 @@ nhdplusTools_env <- new.env()
 COMID <- "COMID"
 FEATUREID <- "FEATUREID"
 Hydroseq <- "Hydroseq"
+UpHydroseq <- "UpHydroseq"
 DnHydroseq <- "DnHydroseq"
 DnMinorHyd <- "DnMinorHyd"
+UpLevelPat <- "UpLevelPat"
 LevelPathI <- "LevelPathI"
 DnLevelPat <- "DnLevelPat"
+UpLevelPat <- "UpLevelPat"
+DnLevel <- "DnLevel"
 ToNode <- "ToNode"
 FromNode <- "FromNode"
 TotDASqKM <- "TotDASqKM"
@@ -46,10 +50,13 @@ nhdplus_attributes <- list(
   VPUID = VPUID,
   FEATUREID = FEATUREID,
   Hydroseq = Hydroseq, HydroSeq = Hydroseq,
+  UpHydroseq = UpHydroseq, UpHydroSeq = UpHydroseq,
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
   DnMinorHyd = DnMinorHyd,
   LevelPathI = LevelPathI,
+  UpLevelPat = UpLevelPat,
   DnLevelPat = DnLevelPat,
+  DnLevel = DnLevel,
   ToNode = ToNode,
   FromNode = FromNode,
   TotDASqKM = TotDASqKM, TotDASqKm = TotDASqKM,
@@ -142,11 +149,13 @@ assign("get_pfaf_attributes",
 
 assign("make_standalone_tonode_attributes",
        c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
-         "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+         "LevelPathI", "FTYPE", "UpLevelPa", "DnLevelPat",
+         "DnLevel", "DnHydroseq"), envir = nhdplusTools_env)
 
 assign("make_standalone_tocomid_attributes",
        c("COMID", "toCOMID", "Hydroseq", "TerminalPa",
-         "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+         "LevelPathI", "FTYPE", "UpLevelPa", "DnLevelPat",
+         "DnLevel", "DnHydroseq"), envir = nhdplusTools_env)
 
 assign("get_waterbody_index_waterbodies_attributes",
        c("COMID"), envir = nhdplusTools_env)
@@ -375,7 +384,7 @@ st_compatibalize <- function(sf1, sf2) {
 #' @param g sf data.table
 #' @param name character name to be used for geometry
 #' @export
-#' @example
+#' @examples
 #'
 #' (g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2))))
 #' rename_geometry(g, "geometry")

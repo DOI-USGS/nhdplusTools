@@ -299,15 +299,22 @@ fix_term <- function(term, flowlines) {
     # Change the old Down Level Paths so they point to the new mainstem levelpath ID
     flowlines$DnLevelPat[flowlines$DnLevelPat == old_term_levelpath] <- term_hydroseq
 
-    # Change olf Up Level Path to point to the new mainstem levelpath ID
-    flowlines$UpLevelPat[flowlines$UpLevelPat == old_term_levelpath] <- term_hydroseq
-
-    # Make the Down Hydrosequence and Down Level and Path look like an outlet.
-    flowlines$DnLevel[flowlines$Hydroseq == term_hydroseq] <- 0
     flowlines$DnLevelPat[flowlines$Hydroseq == term_hydroseq] <- 0
   }
 
-  flowlines$DnHydroseq[flowlines$Hydroseq == term_hydroseq] <- 0
+  if("UpLevelPat" %in% names(flowlines)) {
+    # Change olf Up Level Path to point to the new mainstem levelpath ID
+    flowlines$UpLevelPat[flowlines$UpLevelPat == old_term_levelpath] <- term_hydroseq
+  }
+
+  # Make the Down Hydrosequence and Down Level and Path look like an outlet.
+  if("DnLevel" %in% names(flowlines)) {
+    flowlines$DnLevel[flowlines$Hydroseq == term_hydroseq] <- 0
+  }
+
+  if("DnHydroseq" %in% names(flowlines)) {
+    flowlines$DnHydroseq[flowlines$Hydroseq == term_hydroseq] <- 0
+  }
 
   return(flowlines)
 }

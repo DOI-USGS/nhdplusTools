@@ -157,3 +157,14 @@ test_that("compatibalize", {
   expect_true(all(names(two) == names(three)))
 
 })
+
+test_that("rname geometry", {
+  g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2)))
+
+  g <- rename_geometry(g, "geometry")
+
+  expect_true("geometry" %in% names(g))
+
+  expect_equal(attr(g, "sf_column"), "geometry")
+
+})

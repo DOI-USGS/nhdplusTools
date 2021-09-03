@@ -14,7 +14,6 @@ DnMinorHyd <- "DnMinorHyd"
 UpLevelPat <- "UpLevelPat"
 LevelPathI <- "LevelPathI"
 DnLevelPat <- "DnLevelPat"
-UpLevelPat <- "UpLevelPat"
 DnLevel <- "DnLevel"
 ToNode <- "ToNode"
 FromNode <- "FromNode"
@@ -149,12 +148,12 @@ assign("get_pfaf_attributes",
 
 assign("make_standalone_tonode_attributes",
        c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
-         "LevelPathI", "FTYPE", "UpLevelPa", "DnLevelPat",
+         "LevelPathI", "FTYPE", "UpLevelPat", "DnLevelPat",
          "DnLevel", "DnHydroseq"), envir = nhdplusTools_env)
 
 assign("make_standalone_tocomid_attributes",
        c("COMID", "toCOMID", "Hydroseq", "TerminalPa",
-         "LevelPathI", "FTYPE", "UpLevelPa", "DnLevelPat",
+         "LevelPathI", "FTYPE", "UpLevelPat", "DnLevelPat",
          "DnLevel", "DnHydroseq"), envir = nhdplusTools_env)
 
 assign("get_waterbody_index_waterbodies_attributes",

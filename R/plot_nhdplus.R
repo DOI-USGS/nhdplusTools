@@ -117,7 +117,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
                          add = FALSE, actually_plot = TRUE, overwrite = TRUE,
                          flowline_only = NULL, plot_waterbodies = TRUE, ...) {
-  # browser()
+
   pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg, overwrite, flowline_only)
 
   if(actually_plot) {
@@ -137,7 +137,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
         graphics::plot(gt(pd$network_wbd), lwd = st$network_wbd$lwd, col = st$on_network$col,
                        border = st$network_wbd$border, add = TRUE)
       if(!is.null(pd$off_network_wbd))
-        graphics::plot(gt(pd$off_network_wbd), lwd = st$ooff_network_wbd$lwd, col = st$off_network$col,
+        graphics::plot(gt(pd$off_network_wbd), lwd = st$off_network_wbd$lwd, col = st$off_network$col,
                        border = st$off_network_wbd$border, add = TRUE)
       graphics::plot(gt(pd$flowline), lwd = st$flowline$lwd, col = st$flowline$col,
                      add = TRUE)
@@ -237,7 +237,6 @@ validate_plot_config <- function(plot_config) {
 get_plot_data <- function(outlets = NULL, bbox = NULL,
                           streamorder = NULL, nhdplus_data = NULL,
                           gpkg = NULL, overwrite = TRUE, flowline_only = NULL, ...) {
-
   if(!is.null(outlets) & !is.null(bbox)) stop("Both bbox and outlets not supported.")
   if(!is.null(nhdplus_data)) {
     if(!file.exists(nhdplus_data)) {
@@ -250,16 +249,19 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   }
 
   if(!is.null(bbox)) {
-    browser()
     flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg, overwrite, streamorder = streamorder)
     catchment <- flowline$catchment
     basin <- flowline$basin
     nexus <- flowline$nexus
     wtbdy <- flowline$waterbody
-    network_wbd <- on_network(wtbdy)
-    off_network_wbd <- off_network(wtbdy)
     flowline <- flowline$flowline
-
+    if (!is.null(wtbdy)){
+      network_wbd <- on_network(wtbdy, flowline)
+      off_network_wbd <- off_network(wtbdy, flowline)
+    } else {
+      network_wbd <- NULL
+      off_network_wbd <- NULL
+    }
   }
 
   comids <- NULL
@@ -313,6 +315,14 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
       basin <- NULL
     }
 
+    if ('NHDWaterbody' %in% names(subsets) & !is.null(subsets$NHDWaterbody)){
+      network_wbd <- on_network(subsets$NHDWaterbody, flowline)
+      off_network_wbd <- off_network(subsets$NHDWaterbody, flowline)
+    } else {
+      network_wbd <- NULL
+      off_network_wbd <- NULL
+    }
+
     nexus <- do.call(rbind, nexus)
 
   } else if(all(!is.null(outlets))) {
@@ -327,8 +337,13 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
     }))
 
     catchment <- nhd_data$catchment
-    network_wbd <- on_network(nhd_data$waterbody)
-    off_network_wbd <- off_network(nhd_data$waterbody)
+    if ('waterbody' %in% names(nhd_data) & !is.null(nhd_data$waterbody)){
+      network_wbd <- on_network(nhd_data$waterbody, flowline)
+      off_network_wbd <- off_network(nhd_data$waterbody, flowline)
+    } else {
+      network_wbd <- NULL
+      off_network_wbd <- NULL
+    }
   }
 
   if(!is.null(comids)) {
@@ -364,13 +379,12 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   if(!is.null(streamorder) && "StreamOrde" %in% names(flowline)) {
     flowline <- flowline[flowline$StreamOrde >= streamorder, ]
   }
-
   return(list(plot_bbox = bbox, outlets = nexus, flowline = flowline,
               basin = basin, catchment = catchment, network_wbd=network_wbd,
               off_network_wbd=off_network_wbd))
 }
 
-dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorder = NULL, flowline_only = NULL) {
+dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorder = NULL, flowline_only = FALSE) {
 
   bbox <- sf::st_bbox(sf::st_transform(sf::st_as_sfc(bbox), 4326))
 
@@ -379,9 +393,8 @@ dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorde
   } else {
     source <- "download"
   }
-
   if(is.null(flowline_only) && source == "download") {
-    flowline_only <- TRUE
+    flowline_only <- FALSE
   } else {
     flowline_only <- FALSE
   }
@@ -396,10 +409,6 @@ dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorde
               flowline = d$NHDFlowline_Network,
               waterbody = d$NHDWaterbody,
               nexus = NULL, basin = NULL))
-  test <- list(catchment = d$CatchmentSP,
-               flowline = d$NHDFlowline_Network,
-               waterbody = d$NHDWaterbody,
-               nexus = NULL, basin = NULL)
 }
 
 gt <- function(x) sf::st_geometry(sf::st_transform(x, 3857))
@@ -508,14 +517,14 @@ all_int <- function(o) {
 }
 
 # Define on-network and off-network waterbodies
-on_network <- function(waterbody) {
+on_network <- function(waterbody, flowline) {
   network_wbdarea <- dplyr::filter(waterbody,
-                                   COMID %in% flowline$flowline$wbareacomi)
+                                   COMID %in% flowline$wbareacomi)
   return(network_wbdarea)
 }
 
-off_network <- function(waterbody) {
-  off_network_wbdarea <- dplyr::filter(waterbody, !COMID %in% flowline$flowline$wbareacomi)
+off_network <- function(waterbody, flowline) {
+  off_network_wbdarea <- dplyr::filter(waterbody, !COMID %in% flowline$wbareacomi)
   return(off_network_wbdarea)
 }
 
@@ -523,6 +532,8 @@ off_network <- function(waterbody) {
 #' @param x integer COMID that can be found in \code{waterbodies} input.
 #' @param waterbodies data.frame of waterbodies containing {insert required attributes}
 #' @param network data.frame of network features containing {insert required attributes}
+#' @return sf data.frame with single record of network COMID
+#' associated with most-downstream reach in the NHD Waterbody
 #' @examples
 #' \donttest{
 #'
@@ -539,6 +550,7 @@ get_wb_outlet <- function(lake_COMID, network) {
       dplyr::filter(WBAREACOMI == lake_COMID) %>%
       dplyr::group_by(WBAREACOMI) %>%
       dplyr::filter(Hydroseq == min(Hydroseq))
+    return(outlet)
   } else {
     stop("Lake COMID is not associated with NHDPlus flowlines and no outlet")
   }

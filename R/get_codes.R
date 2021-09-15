@@ -4,7 +4,7 @@
 #' maximum upstream order then the downstream flowpath is assigned the maximum
 #' upstream order plus one. Otherwise it is assigned the max upstream order.
 #' @param x data.frame with dendritic ID and toID columns.
-#' @param status logical emit progress update messages?
+#' @param status logical show progress update messages?
 #' @return numeric stream order in same order as input
 #' @importFrom dplyr left_join select
 #' @export
@@ -23,7 +23,7 @@
 #'
 #' plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$order, col = "blue")
 #'
-get_streamorder <- function(x, status = FALSE) {
+get_streamorder <- function(x, status = TRUE) {
   check_names(x, "get_streamorder")
 
   o_sort <- select(x, .data$ID)
@@ -60,7 +60,7 @@ get_streamorder <- function(x, status = FALSE) {
       }
     }
 
-    if(i %% 1000 == 0) message(paste("ID", i, "of", length(ID)))
+    if(i %% 1000 == 0 & status) message(paste("ID", i, "of", length(ID)))
 
   }
 

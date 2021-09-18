@@ -167,7 +167,7 @@ assign("disambiguate_flowline_indexes_attributes",
        envir = nhdplusTools_env)
 
 assign("add_plus_network_attributes_attributes",
-       c("comid", "tocomid", "nameID", "lengthkm", "areasqkm"),
+       c("comid", "tocomid", "nameID", "lengthkm"),
        envir = nhdplusTools_env)
 
 assign("subset_rpu_attributes",

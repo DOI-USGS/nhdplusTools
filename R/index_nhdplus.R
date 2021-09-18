@@ -11,12 +11,13 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 
   matched <- dplyr::tibble(nn.idx = as.integer(matched$nn.idx),
                            nn.dists = as.numeric(matched$nn.dists),
-                           id = rep(1:nrow(points), ncol(matched[["nn.idx"]])))
+                           id = rep(1:nrow(points), ncol(matched$nn.idx)))
 
-  matched <- left_join(matched, mutate(select(as.data.frame(coords), .data$L1),
+  matched <- left_join(matched, mutate(data.frame(L1 = coords[, "L1"]),
                                        index = seq_len(nrow(coords))),
                        by = c("nn.idx" = "index"))
 
+  rm(coords)
 
   matched <- filter(matched, .data$nn.dists <= search_radius)
 

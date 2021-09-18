@@ -48,4 +48,15 @@ test_that("fix_flowdir", {
   n3 <- get_node(fline[10, ], position = "end")
 
   expect_equal(n1, n3)
+
+  n1 <- get_node(fline[1, ], position = "end")
+  sf::st_geometry(fline)[1] <- sf::st_reverse(sf::st_geometry(fline)[1])
+  sf::st_geometry(fline)[1] <- fix_flowdir(fline$COMID[1], fline)
+  expect_equal(n1, get_node(fline[1, ], position = "end"))
+
+  fline$toCOMID[1] <- 0
+  n1 <- get_node(fline[1, ], position = "end")
+  sf::st_geometry(fline)[1] <- sf::st_reverse(sf::st_geometry(fline)[1])
+  sf::st_geometry(fline)[1] <- fix_flowdir(fline$COMID[1], fline)
+  expect_equal(n1, get_node(fline[1, ], position = "end"))
 })

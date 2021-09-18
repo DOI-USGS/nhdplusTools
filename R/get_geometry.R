@@ -97,7 +97,7 @@ fix_flowdir <- function(comid, network) {
 
     f <- network[network$comid == comid, ]
 
-    if(is.na(f$tocomid)) {
+    if(is.na(f$tocomid) | f$tocomid == 0) {
 
       check_line <- network[network$tocomid == f$comid, ][1, ]
 

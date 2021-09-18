@@ -180,10 +180,14 @@ assign("subset_vpu_attributes",
          "VPUID", "ArbolateSu"),
        envir = nhdplusTools_env)
 
+assign("fix_flowdir_attributes",
+       c("COMID", "toCOMID"),
+       envir = nhdplusTools_env)
+
 # assigned here for record keeping. Used as a status counter in apply functions.
 assign("cur_count", 0, envir = nhdplusTools_env)
 
-check_names <- function(x, function_name, align = TRUE) {
+check_names <- function(x, function_name, align = TRUE, tolower = FALSE) {
   if(align) {
     x <- align_nhdplus_names(x)
   }
@@ -197,6 +201,11 @@ check_names <- function(x, function_name, align = TRUE) {
                                              names_x))],
                       collapse = ", "), " or NHDPlusHR equivalents."))
   }
+
+  if(tolower) {
+    names(x) <- tolower(names(x))
+  }
+
   return(x)
 }
 

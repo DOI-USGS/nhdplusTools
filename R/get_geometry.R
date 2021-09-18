@@ -89,7 +89,9 @@ get_node <- function(x, position = "end") {
 
 fix_flowdir <- function(comid, network) {
 
-  names(network) <- tolower(names(network))
+  network <- check_names(network,
+                         "fix_flowdir",
+                         tolower = TRUE)
 
   try({
 

@@ -27,10 +27,11 @@ test_that("fix_flowdir", {
 
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
 
+  suppressWarnings(
   # We add a tocomid with prepare_nhdplus
   fline <- sf::st_sf(prepare_nhdplus(fline, 0, 0, 0, FALSE),
                      geom = sf::st_zm(sf::st_geometry(fline)))
-
+  )
   # Look at the end node of the 10th line.
   n1 <- get_node(fline[10, ], position = "end")
 

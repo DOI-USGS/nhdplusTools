@@ -185,6 +185,7 @@ get_path <- function(x, tailID, matcher, status) {
 
   toID <- NULL
 
+  tryCatch({
   while(keep_going) {
 
     next_tails <- x[matcher[[as.character(tailID)]], ]
@@ -212,6 +213,10 @@ get_path <- function(x, tailID, matcher, status) {
     if(status && counter %% 1000 == 0) message(paste("long mainstem", counter))
 
   }
+  }, error = function(e) {
+    stop(paste0("Error with outlet tailID ", tailID, "\n",
+                "Original error was \n", e))
+  })
 
   return(tracker[!is.na(tracker)])
 }

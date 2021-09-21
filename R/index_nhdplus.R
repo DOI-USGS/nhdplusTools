@@ -1,7 +1,7 @@
 
 matcher <- function(coords, points, search_radius, max_matches = 1) {
 
-  max_match_ <- ifelse(nrow(coords < 1000), nrow(coords), 1000)
+  max_match_ <- ifelse(nrow(coords) < 1000, nrow(coords), 1000)
 
   matched <- nn2(data = coords[, 1:2],
                  query = matrix(points[, c("X", "Y")], ncol = 2),

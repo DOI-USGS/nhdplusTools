@@ -220,6 +220,25 @@ test_that("split", {
 
 })
 
+test_that("xs", {
+  skip_on_cran()
+
+  point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)
+
+  xs <- get_xs_point(point, 300, 100)
+
+  expect_true(inherits(xs, "sf"))
+  expect_equal(nrow(xs), 101)
+
+  point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
+  point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
+
+  xs <- get_xs_points(point1, point2, 100)
+
+  expect_true(inherits(xs, "sf"))
+  expect_equal(nrow(xs), 101)
+})
+
 test_that("coverage", {
   expect_error(nhdplusTools:::get_nldi_url(tier = "borked"),
                "only prod or test allowed.")

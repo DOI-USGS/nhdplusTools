@@ -153,6 +153,8 @@ devtools::build()
 In addition to typical R package checking, a Dockerfile is included in this repository. Once built, it can be run with the following command.
 
 ```
+docker build -t nhdoplustools_test .
+
 docker run --rm -it -v %cd%:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ && cp /src/.Rbuildignore /check/ && cd /check && Rscript -e 'devtools::build()' && R CMD check --as-cran ../nhdplusTools_*"
 ```
 

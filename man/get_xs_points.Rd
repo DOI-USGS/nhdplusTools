@@ -4,7 +4,7 @@
 \alias{get_xs_points}
 \title{Get Cross Section Endpoints (experimental)}
 \usage{
-get_xs_points(point1, point2, num_pts)
+get_xs_points(point1, point2, num_pts, res = 1)
 }
 \arguments{
 \item{point1}{sfc POINT including crs as created by:
@@ -13,6 +13,9 @@ get_xs_points(point1, point2, num_pts)
 \item{point2}{sfc POINT including crs.}
 
 \item{num_pts}{numeric number of points to retrieve along the cross section.}
+
+\item{res}{integer resolution of 3D Elevation Program data to request.
+Must be on of: 1, 3, 5, 10, 30, 60.}
 }
 \value{
 sf data.frame containing points retrieved.

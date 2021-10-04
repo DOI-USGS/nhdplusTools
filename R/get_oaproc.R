@@ -108,7 +108,8 @@ get_split_catchment <- function(point, upstream = TRUE) {
 #' Get Cross Section From Point (experimental)
 #' @description Uses a cross section retrieval web services to retrieve a
 #' cross section given a point and specified width. Orientation is determined
-#' based on direction of a the flowline found near point.
+#' based on direction of a the flowline found near point. This function uses
+#' a 10m Natioinal Elevation Dataset request on the back end.
 #' @param point sfc POINT including crs as created by:
 #' \code{sf::st_sfc(sf::st_point(.. ,..), crs)}crs.
 #' @param width Cross section width in meters.
@@ -140,7 +141,13 @@ get_xs_point <- function(point, width, num_pts) {
 
   url <- paste0(url_base, "nldi-xsatpoint/jobs?response=document")
 
-  return(sf_post(url, make_json_input_xspt(point, width, num_pts)))
+  out <- sf_post(url, make_json_input_xspt(point, width, num_pts))
+
+  out <- dplyr::rename(out,
+                       distance_m = .data$distance,
+                       elevation_m = .data$elevation)
+
+  return(out)
 
 }
 
@@ -151,6 +158,8 @@ get_xs_point <- function(point, width, num_pts) {
 #' \code{sf::st_sfc(sf::st_point(.. ,..), crs)}
 #' @param point2 sfc POINT including crs.
 #' @param num_pts numeric number of points to retrieve along the cross section.
+#' @param res integer resolution of 3D Elevation Program data to request.
+#' Must be on of: 1, 3, 5, 10, 30, 60.
 #' @return sf data.frame containing points retrieved.
 #' @export
 #' @examples
@@ -172,7 +181,11 @@ get_xs_point <- function(point, width, num_pts) {
 #'
 #' }
 #'
-get_xs_points <- function(point1, point2, num_pts) {
+get_xs_points <- function(point1, point2, num_pts, res = 1) {
+
+  if(!res %in% c(1, 3, 5, 10, 30, 60)) {
+    stop("res input must be on of 1, 3, 5, 10, 30, 60")
+  }
 
   point1 <- check_point(point1)[[1]]
   point2 <- check_point(point2)[[1]]
@@ -181,7 +194,13 @@ get_xs_points <- function(point1, point2, num_pts) {
 
   url <- paste0(url_base, "nldi-xsatendpts/jobs?response=document")
 
-  return(sf_post(url, make_json_input_xspts(point1, point2, num_pts)))
+  out <- sf_post(url, make_json_input_xspts(point1, point2, num_pts, res))
+
+  out <- dplyr::rename(out,
+                       distance_m = .data$distance,
+                       elevation_m = .data$elevation)
+
+  return(out)
 
 }
 
@@ -271,7 +290,7 @@ make_json_input_xspt <- function(p, w, n) {
 }
 
 
-make_json_input_xspts <- function(p1, p2, n) {
+make_json_input_xspts <- function(p1, p2, n, r) {
 
   jsonlite::toJSON(list(inputs = list(list(id = "lat",
                                            type = "text/plain",
@@ -281,7 +300,7 @@ make_json_input_xspts <- function(p1, p2, n) {
                                            value = c(p1[1], p2[1])),
                                       list(id = "3dep_res",
                                            type = "text/plain",
-                                           value = "1"),
+                                           value = as.character(r)),
                                       list(id = "numpts",
                                            type = "text/plain",
                                            value = n))),

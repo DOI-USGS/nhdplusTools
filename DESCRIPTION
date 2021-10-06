@@ -19,5 +19,5 @@ Imports: dplyr, sf, RANN, units, magrittr, jsonlite, httr, igraph, xml2, R.utils
 Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2
 License: CC0
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr

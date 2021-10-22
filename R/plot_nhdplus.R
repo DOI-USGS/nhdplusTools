@@ -10,8 +10,7 @@
 #' @param plot_config list containing plot configuration, see details.
 #' @param add boolean should this plot be added to an already built map.
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
-#' @param flowline_only boolean only subset and plot flowlines?
-#' @param plot_waterbodies boolean plot waterbodies, default=TRUE
+#' @param flowline_only boolean only subset and plot flowlines only, default=FALSE
 #' @param ... parameters passed on to rosm.
 #' @return data.frame plot data is returned invisibly in NAD83 Lat/Lon.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
@@ -116,7 +115,7 @@
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
                          add = FALSE, actually_plot = TRUE, overwrite = TRUE,
-                         flowline_only = NULL, plot_waterbodies = TRUE, ...) {
+                         flowline_only = NULL, ...) {
 
   pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg, overwrite, flowline_only)
 

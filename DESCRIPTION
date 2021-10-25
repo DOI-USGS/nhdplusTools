@@ -9,7 +9,11 @@ Authors@R: c(person(given = "David",
              person(given = "Mike",
                     family = "Johnson",
                     role = "ctb",
-                    comment = c(ORCID = "0000-0002-5288-8350")))
+                    comment = c(ORCID = "0000-0002-5288-8350")),
+             person(given = "Marc",
+                    family = "Weber", 
+                    role = "ctb",
+                    comment = c(ORCID = "0000-0002-9742-4744")))
 Description: Tools for traversing and working with National Hydrography Dataset Plus (NHDPlus) data. All methods implemented in 'nhdplusTools' are available in the NHDPlus documentation available from the US Environmental Protection Agency <https://www.epa.gov/waterdata/basic-information>.
 URL: https://usgs-r.github.io/nhdplusTools/ https://github.com/usgs-r/nhdplusTools/
 BugReports: https://github.com/usgs-r/nhdplusTools/issues/

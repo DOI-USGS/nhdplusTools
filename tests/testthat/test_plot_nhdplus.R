@@ -319,13 +319,15 @@ test_that("waterbodies", {
   site <- "USGS-05428500"
   tempd <- tempdir(check = TRUE)
   g_temp <- file.path(tempd, "foo.gpkg")
+
   d <-  nhdplusTools:::plot_nhdplus(site)
 
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline",
                            "basin", "catchment","network_wbd",
                            "off_network_wbd"))
 
-  d <-  nhdplusTools:::plot_nhdplus(site,flowline_only = FALSE)
+  d <-  nhdplusTools:::plot_nhdplus(site, flowline_only = FALSE)
+
   expect_true(is(d$network_wbd, "sf"))
   expect_true(is(d$off_network_wbd, "sf"))
 
@@ -338,12 +340,13 @@ test_that("waterbodies", {
 
   expect_equal(nrow(d$off_network_wbd), 43)
   expect_equal(nrow(d$network_wbd), 10)
+
   # With Local Data (note this sample is already subset to a watershed basis)
-  # d <- nhdplusTools:::get_plot_data(bbox = bbox, streamorder = 2,
-  #                                   nhdplus_data = sample_data)
-  #
-  # expect_equal(nrow(d$off_network_wbd), 53)
-  # expect_equal(nrow(d$network_wbd), 0)
+  d <- nhdplusTools:::get_plot_data(bbox = bbox, streamorder = 2,
+                                    nhdplus_data = sample_data)
+
+  expect_equal(nrow(d$off_network_wbd), 53)
+  expect_equal(nrow(d$network_wbd), 0)
 })
 
 test_that("get_waterbody_outlet", {
@@ -363,6 +366,6 @@ test_that("get_waterbody_outlet", {
   expect_equal(nrow(out), 1)
 
   lake_comid <- 14711354
-  expect_error(get_wb_outlet(lake_comid, d$flowline),
+  expect_error(nhdplusTools:::get_wb_outlet(lake_comid, d$flowline),
                "Lake COMID is not associated with NHDPlus flowlines and no outlet")
 })

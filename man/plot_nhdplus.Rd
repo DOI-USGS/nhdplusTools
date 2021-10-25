@@ -37,7 +37,7 @@ plot_nhdplus(
 
 \item{overwrite}{passed on the \link{subset_nhdplus}.}
 
-\item{flowline_only}{boolean only subset and plot flowlines?}
+\item{flowline_only}{boolean only subset and plot flowlines only, default=FALSE}
 
 \item{...}{parameters passed on to rosm.}
 }
@@ -65,7 +65,8 @@ is used to convert the outlet formats as described below.
   is performed and upstream with tributaries from the identified catchments is plotted.
 }
 
-The \code{plot_config} parameter is a list with names "basin", "flowline" and "outlets".
+The \code{plot_config} parameter is a list with names "basin", "flowline", "outlets",
+ "network_wbd", and "off_network_wbd".
 The following shows the defaults that can be altered.
 \enumerate{
   \item basin \code{list(lwd = 1, col = NA, border = "black")}
@@ -74,8 +75,10 @@ The following shows the defaults that can be altered.
    list(default = list(col = "black", border = NA, pch = 19, cex = 1),
         nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
         huc12pp = list(col = "white", border = "black", pch = 22, cex = 1),
-        wqp = list(col = "red", border = NA, pch = 20, cex = 1))
-        }
+        wqp = list(col = "red", border = NA, pch = 20, cex = 1))}
+  \item network_wbd  \code{list(lwd = 1, col = "lightblue", border = "black")}
+  \item off_network_wbd  \code{list(lwd = 1, col = "darkblue", border = "black")}
+
 }
 
 If adding additional layers to the plot, data must be projected to EPSG:3857 with

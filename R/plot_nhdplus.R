@@ -133,19 +133,27 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
         graphics::plot(gt(pd$basin), lwd = st$basin$lwd, col = st$basin$col,
                        border = st$basin$border, add = TRUE)
       if(!is.null(pd$network_wbd))
-        graphics::plot(gt(pd$network_wbd), lwd = st$network_wbd$lwd, col = st$on_network$col,
+        graphics::plot(gt(pd$network_wbd),
+                       lwd = st$network_wbd$lwd,
+                       col = st$network_wbd$col,
                        border = st$network_wbd$border, add = TRUE)
       if(!is.null(pd$off_network_wbd))
-        graphics::plot(gt(pd$off_network_wbd), lwd = st$off_network_wbd$lwd, col = st$off_network$col,
+        graphics::plot(gt(pd$off_network_wbd),
+                       lwd = st$off_network_wbd$lwd,
+                       col = st$off_network_wbd$col,
                        border = st$off_network_wbd$border, add = TRUE)
-      graphics::plot(gt(pd$flowline), lwd = st$flowline$lwd, col = st$flowline$col,
+      graphics::plot(gt(pd$flowline),
+                     lwd = st$flowline$lwd,
+                     col = st$flowline$col,
                      add = TRUE)
       if(!is.null(pd$outlets)) {
         for(type in unique(pd$outlets$type)) {
           st_type <- "default"
           if(type %in% names(st$outlets)) st_type <- type
-          graphics::plot(gt(pd$outlets[pd$outlets$type == type, ]), col = st$outlets[[st_type]]$col,
-                         pch = st$outlets[[st_type]]$pch, bg = st$outlets[[st_type]]$bg,
+          graphics::plot(gt(pd$outlets[pd$outlets$type == type, ]),
+                         col = st$outlets[[st_type]]$col,
+                         pch = st$outlets[[st_type]]$pch,
+                         bg = st$outlets[[st_type]]$bg,
                          cex = st$outlets[[st_type]]$cex, add = TRUE)
         }
       }
@@ -550,6 +558,7 @@ off_network <- function(waterbody, flowline) {
 #' wtbdy <- sf::read_sf(sample_data, "NHDWaterbody")
 #' lake_COMID <- wtbdy$COMID[wtbdy$GNIS_NAME=='Lake Mendota 254']
 #' wb_outlet <- get_wb_outlet(13293262, fline)
+#'
 #' }
 get_wb_outlet <- function(lake_COMID, network) {
   if (lake_COMID %in% network$wbareacomi){

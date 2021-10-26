@@ -197,9 +197,11 @@ add_plus_network_attributes <- function(net, override = 5,
   net <- left_join(net, dn_hs, by = "comid") %>%
     mutate(dnhydroseq = ifelse(is.na(.data$dnhydroseq), 0, .data$dnhydroseq))
 
-  net$totdasqkm <- calculate_total_drainage_area(
-    select(net, ID = .data$comid, toID = .data$tocomid, area = .data$areasqkm)
-  )
+  if("areasqkm" %in% names(net)) {
+    net$totdasqkm <- calculate_total_drainage_area(
+      select(net, ID = .data$comid, toID = .data$tocomid, area = .data$areasqkm)
+    )
+  }
 
   net <- net %>%
     group_by(.data$terminalpa) %>%

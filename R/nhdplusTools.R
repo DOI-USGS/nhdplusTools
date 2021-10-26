@@ -167,7 +167,7 @@ assign("disambiguate_flowline_indexes_attributes",
        envir = nhdplusTools_env)
 
 assign("add_plus_network_attributes_attributes",
-       c("comid", "tocomid", "nameID", "lengthkm", "areasqkm"),
+       c("comid", "tocomid", "nameID", "lengthkm"),
        envir = nhdplusTools_env)
 
 assign("subset_rpu_attributes",
@@ -180,10 +180,22 @@ assign("subset_vpu_attributes",
          "VPUID", "ArbolateSu"),
        envir = nhdplusTools_env)
 
+assign("fix_flowdir_attributes",
+       c("COMID", "toCOMID"),
+       envir = nhdplusTools_env)
+
+assign("get_hydro_location_attributes",
+       c("COMID", "ToMeas", "FromMeas"),
+       envir = nhdplusTools_env)
+
+assign("get_wb_outlet_attributes",
+       c("COMID", "Hydroseq"),
+       envir = nhdplusTools_env)
+
 # assigned here for record keeping. Used as a status counter in apply functions.
 assign("cur_count", 0, envir = nhdplusTools_env)
 
-check_names <- function(x, function_name, align = TRUE) {
+check_names <- function(x, function_name, align = TRUE, tolower = FALSE) {
   if(align) {
     x <- align_nhdplus_names(x)
   }
@@ -197,6 +209,11 @@ check_names <- function(x, function_name, align = TRUE) {
                                              names_x))],
                       collapse = ", "), " or NHDPlusHR equivalents."))
   }
+
+  if(tolower) {
+    names(x) <- tolower(names(x))
+  }
+
   return(x)
 }
 

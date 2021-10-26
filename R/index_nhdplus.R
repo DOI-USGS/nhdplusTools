@@ -1,7 +1,7 @@
 
 matcher <- function(coords, points, search_radius, max_matches = 1) {
 
-  max_match_ <- ifelse(nrow(coords < 1000), nrow(coords), 1000)
+  max_match_ <- ifelse(nrow(coords) < 1000, nrow(coords), 1000)
 
   matched <- nn2(data = coords[, 1:2],
                  query = matrix(points[, c("X", "Y")], ncol = 2),
@@ -11,12 +11,13 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 
   matched <- dplyr::tibble(nn.idx = as.integer(matched$nn.idx),
                            nn.dists = as.numeric(matched$nn.dists),
-                           id = rep(1:nrow(points), ncol(matched[["nn.idx"]])))
+                           id = rep(1:nrow(points), ncol(matched$nn.idx)))
 
-  matched <- left_join(matched, mutate(select(as.data.frame(coords), .data$L1),
+  matched <- left_join(matched, mutate(data.frame(L1 = coords[, "L1"]),
                                        index = seq_len(nrow(coords))),
                        by = c("nn.idx" = "index"))
 
+  rm(coords)
 
   matched <- filter(matched, .data$nn.dists <= search_radius)
 
@@ -433,8 +434,9 @@ match_crs <- function(x, y, warn_text = "") {
 #' @description given a flowline index, returns the hydrologic location (point)
 #' along the specific linear element referenced by the index.
 #' @param indexes data.frame as output from \link{get_flowline_index}.
-#' @param flowpath data.frame with two columns. The first should join to the COMID
-#' field of the indexes and the second should be linear geometry.
+#' @param flowpath data.frame with two three columns, COMID, FromMeas, and ToMeas.
+#' The first should join to the COMID field of the indexes and the second
+#' should be linear geometry.
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
@@ -448,9 +450,11 @@ match_crs <- function(x, y, warn_text = "") {
 #' get_hydro_location(indexes, sample_flines)
 #'
 get_hydro_location <- function(indexes, flowpath) {
+  flowpath <- check_names(flowpath, "get_hydro_location", tolower = TRUE)
+
   in_list <- Map(list,
                  indexes$REACH_meas,
-                 split(flowpath[match(indexes$COMID, flowpath$COMID), ],
+                 split(flowpath[match(indexes$COMID, flowpath$comid), ],
                                  seq(1, nrow(indexes))))
 
   do.call(c, lapply(in_list, get_hydro_location_single))
@@ -464,7 +468,7 @@ get_hydro_location_single <- function(x) {
     add_len()
 
   # First rescale 0-100 measures passed in.
-  m <- rescale_measures(x[[1]], x[[2]]$FromMeas, x[[2]]$ToMeas)
+  m <- rescale_measures(x[[1]], x[[2]]$frommeas, x[[2]]$tomeas)
 
   nus <- nrow(coords) - sum(coords$measure <= m)
 

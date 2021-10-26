@@ -7,11 +7,9 @@
 get_wb_outlet(lake_COMID, network)
 }
 \arguments{
-\item{network}{data.frame of network features containing {insert required attributes}}
+\item{lake_COMID}{integer COMID of lake.}
 
-\item{x}{integer COMID that can be found in \code{waterbodies} input.}
-
-\item{waterbodies}{data.frame of waterbodies containing {insert required attributes}}
+\item{network}{data.frame of network features containing wbareacomi, and Hydroseq}
 }
 \value{
 sf data.frame with single record of network COMID
@@ -23,12 +21,14 @@ Get Waterbody Outlet
 \examples{
 \donttest{
 
-
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
 fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
 wtbdy <- sf::read_sf(sample_data, "NHDWaterbody")
+
 lake_COMID <- wtbdy$COMID[wtbdy$GNIS_NAME=='Lake Mendota 254']
-wb_outlet <- get_wb_outlet(13293262, fline)
+
+get_wb_outlet(13293262, fline)
 
 }
 }

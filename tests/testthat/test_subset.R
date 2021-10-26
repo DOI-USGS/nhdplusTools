@@ -345,14 +345,6 @@ test_that("projection check", {
 
   expect_equal(nrow(mr$basin), 1)
 
-  suppressWarnings(mr <- nhdplusTools::plot_nhdplus(list(13293970),
-                                                    gpkg = out,
-                                                    nhdplus_data = out,
-                                                    overwrite = FALSE,
-                                                    actually_plot = FALSE))
-
-  expect_equal(mr$basin, NULL)
-
 })
 
 test_that("extras", {

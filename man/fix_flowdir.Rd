@@ -7,9 +7,9 @@
 fix_flowdir(comid, network)
 }
 \arguments{
-\item{x}{The COMID of the flowline to check}
+\item{comid}{The COMID of the flowline to check}
 
-\item{r}{The entire network to check from. Requires a "toCOMID" field.}
+\item{network}{The entire network to check from. Requires a "toCOMID" field.}
 }
 \value{
 a geometry for the feature that has been reversed if needed.

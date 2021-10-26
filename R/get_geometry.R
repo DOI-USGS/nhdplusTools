@@ -51,8 +51,8 @@ get_node <- function(x, position = "end") {
 #' Fix flow direction
 #' @description If flowlines aren't digitized in the expected direction,
 #' this will reorder the nodes so they are.
-#' @param x The COMID of the flowline to check
-#' @param r The entire network to check from. Requires a "toCOMID" field.
+#' @param comid The COMID of the flowline to check
+#' @param network The entire network to check from. Requires a "toCOMID" field.
 #' @return a geometry for the feature that has been reversed if needed.
 #' @importFrom sf st_reverse st_join st_geometry
 #' @export

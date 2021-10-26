@@ -66,7 +66,7 @@ is used to convert the outlet formats as described below.
 }
 
 The \code{plot_config} parameter is a list with names "basin", "flowline", "outlets",
- "network_wbd", and "off_network_wbd".
+ "network_wtbd", and "off_network_wtbd".
 The following shows the defaults that can be altered.
 \enumerate{
   \item basin \code{list(lwd = 1, col = NA, border = "black")}
@@ -76,8 +76,8 @@ The following shows the defaults that can be altered.
         nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
         huc12pp = list(col = "white", border = "black", pch = 22, cex = 1),
         wqp = list(col = "red", border = NA, pch = 20, cex = 1))}
-  \item network_wbd  \code{list(lwd = 1, col = "lightblue", border = "black")}
-  \item off_network_wbd  \code{list(lwd = 1, col = "darkblue", border = "black")}
+  \item network_wtbd  \code{list(lwd = 1, col = "lightblue", border = "black")}
+  \item off_network_wtbd  \code{list(lwd = 1, col = "darkblue", border = "black")}
 
 }
 

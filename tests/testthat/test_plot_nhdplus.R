@@ -12,7 +12,7 @@ test_that("basics work", {
   g_temp <- file.path(tempd, "foo.gpkg")
 
   d <-  nhdplusTools:::get_plot_data(site, gpkg = g_temp, flowline_only = FALSE)
-  expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
+  expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment","network_wtbd","off_network_wtbd"))
 
   expect_true(all(c("comid", "type") %in% names(d$outlets)))
   l <- sf::st_layers(g_temp)
@@ -118,14 +118,15 @@ test_that("local data", {
 
   expect_equal(names(plot_data), names(plot_data_check))
 
-  expect_equal(names(plot_data), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
+  expect_equal(names(plot_data), c("plot_bbox", "outlets", "flowline", "basin", "catchment",
+                                   "network_wtbd","off_network_wtbd"))
   expect_equal(nrow(plot_data$flowline), 251)
   expect_equal(plot_data$outlets$type, "comid")
 
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, nhdplus_data = sample_data, flowline_only = TRUE)
 
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
-  expect_equal(nrow(plot_data$flowline), 57)
+  expect_equal(nrow(plot_data$flowline), 251)
   expect_true(all(c("comid", "type") %in% names(plot_data$outlets)))
 
   skip_on_cran()
@@ -246,7 +247,8 @@ test_that("test_as_outlets", {
 
 test_that("test_styles", {
   st <- nhdplusTools:::get_styles(NULL)
-  expect_named(st, c("basin", "flowline", "outlets"))
+  expect_named(st, c("basin", "flowline", "network_wtbd",
+                     "off_network_wtbd","outlets"))
   expect_named(st$outlets, c("default", "nwissite", "huc12pp", "wqp"))
   expect_named(st$outlets$nwissite, c("col", "bg", "pch", "cex"))
 
@@ -264,7 +266,7 @@ test_that("test_styles", {
                'Expected one ore more of "lwd", "col", or "border" in basins plot_config, got:lwc')
 
   expect_error(nhdplusTools:::get_styles(list(lowline = c(bol = "test"))),
-               'Expected one or more of "basin", "flowline", or "outlets" in plot_config, got: lowline')
+               'Expected one or more of "basin", "flowline", "outlets", or "waterbody" in plot_config, got: lowline')
 
   expect_error(nhdplusTools:::get_styles(list(flowline = c(bol = "test"))),
                'Expected one ore more of "lwd" and "col" in flowlines plot_config, got:bol')
@@ -286,7 +288,7 @@ test_that("bbox", {
 
    expect_equal(nrow(d$flowline), 183)
 
-   # With Local Data (note this sanple is already subset to a watershed basis)
+   # With Local Data (note this sample is already subset to a watershed basis)
    d <- nhdplusTools:::get_plot_data(bbox = bbox, streamorder = 2,
                                      nhdplus_data = sample_data)
 
@@ -300,9 +302,10 @@ test_that("comids", {
   testthat::skip_on_cran()
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   comids <- nhdplusTools::get_UT(fline, 13293970)
-  d <- nhdplusTools:::get_plot_data(comids)
+  d <- nhdplusTools:::plot_nhdplus(comids, flowline_only = TRUE)
 
-  expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment"))
+  expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment",
+                           "network_wtbd","off_network_wtbd"))
   expect_true(all(d$flowline$comid %in% comids))
   expect_equal(d$catchment, NULL)
 
@@ -311,3 +314,58 @@ test_that("comids", {
   expect_true(is(d$basin, "sf"))
 })
 
+test_that("waterbodies", {
+  testthat::skip_on_cran()
+  site <- "USGS-05428500"
+  tempd <- tempdir(check = TRUE)
+  g_temp <- file.path(tempd, "foo.gpkg")
+
+  d <-  nhdplusTools:::plot_nhdplus(site)
+
+  expect_equal(names(d), c("plot_bbox", "outlets", "flowline",
+                           "basin", "catchment","network_wtbd",
+                           "off_network_wtbd"))
+
+  d <-  nhdplusTools:::plot_nhdplus(site, flowline_only = FALSE)
+
+  expect_true(is(d$network_wtbd, "sf"))
+  expect_true(is(d$off_network_wtbd, "sf"))
+
+  bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
+                        xmax = -89.24681, ymax = 43.17192),
+                      crs = "+proj=longlat +datum=WGS84 +no_defs")
+
+  # With downloaded data
+  d <- nhdplusTools:::get_plot_data(bbox = bbox, flowline_only = FALSE)
+
+  expect_equal(nrow(d$off_network_wtbd), 43)
+  expect_equal(nrow(d$network_wtbd), 10)
+
+  # With Local Data (note this sample is already subset to a watershed basis)
+  d <- nhdplusTools:::get_plot_data(bbox = bbox, streamorder = 2,
+                                    nhdplus_data = sample_data)
+
+  expect_equal(nrow(d$off_network_wtbd), 53)
+  expect_equal(nrow(d$network_wtbd), 0)
+})
+
+test_that("get_waterbody_outlet", {
+  testthat::skip_on_cran()
+  lake_comid <- 13293262
+  site <- "USGS-05428500"
+  tempd <- tempdir(check = TRUE)
+  g_temp <- file.path(tempd, "foo.gpkg")
+
+  d <-  nhdplusTools:::get_plot_data(site, gpkg = g_temp, flowline_only = FALSE)
+  out <-  nhdplusTools:::get_wb_outlet(lake_comid, d$flowline)
+
+  expect_equal(out$comid, 13294312)
+  expect_equal(out$gnis_name, "Yahara River")
+  expect_true(is(out, "sf"))
+
+  expect_equal(nrow(out), 1)
+
+  lake_comid <- 14711354
+  expect_error(nhdplusTools:::get_wb_outlet(lake_comid, d$flowline),
+               "Lake COMID is not associated with NHDPlus flowlines and no outlet")
+})

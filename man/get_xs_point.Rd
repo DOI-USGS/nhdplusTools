@@ -36,7 +36,7 @@ nhdplusTools::plot_nhdplus(bbox = bbox)
 plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
 plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 
-plot(xs$distance, xs$elevation)
+plot(xs$distance_m, xs$elevation_m)
 
 }
 

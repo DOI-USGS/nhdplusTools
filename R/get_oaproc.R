@@ -129,7 +129,7 @@ get_split_catchment <- function(point, upstream = TRUE) {
 #' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 #'
-#' plot(xs$distance, xs$elevation)
+#' plot(xs$distance_m, xs$elevation_m)
 #'
 #' }
 #'
@@ -177,7 +177,7 @@ get_xs_point <- function(point, width, num_pts) {
 #' plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)
 #' plot(sf::st_transform(sf::st_sfc(point2, crs = 4326), 3857), add = TRUE)
 #'
-#' plot(xs$distance, xs$elevation)
+#' plot(xs$distance_m, xs$elevation_m)
 #'
 #' }
 #'

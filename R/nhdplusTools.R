@@ -184,6 +184,14 @@ assign("fix_flowdir_attributes",
        c("COMID", "toCOMID"),
        envir = nhdplusTools_env)
 
+assign("get_hydro_location_attributes",
+       c("COMID", "ToMeas", "FromMeas"),
+       envir = nhdplusTools_env)
+
+assign("get_wb_outlet_attributes",
+       c("COMID", "Hydroseq"),
+       envir = nhdplusTools_env)
+
 # assigned here for record keeping. Used as a status counter in apply functions.
 assign("cur_count", 0, envir = nhdplusTools_env)
 

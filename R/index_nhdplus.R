@@ -430,7 +430,7 @@ match_crs <- function(x, y, warn_text = "") {
   x
 }
 
-#' get hydro location
+#' Get hydro location
 #' @description given a flowline index, returns the hydrologic location (point)
 #' along the specific linear element referenced by the index.
 #' @param indexes data.frame as output from \link{get_flowline_index}.

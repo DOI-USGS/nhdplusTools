@@ -242,7 +242,7 @@ get_nldi_url <- function(tier = "prod") {
   }
 }
 
-#' get or set nhdplusTools data directory
+#' Get or set nhdplusTools data directory
 #' @description if left unset, will return the user data dir
 #' as returned by \link[tools]{R_user_dir} for this package.
 #' @param dir path of desired data directory

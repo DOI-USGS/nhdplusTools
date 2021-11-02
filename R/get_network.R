@@ -346,3 +346,222 @@ get_start_comid <- function(network, comid) {
 
   start_comid
 }
+
+#' Navigate Network
+#' @param start list, integer, or sfc if list must be a valid NLDI feature
+#' if integer must be a valid comid.
+#' @param mode character chosen from c(UM, DM, UT, or DD)
+#' @param network sf should be compatible with network navigation functions
+#' If NULL, network will be derived from requests to the NLDI
+#' @param output character flowline or a valid NLDI data source
+#' @param distance_km numeric distance to navigate in km
+#' @param trim_start logical should start be trimmed or include entire catchment?
+#' @param trim_stop logical should stop(s) be trimmed or include entire catchment(s)?
+#' # Not supported
+#' @param trim_tolerance numeric from 0 to 100 percent of flowline length. If amount
+#' to trim is less than this tolerance, no trim will be applied.
+#' @export
+#' @examples
+#'
+#'
+#'  navigate_network(list(featureSource = "nwissite", featureID = "USGS-06287800"),
+#'                   "UM",
+#'                   output = "flowlines",
+#'                   trim_start = TRUE)
+
+navigate_network <- function(start, mode = "UM", network = NULL,
+                             output = "flowlines", distance_km = 10,
+                             trim_start = FALSE, trim_stop = FALSE,
+                             trim_tolerance = 5) {
+
+  # Work with start to get a start_comid
+  if(!is.numeric(start)) {
+    if(inherits(start, "sfc")) {
+
+      start_comid <- discover_nhdplus_id(point = start)
+
+    } else if(is.list(start)) {
+
+      start <- get_nldi_feature(start)
+      start_comid <- as.integer(start$comid)
+
+    } else {
+
+      stop("start must be integer, list, or sfc geometry")
+
+    }
+
+  } else {
+
+    if(!start %% 1 == 0) {
+      stop("If start is numeric it must be a comid integer")
+    }
+
+    start <- as.integer(start)
+    start_comid <- start
+
+  }
+
+  # in the case that we don't have a network, we need to get it
+  # from the NLDI and web services.
+  if(is.null(network)) {
+
+    network <- navigate_nldi(list(featureSource = "comid",
+                                  featureID = start_comid),
+                             mode, "flowlines", distance_km)
+
+    network <- network[names(network) != "origin"][[1]]$nhdplus_comid
+
+    network <- subset_nhdplus(as.integer(network),
+                              nhdplus_data = "download",
+                              status = TRUE,
+                              flowline_only = TRUE)
+
+    network <- network$NHDFlowline_Network
+
+  } else {
+
+    # If we have a network, we need to filter it down to
+    # the desired navigation.
+    network <- nhdplusTools:::check_names(network, paste0("get_", mode),
+                                          tolower = TRUE)
+
+    if(!start_comid %in% network$comid)
+      stop("start comid not in network?")
+
+    network <- dplyr::filter(network, comid %in%
+                               if(mode == "UM") {
+                                 get_UM(network, start_comid, distance_km, include = TRUE)
+                               } else if(mode == "UT") {
+                                 get_UT(network, start_comid, distance_km)
+                               } else if(mode == "DD") {
+                                 get_DD(network, start_comid, distance_km)
+                               } else if(mode == "DM") {
+                                 get_DM(network, start_comid, distance_km, include = TRUE)
+                               }
+    )
+
+  }
+
+
+  # we now have a network that matches our navigation and, if trim options are
+  # FALSE, can output the desired output data.
+
+  # we need a precise measure for our point
+  if(trim_start) {
+
+    if(!is.numeric(start)) {
+
+      if(inherits(start, "sf")) {
+        start <- sf::st_transform(start,
+                                  sf::st_crs(network))
+      }
+
+      event <- get_flowline_index(flines = network,
+                                 points = start,
+                                 search_radius = 0.001,
+                                 precision = 10)
+
+      event <- sf::st_sf(event,
+                         geom = get_hydro_location(event, network))
+
+    }
+
+  }
+
+  # get the output data if it's not flowlines
+  if(!output == "flowlines") {
+
+    out_features <- navigate_nldi(list(featureSource = "comid",
+                                       featureID = start_comid),
+                                  mode, output, distance_km
+                                  )[[paste0(mode, "_", output)]]
+
+  } else {
+
+    out_features <- NULL
+
+  }
+
+  if(trim_stop) {
+
+    stop("Trim Stop Not Supported")
+
+  }
+
+  # now trim start if requested
+  if(trim_start) {
+
+    if(!is.integer(start)) {
+      if(output == "flowlines") {
+        # trim event flowline to measure of event
+
+        l <- network[network$comid == start_comid, ]
+
+        # Convert start to comid measure
+        split <- rescale_measures(as.numeric(event$REACH_meas),
+                                  l$frommeas, l$tomeas)
+
+        if(grepl("UM|UT", mode)) {
+
+          f <- 0
+          t <- 1 - (split / 100)
+
+        } else {
+
+          f <- split / 100
+          t <- 1
+
+        }
+
+        if(abs(f - t) < trim_tolerance / 100) {
+
+          warning("No split applied, under tolerance.")
+
+        } else {
+
+          sf::st_geometry(network)[network$comid == start_comid] <-
+            suppressWarnings({
+
+              if(!requireNamespace("lwgeom")) {
+                stop("lwgeom required to trim flowlines to a specific measure.")
+              }
+
+              lwgeom::st_linesubstring(sf::st_geometry(l), f, t)
+
+            })
+        }
+
+      } else {
+        if("measure" %in% names(out_features)) {
+          # remove if reachcode is same as start and
+          # measure is greater for upstream
+          # measure is less for downstream
+
+          out_features <- dplyr::filter(
+            out_features,
+            if(grepl("UM|UT", mode)) {
+              .data$reachcode != event$REACHCODE |
+                (.data$reachcode == event$REACHCODE & .data$measure > event$REACH_meas)
+            } else {
+              .data$reachcode != event$REACHCODE |
+                (.data$reachcode == event$REACHCODE & .data$measure < event$REACH_meas)
+            })
+
+        }
+      }
+    } else {
+
+      warning("trim_start ignored for comid start")
+
+    }
+
+  }
+
+  if(!is.null(out_features)) {
+    return(out_features)
+  } else {
+    return(network)
+  }
+
+}

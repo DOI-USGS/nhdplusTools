@@ -345,8 +345,8 @@ test_that("waterbodies", {
   d <- nhdplusTools:::get_plot_data(bbox = bbox, streamorder = 2,
                                     nhdplus_data = sample_data)
 
-  expect_equal(nrow(d$off_network_wtbd), 53)
-  expect_equal(nrow(d$network_wtbd), 0)
+  expect_equal(nrow(d$off_network_wtbd), 43)
+  expect_equal(nrow(d$network_wtbd), 10)
 })
 
 test_that("get_waterbody_outlet", {

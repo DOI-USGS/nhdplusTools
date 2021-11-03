@@ -41,9 +41,10 @@ Navigate Network
 }
 \examples{
 
- navigate_network(list(featureSource = "nwissite", featureID = "USGS-06287800"),
-                  "UM",
-                  output = "flowlines",
-                  trim_start = TRUE)
-
+\donttest{
+navigate_network(list(featureSource = "nwissite", featureID = "USGS-06287800"),
+                "UM",
+                output = "flowlines",
+                trim_start = TRUE)
+}
 }

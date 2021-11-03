@@ -363,11 +363,12 @@ get_start_comid <- function(network, comid) {
 #' @export
 #' @examples
 #'
-#'  navigate_network(list(featureSource = "nwissite", featureID = "USGS-06287800"),
-#'                   "UM",
-#'                   output = "flowlines",
-#'                   trim_start = TRUE)
-#'
+#' \donttest{
+#' navigate_network(list(featureSource = "nwissite", featureID = "USGS-06287800"),
+#'                 "UM",
+#'                 output = "flowlines",
+#'                 trim_start = TRUE)
+#' }
 
 navigate_network <- function(start, mode = "UM", network = NULL,
                              output = "flowlines", distance_km = 10,
@@ -423,8 +424,8 @@ navigate_network <- function(start, mode = "UM", network = NULL,
 
     # If we have a network, we need to filter it down to
     # the desired navigation.
-    network <- nhdplusTools:::check_names(network, paste0("get_", mode),
-                                          tolower = TRUE)
+    network <- check_names(network, paste0("get_", mode),
+                           tolower = TRUE)
 
     if(!start_comid %in% network$comid)
       stop("start comid not in network?")

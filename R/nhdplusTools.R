@@ -40,6 +40,7 @@ ReachCode <- "ReachCode"
 VPUID <- "VPUID"
 RPUID <- "RPUID"
 toCOMID <- "toCOMID"
+WBAREACOMI <- "WBAREACOMI"
 
 
 # List of input names that should be changed to replacement names
@@ -48,6 +49,7 @@ nhdplus_attributes <- list(
   RPUID = RPUID,
   VPUID = VPUID,
   FEATUREID = FEATUREID,
+  WBAREACOMI = WBAREACOMI,
   Hydroseq = Hydroseq, HydroSeq = Hydroseq,
   UpHydroseq = UpHydroseq, UpHydroSeq = UpHydroseq,
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
@@ -192,8 +194,9 @@ assign("get_wb_outlet_attributes",
        c("COMID", "Hydroseq"),
        envir = nhdplusTools_env)
 
-assign("on_off_network",
-       c("COMID", "WBAREACOMI"))
+assign("on_off_network_attributes",
+       c("COMID", "WBAREACOMI"),
+       envir = nhdplusTools_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.
 assign("cur_count", 0, envir = nhdplusTools_env)
@@ -247,7 +250,7 @@ get_nldi_url <- function(tier = "prod") {
 
 #' Get or set nhdplusTools data directory
 #' @description if left unset, will return the user data dir
-#' as returned by \link[tools]{R_user_dir} for this package.
+#' as returned by `tools::R_user_dir` for this package.
 #' @param dir path of desired data directory
 #' @return character path of data directory (silent when setting)
 #' @importFrom tools R_user_dir

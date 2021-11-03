@@ -264,8 +264,10 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
     wtbdy <- flowline$waterbody
     flowline <- flowline$flowline
     if (!is.null(wtbdy)){
-      network_wtbd <- on_network(wtbdy, flowline)
-      off_network_wtbd <- off_network(wtbdy, flowline)
+      network_wtbd <- on_network(wtbdy,
+                                 check_names(flowline, "on_off_network", tolower = TRUE))
+      off_network_wtbd <- off_network(wtbdy,
+                                      check_names(flowline, "on_off_network", tolower = TRUE))
     } else {
       network_wtbd <- NULL
       off_network_wtbd <- NULL
@@ -324,8 +326,10 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
     }
     if ('NHDWaterbody' %in% names(subsets) & !is.null(subsets$NHDWaterbody) & !is.character(subsets$NHDWaterbody)){
       names(flowline) <- tolower(names(flowline))
-      network_wtbd <- on_network(subsets$NHDWaterbody, flowline)
-      off_network_wtbd <- off_network(subsets$NHDWaterbody, flowline)
+      network_wtbd <- on_network(subsets$NHDWaterbody,
+                                 check_names(flowline, "on_off_network", tolower = TRUE))
+      off_network_wtbd <- off_network(subsets$NHDWaterbody,
+                                      check_names(flowline, "on_off_network", tolower = TRUE))
     } else {
       network_wtbd <- NULL
       off_network_wtbd <- NULL
@@ -346,8 +350,10 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
 
     catchment <- nhd_data$catchment
     if ('waterbody' %in% names(nhd_data) & !is.null(nhd_data$waterbody)){
-      network_wtbd <- on_network(nhd_data$waterbody, flowline)
-      off_network_wtbd <- off_network(nhd_data$waterbody, flowline)
+      network_wtbd <- on_network(nhd_data$waterbody,
+                                 check_names(flowline, "on_off_network", tolower = TRUE))
+      off_network_wtbd <- off_network(nhd_data$waterbody,
+                                      check_names(flowline, "on_off_network", tolower = TRUE))
     } else {
       network_wtbd <- NULL
       off_network_wtbd <- NULL
@@ -536,12 +542,13 @@ all_int <- function(o) {
 # Define on-network and off-network waterbodies
 on_network <- function(waterbody, flowline) {
   network_wtbdarea <- dplyr::filter(waterbody,
-                                   COMID %in% as.numeric(flowline$wbareacomi))
+                                    COMID %in% as.numeric(flowline$wbareacomi))
   return(network_wtbdarea)
 }
 
 off_network <- function(waterbody, flowline) {
-  off_network_wtbdarea <- dplyr::filter(waterbody, !COMID %in% as.numeric(flowline$wbareacomi))
+  off_network_wtbdarea <- dplyr::filter(waterbody,
+                                        !COMID %in% as.numeric(flowline$wbareacomi))
   return(off_network_wtbdarea)
 }
 

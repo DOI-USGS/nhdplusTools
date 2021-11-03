@@ -363,11 +363,11 @@ get_start_comid <- function(network, comid) {
 #' @export
 #' @examples
 #'
-#'
 #'  navigate_network(list(featureSource = "nwissite", featureID = "USGS-06287800"),
 #'                   "UM",
 #'                   output = "flowlines",
 #'                   trim_start = TRUE)
+#'
 
 navigate_network <- function(start, mode = "UM", network = NULL,
                              output = "flowlines", distance_km = 10,
@@ -429,7 +429,7 @@ navigate_network <- function(start, mode = "UM", network = NULL,
     if(!start_comid %in% network$comid)
       stop("start comid not in network?")
 
-    network <- dplyr::filter(network, comid %in%
+    network <- dplyr::filter(network, .data$comid %in%
                                if(mode == "UM") {
                                  get_UM(network, start_comid, distance_km, include = TRUE)
                                } else if(mode == "UT") {
@@ -498,9 +498,19 @@ navigate_network <- function(start, mode = "UM", network = NULL,
 
         l <- network[network$comid == start_comid, ]
 
-        # Convert start to comid measure
-        split <- rescale_measures(as.numeric(event$REACH_meas),
-                                  l$frommeas, l$tomeas)
+        rm <- as.numeric(event$REACH_meas)
+        lf <- l$frommeas
+        lt <- l$tomeas
+
+        # the event measure can be outside the network?
+        if(!dplyr::between(rm, lf, lt)) {
+          df <- abs(c(lf, lt) - rm)
+          split <- c(lf, lt)[which(df == min(df))]
+        } else {
+          # Convert start to comid measure
+          split <- rescale_measures(as.numeric(event$REACH_meas),
+                                    l$frommeas, l$tomeas)
+        }
 
         if(grepl("UM|UT", mode)) {
 

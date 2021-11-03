@@ -192,6 +192,9 @@ assign("get_wb_outlet_attributes",
        c("COMID", "Hydroseq"),
        envir = nhdplusTools_env)
 
+assign("on_off_network",
+       c("COMID", "WBAREACOMI"))
+
 # assigned here for record keeping. Used as a status counter in apply functions.
 assign("cur_count", 0, envir = nhdplusTools_env)
 

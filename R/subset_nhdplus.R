@@ -165,7 +165,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
   if(is.null(bbox)) {
     if(is.null(comids)) stop("must provide comids or bounding box")
 
-    comids <- as.integer(comids)
+    comids <- round(comids)
 
     out_list <- c(get_flowline_subset(nhdplus_data, comids,
                                       output_file,

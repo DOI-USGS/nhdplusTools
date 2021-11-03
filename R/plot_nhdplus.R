@@ -371,8 +371,10 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
     flowline <- sf::st_zm(nhd_data$NHDFlowline_Network)
     nexus <- NULL
     if ('NHDWaterbody' %in% names(nhd_data) & !is.null(nhd_data$NHDWaterbody)){
-      network_wtbd <- on_network(nhd_data$NHDWaterbody, flowline)
-      off_network_wtbd <- off_network(nhd_data$NHDWaterbody, flowline)
+      network_wtbd <- on_network(nhd_data$NHDWaterbody,
+                                 check_names(flowline, "on_off_network", tolower = TRUE))
+      off_network_wtbd <- off_network(nhd_data$NHDWaterbody,
+                                      check_names(flowline, "on_off_network", tolower = TRUE))
     } else {
       network_wtbd <- NULL
       off_network_wtbd <- NULL

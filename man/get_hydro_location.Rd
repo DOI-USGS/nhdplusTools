@@ -2,7 +2,7 @@
 % Please edit documentation in R/index_nhdplus.R
 \name{get_hydro_location}
 \alias{get_hydro_location}
-\title{get hydro location}
+\title{Get hydro location}
 \usage{
 get_hydro_location(indexes, flowpath)
 }

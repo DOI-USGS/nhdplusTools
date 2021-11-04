@@ -2,7 +2,7 @@
 % Please edit documentation in R/nhdplusTools.R
 \name{nhdplusTools_data_dir}
 \alias{nhdplusTools_data_dir}
-\title{get or set nhdplusTools data directory}
+\title{Get or set nhdplusTools data directory}
 \usage{
 nhdplusTools_data_dir(dir = NULL)
 }
@@ -14,7 +14,7 @@ character path of data directory (silent when setting)
 }
 \description{
 if left unset, will return the user data dir
-as returned by \link[tools]{R_user_dir} for this package.
+as returned by `tools::R_user_dir` for this package.
 }
 \examples{
 nhdplusTools_data_dir()

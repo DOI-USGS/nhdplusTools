@@ -1,4 +1,4 @@
-context("levelpath")
+
 
 test_that("reweight", {
   x <- readRDS(list.files(pattern = "reweight_test.rds",

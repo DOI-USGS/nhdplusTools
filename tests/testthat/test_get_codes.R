@@ -1,9 +1,9 @@
+source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
 test_that("get streamorder", {
   skip_on_cran()
 
   if(Sys.getenv("_R_CHECK_ON_GH_") != "true") { # broken on github actions
-
-    source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
     test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
 
@@ -37,7 +37,6 @@ test_that("get streamorder", {
 })
 
 test_that("get_streamlevel", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
   if(Sys.getenv("_R_CHECK_ON_GH_") != "true") {
     test_flowline <- data.frame(
@@ -57,22 +56,31 @@ test_that("get_streamlevel", {
 })
 
 test_that("get_pfaf", {
-  suppressMessages(
-    source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
-  hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 
-  suppressWarnings(
-    fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE))
 
-  fl <- select(hr_flowline, COMID, AreaSqKM) %>%
-    left_join(fl, by = "COMID") %>%
-    st_sf() %>%
-    select(ID = COMID, toID = toCOMID, area = AreaSqKM)
+  # layers <- "NHDFlowline"
+  #
+  # suppressMessages(
+  #   source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
+  #
+  # hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
+  #
+  # suppressWarnings(
+  #   fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE))
+  #
+  # fl <- select(hr_flowline, COMID, AreaSqKM) %>%
+  #   left_join(fl, by = "COMID") %>%
+  #   st_sf() %>%
+  #   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
+  #
+  # fl$nameID = " "
+  # fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+  # fl <- left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),
+  #                                                  weight = totda)), by = "ID")
+  #
+  # saveRDS(sf::st_drop_geometry(fl), "tests/testthat/data/pfaf_net.rds")
 
-  fl$nameID = " "
-  fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
-  fl <- left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),
-                                                   weight = totda)), by = "ID")
+  fl <- readRDS(list.files(pattern = "pfaf_net.rds", recursive = TRUE, full.names = TRUE))
 
   pfaf <- get_pfaf(fl, max_level = 2)
 
@@ -96,8 +104,6 @@ test_that("get_pfaf", {
 
   expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500084318], 161)
   expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500028332], 181)
-
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
   fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE)
 

@@ -15,6 +15,7 @@ plot_nhdplus(
   actually_plot = TRUE,
   overwrite = TRUE,
   flowline_only = NULL,
+  cache_data = NULL,
   ...
 )
 }
@@ -38,6 +39,9 @@ plot_nhdplus(
 \item{overwrite}{passed on the \link{subset_nhdplus}.}
 
 \item{flowline_only}{boolean only subset and plot flowlines only, default=FALSE}
+
+\item{cache_data}{character path to rds file where all plot data can be cached.
+If file doesn't exist, it will be created.}
 
 \item{...}{parameters passed on to rosm.}
 }

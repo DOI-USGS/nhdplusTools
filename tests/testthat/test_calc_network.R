@@ -1,4 +1,4 @@
-context("calculate network attributes")
+
 
 test_that("total drainage area works", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))

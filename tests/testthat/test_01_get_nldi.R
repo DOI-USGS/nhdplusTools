@@ -1,4 +1,4 @@
-context("nldi tests")
+
 
 test_that("nldi basics work", {
 
@@ -49,7 +49,7 @@ test_that("navigation works", {
                         data_source = "flowlines",
                         distance_km = 10)
 
-  expect_is(sf::st_geometry(nav3$UM), "sfc_LINESTRING")
+  expect_s3_class(sf::st_geometry(nav3$UM), "sfc_LINESTRING")
 
   expect_warning(nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
                                        mode = "upstreamMain",
@@ -152,9 +152,9 @@ test_that("raindrop", {
 
   point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
 
-  trace <- get_raindrop_trace(point)
+  trace <- get_raindrop_trace(point, direction = "up")
 
-  expect_equal(trace$id[1], 'downstreamFlowline')
+  expect_equal(trace$id[1], 'upstreamFlowline')
 
   expect_equal(trace$id[2], "raindropPath")
 
@@ -162,19 +162,20 @@ test_that("raindrop", {
 
   expect_true(inherits(trace, "sf"))
 
-  expect_is(trace$intersectionPoint, "list")
-
-  trace2 <- get_raindrop_trace(point, direction = "up")
-
-  expect_equal(trace2$id[1], 'upstreamFlowline')
-
-  trace3 <- get_raindrop_trace(point, direction = "none")
-
-  expect_equal(trace3$id[1], "nhdFlowline")
-
-  expect_equal(length(trace3$intersectionPoint[[1]]), 2)
-
-  expect_equal(length(trace3$intersectionPoint[[2]]), 0)
+  expect_type(trace$intersectionPoint, "list")
+#
+# Doesn't improve coverage
+#   trace2 <- get_raindrop_trace(point, direction = "up")
+#
+#   expect_equal(trace2$id[1], 'upstreamFlowline')
+#
+#   trace3 <- get_raindrop_trace(point, direction = "none")
+#
+#   expect_equal(trace3$id[1], "nhdFlowline")
+#
+#   expect_equal(length(trace3$intersectionPoint[[1]]), 2)
+#
+#   expect_equal(length(trace3$intersectionPoint[[2]]), 0)
 
   expect_error(get_raindrop_trace(point, direction = "borked"),
                "direction must be in up, down, none")
@@ -185,11 +186,14 @@ test_that("split", {
 
   skip_on_cran()
 
-  point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
+  # Doesn't improve coverage
+  # point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
+  #
+  # trace <- get_raindrop_trace(point)
+  #
+  # dput(sf::st_point(trace$intersectionPoint[[1]][2:1]))
 
-  trace <- get_raindrop_trace(point)
-
-  snap_point <- sf::st_sfc(sf::st_point(trace$intersectionPoint[[1]][2:1]),
+  snap_point <- sf::st_sfc(sf::st_point(c(-89.213274, 42.956989)),
                            crs = 4326)
 
   catchment <- get_split_catchment(snap_point, upstream = TRUE)
@@ -200,23 +204,24 @@ test_that("split", {
 
   expect_true(area[2] > units::set_units(900000000, "m^2"))
 
-  catchment2 <- get_split_catchment(snap_point, upstream = FALSE)
-
-  area <- sf::st_area(catchment2)
-
-  expect_true(area[1] < units::set_units(7000000, "m^2"))
-
-  expect_true(area[2] < units::set_units(900000000, "m^2"))
-
-  pour_point <- sf::st_sfc(sf::st_point(x = c(-89.25619, 42.98646)), crs = 4326)
-
-  catchment3 <- get_split_catchment(pour_point, upstream = FALSE)
-
-  area <- sf::st_area(catchment3)
-
-  expect_true(area[1] < units::set_units(7000000, "m^2"))
-
-  expect_true(area[2] < units::set_units(40000, "m^2"))
+  # Doesn't improve coverage
+  # catchment2 <- get_split_catchment(snap_point, upstream = FALSE)
+  #
+  # area <- sf::st_area(catchment2)
+  #
+  # expect_true(area[1] < units::set_units(7000000, "m^2"))
+  #
+  # expect_true(area[2] < units::set_units(900000000, "m^2"))
+  #
+  # pour_point <- sf::st_sfc(sf::st_point(x = c(-89.25619, 42.98646)), crs = 4326)
+  #
+  # catchment3 <- get_split_catchment(pour_point, upstream = FALSE)
+  #
+  # area <- sf::st_area(catchment3)
+  #
+  # expect_true(area[1] < units::set_units(7000000, "m^2"))
+  #
+  # expect_true(area[2] < units::set_units(40000, "m^2"))
 
 })
 
@@ -232,15 +237,18 @@ test_that("xs", {
 
   expect_true(all(c("distance_m", "elevation_m") %in% names(xs)))
 
+
   point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
   point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
 
-  xs <- get_xs_points(point1, point2, 100)
-
-  expect_true(inherits(xs, "sf"))
-  expect_equal(nrow(xs), 101)
-
-  expect_true(all(c("distance_m", "elevation_m") %in% names(xs)))
+  # Doesn't improve coverage
+    #
+  # xs <- get_xs_points(point1, point2, 100)
+  #
+  # expect_true(inherits(xs, "sf"))
+  # expect_equal(nrow(xs), 101)
+  #
+  # expect_true(all(c("distance_m", "elevation_m") %in% names(xs)))
 
   expect_error(get_xs_points(point1, point2, 100, 2),
                "res input must be on of 1, 3, 5, 10, 30, 60")

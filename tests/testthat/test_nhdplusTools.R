@@ -1,4 +1,4 @@
-context("package setup")
+
 
 source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 
@@ -29,7 +29,7 @@ test_that("nhdplusTools_data_path works", {
                check)
 })
 
-context("discover nhdplus id")
+
 
 test_that("discover nhdplus id errors", {
   skip_on_cran()
@@ -58,7 +58,7 @@ test_that("discover nhdplus id works as expected", {
 
 })
 
-context("prepare_nhdplus")
+
 
 test_that("prep_nhdplus_works and errors as expected", {
   flines_in <- pt_data
@@ -127,7 +127,7 @@ test_that("prep_nhdplus works with inland network", {
 
   flines <- dplyr::filter(flines_in, COMID %in% get_UT(flines_in, 11690564))
   flines <- sf::st_set_geometry(flines, NULL)
-  expect_warning(prepare_nhdplus(flines, 0, 0, FALSE, FALSE),
+  expect_warning(prepare_nhdplus(flines, 0, 0, 0, FALSE, FALSE),
                  "Got NHDPlus data without a Terminal catchment. Attempting to find it.")
 })
 

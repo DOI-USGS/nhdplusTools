@@ -141,13 +141,7 @@ get_xs_point <- function(point, width, num_pts) {
 
   url <- paste0(url_base, "nldi-xsatpoint/jobs?response=document")
 
-  out <- sf_post(url, make_json_input_xspt(point, width, num_pts))
-
-  out <- dplyr::rename(out,
-                       distance_m = .data$distance,
-                       elevation_m = .data$elevation)
-
-  return(out)
+  get_xs(url, make_json_input_xspt, point, width, num_pts)
 
 }
 
@@ -183,10 +177,6 @@ get_xs_point <- function(point, width, num_pts) {
 #'
 get_xs_points <- function(point1, point2, num_pts, res = 1) {
 
-  if(!res %in% c(1, 3, 5, 10, 30, 60)) {
-    stop("res input must be on of 1, 3, 5, 10, 30, 60")
-  }
-
   point1 <- check_point(point1)[[1]]
   point2 <- check_point(point2)[[1]]
 
@@ -194,14 +184,18 @@ get_xs_points <- function(point1, point2, num_pts, res = 1) {
 
   url <- paste0(url_base, "nldi-xsatendpts/jobs?response=document")
 
-  out <- sf_post(url, make_json_input_xspts(point1, point2, num_pts, res))
+  if(!res %in% c(1, 3, 5, 10, 30, 60)) {
+    stop("res input must be on of 1, 3, 5, 10, 30, 60")
+  }
 
-  out <- dplyr::rename(out,
-                       distance_m = .data$distance,
-                       elevation_m = .data$elevation)
+  get_xs(url, make_json_input_xspts, point1, point2, num_pts, res)
 
-  return(out)
+}
 
+get_xs <- function(url, fun, ...) {
+  dplyr::rename(sf_post(url, fun(...)),
+                distance_m = .data$distance,
+                elevation_m = .data$elevation)
 }
 
 sf_post <- function(url, json) {

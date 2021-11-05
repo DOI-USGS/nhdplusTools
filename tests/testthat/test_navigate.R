@@ -1,4 +1,4 @@
-context("navigate")
+
 
 test_that("navigation basics", {
 
@@ -30,7 +30,7 @@ test_that("navigation basics", {
                                    trim_start = FALSE)
 
 
-  expect_equal(net, net3)
+  expect_equal(names(net), names(net3))
 
   expect_true(length(sf::st_geometry(net_no_split)[[5]]) > length(sf::st_geometry(net)[[5]]))
 
@@ -39,7 +39,8 @@ test_that("navigation basics", {
                             output = "flowlines",
                             trim_start = TRUE)
 
-  expect_equal(net4, net)
+  expect_equal(names(net4), names(net))
+  expect_equal(nrow(net4), nrow(net))
 
   expect_error(navigate_network(1234567,
                                 "UM", network = net_no_split,

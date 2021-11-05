@@ -1,4 +1,4 @@
-context("get_nhdplushr")
+
 
 work_dir <- file.path(tempdir(), "test_hr")
 dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)

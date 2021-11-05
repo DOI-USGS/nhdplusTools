@@ -1,4 +1,4 @@
-context("run plus attributes")
+
 
 test_that("example", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
@@ -31,11 +31,11 @@ test_that("example", {
                                      split_temp = (tempf <- tempfile(fileext = ".rds")),
                                      status = FALSE)
 
-  expect_equivalent(fl, fl2)
+  expect_equal(fl, fl2, ignore_attr = TRUE)
 
   expect_true(file.exists(tempf))
 
-  expect_is(readRDS(tempf), "list")
+  expect_type(readRDS(tempf), "list")
 
   unlink(tempf)
 })

@@ -11,6 +11,8 @@
 #' @param add boolean should this plot be added to an already built map.
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
 #' @param flowline_only boolean only subset and plot flowlines only, default=FALSE
+#' @param cache_data character path to rds file where all plot data can be cached.
+#' If file doesn't exist, it will be created.
 #' @param ... parameters passed on to rosm.
 #' @return data.frame plot data is returned invisibly in NAD83 Lat/Lon.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
@@ -115,9 +117,27 @@
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
                          add = FALSE, actually_plot = TRUE, overwrite = TRUE,
-                         flowline_only = NULL, ...) {
+                         flowline_only = NULL, cache_data = NULL, ...) {
 
-  pd <- get_plot_data(outlets, bbox, streamorder, nhdplus_data, gpkg, overwrite, flowline_only)
+  # Work with cache data
+  save <- FALSE
+  fetch <- TRUE
+  if(!is.null(cache_data)) {
+    if(file.exists(cache_data)) {
+      pd <- readRDS(cache_data)
+      fetch <- FALSE
+    } else {
+      save <- TRUE
+    }
+  }
+
+  if(fetch)
+    pd <- get_plot_data(outlets, bbox, streamorder,
+                        nhdplus_data, gpkg, overwrite, flowline_only)
+
+  if(save) {
+    saveRDS(pd, cache_data)
+  }
 
   if(actually_plot) {
     st <- get_styles(plot_config)
@@ -422,6 +442,9 @@ dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorde
     flowline_only <- FALSE
   }
 
+  test_cache_f <- paste0("nhd_data",
+                         paste0(as.character(round(bbox, 2)), collapse = ""), ".rds")
+
   d <- subset_nhdplus(bbox = bbox, output_file = gpkg, nhdplus_data = source,
                       simplified = TRUE, status = FALSE,
                       overwrite = overwrite, flowline_only = flowline_only, streamorder = streamorder)
@@ -443,6 +466,11 @@ sp_bbox <- function(g) {
 }
 
 make_basin <- function(x, catchment_layer, comids = NULL) {
+
+  if(Sys.getenv("MAKE_BASIN") == "FALSE") {
+    return(NULL)
+  }
+
   x <- x[[catchment_layer]]
   if(!is.null(comids)) {
     x <- x[x$FEATUREID %in% comids, ]

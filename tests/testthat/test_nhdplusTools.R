@@ -5,6 +5,8 @@ source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 pt_data <- sample_flines
 
 test_that("nhdplus_data path sets and gets right", {
+  nhdplus_path("../NHDPlusV21_National_Seamless.gdb")
+
   expect_equal(nhdplus_path(), "../NHDPlusV21_National_Seamless.gdb")
 
   expect_equal(nhdplus_path("test", warn = FALSE), 0)

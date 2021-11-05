@@ -187,13 +187,15 @@ osm_cache_dir <- function() {
   osm_dir <- file.path(nhdplusTools_data_dir(),
                        "osm.cache")
 
+  # Checks to see if osm_dir is writable
   test_dir <- file.path(osm_dir, "test")
-
   dir.create(test_dir, recursive = TRUE, showWarnings = FALSE)
 
   if(!dir.exists(test_dir)) {
-    return(file.path(tempdir(check = TRUE), "osm.cache"))
+    # just use tempdir() which is for sure writable.
+    return(file.path(tempdir(check = TRUE), "osm.cache")) #notest
   } else {
+    # cleanup and return
     unlink(test_dir, recursive = TRUE)
     return(osm_dir)
   }

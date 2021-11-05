@@ -1,6 +1,24 @@
 
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
+test_that("osm_cache_dir", {
+  dir <- nhdplusTools:::osm_cache_dir()
+
+  expect_equal(dir,
+               file.path(nhdplusTools_data_dir(),
+                         "osm.cache"))
+
+  temp_test <- file.path(tempdir(check = TRUE), "temptest.txt")
+
+  cat("temp", file = temp_test)
+
+  nhdplusTools_data_dir(temp_test)
+
+  dir <- nhdplusTools:::osm_cache_dir()
+
+  expect_equal(dir, file.path(tempdir(check = TRUE), "osm.cache"))
+})
+
 test_that("test_as_outlets", {
   expect_equal(nhdplusTools:::as_outlets(NULL), NULL)
 
@@ -102,19 +120,33 @@ test_that("test_styles", {
 })
 
 test_that("comids", {
+  Sys.setenv(MAKE_BASIN="FALSE")
+
   testthat::skip_on_cran()
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   comids <- nhdplusTools::get_UT(fline, 13293970)
-  d <- nhdplusTools:::plot_nhdplus(comids, flowline_only = TRUE)
+  d <- nhdplusTools:::plot_nhdplus(comids, flowline_only = TRUE, nhdplus_data = sample_data)
 
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment",
                            "network_wtbd","off_network_wtbd"))
-  expect_true(all(d$flowline$comid %in% comids))
+  expect_true(all(d$flowline$COMID %in% comids))
   expect_equal(d$catchment, NULL)
 
-  d <- nhdplusTools:::get_plot_data(comids, flowline_only = FALSE)
+  d <- nhdplusTools:::get_plot_data(comids, flowline_only = FALSE, nhdplus_data = sample_data)
   expect_true(is(d$catchment, "sf"))
   # expect_true(is(d$basin, "sf"))
+
+  b <- nhdplusTools:::make_basin(d, "catchment", comids)
+
+  expect_null(b)
+
+  Sys.unsetenv("MAKE_BASIN")
+
+  b <- nhdplusTools:::make_basin(d, "catchment", comids[1:10])
+
+  expect_s3_class(b, "sf")
+
+  Sys.setenv(MAKE_BASIN="FALSE")
 })
 
 test_that("waterbodies", {

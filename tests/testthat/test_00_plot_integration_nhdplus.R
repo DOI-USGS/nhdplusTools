@@ -81,11 +81,22 @@ test_that("basics work", {
   expect_true(file.exists(tempf))
   unlink(tempf)
 
+  # Test caching
+  tmp_cache <- file.path(tempd, "temp.rds")
+  unlink(tmp_cache, force = TRUE)
+
   png(file.path(tempd, "temp.png"))
-  plot_nhdplus("USGS-05428500", streamorder = 3)
+  plot_nhdplus("USGS-05428500", streamorder = 3, cache_data = tmp_cache)
+  dev.off()
+
+  unlink(tempf)
+  expect_true(file.exists(tmp_cache))
+
+  png(file.path(tempd, "temp.png"))
+  plot_nhdplus("USGS-05428500", streamorder = 3, cache_data = tmp_cache)
   dev.off()
 
   expect_true(file.exists(tempf))
   unlink(tempf)
-
+  unlink(tmp_cache, force = TRUE)
 })

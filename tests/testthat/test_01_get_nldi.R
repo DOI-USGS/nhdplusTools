@@ -241,14 +241,12 @@ test_that("xs", {
   point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
   point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
 
-  # Doesn't improve coverage
-    #
-  # xs <- get_xs_points(point1, point2, 100)
-  #
-  # expect_true(inherits(xs, "sf"))
-  # expect_equal(nrow(xs), 101)
-  #
-  # expect_true(all(c("distance_m", "elevation_m") %in% names(xs)))
+  xs <- get_xs_points(point1, point2, 100)
+
+  expect_true(inherits(xs, "sf"))
+  expect_equal(nrow(xs), 101)
+
+  expect_true(all(c("distance_m", "elevation_m") %in% names(xs)))
 
   expect_error(get_xs_points(point1, point2, 100, 2),
                "res input must be on of 1, 3, 5, 10, 30, 60")

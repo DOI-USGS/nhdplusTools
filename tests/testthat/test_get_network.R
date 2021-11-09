@@ -1,4 +1,4 @@
-context("get_DM")
+
 
 source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 
@@ -95,7 +95,7 @@ test_that("get_DM sorts correctly with distance parameter", {
 })
 
 
-context("get_UM")
+
 
 test_that("get_UM works short", {
   result <- get_UM(pt_data, 11689050)
@@ -151,7 +151,7 @@ test_that("get_UM sorts correctly with distance parameter", {
 
 
 
-context("get_UT")
+
 
 test_that("get_UT works", {
   result <- get_UT(pt_data, 11687180)
@@ -186,7 +186,7 @@ test_that("get_UT returns diverted paths.", {
 })
 
 
-context("get_DD")
+
 
 test_that("get_DD works with two divergences", {
   result <- get_DD(pt_data, 11689316)
@@ -221,7 +221,7 @@ test_that("get_DD with distance 2 returns 4 specific", {
   expect_true(all(c(11688810, 11688826, 11688828, 11688884) %in% result))
 })
 
-context("get_network edge cases")
+
 
 test_that("get_DM works if missing the outlet", {
   pt_data_borkd <- dplyr::filter(pt_data, TerminalFl == 0)

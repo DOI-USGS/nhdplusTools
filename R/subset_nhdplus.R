@@ -218,12 +218,40 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
   if (nhdplus_data == "download") {
 
+    if(!is.null(bbox)) {
+      # Just hacking in some test mock data
+      test_cache_f <- paste0("nhd_data",
+                             paste0(as.character(round(bbox, 2)), collapse = ""), ".rds")
+    } else {
+      test_cache_f <- "nope.nope.nope"
+    }
+
+    if(!exists("out_list")) {
+      out_list <- NULL
+    }
+    check_geom <- TRUE
+
+    tc <- list.files(pattern = test_cache_f,
+                     recursive = TRUE,
+                     full.names = TRUE)
+
+    if(length(tc) > 0 && file.exists(tc)) {
+      out_list <- readRDS(tc)
+      check_geom <- FALSE
+    }
+
     for (layer_name in intersection_names) {
-      layer <- sf::st_transform(envelope, 4326) %>%
-        get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
+      if(is.null(out_list[layer_name][[1]])) {
+        layer <- sf::st_transform(envelope, 4326) %>%
+          get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
+      } else {
+        layer <- out_list[layer_name][[1]]
+      }
 
       if(!is.null(nrow(layer)) && nrow(layer) > 0) {
-        layer <- check_valid(layer, out_prj)
+
+        if(check_geom)
+          layer <- check_valid(layer, out_prj)
 
         if(return_data) {
           out_list[layer_name] <- list(layer)

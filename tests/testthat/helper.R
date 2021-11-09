@@ -19,3 +19,9 @@ get_test_file <- function(temp_dir) {
   }
   unzip(temp_file, exdir = temp_dir)
 }
+
+
+get_test_dir <- function() {
+  f <- list.files(pattern = "data$", recursive = TRUE, full.names = TRUE, include.dirs = TRUE)
+  f[grep("testthat\\/data", f)]
+}

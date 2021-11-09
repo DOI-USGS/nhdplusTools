@@ -1,4 +1,4 @@
-context("get_*()...")
+
 library(sf)
 # TESTING UNITS
 # ==============================================================================
@@ -118,18 +118,22 @@ test_that("get_nhdplus...", {
   #POLYGON, all
   areaNHD  = get_nhdplus(AOI = area, realization = "all")
   expect_equal(length(areaNHD), 3)
-  expect_equal(nrow(areaNHD$flowline), nrow(areaNHD$catchment), nrow(areaNHD$outlet))
+  expect_equal(nrow(areaNHD$flowline), nrow(areaNHD$catchment))
+  expect_equal(nrow(areaNHD$outlet), nrow(areaNHD$catchment))
   expect_equal(as.character(st_geometry_type(areaNHD$outlet))[1], 'POINT')
   expect_equal(as.character(st_geometry_type(areaNHD$flowline))[1], 'LINESTRING')
   expect_true(grepl('POLYGON', as.character(st_geometry_type(areaNHD$catchment))[1]))
 
   # ID
   # forcing "no attributes found" for bad COMID
-  expect_warning( get_nhdplus(comid = 1) )
+  out <- capture_warnings(get_nhdplus(comid = 1))
+
+  expect_true("No nhd features found" %in% out)
 
   idCheck  = get_nhdplus(comid = 101, realization = 'all')
   expect_equal(length(idCheck), 3)
-  expect_equal(nrow(idCheck$flowline), nrow(idCheck$catchment), nrow(idCheck$outlet))
+  expect_equal(nrow(idCheck$flowline), nrow(idCheck$catchment))
+  expect_equal(nrow(idCheck$catchment), nrow(idCheck$outlet))
   expect_equal(as.character(st_geometry_type(idCheck$outlet))[1], 'POINT')
   expect_equal(as.character(st_geometry_type(idCheck$flowline))[1], 'LINESTRING')
   expect_equal(as.character(st_geometry_type(idCheck$catchment))[1], 'POLYGON')
@@ -138,11 +142,11 @@ test_that("get_nhdplus...", {
   streamOrderSubset = get_nhdplus(AOI = area, streamorder = 3)
   expect_gt(nrow(areaNHD$flowline), nrow(streamOrderSubset))
 
-  byGage = get_nhdplus(nwis = c('11120500'))
+  byGage = get_nhdplus(nwis = c('05427718'))
   expect_equal(nrow(byGage), 1)
-  expect_equal(byGage$comid, 17596109)
+  expect_equal(byGage$comid, 13293454)
 
-  byGageComid = get_nhdplus(nwis = c('11120500'), comid = 101)
+  byGageComid = get_nhdplus(nwis = c('05427718'), comid = 101)
   expect_equal(nrow(byGageComid), 2)
 
   #bad realization error check
@@ -157,7 +161,9 @@ test_that("get_nhdplus...", {
 test_that("nhdarea", {
   testthat::skip_on_cran()
   # No intersecting point here...
-  expect_warning(get_nhdarea(AOI  = pt))
+  out <- capture_warnings(get_nhdarea(AOI  = pt))
+
+  expect_true("No nhdarea features found" %in% out)
   # Buffer it out ...
   nhdarea = get_nhdarea(AOI  = pt, buffer = 1e4)
   expect_equal(nhdarea$ftype, "Submerged Stream")

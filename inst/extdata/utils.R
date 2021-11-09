@@ -1,15 +1,31 @@
 download_pkg_data <- function(f, u, work_dir) {
-  dir.create(work_dir, showWarnings = FALSE)
+  dir.create(work_dir, showWarnings = FALSE, recursive = TRUE)
 
   d <- file.path(work_dir, f)
 
-  project_file <- c(paste0("../../docs/data/", f),
-                    paste0("docs/data/", f))
+  check_cache <- file.path(nhdplusTools::nhdplusTools_data_dir(), f)
 
-  project_file <- project_file[file.exists(project_file)]
+  if(file.exists(check_cache)) {
+
+    project_file <- check_cache
+
+  } else {
+
+    project_file <- c(paste0("../../docs/data/", f),
+                      paste0("docs/data/", f))
+
+    project_file <- project_file[file.exists(project_file)][1]
+
+  }
 
   if(length(project_file) > 0 &&
-     file.exists(project_file[1])) {
+     file.exists(project_file)) {
+
+    if(!dir.exists(dirname(d))) {
+      dir.create(dirname(d), showWarnings = TRUE, recursive = TRUE)
+    }
+
+
     file.copy(project_file, d, overwrite = TRUE)
   } else {
     url <- u

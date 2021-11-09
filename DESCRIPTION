@@ -26,3 +26,5 @@ License: CC0
 Encoding: UTF-8
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
+Config/testthat/parallel: true
+Config/testthat/edition: 3

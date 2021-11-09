@@ -1,19 +1,19 @@
-context("get vaa")
+
 
 test_that("vaa examples", {
   skip_on_cran()
 
   vaa_names <- get_vaa_names()
 
-  expect_is(vaa_names, "character")
+  expect_type(vaa_names, "character")
 
   vaa_path <- get_vaa_path()
 
-  expect_is(vaa_path, "character")
+  expect_type(vaa_path, "character")
 
   vaa <- get_vaa()
 
-  expect_is(vaa, "data.frame")
+  expect_s3_class(vaa, "data.frame")
 
   expect_message(empty <- get_vaa(atts = "baddies"), "baddies not in vaa data. Ignoring...")
 

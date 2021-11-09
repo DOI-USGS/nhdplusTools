@@ -1,4 +1,4 @@
-context("get_nhdplus")
+
 
 source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 

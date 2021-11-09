@@ -1,4 +1,4 @@
-context("point indexing")
+
 
 test_that("point indexing to nearest existing node works as expected", {
     skip_on_cran()

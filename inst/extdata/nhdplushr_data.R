@@ -2,7 +2,8 @@
 source(system.file("extdata", "utils.R", package = "nhdplusTools"))
 
 if(!exists("work_dir")) {
-  work_dir <- file.path(tempdir(check = TRUE), "nhdplusTools")
+  work_dir <- normalizePath(file.path(tempdir(check = TRUE), "nhdplusTools"), mustWork = FALSE)
+  dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
 }
 
 if(!file.exists(file.path(work_dir, "03_sub.gpkg"))) {
@@ -14,7 +15,11 @@ if(!file.exists(file.path(work_dir, "03_sub.gpkg"))) {
 hr_source <- file.path(work_dir, "03_sub.gpkg")
 hr_gpkg <- file.path(work_dir, "hr_data.gpkg")
 
-hr_data <- get_nhdplushr(work_dir, layers = NULL,
+if(!exists("layers")) {
+  layers <- NULL
+}
+
+hr_data <- get_nhdplushr(work_dir, layers = layers,
                          out_gpkg = hr_gpkg,
                          pattern = "03_sub.gpkg")
 

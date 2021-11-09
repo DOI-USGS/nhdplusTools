@@ -2,7 +2,7 @@
 source(system.file("extdata", "utils.R", package = "nhdplusTools"))
 
 if(!exists("work_dir")) {
-  work_dir <- file.path(tempdir(check = TRUE), "nhdplusTools")
+  work_dir <- normalizePath(file.path(tempdir(check = TRUE), "nhdplusTools"), mustWork = FALSE)
   dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
 }
 

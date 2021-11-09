@@ -3,6 +3,7 @@ source(system.file("extdata", "utils.R", package = "nhdplusTools"))
 
 if(!exists("work_dir")) {
   work_dir <- file.path(tempdir(check = TRUE), "nhdplusTools")
+  dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
 }
 
 if(!file.exists(file.path(work_dir, "03_sub.gpkg"))) {

@@ -12,11 +12,15 @@ test_that("osm_cache_dir", {
 
   cat("temp", file = temp_test)
 
+  orig_dir <- nhdplusTools_data_dir()
+
   nhdplusTools_data_dir(temp_test)
 
   dir <- nhdplusTools:::osm_cache_dir()
 
   expect_equal(dir, file.path(tempdir(check = TRUE), "osm.cache"))
+
+  nhdplusTools_data_dir(orig_dir)
 })
 
 test_that("test_as_outlets", {

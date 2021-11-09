@@ -21,6 +21,8 @@ test_that("nhdplus_data path sets and gets right", {
 test_that("nhdplusTools_data_path works", {
   check <- tools::R_user_dir("usgs_r/nhdplusTools")
 
+  orig <- nhdplusTools_data_dir()
+
   expect_equal(nhdplusTools_data_dir(),
                check)
 
@@ -29,6 +31,8 @@ test_that("nhdplusTools_data_path works", {
 
   expect_equal(nhdplusTools_data_dir(check),
                check)
+
+  nhdplusTools_data_dir(orig)
 })
 
 

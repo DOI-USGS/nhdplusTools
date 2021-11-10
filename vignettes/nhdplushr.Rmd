@@ -54,7 +54,7 @@ plot_data <- plot_nhdplus(list("nwissite", "USGS-05428500"), streamorder = 3,
                           stoponlargerequest = FALSE)
 
 # Find the HU04 we are interested in.
-hu04 <- unique(substr(plot_data$flowline$REACHCODE, 1, 4))
+hu04 <- unique(substr(plot_data$flowline$reachcode, 1, 4))
 
 # Download some NHDPlusHR Data
 hr_data_dir <- download_nhdplushr(work_dir, hu04)

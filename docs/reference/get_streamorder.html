@@ -158,7 +158,7 @@ maximum upstream order then the downstream flowpath is assigned the maximum
 upstream order plus one. Otherwise it is assigned the max upstream order.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>get_streamorder</span><span class='op'>(</span><span class='va'>x</span>, status <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></code></pre></div>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>get_streamorder</span><span class='op'>(</span><span class='va'>x</span>, status <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,7 +169,7 @@ upstream order plus one. Otherwise it is assigned the max upstream order.</p>
     </tr>
     <tr>
       <th>status</th>
-      <td><p>logical emit progress update messages?</p></td>
+      <td><p>logical show progress update messages?</p></td>
     </tr>
     </table>
 
@@ -196,7 +196,7 @@ upstream order plus one. Otherwise it is assigned the max upstream order.</p>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>order</span> <span class='op'>&lt;-</span> <span class='va'>order</span></span>
 <span class='r-in'></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>walker_flowline</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>order</span>, col <span class='op'>=</span> <span class='st'>"blue"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://r-spatial.github.io/sf/reference/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>walker_flowline</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='va'>walker_flowline</span><span class='op'>$</span><span class='va'>order</span>, col <span class='op'>=</span> <span class='st'>"blue"</span><span class='op'>)</span></span>
 <span class='r-plt'><img src='get_streamorder-1.png' alt='' width='700' height='433' /></span>
 <span class='r-in'></span>
 </code></pre></div>

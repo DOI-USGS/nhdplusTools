@@ -8,6 +8,13 @@
 
 <title>Make isolated NHDPlusHR region a standalone dataset — make_standalone • nhdplusTools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -85,7 +92,7 @@ the domain is independently complete." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -179,23 +186,16 @@ the domain is independently complete.</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Bounding box:  xmin: -79.01402 ymin: 35.79464 xmax: -79.00523 ymax: 35.80153</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Geodetic CRS:  GRS 1980(IUGG, 1980)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 58</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   Permanent_Identif~ FDate               Resolution GNIS_ID GNIS_Name   LENGTHKM</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>*</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span> 46353268           2012-03-11 </span><span style='color: #949494;'>06:52:19</span><span>          2 009910~ New Hope C~     1.10</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Permanent_Identifier FDate               Resolution GNIS_ID GNIS_Name LENGTHKM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>*</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dttm&gt;</span>                   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> 46353268             2012-03-11 <span style='color: #949494;'>06:52:19</span>          2 009910~ New Hope~     1.10</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 52 more variables: REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   geom &lt;LINESTRING [°]&gt;, StreamLeve &lt;dbl&gt;, StreamOrde &lt;dbl&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   StreamCalc &lt;dbl&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;dbl&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   RtnDiv &lt;dbl&gt;, Thinner &lt;dbl&gt;, VPUIn &lt;dbl&gt;, VPUOut &lt;dbl&gt;, AreaSqKM &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   ElevFixed &lt;dbl&gt;, HWType &lt;dbl&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, ...</span></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>TerminalPa</span> <span class='op'>==</span> <span class='va'>outlet</span><span class='op'>$</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2691</span>
 <span class='r-in'></span>
@@ -208,23 +208,16 @@ the domain is independently complete.</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Bounding box:  xmin: -79.01402 ymin: 35.79464 xmax: -79.00523 ymax: 35.80153</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Geodetic CRS:  GRS 1980(IUGG, 1980)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 58</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   Permanent_Identif~ FDate               Resolution GNIS_ID GNIS_Name   LENGTHKM</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>*</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;dttm&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span> 46353268           2012-03-11 </span><span style='color: #949494;'>06:52:19</span><span>          2 009910~ New Hope C~     1.10</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Permanent_Identifier FDate               Resolution GNIS_ID GNIS_Name LENGTHKM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>*</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dttm&gt;</span>                   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> 46353268             2012-03-11 <span style='color: #949494;'>06:52:19</span>          2 009910~ New Hope~     1.10</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 52 more variables: REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   geom &lt;LINESTRING [°]&gt;, StreamLeve &lt;dbl&gt;, StreamOrde &lt;dbl&gt;,</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   StreamCalc &lt;dbl&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;dbl&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   RtnDiv &lt;dbl&gt;, Thinner &lt;dbl&gt;, VPUIn &lt;dbl&gt;, VPUOut &lt;dbl&gt;, AreaSqKM &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   ElevFixed &lt;dbl&gt;, HWType &lt;dbl&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'>#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, ...</span></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>hr_data</span><span class='op'>$</span><span class='va'>NHDFlowline</span>, <span class='va'>TerminalPa</span> <span class='op'>==</span> <span class='va'>outlet</span><span class='op'>$</span><span class='va'>Hydroseq</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2691</span>
 <span class='r-in'></span>

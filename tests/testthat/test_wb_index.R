@@ -40,6 +40,4 @@ expect_true(is.na(match[18,]$outlet_fline_COMID))
 # point near waterbody
 expect_equal(match[7,]$outlet_fline_COMID, 13294312)
 
-# mapview::mapview(list(gage_l, wb_l, fline))
-
 })

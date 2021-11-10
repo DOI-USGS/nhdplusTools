@@ -8,6 +8,13 @@
 
 <title>Get Level Paths — get_levelpaths • nhdplusTools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -86,7 +93,7 @@ included in this column and the largest value will be followed when no nameID is
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -216,17 +223,17 @@ See details for more info.</p>
 <span class='r-in'><span class='fu'>get_levelpaths</span><span class='op'>(</span><span class='va'>test_flowline</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 62 x 4</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>         ID outletID topo_sort levelpath</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>      <span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>303  5</span><span style='text-decoration: underline;'>329</span><span>303         1         1</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>293  5</span><span style='text-decoration: underline;'>329</span><span>303         2         1</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>305  5</span><span style='text-decoration: underline;'>329</span><span>303         3         1</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>317  5</span><span style='text-decoration: underline;'>329</span><span>303         4         1</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>315  5</span><span style='text-decoration: underline;'>329</span><span>303         5         1</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>339  5</span><span style='text-decoration: underline;'>329</span><span>303         6         1</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>343  5</span><span style='text-decoration: underline;'>329</span><span>303         7         1</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>357  5</span><span style='text-decoration: underline;'>329</span><span>303         8         1</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>365  5</span><span style='text-decoration: underline;'>329</span><span>303         9         1</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span><span> 5</span><span style='text-decoration: underline;'>329</span><span>373  5</span><span style='text-decoration: underline;'>329</span><span>303        10         1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> 5<span style='text-decoration: underline;'>329</span>303  5<span style='text-decoration: underline;'>329</span>303         1         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> 5<span style='text-decoration: underline;'>329</span>293  5<span style='text-decoration: underline;'>329</span>303         2         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> 5<span style='text-decoration: underline;'>329</span>305  5<span style='text-decoration: underline;'>329</span>303         3         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> 5<span style='text-decoration: underline;'>329</span>317  5<span style='text-decoration: underline;'>329</span>303         4         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> 5<span style='text-decoration: underline;'>329</span>315  5<span style='text-decoration: underline;'>329</span>303         5         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> 5<span style='text-decoration: underline;'>329</span>339  5<span style='text-decoration: underline;'>329</span>303         6         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> 5<span style='text-decoration: underline;'>329</span>343  5<span style='text-decoration: underline;'>329</span>303         7         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> 5<span style='text-decoration: underline;'>329</span>357  5<span style='text-decoration: underline;'>329</span>303         8         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> 5<span style='text-decoration: underline;'>329</span>365  5<span style='text-decoration: underline;'>329</span>303         9         1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> 5<span style='text-decoration: underline;'>329</span>373  5<span style='text-decoration: underline;'>329</span>303        10         1</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 52 more rows</span></span>
 <span class='r-in'></span>
 <span class='r-in'></span>

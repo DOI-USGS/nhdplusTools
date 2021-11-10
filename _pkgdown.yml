@@ -14,6 +14,8 @@ reference:
       - '`download_wbd`'
       - '`download_vaa`'
       - '`get_vaa`'
+      - '`get_xs_point`'
+      - '`get_xs_points`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are
@@ -21,6 +23,7 @@ reference:
     contents:
       - '`subset_nhdplus`'
       - '`subset_rpu`'
+      - '`subset_vpu`'
       - '`discover_nhdplus_id`'
       - '`get_nhdplus`'
       - '`get_gagesII`'
@@ -47,6 +50,9 @@ reference:
       - '`prepare_nhdplus`'
       - '`get_vaa_names`'
       - '`get_vaa_path`'
+      - '`st_compatibalize`'
+      - '`rename_geometry`'
+
   - title: Network Attributes
     desc: >
       Functions that generate common river network attributes.
@@ -61,6 +67,7 @@ reference:
       - '`get_pfaf`'
       - '`make_standalone`'
       - '`get_streamlevel`'
+      - '`fix_flowdir`'
   - title: Indexing and Network Navigation
     desc: >
       Functions to index and match data to NHDPlus features.
@@ -70,9 +77,11 @@ reference:
       - '`get_UM`'
       - '`get_UT`'
       - '`navigate_nldi`'
+      - '`navigate_network`'
       - '`get_flowline_index`'
       - '`get_hydro_location`'
       - '`get_waterbody_index`'
+      - '`get_wb_outlet`'
       - '`get_node`'
       - '`rescale_measures`'
       - '`disambiguate_flowline_indexes`'

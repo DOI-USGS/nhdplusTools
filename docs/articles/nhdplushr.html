@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@
 
       
 
-      </header><script src="nhdplushr_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="nhdplushr_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Working with NHDPlusHR</h1>
@@ -113,7 +113,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>
-<span class="co">#&gt; Linking to GEOS 3.9.0, GDAL 3.2.1, PROJ 7.2.1</span>
+<span class="co">#&gt; Linking to GEOS 3.9.1, GDAL 3.2.1, PROJ 7.2.1</span>
 
 <span class="va">work_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"hr_v_cache"</span><span class="op">)</span>
 
@@ -132,7 +132,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Find the HU04 we are interested in.</span>
-<span class="va">hu04</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">flowline</span><span class="op">$</span><span class="va">REACHCODE</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
+<span class="va">hu04</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">flowline</span><span class="op">$</span><span class="va">reachcode</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Download some NHDPlusHR Data</span>
 <span class="va">hr_data_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="va">hu04</span><span class="op">)</span>
@@ -309,15 +309,7 @@
 <span class="co">#&gt; #   FTYPE &lt;int&gt;, FCODE &lt;int&gt;, MainPath &lt;int&gt;, InNetwork &lt;int&gt;,</span>
 <span class="co">#&gt; #   VisibilityFilter &lt;int&gt;, Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;,</span>
 <span class="co">#&gt; #   Enabled &lt;int&gt;, Shape &lt;GEOMETRY [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span>
-<span class="co">#&gt; #   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   Divergence &lt;int&gt;, StartFlag &lt;int&gt;, TerminalFl &lt;int&gt;, UpLevelPat &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;int&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;int&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   RtnDiv &lt;int&gt;, Thinner &lt;int&gt;, VPUIn &lt;int&gt;, VPUOut &lt;int&gt;, AreaSqKM &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   ElevFixed &lt;int&gt;, HWType &lt;int&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</span>
+<span class="co">#&gt; #   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, ...</span>
 <span class="op">(</span><span class="va">standalone</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">standalone_demo</span>, <span class="va">TerminalPa</span> <span class="op">==</span> <span class="va">standalone_demo_outlet</span><span class="op">$</span><span class="va">Hydroseq</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Simple feature collection with 5358 features and 57 fields</span>
 <span class="co">#&gt; Geometry type: MULTILINESTRING</span>
@@ -343,14 +335,7 @@
 <span class="co">#&gt; #   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span>
 <span class="co">#&gt; #   Shape &lt;MULTILINESTRING [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span>
 <span class="co">#&gt; #   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   Divergence &lt;int&gt;, StartFlag &lt;int&gt;, TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   UpHydroSeq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, DnLevelPat &lt;dbl&gt;, DnHydroseq &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;int&gt;, FromMeas &lt;dbl&gt;, ToMeas &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   RtnDiv &lt;int&gt;, Thinner &lt;int&gt;, VPUIn &lt;int&gt;, VPUOut &lt;int&gt;, AreaSqKM &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   TotDASqKM &lt;dbl&gt;, DivDASqKm &lt;dbl&gt;, MaxElevRaw &lt;dbl&gt;, MinElevRaw &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   MaxElevSmo &lt;dbl&gt;, MinElevSmo &lt;dbl&gt;, Slope &lt;dbl&gt;, SlopeLenKm &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   ElevFixed &lt;int&gt;, HWType &lt;int&gt;, HWNodeSqKm &lt;dbl&gt;, StatusFlag &lt;chr&gt;</span>
+<span class="co">#&gt; #   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, ...</span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">standalone</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplushr_files/figure-html/make_standalone-1.png" width="576"></p>

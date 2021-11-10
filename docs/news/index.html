@@ -88,7 +88,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -146,6 +146,21 @@
       <small>Source: <a href='https://github.com/usgs-r/nhdplusTools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="nhdplustools-043" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.3">
+<a href="#nhdplustools-043" class="anchor" aria-hidden="true"></a>nhdplusTools 0.4.3<small> 2021-08-18 </small></h1>
+<ul><li><p>New function added: <code><a href="../reference/get_streamlevel.html">get_streamlevel()</a></code> calculates stream level, a bottom up level path order used by nhdplus to categorize complete river levels.</p></li>
+<li><p>New functions <code><a href="../reference/get_raindrop_trace.html">get_raindrop_trace()</a></code>, <code><a href="../reference/get_split_catchment.html">get_split_catchment()</a></code> use a web service to access elevation data and retireve a raindrop trace path to the nearest flowline in nhdplus V2 and a split catchment or basin to a precise point location respectively.</p></li>
+<li><p>New function <code><a href="../reference/subset_vpu.html">subset_vpu()</a></code> wraps <code><a href="../reference/subset_rpu.html">subset_rpu()</a></code> and will subset a vector procesing unit.</p></li>
+<li><p>New functions <code><a href="../reference/get_xs_point.html">get_xs_point()</a></code> and <code><a href="../reference/get_xs_points.html">get_xs_points()</a></code> access an elevation data service from the 3D Elevation Program and return cross section data.</p></li>
+<li><p>New functions <code><a href="../reference/st_compatibalize.html">st_compatibalize()</a></code> and <code><a href="../reference/rename_geometry.html">rename_geometry()</a></code> provide utility functionality to make two layers compatible, including projection and rename geometry columns respectively.</p></li>
+<li><p>New function <code><a href="../reference/fix_flowdir.html">fix_flowdir()</a></code> will re-order geometry nodes such that their order cooresponds to the convention used in nhdplus data.</p></li>
+<li><p>New function <code><a href="../reference/navigate_network.html">navigate_network()</a></code> provides a wrapper around a number of network navigation capabilities and will support local or web service data.</p></li>
+<li><p><code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code> now includes on network and off network waterbodies.</p></li>
+<li><p>New function <code><a href="../reference/get_wb_outlet.html">get_wb_outlet()</a></code> finds the outlet flowline of an on-network waterbody.</p></li>
+<li><p>nhdplusTools internals have started to be refactored to use all lower case attribute names. No changes should be seen from outside the package, but please <a href="https://github.com/USGS-R/nhdplusTools/issues" class="external-link">report issues</a> with attribute naming.</p></li>
+<li><p>Package testing now runs in parallel and uses revision 3 of the testthat package.</p></li>
+</ul></div>
     <div id="nhdplustools-042" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.2">
 <a href="#nhdplustools-042" class="anchor" aria-hidden="true"></a>nhdplusTools 0.4.2<small> 2021-06-23 </small></h1>

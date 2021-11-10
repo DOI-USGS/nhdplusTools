@@ -8,6 +8,13 @@
 
 <title>Discover Characteristics Metadata — discover_nldi_characteristics • nhdplusTools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -82,7 +89,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -166,82 +173,82 @@
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "local"             "total"             "divergence_routed"</span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>chars</span><span class='op'>$</span><span class='va'>local</span>, <span class='fl'>10</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    characteristic_id</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1            CAT_HGC</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2           CAT_HGCD</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3            CAT_HGD</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4          CAT_HGVAR</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5      CAT_NLCD01_43</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6      CAT_NLCD01_52</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7      CAT_NLCD01_71</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8      CAT_NLCD01_81</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 9      CAT_NLCD01_82</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 10     CAT_NLCD01_90</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                                                                                                                                                                                                                   characteristic_description</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1         Percentage of Hydrologic Group C soil. -9999 denotes NODATA, usually water. Hydrologic group C soils have slow soil infiltration rates. The soil profiles include layers impeding downward movement of water and, typically, have moderately fine or fine texture.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  Percentage of Hydrologic Group CD soil. -9999 denotes NODATA, usually water. Hydrologic group CD soils have group C characteristics (slow infiltration rates) when artificially drained and have group D characteristics (very slow infiltration rates) when not drained.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3                                                     Percentage of Hydrologic Group D soil. -9999 denotes NODATA, usually water. Hydrologic group D soils have very slow infiltration rates. Soils are clayey, have a high water table, or have a shallow impervious layer.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4                                                                                                                           Percentage of Hydrologic Group VAR soil. -9999 denotes NODATA, usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5                                                                                                                                                                                                                                                                    unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6                                                                                                                                                                                                                                                                    unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7                                                                                                                                                                                                                                                                    unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8                                                                                                                                                                                                                                                                    unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 9                                                                                                                                                                                                                                                                    unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 10                                                                                                                                                                                                                                                                   unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>      units</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  percent</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  percent</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  percent</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  percent</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6  unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7  unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8  unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 9  unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 10 unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                                                                                                                                                                                                                                 dataset_label</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4                                                               Percentage of soils found in an NHDPlus version 2 catchment that contains Hydrologic Group VAR soil. -9999 denotes NODATA,  usually water. Hydrologic group VAR soils have variable drainage characteristics.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 9  2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 10 2011 land-use and land-cover type Emergent Herbaceous Wetlands: Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water. -9999 denotes NODATA.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  CAT_WILDFIRE_2011</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2        CAT_CONTACT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3            CAT_EWT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4      CAT_FUNGICIDE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5           CAT_IEOF</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6            CAT_PET</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7          CAT_RECHG</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8          CAT_SATOF</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9            CAT_TWI</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10    CAT_WB5100_ANN</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                                                                                                                                                                                                          characteristic_description</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1                                                                                                                                                                                                                     percent of wild fires per catchments for 2011</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2                                               Subsurface flow contact time index. The subsurface contact time index estimates the number of days that infiltrated water resides in the saturated subsurface zone of the basin before discharging into the stream.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3                                                                                                                                                                                                 Average depth to water table relatice to the land surface(meters)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4                                                                                                                                                        Fungicide use on agricultural land in kilograms per square kilometer, 2009 per NHDPlus version 2 catchment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5                                                                                                                                                                                                                   Percentage of Horton overland flow as a percent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6                                                                                                                                                                       Mean-annual potential evapotranspiration (PET), estimated using the Hamon (1961) equation. </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7                                                                                                                                                                                                 Mean annual natural ground-water recharge in millimeters per year</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8                                                                                                                                                                                                                    Percentage of Dunne overland flow as a percent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9  Topographic wetness index, ln(a/S); where ln is the natural log, a is the upslope area per unit contour length and S is the slope at that point.  See http://ks.water.usgs.gov/Kansas/pubs/reports/wrir.99-4242.html and Wolock and McCabe, 1995 for more detail</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10                                                                                                                                                       Average annual runoff (mm) from McCabe and Wolock's Runoff Model 1951-2000 per NHDPlus version 2 catchment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                            units</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1                        percent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2                           days</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3                         meters</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  kilogram per square kilometer</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5                        percent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6                        mm/year</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7                          mm/yr</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8                        percent</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9                          ln(m)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10          millimeters per year</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                                                                                                                                                  dataset_label</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1                                                                                                                    Estimated percent of catchment that experienced a wild fire in year XXXX.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2                                                     Contact time, the length of time it takes for water to drain along subsurface flow paths to the stream, per NHDPlus version 2 catchment.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3                                                                                                        Average depth to water table relative to land surface per NHDPlus version 2 catchment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4                                                                                   Fungicide use on agricultural land in kilograms per square kilometer, 2009 per NHDPlus version 2 catchment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5                                                                                            Mean infiltration-excess overland flow as a percent of streamflow per NHDPlus version 2 catchment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6                                                                                                PRISM 30-year average Potential Evapotranspiration, 1971-2000 per NHDPlus version 2 catchment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7                                  Estimated 30 year (1951-1980) mean annual natural groundwater recharge per NHDPlus version 2 catchment. -9999 denotes source data does not cover catchment.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8  Mean saturation overland flow as a percent of streamflow per NHDPlus version 2 catchment. -9999 denotes NODATA or flowline has no catchment. -9999 denotes flowline reach has no catchment.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9                                                                                                                             average topgraphic wetness index per NHDPlus version 2 catchment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10                                                                                  Average annual runoff (mm) from McCabe and Wolock's Runoff Model 1951-2000 per NHDPlus version 2 catchment</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>                                                          dataset_url</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  https://www.sciencebase.gov/catalog/item/5728d93be4b0b13d3918a99f</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 9  https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 10 https://www.sciencebase.gov/catalog/item/5761b67de4b04f417c2d30ae</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  https://www.sciencebase.gov/catalog/item/57f66d66e4b0bc0bec06de3a</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  https://www.sciencebase.gov/catalog/item/56f96fc5e4b0a6037df06b12</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  https://www.sciencebase.gov/catalog/item/56f97456e4b0a6037df06b50</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  https://www.sciencebase.gov/catalog/item/56fd610fe4b022712b81bf9f</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  https://www.sciencebase.gov/catalog/item/56f974e2e4b0a6037df06b55</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6  https://www.sciencebase.gov/catalog/item/56f96ed1e4b0a6037df06a2d</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7  https://www.sciencebase.gov/catalog/item/56f97577e4b0a6037df06b5a</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8  https://www.sciencebase.gov/catalog/item/56f97acbe4b0a6037df06b6a</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9  https://www.sciencebase.gov/catalog/item/56f97be4e4b0a6037df06b70</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10 https://www.sciencebase.gov/catalog/item/56fd5bd0e4b0c07cbfa40473</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    theme_label</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1        Soils</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2        Soils</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3        Soils</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4        Soils</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5   Land Cover</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6   Land Cover</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7   Land Cover</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8   Land Cover</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 9   Land Cover</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 10  Land Cover</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1   Land Cover</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2   Hydrologic</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3   Hydrologic</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4     Chemical</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5   Hydrologic</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6      Climate</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7   Hydrologic</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8   Hydrologic</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9   Hydrologic</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10  Hydrologic</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>                                                            theme_url</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  https://www.sciencebase.gov/catalog/item/568d6554e4b0e7a44bc207f7</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5                                                            unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6                                                            unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7                                                            unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8                                                            unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 9                                                            unknown</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 10                                                           unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1                                                            unknown</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  https://www.sciencebase.gov/catalog/item/56fd600fe4b022712b81bf9a</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6  https://www.sciencebase.gov/catalog/item/566ef828e4b09cfe53ca76f7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9  https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10 https://www.sciencebase.gov/catalog/item/5669a8a4e4b08895842a1d4c</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    characteristic_type</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 1      localCatch_name</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 2      localCatch_name</span>

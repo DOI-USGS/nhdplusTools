@@ -2,6 +2,17 @@ nhdplusTools 0.4.3
 ==========
 
 - New function added: `get_streamlevel()` calculates stream level, a bottom up level path order used by nhdplus to categorize complete river levels.
+- New functions `get_raindrop_trace()`, `get_split_catchment()` use a web service to access elevation data and retireve a raindrop trace path to the nearest flowline in nhdplus V2 and a split catchment or basin to a precise point location respectively.
+- New function `subset_vpu()` wraps `subset_rpu()` and will subset a vector procesing unit.
+- New functions `get_xs_point()` and `get_xs_points()` access an elevation data service from the 3D Elevation Program and return cross section data. 
+- New functions `st_compatibalize()` and `rename_geometry()` provide utility functionality to make two layers compatible, including projection and rename geometry columns respectively.
+- New function `fix_flowdir()` will re-order geometry nodes such that their order cooresponds to the convention used in nhdplus data.
+- New function `navigate_network()` provides a wrapper around a number of network navigation capabilities and will support local or web service data.
+- `plot_nhdplus()` now includes on network and off network waterbodies. 
+- New function `get_wb_outlet()` finds the outlet flowline of an on-network waterbody.
+
+- nhdplusTools internals have started to be refactored to use all lower case attribute names. No changes should be seen from outside the package, but please [report issues](https://github.com/USGS-R/nhdplusTools/issues) with attribute naming.
+- Package testing now runs in parallel and uses revision 3 of the testthat package.
 
 nhdplusTools 0.4.2
 ==========

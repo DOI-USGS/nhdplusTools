@@ -8,6 +8,13 @@
 
 <title>Disambiguate Flowline Indexes — disambiguate_flowline_indexes • nhdplusTools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -86,7 +93,7 @@ the adist function is used with the following algorithm:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -212,10 +219,10 @@ value, duplicates will be returned.</p>
 <span class='r-in'>                              <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>hydro_location</span>, <span class='va'>id</span>, <span class='va'>totda</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 3 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>      id    COMID REACHCODE      REACH_meas    offset</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>688</span><span>298 02060003000579   1.42</span><span style='color: #949494;'>e</span><span style='color: #BB0000;'>-14</span><span> 0.000</span><span style='text-decoration: underline;'>060</span><span>3</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>808 02060003000519   5.36</span><span style='color: #949494;'>e</span><span>+ 1 0.000</span><span style='text-decoration: underline;'>564</span><span> </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>950 02060003000254   1.85</span><span style='color: #949494;'>e</span><span>+ 1 0.001</span><span style='text-decoration: underline;'>13</span><span>  </span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span>     1 11<span style='text-decoration: underline;'>688</span>298 02060003000579        0   0.000<span style='text-decoration: underline;'>060</span>3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span>     2 11<span style='text-decoration: underline;'>688</span>808 02060003000519       53.6 0.000<span style='text-decoration: underline;'>564</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span>     3 11<span style='text-decoration: underline;'>688</span>950 02060003000254       18.5 0.001<span style='text-decoration: underline;'>13</span>  </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'>disambiguate_flowline_indexes</span><span class='op'>(</span><span class='va'>indexes</span>,</span>
 <span class='r-in'>                                        <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>flowpath</span>, <span class='va'>comid</span>, <span class='va'>nameid</span><span class='op'>)</span>,</span>
@@ -224,31 +231,31 @@ value, duplicates will be returned.</p>
 <span class='r-in'><span class='va'>result</span><span class='op'>[</span><span class='va'>result</span><span class='op'>$</span><span class='va'>id</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='op'>]</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 3 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>      id    COMID REACHCODE      REACH_meas  offset</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>928 02060003001468   1.42</span><span style='color: #949494;'>e</span><span style='color: #BB0000;'>-14</span><span> 0.002</span><span style='text-decoration: underline;'>03</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472   1   </span><span style='color: #949494;'>e</span><span>+ 2 0.002</span><span style='text-decoration: underline;'>03</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span><span>     1 11</span><span style='text-decoration: underline;'>690</span><span>532 02060003000256   0   </span><span style='color: #949494;'> </span><span>    0.004</span><span style='text-decoration: underline;'>51</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span>     1 11<span style='text-decoration: underline;'>689</span>928 02060003001468          0 0.002<span style='text-decoration: underline;'>03</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span>     1 11<span style='text-decoration: underline;'>689</span>978 02060003001472        100 0.002<span style='text-decoration: underline;'>03</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span>     1 11<span style='text-decoration: underline;'>690</span>532 02060003000256          0 0.004<span style='text-decoration: underline;'>51</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>result</span><span class='op'>[</span><span class='va'>result</span><span class='op'>$</span><span class='va'>id</span> <span class='op'>==</span> <span class='fl'>2</span>, <span class='op'>]</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 10 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>       id    COMID REACHCODE      REACH_meas   offset</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>808 02060003000519       53.6 0.000</span><span style='text-decoration: underline;'>564</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span><span>     2 11</span><span style='text-decoration: underline;'>690</span><span>110 02060003001493      100   0.007</span><span style='text-decoration: underline;'>42</span><span> </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>822 02060003000518       39.5 0.007</span><span style='text-decoration: underline;'>68</span><span> </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>742 02060003000521        0   0.008</span><span style='text-decoration: underline;'>55</span><span> </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>778 02060003000520        0   0.008</span><span style='text-decoration: underline;'>55</span><span> </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span><span>     2 11</span><span style='text-decoration: underline;'>690</span><span>112 02060003001494      100   0.009</span><span style='text-decoration: underline;'>55</span><span> </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span><span>     2 11</span><span style='text-decoration: underline;'>690</span><span>122 02060003001495      100   0.010</span><span style='text-decoration: underline;'>3</span><span>  </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>868 02060003000517       27.8 0.016</span><span style='text-decoration: underline;'>9</span><span>  </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span><span>     2 11</span><span style='text-decoration: underline;'>690</span><span>124 02060003001496      100   0.019</span><span style='text-decoration: underline;'>5</span><span>  </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span><span>     2 11</span><span style='text-decoration: underline;'>690</span><span>128 02060003001498      100   0.021</span><span style='text-decoration: underline;'>0</span><span>  </span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span>     2 11<span style='text-decoration: underline;'>688</span>808 02060003000519       53.6 0.000<span style='text-decoration: underline;'>564</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span>     2 11<span style='text-decoration: underline;'>690</span>110 02060003001493      100   0.007<span style='text-decoration: underline;'>42</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span>     2 11<span style='text-decoration: underline;'>688</span>822 02060003000518       39.5 0.007<span style='text-decoration: underline;'>68</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span>     2 11<span style='text-decoration: underline;'>688</span>742 02060003000521        0   0.008<span style='text-decoration: underline;'>55</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span>     2 11<span style='text-decoration: underline;'>688</span>778 02060003000520        0   0.008<span style='text-decoration: underline;'>55</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span>     2 11<span style='text-decoration: underline;'>690</span>112 02060003001494      100   0.009<span style='text-decoration: underline;'>55</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span>     2 11<span style='text-decoration: underline;'>690</span>122 02060003001495      100   0.010<span style='text-decoration: underline;'>3</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span>     2 11<span style='text-decoration: underline;'>688</span>868 02060003000517       27.8 0.016<span style='text-decoration: underline;'>9</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span>     2 11<span style='text-decoration: underline;'>690</span>124 02060003001496      100   0.019<span style='text-decoration: underline;'>5</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span>     2 11<span style='text-decoration: underline;'>690</span>128 02060003001498      100   0.021<span style='text-decoration: underline;'>0</span>  </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>result</span><span class='op'>[</span><span class='va'>result</span><span class='op'>$</span><span class='va'>id</span> <span class='op'>==</span> <span class='fl'>3</span>, <span class='op'>]</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>      id    COMID REACHCODE      REACH_meas  offset</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>948 02060003000516          0 0.003</span><span style='text-decoration: underline;'>21</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span>     3 11<span style='text-decoration: underline;'>688</span>948 02060003000516          0 0.003<span style='text-decoration: underline;'>21</span></span>
 <span class='r-in'></span>
 </code></pre></div>
   </div>

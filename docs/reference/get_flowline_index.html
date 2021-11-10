@@ -8,6 +8,13 @@
 
 <title>Get Flowline Index — get_flowline_index • nhdplusTools</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -83,7 +90,7 @@ and measure for each." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -216,8 +223,8 @@ handling of precision parameter.</p>
 <span class='r-in'>                              crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>      id    COMID REACHCODE      REACH_meas   offset</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472       51.5 0.000</span><span style='text-decoration: underline;'>301</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span>     1 11<span style='text-decoration: underline;'>689</span>978 02060003001472       51.5 0.000<span style='text-decoration: underline;'>301</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>get_flowline_index</span><span class='op'>(</span><span class='st'>"download_nhdplusv2"</span>,</span>
 <span class='r-in'>                   <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>76.87479</span>,</span>
@@ -225,8 +232,8 @@ handling of precision parameter.</p>
 <span class='r-in'>                              crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>      id    COMID REACHCODE      REACH_meas   offset</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472       51.5 0.000</span><span style='text-decoration: underline;'>311</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span>     1 11<span style='text-decoration: underline;'>689</span>978 02060003001472       51.5 0.000<span style='text-decoration: underline;'>301</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>get_flowline_index</span><span class='op'>(</span><span class='va'>sample_flines</span>,</span>
 <span class='r-in'>                   <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>76.87479</span>,</span>
@@ -234,8 +241,8 @@ handling of precision parameter.</p>
 <span class='r-in'>                              crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>, precision <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>      id    COMID REACHCODE      REACH_meas    offset</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472       52.3 0.000</span><span style='text-decoration: underline;'>045</span><span>8</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span>     1 11<span style='text-decoration: underline;'>689</span>978 02060003001472       52.3 0.000<span style='text-decoration: underline;'>045</span>8</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'>get_flowline_index</span><span class='op'>(</span><span class='va'>sample_flines</span>,</span>
 <span class='r-in'>                   <span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st.html'>st_point</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>76.86934</span>, <span class='fl'>39.49328</span><span class='op'>)</span><span class='op'>)</span>,</span>
@@ -246,17 +253,17 @@ handling of precision parameter.</p>
 <span class='r-in'>                   max_matches <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 30 x 5</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>       id    COMID REACHCODE      REACH_meas    offset</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span><span>     1 11</span><span style='text-decoration: underline;'>688</span><span>298 02060003000579   1.42</span><span style='color: #949494;'>e</span><span style='color: #BB0000;'>-14</span><span> 0.000</span><span style='text-decoration: underline;'>060</span><span>3</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span><span>     2 11</span><span style='text-decoration: underline;'>688</span><span>808 02060003000519   5.36</span><span style='color: #949494;'>e</span><span>+ 1 0.000</span><span style='text-decoration: underline;'>564</span><span> </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>980 02060003000253   7.54</span><span style='color: #949494;'>e</span><span>+ 1 0.000</span><span style='text-decoration: underline;'>310</span><span> </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>926 02060003001467   1   </span><span style='color: #949494;'>e</span><span>+ 2 0.000</span><span style='text-decoration: underline;'>060</span><span>3</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>950 02060003000254   1.85</span><span style='color: #949494;'>e</span><span>+ 1 0.001</span><span style='text-decoration: underline;'>13</span><span>  </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>928 02060003001468   1.42</span><span style='color: #949494;'>e</span><span style='color: #BB0000;'>-14</span><span> 0.002</span><span style='text-decoration: underline;'>03</span><span>  </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span><span>     1 11</span><span style='text-decoration: underline;'>689</span><span>978 02060003001472   1   </span><span style='color: #949494;'>e</span><span>+ 2 0.002</span><span style='text-decoration: underline;'>03</span><span>  </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span><span>     1 11</span><span style='text-decoration: underline;'>690</span><span>530 02060003000585   2.64</span><span style='color: #949494;'>e</span><span style='color: #BB0000;'>-15</span><span> 0.002</span><span style='text-decoration: underline;'>85</span><span>  </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span><span>     1 11</span><span style='text-decoration: underline;'>690</span><span>490 02060003000580   0   </span><span style='color: #949494;'> </span><span>    0.002</span><span style='text-decoration: underline;'>85</span><span>  </span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span><span>     3 11</span><span style='text-decoration: underline;'>688</span><span>948 02060003000516   0   </span><span style='color: #949494;'> </span><span>    0.003</span><span style='text-decoration: underline;'>21</span><span>  </span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span>     1 11<span style='text-decoration: underline;'>688</span>298 02060003000579        0   0.000<span style='text-decoration: underline;'>060</span>3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span>     2 11<span style='text-decoration: underline;'>688</span>808 02060003000519       53.6 0.000<span style='text-decoration: underline;'>564</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span>     3 11<span style='text-decoration: underline;'>688</span>980 02060003000253       75.4 0.000<span style='text-decoration: underline;'>310</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span>     1 11<span style='text-decoration: underline;'>689</span>926 02060003001467      100   0.000<span style='text-decoration: underline;'>060</span>3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span>     3 11<span style='text-decoration: underline;'>688</span>950 02060003000254       18.5 0.001<span style='text-decoration: underline;'>13</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span>     1 11<span style='text-decoration: underline;'>689</span>928 02060003001468        0   0.002<span style='text-decoration: underline;'>03</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span>     1 11<span style='text-decoration: underline;'>689</span>978 02060003001472      100   0.002<span style='text-decoration: underline;'>03</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span>     1 11<span style='text-decoration: underline;'>690</span>530 02060003000585        0   0.002<span style='text-decoration: underline;'>85</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span>     1 11<span style='text-decoration: underline;'>690</span>490 02060003000580        0   0.002<span style='text-decoration: underline;'>85</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span>     3 11<span style='text-decoration: underline;'>688</span>948 02060003000516        0   0.003<span style='text-decoration: underline;'>21</span>  </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># ... with 20 more rows</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># }</span></span>

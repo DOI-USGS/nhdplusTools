@@ -3,8 +3,6 @@ source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 test_that("get streamorder", {
   skip_on_cran()
 
-  if(Sys.getenv("_R_CHECK_ON_GH_") != "true") { # broken on github actions
-
     test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
 
     test_flowline <- data.frame(
@@ -16,6 +14,8 @@ test_that("get streamorder", {
     walker_flowline <- left_join(walker_flowline, test_flowline, by = c("COMID" = "ID"))
 
     expect_equal(walker_flowline$order, walker_flowline$StreamOrde)
+
+    if(Sys.getenv("_R_CHECK_ON_GH_") != "true") { # broken on github actions
 
     source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 
@@ -39,7 +39,6 @@ test_that("get streamorder", {
 
 test_that("get_streamlevel", {
 
-  if(Sys.getenv("_R_CHECK_ON_GH_") != "true") {
     test_flowline <- data.frame(
       levelpathi = walker_flowline$LevelPathI,
       dnlevelpat = walker_flowline$DnLevelPat)
@@ -53,7 +52,7 @@ test_that("get_streamlevel", {
 
     test_flowline$coastal[!test_flowline$dnlevelpat %in% test_flowline$levelpathi] <- TRUE
     expect_equal(walker_flowline$StreamLeve, get_streamlevel(test_flowline))
-  }
+
 })
 
 test_that("get_pfaf", {

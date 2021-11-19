@@ -4,7 +4,7 @@
 \alias{download_vaa}
 \title{Download nhdplusVAA data from HydroShare}
 \usage{
-download_vaa(path = get_vaa_path(), force = FALSE)
+download_vaa(path = get_vaa_path(), force = FALSE, updated_network = FALSE)
 }
 \arguments{
 \item{path}{character path where the file should be saved. Default is a
@@ -12,6 +12,10 @@ persistent system data as retrieved by \link{nhdplusTools_data_dir}.
 Also see: \link{get_vaa_path}}
 
 \item{force}{logical. Force data re-download. Default = FALSE}
+
+\item{updated_network}{logical default FALSE. If TRUE, updated network attributes
+from E2NHD and National Water Model retrieved from
+\href{https://www.sciencebase.gov/catalog/item/60c92503d34e86b9389df1c9}{here.}}
 }
 \value{
 character path to cached data

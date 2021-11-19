@@ -3,14 +3,23 @@
 #' NHDPlusV2 attribute data sans geometry. This function returns the
 #' file path to the cached file. Will use the user data dir indicated
 #' by \link{nhdplusTools_data_dir}.
+#' @param updated_network logical default FALSE. If TRUE, returns path to updated
+#' network parameters. See \link{get_vaa} for more.
 #' @inherit download_vaa details
 #' @return character file path
 #' @export
 #' @examples
 #' get_vaa_path()
+#'
+#' get_vaa_path(updated_network = TRUE)
+#'
 
-get_vaa_path <- function() {
-  file.path(nhdplusTools_data_dir(), "nhdplusVAA.fst")
+get_vaa_path <- function(updated_network = FALSE) {
+  if(updated_network) {
+    file.path(nhdplusTools_data_dir(), "enhd_nhdplusatts.fst")
+  } else {
+    file.path(nhdplusTools_data_dir(), "nhdplusVAA.fst")
+  }
 }
 
 #' @title Available NHDPlusV2 Attributes
@@ -36,7 +45,7 @@ get_vaa_names <- function() {
 }
 
 #' @title NHDPlusV2 Attribute Subset
-#' @description Return requested NHDPlusv2 Attributes
+#' @description Return requested NHDPlusv2 Attributes.
 #' @inherit download_vaa details
 #' @param atts character The variable names you would like, always includes comid
 #' @param path character path where the file should be saved. Default is a
@@ -44,6 +53,9 @@ get_vaa_names <- function() {
 #' Also see: \link{get_vaa_path}
 #' @param download logical if TRUE, the default, will download VAA table if not
 #' found at path.
+#' @param updated_network logical default FALSE. If TRUE, updated network attributes
+#' from E2NHD and National Water Model retrieved from
+#' \href{https://www.sciencebase.gov/catalog/item/60c92503d34e86b9389df1c9}{here.}
 #' @return data.frame containing requested VAA data
 #' @importFrom fst read.fst
 #' @export
@@ -54,39 +66,94 @@ get_vaa_names <- function() {
 #' get_vaa("slope")
 #' get_vaa(c("slope", "lengthkm"))
 #'
+#' get_vaa(updated_network = TRUE)
+#' get_vaa("reachcode", updated_network = TRUE)
+#'
 #' #cleanup if desired
 #' unlink(dirname(get_vaa_path()), recursive = TRUE)
 #' }
 
 get_vaa <- function(atts = NULL,
                     path = get_vaa_path(),
-                    download = TRUE) {
+                    download = TRUE,
+                    updated_network = FALSE) {
 
-  check_vaa_path(path, download)
+  check_vaa_path(path, download, FALSE)
 
-  avaliable_names = get_vaa_names()
+  if(updated_network) {
+    updated_net_path <- file.path(dirname(path), "enhd_nhdplusatts.fst")
 
-  bad_atts = atts[!atts %in% avaliable_names]
-  atts      = atts[atts %in% avaliable_names]
-  if(length(bad_atts) > 0){
-    message(paste(bad_atts, collapse = ", "), " not in vaa data. Ignoring...")
+    check_vaa_path(updated_net_path, download, TRUE)
+
+    new_names <- fst::metadata_fst(updated_net_path)[["columnNames"]]
   }
 
-  if(is.null(atts)){
-    return(fst::read.fst(path))
+  available_names = get_vaa_names()
+
+  if(is.null(atts)) {
+
+    atts <- available_names
+
+  } else {
+
+    bad_atts = atts[!atts %in% available_names]
+    atts      = atts[atts %in% available_names]
+    if(length(bad_atts) > 0){
+      message(paste(bad_atts, collapse = ", "), " not in vaa data. Ignoring...")
+
+      if(length(atts) == 0) {
+        stop()
+      }
+
+    }
+
   }
 
-  if(all(atts %in% avaliable_names)){
+  if(updated_network) {
+
+    message("Caution: updated attributes drop some catchments and attributes")
+
+    deprecated_names <- c("streamleve", "streamorde", "streamcalc",
+                          "fromnode", "tonode", "arbolatesu", "dnlevel",
+                          "uplevelpat", "uphydroseq", "dnminorhyd",
+                          "divdasqkm")
+
+    include_names <- c("comid",
+                       atts[!atts %in%
+                              c(deprecated_names, new_names)])
+
+    replace_names <- atts[atts %in% new_names & !atts %in% deprecated_names]
+
+    # Grab the original vaas but not the ones we are going to replace.
+    out <- fst::read.fst(path, include_names)
+
+    # grab all the new attributes.
+    new_comid <- fst::read.fst(updated_net_path, "comid")
+
+    # reorder out to match new -- also drop stuff missing from new.
+    out <- out[match(new_comid$comid, out$comid), , drop = FALSE]
+
+    out <- cbind(out, fst::read.fst(updated_net_path,
+                                    c(replace_names[replace_names != "comid"])))
+
+    reorder <- match(get_vaa_names(), names(out))
+
+    reorder <- reorder[!is.na(reorder)]
+
+    return(out[, reorder])
+
+  } else {
+
     return(fst::read_fst(path, c('comid', atts)))
   }
 
 }
 
-check_vaa_path <- function(path = get_vaa_path(), download = TRUE) {
+check_vaa_path <- function(path, download, updated_network = FALSE) {
   if(!file.exists(path)){
     if(download) {
       message("didn't find data, downloading.")
-      path <- download_vaa(path = path)
+      path <- download_vaa(path, updated_network = updated_network)
     } else {
       stop("need to download data: run `download_vaa()`")
     }
@@ -103,20 +170,20 @@ check_vaa_path <- function(path = get_vaa_path(), download = TRUE) {
 #' \code{\link{get_vaa_path}}.
 #' To view aggregate data and documentation, see
 #' \href{https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/}{here}
-#' @inheritParams  get_vaa
+#' @inheritParams get_vaa
 #' @param force logical. Force data re-download. Default = FALSE
 #' @return character path to cached data
 #' @export
 #' @importFrom httr GET progress write_disk
 
-download_vaa <- function(path = get_vaa_path(), force = FALSE) {
+download_vaa <- function(path = get_vaa_path(), force = FALSE, updated_network = FALSE) {
 
   if (file.exists(path) & !force) {
     message("File already cached")
   } else {
     dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
 
-    resp <- httr::GET(vaa_hydroshare,
+    resp <- httr::GET(ifelse(updated_network, vaa_sciencebase, vaa_hydroshare),
                       httr::write_disk(path, overwrite = TRUE),
                       httr::progress())
 
@@ -127,4 +194,6 @@ download_vaa <- function(path = get_vaa_path(), force = FALSE) {
   # return file path
   return(path)
 }
+
+
 

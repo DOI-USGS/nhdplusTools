@@ -99,11 +99,8 @@ get_vaa <- function(atts = NULL,
     bad_atts = atts[!atts %in% available_names]
     atts      = atts[atts %in% available_names]
     if(length(bad_atts) > 0){
-      message(paste(bad_atts, collapse = ", "), " not in vaa data. Ignoring...")
 
-      if(length(atts) == 0) {
-        stop()
-      }
+      message(paste(bad_atts, collapse = ", "), " not in vaa data. Ignoring...")
 
     }
 

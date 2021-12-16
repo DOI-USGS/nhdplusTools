@@ -110,10 +110,9 @@ get_vaa <- function(atts = NULL,
 
     message("Caution: updated attributes drop some catchments and attributes")
 
-    deprecated_names <- c("streamleve", "streamorde", "streamcalc",
-                          "fromnode", "tonode", "arbolatesu", "dnlevel",
-                          "uplevelpat", "uphydroseq", "dnminorhyd",
-                          "divdasqkm")
+    deprecated_names <- c("streamcalc", "fromnode", "tonode",
+                          "dnlevel", "uplevelpat", "uphydroseq",
+                          "dnminorhyd", "divdasqkm")
 
     include_names <- c("comid",
                        atts[!atts %in%

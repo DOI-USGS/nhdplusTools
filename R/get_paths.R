@@ -20,8 +20,7 @@
 #'   at the outlet of the levelpath the catchment is part of.
 #'   \item topo_sort is similar to Hydroseq in NHDPlus in that large topo_sort values
 #'   are upstream of small topo_sort values. Note that there are many valid topological
-#'   sort orders of a directed graph. The sort order output by this function is generated
-#'   using `igraph::topo_sort`.
+#'   sort orders of a directed graph.
 #' }
 #' @export
 #' @examples
@@ -48,12 +47,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   x[["nameID"]][is.na(x[["nameID"]])] <- " " # NHDPlusHR uses NA for empty names.
   x[["nameID"]][x[["nameID"]] == "-1"] <- " "
 
-  sorted <- get_sorted(x)
-
-  sorted <- sorted[sorted != 0]
-
-  x <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
-                 x, by = "ID")
+  x <- get_sorted(x)
 
   x[["topo_sort"]] <- seq(nrow(x), 1)
   x[["levelpath"]] <- rep(0, nrow(x))
@@ -292,13 +286,98 @@ reweight <- function(x, ..., override_factor) {
 .datatable.aware <- TRUE
 
 #' @noRd
-#' @param x data.frame if an identifier and to identifier in the
+#' @param x data.frame with an identifier and to identifier in the
 #' first and second columns.
-#' @importFrom igraph topo_sort graph_from_data_frame
 get_sorted <- function(x) {
-  x <- graph_from_data_frame(x, directed = TRUE)
-  x <- topo_sort(x, mode = "out")
-  names(x)
+
+  # nrow to reuse
+  n <- nrow(x)
+
+  # index for fast traversal
+  index_ids <- get_index_ids(x, innames = names(x)[1:2])
+
+  # All the start nodes
+  starts <- which(index_ids$toid == 0)
+
+  # Some vectors to track results
+  out <- rep(0, n)
+  # This could probably be a lot shorter? Used as a state tracker.
+  to_visit <- out
+
+  index_ids <- data.table::as.data.table(index_ids)
+
+  froms <- merge(
+    index_ids[,.(id)],
+    data.table::setnames(index_ids, c("toid", "id"), c("id", "fromid")),
+    by = "id", all.x = TRUE
+  )
+
+  froms <- froms[,.(froms = list(c(fromid))), by = id]
+
+  froms_l <- lengths(froms$froms)
+  max_from <- max(froms_l)
+
+  # Convert list to matrix with NA fill
+  froms <- sapply(froms$froms, '[', seq(max_from))
+
+  # output order tracker
+  o <- 1
+
+  for(s in starts) {
+
+    # Set up the starting node
+    node <- s
+
+    # v is a pointer into the to_visit vector
+    v <- 1
+
+    while(v > 0) {
+
+      # track the order that nodes were visited
+      out[node] <- o
+
+      # increment to the next node
+      o <- o + 1
+
+      # does nothing if froms_l[node] == 0
+      for(from in seq_len(froms_l[node])) {
+
+        if(!is.na(next_node <- froms[from, node])) {
+          # Add the next node to visit to the tracking vector
+          to_visit[v] <- next_node
+          v <- v + 1
+        }
+
+      }
+
+      # go to the last element added in to_visit
+      v <- v - 1
+      node <- to_visit[v]
+
+    }
+
+  }
+
+  x[order(out)[n:1], ]
+
+}
+
+#' @noRd
+#' @param x data.frame with ID and toID (names not important)
+#' in the first and second columns.
+#' An "id" and "toid" (lowercase) will be added.
+get_index_ids <- function(x,
+                          innames = c("comid", "tocomid"),
+                          outnames = c("id", "toid")) {
+
+  out <- data.frame(id = seq(1, nrow(x)))
+
+  out["toid"] <- match(x[[innames[2]]], x[[innames[1]]], nomatch = 0)
+
+  names(out) <- outnames
+
+  out
+
 }
 
 #' @noRd
@@ -310,18 +389,11 @@ topo_sort_network <- function(x, reverse = TRUE) {
 
   x$toID[is.na(x$toID)] <- 0
 
-  sorted <- as(get_sorted(x[, c("ID", "toID")]),
-               class(x$ID))
+  x <- get_sorted(x[, c("ID", "toID", names(x)[!names(x) %in% c("ID", "toID")])])
 
   if(reverse) {
-    sorted <- sorted[length(sorted):1]
+    x <- x[nrow(x):1, ]
   }
-
-  sorted <- sorted[(!sorted == 0)]
-
-  order <- match(sorted, x$ID)
-
-  x <- x[order, ]
 
   x[!is.na(x$ID), ]
 
@@ -351,7 +423,7 @@ get_terminal <- function(x, outlets) {
   g <- graph_from_data_frame(x, directed = TRUE)
 
   basins <- lapply(outlets, function(o, g) {
-    v <- V(g)[which(names(igraph::V(g)) == o)]
+    v <- V(g)[which(names(V(g)) == o)]
 
     b <- dfs(g, v, neimode = "in", unreachable = FALSE)
 

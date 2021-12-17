@@ -30,10 +30,7 @@ get_streamorder <- function(x, status = TRUE) {
 
   x[["toID"]][which(is.na(x[["toID"]]))] <- 0
 
-  sorted <- get_sorted(x)
-
-  x <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "0"])),
-                 x, by = "ID")
+  x <- get_sorted(x)
 
   ID <- as.integer(x$ID)
 
@@ -41,7 +38,10 @@ get_streamorder <- function(x, status = TRUE) {
 
   order <- rep(as.integer(1), max(ID))
 
-  froms <- lapply(ID, get_fromIDs, edge_list = data.frame(ID = ID, toID = toID))
+  froms <- lapply(ID, function(id, edge_list) {
+    edge_list$ID[edge_list$toID == id]
+  }, edge_list = data.frame(ID = ID, toID = toID))
+
   names(froms) <- ID
 
   for(i in seq(1, length(ID))) {
@@ -66,10 +66,6 @@ get_streamorder <- function(x, status = TRUE) {
 
   distinct(left_join(o_sort, data.frame(ID = ID, order = order[ID]), by = "ID"))[["order"]]
 
-}
-
-get_fromIDs <- function(id, edge_list) {
-  edge_list$ID[edge_list$toID == id]
 }
 
 #' @title Get Streamlevel

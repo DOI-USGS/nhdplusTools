@@ -30,41 +30,47 @@ get_streamorder <- function(x, status = TRUE) {
 
   x[["toID"]][which(is.na(x[["toID"]]))] <- 0
 
+  # First sort so we have upstream first and outlets last.
   x <- get_sorted(x)
 
-  ID <- as.integer(x$ID)
+  # Now generate a working index against the sorted data.
+  index_ids <- get_index_ids(x, innames = c("ID", "toID"))
 
-  toID <- as.integer(x$toID)
+  # Find fromids from the working index.
+  # columns of the included matrix correspond to the index ids.
+  # rows of the matrix correspond to adjacent upstream ids
+  froms <- get_fromids(index_ids)
 
-  order <- rep(as.integer(1), max(ID))
+  # will fill in order as we go in this
+  order <- rep(1, nrow(x))
 
-  froms <- lapply(ID, function(id, edge_list) {
-    edge_list$ID[edge_list$toID == id]
-  }, edge_list = data.frame(ID = ID, toID = toID))
+  for(i in seq_len(nrow(x))) {
 
-  names(froms) <- ID
+    # nothing to do if nothing upstream
+    if((l <- froms$lengths[i]) > 0) {
 
-  for(i in seq(1, length(ID))) {
+      # these are the upstream orders
+      orders <- order[froms$froms[1:l,i]]
 
-    from <- froms[[as.character(ID[i])]]
-
-    if(length(from) > 0) {
-      orders <- order[from]
-
+      # Need the max upstream order for this work
       m <- max(orders)
 
+      # the core stream order algorithm.
+      # if more than one upstream order is the same
+      # as the max upstream order, increment by one.
+      # otherwise use the max upstream order.
       if(length(orders[orders == m]) > 1) {
-        order[ID[i]] <- m + 1
+        order[i] <- m + 1
       } else {
-        order[ID[i]] <- m
+        order[i] <- m
       }
+
     }
-
-    if(i %% 1000 == 0 & status) message(paste("ID", i, "of", length(ID)))
-
   }
 
-  distinct(left_join(o_sort, data.frame(ID = ID, order = order[ID]), by = "ID"))[["order"]]
+  left_join(o_sort,
+            bind_cols(x, data.frame(order = order)),
+            by = "ID")[["order"]]
 
 }
 

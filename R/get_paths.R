@@ -285,25 +285,7 @@ reweight <- function(x, ..., override_factor) {
 
 .datatable.aware <- TRUE
 
-#' @noRd
-#' @param x data.frame with an identifier and to identifier in the
-#' first and second columns.
-get_sorted <- function(x) {
-
-  # nrow to reuse
-  n <- nrow(x)
-
-  # index for fast traversal
-  index_ids <- get_index_ids(x, innames = names(x)[1:2])
-
-  # All the start nodes
-  starts <- which(index_ids$toid == 0)
-
-  # Some vectors to track results
-  out <- rep(0, n)
-  # This could probably be a lot shorter? Used as a state tracker.
-  to_visit <- out
-
+get_fromids <- function(index_ids, return_list = FALSE) {
   index_ids <- data.table::as.data.table(index_ids)
 
   froms <- merge(
@@ -318,7 +300,40 @@ get_sorted <- function(x) {
   max_from <- max(froms_l)
 
   # Convert list to matrix with NA fill
-  froms <- sapply(froms$froms, '[', seq(max_from))
+  froms_m <- sapply(froms$froms, '[', seq(max_from))
+
+  # NAs should be length 0
+  froms_l[is.na(froms_m[1, ])] <- 0
+
+  if(return_list) return(list(froms = froms_m, lengths = froms_l,
+                              froms_list = froms))
+
+  return(list(froms = froms_m, lengths = froms_l))
+
+}
+
+#' @noRd
+#' @param x data.frame with an identifier and to identifier in the
+#' first and second columns.
+get_sorted <- function(x) {
+
+  # nrow to reuse
+  n <- nrow(x)
+
+  # index for fast traversal
+  index_ids <- get_index_ids(x, innames = names(x)[1:2])
+
+  # All the start nodes
+  starts <- which(index_ids$toid == 0)
+
+  froms <- get_fromids(index_ids)
+
+  # Some vectors to track results
+  out <- rep(0, n)
+  # This could probably be a lot shorter? Used as a state tracker.
+  to_visit <- out
+
+
 
   # output order tracker
   o <- 1
@@ -340,9 +355,10 @@ get_sorted <- function(x) {
       o <- o + 1
 
       # does nothing if froms_l[node] == 0
-      for(from in seq_len(froms_l[node])) {
 
-        if(!is.na(next_node <- froms[from, node])) {
+      for(from in seq_len(froms$lengths[node])) {
+
+        if(!is.na(next_node <- froms$froms[from, node])) {
           # Add the next node to visit to the tracking vector
           to_visit[v] <- next_node
           v <- v + 1
@@ -369,6 +385,10 @@ get_sorted <- function(x) {
 get_index_ids <- function(x,
                           innames = c("comid", "tocomid"),
                           outnames = c("id", "toid")) {
+
+  if(!all(innames %in% names(x))) {
+    stop(paste(paste(innames, collapse = ", "), "must be in input or provided."))
+  }
 
   out <- data.frame(id = seq(1, nrow(x)))
 

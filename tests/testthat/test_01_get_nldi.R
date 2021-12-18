@@ -148,6 +148,8 @@ test_that("characteristics", {
 
 test_that("raindrop", {
 
+  testthat::skip(message = "offline service")
+
   skip_on_cran()
 
   point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
@@ -183,6 +185,8 @@ test_that("raindrop", {
 })
 
 test_that("split", {
+
+  testthat::skip(message = "offline service")
 
   skip_on_cran()
 
@@ -226,6 +230,9 @@ test_that("split", {
 })
 
 test_that("xs", {
+
+  testthat::skip(message = "offline service")
+
   skip_on_cran()
 
   point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)

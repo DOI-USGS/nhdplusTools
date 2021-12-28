@@ -3,7 +3,6 @@
 #' network and incremental areas.
 #' @param x data.frame with ID, toID, and area columns.
 #' @return numeric with total area.
-#' @importFrom igraph graph_from_data_frame topo_sort
 #' @importFrom dplyr select left_join
 #' @export
 #' @examples
@@ -70,12 +69,7 @@ accumulate_downstream <- function(x, var) {
 
   x[["toID"]][which(is.na(x[["toID"]]))] <- 0
 
-  sorted <- get_sorted(x)
-
-  sorted <- sorted[sorted != "0" & sorted %in% as.character(cat_order$ID)]
-
-  x <- left_join(data.frame(ID = as.numeric(sorted[!sorted == "NA"])),
-                        x, by = "ID")
+  x <- get_sorted(x)
 
   x[["toID_row"]] <- match(x[["toID"]], x[["ID"]])
 

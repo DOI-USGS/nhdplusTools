@@ -36,8 +36,7 @@ included in this column and the largest value will be followed when no nameID is
   at the outlet of the levelpath the catchment is part of.
   \item topo_sort is similar to Hydroseq in NHDPlus in that large topo_sort values
   are upstream of small topo_sort values. Note that there are many valid topological
-  sort orders of a directed graph. The sort order output by this function is generated
-  using `igraph::topo_sort`.
+  sort orders of a directed graph.
 }
 }
 \examples{

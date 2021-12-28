@@ -9,7 +9,7 @@ get_nldi_basin(nldi_feature)
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
+dataRetrieval::get_nldi_sources() and the `featureID` is a known identifier
 from the specified `featureSource`.}
 }
 \value{

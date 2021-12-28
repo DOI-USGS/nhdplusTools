@@ -665,9 +665,9 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
     x <- sf::st_transform(x, out_prj)
   }
 
-  types <- as.character(sf::st_geometry_type(x, by_geometry = FALSE))
+  types <- as.character(sf::st_geometry_type(x, by_geometry = TRUE))
 
-  if(grepl("^GEOME", types)) {
+  if(any(grepl("^GEOME", types))) {
     unq <- unique(as.character(
       sf::st_geometry_type(x, by_geometry = TRUE)))
 

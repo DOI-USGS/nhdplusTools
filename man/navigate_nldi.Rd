@@ -14,7 +14,7 @@ navigate_nldi(
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
+dataRetrieval::get_nldi_sources() and the `featureID` is a known identifier
 from the specified `featureSource`.}
 
 \item{mode}{character chosen from ("UM", "UT", DM", "DD"). See examples.}

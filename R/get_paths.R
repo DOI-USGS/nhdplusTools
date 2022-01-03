@@ -147,7 +147,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
 
   outlets <- x %>%
     group_by(.data$levelpath) %>%
-    filter(topo_sort == min(topo_sort)) %>%
+    filter(.data$topo_sort == min(.data$topo_sort)) %>%
     ungroup() %>%
     select(outletID = .data$ID, .data$levelpath)
 
@@ -284,17 +284,18 @@ reweight <- function(x, ..., override_factor) {
 }
 
 .datatable.aware <- TRUE
+. <- fromid <- id <- NULL
 
 get_fromids <- function(index_ids, return_list = FALSE) {
   index_ids <- data.table::as.data.table(index_ids)
 
   froms <- merge(
-    index_ids[,.(id)],
+    index_ids[,list(id)],
     data.table::setnames(index_ids, c("toid", "id"), c("id", "fromid")),
     by = "id", all.x = TRUE
   )
 
-  froms <- froms[,.(froms = list(c(fromid))), by = id]
+  froms <- froms[,list(froms = list(c(fromid))), by = id]
 
   froms_l <- lengths(froms$froms)
   max_from <- max(froms_l)

@@ -4,7 +4,12 @@
 \alias{get_vaa}
 \title{NHDPlusV2 Attribute Subset}
 \usage{
-get_vaa(atts = NULL, path = get_vaa_path(), download = TRUE)
+get_vaa(
+  atts = NULL,
+  path = get_vaa_path(),
+  download = TRUE,
+  updated_network = FALSE
+)
 }
 \arguments{
 \item{atts}{character The variable names you would like, always includes comid}
@@ -15,12 +20,16 @@ Also see: \link{get_vaa_path}}
 
 \item{download}{logical if TRUE, the default, will download VAA table if not
 found at path.}
+
+\item{updated_network}{logical default FALSE. If TRUE, updated network attributes
+from E2NHD and National Water Model retrieved from
+\href{https://www.sciencebase.gov/catalog/item/60c92503d34e86b9389df1c9}{here.}}
 }
 \value{
 data.frame containing requested VAA data
 }
 \description{
-Return requested NHDPlusv2 Attributes
+Return requested NHDPlusv2 Attributes.
 }
 \details{
 The VAA data is a aggregate table of information from the NHDPlusV2
@@ -38,6 +47,9 @@ To view aggregate data and documentation, see
 
 get_vaa("slope")
 get_vaa(c("slope", "lengthkm"))
+
+get_vaa(updated_network = TRUE)
+get_vaa("reachcode", updated_network = TRUE)
 
 #cleanup if desired
 unlink(dirname(get_vaa_path()), recursive = TRUE)

@@ -218,28 +218,6 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
   if (nhdplus_data == "download") {
 
-    if(!is.null(bbox)) {
-      # Just hacking in some test mock data
-      test_cache_f <- paste0("nhd_data",
-                             paste0(as.character(round(bbox, 2)), collapse = ""), ".rds")
-    } else {
-      test_cache_f <- "nope.nope.nope"
-    }
-
-    if(!exists("out_list")) {
-      out_list <- NULL
-    }
-    check_geom <- TRUE
-
-    tc <- list.files(pattern = test_cache_f,
-                     recursive = TRUE,
-                     full.names = TRUE)
-
-    if(length(tc) > 0 && file.exists(tc)) {
-      out_list <- readRDS(tc)
-      check_geom <- FALSE
-    }
-
     for (layer_name in intersection_names) {
       if(is.null(out_list[layer_name][[1]])) {
         layer <- sf::st_transform(envelope, 4326) %>%
@@ -250,8 +228,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
       if(!is.null(nrow(layer)) && nrow(layer) > 0) {
 
-        if(check_geom)
-          layer <- check_valid(layer, out_prj)
+        layer <- check_valid(layer, out_prj)
 
         if(return_data) {
           out_list[layer_name] <- list(layer)
@@ -646,8 +623,8 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
 
           sf::st_geometry(x) <-
             sf::st_sfc(lapply(sf::st_geometry(x), fix_g_type,
-                                         type = gsub("^MULTI", "", orig_type),
-                                         orig_type = orig_type),
+                              type = gsub("^MULTI", "", orig_type),
+                              orig_type = orig_type),
                        crs = sf::st_crs(x))
 
           x <- sf::st_cast(x, orig_type)
@@ -658,7 +635,13 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
   }
 
   if (any(grepl("POLYGON", class(sf::st_geometry(x))))) {
-    suppressMessages(suppressWarnings(x <- sf::st_buffer(x, 0)))
+    suppressMessages(suppressWarnings(
+      {
+        use_s2 <- sf::sf_use_s2()
+        sf::sf_use_s2(FALSE)
+        x <- sf::st_buffer(x, 0)
+        sf::sf_use_s2(use_s2)
+      }))
   }
 
   if (sf::st_crs(x) != sf::st_crs(out_prj)) {

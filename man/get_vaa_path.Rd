@@ -4,7 +4,11 @@
 \alias{get_vaa_path}
 \title{File path to value added attribute (vaa) Cache}
 \usage{
-get_vaa_path()
+get_vaa_path(updated_network = FALSE)
+}
+\arguments{
+\item{updated_network}{logical default FALSE. If TRUE, returns path to updated
+network parameters. See \link{get_vaa} for more.}
 }
 \value{
 character file path
@@ -27,4 +31,7 @@ To view aggregate data and documentation, see
 }
 \examples{
 get_vaa_path()
+
+get_vaa_path(updated_network = TRUE)
+
 }

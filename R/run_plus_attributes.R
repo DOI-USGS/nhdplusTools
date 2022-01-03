@@ -60,7 +60,7 @@ combine_networks <- function(lp) {
   }
 
   lp <- lapply(lp, function(x) {
-    mutate(x, terminalpath = min(topo_sort))
+    mutate(x, terminalpath = min(.data$topo_sort))
   })
 
   bind_rows(lp)

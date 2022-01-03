@@ -22,4 +22,11 @@ test_that("vaa examples", {
   expect_message(vaa_path_2 <- download_vaa(), "File already cached")
 
   expect_equal(vaa_path, vaa_path_2)
+
+  expect_message(update <- get_vaa("reachcode", updated_network = TRUE))
+
+  expect_equal(names(update), c("comid", "reachcode"))
+
+  expect_error(capture_messages(get_vaa("bad", updated_network = TRUE)))
+
 })

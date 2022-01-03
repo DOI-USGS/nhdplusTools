@@ -635,7 +635,10 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
   }
 
   if (any(grepl("POLYGON", class(sf::st_geometry(x))))) {
+    use_s2 <- sf::sf_use_s2()
+    sf::sf_use_s2(FALSE)
     suppressMessages(suppressWarnings(x <- sf::st_buffer(x, 0)))
+    sf::sf_use_s2(use_s2)
   }
 
   if (sf::st_crs(x) != sf::st_crs(out_prj)) {

@@ -140,7 +140,7 @@ get_vaa <- function(atts = NULL,
 
   } else {
 
-    return(fst::read_fst(path, c('comid', atts)))
+    return(fst::read_fst(path, c('comid', atts[atts != 'comid'])))
   }
 
 }

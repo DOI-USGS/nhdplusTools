@@ -342,6 +342,7 @@ get_sorted <- function(x, split = FALSE, return_list = FALSE) {
 
   # output order tracker
   o <- 1
+  set_id <- 1
 
   for(s in starts) {
 
@@ -386,11 +387,20 @@ get_sorted <- function(x, split = FALSE, return_list = FALSE) {
 
     }
 
-    if(split) out_list[[s]] <- x[set[1:(n - 1)], 1]
+    if(split) {
+      out_list[[set_id]] <- x[set[1:(n - 1)], 1][[1]]
+      set_id <- set_id + 1
+    }
+
 
   }
 
-  if(split) names(out_list) <- x[starts, 1]
+  if(split) {
+
+    out_list <- out_list[1:length(starts)]
+
+    names(out_list) <- x[starts, 1][[1]]
+  }
 
   ### rewrites x into the correct order. ###
   x <- x[order(out)[(o-1):1], ]
@@ -398,7 +408,7 @@ get_sorted <- function(x, split = FALSE, return_list = FALSE) {
   if(split) {
 
     # this is only two columns
-    ids <- methods::as(names(out_list), class(x[1, 1]))
+    ids <- methods::as(names(out_list), class(x[[1, 1]]))
 
     out_list <- data.frame(ids = ids) %>%
       mutate(set = out_list) %>%

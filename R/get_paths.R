@@ -316,7 +316,7 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' @noRd
 #' @param x data.frame with an identifier and to identifier in the
 #' first and second columns.
-get_sorted <- function(x) {
+get_sorted <- function(x, split = FALSE, return_list = FALSE) {
 
   # nrow to reuse
   n <- nrow(x)
@@ -331,10 +331,14 @@ get_sorted <- function(x) {
 
   # Some vectors to track results
   out <- rep(0, n)
+
+  if(split) {
+    set <- out
+    out_list <- rep(list(list()), length(starts))
+  }
+
   # This could probably be a lot shorter? Used as a state tracker.
   to_visit <- out
-
-
 
   # output order tracker
   o <- 1
@@ -344,6 +348,9 @@ get_sorted <- function(x) {
     # Set up the starting node
     node <- s
 
+    # within set node tracker for split = TRUE
+    n <- 1
+
     # v is a pointer into the to_visit vector
     v <- 1
 
@@ -351,9 +358,15 @@ get_sorted <- function(x) {
 
       # track the order that nodes were visited
       out[node] <- o
-
       # increment to the next node
       o <- o + 1
+
+      if(split) {
+
+        set[n] <- node
+        n <- n + 1
+
+      }
 
       # does nothing if froms_l[node] == 0
 
@@ -373,9 +386,38 @@ get_sorted <- function(x) {
 
     }
 
+    if(split) out_list[[s]] <- x[set[1:(n - 1)], 1]
+
   }
 
-  x[order(out)[n:1], ]
+  if(split) names(out_list) <- x[starts, 1]
+
+  ### rewrites x into the correct order. ###
+  x <- x[order(out)[(o-1):1], ]
+
+  if(split) {
+
+    # this is only two columns
+    ids <- methods::as(names(out_list), class(x[1, 1]))
+
+    out_list <- data.frame(ids = ids) %>%
+      mutate(set = out_list) %>%
+      tidyr::unnest_longer(.data$set)
+
+    names(out_list) <- c("set_outlet", names(x)[1])
+
+    ### adds grouping set_outlet to x ###
+    x <- dplyr::left_join(x, out_list, by = names(x)[1])
+
+    ### splits x appart by the grouping set_outlet ###
+    if(return_list) {
+      x <- dplyr::group_by(x, .data$set_outlet) %>%
+        dplyr::group_split()
+    }
+
+  }
+
+  x
 
 }
 

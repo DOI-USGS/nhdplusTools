@@ -1,71 +1,3 @@
-par_make_subnet <- function(out, g, vs, net_new) {
-
-  dfs <- igraph::dfs(g, which(vs == as.character(out)),
-                     "in", unreachable = FALSE)
-
-  subnet <- dplyr::filter(net_new, .data$comid %in% as.integer(names(dfs$order[!is.na(dfs$order)])))
-
-
-  dplyr::mutate(dplyr::select(subnet, ID = .data$comid, toID = .data$tocomid,
-                              nameID = .data$nameID, weight = .data$weight),
-                nameID = as.character(.data$nameID))
-}
-
-split_network <- function(net, cl = NULL) {
-
-  g <- igraph::graph_from_data_frame(select(net, .data$comid, .data$tocomid), directed = TRUE)
-
-  vs <- names(igraph::V(g))
-
-  if(!is.null(cl)) {
-    cl <- get_cl(cl)
-    on.exit(parallel::stopCluster(cl))
-  }
-
-  outlets <- net$comid[net$tocomid == 0 | is.na(net$tocomid)]
-
-  lp <- pbapply::pblapply(cl = cl, X = outlets,
-                            FUN = par_make_subnet, g = g,
-                            vs = vs, net_new = net)
-
-  return(lp)
-}
-
-run_small <- function(small_lp, override, cl) {
-  if(!is.null(cl)) {
-    cl <- parallel::makeCluster(cl)
-    on.exit(parallel::stopCluster(cl))
-  }
-
-  small_lp <- parallel::parLapply(cl = cl, X = small_lp,
-                                  fun = function(x, override) {
-                                    nhdplusTools::get_levelpaths(x, override)
-                                  },
-                                  override = override)
-
-}
-
-combine_networks <- function(lp) {
-  # ts stands for toposort here. Given that the networks retrieved above are
-  # independent, we need to lag them so they don't have overlapping identifiers.
-  start_ts <- 0
-
-  for(i in 1:length(lp)) {
-
-    lp[[i]]$levelpath <- lp[[i]]$levelpath + start_ts
-    lp[[i]]$topo_sort <- lp[[i]]$topo_sort + start_ts
-
-    start_ts <- max(lp[[i]]$topo_sort)
-
-  }
-
-  lp <- lapply(lp, function(x) {
-    mutate(x, terminalpath = min(.data$topo_sort))
-  })
-
-  bind_rows(lp)
-}
-
 #' Add NHDPlus Network Attributes to a provided network.
 #' @description Given a river network with required base attributes, adds the
 #' NHDPlus network attributes: hydrosequence, levelpath, terminalpath, pathlength,
@@ -127,7 +59,14 @@ add_plus_network_attributes <- function(net, override = 5,
   if(!is.null(split_temp) && file.exists(split_temp)) {
     lp <- readRDS(split_temp)
   } else {
-    lp <- split_network(net, cl = cores)
+
+    lp <- get_sorted(
+      dplyr::rename(net,
+                    ID = .data$comid,
+                    toID = .data$tocomid),
+      split = TRUE)
+
+    lp <- split(lp, lp$terminalID)
 
     if(!is.null(split_temp)) {
       saveRDS(lp, split_temp)
@@ -141,6 +80,8 @@ add_plus_network_attributes <- function(net, override = 5,
     small_lp <- lp[rows <= 20000]
     lp <- lp[rows > 20000]
 
+    message("running large networks")
+
   }
 
   lp <- pbapply::pblapply(X = lp,
@@ -153,8 +94,46 @@ add_plus_network_attributes <- function(net, override = 5,
 
   if(!is.null(cores)) {
 
+    run_small <- function(small_lp, override, cl) {
+
+      if(!is.null(cl)) {
+        cl <- parallel::makeCluster(cl)
+        on.exit(parallel::stopCluster(cl))
+      }
+
+      message("running small networks")
+
+      small_lp <- pbapply::pblapply(cl = cl, X = small_lp,
+                                    FUN = function(x, override) {
+                                      nhdplusTools::get_levelpaths(x, override)
+                                    },
+                                    override = override)
+
+    }
+
     lp <- c(lp, run_small(small_lp, override, cores))
 
+  }
+
+  combine_networks <- function(lp) {
+    # ts stands for toposort here. Given that the networks retrieved above are
+    # independent, we need to lag them so they don't have overlapping identifiers.
+    start_ts <- 0
+
+    for(i in 1:length(lp)) {
+
+      lp[[i]]$levelpath <- lp[[i]]$levelpath + start_ts
+      lp[[i]]$topo_sort <- lp[[i]]$topo_sort + start_ts
+
+      start_ts <- max(lp[[i]]$topo_sort)
+
+    }
+
+    lp <- lapply(lp, function(x) {
+      mutate(x, terminalpath = min(.data$topo_sort))
+    })
+
+    bind_rows(lp)
   }
 
   lp <- combine_networks(lp)

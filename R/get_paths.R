@@ -301,7 +301,7 @@ get_fromids <- function(index_ids, return_list = FALSE) {
   max_from <- max(froms_l)
 
   # Convert list to matrix with NA fill
-  froms_m <- sapply(froms$froms, '[', seq(max_from))
+  froms_m <- as.matrix(sapply(froms$froms, '[', seq(max_from)))
 
   # NAs should be length 0
   froms_l[is.na(froms_m[1, ])] <- 0
@@ -313,10 +313,24 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 
 }
 
-#' @noRd
+#' Get Sorted Network
+#' @description given a tree with an id and and toid in the
+#' first and second columns, returns a sorted and potentially
+#' split set of output.
+#' @export
 #' @param x data.frame with an identifier and to identifier in the
 #' first and second columns.
-get_sorted <- function(x) {
+#' @param split logical if TRUE, the result will be split into
+#' independent networks identified by the id of their outlet. The
+#' outlet id of each independent network is added as a "terminalID"
+#' attribute.
+#' @param outlets same as id in x; if specified only the network
+#' eminating from these outlets will be considered and returned.
+#' @return data.frame containing a topologically sorted version
+#' of the requested network and optionally a terminal id.
+get_sorted <- function(x, split = FALSE, outlets = NULL) {
+
+  x <- as.data.frame(x)
 
   # nrow to reuse
   n <- nrow(x)
@@ -324,26 +338,34 @@ get_sorted <- function(x) {
   # index for fast traversal
   index_ids <- get_index_ids(x, innames = names(x)[1:2])
 
-  # All the start nodes
-  starts <- which(index_ids$toid == 0)
+  if(!is.null(outlets)) {
+    starts <- which(x[, 1] %in% outlets)
+  } else {
+    # All the start nodes
+    starts <- which(index_ids$toid == 0)
+  }
 
   froms <- get_fromids(index_ids)
 
   # Some vectors to track results
-  out <- rep(0, n)
-  # This could probably be a lot shorter? Used as a state tracker.
-  to_visit <- out
+  to_visit <- out <- rep(0, n)
 
-
+  if(split) {
+    set <- out
+    out_list <- rep(list(list()), length(starts))
+  }
 
   # output order tracker
   o <- 1
+  set_id <- 1
 
   for(s in starts) {
 
     # Set up the starting node
     node <- s
 
+    # within set node tracker for split = TRUE
+    n <- 1
     # v is a pointer into the to_visit vector
     v <- 1
 
@@ -351,21 +373,22 @@ get_sorted <- function(x) {
 
       # track the order that nodes were visited
       out[node] <- o
-
       # increment to the next node
       o <- o + 1
+
+      if(split) {
+        set[n] <- node
+        n <- n + 1
+      }
 
       # does nothing if froms_l[node] == 0
 
       for(from in seq_len(froms$lengths[node])) {
-
         if(!is.na(next_node <- froms$froms[from, node])) {
           # Add the next node to visit to the tracking vector
           to_visit[v] <- next_node
           v <- v + 1
-        }
-
-      }
+        }}
 
       # go to the last element added in to_visit
       v <- v - 1
@@ -373,10 +396,39 @@ get_sorted <- function(x) {
 
     }
 
+    if(split) {
+      out_list[[set_id]] <- x[set[1:(n - 1)], 1]
+      set_id <- set_id + 1
+    }
   }
 
-  x[order(out)[n:1], ]
+  if(split) names(out_list) <- x[starts, 1]
 
+  ### rewrites x into the correct order. ###
+  if(o - 1 != nrow(x)) {
+    x <- x[which(out != 0), ]
+    out <- out[out != 0]
+  }
+
+  x <- x[order(out)[(o-1):1], ]
+
+  if(split) {
+
+    # this is only two columns
+    ids <- methods::as(names(out_list), class(x[1, 1]))
+
+    out_list <- data.frame(ids = ids) %>%
+      mutate(set = out_list) %>%
+      tidyr::unnest_longer(.data$set)
+
+    names(out_list) <- c("terminalID", names(x)[1])
+
+    ### adds grouping terminalID to x ###
+    x <- dplyr::left_join(x, out_list, by = names(x)[1])
+
+  }
+
+  return(x)
 }
 
 #' @noRd
@@ -420,15 +472,13 @@ topo_sort_network <- function(x, reverse = TRUE) {
 
 }
 
-#' Get Terminal ID
+#' Get Terminal ID (DEPRECATED)
 #' @description Get the ID of the basin outlet for each flowline.
+#' This function has been deprecated in favor of get_sorted.
 #' @param x two column data.frame with IDs and toIDs. Names are ignored.
 #' @param outlets IDs of outlet flowlines
 #' @export
 #' @return data.frame containing the terminal ID for each outlet
-#' @importFrom igraph dfs graph_from_data_frame V
-#' @importFrom sf st_drop_geometry
-#' @importFrom tidyr unnest
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #'
@@ -441,32 +491,14 @@ topo_sort_network <- function(x, reverse = TRUE) {
 #'
 get_terminal <- function(x, outlets) {
 
-  g <- graph_from_data_frame(x, directed = TRUE)
+  message("Deprecated, use get_sorted.")
 
-  basins <- lapply(outlets, function(o, g) {
-    v <- V(g)[which(names(V(g)) == o)]
+  ordered_id <- x$ID
 
-    b <- dfs(g, v, neimode = "in", unreachable = FALSE)
+  x <- get_sorted(x, split = TRUE, outlets = outlets)
 
-    b <- names(b$order)
-    b[!is.na(b) & b !=0]
-
-  }, g = g)
-
-  basin_df <- data.frame(terminalID = outlets, stringsAsFactors = FALSE)
-  basin_df[["ID"]] <- basins
-
-  basin_df <- distinct(unnest(basin_df, cols = "ID"))
-
-  if(is.integer(x[[1, 1]])) {
-    basin_df[["ID"]] <- as.integer(basin_df[["ID"]])
-  }
-
-  if(is.numeric(x[[1, 1]]) & !is.integer(x[[1, 1]])) {
-    basin_df[["ID"]] <- as.numeric(basin_df[["ID"]])
-  }
-
-  return(basin_df)
+  dplyr::left_join(data.frame(ID = ordered_id),
+                   x[c("ID", "terminalID")], by = "ID")
 }
 
 #' Get path length

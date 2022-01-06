@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_paths.R
 \name{get_terminal}
 \alias{get_terminal}
-\title{Get Terminal ID}
+\title{Get Terminal ID (DEPRECATED)}
 \usage{
 get_terminal(x, outlets)
 }
@@ -16,6 +16,7 @@ data.frame containing the terminal ID for each outlet
 }
 \description{
 Get the ID of the basin outlet for each flowline.
+This function has been deprecated in favor of get_sorted.
 }
 \examples{
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))

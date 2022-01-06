@@ -40,3 +40,20 @@ test_that("example", {
   unlink(tempf)
 })
 
+test_that("coastal", {
+  net <- read.csv(list.files(pattern = "coastal_net.csv", full.names = TRUE, recursive = TRUE))
+
+  net <- net[order(net$hydroseq), ]
+
+  sorted <- get_sorted(net[, c("comid", "tocomid")], split = TRUE)
+
+  expect_true(which(sorted$comid == 2544325) <
+                which(sorted$comid == 2544321))
+
+  expect_equal(length(unique(sorted$terminalID)), 32)
+
+  sorted <- get_sorted(net[, c("comid", "tocomid")], split = TRUE, outlets = 2544457)
+
+  expect_true(all(sorted$terminalID == 2544457))
+
+})

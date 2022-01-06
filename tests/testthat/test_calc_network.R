@@ -48,9 +48,9 @@ test_that("get_terminal", {
 
   outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
   fl$toID[which(!fl$toID %in% fl$ID)] <- 0
-  terminal <- get_terminal(fl, outlet)
+  expect_message(terminal <- get_terminal(fl, outlet))
 
-  expect_equal(names(terminal), c("terminalID", "ID"))
+  expect_equal(names(terminal), c("ID", "terminalID"))
   expect_true(is.numeric(terminal$ID))
   expect_equal(nrow(terminal), nrow(fl))
 
@@ -62,7 +62,7 @@ test_that("get_terminal", {
   outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
   fl$toID[which(!fl$toID %in% fl$ID)] <- 0
 
-  terminal <- get_terminal(fl, outlet)
+  expect_message(terminal <- get_terminal(fl, outlet))
 
   expect_equal(nrow(terminal), nrow(fl))
   expect_true(is.integer(terminal$ID))

@@ -162,7 +162,7 @@ test_that("raindrop", {
 
   expect_true(inherits(trace, "sf"))
 
-  expect_type(trace$intersectionPoint, "list")
+  expect_type(trace$intersection_point, "list")
 #
 # Doesn't improve coverage
 #   trace2 <- get_raindrop_trace(point, direction = "up")
@@ -173,9 +173,9 @@ test_that("raindrop", {
 #
 #   expect_equal(trace3$id[1], "nhdFlowline")
 #
-#   expect_equal(length(trace3$intersectionPoint[[1]]), 2)
+#   expect_equal(length(trace3$intersection_point[[1]]), 2)
 #
-#   expect_equal(length(trace3$intersectionPoint[[2]]), 0)
+#   expect_equal(length(trace3$intersection_point[[2]]), 0)
 
   expect_error(get_raindrop_trace(point, direction = "borked"),
                "direction must be in up, down, none")
@@ -191,7 +191,7 @@ test_that("split", {
   #
   # trace <- get_raindrop_trace(point)
   #
-  # dput(sf::st_point(trace$intersectionPoint[[1]][2:1]))
+  # dput(sf::st_point(trace$intersection_point[[1]][2:1]))
 
   snap_point <- sf::st_sfc(sf::st_point(c(-89.213274, 42.956989)),
                            crs = 4326)

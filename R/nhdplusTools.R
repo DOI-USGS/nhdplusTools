@@ -193,12 +193,20 @@ assign("get_hydro_location_attributes",
        c("COMID", "ToMeas", "FromMeas"),
        envir = nhdplusTools_env)
 
-assign("get_wb_outlet_attributes",
-       c("COMID", "Hydroseq"),
+assign("get_wb_outlet_mres_attributes",
+       c("COMID", "Hydroseq", "WBAREACOMI"),
+       envir = nhdplusTools_env)
+
+assign("get_wb_outlet_hires_attributes",
+       c("WBArea_Permanent_Identifier", "Hydroseq"),
        envir = nhdplusTools_env)
 
 assign("on_off_network_attributes",
        c("COMID", "WBAREACOMI"),
+       envir = nhdplusTools_env)
+
+assign("get_tocomid_attributes",
+       c("COMID", "ToNode", "FromNode"),
        envir = nhdplusTools_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.

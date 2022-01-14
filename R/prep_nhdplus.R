@@ -141,23 +141,10 @@ prepare_nhdplus <- function(flines,
   }
 
   if(nrow(flines) > 0) {
-    # Join ToNode and FromNode along with COMID and Length to
-    # get downstream attributes. This is done grouped by
-    # terminalpathID becasue duplicate node ids were encountered
-    # accross basins.
-    flines <- group_by(flines, TerminalPa)
-    flines <- group_split(flines)
-
-    flines <- lapply(flines, function(x){
-      left_join(x, select(x,
-                          toCOMID = .data$COMID,
-                          .data$FromNode),
-                by = c("ToNode" = "FromNode"))})
-
-    flines <- bind_rows(flines)
+    flines[["toCOMID"]] <- get_tocomid(flines)
   }
 
-  if (!all(flines[["TerminalFl"]][which(is.na(flines$toCOMID))] == 1)) {
+  if (!all(flines[["TerminalFl"]][which(flines$toCOMID == 0)] == 1)) {
     warn <- paste("FromNode - ToNode imply terminal flowlines that are not\n",
                   "flagged terminal. Can't assume NA toCOMIDs go to the ocean.")
     if(error) {
@@ -179,5 +166,76 @@ filter_coastal <- function(flines) {
     flines <- filter(flines, (FTYPE != "Coastline" | FTYPE != 566))
   } else {
     stop("must provide FCODE and/or FTYPE to filter coastline.")
+  }
+}
+
+
+#' get toid
+#' @description Given flowlines with fromnode and tonode attributes,
+#' will return a toid attribute that is the result of joining
+#' tonode and fromnode attributes. In the case that a terminalpa
+#' attribute is included, the join is executed by terminalpa group.
+#' This is done grouped by terminalpathID because duplicate node
+#' ids have been encountere accross basins in some datasets.
+#' @param x data.frame with comid, tonode, fromnode, and (optionally)
+#' divergence and terminalpa attributes.
+#' @param return_dendritic logical if TRUE, a divergence attribute is required
+#' (2 indicates diverted path, 1 is main) and diverted paths will be treated
+#' as headwaters. If this is FALSE, the return value is a data.frame including
+#' the comid and tocomid attributes.
+#' @param missing integer value to use for terminal nodes.
+#' @return if return_dendritic is TRUE, a vector containing tocomid values
+#' in the same order as x. If return_dendritic is FALSE, a data.frame with
+#' comid and tocomid attributes.
+#' @export
+#' @examples
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
+#' tocomid <- get_tocomid(sample_flines)
+#'
+#' tocomid <- get_tocomid(sample_flines, return_dendritic = FALSE)
+#'
+get_tocomid <- function(x, return_dendritic = TRUE, missing = 0) {
+  x <- drop_geometry(check_names(x, "get_tocomid", tolower = TRUE))
+
+  joiner_fun <- function(x) {
+    left_join(x, select(x,
+                        tocomid = .data$comid,
+                        .data$fromnode),
+              by = c("tonode" = "fromnode"))
+  }
+
+  order <- data.frame(comid = x$comid)
+
+  if(return_dendritic) {
+    if(!"divergence" %in% names(x)) {
+      stop("To remove non dendritic paths, a divergence attribute is required.")
+    }
+
+    x[["fromnode"]][which(x$divergence == 2)] <- NA
+
+  }
+
+  if("terminalpa" %in% names(x)) {
+
+    x <- group_split(group_by(x, .data$terminalpa))
+    x <- bind_rows(lapply(x, joiner_fun))
+
+  } else {
+
+    x <- joiner_fun(x)
+
+  }
+
+  x <- left_join(order, x, by = c("comid"))
+
+  if(!is.na(missing)) {
+    x$tocomid[is.na(x$tocomid)] <- missing
+  }
+
+  if(return_dendritic) {
+    x$tocomid
+  } else {
+    as.data.frame(select(x, .data$comid, .data$tocomid))
   }
 }

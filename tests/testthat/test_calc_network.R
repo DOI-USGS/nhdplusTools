@@ -17,6 +17,10 @@ test_that("total drainage area works", {
 
   expect(mean(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-3, "drainage area not close enough")
   expect(max(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-2, "drainage area not close enough")
+
+  catchment_area$area[1] <- NA
+
+  expect_warning(calculate_total_drainage_area(catchment_area))
 })
 
 test_that("arbolate sum works", {

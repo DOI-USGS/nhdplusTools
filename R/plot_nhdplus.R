@@ -583,7 +583,7 @@ off_network <- function(waterbody, flowline) {
 }
 
 #' Get Waterbody Outlet
-#' @param lake_COMID integer COMID of lake.
+#' @param lake_id integer COMID (or character permenent identifier for hi res) of lake.
 #' @param network data.frame of network features containing wbareacomi, and Hydroseq
 #' @export
 #' @return sf data.frame with single record of network COMID
@@ -601,17 +601,32 @@ off_network <- function(waterbody, flowline) {
 #' get_wb_outlet(13293262, fline)
 #'
 #' }
-get_wb_outlet <- function(lake_COMID, network) {
+get_wb_outlet <- function(lake_id, network) {
 
-  network <- check_names(network, "get_wb_outlet", tolower = TRUE)
-
-  if (lake_COMID %in% network$wbareacomi){
+  if(any(grepl("WBArea_Permanent_Identifier", names(network), ignore.case = TRUE))) {
+    network <- check_names(network, "get_wb_outlet_hires",
+                           align = FALSE, tolower = FALSE)
+    if (lake_id %in% network$WBArea_Permanent_Identifier){
     outlet <- network %>%
-      dplyr::filter(.data$wbareacomi == lake_COMID) %>%
-      dplyr::group_by(.data$wbareacomi) %>%
-      dplyr::filter(.data$hydroseq == min(.data$hydroseq))
+      dplyr::filter(.data$WBArea_Permanent_Identifier == lake_id) %>%
+      dplyr::group_by(.data$WBArea_Permanent_Identifier) %>%
+      dplyr::filter(.data$Hydroseq == min(.data$Hydroseq))
     return(outlet)
+    } else {
+      stop("Lake Permanent Identifier no associated with NHDPlus HR Flowlines")
+    }
   } else {
-    stop("Lake COMID is not associated with NHDPlus flowlines and no outlet")
+    network <- check_names(network, "get_wb_outlet_mres", tolower = TRUE)
+
+    if (lake_id %in% network$wbareacomi){
+      outlet <- network %>%
+        dplyr::filter(.data$wbareacomi == lake_id) %>%
+        dplyr::group_by(.data$wbareacomi) %>%
+        dplyr::filter(.data$hydroseq == min(.data$hydroseq))
+      return(outlet)
+    } else {
+      stop("Lake COMID is not associated with NHDPlus flowlines and no outlet")
+    }
   }
+
 }

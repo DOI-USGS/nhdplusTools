@@ -74,6 +74,11 @@ accumulate_downstream <- function(x, var) {
   x[["toID_row"]] <- match(x[["toID"]], x[["ID"]])
 
   var_out <- x[[var]]
+
+  if(any(is.na(x[[var]]))) {
+    warning("NA values found, accumulation math may fail.")
+  }
+
   toid_row <- x[["toID_row"]]
 
   for(cat in 1:length(var_out)) {

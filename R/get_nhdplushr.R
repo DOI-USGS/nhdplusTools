@@ -77,7 +77,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 
   layer_names <- c()
   if(!is.null(out_gpkg) && file.exists(out_gpkg))
-    layer_names <- st_layers(out_gpkg)$names
+    layer_names <- st_layers(out_gpkg)$name
 
   for(layer in layers) {
     if(!is.null(out_gpkg) && layer %in% layer_names & !overwrite) {

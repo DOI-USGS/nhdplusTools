@@ -125,6 +125,10 @@ get_flowline_index <- function(flines, points,
 
   in_crs <- sf::st_crs(flines)
 
+  if(sf::st_is_longlat(in_crs) & search_radius > 1) {
+    warning("search radius is large for lat/lon input, are you sure?")
+  }
+
   if (sf::st_crs(points) != in_crs) {
     warning(paste("crs of lines and points don't match.",
                   "attempting st_transform of points"))
@@ -136,7 +140,11 @@ get_flowline_index <- function(flines, points,
 
   fline_atts <- sf::st_set_geometry(flines, NULL)
 
-  flines <- sf::st_zm(sf::st_cast(flines, "LINESTRING", warn = FALSE))
+  flines <- sf::st_cast(flines, "LINESTRING", warn = FALSE)
+
+  if(!"XY" %in% class(sf::st_geometry(flines)[[1]])) {
+    flines <- sf::st_zm(flines)
+  }
 
   if (nrow(flines) != nrow(fline_atts)) {
 

@@ -119,7 +119,8 @@ test_that("prep_nhdplus leaves non-dendritic", {
 
 test_that("prep_nhdplus removes tiny networks", {
   expect_warning(flines <- prepare_nhdplus(
-    sf::st_set_geometry(readRDS("data/tiny_network.rds"), NULL),
+    sf::st_set_geometry(readRDS(
+      list.files(pattern = "tiny_network.rds", full.names = TRUE, recursive = TRUE)), NULL),
     min_network_size = 10,
     min_path_length = 1,
     purge_non_dendritic = FALSE),
@@ -149,6 +150,24 @@ test_that("prep_nhdplus removes small drainage basins", {
   expect_equal(nrow(flines), 303)
 })
 
+test_that("get_tocomid", {
+
+  tocomid <- get_tocomid(sample_flines)
+
+  expect_equal(length(tocomid), nrow(sample_flines))
+
+  expect_true(!any(is.na(tocomid)))
+
+  tocomid <- get_tocomid(sample_flines, missing = NA, return_dendritic = FALSE)
+
+  expect(length(tocomid), 714)
+
+  expect(sum(is.na(tocomid)), 1)
+
+  expect_error(get_tocomid(dplyr::select(sample_flines, -Divergence)))
+
+})
+
 test_that("compatibalize", {
   one <- pt_data
 
@@ -175,3 +194,4 @@ test_that("rname geometry", {
   expect_equal(attr(g, "sf_column"), "geometry")
 
 })
+

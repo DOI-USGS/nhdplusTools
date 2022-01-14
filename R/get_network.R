@@ -348,6 +348,9 @@ get_start_comid <- function(network, comid) {
 }
 
 #' Navigate Network
+#' @description Provides a full feature network navigation function that
+#' will work with local or web service data. Parameter details provide
+#' context.
 #' @param start list, integer, or sfc if list must be a valid NLDI feature
 #' if integer must be a valid comid.
 #' @param mode character chosen from c(UM, DM, UT, or DD)

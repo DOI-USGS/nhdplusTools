@@ -37,7 +37,9 @@ If NULL, network will be derived from requests to the NLDI}
 to trim is less than this tolerance, no trim will be applied.}
 }
 \description{
-Navigate Network
+Provides a full feature network navigation function that
+will work with local or web service data. Parameter details provide
+context.
 }
 \examples{
 

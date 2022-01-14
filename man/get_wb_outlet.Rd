@@ -4,10 +4,10 @@
 \alias{get_wb_outlet}
 \title{Get Waterbody Outlet}
 \usage{
-get_wb_outlet(lake_COMID, network)
+get_wb_outlet(lake_id, network)
 }
 \arguments{
-\item{lake_COMID}{integer COMID of lake.}
+\item{lake_id}{integer COMID (or character permenent identifier for hi res) of lake.}
 
 \item{network}{data.frame of network features containing wbareacomi, and Hydroseq}
 }

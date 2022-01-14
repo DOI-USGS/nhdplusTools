@@ -37,6 +37,17 @@ test_that("get_nhdplushr layers and gpkg", {
   expect(length(names(out)), 7)
 })
 
+test_that("nhdplus hr waterbody", {
+  out <- get_nhdplushr(work_dir, layers = c("NHDFlowline",
+                                            "NHDWaterbody"),
+                       out_gpkg = out_gpkg)
+
+  wb <- out$NHDWaterbody[out$NHDWaterbody$Permanent_Identifier == 46376571,]
+
+  expect_equal(get_wb_outlet(wb$Permanent_Identifier, out$NHDFlowline)$Permanent_Identifier,
+               "46338320")
+})
+
 test_that("get_nhdplushr overwrite gpkg and pattern", {
   skip_on_cran()
 

@@ -191,7 +191,7 @@ filter_coastal <- function(flines) {
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 #'
-#' sample_flines[["toCOMID"]] <- get_tocomid(sample_flines)
+#' tocomid <- get_tocomid(sample_flines)
 #'
 #' tocomid <- get_tocomid(sample_flines, return_dendritic = FALSE)
 #'
@@ -236,6 +236,6 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0) {
   if(return_dendritic) {
     x$tocomid
   } else {
-    as.data.frame(select(x, comid, tocomid))
+    as.data.frame(select(x, .data$comid, .data$tocomid))
   }
 }

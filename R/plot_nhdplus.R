@@ -608,7 +608,7 @@ get_wb_outlet <- function(lake_id, network) {
                            align = FALSE, tolower = FALSE)
     if (lake_id %in% network$WBArea_Permanent_Identifier){
     outlet <- network %>%
-      dplyr::filter(.data$WBArea_Permanent_Identifier == tva.latlon.sf$Permanent_Identifier) %>%
+      dplyr::filter(.data$WBArea_Permanent_Identifier == lake_id) %>%
       dplyr::group_by(.data$WBArea_Permanent_Identifier) %>%
       dplyr::filter(.data$Hydroseq == min(.data$Hydroseq))
     return(outlet)
@@ -620,7 +620,7 @@ get_wb_outlet <- function(lake_id, network) {
 
     if (lake_id %in% network$wbareacomi){
       outlet <- network %>%
-        dplyr::filter(.data$wbareacomi == lake_COMID) %>%
+        dplyr::filter(.data$wbareacomi == lake_id) %>%
         dplyr::group_by(.data$wbareacomi) %>%
         dplyr::filter(.data$hydroseq == min(.data$hydroseq))
       return(outlet)

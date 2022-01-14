@@ -33,7 +33,7 @@ ids have been encountere accross basins in some datasets.
 \examples{
 source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 
-sample_flines[["toCOMID"]] <- get_tocomid(sample_flines)
+tocomid <- get_tocomid(sample_flines)
 
 tocomid <- get_tocomid(sample_flines, return_dendritic = FALSE)
 

@@ -16,6 +16,7 @@ DnHydroseq <- "DnHydroseq"
 DnMinorHyd <- "DnMinorHyd"
 UpLevelPat <- "UpLevelPat"
 LevelPathI <- "LevelPathI"
+LevelPathID <- "LevelPathID"
 DnLevelPat <- "DnLevelPat"
 DnLevel <- "DnLevel"
 ToNode <- "ToNode"
@@ -58,6 +59,7 @@ nhdplus_attributes <- list(
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
   DnMinorHyd = DnMinorHyd,
   LevelPathI = LevelPathI,
+  LevelPathID = LevelPathID,
   UpLevelPat = UpLevelPat,
   DnLevelPat = DnLevelPat,
   DnLevel = DnLevel,

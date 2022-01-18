@@ -211,6 +211,10 @@ assign("get_tocomid_attributes",
        c("COMID", "ToNode", "FromNode"),
        envir = nhdplusTools_env)
 
+assign("get_partial_length_attributes",
+       c("REACHCODE", "FromNode", "ToNode", "LENGTHKM"),
+       envir = nhdplusTools_env)
+
 # assigned here for record keeping. Used as a status counter in apply functions.
 assign("cur_count", 0, envir = nhdplusTools_env)
 

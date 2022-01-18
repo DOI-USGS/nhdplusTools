@@ -130,3 +130,66 @@ get_path_lengths <- function(outlets, network, cores = 1, status = FALSE) {
 
   select(path_lengths, -.data$id_1, -.data$id_2)
 }
+
+# utility function
+get_fl <- function(hl, net) {
+  filter(net,
+         .data$reachcode == hl$reachcode &
+           .data$frommeas < hl$reach_meas &
+           .data$tomeas > hl$reach_meas)
+}
+
+#' Get Partial Flowline Length
+#' @param hl list containing a hydrologic location with names reachcode
+#' and reach_meas.
+#' @param net data.frame containing a flowpath network with reachcode,
+#' frommeas, tomeas, and lengthkm attributes. Not required if `fl` is
+#' provided.
+#' @param fl data.frame containing one flowline that corresponds to the
+#' reachcode and measure of `hl`. Not required if `hl` is provided.
+#' @description Finds the upstream and downstream lengths along a given
+#' flowpath (flowline in nhdplus terminology). Internally, the function
+#' rescales the reach measure to a flowpath measure and applies that
+#' rescaled measure to the length of the flowpath.
+#' @return list containing `up` and `dn` elements with numeric length in
+#' km.
+#' @export
+#' @examples
+#'
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' hydro_location <- list(comid = 5329339,
+#'                        reachcode = "18050005000078",
+#'                        reach_meas = 30)
+#'
+#' (pl <- get_partial_length(hydro_location, walker_flowline))
+#'
+#' hydro_location <- sf::st_sf(hydro_location,
+#'                             geom = nhdplusTools::get_hydro_location(data.frame(hydro_location),
+#'                                                                     walker_flowline))
+#'
+#' net <- navigate_network(hydro_location,
+#'                         mode = "DM", network = walker_flowline,
+#'                         distance_km = 4, trim_start = TRUE)
+#'
+#' plot(sf::st_geometry(walker_flowline[walker_flowline$COMID == hydro_location$comid,]))
+#' plot(sf::st_geometry(hydro_location), add = TRUE)
+#' plot(sf::st_geometry(net), add = TRUE, col = "blue", lwd = 2)
+#'
+#' sf::st_length(net)
+#' pl$dn
+#'
+
+get_partial_length <- function(hl, net = NULL, fl = NULL) {
+
+  if(is.null(fl)) {
+    net <- check_names(net, "get_partial_length", tolower = TRUE)
+    fl <- get_fl(hl, net)
+  }
+
+  meas <- rescale_measures(measure = hl$reach_meas,
+                           from = fl$frommeas,
+                           to = fl$tomeas) / 100
+
+  list(dn = fl$lengthkm * meas,
+       up = fl$lengthkm * 1 - meas)
+}

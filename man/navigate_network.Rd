@@ -16,8 +16,8 @@ navigate_network(
 )
 }
 \arguments{
-\item{start}{list, integer, or sfc if list must be a valid NLDI feature
-if integer must be a valid comid.}
+\item{start}{list, integer, sf, or sfc if list must be a valid NLDI feature
+if integer must be a valid comid. If sf, must contain a "comid" field.}
 
 \item{mode}{character chosen from c(UM, DM, UT, or DD)}
 

@@ -62,3 +62,25 @@ test_that("navigation basics", {
                             output = "nwissite",
                             trim_start = TRUE)
 })
+
+test_that("walker", {
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  hydro_location <- list(comid = 5329339,
+                         reachcode = "18050005000078",
+                         reach_meas = 30)
+
+  hydro_location <- sf::st_sf(hydro_location,
+                              geom = nhdplusTools::get_hydro_location(data.frame(hydro_location),
+                                                                      walker_flowline))
+
+  netD <- navigate_network(hydro_location,
+                          mode = "DM", network = walker_flowline,
+                          distance_km = 4, trim_start = TRUE)
+
+  netM <- navigate_network(sf::st_geometry(hydro_location),
+                          mode = "UM", network = walker_flowline,
+                          distance_km = 4, trim_start = TRUE)
+
+  expect_true(nrow(sf::st_coordinates(netD)) < nrow(sf::st_coordinates(netM)))
+
+})

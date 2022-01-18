@@ -351,8 +351,8 @@ get_start_comid <- function(network, comid) {
 #' @description Provides a full feature network navigation function that
 #' will work with local or web service data. Parameter details provide
 #' context.
-#' @param start list, integer, or sfc if list must be a valid NLDI feature
-#' if integer must be a valid comid.
+#' @param start list, integer, sf, or sfc if list must be a valid NLDI feature
+#' if integer must be a valid comid. If sf, must contain a "comid" field.
 #' @param mode character chosen from c(UM, DM, UT, or DD)
 #' @param network sf should be compatible with network navigation functions
 #' If NULL, network will be derived from requests to the NLDI
@@ -372,7 +372,25 @@ get_start_comid <- function(network, comid) {
 #'                 output = "flowlines",
 #'                 trim_start = TRUE)
 #' }
-
+#'
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' hydro_location <- list(comid = 5329339,
+#'                       reachcode = "18050005000078",
+#'                        reach_meas = 30)
+#'
+#' hydro_location <- sf::st_sf(
+#'   hydro_location,
+#'   geom = nhdplusTools::get_hydro_location(data.frame(hydro_location),
+#'                                           walker_flowline))
+#'
+#' net <- navigate_network(hydro_location,
+#'                        mode = "DM", network = walker_flowline,
+#'                        trim_start = TRUE, distance_km = 20)
+#'
+#' plot(sf::st_geometry(walker_flowline))
+#' plot(sf::st_geometry(hydro_location), add = TRUE)
+#' plot(sf::st_geometry(net), add = TRUE, col = "blue", lwd = 2)
+#'
 navigate_network <- function(start, mode = "UM", network = NULL,
                              output = "flowlines", distance_km = 10,
                              trim_start = FALSE, trim_stop = FALSE,
@@ -383,6 +401,10 @@ navigate_network <- function(start, mode = "UM", network = NULL,
     if(inherits(start, "sfc")) {
 
       start_comid <- discover_nhdplus_id(point = start)
+
+    } else if(inherits(start, "sf")) {
+
+      start_comid <- start$comid
 
     } else if(is.list(start)) {
 
@@ -456,14 +478,20 @@ navigate_network <- function(start, mode = "UM", network = NULL,
 
     if(!is.numeric(start)) {
 
-      if(inherits(start, "sf")) {
+      if(inherits(start, "sf") | inherits(start, "sfc")) {
         start <- sf::st_transform(start,
                                   sf::st_crs(network))
       }
 
+      if(sf::st_is_longlat(start)) {
+        search_radius <- 0.001
+      } else {
+        search_radius <- 100
+      }
+
       event <- get_flowline_index(flines = network,
                                  points = start,
-                                 search_radius = 0.001,
+                                 search_radius = search_radius,
                                  precision = 10)
 
       event <- sf::st_sf(event,
@@ -523,7 +551,7 @@ navigate_network <- function(start, mode = "UM", network = NULL,
 
         } else {
 
-          f <- split / 100
+          f <- 1 - (split / 100)
           t <- 1
 
         }
@@ -541,7 +569,8 @@ navigate_network <- function(start, mode = "UM", network = NULL,
                 stop("lwgeom required to trim flowlines to a specific measure.")
               }
 
-              lwgeom::st_linesubstring(sf::st_geometry(l), f, t)
+              lwgeom::st_linesubstring(
+                sf::st_cast(sf::st_geometry(l), "LINESTRING"), f, t)
 
             })
         }

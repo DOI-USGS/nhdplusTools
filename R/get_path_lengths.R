@@ -133,10 +133,16 @@ get_path_lengths <- function(outlets, network, cores = 1, status = FALSE) {
 
 # utility function
 get_fl <- function(hl, net) {
-  filter(net,
-         .data$reachcode == hl$reachcode &
-           .data$frommeas < hl$reach_meas &
-           .data$tomeas > hl$reach_meas)
+  if(hl$reach_meas == 100) {
+    filter(net,
+           .data$reachcode == hl$reachcode &
+             .data$tomeas == hl$reach_meas)
+  } else {
+    filter(net,
+           .data$reachcode == hl$reachcode &
+             .data$frommeas <= hl$reach_meas &
+             .data$tomeas > hl$reach_meas)
+  }
 }
 
 #' Get Partial Flowline Length
@@ -182,8 +188,17 @@ get_fl <- function(hl, net) {
 get_partial_length <- function(hl, net = NULL, fl = NULL) {
 
   if(is.null(fl)) {
+
+    if(is.null(net)) {
+      stop("network must be supplied if flowline is null")
+    }
+
     net <- check_names(net, "get_partial_length", tolower = TRUE)
     fl <- get_fl(hl, net)
+  }
+
+  if(nrow(fl) == 0) {
+    stop("hydrolocation not found in network provided")
   }
 
   meas <- rescale_measures(measure = hl$reach_meas,
@@ -191,5 +206,5 @@ get_partial_length <- function(hl, net = NULL, fl = NULL) {
                            to = fl$tomeas) / 100
 
   list(dn = fl$lengthkm * meas,
-       up = fl$lengthkm * 1 - meas)
+       up = fl$lengthkm * (1 - meas))
 }

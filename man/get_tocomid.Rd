@@ -4,7 +4,7 @@
 \alias{get_tocomid}
 \title{get toid}
 \usage{
-get_tocomid(x, return_dendritic = TRUE, missing = 0)
+get_tocomid(x, return_dendritic = TRUE, missing = 0, remove_coastal = TRUE)
 }
 \arguments{
 \item{x}{data.frame with comid, tonode, fromnode, and (optionally)
@@ -16,11 +16,13 @@ as headwaters. If this is FALSE, the return value is a data.frame including
 the comid and tocomid attributes.}
 
 \item{missing}{integer value to use for terminal nodes.}
+
+\item{remove_coastal}{logical remove coastal features prior to generating
+tocomid values? ftype or fcode are required if `TRUE`. fcode == 56600 or
+fcode == "Coastline" will be fremoved.}
 }
 \value{
-if return_dendritic is TRUE, a vector containing tocomid values
-in the same order as x. If return_dendritic is FALSE, a data.frame with
-comid and tocomid attributes.
+data.frame containing comid and tocomid attributes.
 }
 \description{
 Given flowlines with fromnode and tonode attributes,
@@ -28,7 +30,9 @@ will return a toid attribute that is the result of joining
 tonode and fromnode attributes. In the case that a terminalpa
 attribute is included, the join is executed by terminalpa group.
 This is done grouped by terminalpathID because duplicate node
-ids have been encountere accross basins in some datasets.
+ids have been encountered accross basins in some datasets. If
+`remove_coastal` is `TRUE` (the default) either ftype or fcode are
+required.
 }
 \examples{
 source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))

@@ -18,7 +18,7 @@
 #'
 #' outlets <- c(5329303, 5329357, 5329317, 5329365, 5329435, 5329817)
 #'
-#' #' Add toCOMID
+#' # Add toCOMID
 #' fline[["toCOMID"]] <- nhdplusTools::get_tocomid(fline)
 #'
 #' fl <- dplyr::select(fline, ID = COMID, toID = toCOMID, lengthkm = LENGTHKM)
@@ -27,7 +27,8 @@
 #'
 #' outlet_geo <- sf::st_sf(
 #'   dplyr::left_join(data.frame(ID = outlets),
-#'                    dplyr::select(fline, ID = COMID), by = "ID))
+#'                    dplyr::select(fline, ID = COMID), by = "ID"))
+#'
 #' sf::st_geometry(outlet_geo) <- sf::st_geometry(nhdplusTools::get_node(outlet_geo))
 #'
 #' plot(sf::st_geometry(fl))

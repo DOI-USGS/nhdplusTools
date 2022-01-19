@@ -3,12 +3,14 @@ test_that("path_lengths", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
   fline <- walker_flowline
 
+  names(fline) <- tolower(names(fline))
+
   outlets <- c(5329357, 5329317, 5329365, 5329435, 5329817)
 
   #' Add toCOMID
-  fline[["toCOMID"]] <- nhdplusTools::get_tocomid(fline)
+  fline <- dplyr::left_join(nhdplusTools::get_tocomid(fline), fline, by = "comid")
 
-  fl <- dplyr::select(fline, ID = COMID, toID = toCOMID, lengthkm = LENGTHKM)
+  fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm = lengthkm)
 
   pl <- get_path_lengths(outlets, fl)
 

@@ -16,8 +16,8 @@ navigate_network(
 )
 }
 \arguments{
-\item{start}{list, integer, or sfc if list must be a valid NLDI feature
-if integer must be a valid comid.}
+\item{start}{list, integer, sf, or sfc if list must be a valid NLDI feature
+if integer must be a valid comid. If sf, must contain a "comid" field.}
 
 \item{mode}{character chosen from c(UM, DM, UT, or DD)}
 
@@ -49,4 +49,23 @@ navigate_network(list(featureSource = "nwissite", featureID = "USGS-06287800"),
                 output = "flowlines",
                 trim_start = TRUE)
 }
+
+source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+hydro_location <- list(comid = 5329339,
+                      reachcode = "18050005000078",
+                       reach_meas = 30)
+
+hydro_location <- sf::st_sf(
+  hydro_location,
+  geom = nhdplusTools::get_hydro_location(data.frame(hydro_location),
+                                          walker_flowline))
+
+net <- navigate_network(hydro_location,
+                       mode = "DM", network = walker_flowline,
+                       trim_start = TRUE, distance_km = 20)
+
+plot(sf::st_geometry(walker_flowline))
+plot(sf::st_geometry(hydro_location), add = TRUE)
+plot(sf::st_geometry(net), add = TRUE, col = "blue", lwd = 2)
+
 }

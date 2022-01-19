@@ -154,7 +154,7 @@ test_that("get_tocomid", {
 
   tocomid <- get_tocomid(sample_flines)
 
-  expect_equal(length(tocomid), nrow(sample_flines))
+  expect_equal(nrow(tocomid), nrow(sample_flines))
 
   expect_true(!any(is.na(tocomid)))
 

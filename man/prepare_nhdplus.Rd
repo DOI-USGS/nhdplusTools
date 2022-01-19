@@ -12,7 +12,8 @@ prepare_nhdplus(
   purge_non_dendritic = TRUE,
   warn = TRUE,
   error = TRUE,
-  skip_toCOMID = FALSE
+  skip_toCOMID = FALSE,
+  align_names = TRUE
 )
 }
 \arguments{

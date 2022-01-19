@@ -460,9 +460,11 @@ match_crs <- function(x, y, warn_text = "") {
 get_hydro_location <- function(indexes, flowpath) {
   flowpath <- check_names(flowpath, "get_hydro_location", tolower = TRUE)
 
+  names(indexes) <- tolower(names(indexes))
+
   in_list <- Map(list,
-                 indexes$REACH_meas,
-                 split(flowpath[match(indexes$COMID, flowpath$comid), ],
+                 indexes$reach_meas,
+                 split(flowpath[match(indexes$comid, flowpath$comid), ],
                                  seq(1, nrow(indexes))))
 
   do.call(c, lapply(in_list, get_hydro_location_single))

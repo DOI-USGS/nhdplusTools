@@ -38,6 +38,9 @@ get_path_lengths <- function(outlets, network, cores = 1, status = FALSE) {
 
   stopifnot(is.vector(outlets))
 
+  if(!all(outlets %in% network$ID))
+    stop("All outlets must be in network.")
+
   if(!status) {
     pbopts <- pboptions(type = "none")
     on.exit(pboptions(pbopts), add = TRUE)

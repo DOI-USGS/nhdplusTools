@@ -29,6 +29,9 @@ test_that("path_lengths", {
 
   expect_equal(pl$network_distance_km[pl$ID_1 == 5329317 & pl$ID_2 == 5329303],
                5.8, tolerance = 0.01)
+
+  expect_error(get_path_lengths(c(outlets, 12345), fl),
+               "All outlets must be in network.")
 })
 
 test_that("get_partial_length", {

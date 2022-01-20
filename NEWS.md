@@ -1,15 +1,42 @@
+nhdplusTools 0.4.4
+==========
+
+## Web Service Wrapper Functions
+- New functions `get_raindrop_trace()`, `get_split_catchment()` use a web service to access elevation data and retireve a raindrop trace path to the nearest flowline in nhdplus V2 and a split catchment or basin to a precise point location respectively.
+- New functions `get_xs_point()` and `get_xs_points()` access an elevation data service from the 3D Elevation Program and return cross section data. 
+
+## Utility Functions
+- New functions `st_compatibalize()` and `rename_geometry()` provide utility functionality to make two layers compatible, including projection and rename geometry columns respectively.
+
+- New function `get_sorted()` generates a sorted and optionally partitioned version of a dendritic tree.
+
+## Subsetting and data utilities
+- New function `subset_vpu()` wraps `subset_rpu()` and will subset a vector procesing unit.
+- New function `fix_flowdir()` will re-order geometry nodes such that their order cooresponds to the convention used in nhdplus data.
+- `get_vaa()` will now return an updated nhdplus network attribute set derived from multiple improved sources.
+
+## Network Navigation and Attributes
+- New function `navigate_network()` provides a wrapper around a number of network navigation capabilities and will support local or web service data.
+- New function `get_tocomid()` encapsulates a suite of functionality for converting edge node network representations to edge list format.
+- New function `get_path_lengths()` finds network distances between pairs of points.
+- New function `get_partial_length()` finds flowpath length up and downstream of a hydrologic location.
+
+## Plotting
+- `plot_nhdplus()` now includes on network and off network waterbodies. 
+- New function `get_wb_outlet()` finds the outlet flowline of an on-network waterbody. This function works for both nhdplusV2 and hires.
+
+## Package Internals
+- nhdplusTools testing has been updated to use `testthat` edition 3.
+- All terminal "toID" values are 0 rather than NA to avoid confusion with a mix of both.
+- `igraph` package is no longer a dependency. All graph algorithms have been implemented in base R for performance and simplicity.
+- Many package functions have been converted to use lowercase attributes. Attribute naming is settling into two modes -- ID, toID, and lowercase otherwise -- and comid, tocomid, and lowercase. The ID syntax is meant to be a temporary ID while comid is meant to be some external identifier that should be treated as such.
+- The master branch was renamed main.
+
+
 nhdplusTools 0.4.3
 ==========
 
 - New function added: `get_streamlevel()` calculates stream level, a bottom up level path order used by nhdplus to categorize complete river levels.
-- New functions `get_raindrop_trace()`, `get_split_catchment()` use a web service to access elevation data and retireve a raindrop trace path to the nearest flowline in nhdplus V2 and a split catchment or basin to a precise point location respectively.
-- New function `subset_vpu()` wraps `subset_rpu()` and will subset a vector procesing unit.
-- New functions `get_xs_point()` and `get_xs_points()` access an elevation data service from the 3D Elevation Program and return cross section data. 
-- New functions `st_compatibalize()` and `rename_geometry()` provide utility functionality to make two layers compatible, including projection and rename geometry columns respectively.
-- New function `fix_flowdir()` will re-order geometry nodes such that their order cooresponds to the convention used in nhdplus data.
-- New function `navigate_network()` provides a wrapper around a number of network navigation capabilities and will support local or web service data.
-- `plot_nhdplus()` now includes on network and off network waterbodies. 
-- New function `get_wb_outlet()` finds the outlet flowline of an on-network waterbody.
 
 - nhdplusTools internals have started to be refactored to use all lower case attribute names. No changes should be seen from outside the package, but please [report issues](https://github.com/USGS-R/nhdplusTools/issues) with attribute naming.
 - Package testing now runs in parallel and uses revision 3 of the testthat package.

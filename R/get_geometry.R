@@ -97,6 +97,7 @@ fix_flowdir <- function(comid, network) {
 
     f <- network[network$comid == comid, ]
 
+    #FIXME: consider not supporting na tocomid
     if(is.na(f$tocomid) | f$tocomid == 0) {
 
       check_line <- network[network$tocomid == f$comid, ][1, ]

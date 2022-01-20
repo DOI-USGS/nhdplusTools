@@ -4,7 +4,13 @@
 \alias{get_tocomid}
 \title{get toid}
 \usage{
-get_tocomid(x, return_dendritic = TRUE, missing = 0, remove_coastal = TRUE)
+get_tocomid(
+  x,
+  return_dendritic = TRUE,
+  missing = 0,
+  remove_coastal = TRUE,
+  add = TRUE
+)
 }
 \arguments{
 \item{x}{data.frame with comid, tonode, fromnode, and (optionally)
@@ -20,9 +26,13 @@ the comid and tocomid attributes.}
 \item{remove_coastal}{logical remove coastal features prior to generating
 tocomid values? ftype or fcode are required if `TRUE`. fcode == 56600 or
 fcode == "Coastline" will be fremoved.}
+
+\item{add}{logical if TRUE, a tocomid column will be added, otherwise
+a data.frame with two columns will be returned.}
 }
 \value{
-data.frame containing comid and tocomid attributes.
+data.frame containing comid and tocomid attributes or all
+attributes provided with comid and tocomid in the first and second columns..
 }
 \description{
 Given flowlines with fromnode and tonode attributes,

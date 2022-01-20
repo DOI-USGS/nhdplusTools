@@ -516,7 +516,7 @@ add_len <- function(x) {
   x %>%
     mutate(len  = sqrt( ( (.data$X - (lag(.data$X))) ^ 2) +
                           ( ( (.data$Y - (lag(.data$Y))) ^ 2)))) %>%
-    mutate(len = ifelse(is.na(.data$len), 0, .data$len)) %>%
+    mutate(len = tidyr::replace_na(.data$len, 0)) %>%
     mutate(len = cumsum(.data$len)) %>%
     mutate(measure = 100 - (100 * .data$len / max(.data$len)))
 }

@@ -11,11 +11,12 @@
 #' @param  min_path_size numeric Minimum size (sqkm) of outlet level
 #' path of a drainage basin. Drainage basins with an outlet drainage area
 #' smaller than this will be removed.
-#' @param purge_non_dendritic boolean Should non dendritic paths be removed
+#' @param purge_non_dendritic logical Should non dendritic paths be removed
 #' or not.
-#' @param warn boolean controls whether warning an status messages are printed
-#' @param error boolean controls whether to return potentially invalid data with a warning rather than an error
-#' @param skip_toCOMID boolean if TRUE, toCOMID will not be added to output.
+#' @param warn logical controls whether warning an status messages are printed
+#' @param error logical controls whether to return potentially invalid data with a warning rather than an error
+#' @param skip_toCOMID logical if TRUE, toCOMID will not be added to output.
+#' @param align_names logical
 #' @return data.frame ready to be used with the refactor_flowlines function.
 #' @importFrom dplyr select filter left_join group_split group_by bind_rows
 #' @export
@@ -29,8 +30,8 @@
 #'                 warn = FALSE)
 #'
 prepare_nhdplus <- function(flines,
-                            min_network_size,
-                            min_path_length,
+                            min_network_size = 0,
+                            min_path_length = 0,
                             min_path_size = 0,
                             purge_non_dendritic = TRUE,
                             warn = TRUE,
@@ -92,7 +93,7 @@ prepare_nhdplus <- function(flines,
 
   if (purge_non_dendritic) {
 
-    flines <- filter(flines, streamorde == streamcalc)
+    flines <- filter(flines, .data$streamorde == .data$streamcalc)
 
   } else {
     if(!skip_toCOMID) {
@@ -102,10 +103,11 @@ prepare_nhdplus <- function(flines,
 
   if(min_path_size > 0) {
 
-    remove_paths <- group_by(flines, levelpathi)
-    remove_paths <- filter(remove_paths, hydroseq == min(hydroseq))
-    remove_paths <- filter(remove_paths, totdasqkm < min_path_size & totdasqkm >= 0)$levelpathi
-    flines <- filter(flines, !levelpathi %in% remove_paths)
+    remove_paths <- group_by(flines, .data$levelpathi)
+    remove_paths <- filter(remove_paths, .data$hydroseq == min(.data$hydroseq))
+    remove_paths <- filter(remove_paths, .data$totdasqkm < min_path_size &
+                             .data$totdasqkm >= 0)$levelpathi
+    flines <- filter(flines, !.data$levelpathi %in% remove_paths)
 
   }
 
@@ -139,8 +141,7 @@ prepare_nhdplus <- function(flines,
   if(!skip_toCOMID) {
 
     if(nrow(flines) > 0) {
-      flines <- left_join(get_tocomid(flines, remove_coastal = FALSE),
-                          flines, by = "comid")
+      flines <- get_tocomid(flines, remove_coastal = FALSE)
     }
 
     if (!all(flines[["terminalfl"]][which(flines$tocomid == 0)] == 1)) {
@@ -166,9 +167,9 @@ prepare_nhdplus <- function(flines,
 
 filter_coastal <- function(flines) {
   if("fcode" %in% names(flines)) {
-    flines <- filter(flines, (fcode != 56600))
+    flines <- filter(flines, (.data$fcode != 56600))
   } else if("ftype" %in% names(flines)) {
-    flines <- filter(flines, (ftype != "Coastline" | ftype != 566))
+    flines <- filter(flines, (.data$ftype != "Coastline" | .data$ftype != 566))
   } else {
     stop("must provide fcode and/or ftype to filter coastline.")
   }
@@ -194,7 +195,10 @@ filter_coastal <- function(flines) {
 #' @param remove_coastal logical remove coastal features prior to generating
 #' tocomid values? ftype or fcode are required if `TRUE`. fcode == 56600 or
 #' fcode == "Coastline" will be fremoved.
-#' @return data.frame containing comid and tocomid attributes.
+#' @param add logical if TRUE, a tocomid column will be added, otherwise
+#' a data.frame with two columns will be returned.
+#' @return data.frame containing comid and tocomid attributes or all
+#' attributes provided with comid and tocomid in the first and second columns..
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
@@ -204,8 +208,17 @@ filter_coastal <- function(flines) {
 #' tocomid <- get_tocomid(sample_flines, return_dendritic = FALSE)
 #'
 get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
-                        remove_coastal = TRUE) {
-  x <- drop_geometry(check_names(x, "get_tocomid", tolower = TRUE))
+                        remove_coastal = TRUE, add = TRUE) {
+
+  x <- check_names(x, "get_tocomid", tolower = TRUE)
+
+  hy_g <- NULL
+  if(add && inherits(x, "sf")) {
+    # need to keep geometry for later
+    hy_g <- select(x, .data$comid)
+  }
+
+  x <- drop_geometry(x)
 
   if(remove_coastal)
     x <- filter_coastal(x)
@@ -242,8 +255,21 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
   x <- left_join(order, x, by = c("comid"))
 
   if(!is.na(missing)) {
-    x$tocomid[is.na(x$tocomid)] <- missing
+    x[["tocomid"]] <- tidyr::replace_na(x[["tocomid"]], 0)
   }
 
-  as.data.frame(select(x, .data$comid, .data$tocomid))
+  if(add) {
+
+    if(!is.null(hy_g)) {
+      x <- sf::st_sf(left_join(x, hy_g, by = "comid"))
+    }
+
+    x[ , c("comid", "tocomid",
+           names(x)[!names(x) %in% c("comid", "tocomid")])]
+
+  } else {
+
+    as.data.frame(select(x, .data$comid, .data$tocomid))
+
+  }
 }

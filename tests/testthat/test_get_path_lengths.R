@@ -8,7 +8,7 @@ test_that("path_lengths", {
   outlets <- c(5329357, 5329317, 5329365, 5329435, 5329817)
 
   #' Add toCOMID
-  fline <- dplyr::left_join(nhdplusTools::get_tocomid(fline), fline, by = "comid")
+  fline <- nhdplusTools::get_tocomid(fline)
 
   fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm = lengthkm)
 

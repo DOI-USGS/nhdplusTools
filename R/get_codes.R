@@ -28,7 +28,7 @@ get_streamorder <- function(x, status = TRUE) {
 
   o_sort <- select(x, .data$ID)
 
-  x[["toID"]][which(is.na(x[["toID"]]))] <- 0
+  x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
 
   # First sort so we have upstream first and outlets last.
   x <- get_sorted(x)

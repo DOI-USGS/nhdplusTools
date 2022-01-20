@@ -156,16 +156,19 @@ test_that("get_tocomid", {
 
   expect_equal(nrow(tocomid), nrow(sample_flines))
 
-  expect_true(!any(is.na(tocomid)))
+  expect_true(!any(is.na(tocomid$tocomid)))
 
   tocomid <- get_tocomid(sample_flines, missing = NA, return_dendritic = FALSE)
 
-  expect(length(tocomid), 714)
+  expect(length(tocomid$tocomid), 714)
 
-  expect(sum(is.na(tocomid)), 1)
+  expect(sum(is.na(tocomid$tocomid)), 1)
 
   expect_error(get_tocomid(dplyr::select(sample_flines, -Divergence)))
 
+  tocomid <- get_tocomid(sample_flines, add = FALSE)
+
+  expect_equal(names(tocomid), c("comid", "tocomid"))
 })
 
 test_that("compatibalize", {

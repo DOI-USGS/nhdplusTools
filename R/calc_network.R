@@ -67,7 +67,7 @@ accumulate_downstream <- function(x, var) {
 
   cat_order <- select(x, .data$ID)
 
-  x[["toID"]][which(is.na(x[["toID"]]))] <- 0
+  x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
 
   x <- get_sorted(x)
 

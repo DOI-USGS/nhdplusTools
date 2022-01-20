@@ -32,7 +32,7 @@ fline <- walker_flowline
 outlets <- c(5329303, 5329357, 5329317, 5329365, 5329435, 5329817)
 
 # Add toCOMID
-fline[["toCOMID"]] <- nhdplusTools::get_tocomid(fline)
+fline <- nhdplusTools::get_tocomid(fline)
 
 fl <- dplyr::select(fline, ID = COMID, toID = toCOMID, lengthkm = LENGTHKM)
 

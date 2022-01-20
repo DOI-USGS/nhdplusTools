@@ -42,7 +42,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
 
   x <- check_names(x, "get_levelpaths")
 
-  x[["toID"]][which(is.na(x[["toID"]]))] <- 0
+  x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
 
   x[["nameID"]][is.na(x[["nameID"]])] <- " " # NHDPlusHR uses NA for empty names.
   x[["nameID"]][x[["nameID"]] == "-1"] <- " "
@@ -460,7 +460,7 @@ topo_sort_network <- function(x, reverse = TRUE) {
 
   if(any(x$ID == 0)) stop("ID 0 must not be present. It is used as the outlet ID.")
 
-  x$toID[is.na(x$toID)] <- 0
+  x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
 
   x <- get_sorted(x[, c("ID", "toID", names(x)[!names(x) %in% c("ID", "toID")])])
 

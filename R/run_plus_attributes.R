@@ -45,7 +45,7 @@ add_plus_network_attributes <- function(net, override = 5,
     on.exit(pbapply::pboptions(type = old_opt$type))
   }
 
-  net$tocomid[is.na(net$tocomid)] <- 0
+  net[["tocomid"]] <- tidyr::replace_na(net[["tocomid"]], 0)
 
   rename_arb <- FALSE
 

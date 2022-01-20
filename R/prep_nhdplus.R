@@ -139,8 +139,7 @@ prepare_nhdplus <- function(flines,
   if(!skip_toCOMID) {
 
     if(nrow(flines) > 0) {
-      flines <- left_join(get_tocomid(flines, remove_coastal = FALSE),
-                          flines, by = "comid")
+      flines <- get_tocomid(flines, remove_coastal = FALSE)
     }
 
     if (!all(flines[["terminalfl"]][which(flines$tocomid == 0)] == 1)) {
@@ -194,7 +193,10 @@ filter_coastal <- function(flines) {
 #' @param remove_coastal logical remove coastal features prior to generating
 #' tocomid values? ftype or fcode are required if `TRUE`. fcode == 56600 or
 #' fcode == "Coastline" will be fremoved.
-#' @return data.frame containing comid and tocomid attributes.
+#' @param add logical if TRUE, a tocomid column will be added, otherwise
+#' a data.frame with two columns will be returned.
+#' @return data.frame containing comid and tocomid attributes or all
+#' attributes provided with comid and tocomid in the first and second columns..
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
@@ -204,8 +206,17 @@ filter_coastal <- function(flines) {
 #' tocomid <- get_tocomid(sample_flines, return_dendritic = FALSE)
 #'
 get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
-                        remove_coastal = TRUE) {
-  x <- drop_geometry(check_names(x, "get_tocomid", tolower = TRUE))
+                        remove_coastal = TRUE, add = TRUE) {
+
+  x <- check_names(x, "get_tocomid", tolower = TRUE)
+
+  hy_g <- NULL
+  if(add && inherits(x, "sf")) {
+    # need to keep geometry for later
+    hy_g <- select(x, .data$comid)
+  }
+
+  x <- nhdplusTools:::drop_geometry(x)
 
   if(remove_coastal)
     x <- filter_coastal(x)
@@ -242,8 +253,21 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
   x <- left_join(order, x, by = c("comid"))
 
   if(!is.na(missing)) {
-    x$tocomid[is.na(x$tocomid)] <- missing
+    x[["tocomid"]] <- tidyr::replace_na(x[["tocomid"]], 0)
   }
 
-  as.data.frame(select(x, .data$comid, .data$tocomid))
+  if(add) {
+
+    if(!is.null(hy_g)) {
+      x <- left_join(x, hy_g, by = "comid")
+    }
+
+    x[ , c("comid", "tocomid",
+           names(x)[!names(x) %in% c("comid", "tocomid")])]
+
+  } else {
+
+    as.data.frame(select(x, .data$comid, .data$tocomid))
+
+  }
 }

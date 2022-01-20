@@ -19,15 +19,15 @@
 #' outlets <- c(5329303, 5329357, 5329317, 5329365, 5329435, 5329817)
 #'
 #' # Add toCOMID
-#' fline <- nhdplusTools::get_tocomid(fline)
+#' fline <- nhdplusTools::get_tocomid(fline, add = TRUE)
 #'
-#' fl <- dplyr::select(fline, ID = COMID, toID = toCOMID, lengthkm = LENGTHKM)
+#' fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm)
 #'
 #' path_lengths <- get_path_lengths(outlets, fl)
 #'
 #' outlet_geo <- sf::st_sf(
 #'   dplyr::left_join(data.frame(ID = outlets),
-#'                    dplyr::select(fline, ID = COMID), by = "ID"))
+#'                    dplyr::select(fline, ID = comid), by = "ID"))
 #'
 #' sf::st_geometry(outlet_geo) <- sf::st_geometry(nhdplusTools::get_node(outlet_geo))
 #'

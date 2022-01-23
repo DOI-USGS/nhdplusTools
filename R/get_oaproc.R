@@ -147,11 +147,8 @@ get_xs_point <- function(point, width, num_pts) {
 
 #' Get Cross Section Endpoints (experimental)
 #' @description Uses a cross section retrieval web services to retrieve a
-#' cross section between two endpoints.
-#' @param point1 sfc POINT including crs as created by:
-#' \code{sf::st_sfc(sf::st_point(.. ,..), crs)}
-#' @param point2 sfc POINT including crs.
-#' @param num_pts numeric number of points to retrieve along the cross section.
+#' cross section between two endpoints or multiple points.
+#' @param points A sf point object (cross section in order of points).
 #' @param res integer resolution of 3D Elevation Program data to request.
 #' Must be on of: 1, 3, 5, 10, 30, 60.
 #' @return sf data.frame containing points retrieved.
@@ -161,7 +158,9 @@ get_xs_point <- function(point, width, num_pts) {
 #' point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
 #' point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
 #'
-#' (xs <- get_xs_points(point1, point2, 100))
+#' points <- c(point1, point2) %>% sf::st_as_sf()
+#'
+#' (xs <- get_xs_points(points, 100))
 #'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
@@ -175,10 +174,13 @@ get_xs_point <- function(point, width, num_pts) {
 #'
 #' }
 #'
-get_xs_points <- function(point1, point2, num_pts, res = 1) {
+get_xs_points <- function(points, num_pts, res = 1) {
 
-  point1 <- check_point(point1)[[1]]
-  point2 <- check_point(point2)[[1]]
+  points <- split(points, sort(as.numeric(rownames(points))))
+
+  points <- lapply(points, check_point)
+
+  points <- lapply(points, "[[", 1)
 
   url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
 
@@ -188,7 +190,41 @@ get_xs_points <- function(point1, point2, num_pts, res = 1) {
     stop("res input must be on of 1, 3, 5, 10, 30, 60")
   }
 
-  get_xs(url, make_json_input_xspts, point1, point2, num_pts, res)
+  data_xs <- data.frame()
+  dist <- vector()
+
+  is.odd <- function(x) x %% 2 != 0
+
+  for(i in 1:(length(points)-1)) {
+
+  data <- get_xs(url, make_json_input_xspts, points[[i]], points[[i+1]], num_pts, res)
+
+
+  if(i == 1){
+
+  if(isTRUE(is.odd(num_pts))){
+   dist[[i]] <- data[[num_pts, 'distance_m']]
+  } else {
+    dist[[i]] <- data[[num_pts + 1, 'distance_m']]
+  }
+
+  } else {
+
+   data[['distance_m']] <- dist[i-1] + data[['distance_m']]
+
+   if(isTRUE(is.odd(num_pts))){
+     dist[[i]] <- data[[num_pts, 'distance_m']]
+   } else {
+     dist[[i]] <- data[[num_pts + 1, 'distance_m']]
+   }
+
+  }
+
+  data_xs <- rbind(data_xs, data)
+
+  }
+
+  data_xs
 
 }
 

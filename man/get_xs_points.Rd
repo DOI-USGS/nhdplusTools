@@ -4,15 +4,10 @@
 \alias{get_xs_points}
 \title{Get Cross Section Endpoints (experimental)}
 \usage{
-get_xs_points(point1, point2, num_pts, res = 1)
+get_xs_points(points, num_pts, res = 1)
 }
 \arguments{
-\item{point1}{sfc POINT including crs as created by:
-\code{sf::st_sfc(sf::st_point(.. ,..), crs)}}
-
-\item{point2}{sfc POINT including crs.}
-
-\item{num_pts}{numeric number of points to retrieve along the cross section.}
+\item{points}{A sf point object (cross section in order of points).}
 
 \item{res}{integer resolution of 3D Elevation Program data to request.
 Must be on of: 1, 3, 5, 10, 30, 60.}
@@ -22,14 +17,16 @@ sf data.frame containing points retrieved.
 }
 \description{
 Uses a cross section retrieval web services to retrieve a
-cross section between two endpoints.
+cross section between two endpoints or multiple points.
 }
 \examples{
 \donttest{
 point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
 point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
 
-(xs <- get_xs_points(point1, point2, 100))
+points <- c(point1, point2) \%>\% sf::st_as_sf()
+
+(xs <- get_xs_points(points, 100))
 
 bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 

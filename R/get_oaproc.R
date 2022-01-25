@@ -199,6 +199,7 @@ get_xs_points <- function(points, num_pts, res = 1) {
 
   data <- get_xs(url, make_json_input_xspts, points[[i]], points[[i+1]], num_pts, res)
 
+  data$group <- i
 
   if(i == 1){
 

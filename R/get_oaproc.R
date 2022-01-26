@@ -149,6 +149,7 @@ get_xs_point <- function(point, width, num_pts) {
 #' @description Uses a cross section retrieval web services to retrieve a
 #' cross section between two endpoints or multiple points.
 #' @param points A sf point object (cross section in order of points).
+#' @param num_pts numeric number of points to retrieve along the cross section.
 #' @param res integer resolution of 3D Elevation Program data to request.
 #' Must be on of: 1, 3, 5, 10, 30, 60.
 #' @return sf data.frame containing points retrieved.
@@ -176,7 +177,7 @@ get_xs_point <- function(point, width, num_pts) {
 #'
 get_xs_points <- function(points, num_pts, res = 1) {
 
-  points <- split(points, sort(as.numeric(rownames(points))))
+  points <- split(points, as.numeric(rownames(points)))
 
   points <- lapply(points, check_point)
 
@@ -193,17 +194,15 @@ get_xs_points <- function(points, num_pts, res = 1) {
   data_xs <- data.frame()
   dist <- vector()
 
-  is.odd <- function(x) x %% 2 != 0
-
   for(i in 1:(length(points)-1)) {
 
   data <- get_xs(url, make_json_input_xspts, points[[i]], points[[i+1]], num_pts, res)
 
-  data$group <- i
+  data$.group <- i
 
   if(i == 1){
 
-  if(isTRUE(is.odd(num_pts))){
+  if(num_pts %% 2 != 0){
    dist[[i]] <- data[[num_pts, 'distance_m']]
   } else {
     dist[[i]] <- data[[num_pts + 1, 'distance_m']]
@@ -213,7 +212,7 @@ get_xs_points <- function(points, num_pts, res = 1) {
 
    data[['distance_m']] <- dist[i-1] + data[['distance_m']]
 
-   if(isTRUE(is.odd(num_pts))){
+   if(num_pts %% 2 != 0){
      dist[[i]] <- data[[num_pts, 'distance_m']]
    } else {
      dist[[i]] <- data[[num_pts + 1, 'distance_m']]

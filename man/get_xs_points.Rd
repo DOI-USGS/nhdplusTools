@@ -9,6 +9,8 @@ get_xs_points(points, num_pts, res = 1)
 \arguments{
 \item{points}{A sf point object (cross section in order of points).}
 
+\item{num_pts}{numeric number of points to retrieve along the cross section.}
+
 \item{res}{integer resolution of 3D Elevation Program data to request.
 Must be on of: 1, 3, 5, 10, 30, 60.}
 }

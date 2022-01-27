@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -91,23 +91,23 @@
 
       
 
-      </header><script src="point_indexing_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Indexing and Referencing</h1>
                         <h4 data-toc-skip class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/master/vignettes/point_indexing.Rmd" class="external-link"><code>vignettes/point_indexing.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/HEAD/vignettes/point_indexing.Rmd" class="external-link"><code>vignettes/point_indexing.Rmd</code></a></small>
       <div class="hidden name"><code>point_indexing.Rmd</code></div>
 
     </div>
 
     
     
-<div id="nhdplus-flowline-indexing" class="section level2">
-<h2 class="hasAnchor">
-<a href="#nhdplus-flowline-indexing" class="anchor" aria-hidden="true"></a>NHDPlus Flowline Indexing</h2>
+<div class="section level2">
+<h2 id="nhdplus-flowline-indexing">NHDPlus Flowline Indexing<a class="anchor" aria-label="anchor" href="#nhdplus-flowline-indexing"></a>
+</h2>
 <p>First we’ll load up some data. In this case, we use flowlines from the NHDPlus subset that’s included in the package and a set of points to index. We’ll use the NHDPlus Gages layer for this example. The data in this example is big. The R session needs a lot of memory to hold the whole NHDPlus flowline layer and run the calculations.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span>
@@ -124,7 +124,7 @@
                               search_radius <span class="op">=</span> <span class="fl">0.01</span>, 
                               max_matches <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 
-<span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu">left_join</span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span>, 
+<span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span>, 
                                geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span>, 
                      <span class="va">indexes</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>
 
@@ -162,9 +162,9 @@
 <span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span>
 <span class="co">#&gt; -5.11 -1.40 -0.52  0.36  1.57  8.11 30.74</span></code></pre></div>
 </div>
-<div id="flowline-indexing-with-higher-precision" class="section level2">
-<h2 class="hasAnchor">
-<a href="#flowline-indexing-with-higher-precision" class="anchor" aria-hidden="true"></a>Flowline Indexing with higher precision</h2>
+<div class="section level2">
+<h2 id="flowline-indexing-with-higher-precision">Flowline Indexing with higher precision<a class="anchor" aria-label="anchor" href="#flowline-indexing-with-higher-precision"></a>
+</h2>
 <p>The above example used the native nodes of the NHDPlus as the potential measure snap locations. The <code><a href="../reference/get_flowline_index.html">nhdplusTools::get_flowline_index()</a></code> function has the ability to refine these by segmentizing the line to some given resolution. Let’s try the same thing using a resolution of 10m and see if we can do any better.</p>
 <p>Note that the <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_segmentize</a></code> function takes care of the distance conversion and segmentizes our lon/lat lines to 10m on the fly.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -172,9 +172,9 @@
                               <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>, 
                               search_radius <span class="op">=</span> <span class="fl">0.1</span>, 
                               precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt; Linking to GEOS 3.9.0, GDAL 3.2.1, PROJ 7.2.1</span>
+<span class="co">#&gt; Linking to GEOS 3.9.1, GDAL 3.2.1, PROJ 7.2.1; sf_use_s2() is TRUE</span>
 
-<span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu">left_join</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">indexes</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></code></pre></div>
+<span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">indexes</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></code></pre></div>
 <p>Now lets look at out comparison again.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p_match</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">indexes</span><span class="op">$</span><span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">gages</span><span class="op">$</span><span class="va">FLComID</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>
@@ -205,9 +205,9 @@
 <span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span>
 <span class="co">#&gt; -1.31 -0.66 -0.33 -0.04  0.22  0.81  1.57</span></code></pre></div>
 </div>
-<div id="finding-multiple-indexes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#finding-multiple-indexes" class="anchor" aria-hidden="true"></a>Finding multiple indexes</h2>
+<div class="section level2">
+<h2 id="finding-multiple-indexes">Finding multiple indexes<a class="anchor" aria-label="anchor" href="#finding-multiple-indexes"></a>
+</h2>
 <p><code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> has a parameter <code>max_matches</code> that controls how many indexed flowlines are returned per point. This is useful for points that are near many flowlines and some further disambiguation is needed to determine exactly which flowline the point should be indexed to. At the time of writing, that functionality is not included in nhdplusTools but is planned.</p>
 <p>For this example, we’ll just look at one point.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -216,7 +216,7 @@
                               search_radius <span class="op">=</span> <span class="fl">0.01</span>, 
                               max_matches <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 
-<span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu">left_join</span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, 
+<span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, 
                                geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">[</span><span class="fl">42</span><span class="op">]</span><span class="op">)</span>, 
                      <span class="va">indexes</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>
 
@@ -231,17 +231,17 @@
 <span class="co">#&gt; Dimension:     XY</span>
 <span class="co">#&gt; Bounding box:  xmin: -89.35278 ymin: 43.20867 xmax: -89.35278 ymax: 43.20867</span>
 <span class="co">#&gt; Geodetic CRS:  GRS 1980(IUGG, 1980)</span>
-<span class="co">#&gt;    id    COMID      REACHCODE               REACH_meas       offset</span>
-<span class="co">#&gt; 1   1 13293452 07090002007737   0.00000000000000000000 0.0004868953</span>
-<span class="co">#&gt; 2   1 13293456 07090002007738 100.00000000000000000000 0.0004868953</span>
-<span class="co">#&gt; 3   1 13293432 07090002007736 100.00000000000000000000 0.0004868953</span>
-<span class="co">#&gt; 4   1 13293430 07090002007639  -0.00000000000001421085 0.0008846702</span>
-<span class="co">#&gt; 5   1 13293454 07090002007638 100.00000000000000000000 0.0008846702</span>
-<span class="co">#&gt; 6   1 13294394 07090002007637 100.00000000000000000000 0.0049572540</span>
-<span class="co">#&gt; 7   1 13294128 07090002007636 100.00000000000000000000 0.0052999159</span>
-<span class="co">#&gt; 8   1 13294382 07090002007725   0.00000000000000000000 0.0052999159</span>
-<span class="co">#&gt; 9   1 13294274 07090002007725   3.63134999999999985576 0.0065388475</span>
-<span class="co">#&gt; 10  1 13293458 07090002007725  12.51731999999999978002 0.0099172984</span>
+<span class="co">#&gt;    id    COMID      REACHCODE REACH_meas       offset</span>
+<span class="co">#&gt; 1   1 13293452 07090002007737     0.0000 0.0004868953</span>
+<span class="co">#&gt; 2   1 13293456 07090002007738   100.0000 0.0004868953</span>
+<span class="co">#&gt; 3   1 13293432 07090002007736   100.0000 0.0004868953</span>
+<span class="co">#&gt; 4   1 13293430 07090002007639     0.0000 0.0008846702</span>
+<span class="co">#&gt; 5   1 13293454 07090002007638   100.0000 0.0008846702</span>
+<span class="co">#&gt; 6   1 13294394 07090002007637   100.0000 0.0049572540</span>
+<span class="co">#&gt; 7   1 13294128 07090002007636   100.0000 0.0052999159</span>
+<span class="co">#&gt; 8   1 13294382 07090002007725     0.0000 0.0052999159</span>
+<span class="co">#&gt; 9   1 13294274 07090002007725     3.6313 0.0065388475</span>
+<span class="co">#&gt; 10  1 13293458 07090002007725    12.5173 0.0099172984</span>
 <span class="co">#&gt;                          geom</span>
 <span class="co">#&gt; 1  POINT (-89.35278 43.20867)</span>
 <span class="co">#&gt; 2  POINT (-89.35278 43.20867)</span>
@@ -254,9 +254,9 @@
 <span class="co">#&gt; 9  POINT (-89.35278 43.20867)</span>
 <span class="co">#&gt; 10 POINT (-89.35278 43.20867)</span></code></pre></div>
 </div>
-<div id="waterbody-indexing" class="section level2">
-<h2 class="hasAnchor">
-<a href="#waterbody-indexing" class="anchor" aria-hidden="true"></a>Waterbody Indexing</h2>
+<div class="section level2">
+<h2 id="waterbody-indexing">Waterbody Indexing<a class="anchor" aria-label="anchor" href="#waterbody-indexing"></a>
+</h2>
 <p>The <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> function estimates a hydrographic address as a linear reference to a flowline. For points near bodies of water, these could be an inappropriate kind of index. This is because where flowlines run through a waterbody. they are “artificial paths” and do not represent the waterbody. The <code><a href="../reference/get_waterbody_index.html">get_waterbody_index()</a></code> function is intended to address points that are in or near the shore of a waterbody.</p>
 <p>This next block of code loads the NHDPlus Waterbody layer and creates an interactive map. Of interest on gages that are near the short of bodies of water but far away from flowlines. Note that we drop the NHDPlus geometry and use the source <code>LonSite</code> and <code>LatSite</code> attributes for geometry.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -273,7 +273,7 @@
 <p>This next block shows how to call <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> and <code><a href="../reference/get_waterbody_index.html">get_waterbody_index()</a></code> and what the output looks like.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">flowline_indexes</span> <span class="op">&lt;-</span> <span class="fu">left_join</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
+<span class="va">flowline_indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
                               <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span>
                                 <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">flowlines</span>, <span class="fl">5070</span><span class="op">)</span>, 
                                 <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">gages</span>, <span class="fl">5070</span><span class="op">)</span><span class="op">)</span>, 
@@ -364,7 +364,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>

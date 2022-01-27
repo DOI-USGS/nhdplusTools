@@ -22,9 +22,6 @@
     <loc>https://usgs-r.github.io/nhdplusTools/authors.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/awra_2019/index.html</loc>
-  </url>
-  <url>
     <loc>https://usgs-r.github.io/nhdplusTools/DISCLAIMER.html</loc>
   </url>
   <url>
@@ -127,13 +124,22 @@
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nwis.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_partial_length.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_pathlength.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_path_lengths.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_pfaf.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_raindrop_trace.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_sorted.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_split_catchment.html</loc>
@@ -146,6 +152,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_terminal.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_tocomid.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_UM.html</loc>

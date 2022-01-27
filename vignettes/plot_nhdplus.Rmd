@@ -122,7 +122,7 @@ flowline <- navigate_nldi(nwissite,
                           mode = "upstreamTributaries", 
                           data_source = "flowlines")
 
-nhdplus <- subset_nhdplus(comids = flowline$UT$nhdplus_comid,
+nhdplus <- subset_nhdplus(comids = as.integer(flowline$UT$nhdplus_comid),
                           output_file = file.path(work_dir, "nhdplus.gpkg"),
                           nhdplus_data = "download",
                           overwrite = TRUE, return_data = FALSE)

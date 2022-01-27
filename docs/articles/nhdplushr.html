@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -91,29 +91,29 @@
 
       
 
-      </header><script src="nhdplushr_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Working with NHDPlusHR</h1>
                         <h4 data-toc-skip class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/master/vignettes/nhdplushr.Rmd" class="external-link"><code>vignettes/nhdplushr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/HEAD/vignettes/nhdplushr.Rmd" class="external-link"><code>vignettes/nhdplushr.Rmd</code></a></small>
       <div class="hidden name"><code>nhdplushr.Rmd</code></div>
 
     </div>
 
     
     
-<div id="tldr" class="section level2">
-<h2 class="hasAnchor">
-<a href="#tldr" class="anchor" aria-hidden="true"></a>TL;DR;</h2>
+<div class="section level2">
+<h2 id="tldr">TL;DR;<a class="anchor" aria-label="anchor" href="#tldr"></a>
+</h2>
 <p>Most functions in <code>nhdplusTools</code> work with NHDPlus High Res (HR) the same as they do with medium res. The demo below shows how to get a single four-digit hydrologic unit worth of HR data, index a point to it, subset it, and plot the results.</p>
 <p><em>Note: For consistency, identifiers from NHDPlusV2 are used with HiRes data. A future release of nhdplusTools may alter this behavior.</em></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>
-<span class="co">#&gt; Linking to GEOS 3.9.1, GDAL 3.2.1, PROJ 7.2.1</span>
+<span class="co">#&gt; Linking to GEOS 3.9.1, GDAL 3.2.1, PROJ 7.2.1; sf_use_s2() is TRUE</span>
 
 <span class="va">work_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"hr_v_cache"</span><span class="op">)</span>
 
@@ -144,10 +144,10 @@
 <span class="op">(</span><span class="va">start_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="fl">5070</span><span class="op">)</span>,
                                    <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">outlets</span>, <span class="fl">5070</span><span class="op">)</span>,
                                    search_radius <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span> <span class="co"># meters albers eq area</span>
-<span class="co">#&gt; # A tibble: 1 x 5</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 x 5</span></span>
 <span class="co">#&gt;      id   COMID REACHCODE      REACH_meas offset</span>
-<span class="co">#&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1     1 2.20e13 07090002006114       37.7   87.7</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1 2.20<span style="color: #949494;">e</span>13 07090002006114       37.7   87.7</span>
 
 <span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">start_index</span><span class="op">$</span><span class="va">COMID</span><span class="op">)</span>
 
@@ -178,9 +178,9 @@
      col <span class="op">=</span> <span class="st">"cyan"</span>, lwd <span class="op">=</span> <span class="fl">1</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplushr_files/figure-html/plot-1.png" width="576"></p>
 </div>
-<div id="download" class="section level2">
-<h2 class="hasAnchor">
-<a href="#download" class="anchor" aria-hidden="true"></a>Download</h2>
+<div class="section level2">
+<h2 id="download">Download<a class="anchor" aria-label="anchor" href="#download"></a>
+</h2>
 <p>NHDPlusHR support in nhdplusTools begins with the function <code><a href="../reference/download_nhdplushr.html">download_nhdplushr()</a></code>. The NHDPlusHR can be downloaded in <a href="https://www.usgs.gov/core-science-systems/ngp/national-hydrography/access-national-hydrography-products" class="external-link">four digit hydrologic unit code subsets here.</a> <code><a href="../reference/download_nhdplushr.html">download_nhdplushr()</a></code> facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.</p>
 <p><em>Note: Data for each HU02 are put in their own output folder.</em></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -195,9 +195,9 @@
 <span class="co">#&gt; [1] "NHDPLUS_H_0709_HU4_GDB.gdb" "NHDPLUS_H_0709_HU4_GDB.jpg"</span>
 <span class="co">#&gt; [3] "NHDPLUS_H_0709_HU4_GDB.xml"</span></code></pre></div>
 </div>
-<div id="basic-functionality" class="section level2">
-<h2 class="hasAnchor">
-<a href="#basic-functionality" class="anchor" aria-hidden="true"></a>Basic functionality</h2>
+<div class="section level2">
+<h2 id="basic-functionality">Basic functionality<a class="anchor" aria-label="anchor" href="#basic-functionality"></a>
+</h2>
 <p>The second part of nhdplusTools support for NHDPlusHR is a bit more involved. The entry point is a function called <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code>. At it’s core, it will take a collection of NHDPlusHR subsets, open them up one by one and build a single output table for later use. It also 1. joins flowline attributes to the flowline geometry, 1. can return one or more selected layers, 1. can save the result to a standalone geopackage for later use, and 1. can make some attributes of a subset look like they are part of a standalone network rather than having references to downstream data that aren’t in the subset.</p>
 <p>Using the data we downloaded in the TL;DR; intro, the code below demonstrates a few behaviors of <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code></p>
 <p>First, if we just give it a directory containing HR data, it will give us back a list with flowlines and catchments as sf data.frames.</p>
@@ -245,9 +245,9 @@
 <span class="co">#&gt; 1      NHDFlowline Multi Line String    34532     57</span>
 <span class="co">#&gt; 2 NHDPlusCatchment     Multi Polygon    42300      7</span></code></pre></div>
 </div>
-<div id="hr-modification-and-filtering" class="section level2">
-<h2 class="hasAnchor">
-<a href="#hr-modification-and-filtering" class="anchor" aria-hidden="true"></a>HR modification and filtering</h2>
+<div class="section level2">
+<h2 id="hr-modification-and-filtering">HR modification and filtering<a class="anchor" aria-label="anchor" href="#hr-modification-and-filtering"></a>
+</h2>
 <p>Since NHDPlusHR data can be very large, <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> offers the ability to subset the data using a few filter options. Most of the filters are described in the manual page of the <code><a href="../reference/get_hr_data.html">get_hr_data()</a></code> utility function. 1. <code>min_size_sqkm</code> will remove flowlines under a certain size threshold. 1. <code>sim</code> will simplify all geometry to a given tolerance using <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_simplify()</a></code>. 1. <code>proj</code> will project the output into the desired projection. 1. <code>keep_cols</code> is used to specify which attributes are desired in the output. 1. <code>rename</code> controls whether output is automatically renamed to be compatible with <code>nhdplusTools</code> functions.</p>
 <p><em>Note: These options only operate on the flowline network.</em></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -269,9 +269,9 @@
      lwd <span class="op">=</span> <span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">$</span><span class="va">StreamOrde</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplushr_files/figure-html/get_nhdplushr5-1.png" width="576"></p>
 </div>
-<div id="make-standalone-basins" class="section level2">
-<h2 class="hasAnchor">
-<a href="#make-standalone-basins" class="anchor" aria-hidden="true"></a>Make Standalone Basins</h2>
+<div class="section level2">
+<h2 id="make-standalone-basins">Make Standalone Basins<a class="anchor" aria-label="anchor" href="#make-standalone-basins"></a>
+</h2>
 <p>The NHDPlus data model has some shared identifiers that can span very large distances. For example, the “Level Path Identifier” identifies an entire river from headwater to outlet using the “hydrologic sequence identifier” of the outlet. Similarly, the “Terminal Path Identifier” identifies an entire basin using the hydrologic sequence identifier of the terminal flowline (to the ocean or an inland sink). When creating subsets of NHDPlus data, many times, these attributes can identify flowlines that are not included in the subset. For most applications, this is not a problem, but in some cases, it is advantageous to adjust identifiers such that the subset appears to be a complete drainage basin with a true terminal outlet. <code><a href="../reference/make_standalone.html">make_standalone()</a></code> accomplishes this task.</p>
 <p>On a one by one basis, this may seam insignificant, but for workflows that need to work with arbitrary subsets and start from basin outlets, this functionality is useful. It has little impact on the data and is applied by default.</p>
 <p>The example below shows how the outlet is modified. As described in the documentation os <code><a href="../reference/make_standalone.html">make_standalone()</a></code> all related attributes upstream are also fixed such that the network is intact for further use.</p>
@@ -302,40 +302,40 @@
 <span class="co">#&gt; Simple feature collection with 0 features and 57 fields</span>
 <span class="co">#&gt; Bounding box:  xmin: NA ymin: NA xmax: NA ymax: NA</span>
 <span class="co">#&gt; Geodetic CRS:  NAD83</span>
-<span class="co">#&gt; # A tibble: 0 x 58</span>
-<span class="co">#&gt; # ... with 58 variables: Permanent_Identifier &lt;chr&gt;, FDate &lt;dttm&gt;,</span>
-<span class="co">#&gt; #   Resolution &lt;int&gt;, GNIS_ID &lt;chr&gt;, GNIS_Name &lt;chr&gt;, LENGTHKM &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;,</span>
-<span class="co">#&gt; #   FTYPE &lt;int&gt;, FCODE &lt;int&gt;, MainPath &lt;int&gt;, InNetwork &lt;int&gt;,</span>
-<span class="co">#&gt; #   VisibilityFilter &lt;int&gt;, Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;,</span>
-<span class="co">#&gt; #   Enabled &lt;int&gt;, Shape &lt;GEOMETRY [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span>
-<span class="co">#&gt; #   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, ...</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 x 58</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># ... with 58 variables: Permanent_Identifier &lt;chr&gt;, FDate &lt;dttm&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   Resolution &lt;int&gt;, GNIS_ID &lt;chr&gt;, GNIS_Name &lt;chr&gt;, LENGTHKM &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   FTYPE &lt;int&gt;, FCODE &lt;int&gt;, MainPath &lt;int&gt;, InNetwork &lt;int&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   VisibilityFilter &lt;int&gt;, Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   Enabled &lt;int&gt;, Shape &lt;GEOMETRY [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span></span>m
+<span class="co">#&gt; <span style="color: #949494;">#   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, ...</span></span>
 <span class="op">(</span><span class="va">standalone</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">standalone_demo</span>, <span class="va">TerminalPa</span> <span class="op">==</span> <span class="va">standalone_demo_outlet</span><span class="op">$</span><span class="va">Hydroseq</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Simple feature collection with 5358 features and 57 fields</span>
 <span class="co">#&gt; Geometry type: MULTILINESTRING</span>
 <span class="co">#&gt; Dimension:     XY</span>
 <span class="co">#&gt; Bounding box:  xmin: -90.68076 ymin: 41.27482 xmax: -88.1999 ymax: 43.74949</span>
 <span class="co">#&gt; Geodetic CRS:  NAD83</span>
-<span class="co">#&gt; # A tibble: 5,358 x 58</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 5,358 x 58</span></span>
 <span class="co">#&gt;    Permanent_Identi~ FDate               Resolution GNIS_ID GNIS_Name   LENGTHKM</span>
-<span class="co">#&gt;  * &lt;chr&gt;             &lt;dttm&gt;                   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 156038282         2012-03-19 01:32:25          2 004155~ Pecatonica~    1.34 </span>
-<span class="co">#&gt;  2 155714162         2014-10-28 19:00:00          2 004248~ Fairfield ~    0.417</span>
-<span class="co">#&gt;  3 156035374         2012-03-19 01:35:08          2 015619~ Gordon Cre~    0.39 </span>
-<span class="co">#&gt;  4 145600320         2012-03-19 01:34:47          2 004168~ Rock Creek     0.352</span>
-<span class="co">#&gt;  5 155712981         2012-03-19 02:05:43          2 &lt;NA&gt;    &lt;NA&gt;           0.034</span>
-<span class="co">#&gt;  6 137417698         2012-03-18 13:07:30          2 015750~ Sugar River    0.798</span>
-<span class="co">#&gt;  7 156037500         2012-03-19 01:33:10          2 &lt;NA&gt;    &lt;NA&gt;           0.009</span>
-<span class="co">#&gt;  8 145599800         2012-03-19 01:34:47          2 004145~ North Fork~    0.665</span>
-<span class="co">#&gt;  9 143246785         2012-03-18 12:56:42          2 004168~ Rock River     0.165</span>
-<span class="co">#&gt; 10 155712415         2012-03-19 02:05:51          2 004241~ Willow Cre~    2.11 </span>
-<span class="co">#&gt; # ... with 5,348 more rows, and 52 more variables: REACHCODE &lt;chr&gt;,</span>
-<span class="co">#&gt; #   FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span>
-<span class="co">#&gt; #   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span>
-<span class="co">#&gt; #   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span>
-<span class="co">#&gt; #   Shape &lt;MULTILINESTRING [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span>
-<span class="co">#&gt; #   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, ...</span>
+<span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 156038282         2012-03-19 <span style="color: #949494;">01:32:25</span>          2 004155~ Pecatonica~    1.34 </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 155714162         2014-10-28 <span style="color: #949494;">19:00:00</span>          2 004248~ Fairfield ~    0.417</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 156035374         2012-03-19 <span style="color: #949494;">01:35:08</span>          2 015619~ Gordon Cre~    0.39 </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 145600320         2012-03-19 <span style="color: #949494;">01:34:47</span>          2 004168~ Rock Creek     0.352</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 155712981         2012-03-19 <span style="color: #949494;">02:05:43</span>          2 <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>             0.034</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 137417698         2012-03-18 <span style="color: #949494;">13:07:30</span>          2 015750~ Sugar River    0.798</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 156037500         2012-03-19 <span style="color: #949494;">01:33:10</span>          2 <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>             0.009</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 145599800         2012-03-19 <span style="color: #949494;">01:34:47</span>          2 004145~ North Fork~    0.665</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 143246785         2012-03-18 <span style="color: #949494;">12:56:42</span>          2 004168~ Rock River     0.165</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 155712415         2012-03-19 <span style="color: #949494;">02:05:51</span>          2 004241~ Willow Cre~    2.11 </span>
+<span class="co">#&gt; <span style="color: #949494;"># ... with 5,348 more rows, and 52 more variables: REACHCODE &lt;chr&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   Shape &lt;MULTILINESTRING [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span></span>m
+<span class="co">#&gt; <span style="color: #949494;">#   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, ...</span></span>
 
 <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">standalone</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="nhdplushr_files/figure-html/make_standalone-1.png" width="576"></p>
@@ -359,7 +359,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>

@@ -30,7 +30,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 
   url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
 
-  url <- paste0(url_base, "nldi-flowtrace/jobs?response=document")
+  url <- paste0(url_base, "nldi-flowtrace/execution")
 
   allowed_direction <- c("up", "down", "none")
 
@@ -58,7 +58,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #'
 #' trace <- get_raindrop_trace(point)
 #'
-#' (snap_point <- sf::st_sfc(sf::st_point(trace$intersectionPoint[[1]][2:1]),
+#' (snap_point <- sf::st_sfc(sf::st_point(trace$intersection_point[[1]][2:1]),
 #'                           crs = 4326))
 #'
 #' (catchment <- get_split_catchment(snap_point))
@@ -100,7 +100,7 @@ get_split_catchment <- function(point, upstream = TRUE) {
 
   url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
 
-  url <- paste0(url_base, "nldi-splitcatchment/jobs?response=document")
+  url <- paste0(url_base, "nldi-splitcatchment/execution")
 
   return(sf_post(url, make_json_input_split(point, upstream)))
 }
@@ -139,7 +139,7 @@ get_xs_point <- function(point, width, num_pts) {
 
   url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
 
-  url <- paste0(url_base, "nldi-xsatpoint/jobs?response=document")
+  url <- paste0(url_base, "nldi-xsatpoint/execution")
 
   get_xs(url, make_json_input_xspt, point, width, num_pts)
 
@@ -185,7 +185,7 @@ get_xs_points <- function(points, num_pts, res = 1) {
 
   url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
 
-  url <- paste0(url_base, "nldi-xsatendpts/jobs?response=document")
+  url <- paste0(url_base, "nldi-xsatendpts/execution")
 
   if(!res %in% c(1, 3, 5, 10, 30, 60)) {
     stop("res input must be on of 1, 3, 5, 10, 30, 60")

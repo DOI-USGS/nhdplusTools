@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -91,27 +91,27 @@
 
       
 
-      </header><script src="plot_nhdplus_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Plotting with nhdplusTools</h1>
                         <h4 data-toc-skip class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/master/vignettes/plot_nhdplus.Rmd" class="external-link"><code>vignettes/plot_nhdplus.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/HEAD/vignettes/plot_nhdplus.Rmd" class="external-link"><code>vignettes/plot_nhdplus.Rmd</code></a></small>
       <div class="hidden name"><code>plot_nhdplus.Rmd</code></div>
 
     </div>
 
     
     
-<div id="plotting-with-nhdplustools" class="section level1">
-<h1 class="hasAnchor">
-<a href="#plotting-with-nhdplustools" class="anchor" aria-hidden="true"></a>Plotting with nhdplusTools</h1>
+<div class="section level2">
+<h2 id="plotting-with-nhdplustools">Plotting with nhdplusTools<a class="anchor" aria-label="anchor" href="#plotting-with-nhdplustools"></a>
+</h2>
 <p>The goal of this vignette is to demonstrate a simple and lightweight approach to building maps with NHDPlus data.</p>
-<div id="the-plot_nhdplus-function" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-plot_nhdplus-function" class="anchor" aria-hidden="true"></a>The <code>plot_nhdplus</code> function</h2>
+<div class="section level3">
+<h3 id="the-plot_nhdplus-function">The <code>plot_nhdplus</code> function<a class="anchor" aria-label="anchor" href="#the-plot_nhdplus-function"></a>
+</h3>
 <p><strong><code>plot_nhdplus</code> is a work in progress. Not all inputs in the function have been implemented as of 11/18/2019 and additional functionality will be added later. Please leave feature requests and issues you find in an <a href="https://github.com/USGS-R/nhdplusTools/pulls" class="external-link">issue here</a>.</strong></p>
 <p><code>plot_nhdplus</code> is a function that makes getting a simple plot of NHDPlus data as easy as possible. It works with other functions from <code>nhdplusTools</code> for identifying and retrieving watershed outlet locations. See the <code>plot_nhdplus</code> documentation for more info.</p>
 <p>If we pass <code>plot_nhdplus</code> a single NWIS site id, <code>nhdplusTools</code> uses web services to get data and we get a plot like this:</p>
@@ -158,14 +158,14 @@
 <p><img src="plot_nhdplus_files/figure-html/bbox_plotting-1.png" width="576"></p>
 <p>The plots above are all in the EPSG:3857 projection to be compatible with background tiles. Any data added to these plots must be projected to this coordinate system to be added to the plot.</p>
 </div>
-<div id="getting-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#getting-data" class="anchor" aria-hidden="true"></a>Getting Data</h2>
+<div class="section level3">
+<h3 id="getting-data">Getting Data<a class="anchor" aria-label="anchor" href="#getting-data"></a>
+</h3>
 <p>What follows shows how to use <code>nhdplusTools</code> to create plots without the <code>plot_nhdplus</code> function. While super convenient, we all know the “easy button” is never quite right, the description below should help get you started.</p>
 <p>For this example, we’ll start from an outlet NWIS Site. Note that other options are possible with <code>discover_nhdplus_id</code> and <code><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">dataRetrieval::get_nldi_sources</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>
-<span class="co">#&gt; Linking to GEOS 3.9.0, GDAL 3.2.1, PROJ 7.2.1</span>
+<span class="co">#&gt; Linking to GEOS 3.9.1, GDAL 3.2.1, PROJ 7.2.1; sf_use_s2() is TRUE</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span>
 <span class="va">nwissite</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, 
                      featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span>
@@ -174,7 +174,7 @@
                           mode <span class="op">=</span> <span class="st">"upstreamTributaries"</span>, 
                           data_source <span class="op">=</span> <span class="st">"flowlines"</span><span class="op">)</span>
 
-<span class="va">nhdplus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span>comids <span class="op">=</span> <span class="va">flowline</span><span class="op">$</span><span class="va">UT</span><span class="op">$</span><span class="va">nhdplus_comid</span>,
+<span class="va">nhdplus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span>comids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">$</span><span class="va">UT</span><span class="op">$</span><span class="va">nhdplus_comid</span><span class="op">)</span>,
                           output_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"nhdplus.gpkg"</span><span class="op">)</span>,
                           nhdplus_data <span class="op">=</span> <span class="st">"download"</span>,
                           overwrite <span class="op">=</span> <span class="cn">TRUE</span>, return_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -240,9 +240,9 @@
 <p>See the NHDPlus user guide <a href="https://www.epa.gov/waterdata/learn-more#Documentation" class="external-link">linked here</a> for more on what these layers are and what the flowline attributes entail.</p>
 </div>
 </div>
-<div id="bounding-boxes" class="section level1">
-<h1 class="hasAnchor">
-<a href="#bounding-boxes" class="anchor" aria-hidden="true"></a>Bounding Boxes</h1>
+<div class="section level2">
+<h2 id="bounding-boxes">Bounding Boxes<a class="anchor" aria-label="anchor" href="#bounding-boxes"></a>
+</h2>
 <p>First, a side note on bounding boxes. With the ongoing transition from the <code>sp</code> package to the <code>sf</code> package, there are a few stumbling blocks. Bounding boxes are one of them. As shown below, the <code>sf</code> bbox format is a named vector of class “bbox”. The <code>sp</code> bbox format is a matrix with named dimensions. Many packages expect the sp format. the <code>ggmap</code> package expects yet another bbox format, much like <code>sf</code> but with different names.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/edzer/sp/" class="external-link">sp</a></span><span class="op">)</span>
@@ -277,9 +277,9 @@
 <span class="va">ggmap_bbox</span>
 <span class="co">#&gt;      left    bottom     right       top </span>
 <span class="co">#&gt; -89.60465  43.03507 -89.20378  43.36607</span></code></pre></div>
-<div id="base-r-plotting" class="section level2">
-<h2 class="hasAnchor">
-<a href="#base-r-plotting" class="anchor" aria-hidden="true"></a>Base R Plotting</h2>
+<div class="section level3">
+<h3 id="base-r-plotting">Base R Plotting<a class="anchor" aria-label="anchor" href="#base-r-plotting"></a>
+</h3>
 <p>In order to maximize flexibility and make sure we understand what’s going on with coordinate reference systems, the demonstration below shows how to use base R plotting with the package <code>prettymappr</code> and <code>rosm</code>.</p>
 <p>In this example, we have to plot just the geometry, extracted with <code>st_geometry</code> and we need to project the geometry into the plotting coordinate reference system, <a href="https://en.wikipedia.org/wiki/Web_Mercator" class="external-link">EPSG:3857 also known as “web mercator”</a>. The reason we have to make this transformation is that practically all basemap tiles are in this projection and reprojection of pre-rendered tiles doesn’t look good. We do this with a simple <code>prep_layer</code> function.</p>
 <p>The <code><a href="https://rdrr.io/pkg/prettymapr/man/prettymap.html" class="external-link">prettymapr::prettymap()</a></code> function isn’t strictly necessary, but it gives us nice margins, a scale bar, and a north arrow. The <code><a href="https://rdrr.io/pkg/rosm/man/osm.plot.html" class="external-link">rosm::osm.plot</a></code> and base <code>plot</code> commands put data onto the R plotting device so the first to be plotted is on the bottom. A couple hints here. <code>lwd</code> is line width. <code>pch</code> is point style. <code>cex</code> is an expansion factor. Colors shown below are <a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf" class="external-link">basic R colors.</a> the <code>rgb</code> function is handy for creating colors with transparency if that’s of interest.</p>
@@ -316,9 +316,9 @@
 <span class="co">#&gt; Error occured while plotting:  Error in UseMethod("st_transform"): no applicable method for 'st_transform' applied to an object of class "list"</span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/plot-1.png" width="576"></p>
 </div>
-<div id="plotting-with-ggplot2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plotting-with-ggplot2" class="anchor" aria-hidden="true"></a>Plotting with ggplot2</h2>
+<div class="section level3">
+<h3 id="plotting-with-ggplot2">Plotting with ggplot2<a class="anchor" aria-label="anchor" href="#plotting-with-ggplot2"></a>
+</h3>
 <p>Below is a very similar example using <a href="https://github.com/dkahle/ggmap" class="external-link"><code>ggmap</code></a> and <a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link"><code>ggplot2</code> <code>geom_sf</code></a>. Note that ggmap takes case of projections for us, which should either make you happy because it <em>just works</em> or very nervous because it <em>just works</em>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dkahle/ggmap" class="external-link">ggmap</a></span><span class="op">)</span>
@@ -374,7 +374,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>

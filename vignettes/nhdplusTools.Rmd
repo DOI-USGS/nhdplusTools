@@ -52,7 +52,7 @@ flowline <- navigate_nldi(list(featureSource = "comid",
                           distance_km = 1000)
 
 subset_file <- tempfile(fileext = ".gpkg")
-subset <- subset_nhdplus(comids = flowline$UT$nhdplus_comid,
+subset <- subset_nhdplus(comids = as.integer(flowline$UT$nhdplus_comid),
                          output_file = subset_file,
                          nhdplus_data = "download", 
                          flowline_only = FALSE,
@@ -74,16 +74,16 @@ plot(sf::st_geometry(catchment), add = TRUE)
 plot(sf::st_geometry(waterbody), col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 ```
 
-Read on to see how NHDPlusTools will help you index data to the network you just retrieved and refactor (split, collapse, and aggregate) the catchments into a different set of catchments. Please consider registering [issues and feature suggestions on github](https://github.com/dblodgett-usgs/nhdplusTools/issues).
+Read on to see how NHDPlusTools will help you index data to the network you just retrieved. Please consider registering [issues and feature suggestions on github](https://github.com/dblodgett-usgs/nhdplusTools/issues).
 
 ## Introduction
 
 The `nhdplusTools` package is intended to provide a reusable set of tools to
-subset, relate data to, and refactor (collapse, split, and aggregate) NHDPlus data. 
+subset, relate data to, and rebuild attributes for hydrography data. 
 It implements a data model consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
 and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
 aims to provide a set of tools with minimal dependencies that can be used
-to build workflows using NHDPlus data.
+to build workflows using NHDPlus data-model data.
 
 The package has three types of functionality:
 
@@ -237,7 +237,7 @@ What is not shown here is that the NLDI only provided geometry and a comid for e
 ```{r subset_nhdplus_download}
 output_file_download <- file.path(work_dir, "subset_download.gpkg")
 
-output_file_download <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
+output_file_download <-subset_nhdplus(comids = as.integer(flowline_nldi$UT$nhdplus_comid),
                                       output_file = output_file_download,
                                       nhdplus_data = "download", return_data = FALSE,
                                       overwrite = TRUE)
@@ -269,7 +269,7 @@ flowline_nldi <- navigate_nldi(nldi_feature,
 
 output_file_nwis <- file.path(work_dir, "subset_download_nwis.gpkg")
 
-output_file_nwis <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
+output_file_nwis <-subset_nhdplus(comids = as.integer(flowline_nldi$UT$nhdplus_comid),
                                   output_file = output_file_nwis,
                                   nhdplus_data = "download",
                                   return_data = FALSE, overwrite = TRUE)

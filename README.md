@@ -34,22 +34,23 @@ Terms for rivers:
 
 Terms used for hydrologic units:  
 **Catchment:** The most abstract unit of hydrology in HY_Features is the catchment. It is a physiographic unit with zero or one inlets and one outlet. It does not inherently have any conceptual realizations. Rather, a given catchment can be realized in a number of ways; flowpath, divide, and networks of flowpaths and divides are the primary realizations.  
-**Catchment divide:** NHD "catchment" polygons are more accurately described as "catchment divide" features. Because of the overlap with the HY_Features abstract "catchment" feature type, "catchment divide" is used for polygon representations of catchments.  
+**Catchment divide:** NHD "catchment" polygons are more accurately described as "catchment divide" features. Because of the overlap with the HY_Features abstract "catchment" feature type, "catchment divide" is used for polygon representations of catchments.
 
 ### Data:
 
 [A National Dataset of NHDPlusV2.1 is available here.](https://www.epa.gov/waterdata/nhdplus-national-data)  
-Also see: [`get_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html), [`subset_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html), [`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html) and [`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
+
+For data subsetting, also see: [`get_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html), [`subset_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html), [`navigate_network`](https://usgs-r.github.io/nhdplusTools/reference/navigate_network.html), [`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html) and [`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
 
 ## Package Vision
 
 The `nhdplusTools` package is intended to provide a reusable set of tools to
-subset and relate data to NHDPlus data. 
+subset, relate data to, and generate network attributes for NHDPlus data. 
 
 It implements a data model consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
-and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
-aims to provide a set of tools with minimal dependencies that can be used
-to build workflows using NHDPlus data.
+dataset and the [HY\_Features](http://opengeospatial.github.io/HY_Features/) data 
+model. The package aims to provide a set of tools that can be used to build 
+workflows using NHDPlus data.
 
 **This vision is intended as a guide to contributors -- conveying what kinds of
 contributions are of interest to the package's long term vision. It is a

@@ -1,4 +1,4 @@
-nhdplusTools 0.4.4
+nhdplusTools 0.5.0
 ==========
 
 ## Web Service Wrapper Functions

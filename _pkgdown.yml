@@ -57,6 +57,8 @@ reference:
     desc: >
       Functions that generate common river network attributes.
     contents:
+      - '`get_tocomid`'
+      - '`get_sorted`'
       - '`add_plus_network_attributes`'
       - '`calculate_total_drainage_area`'
       - '`calculate_arbolate_sum`'
@@ -85,3 +87,5 @@ reference:
       - '`get_node`'
       - '`rescale_measures`'
       - '`disambiguate_flowline_indexes`'
+      - '`get_partial_length`'
+      - '`get_path_lengths`'

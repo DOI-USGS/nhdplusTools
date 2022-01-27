@@ -147,8 +147,10 @@ get_xs_point <- function(point, width, num_pts) {
 
 #' Get Cross Section Endpoints (experimental)
 #' @description Uses a cross section retrieval web services to retrieve a
-#' cross section between two endpoints or multiple points.
-#' @param points A sf point object (cross section in order of points).
+#' cross section between two endpoints.
+#' @param point1 sfc POINT including crs as created by:
+#' \code{sf::st_sfc(sf::st_point(.. ,..), crs)}
+#' @param point2 sfc POINT including crs.
 #' @param num_pts numeric number of points to retrieve along the cross section.
 #' @param res integer resolution of 3D Elevation Program data to request.
 #' Must be on of: 1, 3, 5, 10, 30, 60.
@@ -159,9 +161,7 @@ get_xs_point <- function(point, width, num_pts) {
 #' point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
 #' point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
 #'
-#' points <- c(point1, point2) %>% sf::st_as_sf()
-#'
-#' (xs <- get_xs_points(points, 100))
+#' (xs <- get_xs_points(point1, point2, 100))
 #'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
@@ -175,13 +175,10 @@ get_xs_point <- function(point, width, num_pts) {
 #'
 #' }
 #'
-get_xs_points <- function(points, num_pts, res = 1) {
+get_xs_points <- function(point1, point2, num_pts, res = 1) {
 
-  points <- split(points, as.numeric(rownames(points)))
-
-  points <- lapply(points, check_point)
-
-  points <- lapply(points, "[[", 1)
+  point1 <- check_point(point1)[[1]]
+  point2 <- check_point(point2)[[1]]
 
   url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
 
@@ -191,41 +188,99 @@ get_xs_points <- function(points, num_pts, res = 1) {
     stop("res input must be on of 1, 3, 5, 10, 30, 60")
   }
 
-  data_xs <- data.frame()
+  get_xs(url, make_json_input_xspts, point1, point2, num_pts, res)
+
+}
+
+#' Get Elevation Along Path (experimental)
+#' @description Uses a cross section retrieval web services to retrieve elevation
+#'  along a path.
+#' @param points A sf point object.
+#' @param num_pts numeric number of points to retrieve along the cross section.
+#' @param res integer resolution of 3D Elevation Program data to request.
+#' Must be on of: 1, 3, 5, 10, 30, 60.
+#' @return sf data.frame containing points retrieved.
+#' @export
+#' @examples
+#' \donttest{
+#' point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
+#' point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
+#' point3 <- sf::st_sfc(sf::st_point(x = c(-105.98869, 36.17450)), crs = 4326)
+#'
+#' points <- c(point1, point2, point3) %>% sf::st_as_sf()
+#'
+#' (xs <- get_xs_points(points, 100))
+#'
+#' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
+#'
+#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#'
+#' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
+#' plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)
+#' plot(sf::st_transform(sf::st_sfc(point2, crs = 4326), 3857), add = TRUE)
+#' plot(sf::st_transform(sf::st_sfc(point3, crs = 4326), 3857), add = TRUE)
+#'
+#' plot(xs$distance_m, xs$elevation_m)
+#'
+#' }
+#'
+get_elev_along_path <- function(points, num_pts, res = 1) {
+
+  url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
+
+  url <- paste0(url_base, "nldi-xsatendpts/execution")
+
+  if(!res %in% c(1, 3, 5, 10, 30, 60)) {
+    stop("res input must be on of 1, 3, 5, 10, 30, 60")
+  }
+
+  get_elev(url, make_json_input_xspts, points, num_pts, res)
+
+}
+
+
+get_elev <- function(url, fun, points, num_pts, res) {
+
+  points <- split(points, as.numeric(rownames(points)))
+
+  points <- lapply(points, check_point)
+
+  points <- lapply(points, "[[", 1)
+
+  data_elev <- data.frame()
   dist <- vector()
 
   for(i in 1:(length(points)-1)) {
 
-  data <- get_xs(url, make_json_input_xspts, points[[i]], points[[i+1]], num_pts, res)
+    data <- get_xs(url, fun, points[[i]], points[[i+1]], num_pts, res)
 
-  data$.group <- i
+    data$.group <- i
 
-  if(i == 1){
+    if(i == 1){
 
-  if(num_pts %% 2 != 0){
-   dist[[i]] <- data[[num_pts, 'distance_m']]
-  } else {
-    dist[[i]] <- data[[num_pts + 1, 'distance_m']]
+      if(num_pts %% 2 != 0){
+        dist[[i]] <- data[[num_pts, 'distance_m']]
+      } else {
+        dist[[i]] <- data[[num_pts + 1, 'distance_m']]
+      }
+
+    } else {
+
+      data[['distance_m']] <- dist[i-1] + data[['distance_m']]
+
+      if(num_pts %% 2 != 0){
+        dist[[i]] <- data[[num_pts, 'distance_m']]
+      } else {
+        dist[[i]] <- data[[num_pts + 1, 'distance_m']]
+      }
+
+    }
+
+    data_elev <- rbind(data_elev, data)
+
   }
 
-  } else {
-
-   data[['distance_m']] <- dist[i-1] + data[['distance_m']]
-
-   if(num_pts %% 2 != 0){
-     dist[[i]] <- data[[num_pts, 'distance_m']]
-   } else {
-     dist[[i]] <- data[[num_pts + 1, 'distance_m']]
-   }
-
-  }
-
-  data_xs <- rbind(data_xs, data)
-
-  }
-
-  data_xs
-
+  data_elev
 }
 
 get_xs <- function(url, fun, ...) {

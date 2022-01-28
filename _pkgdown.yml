@@ -16,6 +16,7 @@ reference:
       - '`get_vaa`'
       - '`get_xs_point`'
       - '`get_xs_points`'
+      - '`get_elev_along_path`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are

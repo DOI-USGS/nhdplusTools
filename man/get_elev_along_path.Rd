@@ -4,18 +4,23 @@
 \alias{get_elev_along_path}
 \title{Get Elevation Along Path (experimental)}
 \usage{
-get_elev_along_path(points, num_pts, res = 1)
+get_elev_along_path(points, num_pts, res = 1, status = TRUE)
 }
 \arguments{
-\item{points}{A sf point object.}
+\item{points}{sf data.frame containing a point column.}
 
 \item{num_pts}{numeric number of points to retrieve along the cross section.}
 
 \item{res}{integer resolution of 3D Elevation Program data to request.
 Must be on of: 1, 3, 5, 10, 30, 60.}
+
+\item{status}{logical}
 }
 \value{
-sf data.frame containing points retrieved.
+sf data.frame containing points retrieved. Names include
+"id", "distance_m", "elevation_m", "spatial_ref", "geometry",
+and ".group". .group tracks which input point each set of output
+points belongs to.
 }
 \description{
 Uses a cross section retrieval web services to retrieve elevation
@@ -29,7 +34,7 @@ point3 <- sf::st_sfc(sf::st_point(x = c(-105.98869, 36.17450)), crs = 4326)
 
 points <- c(point1, point2, point3) \%>\% sf::st_as_sf()
 
-(xs <- get_xs_points(points, 100))
+(xs <- get_elev_along_path(points, 100))
 
 bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 

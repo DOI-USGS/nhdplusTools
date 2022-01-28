@@ -251,6 +251,25 @@ test_that("xs", {
 
   expect_error(get_xs_points(point1, point2, 100, 2),
                "res input must be on of 1, 3, 5, 10, 30, 60")
+
+  point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
+  point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
+  point3 <- sf::st_sfc(sf::st_point(x = c(-105.98869, 36.17450)), crs = 4326)
+
+  points <- sf::st_as_sf(c(point1, point2, point3))
+
+  suppressMessages(xs <- get_elev_along_path(points, 100))
+
+  expect_equal(names(xs), c("id", "distance_m", "elevation_m", "spatial_ref", "geometry",
+                            ".group"))
+
+  expect_equal(nrow(xs), 202)
+
+  expect_true(mean(xs$elevation_m) - 1822 < 1)
+
+  suppressMessages(xs <- get_elev_along_path(points, 33))
+
+  expect_equal(nrow(xs), 66)
 })
 
 test_that("coverage", {

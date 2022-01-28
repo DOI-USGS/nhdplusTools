@@ -184,22 +184,31 @@ get_xs_points <- function(point1, point2, num_pts, res = 1) {
 
   url <- paste0(url_base, "nldi-xsatendpts/execution")
 
-  if(!res %in% c(1, 3, 5, 10, 30, 60)) {
-    stop("res input must be on of 1, 3, 5, 10, 30, 60")
-  }
+  check_res(res)
 
   get_xs(url, make_json_input_xspts, point1, point2, num_pts, res)
 
 }
 
+check_res <- function(res) {
+  if(!res %in% c(1, 3, 5, 10, 30, 60)) {
+    stop("res input must be on of 1, 3, 5, 10, 30, 60")
+  }
+  return(invisible(TRUE))
+}
+
 #' Get Elevation Along Path (experimental)
 #' @description Uses a cross section retrieval web services to retrieve elevation
 #'  along a path.
-#' @param points A sf point object.
+#' @param points sf data.frame containing a point column.
 #' @param num_pts numeric number of points to retrieve along the cross section.
 #' @param res integer resolution of 3D Elevation Program data to request.
 #' Must be on of: 1, 3, 5, 10, 30, 60.
-#' @return sf data.frame containing points retrieved.
+#' @param status logical
+#' @return sf data.frame containing points retrieved. Names include
+#' "id", "distance_m", "elevation_m", "spatial_ref", "geometry",
+#' and ".group". .group tracks which input point each set of output
+#' points belongs to.
 #' @export
 #' @examples
 #' \donttest{
@@ -209,7 +218,7 @@ get_xs_points <- function(point1, point2, num_pts, res = 1) {
 #'
 #' points <- c(point1, point2, point3) %>% sf::st_as_sf()
 #'
-#' (xs <- get_xs_points(points, 100))
+#' (xs <- get_elev_along_path(points, 100))
 #'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
@@ -224,24 +233,22 @@ get_xs_points <- function(point1, point2, num_pts, res = 1) {
 #'
 #' }
 #'
-get_elev_along_path <- function(points, num_pts, res = 1) {
+get_elev_along_path <- function(points, num_pts, res = 1, status = TRUE) {
 
   url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
 
   url <- paste0(url_base, "nldi-xsatendpts/execution")
 
-  if(!res %in% c(1, 3, 5, 10, 30, 60)) {
-    stop("res input must be on of 1, 3, 5, 10, 30, 60")
-  }
+  check_res(res)
 
-  get_elev(url, make_json_input_xspts, points, num_pts, res)
+  get_elev(url, make_json_input_xspts, points, num_pts, res, status)
 
 }
 
 
-get_elev <- function(url, fun, points, num_pts, res) {
+get_elev <- function(url, fun, points, num_pts, res, status) {
 
-  points <- split(points, as.numeric(rownames(points)))
+  points <- split(points, seq_len(nrow(points)))
 
   points <- lapply(points, check_point)
 
@@ -251,6 +258,9 @@ get_elev <- function(url, fun, points, num_pts, res) {
   dist <- vector()
 
   for(i in 1:(length(points)-1)) {
+
+    if(status)
+      message(paste("Requestion segment", i, "of", (length(points)-1)))
 
     data <- get_xs(url, fun, points[[i]], points[[i+1]], num_pts, res)
 

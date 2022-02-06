@@ -330,6 +330,8 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' of the requested network and optionally a terminal id.
 get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
+  class_x <- class(x)
+
   x <- as.data.frame(x)
 
   # nrow to reuse
@@ -426,6 +428,10 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
     ### adds grouping terminalID to x ###
     x <- dplyr::left_join(x, out_list, by = names(x)[1])
 
+  }
+
+  if("sf" %in% class_x) {
+    try(x <- sf::st_sf(x))
   }
 
   return(x)

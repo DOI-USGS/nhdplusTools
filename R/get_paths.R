@@ -63,7 +63,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   }
 
   x <- x %>% # get downstream name ID added
-    left_join(select(x, .data$ID, ds_nameID = .data$nameID),
+    left_join(drop_geometry(select(x, .data$ID, ds_nameID = .data$nameID)),
               by = c("toID" = "ID")) %>%
     # if it's na, we need it to be an empty string
     mutate(ds_nameID = ifelse(is.na(.data$ds_nameID),

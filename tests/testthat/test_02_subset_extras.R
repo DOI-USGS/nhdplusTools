@@ -134,7 +134,7 @@ test_that("by rpu", {
 
   suppressWarnings(sample_flines <- dplyr::left_join(
     dplyr::select(sample_flines, COMID, RPUID, TerminalPa,
-                  ArbolateSu, DnHydroseq, Pathlength, FTYPE),
+                  ArbolateSu, DnHydroseq, Pathlength, FCODE),
     prepare_nhdplus(sample_flines,
                     0, 0, 0, FALSE), by = "COMID"))
 

@@ -29,4 +29,5 @@ test_that("vaa examples", {
 
   expect_error(capture_messages(get_vaa("bad", updated_network = TRUE)))
 
+  expect_true("tocomid" %in% get_vaa_names(updated_network = TRUE))
 })

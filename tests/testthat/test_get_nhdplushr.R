@@ -142,6 +142,16 @@ test_that("make_standalone", {
   expect_equal(sa_UT, fl_UT)
 
   expect_true(all(sa[sa$Hydroseq == min(sa$Hydroseq), ][c("DnLevel", "DnLevelPat", "DnHydroseq")] == 0))
+
+  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+  sample_flines <- get_tocomid(sample_flines)
+
+  sample_flines[sample_flines$tocomid == 0] <- "12345"
+
+  sample_flines <- make_standalone(sample_flines)
+
+  expect_true(0 %in% sample_flines$toCOMID)
 })
 
 unlink(work_dir, recursive = TRUE)

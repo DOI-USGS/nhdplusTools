@@ -4,7 +4,7 @@
 \alias{subset_rpu}
 \title{Subset by Raster Processing Unit.}
 \usage{
-subset_rpu(fline, rpu, run_make_standalone = TRUE)
+subset_rpu(fline, rpu, run_make_standalone = TRUE, strict = FALSE)
 }
 \arguments{
 \item{fline}{sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM,
@@ -14,6 +14,9 @@ Hydroseq, LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.}
 
 \item{run_make_standalone}{logical default TRUE
 should the run_make_standalone function be run on result?}
+
+\item{strict}{logical if TRUE, paths that extend outside the RPU but
+have no tributaries in the upstream RPU will be included in the output.}
 }
 \value{
 data.frame containing subset network

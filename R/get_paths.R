@@ -321,6 +321,11 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' @description given a tree with an id and and toid in the
 #' first and second columns, returns a sorted and potentially
 #' split set of output.
+#'
+#' Can also be used as a very fast implementation of upstream
+#' with tributaries navigation. The full network from each
+#' outlet is returned in sorted order.
+#'
 #' @export
 #' @param x data.frame with an identifier and to identifier in the
 #' first and second columns.
@@ -329,7 +334,7 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' outlet id of each independent network is added as a "terminalID"
 #' attribute.
 #' @param outlets same as id in x; if specified only the network
-#' eminating from these outlets will be considered and returned.
+#' emanating from these outlets will be considered and returned.
 #' @return data.frame containing a topologically sorted version
 #' of the requested network and optionally a terminal id.
 get_sorted <- function(x, split = FALSE, outlets = NULL) {

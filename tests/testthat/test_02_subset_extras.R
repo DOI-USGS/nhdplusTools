@@ -152,18 +152,41 @@ test_that("big rpu test", {
 
   vaa <- get_vaa(atts = c("comid", "pathlength", "lengthkm",
                           "hydroseq", "dnhydroseq", "levelpathi",
-                          "rpuid", "vpuid", "fromnode", "fcode",
-                          "tonode", "arbolatesu", "terminalfl",
-                          "terminalpa", "dnlevelpat"))
+                          "rpuid", "vpuid", "fcode", "arbolatesu",
+                          "terminalfl", "terminalpa", "dnlevelpat"))
 
   vaa <- dplyr::filter(vaa, vpuid == "14")
 
   sub <- subset_rpu(vaa, "14a", strict = TRUE)
 
+  expect_equal(names(sub), names(vaa))
+
   sub2 <- subset_rpu(vaa, "14a", strict = FALSE)
 
-  expect_false(1356902 %in% sub$COMID)
-  expect_true(1356902 %in% sub2$COMID)
+  expect_false(1356902 %in% sub$comid)
+  expect_true(1356902 %in% sub2$comid)
+
+  vaa_new <- get_vaa(atts = c("comid", "tocomid", "pathlength", "lengthkm",
+                          "hydroseq", "dnhydroseq", "levelpathi",
+                          "fcode", "terminalfl", "terminalpa",
+                          "dnlevelpat"),
+                 updated_network = TRUE)
+
+  vaa_new <- dplyr::right_join(vaa_new,
+                               vaa[c("comid", "rpuid", "vpuid")],
+                               by = "comid")
+
+  vaa_new$arbolatesu <- calculate_arbolate_sum(
+    dplyr::select(vaa_new, ID = comid, toID = tocomid, length = lengthkm))
+
+  sub <- subset_rpu(vaa_new, "14a", strict = TRUE)
+
+  expect_equal(names(sub), names(vaa_new))
+
+  sub2 <- subset_rpu(vaa, "14a", strict = FALSE)
+
+  expect_false(1356902 %in% sub$comid)
+  expect_true(1356902 %in% sub2$comid)
 })
 
 test_that("projection check", {

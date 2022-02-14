@@ -795,6 +795,13 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 
   fline <- check_names(fline, "subset_rpu", tolower = TRUE)
 
+  if(!any(c("tocomid") %in% names(fline))) {
+    # derive tocomid from dnhydroseq
+    # this avoids using get_tocomid() which requires additional attributes.
+    fline$tocomid <- fline$comid[match(fline$dnhydroseq, fline$hydroseq)]
+    fline$tocomid[is.na(fline$tocomid)] <- 0
+  }
+
   # Filter so only navigable flowlines are included.
   fline <- fline[fline$comid %in% get_all_navigable(fline, rpu), ]
 
@@ -852,28 +859,21 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 
   fline <- select(fline, -.data$lp_top, -.data$lp_bot)
 
+  if(run_make_standalone) {
+    fline <- make_standalone(fline)
+  }
+
+  if(!any(grepl("tocomid", orig_names, ignore.case = TRUE))) {
+    fline <- select(fline, -.data$toCOMID) # case if required for make_standalone
+  }
+
   names(fline) <- orig_names
 
-  if(run_make_standalone) {
-    make_standalone(fline)
-  } else {
-    fline
-  }
+  fline
 }
 
 #' @noRd
 get_all_navigable <- function(fline, rpu) {
-
-  if("tocomid" %in% names(fline))
-    fline <- dplyr::rename(fline, tocomid = .data$tocomid)
-
-  if(!any(c("tocomid") %in% names(fline))) {
-    # derive tocomid from dnhydroseq
-    # this avoids using get_tocomid() which requires additional attributes.
-    fline$tocomid <- fline$comid[match(fline$dnhydroseq, fline$hydroseq)]
-    fline$tocomid[is.na(fline$tocomid)] <- 0
-
-  }
 
   # Find all outlets of current rpu and sort by size
   outlets <- filter(drop_geometry(fline), .data$rpuid %in% rpu)

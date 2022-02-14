@@ -178,13 +178,15 @@ assign("add_plus_network_attributes_attributes",
        envir = nhdplusTools_env)
 
 assign("subset_rpu_attributes",
-       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
-         "ArbolateSu"),
+       c("COMID", "Pathlength", "LENGTHKM",
+         "Hydroseq", "LevelPathI", "DnLevelPat",
+         "RPUID", "ArbolateSu", "TerminalPa"),
        envir = nhdplusTools_env)
 
 assign("subset_vpu_attributes",
-       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
-         "VPUID", "ArbolateSu"),
+       c(get("subset_rpu_attributes",
+             envir = nhdplusTools_env),
+         "VPUID"),
        envir = nhdplusTools_env)
 
 assign("fix_flowdir_attributes",

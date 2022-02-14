@@ -127,7 +127,10 @@ test_that("by rpu", {
 
   sample_flines <- readRDS(staged_nhdplus$flowline)
 
-  expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
+  out <- subset_rpu(sample_flines, rpu = "07b")
+
+  expect_equal(names(out), names(sample_flines))
+  expect(nrow(out), 267)
   expect(nrow(subset_rpu(sample_flines, rpu = "07b",
                          run_make_standalone = TRUE)), 267)
 

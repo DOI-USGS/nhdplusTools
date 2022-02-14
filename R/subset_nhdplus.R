@@ -883,16 +883,10 @@ get_all_navigable <- function(fline, rpu) {
 
   outlets <- arrange(outlets, desc(.data$arbolatesu))
 
-  if(nrow(outlets) < 100) {
-    old_opt <- pbapply::pboptions(type = "none")
-    on.exit(pbapply::pboptions(type = old_opt$type))
-  }
+  network <- get_sorted(fline[c("comid", "tocomid")],
+                        split = FALSE, outlets = outlets$comid)
 
-  # run nhdplusTools::get_UT for all outlets and concatenate.
-  network <- pbapply::pblapply(outlets$comid,
-                               function(x, fline) get_UT(fline, x),
-                               fline = fline)
-  do.call(c, network)
+  network$comid
 }
 
 #' @noRd

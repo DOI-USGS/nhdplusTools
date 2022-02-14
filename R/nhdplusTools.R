@@ -90,7 +90,7 @@ nhdplus_attributes <- list(
 
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
-assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
+assign("geoserver_root", "https://nhgf.dev-wma.chs.usgs.gov/geoserver/",
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",
@@ -237,6 +237,9 @@ check_names <- function(x, function_name, align = TRUE, tolower = FALSE) {
 
   if(tolower) {
     names(x) <- tolower(names(x))
+    if(inherits(x, "sf")) {
+      attr(x, "sf_column") <- tolower(attr(x, "sf_column"))
+    }
   }
 
   return(x)

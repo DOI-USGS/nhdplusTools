@@ -43,17 +43,17 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                                       'nhd','catchment', 'nhdarea',
                                       'nonnetwork',
                                       'waterbodies',
-                                      'gagesII'),
+                                      'gagesII', "gagesII-basin"),
                        geoserver  = c("huc08","huc12",
                                       "nhdflowline_network", "catchmentsp", 'nhdarea',
                                       "nhdflowline_nonnetwork",
                                       "nhdwaterbody",
-                                      "gagesii"),
+                                      "gagesii", "gagesii_basins"),
                        ids        = c("huc8", "huc12",
                                       "comid", "featureid", "comid",
                                       "comid",
                                       "comid",
-                                      "staid"))
+                                      "staid", "gage_id"))
 
   if(is.null(type)){ return(source) }
 

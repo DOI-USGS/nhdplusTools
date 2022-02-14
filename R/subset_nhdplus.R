@@ -755,12 +755,21 @@ subset_vpu <- function(fline, vpu,
 
   }
 
-  names(all_vpu) <- orig_names
-
-  return(all_vpu)
+  return(recase_sf(all_vpu, orig_names))
 
 }
 
+recase_sf <- function(x, orig_names) {
+  names(x) <- orig_names
+
+  if(inherits(x, "sf")) {
+    attr(x, "sf_column") <- orig_names[grepl(attr(x, "sf_column"),
+                                             orig_names,
+                                             ignore.case = TRUE)]
+  }
+
+  x
+}
 
 
 #' Subset by Raster Processing Unit.
@@ -867,9 +876,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
     fline <- select(fline, -.data$toCOMID) # case if required for make_standalone
   }
 
-  names(fline) <- orig_names
-
-  fline
+  recase_sf(fline, orig_names)
 }
 
 #' @noRd

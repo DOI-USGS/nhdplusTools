@@ -4,14 +4,14 @@
 \alias{get_gagesII}
 \title{Find GAGESII Features}
 \usage{
-get_gagesII(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5)
+get_gagesII(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5, basin = FALSE)
 }
 \arguments{
 \item{AOI}{sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
 be provided as either a location (sf POINT) or area (sf POLYGON)
 in any Spatial Reference System.}
 
-\item{id}{NWIS Gage ID(s)}
+\item{id}{character NWIS Gage ID(s)}
 
 \item{t_srs}{character (PROJ string or EPSG code) or numeric (EPSG code).
 A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.
@@ -19,6 +19,9 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 
 \item{buffer}{numeric. The amount (in meters) to buffer a POINT AOI by for an
 extended search. Default = 0.5}
+
+\item{basin}{logical should the gagesII basin also be returned? If True,
+return value will be a list with "site" and "basin" elements.}
 }
 \value{
 a simple features (sf) object

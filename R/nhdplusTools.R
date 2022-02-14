@@ -90,7 +90,7 @@ nhdplus_attributes <- list(
 
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
-assign("geoserver_root", "https://nhgf.dev-wma.chs.usgs.gov/geoserver/",
+assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",

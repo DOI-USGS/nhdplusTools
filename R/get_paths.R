@@ -183,8 +183,6 @@ get_path <- function(x, tailID, matcher, status) {
 
   while(keep_going) {
     tryCatch({
-      if(length(tailID) == 0) browser()
-
       next_tails <- x[matcher[[as.character(tailID)]], ]
 
       if(nrow(next_tails) > 1) {

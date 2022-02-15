@@ -7,8 +7,9 @@
 subset_vpu(fline, vpu, include_null_rpuid = TRUE, run_make_standalone = TRUE)
 }
 \arguments{
-\item{fline}{sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM,
-Hydroseq, LevelPathI, RPUID, VPUID, ToNode, FromNode, and ArbolateSu.}
+\item{fline}{sf data.frame NHD Flowlines with comid, pathlength, lengthkm,
+hydroseq, levelpathi, rpuid, vpuid, and arbolatesu
+(dnhydroseq is required if tocomid is not provided).}
 
 \item{vpu}{character e.g. "01"}
 

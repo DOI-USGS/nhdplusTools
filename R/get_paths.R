@@ -40,7 +40,7 @@
 #'
 get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NULL) {
 
-  x <- check_names(x, "get_levelpaths")
+  x <- check_names(drop_geometry(x), "get_levelpaths")
 
   x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
 
@@ -63,7 +63,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   }
 
   x <- x %>% # get downstream name ID added
-    left_join(select(x, .data$ID, ds_nameID = .data$nameID),
+    left_join(drop_geometry(select(x, .data$ID, ds_nameID = .data$nameID)),
               by = c("toID" = "ID")) %>%
     # if it's na, we need it to be an empty string
     mutate(ds_nameID = ifelse(is.na(.data$ds_nameID),
@@ -112,7 +112,9 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   while(done < nrow(x) & checker < 10000000) {
     tail_topo <- outlets$topo_sort
 
-    pathIDs <- if(!is.null(cl)) {
+    pathIDs <- if(nrow(outlets) == 1) {
+      list(par_get_path(as.list(outlets), x, matcher, status))
+    } else if(!is.null(cl)) {
       parallel::parApply(cl = cl,
                          outlets[sample(nrow(outlets)), ], 1, par_get_path,
                          x_in = x, matcher = matcher,
@@ -157,9 +159,9 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
 }
 
 par_get_path <- function(outlet, x_in, matcher, status) {
-  out <- get_path(x = x_in, tailID = outlet[names(outlet) == "ID"],
+  out <- get_path(x = x_in, tailID = outlet[names(outlet) == "ID"][[1]],
                   matcher = matcher, status = status)
-  data.frame(ID = out, levelpath = rep(outlet[names(outlet) == "topo_sort"], length(out)))
+  data.frame(ID = out, levelpath = rep(outlet[names(outlet) == "topo_sort"][[1]], length(out)))
 }
 
 #' get level path
@@ -179,38 +181,38 @@ get_path <- function(x, tailID, matcher, status) {
 
   toID <- NULL
 
-  tryCatch({
   while(keep_going) {
+    tryCatch({
+      next_tails <- x[matcher[[as.character(tailID)]], ]
 
-    next_tails <- x[matcher[[as.character(tailID)]], ]
+      if(nrow(next_tails) > 1) {
 
-    if(nrow(next_tails) > 1) {
+        next_tails <- next_tails[next_tails$weight == max(next_tails$weight), ]
 
-      next_tails <- next_tails[next_tails$weight == max(next_tails$weight), ]
+      }
 
-    }
+      if(nrow(next_tails) == 0) {
 
-    if(nrow(next_tails) == 0) {
+        keep_going <- FALSE
 
-      keep_going <- FALSE
+      }
 
-    }
+      if(tailID %in% tracker) stop(paste0("loop at", tailID))
 
-    if(tailID %in% tracker) stop(paste0("loop at", tailID))
+      tracker[counter] <- tailID
 
-    tracker[counter] <- tailID
+      counter <- counter + 1
 
-    counter <- counter + 1
+      tailID <- next_tails$ID
 
-    tailID <- next_tails$ID
-
-    if(status && counter %% 1000 == 0) message(paste("long mainstem", counter))
+      if(status && counter %% 1000 == 0) message(paste("long mainstem", counter))
+    }, error = function(e) {
+      stop(paste0("Error with outlet tailID ", tailID, "\n",
+                  "Original error was \n", e))
+    })
 
   }
-  }, error = function(e) {
-    stop(paste0("Error with outlet tailID ", tailID, "\n",
-                "Original error was \n", e))
-  })
+
 
   return(tracker[!is.na(tracker)])
 }
@@ -317,6 +319,11 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' @description given a tree with an id and and toid in the
 #' first and second columns, returns a sorted and potentially
 #' split set of output.
+#'
+#' Can also be used as a very fast implementation of upstream
+#' with tributaries navigation. The full network from each
+#' outlet is returned in sorted order.
+#'
 #' @export
 #' @param x data.frame with an identifier and to identifier in the
 #' first and second columns.
@@ -325,10 +332,12 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' outlet id of each independent network is added as a "terminalID"
 #' attribute.
 #' @param outlets same as id in x; if specified only the network
-#' eminating from these outlets will be considered and returned.
+#' emanating from these outlets will be considered and returned.
 #' @return data.frame containing a topologically sorted version
 #' of the requested network and optionally a terminal id.
 get_sorted <- function(x, split = FALSE, outlets = NULL) {
+
+  class_x <- class(x)
 
   x <- as.data.frame(x)
 
@@ -426,6 +435,10 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
     ### adds grouping terminalID to x ###
     x <- dplyr::left_join(x, out_list, by = names(x)[1])
 
+  }
+
+  if("sf" %in% class_x) {
+    try(x <- sf::st_sf(x))
   }
 
   return(x)

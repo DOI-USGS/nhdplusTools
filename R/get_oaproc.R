@@ -216,7 +216,7 @@ check_res <- function(res) {
 #' point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
 #' point3 <- sf::st_sfc(sf::st_point(x = c(-105.98869, 36.17450)), crs = 4326)
 #'
-#' points <- c(point1, point2, point3) %>% sf::st_as_sf()
+#' points <- sf::st_as_sf(c(point1, point2, point3))
 #'
 #' (xs <- get_elev_along_path(points, 100))
 #'

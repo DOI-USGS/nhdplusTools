@@ -37,6 +37,12 @@
 add_plus_network_attributes <- function(net, override = 5,
                                         cores = NULL, split_temp = NULL,
                                         status = TRUE) {
+  add_sf <- FALSE
+  if(inherits(net, "sf")) {
+    add_sf <- TRUE
+    geom <- dplyr::select(net)
+    net <- drop_geometry(net)
+  }
 
   check_names(net, "add_plus_network_attributes", align = FALSE)
 
@@ -186,6 +192,10 @@ add_plus_network_attributes <- function(net, override = 5,
     group_by(.data$terminalpa) %>%
     mutate(terminalfl = ifelse(.data$hydroseq == min(.data$hydroseq), 1, 0)) %>%
     ungroup()
+
+  if(add_sf) {
+    net <- sf::st_sf(cbind(net, geom))
+  }
 
   net
 }

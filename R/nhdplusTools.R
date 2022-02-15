@@ -155,12 +155,12 @@ assign("get_pfaf_attributes",
 
 assign("make_standalone_tonode_attributes",
        c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
-         "LevelPathI", "FTYPE"),
+         "LevelPathI", "FCODE"),
        envir = nhdplusTools_env)
 
 assign("make_standalone_tocomid_attributes",
        c("COMID", "toCOMID", "Hydroseq", "TerminalPa",
-         "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+         "LevelPathI", "FCODE"), envir = nhdplusTools_env)
 
 assign("get_waterbody_index_waterbodies_attributes",
        c("COMID"), envir = nhdplusTools_env)
@@ -178,13 +178,15 @@ assign("add_plus_network_attributes_attributes",
        envir = nhdplusTools_env)
 
 assign("subset_rpu_attributes",
-       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
-         "ArbolateSu"),
+       c("COMID", "Pathlength", "LENGTHKM",
+         "Hydroseq", "LevelPathI", "DnLevelPat",
+         "RPUID", "ArbolateSu", "TerminalPa"),
        envir = nhdplusTools_env)
 
 assign("subset_vpu_attributes",
-       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq", "LevelPathI", "RPUID",
-         "VPUID", "ArbolateSu"),
+       c(get("subset_rpu_attributes",
+             envir = nhdplusTools_env),
+         "VPUID"),
        envir = nhdplusTools_env)
 
 assign("fix_flowdir_attributes",
@@ -235,6 +237,9 @@ check_names <- function(x, function_name, align = TRUE, tolower = FALSE) {
 
   if(tolower) {
     names(x) <- tolower(names(x))
+    if(inherits(x, "sf")) {
+      attr(x, "sf_column") <- tolower(attr(x, "sf_column"))
+    }
   }
 
   return(x)

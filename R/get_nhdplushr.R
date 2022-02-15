@@ -232,11 +232,12 @@ cull_cols <- function(x, keep_cols) {
 #'}
 make_standalone <- function(flowlines) {
 
-  if("toCOMID" %in% names(flowlines)) {
+  if(any(grepl("tocomid", names(flowlines), ignore.case = TRUE))) {
     flowlines <- check_names(flowlines, "make_standalone_tocomid")
 
     # Remove non-terminal coastal flowlines
-    flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$Hydroseq != flowlines$TerminalPa), ]
+    flowlines <- flowlines[!(flowlines$FCODE == 566 &
+                               flowlines$Hydroseq != flowlines$TerminalPa), ]
 
     outlets <- select(drop_geometry(flowlines),
                       .data$COMID, .data$toCOMID,
@@ -250,7 +251,7 @@ make_standalone <- function(flowlines) {
     flowlines <- check_names(flowlines, "make_standalone_tonode")
 
     # Remove non-terminal coastal flowlines
-    flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$TerminalFl != 1), ]
+    flowlines <- flowlines[!(flowlines$FCODE == 566 & flowlines$TerminalFl != 1), ]
 
     outlets <- select(drop_geometry(flowlines),
                       .data$COMID, .data$ToNode,
@@ -279,6 +280,10 @@ make_standalone <- function(flowlines) {
 fix_term <- function(term, flowlines) {
   term_hydroseq <- term$Hydroseq
   term_comid <- term$COMID
+
+  if("toCOMID" %in% names(term)) {
+    flowlines$toCOMID[flowlines$COMID == term_comid] <- 0
+  }
 
   # old_term_levelpath is the levelpath of the mainstem of the basin.
   old_term_levelpath <- flowlines$LevelPathI[flowlines$Hydroseq == term_hydroseq]

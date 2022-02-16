@@ -191,7 +191,7 @@ lp <-  unique(lp$levelpath)
 # Terminal Flowpath 
 terminal_fpath <- dplyr::filter(fpath, comid %in% terminalID)
 
-gif_file <- tempfile(fileext = ".gif")
+gif_file <- "levelpath.gif"
 
 gifski::save_gif({
   for(i in 1:length(lp)) {

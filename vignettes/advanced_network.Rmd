@@ -21,6 +21,7 @@ if(local) {
 
 knitr::opts_chunk$set(
   collapse = TRUE,
+  warning = FALSE,
   comment = "#>",
   fig.width=6, 
   fig.height=4,
@@ -34,180 +35,164 @@ oldoption <- options(scipen = 9999,
 
 ```
 
-## Terminology
+### Terminology
 
-Terms used below are derived from [graph theoretic](https://en.wikipedia.org/wiki/Graph_theory) concepts, the [HY\_Features](http://opengeospatial.github.io/HY_Features/) data model, and the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus) data model. Many of the concepts here are also presented in: [Mainstems: A logical data model implementing *mainstem* and *drainage* basin feature types based on WaterML2 Part 3: HY Features concepts](https://doi.org/10.1016/j.envsoft.2020.104927) The context that terms are used is noted in line.
+The terms used below are derived from concepts of [graph theory](https://en.wikipedia.org/wiki/Graph_theory), the [HY\_Features](http://opengeospatial.github.io/HY_Features/) data model, and the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus) data model. Many of the concepts here are also presented in: [Mainstems: A logical data model implementing *mainstem* and *drainage* basin feature types based on WaterML2 Part 3: HY Features concepts](https://doi.org/10.1016/j.envsoft.2020.104927).
 
-## Introduction
+# Introduction
 
-The NHDPlus data model includes numerous value added attributes. This vignette discusses a core set of advanced network attributes that the nhdplusTools package can create based on readily available inputs. The vignette begins with some background that is necessary to understand what these attributes are then demonstrates how to create them based on some basic input data. These attributes are documented in the NHDPlus manual, [available here](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus), and every effort has been made to faithfully implement their meaning.
+The NHDPlus data model includes many 'value added attributes' (VAA). This vignette discusses a core set of VAA's that `nhdplusTools` can create from readily available hydrograhic inputs. The vignette begins with a background needed to understand what these attributes are, and then demonstrates how to create them based on some basic input data. These attributes are documented in the [NHDPlus manual](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus), and every effort has been made to faithfully implement their meaning. 
 
-NOTE: The nhdplusTools package does not support creation of all the attributes discussed below. Those that are not supported directly can be created based on basic transformations of attributes that nhdplusTools does support.
+While the `nhdplusTools` package contains other functions to generate network attributes, (e.g. `get_pfaf()` for Pfafstetter codes and `get_streamorder()` for stream orders) this vignette focuses on the advanced network VAAs from the NHDPlus data model that revolve around the **hydrosequence** and **levelpath**.
 
-## Network topology representation
+## Representing Network Topology
 
-The topology of a network of flowpaths can be represented either as an edge-to-edge (sometimes called an edge list) topology or a more complete edge-node topology. As is discussed in greater detail below, the NHDPlus includes both an edge list and an edge-node topology. An edge list expresses the connectivity between edges only. Nodes (confluences in the context of rivers) must be inferred. An edge-node topology has explicit identifiers for nodes such that the nodes themselves can be referred to by identifier. 
+A network of flowpaths can be represented as an edge-to-edge (e.g. edge list) or edge-node topology. An edge list only expresses the connectivity between _edges_ (flowpaths in the context of rivers), requiring _nodes_ (confluences in the context of rivers) to be inferred. 
 
-As of the current draft of this vignette (2/2022) the nhdplusTools package works on a edge list representation only. Additionally, the advanced network attributes implemented to date, are those that do not involve divergences. This implies that the network is a tree-graph represented as an edge-list. Practically, this means the network takes the form:
+As 2/2022 `nhdplusTools` works on edge list representations only. Practically, this means the network takes the form:
 
 ```{r, echo=FALSE, eval=TRUE}
-print.data.frame(data.frame(id = c(1, 2, 3), toid = c(NA, 1, 2)), row.names = FALSE)
+print.data.frame(data.frame(ID = c(1, 2, 3), toID = c(NA, 1, 2)), row.names = FALSE)
 ```
 
-NOTE: The "toid" of a terminal flowpath can be NA or, by convention, 0. As long as "id" 0 is not in the set of ids, this is of little practical difference. Using 0 is preferred within the code of nhdplusTools but both are handled in input in most cases.
+The "toID" of a terminal flowpath can be  either NA or, by convention, 0. Using 0 is preferred within `nhdplusTools` but both are handled in most cases. Further, as long as 0 is not in the set of IDs, there is little practical difference.
 
 ## Hydrosequence
 
-The NHDPlus data model includes an attribute called *hydrosequence* that, for all practical purposes is a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of the flowpath network. It is an integer identifier that is guaranteed to decrease in the downstream direction. **For flowpaths that are not connected by a single direction navigation  (are on two parallel tributaries for example) the hydrosequence has no significance.** However, if two flowpaths are navigable in this way, the downstream flowpath will always have the smaller hydrosequence. 
+The NHDPlus data model includes an attribute called *hydrosequence* that is functionally a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of the flowpath network. It provides an integer identifier guaranteed to decrease in the downstream direction. For flowpaths that are not connected by a single direction navigation (e.g. parallel tributaries) the hydrosequence has no significance. However, when two flowpaths have a direct navigation, the downstream flowpath will always have the smaller hydrosequence. `nhdplusTools` supports creation of hydrosequence with the `get_sorted()` function.
 
-The importance of hydrosequence is hard to overstate. Anything that requires (for example) sorting according to upstream-downstream relationships, visiting flowpaths in a guaranteed upstream-downstream order, or testing which of a set is upstream of the others requires a sorted version of the flowpath network. 
-
-In the NHDPlus data model, a tree-graph edge-list topology is stored in the form of the hydrosequence and a to hydrosequence attributes. The equivalent is available from nhdplusTools, but the package does not use the to hydrosequence convention, preferring to use the primary identifier (id or comid) attribute and an accompanying toid or tocomid instead. There is more on this difference between nhdplusTools and the NHDPlus data model in the Other Derived Attributes section, but first it's important to touch on the concept of level path.
-
-nhdplusTools supports creation of hydrosequence with the `get_sorted()` function.
+It is hard to overstate the importance of hydrosequence as _any_ function that requires understanding upstream-downstream relationships requires a sorted version of the flowpath network. In the NHDPlus data model, a edge-list topology is stored in the form of a hydrosequence and 'to hydrosequence' attribute. The equivalent is available in `nhdplusTools`, but does not use the to hydrosequence convention, preferring the primary identifier (ID or comid) and an accompanying toID/tocomid.
 
 ## Level Path
 
-A level path is derived from the notion of "stream level" which assigns an integer "level" to mainstem rivers from bottom up (see NHDPlus documentation for more). That is, rivers terminating to the ocean are given level 1 and this level extends all the way to their headwater. Rivers terminating in level 1 rivers are given level 2, and so on. A level path is one of these stream level paths and it can be given an identifier. The convention used in NHDPlus is to set the levelpath to the hydrosequence of the path's outlet. 
+A level path is derived from "stream level" which assigns an integer value to mainstem rivers from outlet up the network (see NHDPlus documentation for more). Rivers terminating to the ocean are given level 1 and this level extends all the way to the headwaters. Rivers terminating in level 1 rivers are given level 2, and so on.  
 
-"Stream leveling" is the process of establishing the "level paths" through a stream network. This is accomplished with a set of rules that determine which tributary should be considered to be dominant at every confluence. This process effectively establishes the "mainstem rivers" for every "drainage basin" in a network. 
+"Stream leveling", then, is the process of establishing uniquely identified "level paths" through a stream network. This is accomplished with a set of rules that determine which tributary should be considered dominant at every confluence to establish the "mainstem rivers" for each "drainage basin" in a network.  `nhdplusTools` supports creation of streamlevel with the `get_streamlevel()` function, and the creation of level path with `get_levelpath()`. The convention used in NHDPlus is to assign the levelpath as the hydrosequence of the path's outlet. 
 
 See [Mainstems: A logical data model implementing *mainstem* and *drainage* basin feature types based on WaterML2 Part 3: HY Features concepts](https://doi.org/10.1016/j.envsoft.2020.104927) for an in depth discussion of these concepts.
 
-## Other Derived Attributes
+## Other Derived Network Attributes
 
-There are a number of attributes that can be derived from levelpath and hydrosequence:
-1. terminal path is the identifier (hydrosequence or primary id) of the terminal flowpath of a given complete network where the outlet is thought to be "terminal".
-1. up hydrosequence is the identifier of the upstream flowpath along the mainstem
-1. down hydrosequence is the identifier of the downstream flowpath along the mainstem
-1. up level path is the identifier of the next downstream levelpath along the mainstem
-1. down level path is the identifier of the next downstream levelpath along the mainstem
+A number of additional attributes can be derived once `levelpath` and `hydrosequence` are established. These include:
 
-The `add_plus_network_attributes()` function, demonstrated below, does not support up levelpath or up hydrosequence as of 2/2022.
+1. **terminal path**: the identifier (hydrosequence or primary id) of the terminal flowpath of network.
+2. **up hydrosequence**: the identifier of the upstream flowpath on the mainstem
+3. **down hydrosequence**: the identifier of the downstream flowpath on the mainstem
+4. **up level path**: the identifier of the next upstream levelpath on the mainstem
+5. **down level path**: the identifier of the next downstream levelpath on the mainstem
+6. **path length:** The distance to the network outlet downstream along the main path.
+7. **total drainage area:** Total accumulated area from upstream flowpath's catchment area.
+8. **arbolate sum:** The total accumulated length of upstream flowpaths.
+9. **terminal flag:** A simple 0 or 1 indicating whether a flowpath is a terminal path or not.
 
-## Required physical attributes
+## Required Base Attributes
 
-**fromnode / tonode**: from and to nodes can be used to generate an edge to edge flowpath topology.
+Creating levelpath and hydrosequence identifiers requires a set of base attributes that include:
 
-**length:** is required for each flowpath in the network. It is used in a number of contexts when determining flow distance and if using the arbolate sum (sum of all upstream flowpath lengths) metric for stream leveling.
+1. **fromnode / tonode**: from and to nodes can be used to generate an edge to edge flowpath topology. In `nhdplusTools`, these can also be refered to as "comid/tocomid", or a more genral, "ID/toID".
 
-**area:** the local drainage area of each flowpath is useful in many contexts but is primarily used for calculating total drainage area.
+2. **length:** a length is required for each flowpath in the network to determine a flow distance, and, if using the arbolate sum for stream leveling.
 
-**weight:** for stream leveling, a weight metric is required to determine which upstream flowpath is dominant. In the NHD, the arbolate sum metric is used but any metric (total drainage area for example) can be used here.
+3. **area:** the local drainage area of each flowpath is useful in many contexts but is primarily used to calculate total drainage area.
 
-**name:** for stream leveling, many times it is preferrable to follow a consistently named path rather than strictly following a physical metric.
+4. **weight:** a weight metric is required for stream leveling to determine the dominant upstream flowpath. In the NHD, the arbolate sum is used however alternative metrics (e.g. total drainage area) can be used instead.
 
-**divergence:** in order to create a many:1 upstream to downstream flowpath topology, diverted paths must be labeled as such. This attribute, is 0 for normal (already many:1) connections, 1 for the main path through a divergence, and 2 for any diverted path through a divergence. 
+5. **name:** Many times it is preferable to follow a consistently named path (e.g. GNIS) rather a strict physical weight when stream leveling. In these cases a nameID can be provided.
 
-**feature type:** used to determine whether a feature is a stream, a coastal path, or some other type of connected network feature.
+6. **divergence:** in order to create a [many:1] upstream to downstream topology, diverted paths must be labeled as such. This attribute, is 0 for normal (already [many:1]) connections, 1 for the main path through a divergence, and 2 for any diverted path. 
 
-## Other derived attributes
+7. **feature type:** used to determine whether a feature is a stream, a coastal path, or some other type of connected network feature. This is the 'ftype' in the NHD data model.
 
-**path length:** The distance to the network outlet downstream along the main path.
+**NOTE**: The `nhdplusTools` package does not support creation of all attributes discussed here, however, those that are not directly supported can be created based on basic transformations of attributes that `nhdplusTools` does support.
 
-**total drainage area:** Total accumulated area from upstream flowpath's catchment area.
+# A visual introduction to the advanced network VAAs:
 
-**arbolate sum:** The total accumulated length of upstream flowpaths.
-
-**terminal flag:** A simple 0 or 1 indicating whether a flowpath is a terminal path or not.
-
-## A visual introduction to the advanced network attributes.
-
-Before creating any visuals, we need to generate the attributes. We'll start with the "New Hope" demo data included in the nhdplusTools package, strip the data back to the core required attributes and build up all the attributes discussed above.
+To illustrate the above concepts and attirbutes, we'll start with the "New Hope" demo data included in the `nhdplusTools` package:
 
 ```{r, echo=TRUE, eval=TRUE}
+# Import data
 source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
 
+# Strip the data back to the required base attributes
 fpath <- get_tocomid(
   dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
                 AreaSqKM, LENGTHKM, GNIS_ID)
 )
 
+# Print
 head(fpath <- select(sf::st_cast(fpath, "LINESTRING"), 
                      -tonode, -fromnode, -divergence, -ftype))
 ```
-### hydrosequence and terminal id
 
-After removing attributes used to generate the `tocomid` attribute, we have a `comid` and `tocomid` that represents the connectivity of the flowpath network as well as attributes required to generate additional network attributes. We'll start with hydrosequence and terminal path.
+### Hydrosequence and terminal ID
+
+After removing attributes used to generate the `tocomid` attribute, we have a `comid` and `tocomid` relation representing the connectivity of the network as well as attributes required to generate a sorted network with `get_sorted()`
 
 ```{r}
 head(fpath <- get_sorted(fpath, split = TRUE))
 ```
-In the above, we now have a `terminalID` attribute that is the outlet comid of the network we are working with. If multiple terminal networks had been provided, the `terminalID` would allow us to group the data by complete network (a convenient parallelization scheme). 
 
-What isn't obvious is that the order of the flowpaths has been updated such that headwaters come generally first and the terminal flowpath will be last. We can visualize this with a little animation.
+The `get_sorted()` function sorts the flowpaths such that headwaters come first and the terminal flowpath last. Additionally, it produces a `terminalID` representing the outlet ID of the network. If multiple terminal networks had been provided, the `terminalID` would allow us to group the data by complete subnetworks (a convenient parallelization scheme).  
 
-```{r}
-split_vec <- seq_len(nrow(fpath))
-split_vec <- split(split_vec, ceiling(seq_along(split_vec)/10))
+In contrast to the NHD, where the terminal path is identified by the hydrosequence ID of the outlet flowpath (meaning the outlet of a level path is left to a user to generate), `nhdplusTools` uses the more stable primary ID for identifying outlets to allow the hydrosequence / topo sort attribute to be generated and discarded as needed.
 
-gif_file <- tempfile(fileext = ".gif")
-gifski::save_gif({
-  for(i in 1:length(split_vec)) {
-    plot(sf::st_geometry(fpath), lwd = 0.5, col = "grey")
-    plot(sf::st_geometry(fpath)[do.call(c, split_vec[1:i])], add = TRUE)
-  }
-}, gif_file, delay = 0.01)
+We can visualize this sorting by assigning a temporary "sort_order" value to the sorted network rowwise.
 
-knitr::include_graphics(gif_file)
+```{r, echo = TRUE}
+fpath['sort_order'] <- 1:nrow(fpath)
+plot(fpath['sort_order'])
+fpath['sort_order'] <-  NULL
 ```
 
-NOTE: the logic used to generate this sort order only ensures that the flowpaths can be visited in upstream-downstream order. If the animation looks rather random other than upstream flowlines showing first, it's because there is no additional logic.
+### Level Path and outlet ID
 
-### levelpath
-
-Levelpath is a simple concept, but given how complex river networks are, it can get quite complex. To generate a levelpath attribute, first we need to decide how to determine the metric to use for "upstream mainstem". For this example we'll use arbolate sum, the same as is used for NHD and NHDPlus. These functions require some more general attribute names than is used in the NHDPlus, so we do some renaming in line.
-
-The `get_levelpaths()` function will add arbolate sum for us if we don't calculate it explicitly, but for the sake of clarity, we show it being added here and passed along as the `weight`. The other parameter we pass in, other than `ID` and `toID`, is a `nameID`. This name identifier is used to override the weight where a "smaller" river is has the same name, it will be used as the upstream "main" river. Note that there is an optional `override_factor` parameter (set to 5 here) -- if the weight is `override_factor` times larger on an unnamed or differently named upstream path, the weight will be used anyways. 
+To generate a levelpath attribute, a "physical" weight is needed to determine the upstream mainstem at divergences. For this example, we'll follow the NHD convention and calculate the arbolate sum explicitly. The `get_levelpaths()` function will add arbolate sum internally if no weight is explicitly defined.
 
 ```{r}
+# Rename and compute weight
 fpath[["arbolatesum"]] <- calculate_arbolate_sum(
   dplyr::select(fpath, 
                 ID = comid, toID = tocomid, length = lengthkm))
+```
 
+A `nameID` identifier can also be provided to override the physical `weight` when a "smaller" river has the same name. There is an optional `override_factor` parameter that signifies if the physical weight is `override_factor` times (e.g. 5) larger on an unnamed or differently named upstream path, the physical weight will be used in favor of the named ID. 
+
+As mentioned above, `nhdplusTools` favors more general naming of to/from nodes then the NHD, so names are modified accordingly.
+
+```{r}
+# Get levelpaths
 lp <- get_levelpaths(
   dplyr::select(fpath, 
-                ID = comid, toID = tocomid, nameID = gnis_id, weight = arbolatesum), 
+                ID = comid, toID = tocomid, 
+                nameID = gnis_id, weight = arbolatesum), 
   status = FALSE, override_factor = 5)
 
+# Print
 head(fpath <- dplyr::left_join(fpath, lp, by = c("comid" = "ID")))
-
 ```
-With levelpath added to our data.frame, let's visualize what this new attribute looks like. Below, we arrange the data.frame in ascending order (this results in a downstream to upstream sort order). We grab unique values of levelpath and use those to select groups of flowlines that share a levelpath identifier. The animation shows the current levelpath in red at each step and leaves those that have been added already on the plot as it goes. 
 
-NOTE: For clarity, this graphic only shows the levelpaths with more than two flowpaths.
+Note that the `get_levelpaths` adds an `outletID` signifying the overall network outlet ID (not topo sort / hydrosequence) by primary identifier. 
+
+Finally, let's visualize these advanced VAAs! 
+
+In the below animation, each newly added level path is shown in blue, with the outlet flowpath colored in red. Remembering that `get_sorted()` sorts flowpaths such that headwaters come first and the terminal flowpaths last we invert the network so that level paths fill in from outlet to head waters.  For clarity, only levelpaths with more than 2 flowlines are shown.
 
 ```{r}
-fpath <- dplyr::arrange(fpath, topo_sort)
+# Invert plotting order
+fpath <- dplyr::arrange(fpath, topo_sort) 
 
+# Level Paths with more then 2 flowpaths
 lp <- dplyr::group_by(fpath, levelpath) %>%
-  dplyr::filter(n() > 2)
+dplyr::filter(n() > 2) 
+
+# Unique Level Path ID
 lp <-  unique(lp$levelpath)
 
-gif_file <- tempfile(fileext = ".gif")
-gifski::save_gif({
-  for(i in 1:length(lp)) {
-    plot(sf::st_geometry(fpath), lwd = 0.5, col = "grey")
-    plot(sf::st_geometry(dplyr::filter(fpath, levelpath %in% lp[1:i])), add = TRUE)
-    plot(sf::st_geometry(dplyr::filter(fpath, levelpath == lp[i])), col = "red", add = TRUE)
-  }
-}, gif_file, delay = 0.5)
-
-knitr::include_graphics(gif_file)
-```
-
-The key detail that This should demonstrates is how the levelpaths that are added first are downstream of all others that have not yet been added.
-
-Two other attributes were added by `get_sorted()` and `get_levelpaths()`, `outletID` and `terminalID`. These attributes identify the levelpath outlet ID and overall network outlet ID (not topo sort / hydrosequence) respectively. In contrast, in NHDPlus, the terminal path identifies the hydrosequence identifier of the overall network outlet flowpath and the outlet of a level path is left to a user to generate. 
-
-nhdplusTools used the more stable primary ID for these attributes to allow the hydrosequence / topo sort attribute to be generated as needed and discarded for performance and simplicity.
-
-Let's visualize these attributes. For clarity, only outlets of levelpaths with more than 2 flowlines are shown.
-
-```{r}
+# Terminal Flowpath 
 terminal_fpath <- dplyr::filter(fpath, comid %in% terminalID)
 
 gif_file <- tempfile(fileext = ".gif")
+
 gifski::save_gif({
   for(i in 1:length(lp)) {
     lp_plot <- dplyr::filter(fpath, levelpath == lp[i])
@@ -224,18 +209,20 @@ gifski::save_gif({
 
 knitr::include_graphics(gif_file)
 ```
-While the nhdplusTools package has other functions that generate network attributes, `get_pfaf()` for Pfafstetter codes, `get_streamorder()` to get stream orders. This vignette focuses on the advanced network attributes from the NHDPlus data model that revolve around the hydrosequence and levelpath and will leave those functions for another time.
 
-Finally, it there is also a `add_plus_network_attributes()` function that automates creation of all the attributes discussed here. The strength of this function is performance and simplicity. It supports paralellization and will print status as it runs in case the network in question is very large. 
+# Summary
 
-NOTE: `add_plus_network_attributes()` returns NHDPlus attribute names (truncated per shapefile rules as is done in the NHDPlus database). The `terminalpa`, `levelpathi`, `dnlevelpat`, and `dnhydroseq` attributes are hydroseq identifiers as is the convention in NHDPlus, not primary identifiers (comids) as is returned from the base NHDPlus functions demonstrated above.
+This entire process of sorting the network and building hydrosequence, levelpath, and derivative variables is wrapped in the `add_plus_network_attributes()` function to provide performance and simplicity. It supports paralellization and will print status updates in the case when the input network is very large. `add_plus_network_attributes()` returns NHDPlus attribute names (truncated per shapefile rules as is done in the NHDPlus database). 
+
+The `terminalpa`, `levelpathi`, `dnlevelpat`, and `dnhydroseq` attributes are `hydroseq` identifiers as is the convention in NHDPlus, _not_ primary identifiers (comids) as is returned from the base functions demonstrated above.
+
+As of 2/2022, this function does not support the up level path or up hydrosequence noted in "Other Derived Network Attributes".
 
 ```{r}
 head(add_plus_network_attributes(dplyr::select(fpath, comid, tocomid, lengthkm, areasqkm, 
                                                nameID = gnis_id), status = TRUE))
-
-
 ```
+
 ```{r teardown, include=FALSE}
 options(oldoption)
 

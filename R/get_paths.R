@@ -335,6 +335,20 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' emanating from these outlets will be considered and returned.
 #' @return data.frame containing a topologically sorted version
 #' of the requested network and optionally a terminal id.
+#' @examples
+#' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+#'
+#' fpath <- get_tocomid(
+#'   dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
+#'                 AreaSqKM, LENGTHKM, GNIS_ID)
+#' )
+#'
+#' head(fpath <- get_sorted(fpath, split = TRUE))
+#'
+#' fpath['sort_order'] <- 1:nrow(fpath)
+#'
+#' plot(fpath['sort_order'])
+#'
 get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
   class_x <- class(x)

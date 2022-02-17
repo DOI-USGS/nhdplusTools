@@ -31,3 +31,18 @@ Can also be used as a very fast implementation of upstream
 with tributaries navigation. The full network from each
 outlet is returned in sorted order.
 }
+\examples{
+source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+
+fpath <- get_tocomid(
+  dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
+                AreaSqKM, LENGTHKM, GNIS_ID)
+)
+
+head(fpath <- get_sorted(fpath, split = TRUE))
+
+fpath['sort_order'] <- 1:nrow(fpath)
+
+plot(fpath['sort_order'])
+
+}

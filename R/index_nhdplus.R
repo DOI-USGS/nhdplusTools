@@ -438,7 +438,7 @@ match_crs <- function(x, y, warn_text = "") {
   x
 }
 
-#' Get hydro location
+#' Get Hydro Location
 #' @description given a flowline index, returns the hydrologic location (point)
 #' along the specific linear element referenced by the index.
 #' @param indexes data.frame as output from \link{get_flowline_index}.
@@ -521,7 +521,7 @@ add_len <- function(x) {
     mutate(measure = 100 - (100 * .data$len / max(.data$len)))
 }
 
-#' Rescale reachcode measure to comid flowline measure.
+#' Rescale reachcode measure to comid flowline measure
 #' @description Given a reachcode measure and the from and to measure for a
 #' comid flowline, returns the measure along the comid flowline. This is
 #' a utility specific to the NHDPlus data model where many comid flowlines make

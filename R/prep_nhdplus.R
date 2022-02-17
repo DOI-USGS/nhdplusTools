@@ -176,7 +176,7 @@ filter_coastal <- function(flines) {
 }
 
 
-#' get toid
+#' Get tocomid
 #' @description Given flowlines with fromnode and tonode attributes,
 #' will return a toid attribute that is the result of joining
 #' tonode and fromnode attributes. In the case that a terminalpa

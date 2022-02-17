@@ -1,4 +1,4 @@
-#' @title  Get flowline node
+#' @title  Get Flowline Node
 #' @description Given one or more flowlines, returns
 #'   a particular node from the flowline.
 #' @param x sf data.frame with one or more flowlines

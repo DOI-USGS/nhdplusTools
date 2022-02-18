@@ -35,6 +35,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
+    </li>
+    <li>
       <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
     </li>
     <li>
@@ -42,6 +45,9 @@
     </li>
     <li>
       <a href="../articles/point_indexing.html">Indexing and Referencing</a>
+    </li>
+    <li>
+      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul></li>
 <li>
@@ -166,6 +172,14 @@
         </td>
         <td><p>Discover USGS NWIS Stream Gages</p></td>
       </tr><tr><td>
+          <p><code><a href="navigate_nldi.html">navigate_nldi()</a></code> </p>
+        </td>
+        <td><p>Navigate NLDI</p></td>
+      </tr><tr><td>
+          <p><code><a href="navigate_network.html">navigate_network()</a></code> </p>
+        </td>
+        <td><p>Navigate Network</p></td>
+      </tr><tr><td>
           <p><code><a href="discover_nldi_characteristics.html">discover_nldi_characteristics()</a></code> </p>
         </td>
         <td><p>Discover Characteristics Metadata</p></td>
@@ -235,7 +249,7 @@
         <td><p>rename_geometry</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="network-attributes">Network Attributes <a href="#network-attributes" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Functions that generate common river network attributes.</p>
+          <p class="section-desc"></p><p>Functions that generate common river network attributes. These can be used with any data that adheres to the supported data model. See function documentation for specifics.</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="get_tocomid.html">get_tocomid()</a></code> </p>
@@ -291,7 +305,7 @@
         <td><p>Fix flow direction</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="indexing-and-network-navigation">Indexing and Network Navigation <a href="#indexing-and-network-navigation" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Functions to index and match data to NHDPlus features.</p>
+          <p class="section-desc"></p><p>Functions to index and match data to NHDPlus features. Most of these work with any data that fits the expected data model. Some are very specific to the NHDPlus data model but are not specific to a U.S spatial context.</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="get_DD.html">get_DD()</a></code> </p>
@@ -309,14 +323,6 @@
           <p><code><a href="get_UT.html">get_UT()</a></code> </p>
         </td>
         <td><p>Navigate Upstream with Tributaries</p></td>
-      </tr><tr><td>
-          <p><code><a href="navigate_nldi.html">navigate_nldi()</a></code> </p>
-        </td>
-        <td><p>Navigate NLDI</p></td>
-      </tr><tr><td>
-          <p><code><a href="navigate_network.html">navigate_network()</a></code> </p>
-        </td>
-        <td><p>Navigate Network</p></td>
       </tr><tr><td>
           <p><code><a href="get_flowline_index.html">get_flowline_index()</a></code> </p>
         </td>
@@ -362,7 +368,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by David Blodgett.</p>
+  <p></p><p>Developed by David Blodgett, Mike Johnson.</p>
 </div>
 
 <div class="pkgdown">

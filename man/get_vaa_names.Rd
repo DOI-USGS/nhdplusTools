@@ -4,7 +4,7 @@
 \alias{get_vaa_names}
 \title{Available NHDPlusV2 Attributes}
 \usage{
-get_vaa_names()
+get_vaa_names(updated_network = FALSE)
 }
 \value{
 character vector

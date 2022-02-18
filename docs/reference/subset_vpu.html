@@ -36,6 +36,9 @@ requested vector processing unit."><meta property="og:image" content="https://us
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
+    </li>
+    <li>
       <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
     </li>
     <li>
@@ -43,6 +46,9 @@ requested vector processing unit."><meta property="og:image" content="https://us
     </li>
     <li>
       <a href="../articles/point_indexing.html">Indexing and Referencing</a>
+    </li>
+    <li>
+      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul></li>
 <li>
@@ -80,8 +86,9 @@ requested vector processing unit.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>fline</dt>
-<dd><p>sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM,
-Hydroseq, LevelPathI, RPUID, VPUID, ToNode, FromNode, and ArbolateSu.</p></dd>
+<dd><p>sf data.frame NHD Flowlines with comid, pathlength, lengthkm,
+hydroseq, levelpathi, rpuid, vpuid, and arbolatesu
+(dnhydroseq is required if tocomid is not provided).</p></dd>
 <dt>vpu</dt>
 <dd><p>character e.g. "01"</p></dd>
 <dt>include_null_rpuid</dt>
@@ -143,7 +150,7 @@ should the run_make_standalone function be run on result?</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by David Blodgett.</p>
+  <p></p><p>Developed by David Blodgett, Mike Johnson.</p>
 </div>
 
 <div class="pkgdown">

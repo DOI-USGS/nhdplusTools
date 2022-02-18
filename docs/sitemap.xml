@@ -4,6 +4,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools/404.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/articles/advanced_network.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools/articles/index.html</loc>
   </url>
   <url>
@@ -19,7 +22,13 @@
     <loc>https://usgs-r.github.io/nhdplusTools/articles/point_indexing.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/articles/US_data.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools/authors.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/awra_2019/index.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/DISCLAIMER.html</loc>
@@ -77,6 +86,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_DM.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_elev_along_path.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_flowline_index.html</loc>

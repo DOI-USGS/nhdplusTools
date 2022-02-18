@@ -58,12 +58,25 @@ get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' area (POLYGON), or set of IDs.
 #' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
-#' @param id NWIS Gage ID(s)
+#' @param id character NWIS Gage ID(s)
+#' @param basin logical should the gagesII basin also be returned? If True,
+#' return value will be a list with "site" and "basin" elements.
 #' @export
 
-get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
-  query_usgs_geoserver(AOI = AOI, ids = id, type = "gagesII",
-                       t_srs = t_srs, buffer = buffer)
+get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5,
+                        basin = FALSE){
+
+  out <- query_usgs_geoserver(AOI = AOI, ids = id, type = "gagesII",
+                              t_srs = t_srs, buffer = buffer)
+
+  if(basin) {
+    return(list(site = out,
+                basin = query_usgs_geoserver(
+                  ids = out[["staid"]], type = "gagesII-basin",
+                  t_srs = t_srs, buffer = buffer)))
+  }
+
+  out
 }
 
 #' @title Discover USGS NWIS Stream Gages

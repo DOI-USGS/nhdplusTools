@@ -33,6 +33,8 @@ reference:
       - '`get_nhdarea`'
       - '`get_waterbodies`'
       - '`get_nwis`'
+      - '`navigate_nldi`'
+      - '`navigate_network`'
       - '`discover_nldi_characteristics`'
       - '`get_nldi_characteristics`'
       - '`get_nldi_basin`'
@@ -56,7 +58,7 @@ reference:
 
   - title: Network Attributes
     desc: >
-      Functions that generate common river network attributes.
+      Functions that generate common river network attributes. These can be used with any data that adheres to the supported data model. See function documentation for specifics.
     contents:
       - '`get_tocomid`'
       - '`get_sorted`'
@@ -73,14 +75,12 @@ reference:
       - '`fix_flowdir`'
   - title: Indexing and Network Navigation
     desc: >
-      Functions to index and match data to NHDPlus features.
+      Functions to index and match data to NHDPlus features. Most of these work with any data that fits the expected data model. Some are very specific to the NHDPlus data model but are not specific to a U.S spatial context.
     contents:
       - '`get_DD`'
       - '`get_DM`'
       - '`get_UM`'
       - '`get_UT`'
-      - '`navigate_nldi`'
-      - '`navigate_network`'
       - '`get_flowline_index`'
       - '`get_hydro_location`'
       - '`get_waterbody_index`'

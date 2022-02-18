@@ -127,14 +127,18 @@ test_that("by rpu", {
 
   sample_flines <- readRDS(staged_nhdplus$flowline)
 
-  expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
-  expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = TRUE)), 267)
+  out <- subset_rpu(sample_flines, rpu = "07b")
+
+  expect_equal(names(out), names(sample_flines))
+  expect(nrow(out), 267)
+  expect(nrow(subset_rpu(sample_flines, rpu = "07b",
+                         run_make_standalone = TRUE)), 267)
 
   expect_equal(nrow(subset_vpu(sample_flines, vpu = "07")), 267)
 
   suppressWarnings(sample_flines <- dplyr::left_join(
     dplyr::select(sample_flines, COMID, RPUID, TerminalPa,
-                  ArbolateSu, DnHydroseq, Pathlength, FTYPE),
+                  ArbolateSu, DnHydroseq, Pathlength, FCODE, DnLevelPat),
     prepare_nhdplus(sample_flines,
                     0, 0, 0, FALSE), by = "COMID"))
 
@@ -143,6 +147,47 @@ test_that("by rpu", {
 
 })
 
+test_that("big rpu test", {
+  skip_on_cran()
+
+  vaa <- get_vaa(atts = c("comid", "pathlength", "lengthkm",
+                          "hydroseq", "dnhydroseq", "levelpathi",
+                          "rpuid", "vpuid", "fcode", "arbolatesu",
+                          "terminalfl", "terminalpa", "dnlevelpat"))
+
+  vaa <- dplyr::filter(vaa, vpuid == "14")
+
+  sub <- subset_rpu(vaa, "14a", strict = TRUE)
+
+  expect_equal(names(sub), names(vaa))
+
+  sub2 <- subset_rpu(vaa, "14a", strict = FALSE)
+
+  expect_false(1356902 %in% sub$comid)
+  expect_true(1356902 %in% sub2$comid)
+
+  vaa_new <- get_vaa(atts = c("comid", "tocomid", "pathlength", "lengthkm",
+                          "hydroseq", "dnhydroseq", "levelpathi",
+                          "fcode", "terminalfl", "terminalpa",
+                          "dnlevelpat"),
+                 updated_network = TRUE)
+
+  vaa_new <- dplyr::right_join(vaa_new,
+                               vaa[c("comid", "rpuid", "vpuid")],
+                               by = "comid")
+
+  vaa_new$arbolatesu <- calculate_arbolate_sum(
+    dplyr::select(vaa_new, ID = comid, toID = tocomid, length = lengthkm))
+
+  sub <- subset_rpu(vaa_new, "14a", strict = TRUE)
+
+  expect_equal(names(sub), names(vaa_new))
+
+  sub2 <- subset_rpu(vaa, "14a", strict = FALSE)
+
+  expect_false(1356902 %in% sub$comid)
+  expect_true(1356902 %in% sub2$comid)
+})
 
 test_that("projection check", {
 

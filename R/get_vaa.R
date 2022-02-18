@@ -36,8 +36,8 @@ get_vaa_path <- function(updated_network = FALSE) {
 #' #cleanup if desired
 #' unlink(dirname(get_vaa_path()), recursive = TRUE)
 #' }
-get_vaa_names <- function() {
-  path <- get_vaa_path()
+get_vaa_names <- function(updated_network = FALSE) {
+  path <- get_vaa_path(updated_network = updated_network)
 
   check_vaa_path(path, TRUE)
 
@@ -88,7 +88,7 @@ get_vaa <- function(atts = NULL,
     new_names <- fst::metadata_fst(updated_net_path)[["columnNames"]]
   }
 
-  available_names = get_vaa_names()
+  available_names = get_vaa_names(updated_network)
 
   if(is.null(atts)) {
 
@@ -132,7 +132,7 @@ get_vaa <- function(atts = NULL,
     out <- cbind(out, fst::read.fst(updated_net_path,
                                     c(replace_names[replace_names != "comid"])))
 
-    reorder <- match(get_vaa_names(), names(out))
+    reorder <- match(get_vaa_names(updated_network), names(out))
 
     reorder <- reorder[!is.na(reorder)]
 

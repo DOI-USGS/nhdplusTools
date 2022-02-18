@@ -191,6 +191,16 @@ test_that("gagesii", {
   testthat::skip_on_cran()
   gages2 = get_gagesII(AOI  = pt, buffer = 3e3)
   expect_equal(nrow(gages2), 1)
+
+  gages2 <- get_gagesII(AOI = pt, buffer = 3e3,
+                        basin = TRUE)
+
+  expect_equal(names(gages2), c("site", "basin"))
+
+  gages2 = get_gagesII(id = "01013500", basin = TRUE)
+  expect_true("Ref" %in% gages2$site$class)
+
+
 })
 
 # ==============================================================================

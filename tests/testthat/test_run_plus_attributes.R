@@ -3,6 +3,8 @@
 test_that("example", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
+  expect_s3_class(get_sorted(walker_flowline), "sf")
+
   test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
 
   test_flowline <- data.frame(

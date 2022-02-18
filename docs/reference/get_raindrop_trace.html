@@ -36,6 +36,9 @@ nhdplus digital elevation model to the nearest downslop flowline."><meta propert
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
+    </li>
+    <li>
       <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
     </li>
     <li>
@@ -43,6 +46,9 @@ nhdplus digital elevation model to the nearest downslop flowline."><meta propert
     </li>
     <li>
       <a href="../articles/point_indexing.html">Indexing and Referencing</a>
+    </li>
+    <li>
+      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul></li>
 <li>
@@ -105,18 +111,16 @@ portion of flowline.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -89.21572 ymin: 42.94986 xmax: -89.20944 ymax: 42.95699</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 x 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   id      gnis_name    comid reachcode raindrop_pathDi~ measure intersection_po~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> downst~ Yahara Ri~  1.33<span style="color: #949494;">e</span>7 07090002~             239.    30.8 <span style="color: #949494;">&lt;dbl [2]&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> raindr~ <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  <span style="color: #BB0000;">NA</span>                     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>   <span style="color: #949494;">&lt;dbl [0]&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id       gnis_name   comid reachcode raindrop_pathDi~ measure intersection_po~</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> downstr~ Yahara R~  1.33<span style="color: #949494;">e</span>7 07090002~             239.    30.8 <span style="color: #949494;">&lt;dbl [2]&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> raindro~ <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  <span style="color: #BB0000;">NA</span>                     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>   <span style="color: #949494;">&lt;dbl [0]&gt;</span>       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ... with 1 more variable: geometry &lt;LINESTRING [°]&gt;</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">trace</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.005</span>, <span class="op">-</span><span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.005</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span><span class="op">)</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No waterbodies features found</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Discarded ellps WGS 84 in Proj4 definition: +proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Discarded datum WGS_1984 in Proj4 definition</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Zoom: 15</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -137,7 +141,7 @@ portion of flowline.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by David Blodgett.</p>
+  <p></p><p>Developed by David Blodgett, Mike Johnson.</p>
 </div>
 
 <div class="pkgdown">

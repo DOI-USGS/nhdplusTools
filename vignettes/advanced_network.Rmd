@@ -86,7 +86,7 @@ In `nhdplusTools`, edge-to-edge topology is referred to with "comid and tocomid"
 
 ## Hydrosequence
 
-```{r sort, echo=FALSE, eval=TRUE, fig.cap="Smaller 'hydrosequence' values are gaurunteed to be downstream of larger values along connected paths.", fig.dim=c(3, 3)}
+```{r sort, echo=FALSE, eval=TRUE, fig.cap="Smaller 'hydrosequence' values are guaranteed to be downstream of larger values along connected paths.", fig.dim=c(3, 3)}
 source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
 
 new_hope_flowline <- get_sorted(new_hope_flowline[c("Hydroseq", "DnHydroseq")])

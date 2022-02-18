@@ -142,8 +142,8 @@ In an edge-node topology, edges are directed to nodes which are then directed to
 <h3 id="hydrosequence">Hydrosequence<a class="anchor" aria-label="anchor" href="#hydrosequence"></a>
 </h3>
 <div class="figure" style="text-align: center">
-<img src="advanced_network_files/figure-html/sort-1.png" alt="Smaller 'hydrosequence' values are gaurunteed to be downstream of larger values along connected paths." width="288"><p class="caption">
-Smaller ‘hydrosequence’ values are gaurunteed to be downstream of larger values along connected paths.
+<img src="advanced_network_files/figure-html/sort-1.png" alt="Smaller 'hydrosequence' values are guaranteed to be downstream of larger values along connected paths." width="288"><p class="caption">
+Smaller ‘hydrosequence’ values are guaranteed to be downstream of larger values along connected paths.
 </p>
 </div>
 <p>The NHDPlus data model includes an attribute called <em>hydrosequence</em> that is functionally a <a href="https://en.wikipedia.org/wiki/Topological_sorting" class="external-link">topological sort</a> of the flowpath network. It provides an integer identifier guaranteed to decrease in the downstream direction. For flowpaths that are not connected by a single direction navigation (e.g. parallel tributaries) the hydrosequence has no significance. However, when two flowpaths have a direct navigation, the downstream flowpath will always have the smaller hydrosequence. <code>nhdplusTools</code> supports creation of hydrosequence with the <code><a href="../reference/get_sorted.html">get_sorted()</a></code> function.</p>

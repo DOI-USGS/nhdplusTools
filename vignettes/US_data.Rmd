@@ -344,7 +344,7 @@ gage <- sf::read_sf(output_file, "Gage")
 get_flowline_index(flowline, sf::st_geometry(gage), precision = 10)
 ```
 
-For more info about `get_flowline_index()` and other indexing functions, see the article `vignette("point_indexing")` about it or the reference page that describes it.
+For more info about `get_flowline_index()` and other indexing functions, see the article `vignette("indexing")` about it or the reference page that describes it.
 
 ```{r teardown, include=FALSE}
 options(oldoption)

@@ -38,13 +38,13 @@
       <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
     </li>
     <li>
+      <a href="../articles/indexing.html">Indexing and Referencing</a>
+    </li>
+    <li>
       <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/point_indexing.html">Indexing and Referencing</a>
     </li>
     <li>
       <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
@@ -73,7 +73,7 @@
 
     <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
           <h2 id="data-access">Data Access <a href="#data-access" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Functions that help get ahold of NHDPlus data.</p>
+          <p class="section-desc"></p><p>Functions that help get access data. (all U.S. context)</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="download_nhdplushr.html">download_nhdplushr()</a></code> </p>
@@ -125,12 +125,16 @@
         <td><p>Get Elevation Along Path (experimental)</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="discovery-and-subsetting">Discovery and Subsetting <a href="#discovery-and-subsetting" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Functions for finding and saving the part of the NHDPlus you are interested in working with.</p>
+          <p class="section-desc"></p><p>Functions for finding and saving the part of the NHDPlus you are interested in working with. (All U.S. context)</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="subset_nhdplus.html">subset_nhdplus()</a></code> </p>
         </td>
         <td><p>Subset NHDPlus</p></td>
+      </tr><tr><td>
+          <p><code><a href="make_standalone.html">make_standalone()</a></code> </p>
+        </td>
+        <td><p>Make isolated NHDPlusHR region a standalone dataset</p></td>
       </tr><tr><td>
           <p><code><a href="subset_rpu.html">subset_rpu()</a></code> </p>
         </td>
@@ -172,14 +176,6 @@
         </td>
         <td><p>Discover USGS NWIS Stream Gages</p></td>
       </tr><tr><td>
-          <p><code><a href="navigate_nldi.html">navigate_nldi()</a></code> </p>
-        </td>
-        <td><p>Navigate NLDI</p></td>
-      </tr><tr><td>
-          <p><code><a href="navigate_network.html">navigate_network()</a></code> </p>
-        </td>
-        <td><p>Navigate Network</p></td>
-      </tr><tr><td>
           <p><code><a href="discover_nldi_characteristics.html">discover_nldi_characteristics()</a></code> </p>
         </td>
         <td><p>Discover Characteristics Metadata</p></td>
@@ -204,126 +200,10 @@
         </td>
         <td><p>Get Raindrop Trace</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="package-helpers">Package Helpers <a href="#package-helpers" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Functions that make the package easier to work with.</p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="nhdplus_path.html">nhdplus_path()</a></code> </p>
-        </td>
-        <td><p>NHDPlus Data Path</p></td>
-      </tr><tr><td>
-          <p><code><a href="nhdplusTools_data_dir.html">nhdplusTools_data_dir()</a></code> </p>
-        </td>
-        <td><p>Get or set nhdplusTools data directory</p></td>
-      </tr><tr><td>
-          <p><code><a href="stage_national_data.html">stage_national_data()</a></code> </p>
-        </td>
-        <td><p>Stage NHDPlus National Data (deprecated)</p></td>
-      </tr><tr><td>
-          <p><code><a href="plot_nhdplus.html">plot_nhdplus()</a></code> </p>
-        </td>
-        <td><p>Plot NHDPlus</p></td>
-      </tr><tr><td>
-          <p><code><a href="align_nhdplus_names.html">align_nhdplus_names()</a></code> </p>
-        </td>
-        <td><p>Align NHD Dataset Names</p></td>
-      </tr><tr><td>
-          <p><code><a href="prepare_nhdplus.html">prepare_nhdplus()</a></code> </p>
-        </td>
-        <td><p>Prep NHDPlus Data</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_vaa_names.html">get_vaa_names()</a></code> </p>
-        </td>
-        <td><p>Available NHDPlusV2 Attributes</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_vaa_path.html">get_vaa_path()</a></code> </p>
-        </td>
-        <td><p>File path to value added attribute (vaa) Cache</p></td>
-      </tr><tr><td>
-          <p><code><a href="st_compatibalize.html">st_compatibalize()</a></code> </p>
-        </td>
-        <td><p>make spatial inputs compatible</p></td>
-      </tr><tr><td>
-          <p><code><a href="rename_geometry.html">rename_geometry()</a></code> </p>
-        </td>
-        <td><p>rename_geometry</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="network-attributes">Network Attributes <a href="#network-attributes" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Functions that generate common river network attributes. These can be used with any data that adheres to the supported data model. See function documentation for specifics.</p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="get_tocomid.html">get_tocomid()</a></code> </p>
-        </td>
-        <td><p>get toid</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_sorted.html">get_sorted()</a></code> </p>
-        </td>
-        <td><p>Get Sorted Network</p></td>
-      </tr><tr><td>
-          <p><code><a href="add_plus_network_attributes.html">add_plus_network_attributes()</a></code> </p>
-        </td>
-        <td><p>Add NHDPlus Network Attributes to a provided network.</p></td>
-      </tr><tr><td>
-          <p><code><a href="calculate_total_drainage_area.html">calculate_total_drainage_area()</a></code> </p>
-        </td>
-        <td><p>Total Drainage Area</p></td>
-      </tr><tr><td>
-          <p><code><a href="calculate_arbolate_sum.html">calculate_arbolate_sum()</a></code> </p>
-        </td>
-        <td><p>Calculate Arbolate Sum</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_levelpaths.html">get_levelpaths()</a></code> </p>
-        </td>
-        <td><p>Get Level Paths</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_pathlength.html">get_pathlength()</a></code> </p>
-        </td>
-        <td><p>Get path length</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_terminal.html">get_terminal()</a></code> </p>
-        </td>
-        <td><p>Get Terminal ID (DEPRECATED)</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_streamorder.html">get_streamorder()</a></code> </p>
-        </td>
-        <td><p>Get Streamorder</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_pfaf.html">get_pfaf()</a></code> </p>
-        </td>
-        <td><p>Get Pfafstetter Codes (Experimental)</p></td>
-      </tr><tr><td>
-          <p><code><a href="make_standalone.html">make_standalone()</a></code> </p>
-        </td>
-        <td><p>Make isolated NHDPlusHR region a standalone dataset</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_streamlevel.html">get_streamlevel()</a></code> </p>
-        </td>
-        <td><p>Get Streamlevel</p></td>
-      </tr><tr><td>
-          <p><code><a href="fix_flowdir.html">fix_flowdir()</a></code> </p>
-        </td>
-        <td><p>Fix flow direction</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="indexing-and-network-navigation">Indexing and Network Navigation <a href="#indexing-and-network-navigation" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Functions to index and match data to NHDPlus features. Most of these work with any data that fits the expected data model. Some are very specific to the NHDPlus data model but are not specific to a U.S spatial context.</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="get_DD.html">get_DD()</a></code> </p>
-        </td>
-        <td><p>Navigate Downstream with Diversions</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_DM.html">get_DM()</a></code> </p>
-        </td>
-        <td><p>Navigate Downstream Mainstem</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_UM.html">get_UM()</a></code> </p>
-        </td>
-        <td><p>Navigate Upstream Mainstem</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_UT.html">get_UT()</a></code> </p>
-        </td>
-        <td><p>Navigate Upstream with Tributaries</p></td>
-      </tr><tr><td>
           <p><code><a href="get_flowline_index.html">get_flowline_index()</a></code> </p>
         </td>
         <td><p>Get Flowline Index</p></td>
@@ -359,6 +239,126 @@
           <p><code><a href="get_path_lengths.html">get_path_lengths()</a></code> </p>
         </td>
         <td><p>Get Path Lengths</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="network-navigation">Network Navigation <a href="#network-navigation" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Functions to traverse and return network subsets. All except <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> have applicability outside the U.S. context.</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="get_DD.html">get_DD()</a></code> </p>
+        </td>
+        <td><p>Navigate Downstream with Diversions</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_DM.html">get_DM()</a></code> </p>
+        </td>
+        <td><p>Navigate Downstream Mainstem</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_UM.html">get_UM()</a></code> </p>
+        </td>
+        <td><p>Navigate Upstream Mainstem</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_UT.html">get_UT()</a></code> </p>
+        </td>
+        <td><p>Navigate Upstream with Tributaries</p></td>
+      </tr><tr><td>
+          <p><code><a href="navigate_network.html">navigate_network()</a></code> </p>
+        </td>
+        <td><p>Navigate Network</p></td>
+      </tr><tr><td>
+          <p><code><a href="navigate_nldi.html">navigate_nldi()</a></code> </p>
+        </td>
+        <td><p>Navigate NLDI</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="package-helpers">Package Helpers <a href="#package-helpers" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Functions that make the package easier to work with.</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="st_compatibalize.html">st_compatibalize()</a></code> </p>
+        </td>
+        <td><p>make spatial inputs compatible</p></td>
+      </tr><tr><td>
+          <p><code><a href="rename_geometry.html">rename_geometry()</a></code> </p>
+        </td>
+        <td><p>rename_geometry</p></td>
+      </tr><tr><td>
+          <p><code><a href="align_nhdplus_names.html">align_nhdplus_names()</a></code> </p>
+        </td>
+        <td><p>Align NHD Dataset Names</p></td>
+      </tr><tr><td>
+          <p><code><a href="nhdplus_path.html">nhdplus_path()</a></code> </p>
+        </td>
+        <td><p>NHDPlus Data Path</p></td>
+      </tr><tr><td>
+          <p><code><a href="nhdplusTools_data_dir.html">nhdplusTools_data_dir()</a></code> </p>
+        </td>
+        <td><p>Get or set nhdplusTools data directory</p></td>
+      </tr><tr><td>
+          <p><code><a href="stage_national_data.html">stage_national_data()</a></code> </p>
+        </td>
+        <td><p>Stage NHDPlus National Data (deprecated)</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot_nhdplus.html">plot_nhdplus()</a></code> </p>
+        </td>
+        <td><p>Plot NHDPlus</p></td>
+      </tr><tr><td>
+          <p><code><a href="prepare_nhdplus.html">prepare_nhdplus()</a></code> </p>
+        </td>
+        <td><p>Prep NHDPlus Data</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_vaa_names.html">get_vaa_names()</a></code> </p>
+        </td>
+        <td><p>Available NHDPlusV2 Attributes</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_vaa_path.html">get_vaa_path()</a></code> </p>
+        </td>
+        <td><p>File path to value added attribute (vaa) Cache</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="network-attributes">Network Attributes <a href="#network-attributes" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Functions that generate common river network attributes. These can be used with any data that adheres to the supported data model. See function documentation for specifics.</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="fix_flowdir.html">fix_flowdir()</a></code> </p>
+        </td>
+        <td><p>Fix flow direction</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_tocomid.html">get_tocomid()</a></code> </p>
+        </td>
+        <td><p>get toid</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_sorted.html">get_sorted()</a></code> </p>
+        </td>
+        <td><p>Get Sorted Network</p></td>
+      </tr><tr><td>
+          <p><code><a href="calculate_total_drainage_area.html">calculate_total_drainage_area()</a></code> </p>
+        </td>
+        <td><p>Total Drainage Area</p></td>
+      </tr><tr><td>
+          <p><code><a href="calculate_arbolate_sum.html">calculate_arbolate_sum()</a></code> </p>
+        </td>
+        <td><p>Calculate Arbolate Sum</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_streamlevel.html">get_streamlevel()</a></code> </p>
+        </td>
+        <td><p>Get Streamlevel</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_levelpaths.html">get_levelpaths()</a></code> </p>
+        </td>
+        <td><p>Get Level Paths</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_pathlength.html">get_pathlength()</a></code> </p>
+        </td>
+        <td><p>Get path length</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_streamorder.html">get_streamorder()</a></code> </p>
+        </td>
+        <td><p>Get Streamorder</p></td>
+      </tr><tr><td>
+          <p><code><a href="add_plus_network_attributes.html">add_plus_network_attributes()</a></code> </p>
+        </td>
+        <td><p>Add NHDPlus Network Attributes to a provided network.</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_pfaf.html">get_pfaf()</a></code> </p>
+        </td>
+        <td><p>Get Pfafstetter Codes (Experimental)</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

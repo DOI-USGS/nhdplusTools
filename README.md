@@ -17,8 +17,8 @@ install.packages("nhdplusTools")
 
 For the latest development:
 ```
-install.packages("devtools")
-devtools::install_github("USGS-R/nhdplusTools")
+install.packages("remotes")
+remotes::install_github("USGS-R/nhdplusTools")
 ```
 
 ### Resources

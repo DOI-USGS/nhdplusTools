@@ -3,8 +3,8 @@ url: https://usgs-r.github.io/nhdplusTools/
 reference:
   - title: Data Access
     desc: >
-      Functions that help get ahold of NHDPlus data.
-    contents:
+      Functions that help get access data. (all U.S. context)
+  - contents:
       - '`download_nhdplushr`'
       - '`get_nhdplus`'
       - '`get_nhdplushr`'
@@ -20,9 +20,10 @@ reference:
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are
-      interested in working with.
-    contents:
+      interested in working with. (All U.S. context)
+  - contents:
       - '`subset_nhdplus`'
+      - '`make_standalone`'
       - '`subset_rpu`'
       - '`subset_vpu`'
       - '`discover_nhdplus_id`'
@@ -33,54 +34,19 @@ reference:
       - '`get_nhdarea`'
       - '`get_waterbodies`'
       - '`get_nwis`'
-      - '`navigate_nldi`'
-      - '`navigate_network`'
       - '`discover_nldi_characteristics`'
       - '`get_nldi_characteristics`'
       - '`get_nldi_basin`'
       - '`get_nldi_feature`'
       - '`get_split_catchment`'
       - '`get_raindrop_trace`'
-  - title: Package Helpers
-    desc: >
-      Functions that make the package easier to work with.
-    contents:
-      - '`nhdplus_path`'
-      - '`nhdplusTools_data_dir`'
-      - '`stage_national_data`'
-      - '`plot_nhdplus`'
-      - '`align_nhdplus_names`'
-      - '`prepare_nhdplus`'
-      - '`get_vaa_names`'
-      - '`get_vaa_path`'
-      - '`st_compatibalize`'
-      - '`rename_geometry`'
-
-  - title: Network Attributes
-    desc: >
-      Functions that generate common river network attributes. These can be used with any data that adheres to the supported data model. See function documentation for specifics.
-    contents:
-      - '`get_tocomid`'
-      - '`get_sorted`'
-      - '`add_plus_network_attributes`'
-      - '`calculate_total_drainage_area`'
-      - '`calculate_arbolate_sum`'
-      - '`get_levelpaths`'
-      - '`get_pathlength`'
-      - '`get_terminal`'
-      - '`get_streamorder`'
-      - '`get_pfaf`'
-      - '`make_standalone`'
-      - '`get_streamlevel`'
-      - '`fix_flowdir`'
   - title: Indexing and Network Navigation
     desc: >
-      Functions to index and match data to NHDPlus features. Most of these work with any data that fits the expected data model. Some are very specific to the NHDPlus data model but are not specific to a U.S spatial context.
-    contents:
-      - '`get_DD`'
-      - '`get_DM`'
-      - '`get_UM`'
-      - '`get_UT`'
+      Functions to index and match data to NHDPlus features. Most of these
+      work with any data that fits the expected data model. Some are very
+      specific to the NHDPlus data model but are not specific to a U.S
+      spatial context.
+  - contents:
       - '`get_flowline_index`'
       - '`get_hydro_location`'
       - '`get_waterbody_index`'
@@ -90,3 +56,46 @@ reference:
       - '`disambiguate_flowline_indexes`'
       - '`get_partial_length`'
       - '`get_path_lengths`'
+  - title: Network Navigation
+    desc: >
+      Functions to traverse and return network subsets. All except `navigate_nldi()`
+      have applicability outside the U.S. context.
+  - contents:
+      - '`get_DD`'
+      - '`get_DM`'
+      - '`get_UM`'
+      - '`get_UT`'
+      - '`navigate_network`'
+      - '`navigate_nldi`'
+  - title: Package Helpers
+    desc: >
+      Functions that make the package easier to work with.
+  - contents:
+      - '`st_compatibalize`'
+      - '`rename_geometry`'
+      - '`align_nhdplus_names`'
+      - '`nhdplus_path`'
+      - '`nhdplusTools_data_dir`'
+      - '`stage_national_data`'
+      - '`plot_nhdplus`'
+      - '`prepare_nhdplus`'
+      - '`get_vaa_names`'
+      - '`get_vaa_path`'
+  - title: Network Attributes
+    desc: >
+      Functions that generate common river network attributes. These can be
+      used with any data that adheres to the supported data model. See function
+      documentation for specifics.
+  - contents:
+      - '`fix_flowdir`'
+      - '`get_tocomid`'
+      - '`get_sorted`'
+      - '`calculate_total_drainage_area`'
+      - '`calculate_arbolate_sum`'
+      - '`get_streamlevel`'
+      - '`get_levelpaths`'
+      - '`get_pathlength`'
+      - '`get_streamorder`'
+      - '`add_plus_network_attributes`'
+      - '`get_pfaf`'
+

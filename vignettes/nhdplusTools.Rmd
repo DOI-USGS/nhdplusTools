@@ -10,7 +10,6 @@ vignette: >
 
 ```{r setup, include = FALSE}
 library(nhdplusTools)
-
 local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 if(local) {
   cache_path <- file.path(nhdplusTools_data_dir(), "nhdpt_v_cache")
@@ -27,38 +26,30 @@ knitr::opts_chunk$set(
   cache=local,
   cache.path=(cache_path)
 )
-
-oldoption <- options(scipen = 9999,
-                     "rgdal_show_exportToProj4_warnings"="none")
-
 ```
 
-## TL;DR
+The nhdplusTools package contains a wide range of hydrographic data utilities. Many are globally-applicable hydrographic data manipulation and processing tools. Others are specific to a U.S. context, focused on particular US datasets and sources.
 
-The nhdplusTools package supports a wide range of hydrographic data use cases. Many are globally applicable hydrographic data manipulation and processing utilities. Others are specific to a U.S. context, focused on particular US datasets and sources. 
+Detailed documentation of all the package functions can be found at the **[Reference page](https://usgs-r.github.io/nhdplusTools/reference/)**.
 
-Detailed documentation of all the package functions can be found at the [Reference page](https://usgs-r.github.io/nhdplusTools/reference/) and [Articles index](https://usgs-r.github.io/nhdplusTools/articles/).
+For data discovery and access in a U.S. context, start with the **US Data vignette** `vignette("US_data")`.
 
-For data discovery an access in a U.S. context, start with: `vignette("US_data")`.
-
-Globally applicable hydrographic data functions, start with the `vignette("advanced_network")`.
+For globally applicable functions, start with the **advanced network attributes vignette** `vignette("advanced_network")`.
 
 Please consider registering [issues and feature suggestions on github](https://github.com/dblodgett-usgs/nhdplusTools/issues).
 
-## Installation
+**Installation**
 
 For the latest CRAN release of nhdplusTools, use:
 ```{r cran, echo = TRUE, eval = FALSE}
 # install.packages("nhdplusTools")
 ```
 
-The easiest way to install the latest `nhdplusTools` development is with the `remotes`` package like this:
+The easiest way to install the latest `nhdplusTools` development is with the `remotes` package like this:
 ```{r install, echo = TRUE, eval = FALSE}
 # install.packages("remotes")
 # remotes::install_github("usgs-r/nhdplusTools")
 ```
-
-## Package Summary
 
 The `nhdplusTools` package is intended to provide a reusable set of tools to
 subset, relate data to, and rebuild attributes for hydrography data. 
@@ -67,23 +58,22 @@ and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
 aims to provide a set of tools with minimal dependencies that can be used
 to build workflows using NHDPlus data-model data.
 
-The package has three types of functionality:
+The package has three types of functionality presented in the following vegnettes:
 
-1. `vignette("US_data")`
-1. `vignette("point_indexing")`
-1. `vignette("advanced_network")`
+1. Data access in the U.S. context: `vignette("US_data")`
+1. Indexing data to hydrography: `vignette("indexing")`
+1. Hydrographic network attributes: `vignette("advanced_network")`
 
 Two other vignette articles are available for the package.
 
-1. `vignette("nhdplushr")`
-1. `vignette("plot_nhdplus")`
+1. Working with NHDPlusHR: `vignette("nhdplushr")`
+1. Plotting NHDPlus data:`vignette("plot_nhdplus")`
 
-Thanks for taking the time to read the package documentation. If you see anything that looks wrong or could be better, please consider opening an issue of a pull request in [github](https://github.com/dblodgett-usgs/nhdplusTools/issues)!
+Thanks for taking the time to read the package documentation. If you see anything that looks wrong or could be better, please consider opening an issue or a pull request in [github](https://github.com/dblodgett-usgs/nhdplusTools/issues)!
 
 ```{r teardown, include=FALSE}
-options(oldoption)
-
 if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
   unlink(work_dir, recursive = TRUE)
 }
+
 ```

@@ -32,7 +32,22 @@ oldoption <- options(scipen = 9999,
                      "rgdal_show_exportToProj4_warnings"="none")
 ```
 
-## NHDPlus Flowline Indexing
+## Introduction
+
+`nhdplusTools` offers a few indexing functions and some supporting functions that are worth being aware of.
+
+The core functions are: `get_flowline_index()` and `get_waterbody_index()` -- they do the heavy lifting of finding flowlines and waterbodies near point locations. 
+
+For flowline indexes, there are a number of useful utilities: 
+- `disambiguate_flowline_indexes()` uses numeric or character attributes to attempt to determine the best flowline match when many near by matches exist. This is especially useful for mainstem / tributary disambiguation.
+- `get_hydro_location()` retrieves the point location of an index along a flowline.
+- `rescale_measures()` converts 0:100 reachcode measures to 0:100 flowline measures.
+- `get_partial_length()` retrieves a partial length (upstream and downstream) of an index location.
+- `get_path_lengths()` retrieves the distance between the outlets of pairs of flowlines. Use with `get_partial_length()` to determine network distance between indexes.
+
+For waterbody indexes, the `get_wb_outlet()` function is helpful too determine which flowline is the outlet of a waterbody.
+
+## Flowline Indexing
 
 First we'll load up some data. In this case, we use flowlines from the NHDPlus subset that's included in the package and a set of points to index. We'll use the NHDPlus Gages layer for this example. The data in this example is big. The R session needs a lot of memory to hold the whole NHDPlus flowline layer and run the calculations. 
 
@@ -76,7 +91,6 @@ plot(sf::st_geometry(sf::st_zm(flowlines)))
 plot(sf::st_geometry(indexes), add = TRUE)
 
 ```
-
 
 Now let's look at the results and see how the `nhdplusTools::get_flowline_index()` did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODEs that were matched.
 
@@ -148,25 +162,52 @@ round(quantile(matched$REACH_meas_diff,
 
 ## Finding multiple indexes
 
-`get_flowline_index()` has a parameter `max_matches` that controls how many indexed flowlines are returned per point. This is useful for points that are near many flowlines and some further disambiguation is needed to determine exactly which flowline the point should be indexed to. At the time of writing, that functionality is not included in nhdplusTools but is planned.
+`get_flowline_index()` has a parameter `max_matches` that controls how many indexed flowlines are returned per point. This is useful for points that are near many flowlines and some further disambiguation is needed to determine exactly which flowline the point should be indexed to.
 
-For this example, we'll just look at one point.
+For this example, we'll just look at one point but keep all the sites for disambiguation down below.
 
 ```{r multi}
-indexes <- get_flowline_index(flowlines,
-                              sf::st_geometry(gages)[42], 
-                              search_radius = 0.01, 
-                              max_matches = 10)
+all_indexes <- get_flowline_index(flowlines,
+                                  sf::st_geometry(gages), 
+                                  search_radius = 0.01, 
+                                  max_matches = 10)
 
-indexes <- left_join(sf::st_sf(id = 1, 
+indexes <- left_join(sf::st_sf(id = 42, 
                                geom = sf::st_geometry(gages)[42]), 
-                     indexes, by = "id")
+                     all_indexes[all_indexes$id == 42, ], by = "id")
 
-plot(sf::st_geometry(sf::st_buffer(indexes, 0.005)), border = NA)
+plot(sf::st_geometry(sf::st_buffer(indexes, 500)), border = NA)
 plot(sf::st_geometry(indexes), add = TRUE)
 plot(sf::st_geometry(sf::st_zm(flowlines)), col = "blue", add = TRUE)
 indexes
 ```
+
+Now that we have multiple matches, we can use the function `disambiguate_flowline_indexes()` to figure out which is the "best" match. "best" is in scare quotes here because there are many potential sources of ambiguity here and we are really just narrowing down based on the information we have at hand. (read below for a case in point)
+
+Below, we run `disambiguate_flowline_indexes()` on all the indexes we found then pull out the one we looked at just above as an example (gage 42 in our list).
+
+```{r disamb}
+unique_indexes <- disambiguate_flowline_indexes(
+  all_indexes, 
+  flowlines[, c("COMID", "TotDASqKM"), drop = TRUE],
+  data.frame(ID = seq_len(nrow(gages)),
+             area = gages$DASqKm))
+
+unique_index <- left_join(sf::st_sf(id = 42, 
+                                    geom = sf::st_geometry(gages)[42]), 
+                          unique_indexes[unique_indexes$id == 42, ], by = "id")
+
+plot(sf::st_geometry(sf::st_buffer(indexes, 500)), border = NA)
+plot(sf::st_geometry(indexes), add = TRUE)
+plot(sf::st_geometry(sf::st_zm(flowlines[flowlines$COMID %in% indexes$COMID,])), 
+     col = "grey", lwd = 3, add = TRUE)
+plot(sf::st_geometry(sf::st_zm(flowlines[flowlines$COMID %in% unique_index$COMID,])),
+     col = "blue", add = TRUE)
+
+unique_index
+```
+
+As can be seen in this example, a drainage area disambiguation resulted in an unexpected result. Further inspection of this particular gage and the network data used, shows that the main path through this small diversion is coded counter to the main path in the real world. So in this case, if our interest is in the best match to the hydrographic network data we have, this **is** the best match, as the closest spatial match is incorrectly modeled by the hydrographic data set. As always, buyer beware! 
 
 ## Waterbody Indexing
 
@@ -184,7 +225,6 @@ gages <- sf::st_drop_geometry(gages) %>%
 plot(sf::st_geometry(sf::st_zm(flowlines)))
 plot(sf::st_geometry(waterbody), add = TRUE)
 plot(sf::st_geometry(gages), add = TRUE)
-
 ```
 
 This next block shows how to call `get_flowline_index()` and `get_waterbody_index()` and what the output looks like. 

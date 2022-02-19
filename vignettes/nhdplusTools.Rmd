@@ -61,7 +61,7 @@ to build workflows using NHDPlus data-model data.
 The package has three types of functionality presented in the following vegnettes:
 
 1. Data access in the U.S. context: `vignette("US_data")`
-1. Indexing data to hydrography: `vignette("point_indexing")`
+1. Indexing data to hydrography: `vignette("indexing")`
 1. Hydrographic network attributes: `vignette("advanced_network")`
 
 Two other vignette articles are available for the package.

@@ -31,11 +31,8 @@ against the entire NHDPlusV2 domain and satisfies a number of edge cases.
 
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
-nhdplus_path(sample_data)
-
-staged_nhdplus <- stage_national_data(output_path = tempdir())
-
-sample_flines <- readRDS(staged_nhdplus$flowline)
+sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 
 subset_rpu(sample_flines, rpu = "07b")
+
 }

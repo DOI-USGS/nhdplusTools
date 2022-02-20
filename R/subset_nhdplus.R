@@ -114,6 +114,7 @@
 #'
 #' unlink(output_file)
 #' unlink(sub_gpkg)
+#'
 #' }
 #'
 
@@ -751,7 +752,8 @@ subset_vpu <- function(fline, vpu,
   if(include_null_rpuid) {
 
     all_vpu <- rbind(all_vpu, filter(fline, .data$vpuid == vpu &
-                                       (is.null(rpuid) | is.na(rpuid))))
+                                       (is.null(.data$rpuid) |
+                                          is.na(.data$rpuid))))
 
   }
 
@@ -792,13 +794,10 @@ recase_sf <- function(x, orig_names) {
 #'
 #' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 #'
-#' nhdplus_path(sample_data)
-#'
-#' staged_nhdplus <- stage_national_data(output_path = tempdir())
-#'
-#' sample_flines <- readRDS(staged_nhdplus$flowline)
+#' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 #'
 #' subset_rpu(sample_flines, rpu = "07b")
+#'
 subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
   orig_names <- names(fline)
 
@@ -844,7 +843,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
     # get rid of the ones along the same path -- dnlevelpaths that are left
     # can be removed
     fline_sub_out <- filter(fline_sub_out,
-                            .data$dnlevelpat != .data$dnlevelpat)
+                            .data$dnlevelpat != .data$levelpathi)
   }
 
 
@@ -857,16 +856,22 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
                     .data$levelpathi)
 
   if(strict) {
-  fline <- ungroup(filter(fline, .data$hydroseq >= .data$lp_bot &
-                            .data$hydroseq <= .data$lp_top))
-  } else {
-    fline <- ungroup(filter(fline,
-                            !.data$levelpathi %in% fline_sub_out$dnlevelpat &&
-                              (.data$hydroseq >= .data$lp_bot &
-                              .data$hydroseq <= .data$lp_top)))
+
+    # filter to the top and bottom that are required to connect things
+    # fully within the rpu
+    fline <- filter(fline, .data$hydroseq >= .data$lp_bot &
+                      .data$hydroseq <= .data$lp_top)
+
+  } else if(!nrow(fline_sub_out) == 0) {
+    # if nothing is left in fline_sub_out, we are fine and can move on.
+    fline <- filter(fline,
+                    .data$levelpathi %in% fline_sub_in$levelpathi &
+                      (.data$hydroseq >= .data$lp_bot &
+                         .data$hydroseq <= .data$lp_top))
+
   }
 
-  fline <- select(fline, -.data$lp_top, -.data$lp_bot)
+  fline <- select(ungroup(fline), -.data$lp_top, -.data$lp_bot)
 
   if(run_make_standalone) {
     fline <- make_standalone(fline)

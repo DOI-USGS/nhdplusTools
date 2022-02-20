@@ -25,6 +25,7 @@ get_vaa_path <- function(updated_network = FALSE) {
 #' @title Available NHDPlusV2 Attributes
 #' @description Find variables available from the NHDPlusV2 attribute data.frame
 #' @inherit download_vaa details
+#' @inheritParams get_vaa
 #' @return character vector
 #' @importFrom fst metadata_fst
 #' @export

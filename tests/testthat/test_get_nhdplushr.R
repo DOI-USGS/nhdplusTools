@@ -11,12 +11,12 @@ test_that("we get urls for nhdplushr", {
   expect_equal(length(urls), 11)
 })
 
+get_test_file(work_dir)
+
+out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
+
 test_that("get_nhdplushr layers and gpkg", {
   skip_on_cran()
-
-  get_test_file(work_dir)
-
-  out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
 
   layers <- sf::st_layers(out_gpkg)
   expect_equal(layers$name, c("NHDFlowline", "NHDPlusCatchment"))

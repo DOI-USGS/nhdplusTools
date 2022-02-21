@@ -1,6 +1,11 @@
 nhdplusTools 0.5.0
 ==========
 
+## Documentation updates
+- A new "advanced network attributes" vignette was added.
+- All vignettes were revisited to ensure they are up to date.
+- The introduction vignette is now very brief with links to others.
+
 ## Web Service Wrapper Functions
 - New functions `get_raindrop_trace()`, `get_split_catchment()` use a web service to access elevation data and retireve a raindrop trace path to the nearest flowline in nhdplus V2 and a split catchment or basin to a precise point location respectively.
 - New functions `get_xs_point()`, `get_xs_points()`, and `get_elev_along_path()` access an elevation data service from the 3D Elevation Program and return cross section / path elevation data. 

@@ -212,7 +212,7 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 <p>In addition to typical R package checking, a Dockerfile is included in this repository. Once built, it can be run with the following command.</p>
 <pre><code>docker build -t nhdplustools_test .
 
-docker run --rm -it -v %cd%:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ &amp;&amp; cp /src/.Rbuildignore /check/ &amp;&amp; cd /check &amp;&amp; Rscript -e 'devtools::build()' &amp;&amp; R CMD check --as-cran ../nhdplusTools_*"</code></pre>
+docker run --rm -it -v $PWD:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ &amp;&amp; cp /src/.Rbuildignore /check/ &amp;&amp; cd /check &amp;&amp; Rscript -e 'devtools::build()' &amp;&amp; R CMD check --as-cran ../nhdplusTools_*"</code></pre>
 </div>
 <div class="section level3">
 <h3 id="contributing">Contributing:<a class="anchor" aria-label="anchor" href="#contributing"></a>

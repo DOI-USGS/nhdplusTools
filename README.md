@@ -156,7 +156,7 @@ In addition to typical R package checking, a Dockerfile is included in this repo
 ```
 docker build -t nhdplustools_test .
 
-docker run --rm -it -v %cd%:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ && cp /src/.Rbuildignore /check/ && cd /check && Rscript -e 'devtools::build()' && R CMD check --as-cran ../nhdplusTools_*"
+docker run --rm -it -v $PWD:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ && cp /src/.Rbuildignore /check/ && cd /check && Rscript -e 'devtools::build()' && R CMD check --as-cran ../nhdplusTools_*"
 ```
 
 ### Contributing:

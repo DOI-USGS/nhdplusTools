@@ -90,7 +90,7 @@ plot(st_geometry(st_transform(hr_subset$NHDFlowline, 3857)),
 
 ## Download
 
-NHDPlusHR support in nhdplusTools begins with the function `download_nhdplushr()`. The NHDPlusHR can be downloaded in [four digit hydrologic unit code subsets here.](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/access-national-hydrography-products) `download_nhdplushr()` facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.
+NHDPlusHR support in nhdplusTools begins with the function `download_nhdplushr()`. The NHDPlusHR can be downloaded in [four digit hydrologic unit code subsets here.](https://www.usgs.gov/national-hydrography/access-national-hydrography-products) `download_nhdplushr()` facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.
 
 _Note: Data for each HU02 are put in their own output folder._
 

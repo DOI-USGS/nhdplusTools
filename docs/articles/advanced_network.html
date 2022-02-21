@@ -114,7 +114,7 @@
 <div class="section level4">
 <h4 id="terminology">Terminology<a class="anchor" aria-label="anchor" href="#terminology"></a>
 </h4>
-<p>The terms used below are derived from concepts of <a href="https://en.wikipedia.org/wiki/Graph_theory" class="external-link">graph theory</a>, the <a href="http://opengeospatial.github.io/HY_Features/" class="external-link">HY_Features</a> data model, and the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus" class="external-link">NHDPlus</a> data model. Many of the concepts here are also presented in: <a href="https://doi.org/10.1016/j.envsoft.2020.104927" class="external-link">Mainstems: A logical data model implementing <em>mainstem</em> and <em>drainage</em> basin feature types based on WaterML2 Part 3: HY Features concepts</a>.</p>
+<p>The terms used below are derived from concepts of <a href="https://en.wikipedia.org/wiki/Graph_theory" class="external-link">graph theory</a>, the <a href="http://opengeospatial.github.io/HY_Features/" class="external-link">HY_Features</a> data model, and the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus" class="external-link">NHDPlus</a> data model. Many of the concepts here are also presented in: <a href="https://pubs.er.usgs.gov/publication/70216698" class="external-link">Mainstems: A logical data model implementing <em>mainstem</em> and <em>drainage</em> basin feature types based on WaterML2 Part 3: HY Features concepts</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
@@ -159,7 +159,7 @@ Levelpath values are constant along mainstem paths and are derived from the hydr
 </div>
 <p>A level path is derived from “stream level” which assigns an integer value to mainstem rivers from outlet up the network (see NHDPlus documentation for more). Rivers terminating to the ocean are given level 1 and this level extends all the way to the headwaters. Rivers terminating in level 1 rivers are given level 2, and so on.</p>
 <p>“Stream leveling”, then, is the process of establishing uniquely identified “level paths” through a stream network. This is accomplished with a set of rules that determine which tributary should be considered dominant at every confluence to establish the “mainstem rivers” for each “drainage basin” in a network. <code>nhdplusTools</code> supports creation of streamlevel with the <code><a href="../reference/get_streamlevel.html">get_streamlevel()</a></code> function, and the creation of level path with <code>get_levelpath()</code>. The convention used in NHDPlus is to assign the levelpath as the hydrosequence of the path’s outlet.</p>
-<p>See <a href="https://doi.org/10.1016/j.envsoft.2020.104927" class="external-link">Mainstems: A logical data model implementing <em>mainstem</em> and <em>drainage</em> basin feature types based on WaterML2 Part 3: HY Features concepts</a> for an in depth discussion of these concepts.</p>
+<p>See <a href="https://pubs.er.usgs.gov/publication/70216698" class="external-link">Mainstems: A logical data model implementing <em>mainstem</em> and <em>drainage</em> basin feature types based on WaterML2 Part 3: HY Features concepts</a> for an in depth discussion of these concepts.</p>
 </div>
 <div class="section level3">
 <h3 id="other-derived-network-attributes">Other Derived Network Attributes<a class="anchor" aria-label="anchor" href="#other-derived-network-attributes"></a>

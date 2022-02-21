@@ -774,7 +774,7 @@ recase_sf <- function(x, orig_names) {
 }
 
 
-#' Subset by Raster Processing Unit.
+#' Subset by Raster Processing Unit
 #' @description Given flowlines and an rpu_code, performs a network-safe subset such
 #' that the result can be used in downstream processing. Has been tested to work
 #' against the entire NHDPlusV2 domain and satisfies a number of edge cases.

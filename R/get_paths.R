@@ -528,7 +528,7 @@ get_terminal <- function(x, outlets) {
                    x[c("ID", "terminalID")], by = "ID")
 }
 
-#' Get path length
+#' Get Path Length
 #' @description Generates the main path length to a basin's
 #' terminal path.
 #' @param x data.frame with ID, toID, length columns.

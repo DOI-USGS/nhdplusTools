@@ -67,7 +67,7 @@ The package has three types of functionality presented in the following vegnette
 Two other vignette articles are available for the package.
 
 1. Working with NHDPlusHR: `vignette("nhdplushr")`
-1. Plotting NHDPlus data:`vignette("plot_nhdplus")`
+1. Plotting NHDPlus data: `vignette("plot_nhdplus")`
 
 Thanks for taking the time to read the package documentation. If you see anything that looks wrong or could be better, please consider opening an issue or a pull request in [github](https://github.com/dblodgett-usgs/nhdplusTools/issues)!
 

@@ -918,12 +918,19 @@ get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
 
   if(!layer %in% c("nhdarea", "nhdwaterbody", "nhdflowline_network",
                    "nhdflowline_nonnetwork", "catchmentsp")) {
-    stop("Layer must be one of nhdarea, nhdwaterbody")
+    stop("Layer must be one of nhdarea, nhdwaterbody, nhdflowline_network, nhdflowline_nonnetwork, catchmentsp.")
   }
 
   type <- dplyr::filter(query_usgs_geoserver(),
                         .data$geoserver == layer)$user_call
 
-  query_usgs_geoserver(AOI = box,
-                       type = type)
+
+  if(layer == "nhdflowline_network") {
+    query_usgs_geoserver(AOI = box,
+                         type = type,
+                         filter = streamorder_filter(streamorder))
+  } else {
+    query_usgs_geoserver(AOI = box,
+                         type = type)
+  }
 }

@@ -8,6 +8,8 @@
 #' @param gpkg path and file with .gpkg ending. If omitted, no file is written.
 #' @param overwrite passed on the \link{subset_nhdplus}.
 #' @param plot_config list containing plot configuration, see details.
+#' @param basemap character indicating which basemap type to use. Chose from:
+#' \link[rosm]{osm.types}.
 #' @param add boolean should this plot be added to an already built map.
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
 #' @param flowline_only boolean only subset and plot flowlines only, default=FALSE
@@ -116,8 +118,9 @@
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
-                         add = FALSE, actually_plot = TRUE, overwrite = TRUE,
-                         flowline_only = NULL, cache_data = NULL, ...) {
+                         basemap = "cartolight", add = FALSE, actually_plot = TRUE,
+                         overwrite = TRUE, flowline_only = NULL,
+                         cache_data = NULL, ...) {
 
   # Work with cache data
   save <- FALSE
@@ -144,7 +147,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 
     prettymapr::prettymap({
       if(!add) {
-        rosm::osm.plot(pd$plot_bbox, type = "cartolight",
+        rosm::osm.plot(pd$plot_bbox, type = basemap,
                        quiet = TRUE, progress = "none",
                        cachedir = osm_cache_dir(), ...)
       }
@@ -364,8 +367,16 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
 
     nexus <- do.call(rbind, lapply(outlets, get_outlet_from_nldi))
 
-    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data, gpkg, overwrite, streamorder = streamorder, flowline_only = flowline_only)
+    if((ba <- max(sf::st_area(basin))) > units::set_units(1000^2, "m^2")) {
+      if(is.null(flowline_only)) flowline_only <- TRUE
+      if(is.null(streamorder)) streamorder <- auto_streamorder(ba)
+    }
+
+    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data,
+                                     gpkg, overwrite, streamorder = streamorder,
+                                     flowline_only = flowline_only)
     flowline <- align_nhdplus_names(nhd_data$flowline)
+
     flowline <- do.call(rbind, lapply(nexus$comid, function(x) {
       flowline[flowline$COMID %in% get_UT(align_nhdplus_names(flowline), x), ]
     }))
@@ -429,6 +440,13 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
               off_network_wtbd=off_network_wtbd))
 }
 
+auto_streamorder <- function(x) {
+  if(x <= units::set_units(10000^2, "m^2")) return(1)
+  if(x <= units::set_units(18000^2, "m^2")) return(2)
+  if(x <= units::set_units(28000^2, "m^2")) return(3)
+  return(4)
+}
+
 dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorder = NULL, flowline_only = FALSE) {
 
   bbox <- sf::st_bbox(sf::st_transform(sf::st_as_sfc(bbox), 4326))
@@ -439,8 +457,8 @@ dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorde
     source <- "download"
   }
   if(is.null(flowline_only) && source == "download") {
-    flowline_only <- FALSE
-  } else {
+    flowline_only <- TRUE
+  } else if(is.null(flowline_only)) {
     flowline_only <- FALSE
   }
 

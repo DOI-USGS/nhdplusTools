@@ -41,7 +41,7 @@ test_that("get_nhdplus_bybox", {
   }
 
   expect_error(nhdplusTools:::get_nhdplus_bybox(bbox, "borked"),
-               "Layer must be one of nhdarea, nhdwaterbody")
+               "Layer must be one of nhdarea, nhdwaterbody, nhdflowline_network, nhdflowline_nonnetwork, catchmentsp.")
 
 })
 

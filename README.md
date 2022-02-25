@@ -129,7 +129,7 @@ used for data discovery.
 
 ##### NHDPlus Version
 Initial package development focused on the [National Seamless NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-data)
-database. [NHDPlus High Resolution](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution) is
+database. [NHDPlus High Resolution](https://www.usgs.gov/national-hydrography/nhdplus-high-resolution) is
 also supported.
 
 ### Related similar packages:

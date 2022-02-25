@@ -173,7 +173,7 @@ check_vaa_path <- function(path, download, updated_network = FALSE) {
 #' @export
 #' @importFrom httr GET progress write_disk
 
-download_vaa <- function(path = get_vaa_path(), force = FALSE, updated_network = FALSE) {
+download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, updated_network = FALSE) {
 
   if (file.exists(path) & !force) {
     message("File already cached")

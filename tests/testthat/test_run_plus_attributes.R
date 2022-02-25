@@ -1,6 +1,8 @@
 
 
 test_that("example", {
+  skip_on_cran()
+
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
   expect_s3_class(get_sorted(walker_flowline), "sf")

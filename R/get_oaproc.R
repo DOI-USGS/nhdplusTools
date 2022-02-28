@@ -17,7 +17,7 @@
 #'
 #' bbox <- sf::st_bbox(trace) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 #' plot(sf::st_transform(sf::st_geometry(trace)[1], 3857), add = TRUE, col = "red")
@@ -65,7 +65,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #'
 #' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
@@ -75,7 +75,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #'
 #' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
@@ -87,7 +87,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #'
 #' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
@@ -124,7 +124,7 @@ get_split_catchment <- function(point, upstream = TRUE) {
 #'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
@@ -165,7 +165,7 @@ get_xs_point <- function(point, width, num_pts) {
 #'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)
@@ -222,7 +222,7 @@ check_res <- function(res) {
 #'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox)
+#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)

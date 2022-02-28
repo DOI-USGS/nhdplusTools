@@ -19,7 +19,7 @@ test_that("nhdplus_data path sets and gets right", {
 })
 
 test_that("nhdplusTools_data_path works", {
-  check <- tools::R_user_dir("usgs_r/nhdplusTools")
+  check <- tools::R_user_dir("nhdplusTools")
 
   orig <- nhdplusTools_data_dir()
 

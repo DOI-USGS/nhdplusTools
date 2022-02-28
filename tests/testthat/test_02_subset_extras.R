@@ -199,8 +199,9 @@ test_that("projection check", {
 
   mr <- nhdplusTools::plot_nhdplus(list(13293970), gpkg = out,
                                    nhdplus_data = out,
-                                   overwrite = FALSE, actually_plot = FALSE)
-
+                                   overwrite = FALSE,
+                                   actually_plot = FALSE,
+                                   cache_data = FALSE)
 
   expect_true(sf::st_crs(mr$flowline) == sf::st_crs(4269))
 

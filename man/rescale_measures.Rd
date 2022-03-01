@@ -2,7 +2,7 @@
 % Please edit documentation in R/index_nhdplus.R
 \name{rescale_measures}
 \alias{rescale_measures}
-\title{Rescale reachcode measure to comid flowline measure.}
+\title{Rescale reachcode measure to comid flowline measure}
 \usage{
 rescale_measures(measure, from, to)
 }

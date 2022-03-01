@@ -18,7 +18,7 @@ EPSG:3857 Web Mercator Projection."><meta property="og:image" content="https://u
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
@@ -87,6 +87,7 @@ EPSG:3857 Web Mercator Projection.</p>
   nhdplus_data <span class="op">=</span> <span class="cn">NULL</span>,
   gpkg <span class="op">=</span> <span class="cn">NULL</span>,
   plot_config <span class="op">=</span> <span class="cn">NULL</span>,
+  basemap <span class="op">=</span> <span class="st">"cartolight"</span>,
   add <span class="op">=</span> <span class="cn">FALSE</span>,
   actually_plot <span class="op">=</span> <span class="cn">TRUE</span>,
   overwrite <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -110,6 +111,9 @@ EPSG:3857 Web Mercator Projection.</p>
 <dd><p>path and file with .gpkg ending. If omitted, no file is written.</p></dd>
 <dt>plot_config</dt>
 <dd><p>list containing plot configuration, see details.</p></dd>
+<dt>basemap</dt>
+<dd><p>character indicating which basemap type to use. Chose from:
+<a href="https://rdrr.io/pkg/rosm/man/osm.types.html" class="external-link">osm.types</a>.</p></dd>
 <dt>add</dt>
 <dd><p>boolean should this plot be added to an already built map.</p></dd>
 <dt>actually_plot</dt>
@@ -120,7 +124,8 @@ EPSG:3857 Web Mercator Projection.</p>
 <dd><p>boolean only subset and plot flowlines only, default=FALSE</p></dd>
 <dt>cache_data</dt>
 <dd><p>character path to rds file where all plot data can be cached.
-If file doesn't exist, it will be created.</p></dd>
+If file doesn't exist, it will be created. If set to FALSE, all caching will
+be turned off -- this includes basemap tiles.</p></dd>
 <dt>...</dt>
 <dd><p>parameters passed on to rosm.</p></dd>
 </dl></div>
@@ -160,23 +165,24 @@ The following shows the defaults that can be altered.</p><ol><li><p>basin <code>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"rgdal_show_exportToProj4_warnings"</span><span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span>
+<span class="r-in"><span class="co"># Beware plot_nhdplus caches data to the default location.</span></span>
+<span class="r-in"><span class="co"># If you do not want data in "user space" change the default.</span></span>
+<span class="r-in"><span class="va">old_dir</span> <span class="op">&lt;-</span> <span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">plot_nhdplus</span><span class="op">(</span><span class="st">"05428500"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Zoom: 11</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
 <span class="r-plt img"><img src="plot_nhdplus-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">plot_nhdplus</span><span class="op">(</span><span class="st">"05428500"</span>, streamorder <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Zoom: 11</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
 <span class="r-plt img"><img src="plot_nhdplus-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">plot_nhdplus</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">13293970</span>, <span class="fl">13293750</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Zoom: 11</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -264,9 +270,7 @@ The following shows the defaults that can be altered.</p><ol><li><p>basin <code>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
 <span class="r-plt img"><img src="plot_nhdplus-11.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co"># Cleanup downloaded open street map cache and temp data dir if desired.</span></span>
-<span class="r-in"><span class="co"># This is included for CRAN checks primarily.</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="va">old_dir</span><span class="op">)</span></span>
 <span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
     </div>

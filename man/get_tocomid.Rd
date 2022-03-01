@@ -2,7 +2,7 @@
 % Please edit documentation in R/prep_nhdplus.R
 \name{get_tocomid}
 \alias{get_tocomid}
-\title{get toid}
+\title{Get tocomid}
 \usage{
 get_tocomid(
   x,

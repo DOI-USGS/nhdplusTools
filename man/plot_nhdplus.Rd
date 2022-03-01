@@ -11,6 +11,7 @@ plot_nhdplus(
   nhdplus_data = NULL,
   gpkg = NULL,
   plot_config = NULL,
+  basemap = "cartolight",
   add = FALSE,
   actually_plot = TRUE,
   overwrite = TRUE,
@@ -32,6 +33,9 @@ plot_nhdplus(
 
 \item{plot_config}{list containing plot configuration, see details.}
 
+\item{basemap}{character indicating which basemap type to use. Chose from:
+\link[rosm]{osm.types}.}
+
 \item{add}{boolean should this plot be added to an already built map.}
 
 \item{actually_plot}{boolean actually draw the plot? Use to get data subset only.}
@@ -41,7 +45,8 @@ plot_nhdplus(
 \item{flowline_only}{boolean only subset and plot flowlines only, default=FALSE}
 
 \item{cache_data}{character path to rds file where all plot data can be cached.
-If file doesn't exist, it will be created.}
+If file doesn't exist, it will be created. If set to FALSE, all caching will
+be turned off -- this includes basemap tiles.}
 
 \item{...}{parameters passed on to rosm.}
 }
@@ -91,6 +96,10 @@ If adding additional layers to the plot, data must be projected to EPSG:3857 wit
 \examples{
 \donttest{
 options("rgdal_show_exportToProj4_warnings"="none")
+# Beware plot_nhdplus caches data to the default location.
+# If you do not want data in "user space" change the default.
+old_dir <- nhdplusTools::nhdplusTools_data_dir()
+nhdplusTools_data_dir(tempdir())
 
 plot_nhdplus("05428500")
 
@@ -146,8 +155,6 @@ plot_nhdplus(bbox = bbox, nhdplus_data = sample_data,
 plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
              plot_config = list(flowline = list(col = "darkblue")))
 
-# Cleanup downloaded open street map cache and temp data dir if desired.
-# This is included for CRAN checks primarily.
-unlink(nhdplusTools::nhdplusTools_data_dir(), recursive = TRUE)
+nhdplusTools::nhdplusTools_data_dir(old_dir)
 }
 }

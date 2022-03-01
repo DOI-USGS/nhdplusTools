@@ -2,7 +2,7 @@
 % Please edit documentation in R/subset_nhdplus.R
 \name{subset_rpu}
 \alias{subset_rpu}
-\title{Subset by Raster Processing Unit.}
+\title{Subset by Raster Processing Unit}
 \usage{
 subset_rpu(fline, rpu, run_make_standalone = TRUE, strict = FALSE)
 }

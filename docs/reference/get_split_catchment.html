@@ -18,7 +18,7 @@ the portion of a catchment upstream of the point provided."><meta property="og:i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
@@ -128,7 +128,7 @@ and optionally the total dranage basin.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">catchment</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.005</span>, <span class="op">-</span><span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.005</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span>, cache_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found invalid geometry, attempting to fix.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Zoom: 11</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
@@ -153,7 +153,7 @@ and optionally the total dranage basin.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">catchment</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.005</span>, <span class="op">-</span><span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.005</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span>, cache_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Zoom: 13</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
@@ -179,7 +179,7 @@ and optionally the total dranage basin.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">catchment</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.005</span>, <span class="op">-</span><span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.005</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span>, cache_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No nonnetwork features found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Zoom: 14</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>

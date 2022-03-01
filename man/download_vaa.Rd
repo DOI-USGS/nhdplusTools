@@ -4,7 +4,11 @@
 \alias{download_vaa}
 \title{Download nhdplusVAA data from HydroShare}
 \usage{
-download_vaa(path = get_vaa_path(), force = FALSE, updated_network = FALSE)
+download_vaa(
+  path = get_vaa_path(updated_network),
+  force = FALSE,
+  updated_network = FALSE
+)
 }
 \arguments{
 \item{path}{character path where the file should be saved. Default is a

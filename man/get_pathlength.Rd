@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_paths.R
 \name{get_pathlength}
 \alias{get_pathlength}
-\title{Get path length}
+\title{Get Path Length}
 \usage{
 get_pathlength(x)
 }

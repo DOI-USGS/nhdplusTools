@@ -60,7 +60,7 @@
 #' # Beware plot_nhdplus caches data to the default location.
 #' # If you do not want data in "user space" change the default.
 #' old_dir <- nhdplusTools::nhdplusTools_data_dir()
-#' nhdplusTools::nhdplusTools_data_dir(tempdir())
+#' nhdplusTools_data_dir(tempdir())
 #'
 #' plot_nhdplus("05428500")
 #'
@@ -128,12 +128,14 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
   # Work with cache data
   save <- FALSE
   fetch <- TRUE
-  if(!isFALSE(cache_data) & !is.null(cache_data)) {
-    if(file.exists(cache_data)) {
-      pd <- readRDS(cache_data)
-      fetch <- FALSE
-    } else {
-      save <- TRUE
+  if(!isFALSE(cache_data)) {
+    if(!is.null(cache_data)) {
+      if(file.exists(cache_data)) {
+        pd <- readRDS(cache_data)
+        fetch <- FALSE
+      } else {
+        save <- TRUE
+      }
     }
     cache_osm <- osm_cache_dir()
   } else {

@@ -2,6 +2,7 @@
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 test_that("osm_cache_dir", {
+  testthat::skip_on_cran()
   dir <- nhdplusTools:::osm_cache_dir()
 
   expect_equal(dir,

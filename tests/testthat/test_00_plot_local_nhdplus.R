@@ -58,6 +58,4 @@ test_that("local data", {
   # plot_nhdplus(outlets = outlet, nhdplus_data = sample_data)
   #
   # plot_nhdplus(outlets = outlet, nhdplus_data = sample_data, streamorder = 3)
-
-
 })

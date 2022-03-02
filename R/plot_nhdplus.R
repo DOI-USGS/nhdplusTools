@@ -14,7 +14,8 @@
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
 #' @param flowline_only boolean only subset and plot flowlines only, default=FALSE
 #' @param cache_data character path to rds file where all plot data can be cached.
-#' If file doesn't exist, it will be created.
+#' If file doesn't exist, it will be created. If set to FALSE, all caching will
+#' be turned off -- this includes basemap tiles.
 #' @param ... parameters passed on to rosm.
 #' @return data.frame plot data is returned invisibly in NAD83 Lat/Lon.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
@@ -56,6 +57,10 @@
 #' @examples
 #' \donttest{
 #' options("rgdal_show_exportToProj4_warnings"="none")
+#' # Beware plot_nhdplus caches data to the default location.
+#' # If you do not want data in "user space" change the default.
+#' old_dir <- nhdplusTools::nhdplusTools_data_dir()
+#' nhdplusTools_data_dir(tempdir())
 #'
 #' plot_nhdplus("05428500")
 #'
@@ -111,9 +116,7 @@
 #' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
 #'              plot_config = list(flowline = list(col = "darkblue")))
 #'
-#' # Cleanup downloaded open street map cache and temp data dir if desired.
-#' # This is included for CRAN checks primarily.
-#' unlink(nhdplusTools::nhdplusTools_data_dir(), recursive = TRUE)
+#' nhdplusTools::nhdplusTools_data_dir(old_dir)
 #' }
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
@@ -125,13 +128,18 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
   # Work with cache data
   save <- FALSE
   fetch <- TRUE
-  if(!is.null(cache_data)) {
-    if(file.exists(cache_data)) {
-      pd <- readRDS(cache_data)
-      fetch <- FALSE
-    } else {
-      save <- TRUE
+  if(!isFALSE(cache_data)) {
+    if(!is.null(cache_data)) {
+      if(file.exists(cache_data)) {
+        pd <- readRDS(cache_data)
+        fetch <- FALSE
+      } else {
+        save <- TRUE
+      }
     }
+    cache_osm <- osm_cache_dir()
+  } else {
+    cache_osm <- file.path(tempdir(check = TRUE), "osm.cache")
   }
 
   if(fetch)
@@ -149,7 +157,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
       if(!add) {
         rosm::osm.plot(pd$plot_bbox, type = basemap,
                        quiet = TRUE, progress = "none",
-                       cachedir = osm_cache_dir(), ...)
+                       cachedir = cache_osm, ...)
       }
       # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
       if(!is.null(pd$basin))

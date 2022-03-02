@@ -2,6 +2,7 @@
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 test_that("osm_cache_dir", {
+  testthat::skip_on_cran()
   dir <- nhdplusTools:::osm_cache_dir()
 
   expect_equal(dir,
@@ -129,7 +130,8 @@ test_that("comids", {
   testthat::skip_on_cran()
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   comids <- nhdplusTools::get_UT(fline, 13293970)
-  d <- nhdplusTools:::plot_nhdplus(comids, flowline_only = TRUE, nhdplus_data = sample_data)
+  d <- nhdplusTools:::plot_nhdplus(comids, flowline_only = TRUE,
+                                   nhdplus_data = sample_data, cache_data = FALSE)
 
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin", "catchment",
                            "network_wtbd","off_network_wtbd"))
@@ -159,13 +161,14 @@ test_that("waterbodies", {
   tempd <- tempdir(check = TRUE)
   g_temp <- file.path(tempd, "foo.gpkg")
 
-  d <-  nhdplusTools:::plot_nhdplus(site)
+  d <-  nhdplusTools:::plot_nhdplus(site, cache_data = FALSE)
 
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline",
                            "basin", "catchment","network_wtbd",
                            "off_network_wtbd"))
 
-  d <-  nhdplusTools:::plot_nhdplus(site, flowline_only = FALSE)
+  d <-  nhdplusTools:::plot_nhdplus(site, flowline_only = FALSE,
+                                    cache_data = FALSE)
 
   expect_true(is(d$network_wtbd, "sf"))
   expect_true(is(d$off_network_wtbd, "sf"))

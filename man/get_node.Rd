@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_geometry.R
 \name{get_node}
 \alias{get_node}
-\title{Get flowline node}
+\title{Get Flowline Node}
 \usage{
 get_node(x, position = "end")
 }

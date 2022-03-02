@@ -256,7 +256,7 @@ assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
 
 assign("nhdpt_dat_dir",
-       tools::R_user_dir("usgs_r/nhdplusTools"),
+       tools::R_user_dir("nhdplusTools"),
        envir = nhdplusTools_env)
 
 #' @noRd
@@ -282,7 +282,7 @@ get_nldi_url <- function(tier = "prod") {
 #'
 #' nhdplusTools_data_dir("demo")
 #'
-#' nhdplusTools_data_dir(tools::R_user_dir("usgs_r/nhdplusTools"))
+#' nhdplusTools_data_dir(tools::R_user_dir("nhdplusTools"))
 #'
 nhdplusTools_data_dir <- function(dir = NULL) {
 

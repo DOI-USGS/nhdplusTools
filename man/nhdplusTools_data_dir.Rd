@@ -21,6 +21,6 @@ nhdplusTools_data_dir()
 
 nhdplusTools_data_dir("demo")
 
-nhdplusTools_data_dir(tools::R_user_dir("usgs_r/nhdplusTools"))
+nhdplusTools_data_dir(tools::R_user_dir("nhdplusTools"))
 
 }

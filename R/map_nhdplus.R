@@ -52,68 +52,69 @@ map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
   check_pkg("leaflet")
 
   # I did try gt() and warnings are thrown
-  lt = function(x){ st_transform(x, '+proj=longlat +datum=WGS84') }
+  lt <- function(x){ st_transform(x, '+proj=longlat +datum=WGS84') }
 
   pd <- get_plot_data(outlets, bbox, streamorder,
                       nhdplus_data, gpkg, overwrite, flowline_only)
 
 
-  m <- leaflet::leaflet()  |>
-    leaflet::addProviderTiles("Esri.NatGeoWorldMap", group = "Terrain")  |>
-    leaflet::addProviderTiles("CartoDB.Positron", group = "Grayscale")  |>
-    leaflet::addProviderTiles("Esri.WorldImagery", group = "Imagery")  |>
-    leaflet::addScaleBar("bottomleft")  |>
+  m <- leaflet::leaflet()  %>%
+    leaflet::addProviderTiles("Esri.NatGeoWorldMap", group = "Terrain")  %>%
+    leaflet::addProviderTiles("CartoDB.Positron", group = "Grayscale")  %>%
+    leaflet::addProviderTiles("Esri.WorldImagery", group = "Imagery")  %>%
+    leaflet::addScaleBar("bottomleft")  %>%
     leaflet::addMiniMap(
       toggleDisplay = TRUE,
       minimized = TRUE
-    )  |>
+    )  %>%
     leaflet::addMeasure(
       position = "bottomleft",
       primaryLengthUnit = "feet",
       primaryAreaUnit = "sqmiles",
       activeColor = "red",
       completedColor = "green"
-    )  |>
+    )  %>%
     leaflet::fitBounds(lng1 = pd$plot_bbox[1,1], lng2 = pd$plot_bbox[1,2],
                        lat1 = pd$plot_bbox[2,1], lat2 = pd$plot_bbox[2,2])
 
 
   st <- get_styles(plot_config)
-  overlays = NULL
+
+  overlays <- NULL
 
   if(!is.null(pd$basin)){
 
-    m  = leaflet::addPolygons(m, data = lt(pd$basin),
+    m  <- leaflet::addPolygons(m, data = lt(pd$basin),
                               weight = st$basin$lwd + 2,
                               fillColor = "transparent",
                               color = st$basin$border,
                               group = "basins")
 
-    overlays = c(overlays, "basins")
+    overlays <- c(overlays, "basins")
   }
 
   if(!is.null(pd$network_wtbd)){
 
-    m  = leaflet::addPolygons(m, data = lt(pd$network_wtbd),
+    m  <- leaflet::addPolygons(m, data = lt(pd$network_wtbd),
                               weight = st$network_wtbd$lwd,
                               fillOpacity = .8,
                               fillColor = st$network_wtbd$col,
                               color = st$network_wtbd$border,
                               group = "Network WB")
 
-    overlays = c(overlays, "network WB")
+    overlays <- c(overlays, "network WB")
   }
 
   if(!is.null(pd$off_network_wtbd)){
 
-    m  = leaflet::addPolygons(m, data = lt(pd$off_network_wtbd),
+    m  <- leaflet::addPolygons(m, data = lt(pd$off_network_wtbd),
                               weight = st$off_network_wtbd$lwd,
                               fillColor = st$off_network_wtbd$col,
                               fillOpacity = .8,
                               color = st$off_network_wtbd$border,
                               group = "Off-Network WB")
 
-    overlays = c(overlays, "off-network WB")
+    overlays <- c(overlays, "off-network WB")
 
   }
 
@@ -126,18 +127,18 @@ map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          label = ~COMID,
                          group = "Flowlines")
 
-    overlays = c(overlays, "flowlines")
+    overlays <- c(overlays, "flowlines")
   }
 
   if(!is.null(pd$outlets)) {
 
-    base = do.call(rbind.data.frame, st$outlets)
-    base$type =  rownames(base)
-    pd$outlets$type = ifelse(pd$outlets$type %in% base$type, pd$outlets$type,"default")
+    base <- do.call(rbind.data.frame, st$outlets)
+    base$type <- rownames(base)
+    pd$outlets$type <- ifelse(pd$outlets$type %in% base$type, pd$outlets$type,"default")
 
-    outs = left_join(pd$outlets, base, by = "type")
+    outs <- left_join(pd$outlets, base, by = "type")
 
-    pal = leaflet::colorFactor(c(base$col), domain = base$type)
+    pal <- leaflet::colorFactor(c(base$col), domain = base$type)
 
     m <- leaflet::addCircleMarkers(m, data = lt(outs),
                                    fillOpacity = 1,
@@ -145,23 +146,23 @@ map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                                    stroke = FALSE,
                                    radius = ~cex*5,
                                    group = "outlets"
-                             ) |>
+                             ) %>%
       leaflet::addLegend(position = 'topright',
                 colors = pal(unique(outs$type)), labels = unique(outs$type),
                 title = "Outlet Type", opacity = .7
                 )
 
-    overlays = c(overlays, "outlets")
+    overlays <- c(overlays, "outlets")
   }
 
-m  =m |>
-  leaflet::addLayersControl(
-    baseGroups = c("Grayscale", "Imagery", "Terrain"),
-    overlayGroups = overlays,
-    options = leaflet::layersControlOptions(collapsed = TRUE)
-  )
+  m <-leaflet::addLayersControl(m,
+      baseGroups = c("Grayscale", "Imagery", "Terrain"),
+      overlayGroups = overlays,
+      options = leaflet::layersControlOptions(collapsed = TRUE)
+    )
 
-print(m)
+  print(m)
 
-return(invisible(pd))
+  return(invisible(pd))
+
 }

@@ -47,12 +47,37 @@ check_pkg <- function(pkg) {
 
 map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                         nhdplus_data = NULL, gpkg = NULL,
-                        flowline_only = NULL) {
+                        flowline_only = NULL, plot_config = NULL, overwrite = TRUE, cache_data = NULL) {
 
   check_pkg("leaflet")
 
   # I did try gt() and warnings are thrown
   lt <- function(x){ st_transform(x, '+proj=longlat +datum=WGS84') }
+
+  # Work with cache data
+  save  <- FALSE
+  fetch <- TRUE
+  if(!isFALSE(cache_data)) {
+    if(!is.null(cache_data)) {
+      if(file.exists(cache_data)) {
+        pd <- readRDS(cache_data)
+        fetch <- FALSE
+      } else {
+        save <- TRUE
+      }
+    }
+  }
+
+  if(fetch){
+    pd <- get_plot_data(outlets, bbox, streamorder,
+                        nhdplus_data, gpkg, overwrite, flowline_only)
+  }
+
+  if(save) {
+    saveRDS(pd, cache_data)
+  }
+
+  ########################
 
   pd <- get_plot_data(outlets, bbox, streamorder,
                       nhdplus_data, gpkg, overwrite, flowline_only)

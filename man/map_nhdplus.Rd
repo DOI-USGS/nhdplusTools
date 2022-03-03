@@ -10,7 +10,10 @@ map_nhdplus(
   streamorder = NULL,
   nhdplus_data = NULL,
   gpkg = NULL,
-  flowline_only = NULL
+  flowline_only = NULL,
+  plot_config = NULL,
+  overwrite = TRUE,
+  cache_data = NULL
 )
 }
 \arguments{
@@ -25,6 +28,14 @@ map_nhdplus(
 \item{gpkg}{path and file with .gpkg ending. If omitted, no file is written.}
 
 \item{flowline_only}{boolean only subset and plot flowlines only, default=FALSE}
+
+\item{plot_config}{list containing plot configuration, see details.}
+
+\item{overwrite}{passed on the \link{subset_nhdplus}.}
+
+\item{cache_data}{character path to rds file where all plot data can be cached.
+If file doesn't exist, it will be created. If set to FALSE, all caching will
+be turned off -- this includes basemap tiles.}
 }
 \value{
 data.frame plot data is returned invisibly in NAD83 Lat/Lon.

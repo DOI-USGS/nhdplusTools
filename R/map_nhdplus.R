@@ -1,5 +1,6 @@
 #' Check for a package
 #' @param pkg package name
+#' @noRd
 
 check_pkg <- function(pkg) {
   if (!requireNamespace(pkg, quietly = TRUE))
@@ -10,11 +11,13 @@ check_pkg <- function(pkg) {
          "')`", call. = FALSE)
 }
 
+
 #' @title Make Interactive Map of NHDPlus
 #' @description Given a list of outlets, get their basin boundaries and network and return a leaflet map in
 #' EPSG:4326.
 #' @inheritParams plot_nhdplus
-#' @return data.frame plot data is returned invisibly in NAD83 Lat/Lon.
+#' @param return_map if FALSE (default), a data.frame plot data is returned invisibly in NAD83 Lat/Lon, if TRUE the leaflet object is retuned
+#' @return data.frame or leaflet map (see return_map)
 #' @details map_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
 #' \enumerate{
@@ -42,12 +45,16 @@ check_pkg <- function(pkg) {
 #' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 #'
 #' map_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
+#'
+#' #return leaflet object
+#' map_nhdplus("05428500", return_map = TRUE)
 #' }
 #' @importFrom sf st_transform
 
 map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                         nhdplus_data = NULL, gpkg = NULL,
-                        flowline_only = NULL, plot_config = NULL, overwrite = TRUE, cache_data = NULL) {
+                        flowline_only = NULL, plot_config = NULL,
+                        overwrite = TRUE, cache_data = NULL, return_map = FALSE) {
 
   check_pkg("leaflet")
 
@@ -55,6 +62,8 @@ map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
   lt <- function(x){ st_transform(x, '+proj=longlat +datum=WGS84') }
 
   # Work with cache data
+
+ # TODO: fix duplication with plot_nhdplus
   save  <- FALSE
   fetch <- TRUE
   if(!isFALSE(cache_data)) {
@@ -78,10 +87,6 @@ map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
   }
 
   ########################
-
-  pd <- get_plot_data(outlets, bbox, streamorder,
-                      nhdplus_data, gpkg, overwrite, flowline_only)
-
 
   m <- leaflet::leaflet()  %>%
     leaflet::addProviderTiles("Esri.NatGeoWorldMap", group = "Terrain")  %>%
@@ -188,6 +193,10 @@ map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 
   print(m)
 
-  return(invisible(pd))
+  if(return_map){
+    return(invisible(m))
+  } else {
+    return(invisible(pd))
+  }
 
 }

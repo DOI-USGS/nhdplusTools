@@ -16,7 +16,7 @@ check_pkg <- function(pkg) {
 #' @description Given a list of outlets, get their basin boundaries and network and return a leaflet map in
 #' EPSG:4326.
 #' @inheritParams plot_nhdplus
-#' @param return_map if FALSE (default), a data.frame plot data is returned invisibly in NAD83 Lat/Lon, if TRUE the leaflet object is retuned
+#' @param return_map if FALSE (default), a data.frame of plot data is returned invisibly in NAD83 Lat/Lon, if TRUE the leaflet object is returned
 #' @return data.frame or leaflet map (see return_map)
 #' @details map_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.

@@ -13,7 +13,8 @@ map_nhdplus(
   flowline_only = NULL,
   plot_config = NULL,
   overwrite = TRUE,
-  cache_data = NULL
+  cache_data = NULL,
+  return_map = FALSE
 )
 }
 \arguments{
@@ -36,9 +37,11 @@ map_nhdplus(
 \item{cache_data}{character path to rds file where all plot data can be cached.
 If file doesn't exist, it will be created. If set to FALSE, all caching will
 be turned off -- this includes basemap tiles.}
+
+\item{return_map}{if FALSE (default), a data.frame of plot data is returned invisibly in NAD83 Lat/Lon, if TRUE the leaflet object is returned}
 }
 \value{
-data.frame plot data is returned invisibly in NAD83 Lat/Lon.
+data.frame or leaflet map (see return_map)
 }
 \description{
 Given a list of outlets, get their basin boundaries and network and return a leaflet map in
@@ -72,5 +75,8 @@ map_nhdplus(list(13293970, 13293750))
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 map_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
+
+#return leaflet object
+map_nhdplus("05428500", return_map = TRUE)
 }
 }

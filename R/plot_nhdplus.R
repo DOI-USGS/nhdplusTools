@@ -125,7 +125,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          overwrite = TRUE, flowline_only = NULL,
                          cache_data = NULL, ...) {
 
-  gt <- function(x) sf::st_geometry(sf::st_transform(x, 3857))
+  gt <- function(x) { sf::st_geometry(sf::st_transform(x, 3857)) }
 
   # Work with cache data
   save <- FALSE

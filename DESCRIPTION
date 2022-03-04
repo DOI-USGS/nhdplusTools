@@ -25,7 +25,7 @@ BugReports: https://github.com/usgs-r/nhdplusTools/issues/
 Depends:
     R (>= 4.0)
 Imports: dplyr, sf, RANN, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, rosm, prettymapr, fst, dataRetrieval, tools, zip, pbapply
-Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2, gifski
+Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2, gifski, leaflet
 License: CC0
 Encoding: UTF-8
 RoxygenNote: 7.1.2

@@ -21,7 +21,7 @@ NOTE: The download option may not work for large areas, use with caution.}
 \item{points}{sf or sfc of type POINT in analysis projection. NOTE: flines will
 be projected to the projection of the points layer.}
 
-\item{search_radius}{numeric distance for the nearest neighbor search
+\item{search_radius}{units distance for the nearest neighbor search
 to extend in analysis projection. If missing or NULL, and points are in a lon
 lat projection, a default of 0.01 degrees is used, otherwise 200 m is used.
 Conversion to the linear unit used by the provided crs of points is attempted.

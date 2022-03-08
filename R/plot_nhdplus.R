@@ -125,6 +125,8 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          overwrite = TRUE, flowline_only = NULL,
                          cache_data = NULL, ...) {
 
+  gt <- function(x) { sf::st_geometry(sf::st_transform(x, 3857)) }
+
   # Work with cache data
   save <- FALSE
   fetch <- TRUE
@@ -484,8 +486,6 @@ dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorde
               waterbody = d$NHDWaterbody,
               nexus = NULL, basin = NULL))
 }
-
-gt <- function(x) sf::st_geometry(sf::st_transform(x, 3857))
 
 sp_bbox <- function(g) {
   matrix(as.numeric(sf::st_bbox(g)),

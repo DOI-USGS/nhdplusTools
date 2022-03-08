@@ -72,15 +72,15 @@ flowlines <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network")
 gages <- sf::read_sf(nhdplus_path(), "Gage")
 ```
 
-Now we can call `nhdplusTools::get_flowline_index()` on the data we just loaded. Note that we are doing our spatial searching in units of degrees. The get_flowline_index has an input, `search_radius` which defaults to 0.1. See the documentation of the [nn2 function from the RANN package](https://cran.r-project.org/package=RANN) for more information on how the search works.
+Now we can call `get_flowline_index()` on the data we just loaded. The `get_flowline_index()` function has an input, `search_radius` which should correspond to the units of the `points` input. Projection and unit conversion is attempted. See the function documentation for details. See the documentation of the [nn2 function from the RANN package](https://cran.r-project.org/package=RANN) for more information on how the search works.
 
 NOTE: If you have a small area in which you need flowline indexes, `get_flowline_index()` has an 
 option to download flowlines in the bounding box of your input points.
 
 ```{r get_indexes}
-indexes <- get_flowline_index(flowlines,
-                              sf::st_geometry(gages), 
-                              search_radius = 0.01, 
+indexes <- get_flowline_index(sf::st_transform(flowlines, 5070), # albers
+                              sf::st_transform(sf::st_geometry(gages), 5070), 
+                              search_radius = units::set_units(200, "meters"), 
                               max_matches = 1)
 
 indexes <- left_join(sf::st_sf(id = c(1:nrow(gages)), 
@@ -92,7 +92,7 @@ plot(sf::st_geometry(indexes), add = TRUE)
 
 ```
 
-Now let's look at the results and see how the `nhdplusTools::get_flowline_index()` did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODEs that were matched.
+Now let's look at the results and see how the `get_flowline_index()` did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODEs that were matched.
 
 ```{r analyze_index}
 p_match <- 100 * length(which(indexes$COMID %in% gages$FLComID)) / nrow(gages)
@@ -121,14 +121,14 @@ round(quantile(matched$REACH_meas_diff,
 
 ## Flowline Indexing with higher precision
 
-The above example used the native nodes of the NHDPlus as the potential measure snap locations. The `nhdplusTools::get_flowline_index()` function has the ability to refine these by segmentizing the line to some given resolution. Let's try the same thing using a resolution of 10m and see if we can do any better. 
+The above example used the native nodes of the NHDPlus as the potential measure snap locations. The `get_flowline_index()` function has the ability to refine these by segmentizing the line to some given resolution. Let's try the same thing using a resolution of 10m and see if we can do any better. 
 
-Note that the `sf::st_segmentize` function takes care of the distance conversion and segmentizes our lon/lat lines to 10m on the fly.
+Note that the `sf::st_segmentize` function takes care of the distance conversion and segmentizes our lon/lat lines to 10m on the fly. Also note, we are working in units of degrees for this sample. (this is probably not a good way to do things, but is being shown here for the sake of demonstration)
 
 ```{r get_indexes_precise}
 indexes <- get_flowline_index(flowlines, 
                               sf::st_geometry(gages), 
-                              search_radius = 0.1, 
+                              search_radius = units::set_units(0.1, "degrees"), 
                               precision = 10)
 
 indexes <- left_join(data.frame(id = seq_len(nrow(gages))), indexes, by = "id")
@@ -169,7 +169,7 @@ For this example, we'll just look at one point but keep all the sites for disamb
 ```{r multi}
 all_indexes <- get_flowline_index(flowlines,
                                   sf::st_geometry(gages), 
-                                  search_radius = 0.01, 
+                                  search_radius = units::set_units(0.01, "degrees"), 
                                   max_matches = 10)
 
 indexes <- left_join(sf::st_sf(id = 42, 
@@ -235,7 +235,7 @@ flowline_indexes <- left_join(data.frame(id = seq_len(nrow(gages))),
                               get_flowline_index(
                                 sf::st_transform(flowlines, 5070), 
                                 sf::st_geometry(sf::st_transform(gages, 5070)), 
-                                search_radius = 200), by = "id")
+                                search_radius = units::set_units(200, "m")), by = "id")
                               
 indexed_gages <- cbind(dplyr::select(gages, 
                                       orig_REACHCODE = REACHCODE, 
@@ -247,7 +247,7 @@ indexed_gages <- cbind(dplyr::select(gages,
                           st_transform(waterbody, 5070), 
                           st_transform(gages, 5070), 
                           st_drop_geometry(flowlines), 
-                          search_radius = 200))
+                          search_radius = units::set_units(200, "m")))
 
 plot(sf::st_geometry(sf::st_zm(flowlines)))
 plot(sf::st_geometry(waterbody), add = TRUE)

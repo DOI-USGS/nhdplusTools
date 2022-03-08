@@ -7,7 +7,7 @@
 get_flowline_index(
   flines,
   points,
-  search_radius = 0.1,
+  search_radius = NULL,
   precision = NA,
   max_matches = 1
 )
@@ -18,10 +18,13 @@ COMID, REACHCODE, ToMeas, and FromMeas. Can be "download_nhdplusv2" and remote
 nhdplusv2 data will be downloaded for the bounding box surround the submitted points.
 NOTE: The download option may not work for large areas, use with caution.}
 
-\item{points}{sf or sfc of type POINT}
+\item{points}{sf or sfc of type POINT in analysis projection. NOTE: flines will
+be projected to the projection of the points layer.}
 
-\item{search_radius}{numeric the distance for the nearest neighbor search
-to extend.
+\item{search_radius}{units distance for the nearest neighbor search
+to extend in analysis projection. If missing or NULL, and points are in a lon
+lat projection, a default of 0.01 degree is used, otherwise 200 m is used.
+Conversion to the linear unit used by the provided crs of points is attempted.
 See RANN nn2 documentation for more details.}
 
 \item{precision}{numeric the resolution of measure precision in the output in meters.}
@@ -48,7 +51,7 @@ it can calculate the measure to greater precision than the nearest flowline
 geometry node.
 
 Note 3: Offset is returned in units consistent with the projection of
-the flowlines.
+the input points.
 
 Note 4: See `dfMaxLength` input to sf::st_segmentize() for details of
 handling of precision parameter.
@@ -60,27 +63,26 @@ Note 5: "from" is downstream -- 0 is the outlet "to" is upstream -- 100 is the i
 
 source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 
-get_flowline_index(sample_flines,
-                   sf::st_sfc(sf::st_point(c(-76.87479,
-                                             39.48233)),
-                              crs = 4326))
+point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)),
+                    crs = 4326)
 
-get_flowline_index("download_nhdplusv2",
-                   sf::st_sfc(sf::st_point(c(-76.87479,
-                                             39.48233)),
-                              crs = 4326))
+get_flowline_index(sample_flines, point)
 
-get_flowline_index(sample_flines,
-                   sf::st_sfc(sf::st_point(c(-76.87479,
-                                             39.48233)),
-                              crs = 4326), precision = 30)
+point <- sf::st_transform(point, 5070)
+
+get_flowline_index(sample_flines, point,
+                   search_radius = units::set_units(200, "m"))
+
+get_flowline_index("download_nhdplusv2", point)
+
+get_flowline_index(sample_flines, point, precision = 30)
 
 get_flowline_index(sample_flines,
                    sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
                                    sf::st_point(c(-76.91711, 39.40884)),
                                    sf::st_point(c(-76.88081, 39.36354))),
                               crs = 4326),
-                   search_radius = 0.2,
+                   search_radius = units::set_units(0.2, "degrees"),
                    max_matches = 10)
 
 }

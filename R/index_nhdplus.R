@@ -9,9 +9,9 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
                  searchtype = "radius",
                  radius = search_radius)
 
-  matched <- dplyr::tibble(nn.idx = as.integer(matched$nn.idx),
-                           nn.dists = as.numeric(matched$nn.dists),
-                           id = rep(1:nrow(points), ncol(matched$nn.idx)))
+  matched <- data.frame(nn.idx = as.integer(matched$nn.idx),
+                        nn.dists = as.numeric(matched$nn.dists),
+                        id = rep(1:nrow(points), ncol(matched$nn.idx)))
 
   matched <- left_join(matched, mutate(data.frame(L1 = coords[, "L1"]),
                                        index = seq_len(nrow(coords))),
@@ -29,7 +29,8 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
   # Now limit to max matches per point
   matched <- group_by(matched, .data$id) %>%
     filter(dplyr::row_number() <= max_matches) %>%
-    ungroup()
+    ungroup() %>%
+    as.data.frame()
 
   return(matched)
 }
@@ -41,9 +42,12 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #' COMID, REACHCODE, ToMeas, and FromMeas. Can be "download_nhdplusv2" and remote
 #' nhdplusv2 data will be downloaded for the bounding box surround the submitted points.
 #' NOTE: The download option may not work for large areas, use with caution.
-#' @param points sf or sfc of type POINT
-#' @param search_radius numeric the distance for the nearest neighbor search
-#' to extend.
+#' @param points sf or sfc of type POINT in analysis projection. NOTE: flines will
+#' be projected to the projection of the points layer.
+#' @param search_radius units distance for the nearest neighbor search
+#' to extend in analysis projection. If missing or NULL, and points are in a lon
+#' lat projection, a default of 0.01 degree is used, otherwise 200 m is used.
+#' Conversion to the linear unit used by the provided crs of points is attempted.
 #' See RANN nn2 documentation for more details.
 #' @param precision numeric the resolution of measure precision in the output in meters.
 #' @param max_matches numeric the maximum number of matches to return if multiple are
@@ -60,7 +64,7 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #' geometry node.
 #'
 #' Note 3: Offset is returned in units consistent with the projection of
-#' the flowlines.
+#' the input points.
 #'
 #' Note 4: See `dfMaxLength` input to sf::st_segmentize() for details of
 #' handling of precision parameter.
@@ -77,63 +81,67 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #'
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 #'
-#' get_flowline_index(sample_flines,
-#'                    sf::st_sfc(sf::st_point(c(-76.87479,
-#'                                              39.48233)),
-#'                               crs = 4326))
+#' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)),
+#'                     crs = 4326)
 #'
-#' get_flowline_index("download_nhdplusv2",
-#'                    sf::st_sfc(sf::st_point(c(-76.87479,
-#'                                              39.48233)),
-#'                               crs = 4326))
+#' get_flowline_index(sample_flines, point)
 #'
-#' get_flowline_index(sample_flines,
-#'                    sf::st_sfc(sf::st_point(c(-76.87479,
-#'                                              39.48233)),
-#'                               crs = 4326), precision = 30)
+#' point <- sf::st_transform(point, 5070)
+#'
+#' get_flowline_index(sample_flines, point,
+#'                    search_radius = units::set_units(200, "m"))
+#'
+#' get_flowline_index("download_nhdplusv2", point)
+#'
+#' get_flowline_index(sample_flines, point, precision = 30)
 #'
 #' get_flowline_index(sample_flines,
 #'                    sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
 #'                                    sf::st_point(c(-76.91711, 39.40884)),
 #'                                    sf::st_point(c(-76.88081, 39.36354))),
 #'                               crs = 4326),
-#'                    search_radius = 0.2,
+#'                    search_radius = units::set_units(0.2, "degrees"),
 #'                    max_matches = 10)
 #'
 #' }
 
 get_flowline_index <- function(flines, points,
-                               search_radius = 0.1,
+                               search_radius = NULL,
                                precision = NA,
                                max_matches = 1) {
+
+  in_crs <- sf::st_crs(points)
+
+  search_radius <- check_search_radius(search_radius, points)
 
   if(is.character(flines) && flines == "download_nhdplusv2") {
 
     if((!is.null(nrow(points)) && nrow(points)) == 1 | length(points) == 1) {
-      req <- suppressMessages(sf::st_buffer(points, ifelse(sf::sf_use_s2(), 200, 0.01)))
+      req <- sf::st_buffer(points, search_radius)
     } else {
       req <- points
     }
 
     flines <- align_nhdplus_names(
       get_nhdplus(AOI = sf::st_transform(req, 4326),
-                  realization = "flowline"))
+                  realization = "flowline")) %>%
+      sf::st_transform(sf::st_crs(points))
 
   }
 
   flines <- check_names(flines, "get_flowline_index")
 
-  in_crs <- sf::st_crs(flines)
-
-  if(sf::st_is_longlat(in_crs) & search_radius > 1) {
-    warning("search radius is large for lat/lon input, are you sure?")
+  if(units(search_radius) == units(units::as_units("degrees"))) {
+    if(sf::st_is_longlat(in_crs) & search_radius > units::set_units(1, "degree")) {
+      warning("search radius is large for lat/lon input, are you sure?")
+    }
   }
 
-  if (sf::st_crs(points) != in_crs) {
-    warning(paste("crs of lines and points don't match.",
-                  "attempting st_transform of points"))
-    points <- sf::st_transform(points, sf::st_crs(flines))
-  }
+  flines <- match_crs(flines, points,
+                      paste("crs of lines and points don't match.",
+                            "attempting st_transform of lines"))
+
+  search_radius <- as.numeric(search_radius) # everything in same units now
 
   flines <- select(flines, COMID, REACHCODE, FromMeas, ToMeas) %>%
     mutate(index = seq_len(nrow(flines)))
@@ -227,6 +235,28 @@ get_flowline_index <- function(flines, points,
     select(.data$id, .data$COMID, .data$REACHCODE, .data$REACH_meas, .data$offset)
 
   return(matched)
+}
+
+check_search_radius <- function(search_radius, points) {
+
+  if(is.null(search_radius)) {
+    if(sf::st_is_longlat(points)) {
+      search_radius <- units::set_units(0.01, "degrees")
+    } else {
+      search_radius <- units::set_units(200, "m")
+
+      units(search_radius) <- units::as_units(
+        sf::st_crs(points, parameters = TRUE)$ud_unit)
+    }
+  }
+
+  if(!inherits(search_radius, "units")) {
+    warning("search_radius units not set, trying units of points.")
+    units(search_radius) <- units::as_units(
+      sf::st_crs(points, parameters = TRUE)$ud_unit)
+  }
+
+  search_radius
 }
 
 #' @title Disambiguate Flowline Indexes
@@ -341,7 +371,7 @@ string_score <- function(x) {
 #' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
 #' COMID, WBAREACOMI, and Hydroseq attributes
 #' @param points sfc of type POINT
-#' @param search_radius numeric how far to search for a waterbody boundary in
+#' @param search_radius units how far to search for a waterbody boundary in
 #' units of provided projection
 #' @return data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,
 #' near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.
@@ -352,17 +382,23 @@ string_score <- function(x) {
 #'
 #' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 #'
+#' waterbodies <- sf::st_transform(
+#'   sf::read_sf(sample_data, "NHDWaterbody"), 5070)
 #'
-#' waterbodies <- sf::read_sf(sample_data, "NHDWaterbody")
+#' points <- sf::st_transform(
+#'   sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
+#'              crs = 4326), 5070)
 #'
-#' get_waterbody_index(waterbodies,
-#'                     sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
-#'                                crs = 4326, dim = "XY"))
+#' get_waterbody_index(waterbodies, points,
+#'                     search_radius = units::set_units(500, "m"))
 #'
-get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radius = 0.1) {
+get_waterbody_index <- function(waterbodies, points, flines = NULL,
+                                search_radius = NULL) {
   check_names(waterbodies, "get_waterbody_index_waterbodies")
 
   points <- st_geometry(points)
+
+  search_radius <- as.numeric(check_search_radius(search_radius, points))
 
   points <- st_sf(id = seq_len(length(points)), geometry = points)
 
@@ -395,10 +431,11 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL, search_radiu
 
     check_names(flines, "get_waterbody_index_flines")
 
-    out <- mutate(out, joiner = ifelse(!is.na(.data$in_wb_COMID), .data$in_wb_COMID, .data$near_wb_COMID),
+    out <- mutate(out, joiner = ifelse(!is.na(.data$in_wb_COMID),
+                                       .data$in_wb_COMID, .data$near_wb_COMID),
                   id = seq_len(nrow(out)))
 
-    try(flines <- st_drop_geometry(flines), silent = TRUE)
+    flines <- drop_geometry(flines)
 
     out <- left_join(out, select(flines,
                                  outlet_fline_COMID = .data$COMID,

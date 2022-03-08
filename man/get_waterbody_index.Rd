@@ -4,7 +4,7 @@
 \alias{get_waterbody_index}
 \title{Get Waterbody Index}
 \usage{
-get_waterbody_index(waterbodies, points, flines = NULL, search_radius = 0.1)
+get_waterbody_index(waterbodies, points, flines = NULL, search_radius = NULL)
 }
 \arguments{
 \item{waterbodies}{sf data.frame of type POLYGON or MULTIPOLYGON including
@@ -15,7 +15,7 @@ COMID attributes.}
 \item{flines}{sf data.frame of type LINESTRING or MULTILINESTRING including
 COMID, WBAREACOMI, and Hydroseq attributes}
 
-\item{search_radius}{numeric how far to search for a waterbody boundary in
+\item{search_radius}{units how far to search for a waterbody boundary in
 units of provided projection}
 }
 \value{
@@ -30,11 +30,14 @@ COMID of dominant artificial path
 
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
+waterbodies <- sf::st_transform(
+  sf::read_sf(sample_data, "NHDWaterbody"), 5070)
 
-waterbodies <- sf::read_sf(sample_data, "NHDWaterbody")
+points <- sf::st_transform(
+  sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
+             crs = 4326), 5070)
 
-get_waterbody_index(waterbodies,
-                    sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
-                               crs = 4326, dim = "XY"))
+get_waterbody_index(waterbodies, points,
+                    search_radius = units::set_units(500, "m"))
 
 }

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1.9001</span>
       </span>
     </div>
 
@@ -72,6 +72,24 @@
       <small>Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.5.2" id="nhdplustools-052">nhdplusTools 0.5.2<a class="anchor" aria-label="anchor" href="#nhdplustools-052"></a></h2>
+<div class="section level3">
+<h3 id="new-function-0-5-2">New Function<a class="anchor" aria-label="anchor" href="#new-function-0-5-2"></a></h3>
+<ul><li>
+<code><a href="../reference/map_nhdplus.html">map_nhdplus()</a></code> works much the same as <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code> but creates a leaflet map rather than a static plot.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-5-2">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-5-2"></a></h3>
+<ul><li>
+<code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> and <code><a href="../reference/get_waterbody_index.html">get_waterbody_index()</a></code> units and projection handling was altered. Defaults for the <code>search_radius</code> input were changed. Coordinate reference system handling in geoprocessing now relies on the CRS of the provided points rather than the flowlines.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.5.1" id="nhdplustools-051">nhdplusTools 0.5.1<small>2022-03-01</small><a class="anchor" aria-label="anchor" href="#nhdplustools-051"></a></h2>
+<p>This is a very minor release required by CRAN checks.</p>
+<p>Some scalability issues in <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code> were identified and fixed.</p>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.0" id="nhdplustools-050">nhdplusTools 0.5.0<small>2022-02-22</small><a class="anchor" aria-label="anchor" href="#nhdplustools-050"></a></h2>
 <div class="section level3">

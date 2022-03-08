@@ -46,7 +46,7 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #' be projected to the projection of the points layer.
 #' @param search_radius units distance for the nearest neighbor search
 #' to extend in analysis projection. If missing or NULL, and points are in a lon
-#' lat projection, a default of 0.01 degrees is used, otherwise 200 m is used.
+#' lat projection, a default of 0.01 degree is used, otherwise 200 m is used.
 #' Conversion to the linear unit used by the provided crs of points is attempted.
 #' See RANN nn2 documentation for more details.
 #' @param precision numeric the resolution of measure precision in the output in meters.

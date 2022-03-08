@@ -1,3 +1,19 @@
+nhdplusTools 0.5.2
+==========
+
+## New Function
+- `map_nhdplus()` works much the same as `plot_nhdplus()` but creates a leaflet map rather than a static plot.
+
+## Improvements
+- `get_flowline_index()` and `get_waterbody_index()` units and projection handling was altered. Defaults for the `search_radius` input were changed. Coordinate reference system handling in geoprocessing now relies on the CRS of the provided points rather than the flowlines.
+
+nhdplusTools 0.5.1
+==========
+
+This is a very minor release required by CRAN checks.
+
+Some scalability issues in `plot_nhdplus()` were identified and fixed.
+
 nhdplusTools 0.5.0
 ==========
 

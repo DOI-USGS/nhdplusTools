@@ -2,14 +2,15 @@ citHeader("To cite nhdplusTools in publications, please use:")
 
 bibentry(bibtype = "Manual",
          author = personList(
-           as.person("David Blodgett")
+           as.person("David Blodgett"),
+           as.person("Mike Johnson")
          ),
          title = "nhdplusTools: Tools for Accessing and Working with the NHDPlus",
          publisher = "U.S. Geological Survey",
          address="Reston, VA",
-         version = "0.3.8",
+         version = "0.5.1",
          institution = "U.S. Geological Survey",
-         year = 2018,
+         year = 2022,
          url = "https://code.usgs.gov/water/nhdplusTools",
-         textVersion = "Blodgett, D., 2019, nhdplusTools: Tools for Accessing and Working with the NHDPlus, https://code.usgs.gov/water/nhdplusTools"
+         textVersion = "Blodgett, D., Johnson, J.M., 2022, nhdplusTools: Tools for Accessing and Working with the NHDPlus, https://doi.org/10.5066/P97AS8JD"
 )

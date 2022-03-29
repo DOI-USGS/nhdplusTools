@@ -17,6 +17,7 @@ test_that("nldi basics work", {
   expect_error(nhdplusTools:::check_nldi_feature(nldi_nwis[1]),
                  "Missing some required input for NLDI. Expected length 2 character vector or list with optional names: featureID")
 
+  expect_equal(nrow(get_nldi_index(c(-89.276, 42.988))), 2)
 })
 
 test_that("navigation works", {
@@ -83,7 +84,9 @@ test_that("basin works", {
 
   skip_on_cran()
 
-  nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05427880")
+  nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
+
+  site <- get_nldi_feature(nldi_nwis)
 
   nav <- get_nldi_basin(nldi_feature = nldi_nwis)
 
@@ -91,6 +94,19 @@ test_that("basin works", {
 
   expect_true("sfc_POLYGON" %in% class(sf::st_geometry(nav)),
          "expected polygon response")
+
+  basin2 <- get_nldi_basin(nldi_feature = nldi_nwis,
+                           simplify = FALSE, split = TRUE)
+
+  expect_true(length(sf::st_coordinates(nav)) < length(sf::st_coordinates(basin2)))
+
+  expect_true(!sf::st_crosses(sf::st_cast(nav, "LINESTRING"),
+                              st_buffer(site, units::set_units(50, "m")),
+                                 sparse = FALSE))
+
+  expect_true(sf::st_crosses(sf::st_cast(basin2, "LINESTRING"),
+                             st_buffer(site, units::set_units(50, "m")),
+                             sparse = FALSE))
 })
 
 test_that("get feature works", {

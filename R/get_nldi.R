@@ -156,16 +156,14 @@ get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
 
   nldi_feature <- check_nldi_feature(nldi_feature, convert = FALSE)
 
-  sim <- "true"
-  spl <- "false"
-
-  if(!simplify) sim <- "false"
-  if(split) spl <- "true"
-
-  read_sf(query_nldi(paste0(nldi_feature[["featureSource"]], "/",
-                            nldi_feature[["featureID"]], "/basin?simplify=",
-                            sim, "&splitCatchment=", spl),
-                     parse_json = FALSE))
+  read_sf(query_nldi(
+    paste0(nldi_feature[["featureSource"]], "/",
+           nldi_feature[["featureID"]], "/",
+           "basin?simplify=",
+           ifelse(simplify, "true", "false"), "&",
+           "splitCatchment=",
+           ifelse(split, "true", "false")),
+    parse_json = FALSE))
 
 }
 
@@ -217,7 +215,7 @@ get_nldi_characteristics <- function(nldi_feature, type="local") {
 }
 
 #' Get NLDI Index
-#' @description uses the network linked data index to retrieve and estimated
+#' @description uses the Network Linked Data Index to retrieve and estimated
 #' network location for the given point. If not within a grid cell of a flowline,
 #' will use a raindrop trace service to find the nearest downslope flowline
 #' location.

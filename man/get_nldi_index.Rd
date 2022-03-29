@@ -10,7 +10,7 @@ get_nldi_index(location)
 \item{location}{numeric WGS84 lon/lat pair (X, Y)}
 }
 \description{
-uses the network linked data index to retrieve and estimated
+uses the Network Linked Data Index to retrieve and estimated
 network location for the given point. If not within a grid cell of a flowline,
 will use a raindrop trace service to find the nearest downslope flowline
 location.

@@ -827,9 +827,13 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
     # find flowlines completely outside the RPU
     fline_sub_out <- filter(drop_geometry(fline), !.data$rpuid %in% rpu)
 
-    # join to the paths within the RPU
-    fline_sub_out <- left_join(fline_sub_out,
-                               ungroup(fline_sub_in),
+    # Need all paths in the domain outside the RPU and their tributary relations
+    # used just below. This filter avoids flowlines along the same levelpath.
+    lp_with_trib <-  filter(select(fline_sub_out, .data$levelpathi, .data$dnlevelpat),
+                            .data$levelpathi != .data$dnlevelpat)
+
+    # join to the paths within the RPU so we have the lp_top to filter on.
+    fline_sub_out <- left_join(fline_sub_out, ungroup(fline_sub_in),
                                by = "levelpathi")
 
     # filter so we have the stuff that is complete upstream of the rpu
@@ -837,13 +841,15 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
                             .data$hydroseq > .data$lp_top)
 
     # want to keep anything left that does not have anything flowing to it.
+    # to do this, we need fline_sub_out to include things we CAN remove later.
+
     # first select only levelpath and dnlevelpat and get rid of cruft
     fline_sub_out <- distinct(select(ungroup(fline_sub_out),
                                      .data$levelpathi, .data$dnlevelpat))
-    # get rid of the ones along the same path -- dnlevelpaths that are left
-    # can be removed
-    fline_sub_out <- filter(fline_sub_out,
-                            .data$dnlevelpat != .data$levelpathi)
+
+    # levelpaths with tributaries that are outside the domain.
+    lp_with_trib <- filter(lp_with_trib, .data$dnlevelpat %in% fline_sub_out$levelpathi)
+    fline_sub_out <- filter(fline_sub_out, .data$levelpathi %in% lp_with_trib$dnlevelpat)
   }
 
 
@@ -852,6 +858,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
   # of trusting the rpuid to be useable.
   fline <- left_join(fline, fline_sub_in, by = "levelpathi")
 
+  # first filter to levelpaths included in our domain.
   fline <- group_by(filter(fline, .data$levelpathi %in% fline_sub_in$levelpathi),
                     .data$levelpathi)
 
@@ -863,11 +870,17 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
                       .data$hydroseq <= .data$lp_top)
 
   } else if(!nrow(fline_sub_out) == 0) {
-    # if nothing is left in fline_sub_out, we are fine and can move on.
+
+    # fline_sub_out contains levelpaths that we can subject to the lp_top / lp_bot
+    # filter. All other levelpaths should be left whole.
+
     fline <- filter(fline,
-                    .data$levelpathi %in% fline_sub_in$levelpathi &
+                    # for levelpaths in flinesub out, filter hydrosequence
+                    (.data$levelpathi %in% fline_sub_out$levelpathi &
                       (.data$hydroseq >= .data$lp_bot &
-                         .data$hydroseq <= .data$lp_top))
+                         .data$hydroseq <= .data$lp_top)) |
+                      # keep everything not in fline_sub_out
+                      !.data$levelpathi %in% fline_sub_out$levelpathi)
 
   }
 

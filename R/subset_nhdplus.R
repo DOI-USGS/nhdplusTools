@@ -564,7 +564,7 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
 }
 
 clean_bbox <- function(x) {
-  if("bbox" %in% names(x) && class(x$bbox[1]) == "list") {
+  if("bbox" %in% names(x) && inherits(x$bbox[1], "list")) {
     x$bbox <- sapply(x$bbox, paste, collapse = ",")
   }
 

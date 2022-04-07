@@ -1,9 +1,9 @@
-FROM rocker/geospatial
+FROM rocker/verse:devel
 
 ENV _R_CHECK_CRAN_INCOMING_="false"
 ENV _R_CHECK_FORCE_SUGGESTS_="true"
 ENV _R_CHECK_DONTTEST_EXAMPLES_="false"
-ENV APT_PKGS="libudunits2-dev libgdal-dev libgeos-dev libproj-dev libcurl4-openssl-dev libssh2-1-dev libssl-dev libxml2-dev zlib1g-dev git p7zip-full"
+ENV APT_PKGS="libudunits2-dev libgdal-dev libgeos-dev libproj-dev libcurl4-openssl-dev libssh2-1-dev libssl-dev libxml2-dev zlib1g-dev git p7zip-full cargo"
 
 USER root
 

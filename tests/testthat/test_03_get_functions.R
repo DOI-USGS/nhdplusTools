@@ -1,20 +1,18 @@
-
-library(sf)
 # TESTING UNITS
 # ==============================================================================
 # area = AOI::aoi_get("Eureka, Montana")
 # st_as_text(area$geometry)
 area = data.frame(loc = "eurika", geometry =
         "POLYGON ((-115.0631 48.86286, -115.0345 48.86286, -115.0345 48.88706, -115.0631 48.88706, -115.0631 48.86286))") %>%
-st_as_sf(wkt = "geometry", crs = 4326)
+sf::st_as_sf(wkt = "geometry", crs = 4326)
 
 # pt = AOI::geocode("Eureka, Montana", pt = TRUE)
 # st_as_text(pt$geometry)
 pt = data.frame(loc = "eurika", geometry = "POINT (-115.0535 48.87996)") %>%
-  st_as_sf(wkt = "geometry", crs = 4326)
+  sf::st_as_sf(wkt = "geometry", crs = 4326)
 
 pt2 = data.frame(loc = "ucsb", geometry = "POINT (-119.8458 34.4146)") %>%
-  st_as_sf(wkt = "geometry", crs = 4326)
+  sf::st_as_sf(wkt = "geometry", crs = 4326)
 
 # ==============================================================================
 
@@ -235,6 +233,6 @@ test_that("get_nwis", {
   expect_error(get_nwis(AOI = pt2, buffer = 1000000))
 
   expect_error(get_nwis(AOI = AOI, buffer = 1))
-  expect_error(get_nwis(AOI = st_buffer(st_transform(pt2,5070), 1)))
+  expect_warning(get_nwis(AOI = st_buffer(st_transform(pt2,5070), 1)))
 
 })

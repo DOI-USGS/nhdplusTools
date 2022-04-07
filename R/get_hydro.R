@@ -137,9 +137,11 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 
   if(is.null(resp)){
     if(AOI_type == "POINT"){
-      stop("No gages with defined buffer of this location", call. = FALSE)
+      warning("No gages with defined buffer of this location")
+      return(NULL)
     } else {
-      stop("No gages found in this AOI.", call. = FALSE)
+      warning("No gages found in this AOI.")
+      return(NULL)
     }
   } else {
     doc        <- xml2::xml_root(resp)

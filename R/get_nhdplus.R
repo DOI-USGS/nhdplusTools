@@ -54,6 +54,12 @@ get_nhdplus <- function(AOI = NULL,
       # This overrides the default behavior of query_usgs_geoserver
       # which buffers a POINT by 1/2 meter
       comid  <- discover_nhdplus_id(AOI)
+
+      if(is.null(comid)) {
+        warning("Something went wrong getting NHDPlus ID.")
+        return(NULL)
+      }
+
       AOI    <- NULL
     }
   }

@@ -78,6 +78,7 @@ reference:
       - '`nhdplusTools_data_dir`'
       - '`stage_national_data`'
       - '`plot_nhdplus`'
+      - '`map_nhdplus`'
       - '`prepare_nhdplus`'
       - '`get_vaa_names`'
       - '`get_vaa_path`'
@@ -98,4 +99,3 @@ reference:
       - '`get_streamorder`'
       - '`add_plus_network_attributes`'
       - '`get_pfaf`'
-

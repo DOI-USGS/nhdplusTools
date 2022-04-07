@@ -20,17 +20,17 @@ expect_equal(match[13,]$near_wb_COMID, 13293262)
 gage_l <- sf::st_transform(gage_l, 5070)
 wb_l <- sf::st_transform(dplyr::select(wb, COMID), 5070)
 
-match <- get_waterbody_index(wb_l, gage_l, search_radius = 50)
+match <- get_waterbody_index(wb_l, gage_l, search_radius = units::set_units(50, "m"))
 
 expect_true(is.na(match[13,]$near_wb_COMID))
 
 expect_true(is.na(match[13,]$near_wb_dist))
 
-match <- get_waterbody_index(wb_l, gage_l, search_radius = 200)
+match <- get_waterbody_index(wb_l, gage_l, search_radius = units::set_units(200, "m"))
 
 expect_equal(match[13,]$near_wb_dist, 164, tolerance = 1)
 
-match <- get_waterbody_index(wb_l, gage_l, flines = fline, search_radius = 200)
+match <- get_waterbody_index(wb_l, gage_l, flines = fline, search_radius = units::set_units(200, "m"))
 
 gage_l <- cbind(gage_l, match)
 

@@ -9,6 +9,14 @@ data using the NHDPlus data model. There is no specific
 funding or plan to continue development of this package long term
 but ongoing support is available due to use of the package in project work.
 
+### Recommended Citation:
+
+```
+  Blodgett, D., Johnson, J.M., 2022, nhdplusTools: Tools for
+  Accessing and Working with the NHDPlus,
+  https://doi.org/10.5066/P97AS8JD
+```
+
 ### Installation:
 
 ```

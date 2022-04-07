@@ -18,7 +18,7 @@ and measure for each."><meta property="og:image" content="https://usgs-r.github.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1.9001</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ and measure for each.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_flowline_index</span><span class="op">(</span>
   <span class="va">flines</span>,
   <span class="va">points</span>,
-  search_radius <span class="op">=</span> <span class="fl">0.1</span>,
+  search_radius <span class="op">=</span> <span class="cn">NULL</span>,
   precision <span class="op">=</span> <span class="cn">NA</span>,
   max_matches <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
@@ -97,10 +97,13 @@ COMID, REACHCODE, ToMeas, and FromMeas. Can be "download_nhdplusv2" and remote
 nhdplusv2 data will be downloaded for the bounding box surround the submitted points.
 NOTE: The download option may not work for large areas, use with caution.</p></dd>
 <dt>points</dt>
-<dd><p>sf or sfc of type POINT</p></dd>
+<dd><p>sf or sfc of type POINT in analysis projection. NOTE: flines will
+be projected to the projection of the points layer.</p></dd>
 <dt>search_radius</dt>
-<dd><p>numeric the distance for the nearest neighbor search
-to extend.
+<dd><p>units distance for the nearest neighbor search
+to extend in analysis projection. If missing or NULL, and points are in a lon
+lat projection, a default of 0.01 degree is used, otherwise 200 m is used.
+Conversion to the linear unit used by the provided crs of points is attempted.
 See RANN nn2 documentation for more details.</p></dd>
 <dt>precision</dt>
 <dd><p>numeric the resolution of measure precision in the output in meters.</p></dd>
@@ -123,7 +126,7 @@ identify which flowline the point should belong to. As a second pass,
 it can calculate the measure to greater precision than the nearest flowline
 geometry node.</p>
 <p>Note 3: Offset is returned in units consistent with the projection of
-the flowlines.</p>
+the input points.</p>
 <p>Note 4: See `dfMaxLength` input to sf::st_segmentize() for details of
 handling of precision parameter.</p>
 <p>Note 5: "from" is downstream -- 0 is the outlet "to" is upstream -- 100 is the inlet</p>
@@ -135,54 +138,68 @@ handling of precision parameter.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>,</span>
-<span class="r-in">                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.87479</span>,</span>
-<span class="r-in">                                             <span class="fl">39.48233</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                              crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      id    COMID REACHCODE      REACH_meas   offset</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 11<span style="text-decoration: underline;">689</span>978 02060003001472       51.5 0.000<span style="text-decoration: underline;">301</span></span>
+<span class="r-in"><span class="va">point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.87479</span>, <span class="fl">39.48233</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">                    crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">get_flowline_index</span><span class="op">(</span><span class="st">"download_nhdplusv2"</span>,</span>
-<span class="r-in">                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.87479</span>,</span>
-<span class="r-in">                                             <span class="fl">39.48233</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                              crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      id    COMID REACHCODE      REACH_meas   offset</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 11<span style="text-decoration: underline;">689</span>978 02060003001472       51.5 0.000<span style="text-decoration: underline;">301</span></span>
+<span class="r-in"><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">point</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id    COMID      REACHCODE REACH_meas       offset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 11689978 02060003001472     51.502 0.0003010502</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>,</span>
-<span class="r-in">                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.87479</span>,</span>
-<span class="r-in">                                             <span class="fl">39.48233</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                              crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>, precision <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      id    COMID REACHCODE      REACH_meas    offset</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 11<span style="text-decoration: underline;">689</span>978 02060003001472       52.3 0.000<span style="text-decoration: underline;">045</span>8</span>
+<span class="r-in"><span class="va">point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">point</span>, <span class="fl">5070</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">point</span>,</span>
+<span class="r-in">                   search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">200</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>crs of lines and points don't match. attempting st_transform of lines</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id    COMID      REACHCODE REACH_meas   offset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 11689978 02060003001472    51.8751 25.88438</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">get_flowline_index</span><span class="op">(</span><span class="st">"download_nhdplusv2"</span>, <span class="va">point</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id    COMID      REACHCODE REACH_meas   offset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 11689978 02060003001472    51.8761 25.85641</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">point</span>, precision <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>crs of lines and points don't match. attempting st_transform of lines</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id    COMID      REACHCODE REACH_meas   offset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 11689978 02060003001472    52.7758 4.302007</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>,</span>
 <span class="r-in">                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.86934</span>, <span class="fl">39.49328</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">                                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.91711</span>, <span class="fl">39.40884</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">                                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.88081</span>, <span class="fl">39.36354</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">                              crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>,</span>
-<span class="r-in">                   search_radius <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span class="r-in">                   search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="st">"degrees"</span><span class="op">)</span>,</span>
 <span class="r-in">                   max_matches <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 30 x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       id    COMID REACHCODE      REACH_meas    offset</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 11<span style="text-decoration: underline;">688</span>298 02060003000579        0   0.000<span style="text-decoration: underline;">060</span>3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2 11<span style="text-decoration: underline;">688</span>808 02060003000519       53.6 0.000<span style="text-decoration: underline;">564</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3 11<span style="text-decoration: underline;">688</span>980 02060003000253       75.4 0.000<span style="text-decoration: underline;">310</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     1 11<span style="text-decoration: underline;">689</span>926 02060003001467      100   0.000<span style="text-decoration: underline;">060</span>3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     3 11<span style="text-decoration: underline;">688</span>950 02060003000254       18.5 0.001<span style="text-decoration: underline;">13</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     1 11<span style="text-decoration: underline;">689</span>928 02060003001468        0   0.002<span style="text-decoration: underline;">03</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1 11<span style="text-decoration: underline;">689</span>978 02060003001472      100   0.002<span style="text-decoration: underline;">03</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1 11<span style="text-decoration: underline;">690</span>530 02060003000585        0   0.002<span style="text-decoration: underline;">85</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     1 11<span style="text-decoration: underline;">690</span>490 02060003000580        0   0.002<span style="text-decoration: underline;">85</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     3 11<span style="text-decoration: underline;">688</span>948 02060003000516        0   0.003<span style="text-decoration: underline;">21</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ... with 20 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    id    COMID      REACHCODE REACH_meas       offset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1 11688298 02060003000579     0.0000 6.026811e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   2 11688808 02060003000519    53.5874 5.641410e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   3 11688980 02060003000253    75.3779 3.102970e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   1 11689926 02060003001467   100.0000 6.026811e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   3 11688950 02060003000254    18.5358 1.131181e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   1 11689928 02060003001468     0.0000 2.026592e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   1 11689978 02060003001472   100.0000 2.026592e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   1 11690530 02060003000585     0.0000 2.853201e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   1 11690490 02060003000580     0.0000 2.853201e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  3 11688948 02060003000516     0.0000 3.207544e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  2 11690110 02060003001493   100.0000 7.424781e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  1 11690532 02060003000256     0.0000 4.513088e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  2 11688822 02060003000518    39.5280 7.677891e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  1 11688296 02060003000584     0.0000 6.017732e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  1 11688338 02060003000581     0.0000 6.017732e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  2 11688742 02060003000521     0.0000 8.549572e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  3 11689022 02060003000252    54.2321 6.961051e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  2 11688778 02060003000520     0.0000 8.549572e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19  1 11687550 02060003000585    18.5588 6.832206e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  2 11690112 02060003001494   100.0000 9.547712e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21  3 11688990 02060003000515     1.9144 8.652186e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  2 11690122 02060003001495   100.0000 1.026162e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23  3 11689016 02060003000294    18.9609 1.162680e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  2 11688868 02060003000517    27.7564 1.694256e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25  3 11689072 02060003000251   100.0000 1.366486e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26  2 11690124 02060003001496   100.0000 1.953370e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27  3 11690130 02060003001499     0.0000 1.638423e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28  2 11690128 02060003001498   100.0000 2.099143e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29  3 11689696 02060003000387     0.4731 1.872134e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  3 11689006 02060003000295     0.0000 1.876644e-02</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>

@@ -1,6 +1,7 @@
 
 
 test_that("navigation basics", {
+  skip_on_cran()
 
   # 06287800
   net <-  navigate_network(list(featureSource = "nwissite", featureID = "USGS-11486500"),
@@ -64,6 +65,7 @@ test_that("navigation basics", {
 })
 
 test_that("walker", {
+  skip_on_cran()
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
   hydro_location <- list(comid = 5329339,
                          reachcode = "18050005000078",

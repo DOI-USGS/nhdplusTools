@@ -1,65 +1,69 @@
+sr <- units::set_units(0.1, "degrees")
 
+source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+flines_in <- sample_flines
+
+flines_in <- sf::st_transform(flines_in, 4269)
 
 test_that("point indexing to nearest existing node works as expected", {
     skip_on_cran()
 
-    source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+  point <- sf::st_sfc(sf::st_point(c(-76.86876, 39.49345)), crs = 4269)
 
-    flines_in <- sample_flines
+  expect_equal(get_flowline_index(flines_in, point),
+               data.frame(id = 1,
+                          COMID = 11688298,
+                          REACHCODE = "02060003000579",
+                          REACH_meas = 34.6,
+                          offset = 0.000348), tolerance = 0.01)
 
-    flines_in <- sf::st_transform(flines_in, 4269)
 
-    point <- sf::st_sfc(sf::st_point(c(-76.86876, 39.49345)), crs = 4269)
+  expect_equal(get_flowline_index(sf::st_transform(flines_in, 5070),
+                                  sf::st_transform(point, 5070)),
+               data.frame(id = 1,
+                          COMID = 11688298,
+                          REACHCODE = "02060003000579",
+                          REACH_meas = 33.8,
+                          offset = 30.27), tolerance = 0.01)
 
-    expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1),
-                 dplyr::tibble(id = 1,
-                               COMID = 11688298,
-                               REACHCODE = "02060003000579",
-                               REACH_meas = 34.6,
-                               offset = 0.000348), tolerance = 0.01)
-
-    expect_equal(suppressWarnings(get_flowline_index("download_nhdplusv2", point, search_radius = 0.1)$COMID),
+    expect_equal(suppressWarnings(get_flowline_index("download_nhdplusv2", point, search_radius = sr)$COMID),
                  11688298)
 
-    expect_equal(nrow(get_flowline_index(flines_in, point, search_radius = 0.1,
+    expect_equal(nrow(get_flowline_index(flines_in, point, search_radius = sr,
                                          max_matches = 5)),
                  5)
 
-    expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1,
+    expect_equal(get_flowline_index(flines_in, point, search_radius = sr,
                                     precision = 30),
-                 dplyr::tibble(id = 1,
-                               COMID = 11688298,
-                               REACHCODE = "02060003000579",
-                               REACH_meas = 25.9,
-                               offset = 0.0000959), tolerance = 0.001)
+                 data.frame(id = 1,
+                            COMID = 11688298,
+                            REACHCODE = "02060003000579",
+                            REACH_meas = 25.9,
+                            offset = 0.0000959), tolerance = 0.001)
 
     point_w <- sf::st_sfc(sf::st_point(c(-76.86934, 39.49328)), crs = 4326)
 
     expect_warning(get_flowline_index(flines_in, point_w,
-                                      search_radius = 0.1),
-     "crs of lines and points don't match. attempting st_transform of points")
+                                      search_radius = sr),
+     "crs of lines and points don't match. attempting st_transform of lines")
 
     names(flines_in)[1] <- "broken"
-    expect_error(get_flowline_index(flines_in, point, search_radius = 0.1),
+    expect_error(get_flowline_index(flines_in, point, search_radius = sr),
                  paste("Missing some required attributes in call to:",
                        "get_flowline_index. Expected: COMID."))
 })
 
 test_that("point indexing to for multiple points works", {
   skip_on_cran()
-  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-
-  flines_in <- sample_flines
-
-  flines_in <- sf::st_transform(flines_in, 4269)
 
   point <- sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
                            sf::st_point(c(-76.91711, 39.40884)),
                            sf::st_point(c(-76.88081, 39.36354))), crs = 4269)
 
-  expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1),
-               dplyr::tibble(id = c(1, 2, 3),
-                             COMID = c(11688298, 11688808, 11688980),
+  expect_equal(get_flowline_index(flines_in, point, search_radius = sr),
+               data.frame(id = c(1, 2, 3),
+                          COMID = c(11688298, 11688808, 11688980),
                           REACHCODE = c("02060003000579",
                                         "02060003000519",
                                         "02060003000253"),
@@ -68,10 +72,10 @@ test_that("point indexing to for multiple points works", {
                                      0.00056414104,
                                      0.00031029699)), tolerance = 1e-2)
 
-  expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1,
+  expect_equal(get_flowline_index(flines_in, point, search_radius = sr,
                                   precision = 30),
-               dplyr::tibble(id = c(1, 2, 3),
-                             COMID = c(11688298, 11688808, 11688980),
+               data.frame(id = c(1, 2, 3),
+                          COMID = c(11688298, 11688808, 11688980),
                           REACHCODE = c("02060003000579",
                                         "02060003000519",
                                         "02060003000253"),
@@ -80,10 +84,10 @@ test_that("point indexing to for multiple points works", {
                                      0.0002523808,
                                      0.0001566810)), tolerance = 1e-2)
 
-  matches <- get_flowline_index(flines_in, point, search_radius = 0.1, max_matches = 10)
+  matches <- get_flowline_index(flines_in, point, search_radius = sr, max_matches = 10)
   expect_true("id" %in% names(matches))
 
-  matches2 <- get_flowline_index(flines_in, point, search_radius = 0.1,
+  matches2 <- get_flowline_index(flines_in, point, search_radius = sr,
                                  precision = 30, max_matches = 10)
 
   expect_equal(nrow(matches), nrow(matches2))
@@ -99,8 +103,12 @@ test_that("multipart indexing", {
   lines <- sf::read_sf(list.files(pattern = "*flowline_index_reprex.gpkg",
                                   recursive = TRUE, full.names = TRUE), "reaches")
 
-  expect_warning(index <- nhdplusTools::get_flowline_index(lines, points, search_radius = 500),
-                 "Attempting to combine multipart lines into single part lines. Check results!!")
+  warn <- capture_warnings(index <- nhdplusTools::get_flowline_index(lines, points,
+                                                           search_radius = 500))
+
+  expect_true(all(c("Attempting to combine multipart lines into single part lines. Check results!!",
+                    "search_radius units not set, trying units of points.")
+                  %in% warn))
 
   expect_true(all(index$COMID == 51664))
 
@@ -128,7 +136,7 @@ test_that("disambiguate", {
 
   indexes <- get_flowline_index(flowpath,
                                 hydro_location,
-                                search_radius = 0.2,
+                                search_radius = units::set_units(0.2, "degrees"),
                                 max_matches = 10)
 
   result <- disambiguate_flowline_indexes(indexes,

@@ -4,13 +4,20 @@
 \alias{get_nldi_basin}
 \title{Get NLDI Basin Boundary}
 \usage{
-get_nldi_basin(nldi_feature)
+get_nldi_basin(nldi_feature, simplify = TRUE, split = FALSE)
 }
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
 dataRetrieval::get_nldi_sources() and the `featureID` is a known identifier
 from the specified `featureSource`.}
+
+\item{simplify}{logical should response geometry be simplified for
+visualization and performance?}
+
+\item{split}{logical should response resolve precisely to the location
+of the `nldi_feature`? Setting `TRUE` calls an aditional service and
+will be slower and less robust.}
 }
 \value{
 sf data.frame with result basin boundary
@@ -29,12 +36,26 @@ library(dplyr)
 
 nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 
+site <- get_nldi_feature(nldi_nwis)
+
 basin <- get_nldi_basin(nldi_feature = nldi_nwis)
 
-basin \%>\%
- st_geometry() \%>\%
- plot()
+plot(st_geometry(basin))
 
 basin
+
+basin2 <- get_nldi_basin(nldi_feature = nldi_nwis,
+                         simplify = FALSE, split = TRUE)
+
+length(st_coordinates(basin))
+length(st_coordinates(basin2))
+
+plot(st_geometry(st_buffer(site, units::set_units(3000, "m"))), border = NA)
+
+plot(st_geometry(site), add = TRUE)
+plot(st_geometry(basin2), add = TRUE)
+
+plot(st_geometry(basin), border = "red", add = TRUE)
+
 }
 }

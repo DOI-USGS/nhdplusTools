@@ -219,6 +219,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
   if (nhdplus_data == "download") {
 
+    tryCatch({
     for (layer_name in intersection_names) {
       if(is.null(out_list[layer_name][[1]])) {
         layer <- sf::st_transform(envelope, 4326) %>%
@@ -240,6 +241,10 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
         }
       }
     }
+    }, error = function(e) {
+      warning(e)
+      return(NULL)
+    })
 
   } else {
     if(!flowline_only) {
@@ -446,6 +451,10 @@ get_flowline_subset <- function(nhdplus_data, comids, output_file,
 
     fline <- get_nhdplus_byid(comids, tolower(layer_name))
 
+    if(is.null(fline)) {
+      return(NULL)
+    }
+
   } else {
 
     if(!layer_name %in% st_layers(nhdplus_data)$name) {
@@ -531,6 +540,10 @@ get_catchment_subset <- function(nhdplus_data, comids, output_file,
   if (nhdplus_data == "download") {
 
     catchment <- get_nhdplus_byid(comids, tolower(layer_name))
+
+    if(is.null(catchment)) {
+      return(NULL)
+    }
 
   } else {
 

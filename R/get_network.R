@@ -428,6 +428,11 @@ navigate_network <- function(start, mode = "UM", network = NULL,
 
   }
 
+  if(is.null(start) | length(start_comid) == 0) {
+    warning("something went wrong trying to find the start comid, this won't work")
+    return(NULL)
+  }
+
   # in the case that we don't have a network, we need to get it
   # from the NLDI and web services.
   if(is.null(network)) {
@@ -438,10 +443,17 @@ navigate_network <- function(start, mode = "UM", network = NULL,
 
     network <- network[names(network) != "origin"][[1]]$nhdplus_comid
 
+    if(is.null(network)) {
+      warning("Something went wrong getting network data.")
+      return(NULL)
+    }
+
     network <- subset_nhdplus(as.integer(network),
                               nhdplus_data = "download",
                               status = TRUE,
                               flowline_only = TRUE)
+
+    if(is.null(network)) return(NULL)
 
     network <- network$NHDFlowline_Network
 
@@ -484,9 +496,9 @@ navigate_network <- function(start, mode = "UM", network = NULL,
       }
 
       if(sf::st_is_longlat(start)) {
-        search_radius <- 0.001
+        search_radius <- units::set_units(0.001, "degrees")
       } else {
-        search_radius <- 100
+        search_radius <- units::set_units(100, "m")
       }
 
       event <- get_flowline_index(flines = network,

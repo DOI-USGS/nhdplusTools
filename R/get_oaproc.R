@@ -264,6 +264,10 @@ get_elev <- function(url, fun, points, num_pts, res, status) {
 
     data <- get_xs(url, fun, points[[i]], points[[i+1]], num_pts, res)
 
+    if(is.null(data)) {
+      return(NULL)
+    }
+
     data$.group <- i
 
     if(i == 1){
@@ -294,7 +298,13 @@ get_elev <- function(url, fun, points, num_pts, res, status) {
 }
 
 get_xs <- function(url, fun, ...) {
-  dplyr::rename(sf_post(url, fun(...)),
+  sf <- sf_post(url, fun(...))
+
+  if(is.null(sf)) {
+    return(NULL)
+  }
+
+  dplyr::rename(sf,
                 distance_m = .data$distance,
                 elevation_m = .data$elevation)
 }

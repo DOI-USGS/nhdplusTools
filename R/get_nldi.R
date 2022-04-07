@@ -14,7 +14,13 @@ discover_nldi_characteristics <- function(type="all") {
   out <- lapply(tc$type_options[[type]], function(x) {
     o <- query_nldi(paste0(x, "/characteristics"),
                     base_path = "/lookups")
+
+    if(is.null(o)) {
+      return(NULL)
+    }
+
     o$characteristicMetadata$characteristic
+
   })
 
   names(out) <- tc$char_names
@@ -103,11 +109,12 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
     warning("data source specified as flowline or '' is deprecated")
   }
 
-  dataRetrieval::findNLDI(origin = nldi_feature,
-                          nav = mode,
-                          find = data_source,
-                          distance_km = distance_km,
-                          no_sf = FALSE)
+  tryCatch(dataRetrieval::findNLDI(origin = nldi_feature,
+                                   nav = mode,
+                                   find = data_source,
+                                   distance_km = distance_km,
+                                   no_sf = FALSE),
+           error = function(e) NULL)
 }
 
 #' @title Get NLDI Basin Boundary
@@ -154,16 +161,25 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' }
 get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
 
+  tryCatch({
   nldi_feature <- check_nldi_feature(nldi_feature, convert = FALSE)
 
-  read_sf(query_nldi(
+  o <- query_nldi(
     paste0(nldi_feature[["featureSource"]], "/",
            nldi_feature[["featureID"]], "/",
            "basin?simplify=",
            ifelse(simplify, "true", "false"), "&",
            "splitCatchment=",
            ifelse(split, "true", "false")),
-    parse_json = FALSE))
+    parse_json = FALSE)
+
+  if(is.null(o)) return(NULL)
+
+  read_sf(o)
+  }, error = function(e) {
+    warning(e)
+    return(NULL)
+  })
 
 }
 
@@ -180,7 +196,10 @@ get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
 get_nldi_feature <- function(nldi_feature) {
   nldi_feature <- check_nldi_feature(nldi_feature)
 
-  return(dataRetrieval::findNLDI(origin = nldi_feature))
+  out <- tryCatch(dataRetrieval::findNLDI(origin = nldi_feature),
+                  error = function(e) NULL)
+
+  return(out)
 }
 
 #' @title Get Catchment Characteristics
@@ -230,10 +249,14 @@ get_nldi_characteristics <- function(nldi_feature, type="local") {
 #'
 get_nldi_index <- function(location) {
 
+  tryCatch({
   sf::read_sf(query_nldi(paste0("hydrolocation?coords=POINT(",
                                 location[1],"%20", location[2],")"),
                          parse_json = FALSE))
-
+  }, error = function(e) {
+    warning(paste("Something went wrong querying the NLDI.\n", e))
+    NULL
+  })
 
 }
 
@@ -246,22 +269,27 @@ query_nldi <- function(query, tier = "prod", base_path = "/linked-data", parse_j
   url <- paste(nldi_base_url, query,
                sep = "/")
 
-  req_data <- rawToChar(httr::RETRY("GET", url, times = 3, pause_cap = 60)$content)
+  tryCatch({
+    req_data <- rawToChar(httr::RETRY("GET", url)$content)
 
-  if (nchar(req_data) == 0) {
-    NULL
-  } else {
-    if (parse_json) {
-      tryCatch(jsonlite::fromJSON(req_data, simplifyVector = TRUE),
-               error = function(e) {
-                 message("Something went wrong accessing the NLDI.\n", e)
-               }, warning = function(w) {
-                 message("Something went wrong accessing the NLDI.\n", w)
-               })
+    if (nchar(req_data) == 0) {
+      NULL
     } else {
-      req_data
+      if (parse_json) {
+        tryCatch(jsonlite::fromJSON(req_data, simplifyVector = TRUE),
+                 error = function(e) {
+                   message("Something went wrong accessing the NLDI.\n", e)
+                 }, warning = function(w) {
+                   message("Something went wrong accessing the NLDI.\n", w)
+                 })
+      } else {
+        req_data
+      }
     }
-  }
+  }, error = function(e) {
+    warning("Something went wrong accessing the NLDI.\n", e)
+    NULL
+  })
 }
 
 #' @noRd

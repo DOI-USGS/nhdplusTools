@@ -42,11 +42,20 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
       dir.create(out[length(out)], recursive = TRUE, showWarnings = FALSE)
     }
 
-    file_list <- read_xml(paste0(nhdhr_bucket, nhdhr_file_list,
-                                 "NHDPLUS_H_", hu02)) %>%
-      xml_ns_strip() %>%
-      xml_find_all(xpath = "//Key") %>%
-      xml_text()
+    file_list <- tryCatch({
+      read_xml(paste0(nhdhr_bucket, nhdhr_file_list,
+                      "NHDPLUS_H_", hu02)) %>%
+        xml_ns_strip() %>%
+        xml_find_all(xpath = "//Key") %>%
+        xml_text()
+    }, error= function(e) {
+      NULL
+    })
+
+    if(is.null(file_list)) {
+      warning("Something went wrong retrieving the nhdhr file list.")
+      return(NULL)
+    }
 
     file_list <- file_list[grepl("_GDB.zip", file_list)]
 
@@ -106,6 +115,7 @@ download_nhdplusv2 <- function(outdir,
                                             "_Geodatabase_Lower48_07.7z"),
                                progress = TRUE) {
 
+  tryCatch({
   file <- downloader(outdir, url, "nhdplusV2", progress)
 
   check7z()
@@ -122,6 +132,10 @@ download_nhdplusv2 <- function(outdir,
   message(paste("NHDPlusV2 data extracted to:", path))
 
   return(invisible(path))
+  }, error = function(e) {
+    warning("Something went werong downloading nhd data.")
+    return(NULL)
+  })
 }
 
 #' @title Download the seamless Watershed Boundary Dataset (WBD)
@@ -143,6 +157,7 @@ download_wbd <- function(outdir,
                                       "Hydrography/WBD/National/GDB/WBD_National_GDB.zip"),
                          progress = TRUE) {
 
+  tryCatch({
   file <- downloader(outdir, url, "WBD", progress)
 
   message("Extracting data ...")
@@ -155,6 +170,10 @@ download_wbd <- function(outdir,
   message(paste("WBD data extracted to:", path))
 
   return(invisible(path))
+  }, error = function(e) {
+    warning("Something went wrong trying to download WBD data.")
+    return(NULL)
+  })
 }
 
 #' @title Download the seamless Reach File (RF1) Database
@@ -171,7 +190,7 @@ download_wbd <- function(outdir,
 download_rf1 <- function(outdir,
                          url = "https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz",
                          progress = TRUE){
-
+  tryCatch({
   file <- downloader(outdir, url, "RF1", progress)
 
   message("Extracting data ...")
@@ -184,6 +203,10 @@ download_rf1 <- function(outdir,
   message(paste("RF1 data extracted to:", path))
 
   return(invisible(path))
+  }, error = function(e) {
+    warning("Something went wrong trying to download RF1 data.")
+    return(NULL)
+  })
 
 }
 

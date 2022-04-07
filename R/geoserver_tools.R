@@ -112,11 +112,14 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                              '</wfs:GetFeature>')
   )
 
-  resp <- rawToChar(httr::RETRY("POST",
-                                URL,
-                                body = filterXML,
-                                times = 10,
-                                pause_cap = 240)$content)
+  tryCatch({
+    resp <- rawToChar(httr::RETRY("POST",
+                                  URL,
+                                  body = filterXML)$content)
+  }, error = function(e) {
+    warning("Something went wrong trying to access a service.")
+    return(NULL)
+  })
 
   out <- tryCatch({check_valid(sf::st_zm(sf::read_sf(resp)), out_prj = t_srs)},
                  error   = function(e){ return(NULL) })
@@ -138,6 +141,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
     return(out)
   } else {
     warning(paste("No", here$user_call, "features found"), call. = FALSE)
+    NULL
   }
 
 }
@@ -271,10 +275,7 @@ extact_comid_nwis <- function(nwis){
   #but currently its not...
   baseURL  <- "https://labs.waterdata.usgs.gov/api/nldi/linked-data/"
   url      <-  paste0(baseURL, "nwissite/USGS-", nwis)
-  c        <-  rawToChar(httr::RETRY("GET",
-                                     url,
-                                     times = 10,
-                                     pause_cap = 240)$content)
+  c        <-  rawToChar(httr::RETRY("GET", url)$content)
   f.comid  <-  jsonlite::fromJSON(c, simplifyVector = TRUE)
   f.comid$features$properties$comid
 }

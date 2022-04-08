@@ -1,11 +1,28 @@
 nhdplusTools 0.5.2
 ==========
 
-## New Function
+[Mike Johnson](https://mikejohnson51.github.io/) is now recognized as an author of `nhdplusTools`.
+
+New citation:
+
+```
+> citation("nhdplusTools")
+
+To cite nhdplusTools in publications, please use:
+
+  Blodgett, D., Johnson, J.M., 2022, nhdplusTools: Tools for Accessing and
+  Working with the NHDPlus, https://doi.org/10.5066/P97AS8JD
+```
+
+## New Functions
 - `map_nhdplus()` works much the same as `plot_nhdplus()` but creates a leaflet map rather than a static plot.
+- `get_nldi_index()` is used to call the NLDI web service to retrieve a hydrologic location.
 
 ## Improvements
 - `get_flowline_index()` and `get_waterbody_index()` units and projection handling was altered. Defaults for the `search_radius` input were changed. Coordinate reference system handling in geoprocessing now relies on the CRS of the provided points rather than the flowlines.
+- `get_nldi_basin()` now supports precise basin delineation via a logical "split" parameter as well as the option to retrieve un-simplified basin geometry.
+- All network-dependent functions in `nhdplusTools` now return a warning and NULL if the web servicee is unavailable or fails for other reasons. This is according to CRAN policy.
+
 
 nhdplusTools 0.5.1
 ==========

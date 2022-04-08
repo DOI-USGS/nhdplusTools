@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -150,12 +150,12 @@
 <code class="sourceCode R"><span class="va">p_match</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">indexes</span><span class="op">$</span><span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">gages</span><span class="op">$</span><span class="va">FLComID</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">p_match</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, 
        <span class="st">"% were found to match the COMID in the NHDPlus gages layer"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "63% were found to match the COMID in the NHDPlus gages layer"</span>
+<span class="co">#&gt; [1] "58.7% were found to match the COMID in the NHDPlus gages layer"</span>
 
 <span class="va">p_match</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">indexes</span><span class="op">$</span><span class="va">REACHCODE</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">gages</span><span class="op">$</span><span class="va">REACHCODE</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">p_match</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, 
        <span class="st">"% were found to match the REACHCODE in the NHDPlus gages layer"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "65.2% were found to match the REACHCODE in the NHDPlus gages layer"</span>
+<span class="co">#&gt; [1] "60.9% were found to match the REACHCODE in the NHDPlus gages layer"</span>
 
 <span class="va">matched</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">indexes</span>, 
                  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>, 
@@ -174,7 +174,7 @@
                probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, 
       digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span>
-<span class="co">#&gt; -5.11 -1.40 -0.52  0.36  1.57  8.11 30.74</span></code></pre></div>
+<span class="co">#&gt; -5.54 -1.02 -0.48  0.06  1.02  6.91 19.59</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="flowline-indexing-with-higher-precision">Flowline Indexing with higher precision<a class="anchor" aria-label="anchor" href="#flowline-indexing-with-higher-precision"></a>

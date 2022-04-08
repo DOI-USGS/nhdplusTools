@@ -18,7 +18,7 @@ Metadata for these characteristics can be found using `discover_nldi_characteris
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -100,7 +100,8 @@ from the specified `featureSource`.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">chars</span> <span class="op">&lt;-</span> <span class="fu">get_nldi_characteristics</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, featureID <span class="op">=</span> <span class="st">"USGS-05429700"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
+<span class="r-in"><span class="va">chars</span> <span class="op">&lt;-</span> <span class="fu">get_nldi_characteristics</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, featureID <span class="op">=</span> <span class="st">"USGS-05429700"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">chars</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "local"</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">chars</span><span class="op">$</span><span class="va">local</span>, <span class="fl">10</span><span class="op">)</span></span>
@@ -115,6 +116,7 @@ from the specified `featureSource`.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8          CAT_SATOF                    2              0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9            CAT_TWI                14.05              0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10    CAT_WB5100_ANN               215.97              0</span>
+<span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
     </div>
   </div>

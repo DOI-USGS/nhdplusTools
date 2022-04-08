@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -73,16 +73,29 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.2" id="nhdplustools-052">nhdplusTools 0.5.2<a class="anchor" aria-label="anchor" href="#nhdplustools-052"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.2" id="nhdplustools-052">nhdplusTools 0.5.2<small>2022-04-08</small><a class="anchor" aria-label="anchor" href="#nhdplustools-052"></a></h2>
+<p><a href="https://mikejohnson51.github.io/" class="external-link">Mike Johnson</a> is now recognized as an author of <code>nhdplusTools</code>.</p>
+<p>New citation:</p>
+<pre><code>&gt; citation("nhdplusTools")
+
+To cite nhdplusTools in publications, please use:
+
+  Blodgett, D., Johnson, J.M., 2022, nhdplusTools: Tools for Accessing and
+  Working with the NHDPlus, https://doi.org/10.5066/P97AS8JD</code></pre>
 <div class="section level3">
-<h3 id="new-function-0-5-2">New Function<a class="anchor" aria-label="anchor" href="#new-function-0-5-2"></a></h3>
+<h3 id="new-functions-0-5-2">New Functions<a class="anchor" aria-label="anchor" href="#new-functions-0-5-2"></a></h3>
 <ul><li>
 <code><a href="../reference/map_nhdplus.html">map_nhdplus()</a></code> works much the same as <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code> but creates a leaflet map rather than a static plot.</li>
+<li>
+<code><a href="../reference/get_nldi_index.html">get_nldi_index()</a></code> is used to call the NLDI web service to retrieve a hydrologic location.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-0-5-2">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-5-2"></a></h3>
 <ul><li>
 <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> and <code><a href="../reference/get_waterbody_index.html">get_waterbody_index()</a></code> units and projection handling was altered. Defaults for the <code>search_radius</code> input were changed. Coordinate reference system handling in geoprocessing now relies on the CRS of the provided points rather than the flowlines.</li>
+<li>
+<code><a href="../reference/get_nldi_basin.html">get_nldi_basin()</a></code> now supports precise basin delineation via a logical “split” parameter as well as the option to retrieve un-simplified basin geometry.</li>
+<li>All network-dependent functions in <code>nhdplusTools</code> now return a warning and NULL if the web servicee is unavailable or fails for other reasons. This is according to CRAN policy.</li>
 </ul></div>
 </div>
     <div class="section level2">

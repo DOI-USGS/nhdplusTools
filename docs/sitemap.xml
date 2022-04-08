@@ -133,6 +133,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nldi_feature.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nldi_index.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_node.html</loc>
   </url>
   <url>
@@ -251,5 +254,8 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/subset_vpu.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/training_2022/README.html</loc>
   </url>
 </urlset>

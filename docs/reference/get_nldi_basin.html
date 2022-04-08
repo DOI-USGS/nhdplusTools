@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_nldi_basin</span><span class="op">(</span><span class="va">nldi_feature</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_nldi_basin</span><span class="op">(</span><span class="va">nldi_feature</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, split <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -88,6 +88,13 @@
 `featureSource` is derived from the "source" column of  the response of
 dataRetrieval::get_nldi_sources() and the `featureID` is a known identifier
 from the specified `featureSource`.</p></dd>
+<dt>simplify</dt>
+<dd><p>logical should response geometry be simplified for
+visualization and performance?</p></dd>
+<dt>split</dt>
+<dd><p>logical should response resolve precisely to the location
+of the `nldi_feature`? Setting `TRUE` calls an aditional service and
+will be slower and less robust.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -107,11 +114,11 @@ https://waterdata.usgs.gov/blog/nldi-intro/ for more info on the nldi.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">nldi_nwis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span></span>
 <span class="r-in"></span>
+<span class="r-in"><span class="va">site</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_nldi_feature.html">get_nldi_feature</a></span><span class="op">(</span><span class="va">nldi_nwis</span><span class="op">)</span></span>
+<span class="r-in"></span>
 <span class="r-in"><span class="va">basin</span> <span class="op">&lt;-</span> <span class="fu">get_nldi_basin</span><span class="op">(</span>nldi_feature <span class="op">=</span> <span class="va">nldi_nwis</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">basin</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="get_nldi_basin-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">basin</span></span>
@@ -124,6 +131,23 @@ https://waterdata.usgs.gov/blog/nldi-intro/ for more info on the nldi.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                         geometry</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                    <span style="color: #949494; font-style: italic;">&lt;POLYGON [°]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> ((-89.35859 43.11776, -89.35423 43.11546, -89.35437 43.11067, -89.34997 43.10~</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">basin2</span> <span class="op">&lt;-</span> <span class="fu">get_nldi_basin</span><span class="op">(</span>nldi_feature <span class="op">=</span> <span class="va">nldi_nwis</span>,</span>
+<span class="r-in">                         simplify <span class="op">=</span> <span class="cn">FALSE</span>, split <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1184</span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="va">basin2</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1972</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_buffer</a></span><span class="op">(</span><span class="va">site</span>, <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">3000</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">site</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">basin2</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span>, border <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="get_nldi_basin-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
 <span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
     </div>

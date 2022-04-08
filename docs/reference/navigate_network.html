@@ -19,7 +19,7 @@ context."><meta property="og:image" content="https://usgs-r.github.io/nhdplusToo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -129,7 +129,6 @@ to trim is less than this tolerance, no trim will be applied.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> All intersections performed in latitude/longitude.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Reading NHDFlowline_Network</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing NHDFlowline_Network</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>search_radius units not set, trying units of points.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 8 features and 138 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: LINESTRING</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
@@ -168,7 +167,6 @@ to trim is less than this tolerance, no trim will be applied.</p></dd>
 <span class="r-in"><span class="va">net</span> <span class="op">&lt;-</span> <span class="fu">navigate_network</span><span class="op">(</span><span class="va">hydro_location</span>,</span>
 <span class="r-in">                       mode <span class="op">=</span> <span class="st">"DM"</span>, network <span class="op">=</span> <span class="va">walker_flowline</span>,</span>
 <span class="r-in">                       trim_start <span class="op">=</span> <span class="cn">TRUE</span>, distance_km <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>search_radius units not set, trying units of points.</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">walker_flowline</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hydro_location</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

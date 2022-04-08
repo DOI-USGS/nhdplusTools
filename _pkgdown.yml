@@ -51,6 +51,7 @@ reference:
       - '`get_hydro_location`'
       - '`get_waterbody_index`'
       - '`get_wb_outlet`'
+      - '`get_nldi_index`'
       - '`get_node`'
       - '`rescale_measures`'
       - '`disambiguate_flowline_indexes`'

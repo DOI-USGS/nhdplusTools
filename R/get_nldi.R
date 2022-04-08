@@ -210,9 +210,11 @@ get_nldi_feature <- function(nldi_feature) {
 #' @return data.frame contianing requested characteristics
 #' @export
 #' @examples
+#' \donttest{
 #' chars <- get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
 #' names(chars)
 #' head(chars$local, 10)
+#' }
 get_nldi_characteristics <- function(nldi_feature, type="local") {
 
   tc <- type_check(type)
@@ -241,12 +243,12 @@ get_nldi_characteristics <- function(nldi_feature, type="local") {
 #' @param location numeric WGS84 lon/lat pair (X, Y)
 #' @export
 #' @examples
-#'
+#' \donttest{
 #' index <- get_nldi_index(c(-89.276, 42.988))
 #'
 #' plot_nhdplus(bbox = sf::st_bbox(sf::st_buffer(index[1,], units::set_units(1000, "m"))))
 #' plot(sf::st_geometry(sf::st_transform(index, 3857)), add = TRUE)
-#'
+#' }
 get_nldi_index <- function(location) {
 
   tryCatch({

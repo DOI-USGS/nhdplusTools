@@ -20,3 +20,4 @@ pkgdown
 .gitlab-ci.yml
 .github
 Dockerfile
+data-raw

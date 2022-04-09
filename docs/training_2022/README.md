@@ -2,6 +2,14 @@
 
 ## Session 1: Introduction to nhdplusTools and Mainstems
 
+Agenda: 
+- Ice breaker: what phenology did you note this weekend?
+- Introductions: What's your domain background? What if any programming do you do?
+- Concepts and introduction to background material.
+- Coding and interactive demonstration
+
+During the interactive demonstration, participants are encouraged to take notes in their copy of the code. If an RStudio environment with needed dependencies is available, following along and running the code is also encouraged.
+
 Take Aways: 
 
 1. Core Hydrologic Feature Concepts
@@ -25,6 +33,11 @@ Take Aways:
   - Connecting data as a network!
   
 ## Session 2: Applications related to hydrologic location and multiple representations of hydrologic features.
+
+Agenda: 
+- Hydrologic location background and summary of resources.
+- Summary and background resources for retrieving data.
+- Interactive code demonstration.
 
 Take Aways:
 

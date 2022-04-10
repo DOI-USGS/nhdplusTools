@@ -49,7 +49,7 @@ mr_network <- nhdplusTools::get_UT(v2_vaa, mr_outlet$COMID)
 hr_fline <- filter(hr_data$NHDFlowline, COMID %in% hr_network)
 
 mr_fline <- nhdplusTools::subset_nhdplus(mr_network, nhdplus_data = "download",
-                                         flowline_only = FALSE,
+                                         flowline_only = FALSE, overwrite = TRUE,
                                          output_file = "demo_subset.gpkg")
 
 mapview(flines, color = "blue") +
@@ -84,7 +84,6 @@ match_mr_d <- nhdplusTools::disambiguate_flowline_indexes(
   select(mr_fline$NHDFlowline_Network, comid, reachcode),
   data.frame(id = seq_len(nrow(source_nodes)), flines$REACHCODE))
 
-# found a bug with precision in this while preparing - need to investigate.
 mr_fline$NHDFlowline_Network$frommeas <- round(mr_fline$NHDFlowline_Network$frommeas, 3)
 mr_fline$NHDFlowline_Network$tomeas <- round(mr_fline$NHDFlowline_Network$tomeas, 3)
 match_mr_d$REACH_meas <- round(match_mr_d$REACH_meas, 3)

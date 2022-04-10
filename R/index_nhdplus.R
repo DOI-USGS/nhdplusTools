@@ -580,10 +580,22 @@ add_len <- function(x) {
 #' rescale_measures(60, 50, 100)
 #'
 rescale_measures <- function(measure, from, to) {
+  tryCatch({
 
-  if(!dplyr::between(measure, from, to))
-    stop("measure must be between from and to")
+    if(!dplyr::between(measure, from, to))
+      stop("measure must be between from and to")
 
-  100 * (measure - from) / (to - from)
+    100 * (measure - from) / (to - from)
 
+  }, error = function(r) {
+    if(measure < from & from - measure < 0.1 |
+       measure > to & measure - to < 0.1) {
+
+      to <- round(to, 1)
+      from <- round(from, 1)
+      measure <- round(measure, 1)
+      100 * (measure - from) / (to - from)
+
+    }
+  })
 }

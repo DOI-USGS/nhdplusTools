@@ -587,7 +587,7 @@ rescale_measures <- function(measure, from, to) {
 
     100 * (measure - from) / (to - from)
 
-  }, error = function(r) {
+  }, error = function(e) {
     if(measure < from & from - measure < 0.1 |
        measure > to & measure - to < 0.1) {
 
@@ -596,6 +596,8 @@ rescale_measures <- function(measure, from, to) {
       measure <- round(measure, 1)
       100 * (measure - from) / (to - from)
 
+    } else {
+      stop(e)
     }
   })
 }

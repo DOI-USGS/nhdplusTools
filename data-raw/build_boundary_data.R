@@ -20,7 +20,7 @@ names(vpu) = c("DrainageID", "VPUID", "geometry")
 vpu = ms_simplify(vpu, keep = .001)
 
 ######## ----
-usethis::use_data(vpu, overwrite = TRUE)
+usethis::use_data(vpu_boundaries, overwrite = TRUE)
 ######## ----
 
 tmp = b[b$UnitType == "RPU", c("DrainageID", 'UnitID')]
@@ -37,7 +37,7 @@ rpu = get_vaa(c("rpuid", "vpuid")) |>
   ms_simplify(keep = .001)
 
 ######## ----
-usethis::use_data(rpu, overwrite =TRUE)
+usethis::use_data(rpu_boundaries, overwrite =TRUE)
 ######## ----
 
 

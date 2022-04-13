@@ -9,9 +9,8 @@ get_hydro_location(indexes, flowpath)
 \arguments{
 \item{indexes}{data.frame as output from \link{get_flowline_index}.}
 
-\item{flowpath}{data.frame with two three columns, COMID, FromMeas, and ToMeas.
-The first should join to the COMID field of the indexes and the second
-should be linear geometry.}
+\item{flowpath}{data.frame with three columns: COMID, FromMeas, and ToMeas
+as well as geometry.}
 }
 \description{
 given a flowline index, returns the hydrologic location (point)

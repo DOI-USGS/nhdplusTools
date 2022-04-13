@@ -15,8 +15,9 @@ COMID attributes.}
 \item{flines}{sf data.frame of type LINESTRING or MULTILINESTRING including
 COMID, WBAREACOMI, and Hydroseq attributes}
 
-\item{search_radius}{units how far to search for a waterbody boundary in
-units of provided projection}
+\item{search_radius}{units class with a numeric value indicating how far to
+search for a waterbody boundary in units of provided projection. Set units with
+\link[units]{set_units}.}
 }
 \value{
 data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,

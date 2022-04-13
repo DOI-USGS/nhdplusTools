@@ -35,8 +35,10 @@ outlet <- nhdplusTools::get_node(out_fline, position = "end")
 
 hr_outlet <- nhdplusTools::get_flowline_index(
   filter(hr_data$NHDFlowline, REACHCODE == out_fline$REACHCODE), outlet)
+
 mr_outlet <- nhdplusTools::get_flowline_index("download_nhdplusv2", outlet,
-                                              max_matches = 10, search_radius = units::set_units(1000, "m"))
+                                              max_matches = 10,
+                                              search_radius = units::set_units(1000, "m"))
 
 mr_outlet <- filter(mr_outlet, REACHCODE == out_fline$REACHCODE)
 
@@ -48,9 +50,10 @@ mr_network <- nhdplusTools::get_UT(v2_vaa, mr_outlet$COMID)
 
 hr_fline <- filter(hr_data$NHDFlowline, COMID %in% hr_network)
 
-mr_fline <- nhdplusTools::subset_nhdplus(mr_network, nhdplus_data = "download",
-                                         flowline_only = FALSE, overwrite = TRUE,
-                                         output_file = "demo_subset.gpkg")
+mr_fline <- nhdplusTools::subset_nhdplus(
+  mr_network, nhdplus_data = "download",
+  flowline_only = FALSE, overwrite = TRUE,
+  output_file = "demo_subset.gpkg")
 
 mapview(flines, color = "blue") +
   mapview(mr_fline, color = "brown") +
@@ -62,14 +65,14 @@ match_mr <- nhdplusTools::get_flowline_index(
   sf::st_transform(mr_fline$NHDFlowline_Network,
                    sf::st_crs(source_nodes)),
   source_nodes,
-  search_radius = units::set_units(200),
+  search_radius = units::set_units(200, "m"),
   max_matches = 5)
 
 match_hr <- nhdplusTools::get_flowline_index(
   sf::st_transform(hr_data$NHDFlowline,
                    sf::st_crs(source_nodes)),
   source_nodes,
-  search_radius = units::set_units(200),
+  search_radius = units::set_units(200, "m"),
   max_matches = 5)
 
 ?nhdplusTools::disambiguate_flowline_indexes
@@ -92,7 +95,8 @@ match_mr_d_points <- nhdplusTools::get_hydro_location(
   match_mr_d,
   select(mr_fline$NHDFlowline_Network, comid, frommeas, tomeas))
 
-lookup <- sf::st_sf(cbind(data.frame(id = seq_len(nrow(source_nodes))), flines))
+lookup <- sf::st_sf(cbind(data.frame(id = seq_len(nrow(source_nodes))),
+                          flines))
 
 lookup_mr <- left_join(lookup, select(match_mr_d, id,
                                       match_REACHCODE = REACHCODE,
@@ -122,8 +126,9 @@ outlet_nldi <- list(featureSource = "comid",
 
 basin <- nhdplusTools::get_nldi_basin(outlet_nldi, simplify = FALSE)
 
-all_outlet_char <- nhdplusTools::get_nldi_characteristics(outlet_nldi,
-                                                          type = "total")
+all_outlet_char <- nhdplusTools::get_nldi_characteristics(
+  outlet_nldi,
+  type = "total")
 
 char <- nhdplusTools::discover_nldi_characteristics(type = "local")$local
 

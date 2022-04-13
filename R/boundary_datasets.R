@@ -3,11 +3,11 @@
 #' @docType data
 #' @format An object of class \code{"sf"}
 #' @keywords data
-"vpu"
+"vpu_boundaries"
 
 #' RPU Boundaries
 #' Raster Processing Unit boundaries
 #' @docType data
 #' @format An object of class \code{"sf"}
 #' @keywords data
-"rpu"
+"rpu_boundaries"

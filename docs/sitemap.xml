@@ -241,6 +241,12 @@
     <loc>https://usgs-r.github.io/nhdplusTools/reference/rescale_measures.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/rpu.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/rpu_boundaries.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/stage_national_data.html</loc>
   </url>
   <url>
@@ -256,6 +262,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools/reference/subset_vpu.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/training_2022/README.html</loc>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/vpu.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/vpu_boundaries.html</loc>
   </url>
 </urlset>

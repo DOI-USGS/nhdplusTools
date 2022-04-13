@@ -17,6 +17,8 @@ reference:
       - '`get_xs_point`'
       - '`get_xs_points`'
       - '`get_elev_along_path`'
+      - '`rpu_boundaries`'
+      - '`vpu_boundaries`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are

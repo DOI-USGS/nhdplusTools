@@ -373,7 +373,7 @@ string_score <- function(x) {
 #' @param points sfc of type POINT
 #' @param search_radius units class with a numeric value indicating how far to
 #' search for a waterbody boundary in units of provided projection. Set units with
-#' \link[units](set_units).
+#' \link[units]{set_units}.
 #' @return data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,
 #' near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.
 #' @importFrom sf st_join st_geometry_type

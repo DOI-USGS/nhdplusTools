@@ -259,8 +259,14 @@ assign("nhdpt_dat_dir",
        tools::R_user_dir("nhdplusTools"),
        envir = nhdplusTools_env)
 
+assign("nldi_tier", "prod",
+       envir = nhdplusTools_env)
+
 #' @noRd
-get_nldi_url <- function(tier = "prod") {
+get_nldi_url <- function() {
+
+  tier <- get("nldi_tier", envir = nhdplusTools_env)
+
   if (tier == "prod") {
     "https://labs.waterdata.usgs.gov/api/nldi"
   } else if (tier == "test") {

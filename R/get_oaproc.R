@@ -28,7 +28,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 
   point <- check_point(point)[[1]]
 
-  url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
+  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
 
   url <- paste0(url_base, "nldi-flowtrace/execution")
 
@@ -58,7 +58,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #'
 #' trace <- get_raindrop_trace(point)
 #'
-#' (snap_point <- sf::st_sfc(sf::st_point(trace$intersection_point[[1]][2:1]),
+#' (snap_point <- sf::st_sfc(sf::st_point(trace$intersection_point[[1]]),
 #'                           crs = 4326))
 #'
 #' (catchment <- get_split_catchment(snap_point))
@@ -98,7 +98,7 @@ get_split_catchment <- function(point, upstream = TRUE) {
 
   point <- check_point(point)[[1]]
 
-  url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
+  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
 
   url <- paste0(url_base, "nldi-splitcatchment/execution")
 
@@ -137,7 +137,7 @@ get_xs_point <- function(point, width, num_pts) {
 
   point <- check_point(point)[[1]]
 
-  url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
+  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
 
   url <- paste0(url_base, "nldi-xsatpoint/execution")
 
@@ -180,7 +180,7 @@ get_xs_points <- function(point1, point2, num_pts, res = 1) {
   point1 <- check_point(point1)[[1]]
   point2 <- check_point(point2)[[1]]
 
-  url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
+  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
 
   url <- paste0(url_base, "nldi-xsatendpts/execution")
 
@@ -235,7 +235,7 @@ check_res <- function(res) {
 #'
 get_elev_along_path <- function(points, num_pts, res = 1, status = TRUE) {
 
-  url_base <- paste0(get_nldi_url(tier = "prod"), "/pygeoapi/processes/")
+  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
 
   url <- paste0(url_base, "nldi-xsatendpts/execution")
 
@@ -347,10 +347,10 @@ make_json_input_trace <- function(p, raindrop = TRUE, direction = "down") {
 
   jsonlite::toJSON(list(inputs = list(list(id = "lat",
                                            type = "text/plain",
-                                           value = p[2]),
+                                           value = as.character(p[2])),
                                       list(id = "lon",
                                            type = "text/plain",
-                                           value = p[1]),
+                                           value = as.character(p[1])),
                                       list(id = "raindroptrace",
                                            type = "text/plain",
                                            value = ifelse(raindrop,
@@ -365,10 +365,10 @@ make_json_input_split <- function(p, upstream = TRUE) {
 
   jsonlite::toJSON(list(inputs = list(list(id = "lat",
                                            type = "text/plain",
-                                           value = p[2]),
+                                           value = as.character(p[2])),
                                       list(id = "lon",
                                            type = "text/plain",
-                                           value = p[1]),
+                                           value = as.character(p[1])),
                                       list(id = "upstream",
                                            type = "text/plain",
                                            value = ifelse(upstream,

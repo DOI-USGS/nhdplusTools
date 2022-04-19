@@ -289,10 +289,20 @@ test_that("xs", {
 })
 
 test_that("coverage", {
-  expect_error(nhdplusTools:::get_nldi_url(tier = "borked"),
+  assign("nldi_tier", "borked",
+         envir = nhdplusTools:::nhdplusTools_env)
+
+  expect_error(nhdplusTools:::get_nldi_url(),
                "only prod or test allowed.")
 
-  test <- nhdplusTools:::get_nldi_url(tier = "test")
+  assign("nldi_tier", "test",
+         envir = nhdplusTools:::nhdplusTools_env)
+
+  test <- nhdplusTools:::get_nldi_url()
 
   expect_equal(test, "https://labs-beta.waterdata.usgs.gov/api/nldi")
+
+  assign("nldi_tier", "prod",
+         envir = nhdplusTools:::nhdplusTools_env)
+
 })

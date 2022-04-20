@@ -78,8 +78,10 @@ The \code{plot_config} parameter is a list with names "basin", "flowline", "outl
  "network_wtbd", and "off_network_wtbd".
 The following shows the defaults that can be altered.
 \enumerate{
-  \item basin \code{list(lwd = 1, col = NA, border = "black")}
-  \item flowline \code{list(lwd = 1, col = "blue")}
+  \item basin \preformatted{
+    list(lwd = 1, col = NA, border = "black")}
+  \item flowline \preformatted{
+    list(lwd = 1, col = "blue")}
   \item outlets \preformatted{
    list(default = list(col = "black", border = NA, pch = 19, cex = 1),
         nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),

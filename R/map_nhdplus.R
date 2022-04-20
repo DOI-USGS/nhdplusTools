@@ -33,6 +33,8 @@ check_pkg <- function(pkg) {
 #'   \item if outlets is a data.frame with point geometry, a point in polygon match
 #'   is performed and upstream with tributaries from the identified catchments is plotted.
 #' }
+#'
+#' See \link{plot_nhdplus} for details on plot configuration.
 #' @export
 #' @examples
 #' \donttest{

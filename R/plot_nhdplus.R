@@ -38,8 +38,10 @@
 #'  "network_wtbd", and "off_network_wtbd".
 #' The following shows the defaults that can be altered.
 #' \enumerate{
-#'   \item basin \code{list(lwd = 1, col = NA, border = "black")}
-#'   \item flowline \code{list(lwd = 1, col = "blue")}
+#'   \item basin \preformatted{
+#'     list(lwd = 1, col = NA, border = "black")}
+#'   \item flowline \preformatted{
+#'     list(lwd = 1, col = "blue")}
 #'   \item outlets \preformatted{
 #'    list(default = list(col = "black", border = NA, pch = 19, cex = 1),
 #'         nwissite = list(col = "grey40", border = NA, pch = 17, cex = 1),
@@ -252,8 +254,8 @@ get_styles <- function(plot_config) {
 validate_plot_config <- function(plot_config) {
   if(is.null(plot_config)) return(invisible(NULL))
 
-  if(!all(names(plot_config) %in% c("basin", "flowline", "outlets", "waterbody")))
-    stop(paste('Expected one or more of "basin", "flowline", "outlets", or "waterbody" in plot_config, got:',
+  if(!all(names(plot_config) %in% c("basin", "flowline", "outlets", "network_wtbd", "off_network_wtbd")))
+    stop(paste('Expected one or more of "basin", "flowline", "outlets", "network_wtbd", or "off_network_wtbd" in plot_config, got:',
                names(plot_config)))
 
   if("basin" %in% names(plot_config)) {

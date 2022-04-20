@@ -273,7 +273,7 @@ tc <- function(x) {
 extact_comid_nwis <- function(nwis){
   # We could export this from dataRetrieval dataRetrieval:::pkg.env$nldi_base
   #but currently its not...
-  baseURL  <- "https://labs.waterdata.usgs.gov/api/nldi/linked-data/"
+  baseURL  <- paste0(get_nldi_url(), "/linked-data/")
   url      <-  paste0(baseURL, "nwissite/USGS-", nwis)
   c        <-  rawToChar(httr::RETRY("GET", url)$content)
   f.comid  <-  jsonlite::fromJSON(c, simplifyVector = TRUE)

@@ -27,7 +27,7 @@ point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
 
 trace <- get_raindrop_trace(point)
 
-(snap_point <- sf::st_sfc(sf::st_point(trace$intersection_point[[1]][2:1]),
+(snap_point <- sf::st_sfc(sf::st_point(trace$intersection_point[[1]]),
                           crs = 4326))
 
 (catchment <- get_split_catchment(snap_point))

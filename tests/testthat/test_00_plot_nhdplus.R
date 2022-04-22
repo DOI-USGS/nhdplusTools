@@ -114,7 +114,7 @@ test_that("test_styles", {
                'Expected one ore more of "lwd", "col", or "border" in basins plot_config, got:lwc')
 
   expect_error(nhdplusTools:::get_styles(list(lowline = c(bol = "test"))),
-               'Expected one or more of "basin", "flowline", "outlets", or "waterbody" in plot_config, got: lowline')
+               'Expected one or more of "basin", "flowline", "outlets", "network_wtbd", or "off_network_wtbd" in plot_config, got: lowline')
 
   expect_error(nhdplusTools:::get_styles(list(flowline = c(bol = "test"))),
                'Expected one ore more of "lwd" and "col" in flowlines plot_config, got:bol')

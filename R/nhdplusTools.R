@@ -262,6 +262,10 @@ assign("nhdpt_dat_dir",
 assign("nldi_tier", "prod",
        envir = nhdplusTools_env)
 
+nhdplus_debug <- function() {
+  Sys.getenv("debug_nhdplusTools") == "true"
+}
+
 #' @noRd
 get_nldi_url <- function() {
 

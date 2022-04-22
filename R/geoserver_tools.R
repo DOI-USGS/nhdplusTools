@@ -113,6 +113,11 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   )
 
   tryCatch({
+    if(nhdplus_debug()) {
+      message(paste(URL, "\n"))
+      message(as.character(xml2::read_xml(filterXML)))
+    }
+
     resp <- rawToChar(httr::RETRY("POST",
                                   URL,
                                   body = filterXML)$content)

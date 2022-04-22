@@ -178,9 +178,15 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
   if (file.exists(path) & !force) {
     message("File already cached")
   } else {
+    url <- ifelse(updated_network, vaa_sciencebase, vaa_hydroshare)
+
+    if(nhdplus_debug()) {
+      message(url)
+    }
+
     dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
 
-    resp <- httr::GET(ifelse(updated_network, vaa_sciencebase, vaa_hydroshare),
+    resp <- httr::GET(url,
                       httr::write_disk(path, overwrite = TRUE),
                       httr::progress())
 

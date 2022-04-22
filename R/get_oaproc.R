@@ -312,6 +312,11 @@ get_xs <- function(url, fun, ...) {
 sf_post <- function(url, json) {
   tryCatch({
 
+    if(nhdplus_debug()) {
+      message(paste(url, "\n"))
+      message(json)
+    }
+
     out <- httr::RETRY("POST", url, httr::accept_json(),
                        httr::content_type_json(),
                        body = json)

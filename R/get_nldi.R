@@ -272,6 +272,10 @@ query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE) {
                sep = "/")
 
   tryCatch({
+    if(nhdplus_debug()) {
+      message(url)
+    }
+
     req_data <- rawToChar(httr::RETRY("GET", url)$content)
 
     if (nchar(req_data) == 0) {

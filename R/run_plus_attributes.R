@@ -46,6 +46,13 @@ add_plus_network_attributes <- function(net, override = 5,
 
   check_names(net, "add_plus_network_attributes", align = FALSE)
 
+  if(any((rem <- c("hydroseq", "levelpathi", "terminalpa",
+       "pathlength", "dnlevelpat", "dnhydroseq", "totdasqkm",
+       "terminalfl")) %in% names(net))) {
+    warning("provided flowlines contain attributes that will be over written.")
+    net <- select(net, -dplyr::any_of(c(rem)))
+  }
+
   if(!status) {
     old_opt <- pbapply::pboptions(type = "none")
     on.exit(pbapply::pboptions(type = old_opt$type))

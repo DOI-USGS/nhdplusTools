@@ -407,7 +407,8 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
       # does nothing if froms_l[node] == 0
 
       for(from in seq_len(froms$lengths[node])) {
-        if(!is.na(next_node <- froms$froms[from, node])) {
+        if(node <= ncol(froms$froms) &&
+           !is.na(next_node <- froms$froms[from, node])) {
           # Add the next node to visit to the tracking vector
           to_visit[v] <- next_node
           v <- v + 1

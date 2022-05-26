@@ -1,7 +1,9 @@
 nhdplusTools 0.5.3
 ==========
 
-v0.5.3 is primarily bug fixes and enhancements. No notable functional changes were made.
+v0.5.3 is primarily bug fixes and enhancements.
+
+One notable addition is the addition of the `rpu_boundaries` and `vpu_boundaries` datasets which provide simplified polygons around the RPU and VPU subset domains of the nhdplusV2 dataset.
 
 
 nhdplusTools 0.5.2

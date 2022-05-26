@@ -1,3 +1,9 @@
+nhdplusTools 0.5.3
+==========
+
+v0.5.3 is primarily bug fixes and enhancements. No notable functional changes were made.
+
+
 nhdplusTools 0.5.2
 ==========
 

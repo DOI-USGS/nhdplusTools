@@ -18,7 +18,7 @@ the portion of a catchment upstream of the point provided."><meta property="og:i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
       </span>
     </div>
 
@@ -30,7 +30,7 @@ the portion of a catchment upstream of the point provided."><meta property="og:i
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -105,26 +105,26 @@ and optionally the total dranage basin.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">trace</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_raindrop_trace.html">get_raindrop_trace</a></span><span class="op">(</span><span class="va">point</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="op">(</span><span class="va">snap_point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="va">trace</span><span class="op">$</span><span class="va">intersection_point</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,</span>
+<span class="r-in"><span class="op">(</span><span class="va">snap_point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="va">trace</span><span class="op">$</span><span class="va">intersection_point</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
 <span class="r-in">                          crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 1 feature </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -89.21327 ymin: 42.95699 xmax: -89.21327 ymax: 42.95699</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -89.21343 ymin: 42.95671 xmax: -89.21343 ymax: 42.95671</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (-89.21327 42.95699)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (-89.21343 42.95671)</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="op">(</span><span class="va">catchment</span> <span class="op">&lt;-</span> <span class="fu">get_split_catchment</span><span class="op">(</span><span class="va">snap_point</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 2 features and 2 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -89.60484 ymin: 42.92043 xmax: -89.17466 ymax: 43.3662</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -89.60479 ymin: 42.9205 xmax: -89.17455 ymax: 43.36611</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 x 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id              catchmentID                                           geometry</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                            <span style="color: #949494; font-style: italic;">&lt;POLYGON [°]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> catchment       13297178    ((-89.22801 42.94979, -89.22669 42.95053, -89.224~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> mergedCatchment <span style="color: #BB0000;">NA</span>          ((-89.60275 43.20931, -89.60424 43.21131, -89.602~</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> mergedCatchment <span style="color: #BB0000;">NA</span>          ((-89.60268 43.20938, -89.6039 43.21025, -89.6041~</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">catchment</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.005</span>, <span class="op">-</span><span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.005</span><span class="op">)</span></span>
 <span class="r-in"></span>

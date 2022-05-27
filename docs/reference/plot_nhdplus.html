@@ -18,7 +18,7 @@ EPSG:3857 Web Mercator Projection."><meta property="og:image" content="https://u
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
       </span>
     </div>
 
@@ -30,7 +30,7 @@ EPSG:3857 Web Mercator Projection."><meta property="og:image" content="https://u
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -149,8 +149,8 @@ is used to convert the outlet formats as described below.</p><ol><li><p>if outle
   is performed and upstream with tributaries from the identified catchments is plotted.</p></li>
 </ol><p>The <code>plot_config</code> parameter is a list with names "basin", "flowline", "outlets",
  "network_wtbd", and "off_network_wtbd".
-The following shows the defaults that can be altered.</p><ol><li><p>basin <code>list(lwd = 1, col = NA, border = "black")</code></p></li>
-<li><p>flowline <code>list(lwd = 1, col = "blue")</code></p></li>
+The following shows the defaults that can be altered.</p><ol><li><p>basin</p><div class="sourceCode"><pre><code><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="cn">NA</span>, border <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></code></pre></div></li>
+<li><p>flowline</p><div class="sourceCode"><pre><code><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></code></pre></div></li>
 <li><p>outlets</p><div class="sourceCode"><pre><code><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"black"</span>, border <span class="op">=</span> <span class="cn">NA</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,
         nwissite <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"grey40"</span>, border <span class="op">=</span> <span class="cn">NA</span>, pch <span class="op">=</span> <span class="fl">17</span>, cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,
         huc12pp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"white"</span>, border <span class="op">=</span> <span class="st">"black"</span>, pch <span class="op">=</span> <span class="fl">22</span>, cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,

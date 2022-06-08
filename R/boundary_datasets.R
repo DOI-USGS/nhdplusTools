@@ -3,6 +3,7 @@
 #' @docType data
 #' @format An object of class \code{"sf"}
 #' @keywords data
+#' @export
 "vpu_boundaries"
 
 #' RPU Boundaries
@@ -10,4 +11,5 @@
 #' @docType data
 #' @format An object of class \code{"sf"}
 #' @keywords data
+#' @export
 "rpu_boundaries"

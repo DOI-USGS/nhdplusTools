@@ -21,9 +21,9 @@
 
 get_boundaries = function(type = "vpu"){
   if(tolower(type) == "vpu"){
-    vpu_boundaries
+    nhdplusTools::vpu_boundaries
   } else if(tolower(type) == "rpu"){
-    rpu_boundaries
+    nhdplusTools::rpu_boundaries
   } else {
     stop("Type must be either: rpu or vpu", call. = FALSE)
   }

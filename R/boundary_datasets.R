@@ -3,7 +3,6 @@
 #' @docType data
 #' @format An object of class \code{"sf"}
 #' @keywords data
-#' @export
 "vpu_boundaries"
 
 #' RPU Boundaries
@@ -11,5 +10,21 @@
 #' @docType data
 #' @format An object of class \code{"sf"}
 #' @keywords data
-#' @export
 "rpu_boundaries"
+
+
+
+#' Return RPU or VPU boundaries
+#' @param type character. Either "RPU" or "VPU"
+#' @return An object of class \code{"sf"}
+#' @export
+
+get_boundaries = function(type = "vpu"){
+  if(tolower(type) == "vpu"){
+    vpu_boundaries
+  } else if(tolower(type) == "rpu"){
+    rpu_boundaries
+  } else {
+    stop("Type must be either: rpu or vpu", call. = FALSE)
+  }
+}

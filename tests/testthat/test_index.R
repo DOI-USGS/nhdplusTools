@@ -73,13 +73,13 @@ test_that("point indexing to for multiple points works", {
                                      0.00031029699)), tolerance = 1e-2)
 
   expect_equal(get_flowline_index(flines_in, point, search_radius = sr,
-                                  precision = 30),
+                                  precision = 5),
                data.frame(id = c(1, 2, 3),
                           COMID = c(11688298, 11688808, 11688980),
                           REACHCODE = c("02060003000579",
                                         "02060003000519",
                                         "02060003000253"),
-                          REACH_meas = c(0, 50.52674, 77.40798),
+                          REACH_meas = c(2.1599, 50.52674, 77.40798),
                           offset = c(0.0000602681,
                                      0.0002523808,
                                      0.0001566810)), tolerance = 1e-2)
@@ -87,12 +87,16 @@ test_that("point indexing to for multiple points works", {
   matches <- get_flowline_index(flines_in, point, search_radius = sr, max_matches = 10)
   expect_true("id" %in% names(matches))
 
+  # match_fline <- flines_in[flines_in$REACHCODE %in% matches$REACHCODE, ]
+
   matches2 <- get_flowline_index(flines_in, point, search_radius = sr,
-                                 precision = 30, max_matches = 10)
+                                 precision = 50, max_matches = 10)
+
+  # match_fline2 <- flines_in[flines_in$REACHCODE %in% matches2$REACHCODE, ]
 
   expect_equal(nrow(matches), nrow(matches2))
 
-  expect_true(all(matches$REACHCODE %in% matches2$REACHCODE))
+  expect_true(all(matches2$REACHCODE %in% matches$REACHCODE))
 
 })
 

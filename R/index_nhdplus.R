@@ -114,6 +114,8 @@ get_flowline_index <- function(flines, points,
 
   search_radius <- check_search_radius(search_radius, points)
 
+  point_buffer <- sf::st_buffer(points, search_radius)
+
   if(is.character(flines) && flines == "download_nhdplusv2") {
 
     if((!is.null(nrow(points)) && nrow(points)) == 1 | length(points) == 1) {
@@ -143,12 +145,16 @@ get_flowline_index <- function(flines, points,
 
   search_radius <- as.numeric(search_radius) # everything in same units now
 
+  if(!is.na(precision)) {
+    suppressWarnings(flines <- sf::st_intersection(flines, point_buffer))
+  }
+
   flines <- select(flines, COMID, REACHCODE, FromMeas, ToMeas) %>%
     mutate(index = seq_len(nrow(flines)))
 
   fline_atts <- sf::st_set_geometry(flines, NULL)
 
-  flines <- sf::st_cast(flines, "LINESTRING", warn = FALSE)
+  suppressWarnings(flines <- sf::st_cast(flines, "LINESTRING", warn = FALSE))
 
   if(!"XY" %in% class(sf::st_geometry(flines)[[1]])) {
     flines <- sf::st_zm(flines)
@@ -176,22 +182,16 @@ get_flowline_index <- function(flines, points,
     }
   }
 
-  flines <- sf::st_coordinates(flines)
   points <- sf::st_coordinates(points)
 
-  matched <- matcher(flines, points, search_radius, max_matches = max_matches) %>%
-    left_join(select(fline_atts, .data$COMID, .data$index),
-              by = c("L1" = "index"))
+  if(!is.na(precision)) {
 
-  matched <- mutate(matched, nn.dists = ifelse(.data$nn.dists > search_radius,
-                                               NA, .data$nn.dists))
-
-  if (!is.na(precision)) {
     # upstream to downstream order.
-    flines <- as.data.frame(flines[which(flines[, "L1"] %in% matched$L1), ])
+    flines <- sf::st_coordinates(flines)
 
     # Geometry nodes are in downstream to upstream order.
-    flines <- sf::st_as_sf(flines, coords = c("X", "Y"),
+    flines <- as.data.frame(flines) %>%
+      sf::st_as_sf(coords = c("X", "Y"),
                    crs = in_crs) %>%
       group_by(.data$L1) %>%
       summarise(do_union = FALSE) %>%
@@ -200,12 +200,13 @@ get_flowline_index <- function(flines, points,
       sf::st_segmentize(dfMaxLength = units::as_units(precision, "m"))
 
     fline_atts <- right_join(fline_atts,
-                         select(sf::st_set_geometry(flines, NULL),
-                                .data$L1, precision_index = .data$index),
-                         by = c("index" = "L1"))
+                             select(sf::st_set_geometry(flines, NULL),
+                                    .data$L1, precision_index = .data$index),
+                             by = c("index" = "L1"))
 
     # downstream to upstream order
     flines <- sf::st_coordinates(flines)
+
 
     matched <- matcher(flines, points, search_radius, max_matches = max_matches) %>%
       left_join(select(fline_atts, .data$COMID, .data$precision_index),
@@ -213,6 +214,18 @@ get_flowline_index <- function(flines, points,
 
     matched <- mutate(matched, nn.dists = ifelse(.data$nn.dists > search_radius,
                                                  NA, .data$nn.dists))
+  } else {
+
+    flines <- sf::st_coordinates(flines)
+
+
+    matched <- matcher(flines, points, search_radius, max_matches = max_matches) %>%
+      left_join(select(fline_atts, .data$COMID, .data$index),
+                by = c("L1" = "index"))
+
+    matched <- mutate(matched, nn.dists = ifelse(.data$nn.dists > search_radius,
+                                                 NA, .data$nn.dists))
+
   }
 
   flines <- flines %>%
@@ -230,7 +243,7 @@ get_flowline_index <- function(flines, points,
   matched <- select(matched, .data$id, node = .data$nn.idx, offset = .data$nn.dists, .data$COMID)
 
   matched <- left_join(matched,
-                       select(flines, .data$index, .data$REACHCODE, .data$REACH_meas),
+                      distinct(select(flines, .data$index, .data$REACHCODE, .data$REACH_meas)),
                         by = c("node" = "index")) %>%
     select(.data$id, .data$COMID, .data$REACHCODE, .data$REACH_meas, .data$offset)
 

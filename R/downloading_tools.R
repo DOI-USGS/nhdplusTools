@@ -226,6 +226,10 @@ downloader <- function(dir, url, type, progress = TRUE){
 
   file <-  file.path(dir, basename(url))
 
+  if(grepl("name=", basename(url))) {
+    file <- file.path(dir, tail(strsplit(basename(url), "=")[[1]], 1))
+  }
+
   if (!file.exists(file)) {
 
     message("Downloading ", basename(url))

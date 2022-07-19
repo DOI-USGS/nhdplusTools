@@ -36,6 +36,7 @@ points <- sf::st_as_sf(c(point1, point2, point3))
 
 (xs <- get_elev_along_path(points, 100))
 
+if(!is.null(xs)) {
 bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 
 nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
@@ -46,6 +47,7 @@ plot(sf::st_transform(sf::st_sfc(point2, crs = 4326), 3857), add = TRUE)
 plot(sf::st_transform(sf::st_sfc(point3, crs = 4326), 3857), add = TRUE)
 
 plot(xs$distance_m, xs$elevation_m)
+}
 
 }
 

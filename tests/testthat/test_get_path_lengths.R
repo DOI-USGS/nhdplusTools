@@ -14,7 +14,7 @@ test_that("path_lengths", {
 
   pl <- get_path_members(outlets, fl)
 
-  expect_true(nrow(pl), 10)
+  expect_equal(nrow(pl), 10)
 
   expect_type(pl$path, "list")
 

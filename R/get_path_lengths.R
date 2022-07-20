@@ -1,3 +1,30 @@
+#' Get Path Members
+#' @description Given a network and set of IDs, finds paths between all
+#' identified flowpath outlets. This algorithm finds members between outlets
+#' regardless of flow direction.
+#' @inheritParams get_path_lengths
+#' @return list of lists containing flowpath identifiers along path that connect
+#' outlets.
+#' @export
+#' @examples
+#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' fline <- walker_flowline
+#'
+#' outlets <- c(5329303, 5329357, 5329317, 5329365, 5329435, 5329817)
+#'
+#' # Add toCOMID
+#' fline <- nhdplusTools::get_tocomid(fline, add = TRUE)
+#'
+#' fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm)
+#'
+#' get_path_members(outlets, fl)
+#'
+get_path_members <- function(outlets, network, cores = 1, status = FALSE) {
+
+  get_paths_internal(outlets, network, cores, status, lengths = FALSE)
+
+}
+
 #' Get Path Lengths
 #' @description Given a network and set of IDs, finds path lengths between all
 #' identified flowpath outlets. This algorithm finds distance between outlets
@@ -35,6 +62,12 @@
 #' plot(sf::st_geometry(outlet_geo), add = TRUE)
 #'
 get_path_lengths <- function(outlets, network, cores = 1, status = FALSE) {
+
+  get_paths_internal(outlets, network, cores, status, lengths = TRUE)
+}
+
+get_paths_internal <- function(outlets, network, cores = 1, status = FALSE,
+                               lengths = FALSE) {
 
   stopifnot(is.vector(outlets))
 
@@ -105,12 +138,24 @@ get_path_lengths <- function(outlets, network, cores = 1, status = FALSE) {
   pairs <- t(combn(length(ID_match), 2))
   paths <- pbapply::pbapply(pairs, 1, get_path, all_dn = all_dn, cl = cl)
 
+  connected_paths <- paths[lengths(paths) > 0]
+
+  if(!lengths) {
+    paths <- cbind(as.data.frame(matrix(ID_match[pairs[lengths(paths) > 0,]],
+                                        ncol = 2)))
+
+    names(paths) <- c("id_1", "id_2")
+
+    paths[["path"]] <- lapply(connected_paths, function(x) {
+      c(x$x, x$y)
+    })
+
+    return(paths)
+  }
   lengthkm <- select(left_join(index,
                                select(network, .data$ID, .data$lengthkm),
                                by = "ID"),
                      .data$id, .data$lengthkm)
-
-  connected_paths <- paths[lengths(paths) > 0]
 
   if(status)
     message("Summing length of all connected pairs.")
@@ -134,7 +179,6 @@ get_path_lengths <- function(outlets, network, cores = 1, status = FALSE) {
 
   select(path_lengths, -.data$id_1, -.data$id_2)
 }
-
 # utility function
 get_fl <- function(hl, net) {
   if(hl$reach_meas == 100) {

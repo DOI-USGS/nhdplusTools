@@ -12,6 +12,12 @@ test_that("path_lengths", {
 
   fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm = lengthkm)
 
+  pl <- get_path_members(outlets, fl)
+
+  expect_equal(nrow(pl), 10)
+
+  expect_type(pl$path, "list")
+
   pl <- get_path_lengths(outlets, fl)
 
   expect_equal(pl$network_distance_km[pl$ID_1 == 5329357 & pl$ID_2 == 5329365],

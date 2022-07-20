@@ -1,3 +1,8 @@
+nhdplusTools 0.5.4
+==========
+
+fixes a cran test failure in an example and an issue with precision of `get_flowline_index()`
+
 nhdplusTools 0.5.3
 ==========
 

@@ -104,13 +104,13 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #'   download_nhdplusV2("./data/nhd/")
 #'
 #'   download_nhdplusv2(outdir = "./inst/",
-#'       url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
+#'       url = paste0("https://edap-ow-data-commons.s3.amazonaws.com/NHDPlusV21/",
 #'                    "Data/NationalData/NHDPlusV21_NationalData_Seamless",
 #'                    "_Geodatabase_HI_PR_VI_PI_03.7z"))
 #' }
 
 download_nhdplusv2 <- function(outdir,
-                               url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
+                               url = paste0("https://edap-ow-data-commons.s3.amazonaws.com/NHDPlusV21/",
                                             "Data/NationalData/NHDPlusV21_NationalData_Seamless",
                                             "_Geodatabase_Lower48_07.7z"),
                                progress = TRUE) {

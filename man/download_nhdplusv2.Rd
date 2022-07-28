@@ -6,7 +6,7 @@
 \usage{
 download_nhdplusv2(
   outdir,
-  url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
+  url = paste0("https://edap-ow-data-commons.s3.amazonaws.com/NHDPlusV21/",
     "Data/NationalData/NHDPlusV21_NationalData_Seamless", "_Geodatabase_Lower48_07.7z"),
   progress = TRUE
 )
@@ -35,7 +35,7 @@ are available.
   download_nhdplusV2("./data/nhd/")
 
   download_nhdplusv2(outdir = "./inst/",
-      url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
+      url = paste0("https://edap-ow-data-commons.s3.amazonaws.com/NHDPlusV21/",
                    "Data/NationalData/NHDPlusV21_NationalData_Seamless",
                    "_Geodatabase_HI_PR_VI_PI_03.7z"))
 }

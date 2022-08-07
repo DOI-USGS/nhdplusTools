@@ -1,5 +1,13 @@
-nhdplusTools 0.5.4
+nhdplusTools 0.5.6
 ==========
+
+- Update URL for NHDPlusV2 download
+- make geometry validity checks more robust
+
+nhdplusTools 0.5.4 & v0.5.5
+==========
+
+Note v0.5.4 was burned in a CRAN release mistake
 
 fixes a cran test failure in an example and an issue with precision of `get_flowline_index()`
 

@@ -3,7 +3,7 @@
     "name": "nhdplusTools",
     "organization": "U.S. Geological Survey",
     "description": "Tools for Using NHDPlus Data",
-    "version": "0.5.1",
+    "version": "0.5.6",
     "status": "Production",
 
     "permissions": {
@@ -11,14 +11,14 @@
       "licenses": [
         {
           "name": "Public Domain, CC0-1.0",
-          "URL": "https://code.usgs.gov/water/nhdplusTools/blob/master/LICENSE"
+          "URL": "https://code.usgs.gov/water/nhdplusTools/-/blob/v0.5.6/LICENSE"
         }
         ]
     },
 
     "homepageURL": "https://code.usgs.gov/water/nhdplusTools/",
-    "downloadURL": "https://code.usgs.gov/water/nhdplusTools/-/archive/master/nhdplustools-master.zip",
-    "disclaimerURL": "https://code.usgs.gov/water/nhdplusTools/blob/master/DISCLAIMER.md",
+    "downloadURL": "https://code.usgs.gov/water/nhdplusTools/-/archive/v0.5.6/nhdplusTools-v0.5.6.zip",
+    "disclaimerURL": "https://code.usgs.gov/water/nhdplusTools/-/blob/v0.5.6/DISCLAIMER.md",
     "repositoryURL": "https://code.usgs.gov/water/nhdplusTools.git",
     "vcs": "git",
 
@@ -41,7 +41,7 @@
     },
 
     "date": {
-      "metadataLastUpdated": "2022-03-16"
+      "metadataLastUpdated": "2022-08-06"
     }
   }
 ]

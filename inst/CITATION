@@ -11,6 +11,6 @@ bibentry(bibtype = "Manual",
          version = "0.5.1",
          institution = "U.S. Geological Survey",
          year = 2022,
-         url = "https://code.usgs.gov/water/nhdplusTools",
+         url = "https://doi.org/10.5066/P97AS8JD",
          textVersion = "Blodgett, D., Johnson, J.M., 2022, nhdplusTools: Tools for Accessing and Working with the NHDPlus, https://doi.org/10.5066/P97AS8JD"
 )

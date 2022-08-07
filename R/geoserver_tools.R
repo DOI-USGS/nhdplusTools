@@ -126,6 +126,11 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
     return(NULL)
   })
 
+  use_s2 <- sf::sf_use_s2()
+  sf::sf_use_s2(FALSE)
+
+  on.exit(sf::sf_use_s2(use_s2), add = TRUE)
+
   out <- tryCatch({check_valid(sf::st_zm(sf::read_sf(resp)), out_prj = t_srs)},
                  error   = function(e){ return(NULL) })
 

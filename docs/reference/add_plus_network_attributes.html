@@ -21,7 +21,7 @@ respectively. If a number of cores is specified, parallel execution will be used
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -86,13 +86,13 @@ respectively. If a number of cores is specified, parallel execution will be used
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">add_plus_network_attributes</span><span class="op">(</span>
-  <span class="va">net</span>,
-  override <span class="op">=</span> <span class="fl">5</span>,
-  cores <span class="op">=</span> <span class="cn">NULL</span>,
-  split_temp <span class="op">=</span> <span class="cn">NULL</span>,
-  status <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_plus_network_attributes</span><span class="op">(</span></span>
+<span>  <span class="va">net</span>,</span>
+<span>  override <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  cores <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  split_temp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  status <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -103,42 +103,53 @@ Additional attributes will be passed through unchanged.
 tocomid == 0 is the convention used for outlets.
 If a "weight" column is provided, it will be used in <a href="get_levelpaths.html">get_levelpaths</a>
 otherwise, arbolate sum is calculated for the network and used as the weight.</p></dd>
+
+
 <dt>override</dt>
 <dd><p>numeric factor to be passed to <a href="get_levelpaths.html">get_levelpaths</a></p></dd>
+
+
 <dt>cores</dt>
 <dd><p>integer number of processes to spawn if run in parallel.</p></dd>
+
+
 <dt>split_temp</dt>
 <dd><p>character path to optional temporary copy of the network
 split into independent sub-networks. If it exists, it will be read from disk
 rather than recreated.</p></dd>
+
+
 <dt>status</dt>
 <dd><p>logical should progress be printed?</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>data.frame with added attributes</p>
+    
+
+<p>data.frame with added attributes</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"walker_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">test_flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="prepare_nhdplus.html">prepare_nhdplus</a></span><span class="op">(</span><span class="va">walker_flowline</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"walker_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">test_flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="prepare_nhdplus.html">prepare_nhdplus</a></span><span class="op">(</span><span class="va">walker_flowline</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>removing geometry</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 0 flowlines that don't apply.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>  Includes: Coastlines, non-dendritic paths, </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> and networks with drainage area less than 0 sqkm, and drainage basins smaller than FALSE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">test_flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  comid <span class="op">=</span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">COMID</span>,</span>
-<span class="r-in">  tocomid <span class="op">=</span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">toCOMID</span>,</span>
-<span class="r-in">  nameID <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">GNIS_ID</span>,</span>
-<span class="r-in">  lengthkm <span class="op">=</span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">LENGTHKM</span>,</span>
-<span class="r-in">  areasqkm <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">AreaSqKM</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">add_plus_network_attributes</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 62 x 14</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">test_flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  comid <span class="op">=</span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">COMID</span>,</span></span>
+<span class="r-in"><span>  tocomid <span class="op">=</span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">toCOMID</span>,</span></span>
+<span class="r-in"><span>  nameID <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">GNIS_ID</span>,</span></span>
+<span class="r-in"><span>  lengthkm <span class="op">=</span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">LENGTHKM</span>,</span></span>
+<span class="r-in"><span>  areasqkm <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">AreaSqKM</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">add_plus_network_attributes</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 62 × 14</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     comid tocomid nameID lengthkm areasqkm weight terminalpa hydroseq levelpathi</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 5.33<span style="color: #949494;">e</span>6       0 255208    1.20     0.868  137.           1        1          1</span>
@@ -151,7 +162,7 @@ rather than recreated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 5.33<span style="color: #949494;">e</span>6 5<span style="text-decoration: underline;">329</span>343 255208    3.60     6.94    61.9          1       31          1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 5.33<span style="color: #949494;">e</span>6 5<span style="text-decoration: underline;">329</span>357 255208    3.14     5.13    51.1          1       37          1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 5.33<span style="color: #949494;">e</span>6 5<span style="text-decoration: underline;">329</span>365 254577    1.46     1.69    37.8          1       42          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ... with 52 more rows, and 5 more variables: pathlength &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 52 more rows, and 5 more variables: pathlength &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dnlevelpat &lt;dbl&gt;, dnhydroseq &lt;dbl&gt;, totdasqkm &lt;dbl&gt;, terminalfl &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
@@ -167,7 +178,7 @@ rather than recreated.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

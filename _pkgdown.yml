@@ -19,6 +19,7 @@ reference:
       - '`get_elev_along_path`'
       - '`rpu_boundaries`'
       - '`vpu_boundaries`'
+      - '`get_boundaries`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are
@@ -59,6 +60,7 @@ reference:
       - '`disambiguate_flowline_indexes`'
       - '`get_partial_length`'
       - '`get_path_lengths`'
+      - '`get_path_members`'
   - title: Network Navigation
     desc: >
       Functions to traverse and return network subsets. All except `navigate_nldi()`
@@ -100,5 +102,6 @@ reference:
       - '`get_levelpaths`'
       - '`get_pathlength`'
       - '`get_streamorder`'
+      - '`get_terminal`'
       - '`add_plus_network_attributes`'
       - '`get_pfaf`'

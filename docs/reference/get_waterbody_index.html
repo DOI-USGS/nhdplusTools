@@ -18,7 +18,7 @@ COMID of dominant artificial path"><meta property="og:image" content="https://us
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@ COMID of dominant artificial path</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_waterbody_index</span><span class="op">(</span><span class="va">waterbodies</span>, <span class="va">points</span>, flines <span class="op">=</span> <span class="cn">NULL</span>, search_radius <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_waterbody_index</span><span class="op">(</span><span class="va">waterbodies</span>, <span class="va">points</span>, flines <span class="op">=</span> <span class="cn">NULL</span>, search_radius <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -88,39 +88,48 @@ COMID of dominant artificial path</p>
     <dl><dt>waterbodies</dt>
 <dd><p>sf data.frame of type POLYGON or MULTIPOLYGON including
 COMID attributes.</p></dd>
+
+
 <dt>points</dt>
 <dd><p>sfc of type POINT</p></dd>
+
+
 <dt>flines</dt>
 <dd><p>sf data.frame of type LINESTRING or MULTILINESTRING including
 COMID, WBAREACOMI, and Hydroseq attributes</p></dd>
+
+
 <dt>search_radius</dt>
 <dd><p>units class with a numeric value indicating how far to
 search for a waterbody boundary in units of provided projection. Set units with
 <a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,
+    
+
+<p>data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,
 near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">waterbodies</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">sample_data</span>, <span class="st">"NHDWaterbody"</span><span class="op">)</span>, <span class="fl">5070</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">points</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">89.356086</span>, <span class="fl">43.079943</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">             crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>, <span class="fl">5070</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">get_waterbody_index</span><span class="op">(</span><span class="va">waterbodies</span>, <span class="va">points</span>,</span>
-<span class="r-in">                    search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">500</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">waterbodies</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">sample_data</span>, <span class="st">"NHDWaterbody"</span><span class="op">)</span>, <span class="fl">5070</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">points</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">89.356086</span>, <span class="fl">43.079943</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>             crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>, <span class="fl">5070</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">get_waterbody_index</span><span class="op">(</span><span class="va">waterbodies</span>, <span class="va">points</span>,</span></span>
+<span class="r-in"><span>                    search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">500</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   near_wb_COMID near_wb_dist in_wb_COMID</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     167120949     272.8278   167120949</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -135,7 +144,7 @@ near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projectio
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

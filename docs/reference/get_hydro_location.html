@@ -18,7 +18,7 @@ along the specific linear element referenced by the index."><meta property="og:i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -80,29 +80,32 @@ along the specific linear element referenced by the index.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_hydro_location</span><span class="op">(</span><span class="va">indexes</span>, <span class="va">flowpath</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_hydro_location</span><span class="op">(</span><span class="va">indexes</span>, <span class="va">flowpath</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>indexes</dt>
 <dd><p>data.frame as output from <a href="get_flowline_index.html">get_flowline_index</a>.</p></dd>
+
+
 <dt>flowpath</dt>
 <dd><p>data.frame with three columns: COMID, FromMeas, and ToMeas
 as well as geometry.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">sample_flines</span>,</span>
-<span class="r-in">                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.86934</span>, <span class="fl">39.49328</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                                              <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.91711</span>, <span class="fl">39.40884</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                                              <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.88081</span>, <span class="fl">39.36354</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                              crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">get_hydro_location</span><span class="op">(</span><span class="va">indexes</span>, <span class="va">sample_flines</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">sample_flines</span>,</span></span>
+<span class="r-in"><span>                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.86934</span>, <span class="fl">39.49328</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                              <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.91711</span>, <span class="fl">39.40884</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                              <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.88081</span>, <span class="fl">39.36354</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                              crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">get_hydro_location</span><span class="op">(</span><span class="va">indexes</span>, <span class="va">sample_flines</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry set for 3 features </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
@@ -111,7 +114,7 @@ as well as geometry.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (-76.8694 39.49326)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (-76.91761 39.40909)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> POINT (-76.881 39.3633)</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -126,7 +129,7 @@ as well as geometry.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

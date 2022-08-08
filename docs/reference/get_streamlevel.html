@@ -23,7 +23,7 @@ the NHD stream leveling rules."><meta property="og:image" content="https://usgs-
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -90,7 +90,7 @@ the NHD stream leveling rules.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -99,41 +99,44 @@ the NHD stream leveling rules.</p>
 <dd><p>data.frame with levelpathi, dnlevelpat, and optionally a
 coastal flag. If no coastal flag is included, all terminal paths are
 assumed to be coastal.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>numeric stream order in same order as input</p>
+    
+
+<p>numeric stream order in same order as input</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"walker_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">test_flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in"> levelpathi <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">LevelPathI</span>,</span>
-<span class="r-in"> dnlevelpat <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">DnLevelPat</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"> <span class="va">test_flowline</span><span class="op">$</span><span class="va">dnlevelpat</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"walker_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">test_flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span> levelpathi <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">LevelPathI</span>,</span></span>
+<span class="r-in"><span> dnlevelpat <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">DnLevelPat</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">dnlevelpat</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 3 2 2 2 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [39] 3 2 2 3 2 3 3 4 2 2 2 3 3 3 2 2 2 2 2 2 2 1 2 1</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">walker_flowline</span><span class="op">$</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="va">level</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">walker_flowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">level</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">walker_flowline</span><span class="op">$</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="va">level</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">walker_flowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">level</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="get_streamlevel-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">test_flowline</span><span class="op">$</span><span class="va">coastal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">test_flowline</span><span class="op">$</span><span class="va">coastal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 5 5 5 5 5 5 6 5 5 5 5 5 5 5 6 5 5 6 5 5 5 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [39] 6 5 5 6 5 6 6 7 5 5 5 6 6 6 5 5 5 5 5 5 5 4 5 4</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">test_flowline</span><span class="op">$</span><span class="va">coastal</span><span class="op">[</span><span class="op">!</span><span class="va">test_flowline</span><span class="op">$</span><span class="va">dnlevelpat</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">levelpathi</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">test_flowline</span><span class="op">$</span><span class="va">coastal</span><span class="op">[</span><span class="op">!</span><span class="va">test_flowline</span><span class="op">$</span><span class="va">dnlevelpat</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">levelpathi</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 3 2 2 2 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [39] 3 2 2 3 2 3 3 4 2 2 2 3 3 3 2 2 2 2 2 2 2 1 2 1</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -148,7 +151,7 @@ assumed to be coastal.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

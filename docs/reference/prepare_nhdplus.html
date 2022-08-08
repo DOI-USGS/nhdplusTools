@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -78,17 +78,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">prepare_nhdplus</span><span class="op">(</span>
-  <span class="va">flines</span>,
-  min_network_size <span class="op">=</span> <span class="fl">0</span>,
-  min_path_length <span class="op">=</span> <span class="fl">0</span>,
-  min_path_size <span class="op">=</span> <span class="fl">0</span>,
-  purge_non_dendritic <span class="op">=</span> <span class="cn">TRUE</span>,
-  warn <span class="op">=</span> <span class="cn">TRUE</span>,
-  error <span class="op">=</span> <span class="cn">TRUE</span>,
-  skip_toCOMID <span class="op">=</span> <span class="cn">FALSE</span>,
-  align_names <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">prepare_nhdplus</span><span class="op">(</span></span>
+<span>  <span class="va">flines</span>,</span>
+<span>  min_network_size <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  min_path_length <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  min_path_size <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  purge_non_dendritic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  warn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  error <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  skip_toCOMID <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  align_names <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -98,42 +98,61 @@
 COMID, LENGTHKM, FTYPE (or FCODE), TerminalFl, FromNode, ToNode, TotDASqKM,
 StartFlag, StreamOrde, StreamCalc, TerminalPa, Pathlength,
 and Divergence variables.</p></dd>
+
+
 <dt>min_network_size</dt>
 <dd><p>numeric Minimum size (sqkm) of drainage network
 to include in output.</p></dd>
+
+
 <dt>min_path_length</dt>
 <dd><p>numeric Minimum length (km) of terminal level
 path of a network.</p></dd>
+
+
 <dt>min_path_size</dt>
 <dd><p>numeric Minimum size (sqkm) of outlet level
 path of a drainage basin. Drainage basins with an outlet drainage area
 smaller than this will be removed.</p></dd>
+
+
 <dt>purge_non_dendritic</dt>
 <dd><p>logical Should non dendritic paths be removed
 or not.</p></dd>
+
+
 <dt>warn</dt>
 <dd><p>logical controls whether warning an status messages are printed</p></dd>
+
+
 <dt>error</dt>
 <dd><p>logical controls whether to return potentially invalid data with a warning rather than an error</p></dd>
+
+
 <dt>skip_toCOMID</dt>
 <dd><p>logical if TRUE, toCOMID will not be added to output.</p></dd>
+
+
 <dt>align_names</dt>
 <dd><p>logical</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>data.frame ready to be used with the refactor_flowlines function.</p>
+    
+
+<p>data.frame ready to be used with the refactor_flowlines function.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">prepare_nhdplus</span><span class="op">(</span><span class="va">sample_flines</span>,</span>
-<span class="r-in">                min_network_size <span class="op">=</span> <span class="fl">10</span>,</span>
-<span class="r-in">                min_path_length <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">                warn <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">prepare_nhdplus</span><span class="op">(</span><span class="va">sample_flines</span>,</span></span>
+<span class="r-in"><span>                min_network_size <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                min_path_length <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                warn <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         COMID   toCOMID LENGTHKM  Hydroseq LevelPathI TotDASqKM</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1    11689204  11689212    0.730 200027394  200024046  149.9148</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    11689212  11689228    0.819 200026423  200024046  164.6676</span>
@@ -832,7 +851,7 @@ or not.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 695  11690072  11690088    0.115 200059972  200059972    7.4457</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 696  11690074  11690088    0.090 200029708  200021126   85.8609</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 697  11690088  11688910    0.871 200028469  200021126   93.8475</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -847,7 +866,7 @@ or not.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

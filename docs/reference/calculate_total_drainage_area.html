@@ -18,7 +18,7 @@ network and incremental areas."><meta property="og:image" content="https://usgs-
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -80,38 +80,41 @@ network and incremental areas.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calculate_total_drainage_area</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calculate_total_drainage_area</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>data.frame with ID, toID, and area columns.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>numeric with total area.</p>
+    
+
+<p>numeric with total area.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"walker_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">catchment_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">walker_flowline</span>, <span class="va">COMID</span>, <span class="va">AreaSqKM</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="fu"><a href="prepare_nhdplus.html">prepare_nhdplus</a></span><span class="op">(</span><span class="va">walker_flowline</span>, <span class="fl">0</span>, <span class="fl">0</span>,</span>
-<span class="r-in">                            purge_non_dendritic <span class="op">=</span> <span class="cn">FALSE</span>, warn <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"COMID"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>ID <span class="op">=</span> <span class="va">COMID</span>, toID <span class="op">=</span> <span class="va">toCOMID</span>, area <span class="op">=</span> <span class="va">AreaSqKM</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">new_da</span> <span class="op">&lt;-</span> <span class="fu">calculate_total_drainage_area</span><span class="op">(</span><span class="va">catchment_area</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">catchment_area</span><span class="op">$</span><span class="va">totda</span> <span class="op">&lt;-</span> <span class="va">new_da</span></span>
-<span class="r-in"><span class="va">catchment_area</span><span class="op">$</span><span class="va">nhdptotda</span> <span class="op">&lt;-</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">TotDASqKM</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">catchment_area</span><span class="op">$</span><span class="va">totda</span> <span class="op">-</span> <span class="va">catchment_area</span><span class="op">$</span><span class="va">nhdptotda</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"walker_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">catchment_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">walker_flowline</span>, <span class="va">COMID</span>, <span class="va">AreaSqKM</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="fu"><a href="prepare_nhdplus.html">prepare_nhdplus</a></span><span class="op">(</span><span class="va">walker_flowline</span>, <span class="fl">0</span>, <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>                            purge_non_dendritic <span class="op">=</span> <span class="cn">FALSE</span>, warn <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"COMID"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>ID <span class="op">=</span> <span class="va">COMID</span>, toID <span class="op">=</span> <span class="va">toCOMID</span>, area <span class="op">=</span> <span class="va">AreaSqKM</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">new_da</span> <span class="op">&lt;-</span> <span class="fu">calculate_total_drainage_area</span><span class="op">(</span><span class="va">catchment_area</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">catchment_area</span><span class="op">$</span><span class="va">totda</span> <span class="op">&lt;-</span> <span class="va">new_da</span></span></span>
+<span class="r-in"><span><span class="va">catchment_area</span><span class="op">$</span><span class="va">nhdptotda</span> <span class="op">&lt;-</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">TotDASqKM</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">catchment_area</span><span class="op">$</span><span class="va">totda</span> <span class="op">-</span> <span class="va">catchment_area</span><span class="op">$</span><span class="va">nhdptotda</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.607233e-15</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">catchment_area</span><span class="op">$</span><span class="va">totda</span> <span class="op">-</span> <span class="va">catchment_area</span><span class="op">$</span><span class="va">nhdptotda</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">catchment_area</span><span class="op">$</span><span class="va">totda</span> <span class="op">-</span> <span class="va">catchment_area</span><span class="op">$</span><span class="va">nhdptotda</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.842171e-14</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -126,7 +129,7 @@ network and incremental areas.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

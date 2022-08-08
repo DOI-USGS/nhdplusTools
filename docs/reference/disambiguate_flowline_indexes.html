@@ -21,7 +21,7 @@ the adist function is used with the following algorithm:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -86,7 +86,7 @@ the <a href="https://rdrr.io/r/utils/adist.html" class="external-link">adist</a>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">disambiguate_flowline_indexes</span><span class="op">(</span><span class="va">indexes</span>, <span class="va">flowpath</span>, <span class="va">hydro_location</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">disambiguate_flowline_indexes</span><span class="op">(</span><span class="va">indexes</span>, <span class="va">flowpath</span>, <span class="va">hydro_location</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -94,72 +94,79 @@ the <a href="https://rdrr.io/r/utils/adist.html" class="external-link">adist</a>
     <dl><dt>indexes</dt>
 <dd><p>data.frame as output from <a href="get_flowline_index.html">get_flowline_index</a> with more than
 one hydrologic location per indexed point.</p></dd>
+
+
 <dt>flowpath</dt>
 <dd><p>data.frame with two columns. The first should join to the COMID
 field of the indexes and the second should be the numeric or ascii metric such as drainage
 area or GNIS Name. Names of this data.frame are not used.</p></dd>
+
+
 <dt>hydro_location</dt>
 <dd><p>data.frame with two columns. The first should join to the
 id field of the indexes and the second should be the numeric or ascii metric such as drainage
 area or GNIS Name.. Names of this data,frame are not used.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>data.frame indexes deduplicated according to the minimum difference
+    
+
+<p>data.frame indexes deduplicated according to the minimum difference
 between the values in the metric columns. If two or more result in the same "minimum"
 value, duplicates will be returned.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">hydro_location</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span class="r-in">                            geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.86934</span>, <span class="fl">39.49328</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                                                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.91711</span>, <span class="fl">39.40884</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                                                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.88081</span>, <span class="fl">39.36354</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                                              crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>,</span>
-<span class="r-in">                            totda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">23.6</span>, <span class="fl">7.3</span>, <span class="fl">427.9</span><span class="op">)</span>,</span>
-<span class="r-in">                            nameid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Patapsco"</span>, <span class="st">""</span>, <span class="st">"Falls Run River"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">flowpath</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">sample_flines</span>,</span>
-<span class="r-in">                          comid <span class="op">=</span> <span class="va">COMID</span>,</span>
-<span class="r-in">                          totda <span class="op">=</span> <span class="va">TotDASqKM</span>,</span>
-<span class="r-in">                          nameid <span class="op">=</span> <span class="va">GNIS_NAME</span>,</span>
-<span class="r-in">                          <span class="va">REACHCODE</span>,</span>
-<span class="r-in">                          <span class="va">ToMeas</span>,</span>
-<span class="r-in">                          <span class="va">FromMeas</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowpath</span>,</span>
-<span class="r-in">                              <span class="va">hydro_location</span>,</span>
-<span class="r-in">                              search_radius <span class="op">=</span> <span class="fl">0.2</span>,</span>
-<span class="r-in">                              max_matches <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">hydro_location</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.86934</span>, <span class="fl">39.49328</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.91711</span>, <span class="fl">39.40884</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.88081</span>, <span class="fl">39.36354</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                              crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            totda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">23.6</span>, <span class="fl">7.3</span>, <span class="fl">427.9</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            nameid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Patapsco"</span>, <span class="st">""</span>, <span class="st">"Falls Run River"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">flowpath</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">sample_flines</span>,</span></span>
+<span class="r-in"><span>                          comid <span class="op">=</span> <span class="va">COMID</span>,</span></span>
+<span class="r-in"><span>                          totda <span class="op">=</span> <span class="va">TotDASqKM</span>,</span></span>
+<span class="r-in"><span>                          nameid <span class="op">=</span> <span class="va">GNIS_NAME</span>,</span></span>
+<span class="r-in"><span>                          <span class="va">REACHCODE</span>,</span></span>
+<span class="r-in"><span>                          <span class="va">ToMeas</span>,</span></span>
+<span class="r-in"><span>                          <span class="va">FromMeas</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowpath</span>,</span></span>
+<span class="r-in"><span>                              <span class="va">hydro_location</span>,</span></span>
+<span class="r-in"><span>                              search_radius <span class="op">=</span> <span class="fl">0.2</span>,</span></span>
+<span class="r-in"><span>                              max_matches <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>search_radius units not set, trying units of points.</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">disambiguate_flowline_indexes</span><span class="op">(</span><span class="va">indexes</span>,</span>
-<span class="r-in">                              <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">flowpath</span>, <span class="va">comid</span>, <span class="va">totda</span><span class="op">)</span>,</span>
-<span class="r-in">                              <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">hydro_location</span>, <span class="va">id</span>, <span class="va">totda</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 x 5</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">disambiguate_flowline_indexes</span><span class="op">(</span><span class="va">indexes</span>,</span></span>
+<span class="r-in"><span>                              <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">flowpath</span>, <span class="va">comid</span>, <span class="va">totda</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                              <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">hydro_location</span>, <span class="va">id</span>, <span class="va">totda</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      id    COMID REACHCODE      REACH_meas    offset</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 11<span style="text-decoration: underline;">688</span>298 02060003000579        0   0.000<span style="text-decoration: underline;">060</span>3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 11<span style="text-decoration: underline;">688</span>808 02060003000519       53.6 0.000<span style="text-decoration: underline;">564</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 11<span style="text-decoration: underline;">688</span>950 02060003000254       18.5 0.001<span style="text-decoration: underline;">13</span>  </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">disambiguate_flowline_indexes</span><span class="op">(</span><span class="va">indexes</span>,</span>
-<span class="r-in">                                        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">flowpath</span>, <span class="va">comid</span>, <span class="va">nameid</span><span class="op">)</span>,</span>
-<span class="r-in">                                        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">hydro_location</span>, <span class="va">id</span>, <span class="va">nameid</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">result</span><span class="op">[</span><span class="va">result</span><span class="op">$</span><span class="va">id</span> <span class="op">==</span> <span class="fl">1</span>, <span class="op">]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 x 5</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">disambiguate_flowline_indexes</span><span class="op">(</span><span class="va">indexes</span>,</span></span>
+<span class="r-in"><span>                                        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">flowpath</span>, <span class="va">comid</span>, <span class="va">nameid</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">hydro_location</span>, <span class="va">id</span>, <span class="va">nameid</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">result</span><span class="op">[</span><span class="va">result</span><span class="op">$</span><span class="va">id</span> <span class="op">==</span> <span class="fl">1</span>, <span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      id    COMID REACHCODE      REACH_meas  offset</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 11<span style="text-decoration: underline;">689</span>928 02060003001468          0 0.002<span style="text-decoration: underline;">03</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1 11<span style="text-decoration: underline;">689</span>978 02060003001472        100 0.002<span style="text-decoration: underline;">03</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     1 11<span style="text-decoration: underline;">690</span>532 02060003000256          0 0.004<span style="text-decoration: underline;">51</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">result</span><span class="op">[</span><span class="va">result</span><span class="op">$</span><span class="va">id</span> <span class="op">==</span> <span class="fl">2</span>, <span class="op">]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 x 5</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">result</span><span class="op">[</span><span class="va">result</span><span class="op">$</span><span class="va">id</span> <span class="op">==</span> <span class="fl">2</span>, <span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       id    COMID REACHCODE      REACH_meas   offset</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     2 11<span style="text-decoration: underline;">688</span>808 02060003000519       53.6 0.000<span style="text-decoration: underline;">564</span></span>
@@ -172,13 +179,13 @@ value, duplicates will be returned.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     2 11<span style="text-decoration: underline;">688</span>868 02060003000517       27.8 0.016<span style="text-decoration: underline;">9</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     2 11<span style="text-decoration: underline;">690</span>124 02060003001496      100   0.019<span style="text-decoration: underline;">5</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     2 11<span style="text-decoration: underline;">690</span>128 02060003001498      100   0.021<span style="text-decoration: underline;">0</span>  </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">result</span><span class="op">[</span><span class="va">result</span><span class="op">$</span><span class="va">id</span> <span class="op">==</span> <span class="fl">3</span>, <span class="op">]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 x 5</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">result</span><span class="op">[</span><span class="va">result</span><span class="op">$</span><span class="va">id</span> <span class="op">==</span> <span class="fl">3</span>, <span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      id    COMID REACHCODE      REACH_meas  offset</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     3 11<span style="text-decoration: underline;">688</span>948 02060003000516          0 0.003<span style="text-decoration: underline;">21</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -193,7 +200,7 @@ value, duplicates will be returned.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

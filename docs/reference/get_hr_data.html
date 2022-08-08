@@ -18,7 +18,7 @@ See get_nhdplushr for examples."><meta property="og:image" content="https://usgs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -80,35 +80,48 @@ See <a href="get_nhdplushr.html">get_nhdplushr</a> for examples.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_hr_data</span><span class="op">(</span>
-  <span class="va">gdb</span>,
-  layer <span class="op">=</span> <span class="cn">NULL</span>,
-  min_size_sqkm <span class="op">=</span> <span class="cn">NULL</span>,
-  simp <span class="op">=</span> <span class="cn">NULL</span>,
-  proj <span class="op">=</span> <span class="cn">NULL</span>,
-  rename <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_hr_data</span><span class="op">(</span></span>
+<span>  <span class="va">gdb</span>,</span>
+<span>  layer <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  min_size_sqkm <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  simp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  proj <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rename <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>gdb</dt>
 <dd><p>character path to geodatabase to get data from.</p></dd>
+
+
 <dt>layer</dt>
 <dd><p>character layer name from geodatabase found with <a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></p></dd>
+
+
 <dt>min_size_sqkm</dt>
 <dd><p>numeric minimum basin size to be included in the output</p></dd>
+
+
 <dt>simp</dt>
 <dd><p>numeric simplification tolerance in units of projection</p></dd>
+
+
 <dt>proj</dt>
 <dd><p>a projection specification compatible with <a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></p></dd>
+
+
 <dt>rename</dt>
 <dd><p>boolean if TRUE, nhdplusTools standard attribute values will
 be applied.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>sf data.frame containing requested data</p>
+    
+
+<p>sf data.frame containing requested data</p>
     </div>
 
   </div>
@@ -123,7 +136,7 @@ be applied.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

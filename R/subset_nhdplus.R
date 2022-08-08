@@ -619,6 +619,8 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
 
   if(is.null(x)){return(NULL)}
 
+  return_now <- FALSE
+
   x <- sf::st_zm(x)
 
   if (!all(sf::st_is_valid(x))) {
@@ -629,8 +631,17 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
 
     orig_type <- orig_type[grepl("POLY|LINE", orig_type)]
 
-    try({
-      x <- sf::st_make_valid(x)
+    x <- tryCatch({
+      sf::st_make_valid(x)
+    }, error = function(e) {
+      warning("Error trying to make geometry valid. Returning invalid geometry.")
+      return_now <<- TRUE
+      x
+    })
+
+    if(return_now) return(x)
+
+    tryCatch({
 
       if(!all(sf::st_geometry_type(x) == orig_type)) {
         if(any(grepl("^GEOMETRY", sf::st_geometry_type(x)))) {
@@ -645,7 +656,14 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
 
         }
       }
+    }, error = function(e) {
+      warning("Error while trying to unify geometry type. \nReturning geometry as is.")
+      return_now <<- TRUE
+      x
     })
+
+    if(return_now) return(x)
+
   }
 
   if (any(grepl("POLYGON", class(sf::st_geometry(x))))) {

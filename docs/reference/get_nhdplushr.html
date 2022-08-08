@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -78,24 +78,28 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_nhdplushr</span><span class="op">(</span>
-  <span class="va">hr_dir</span>,
-  out_gpkg <span class="op">=</span> <span class="cn">NULL</span>,
-  layers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NHDFlowline"</span>, <span class="st">"NHDPlusCatchment"</span><span class="op">)</span>,
-  pattern <span class="op">=</span> <span class="st">".*GDB.gdb$"</span>,
-  check_terminals <span class="op">=</span> <span class="cn">TRUE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  keep_cols <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_nhdplushr</span><span class="op">(</span></span>
+<span>  <span class="va">hr_dir</span>,</span>
+<span>  out_gpkg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  layers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NHDFlowline"</span>, <span class="st">"NHDPlusCatchment"</span><span class="op">)</span>,</span>
+<span>  pattern <span class="op">=</span> <span class="st">".*GDB.gdb$"</span>,</span>
+<span>  check_terminals <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  keep_cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>hr_dir</dt>
 <dd><p>character directory with geodatabases (gdb search is recursive)</p></dd>
+
+
 <dt>out_gpkg</dt>
 <dd><p>character path to write output geopackage</p></dd>
+
+
 <dt>layers</dt>
 <dd><p>character vector with desired layers to return.
 c("NHDFlowline", "NHDPlusCatchment") is default.
@@ -105,25 +109,38 @@ c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", "NHDArea", "NHDLine",
 "NHDPlusBurnLineEvent", "HYDRO_NET_Junctions",
 "WBDHU2", "WBDHU4","WBDHU6", "WBDHU8" "WBDHU10", "WBDHU12", "WBDLine")
 Set to NULL to get all available.</p></dd>
+
+
 <dt>pattern</dt>
 <dd><p>character optional regex to select certain files in hr_dir</p></dd>
+
+
 <dt>check_terminals</dt>
 <dd><p>boolean if TRUE, run <a href="make_standalone.html">make_standalone</a> on output.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>boolean should the output overwrite? If false and the output layer
 exists, it will be read and returned so this function will always return data even
 if called a second time for the same output. This is useful for workflows. Note that
 this will NOT delete the entire Geopackage. It will overwrite on a per layer basis.</p></dd>
+
+
 <dt>keep_cols</dt>
 <dd><p>character vector of column names to keep in the output. If NULL,
 all will be kept.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>parameters passed along to <a href="get_hr_data.html">get_hr_data</a>
 for "NHDFlowline" layers.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>sf data.frames containing output that may also be written
+    
+
+<p>sf data.frames containing output that may also be written
 to a geopackage for later use.</p>
     </div>
     <div id="details">
@@ -136,28 +153,28 @@ Set layers to "NULL" to get all layers.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Note this will download a lot of data to a temp directory.</span></span>
-<span class="r-in"><span class="co"># Change 'temp_dir' to your directory of choice.</span></span>
-<span class="r-in"><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"temp_hr_cache"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">download_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="download_nhdplushr.html">download_nhdplushr</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0302"</span>, <span class="st">"0303"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">get_nhdplushr</span><span class="op">(</span><span class="va">download_dir</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">download_dir</span>, <span class="st">"nhdplus_0302-03.gpkg"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">get_nhdplushr</span><span class="op">(</span><span class="va">download_dir</span>,</span>
-<span class="r-in">              <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">download_dir</span>, <span class="st">"nhdplus_0302-03.gpkg"</span><span class="op">)</span>,</span>
-<span class="r-in">              layers <span class="op">=</span> <span class="cn">NULL</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">get_nhdplushr</span><span class="op">(</span><span class="va">download_dir</span>,</span>
-<span class="r-in">              <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">download_dir</span>, <span class="st">"nhdplus_0302-03.gpkg"</span><span class="op">)</span>,</span>
-<span class="r-in">              layers <span class="op">=</span> <span class="st">"NHDFlowline"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">              min_size_sqkm <span class="op">=</span> <span class="fl">10</span>, simp <span class="op">=</span> <span class="fl">10</span>, proj <span class="op">=</span> <span class="st">"+init=epsg:5070"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Cleanup</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">temp_dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Note this will download a lot of data to a temp directory.</span></span></span>
+<span class="r-in"><span><span class="co"># Change 'temp_dir' to your directory of choice.</span></span></span>
+<span class="r-in"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"temp_hr_cache"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">download_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="download_nhdplushr.html">download_nhdplushr</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0302"</span>, <span class="st">"0303"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">get_nhdplushr</span><span class="op">(</span><span class="va">download_dir</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">download_dir</span>, <span class="st">"nhdplus_0302-03.gpkg"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">get_nhdplushr</span><span class="op">(</span><span class="va">download_dir</span>,</span></span>
+<span class="r-in"><span>              <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">download_dir</span>, <span class="st">"nhdplus_0302-03.gpkg"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              layers <span class="op">=</span> <span class="cn">NULL</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">get_nhdplushr</span><span class="op">(</span><span class="va">download_dir</span>,</span></span>
+<span class="r-in"><span>              <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">download_dir</span>, <span class="st">"nhdplus_0302-03.gpkg"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              layers <span class="op">=</span> <span class="st">"NHDFlowline"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>              min_size_sqkm <span class="op">=</span> <span class="fl">10</span>, simp <span class="op">=</span> <span class="fl">10</span>, proj <span class="op">=</span> <span class="st">"+init=epsg:5070"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Cleanup</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">temp_dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -172,7 +189,7 @@ Set layers to "NULL" to get all layers.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

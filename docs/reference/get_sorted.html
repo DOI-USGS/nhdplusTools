@@ -22,7 +22,7 @@ outlet is returned in sorted order."><meta property="og:image" content="https://
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@ outlet is returned in sorted order.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_sorted</span><span class="op">(</span><span class="va">x</span>, split <span class="op">=</span> <span class="cn">FALSE</span>, outlets <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_sorted</span><span class="op">(</span><span class="va">x</span>, split <span class="op">=</span> <span class="cn">FALSE</span>, outlets <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -96,31 +96,38 @@ outlet is returned in sorted order.</p>
     <dl><dt>x</dt>
 <dd><p>data.frame with an identifier and to identifier in the
 first and second columns.</p></dd>
+
+
 <dt>split</dt>
 <dd><p>logical if TRUE, the result will be split into
 independent networks identified by the id of their outlet. The
 outlet id of each independent network is added as a "terminalID"
 attribute.</p></dd>
+
+
 <dt>outlets</dt>
 <dd><p>same as id in x; if specified only the network
 emanating from these outlets will be considered and returned.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>data.frame containing a topologically sorted version
+    
+
+<p>data.frame containing a topologically sorted version
 of the requested network and optionally a terminal id.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/new_hope_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">fpath</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_tocomid.html">get_tocomid</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">new_hope_flowline</span>, <span class="va">COMID</span>, <span class="va">FromNode</span>, <span class="va">ToNode</span>, <span class="va">Divergence</span>, <span class="va">FTYPE</span>,</span>
-<span class="r-in">                <span class="va">AreaSqKM</span>, <span class="va">LENGTHKM</span>, <span class="va">GNIS_ID</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">fpath</span> <span class="op">&lt;-</span> <span class="fu">get_sorted</span><span class="op">(</span><span class="va">fpath</span>, split <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/new_hope_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fpath</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_tocomid.html">get_tocomid</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">new_hope_flowline</span>, <span class="va">COMID</span>, <span class="va">FromNode</span>, <span class="va">ToNode</span>, <span class="va">Divergence</span>, <span class="va">FTYPE</span>,</span></span>
+<span class="r-in"><span>                <span class="va">AreaSqKM</span>, <span class="va">LENGTHKM</span>, <span class="va">GNIS_ID</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">fpath</span> <span class="op">&lt;-</span> <span class="fu">get_sorted</span><span class="op">(</span><span class="va">fpath</span>, split <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 6 features and 10 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTILINESTRING</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
@@ -140,12 +147,12 @@ of the requested network and optionally a terminal id.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4    1.641            8897784 MULTILINESTRING ((1507786 1...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5    1.167  983820    8897784 MULTILINESTRING ((1508236 1...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6    1.767            8897784 MULTILINESTRING ((1508311 1...</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">fpath</span><span class="op">[</span><span class="st">'sort_order'</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">fpath</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fpath</span><span class="op">[</span><span class="st">'sort_order'</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fpath</span><span class="op">[</span><span class="st">'sort_order'</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">fpath</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fpath</span><span class="op">[</span><span class="st">'sort_order'</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="get_sorted-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -160,7 +167,7 @@ of the requested network and optionally a terminal id.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

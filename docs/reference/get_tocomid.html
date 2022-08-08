@@ -24,7 +24,7 @@ required."><meta property="og:image" content="https://usgs-r.github.io/nhdplusTo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -92,13 +92,13 @@ required.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_tocomid</span><span class="op">(</span>
-  <span class="va">x</span>,
-  return_dendritic <span class="op">=</span> <span class="cn">TRUE</span>,
-  missing <span class="op">=</span> <span class="fl">0</span>,
-  remove_coastal <span class="op">=</span> <span class="cn">TRUE</span>,
-  add <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_tocomid</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  return_dendritic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  missing <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  remove_coastal <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -106,35 +106,46 @@ required.</p>
     <dl><dt>x</dt>
 <dd><p>data.frame with comid, tonode, fromnode, and (optionally)
 divergence and terminalpa attributes.</p></dd>
+
+
 <dt>return_dendritic</dt>
 <dd><p>logical if TRUE, a divergence attribute is required
 (2 indicates diverted path, 1 is main) and diverted paths will be treated
 as headwaters. If this is FALSE, the return value is a data.frame including
 the comid and tocomid attributes.</p></dd>
+
+
 <dt>missing</dt>
 <dd><p>integer value to use for terminal nodes.</p></dd>
+
+
 <dt>remove_coastal</dt>
 <dd><p>logical remove coastal features prior to generating
 tocomid values? ftype or fcode are required if `TRUE`. fcode == 56600 or
 fcode == "Coastline" will be fremoved.</p></dd>
+
+
 <dt>add</dt>
 <dd><p>logical if TRUE, a tocomid column will be added, otherwise
 a data.frame with two columns will be returned.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>data.frame containing comid and tocomid attributes or all
+    
+
+<p>data.frame containing comid and tocomid attributes or all
 attributes provided with comid and tocomid in the first and second columns..</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">tocomid</span> <span class="op">&lt;-</span> <span class="fu">get_tocomid</span><span class="op">(</span><span class="va">sample_flines</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">tocomid</span> <span class="op">&lt;-</span> <span class="fu">get_tocomid</span><span class="op">(</span><span class="va">sample_flines</span>, return_dendritic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">tocomid</span> <span class="op">&lt;-</span> <span class="fu">get_tocomid</span><span class="op">(</span><span class="va">sample_flines</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">tocomid</span> <span class="op">&lt;-</span> <span class="fu">get_tocomid</span><span class="op">(</span><span class="va">sample_flines</span>, return_dendritic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -149,7 +160,7 @@ attributes provided with comid and tocomid in the first and second columns..</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

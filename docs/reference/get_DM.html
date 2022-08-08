@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_DM</span><span class="op">(</span><span class="va">network</span>, <span class="va">comid</span>, distance <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, include <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_DM</span><span class="op">(</span><span class="va">network</span>, <span class="va">comid</span>, distance <span class="op">=</span> <span class="cn">NULL</span>, sort <span class="op">=</span> <span class="cn">FALSE</span>, include <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -86,40 +86,51 @@
     <dl><dt>network</dt>
 <dd><p>data.frame NHDPlus flowlines including at a minimum:
 COMID, LENGTHKM, DnHydroseq, and Hydroseq.</p></dd>
+
+
 <dt>comid</dt>
 <dd><p>integer identifier to start navigating from.</p></dd>
+
+
 <dt>distance</dt>
 <dd><p>numeric distance in km to limit how many COMIDs are
 returned. The COMID that exceeds the distance specified is returned.</p></dd>
+
+
 <dt>sort</dt>
 <dd><p>if TRUE, the returned COMID vector will be sorted in order of distance from the input COMID (nearest to farthest)</p></dd>
+
+
 <dt>include</dt>
 <dd><p>if TRUE, the input COMID will be included in the returned COMID vector</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>integer vector of all COMIDs downstream of the starting COMID
+    
+
+<p>integer vector of all COMIDs downstream of the starting COMID
 along the mainstem</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sample_flines</span><span class="op">$</span><span class="va">geom</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">start_COMID</span> <span class="op">&lt;-</span> <span class="fl">11690092</span></span>
-<span class="r-in"><span class="va">DM_COMIDs</span> <span class="op">&lt;-</span> <span class="fu">get_DM</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">start_COMID</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">DM_COMIDs</span><span class="op">)</span><span class="op">$</span><span class="va">geom</span>,</span>
-<span class="r-in">     col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">DM_COMIDs</span> <span class="op">&lt;-</span> <span class="fu">get_DM</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">start_COMID</span>, distance <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">DM_COMIDs</span><span class="op">)</span><span class="op">$</span><span class="va">geom</span>,</span>
-<span class="r-in">     col <span class="op">=</span> <span class="st">"blue"</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sample_flines</span><span class="op">$</span><span class="va">geom</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">start_COMID</span> <span class="op">&lt;-</span> <span class="fl">11690092</span></span></span>
+<span class="r-in"><span><span class="va">DM_COMIDs</span> <span class="op">&lt;-</span> <span class="fu">get_DM</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">start_COMID</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">DM_COMIDs</span><span class="op">)</span><span class="op">$</span><span class="va">geom</span>,</span></span>
+<span class="r-in"><span>     col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">DM_COMIDs</span> <span class="op">&lt;-</span> <span class="fu">get_DM</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">start_COMID</span>, distance <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">DM_COMIDs</span><span class="op">)</span><span class="op">$</span><span class="va">geom</span>,</span></span>
+<span class="r-in"><span>     col <span class="op">=</span> <span class="st">"blue"</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="get_DM-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -134,7 +145,7 @@ along the mainstem</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

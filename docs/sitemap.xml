@@ -85,6 +85,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools/reference/fix_flowdir.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_boundaries.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_DD.html</loc>
   </url>
   <url>
@@ -149,6 +152,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_path_lengths.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_path_members.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_pfaf.html</loc>

@@ -18,7 +18,7 @@ EPSG:4326."><meta property="og:image" content="https://usgs-r.github.io/nhdplusT
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -80,48 +80,69 @@ EPSG:4326.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">map_nhdplus</span><span class="op">(</span>
-  outlets <span class="op">=</span> <span class="cn">NULL</span>,
-  bbox <span class="op">=</span> <span class="cn">NULL</span>,
-  streamorder <span class="op">=</span> <span class="cn">NULL</span>,
-  nhdplus_data <span class="op">=</span> <span class="cn">NULL</span>,
-  gpkg <span class="op">=</span> <span class="cn">NULL</span>,
-  flowline_only <span class="op">=</span> <span class="cn">NULL</span>,
-  plot_config <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,
-  cache_data <span class="op">=</span> <span class="cn">NULL</span>,
-  return_map <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">map_nhdplus</span><span class="op">(</span></span>
+<span>  outlets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bbox <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  streamorder <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nhdplus_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gpkg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  flowline_only <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plot_config <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  cache_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  return_map <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>outlets</dt>
 <dd><p>list of nldi outlets. Other inputs are coerced into nldi outlets, see details.</p></dd>
+
+
 <dt>bbox</dt>
 <dd><p>object of class bbox with a defined crs. See examples.</p></dd>
+
+
 <dt>streamorder</dt>
 <dd><p>integer only streams of order greater than or equal will be returned</p></dd>
+
+
 <dt>nhdplus_data</dt>
 <dd><p>geopackage containing source nhdplus data (omit to download)</p></dd>
+
+
 <dt>gpkg</dt>
 <dd><p>path and file with .gpkg ending. If omitted, no file is written.</p></dd>
+
+
 <dt>flowline_only</dt>
 <dd><p>boolean only subset and plot flowlines only, default=FALSE</p></dd>
+
+
 <dt>plot_config</dt>
 <dd><p>list containing plot configuration, see details.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>passed on the <a href="subset_nhdplus.html">subset_nhdplus</a>.</p></dd>
+
+
 <dt>cache_data</dt>
 <dd><p>character path to rds file where all plot data can be cached.
 If file doesn't exist, it will be created. If set to FALSE, all caching will
 be turned off -- this includes basemap tiles.</p></dd>
+
+
 <dt>return_map</dt>
 <dd><p>if FALSE (default), a data.frame of plot data is returned invisibly in NAD83 Lat/Lon, if TRUE the leaflet object is returned</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>data.frame or leaflet map (see return_map)</p>
+    
+
+<p>data.frame or leaflet map (see return_map)</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -142,20 +163,32 @@ is used to convert the outlet formats as described below.</p><ol><li><p>if outle
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu">map_nhdplus</span><span class="op">(</span><span class="st">"05428500"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">map_nhdplus</span><span class="op">(</span><span class="st">"05428500"</span>, streamorder <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">map_nhdplus</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">13293970</span>, <span class="fl">13293750</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">map_nhdplus</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">13293970</span>, <span class="fl">13293750</span><span class="op">)</span>, streamorder <span class="op">=</span> <span class="fl">3</span>, nhdplus_data <span class="op">=</span> <span class="va">sample_data</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#return leaflet object</span></span>
-<span class="r-in"><span class="fu">map_nhdplus</span><span class="op">(</span><span class="st">"05428500"</span>, return_map <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu">map_nhdplus</span><span class="op">(</span><span class="st">"05428500"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">map_nhdplus</span><span class="op">(</span><span class="st">"05428500"</span>, streamorder <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">map_nhdplus</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">13293970</span>, <span class="fl">13293750</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">map_nhdplus</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">13293970</span>, <span class="fl">13293750</span><span class="op">)</span>, streamorder <span class="op">=</span> <span class="fl">3</span>, nhdplus_data <span class="op">=</span> <span class="va">sample_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#return leaflet object</span></span></span>
+<span class="r-in"><span><span class="fu">map_nhdplus</span><span class="op">(</span><span class="st">"05428500"</span>, return_map <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -170,7 +203,7 @@ is used to convert the outlet formats as described below.</p><ol><li><p>if outle
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -19,7 +19,7 @@ against the entire NHDPlusV2 domain and satisfies a number of edge cases."><meta
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@ against the entire NHDPlusV2 domain and satisfies a number of edge cases.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">subset_rpu</span><span class="op">(</span><span class="va">fline</span>, <span class="va">rpu</span>, run_make_standalone <span class="op">=</span> <span class="cn">TRUE</span>, strict <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">subset_rpu</span><span class="op">(</span><span class="va">fline</span>, <span class="va">rpu</span>, run_make_standalone <span class="op">=</span> <span class="cn">TRUE</span>, strict <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,28 +91,37 @@ against the entire NHDPlusV2 domain and satisfies a number of edge cases.</p>
 <dd><p>sf data.frame NHD Flowlines with comid, pathlength, lengthkm,
 hydroseq, levelpathi, rpuid, and arbolatesu (dnhydroseq
 is required if tocomid is not provided).</p></dd>
+
+
 <dt>rpu</dt>
 <dd><p>character e.g. "01a"</p></dd>
+
+
 <dt>run_make_standalone</dt>
 <dd><p>logical default TRUE
 should the run_make_standalone function be run on result?</p></dd>
+
+
 <dt>strict</dt>
 <dd><p>logical if TRUE, paths that extend outside the RPU but
 have no tributaries in the upstream RPU will be included in the output.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>data.frame containing subset network</p>
+    
+
+<p>data.frame containing subset network</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">sample_flines</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">sample_data</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">subset_rpu</span><span class="op">(</span><span class="va">sample_flines</span>, rpu <span class="op">=</span> <span class="st">"07b"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">sample_flines</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">sample_data</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">subset_rpu</span><span class="op">(</span><span class="va">sample_flines</span>, rpu <span class="op">=</span> <span class="st">"07b"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 267 features and 136 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTILINESTRING</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XYZM</span>
@@ -120,27 +129,27 @@ have no tributaries in the upstream RPU will be included in the output.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z_range:       zmin: 0 zmax: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> m_range:       mmin: 0 mmax: 100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  GRS 1980(IUGG, 1980)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 267 x 137</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 267 × 137</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       COMID FDATE               RESOLUTION GNIS_ID  GNIS_NAME LENGTHKM REACHCODE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 13<span style="text-decoration: underline;">296</span>606 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707~ <span style="color: #949494;">"</span>Yahara ~    0.091 07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 13<span style="text-decoration: underline;">297</span>170 2009-05-01 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707~ <span style="color: #949494;">"</span>Yahara ~    2.85  07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 13<span style="text-decoration: underline;">297</span>160 2009-05-01 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707~ <span style="color: #949494;">"</span>Yahara ~    0.041 07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 13<span style="text-decoration: underline;">293</span>970 1999-10-29 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707~ <span style="color: #949494;">"</span>Yahara ~    0.096 07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 13<span style="text-decoration: underline;">293</span>750 1999-10-29 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707~ <span style="color: #949494;">"</span>Yahara ~    1.72  07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 13<span style="text-decoration: underline;">296</span>614 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span> <span style="color: #949494;">"</span>      <span style="color: #949494;">"</span> <span style="color: #949494;">"</span>          4.59  07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 13<span style="text-decoration: underline;">297</span>104 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>156066~ <span style="color: #949494;">"</span>Murphys~    4.53  07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 13<span style="text-decoration: underline;">297</span>106 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>156066~ <span style="color: #949494;">"</span>Murphys~    2.70  07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 13<span style="text-decoration: underline;">294</span>002 1999-10-29 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157516~ <span style="color: #949494;">"</span>Swan Cr~    0.111 07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 13<span style="text-decoration: underline;">297</span>098 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157516~ <span style="color: #949494;">"</span>Swan Cr~    1.44  07090002~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ... with 257 more rows, and 130 more variables: FLOWDIR &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 13<span style="text-decoration: underline;">296</span>606 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707… <span style="color: #949494;">"</span>Yahara …    0.091 07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 13<span style="text-decoration: underline;">297</span>170 2009-05-01 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707… <span style="color: #949494;">"</span>Yahara …    2.85  07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 13<span style="text-decoration: underline;">297</span>160 2009-05-01 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707… <span style="color: #949494;">"</span>Yahara …    0.041 07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 13<span style="text-decoration: underline;">293</span>970 1999-10-29 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707… <span style="color: #949494;">"</span>Yahara …    0.096 07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 13<span style="text-decoration: underline;">293</span>750 1999-10-29 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157707… <span style="color: #949494;">"</span>Yahara …    1.72  07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 13<span style="text-decoration: underline;">296</span>614 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span> <span style="color: #949494;">"</span>      <span style="color: #949494;">"</span> <span style="color: #949494;">"</span>          4.59  07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 13<span style="text-decoration: underline;">297</span>104 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>156066… <span style="color: #949494;">"</span>Murphys…    4.53  07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 13<span style="text-decoration: underline;">297</span>106 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>156066… <span style="color: #949494;">"</span>Murphys…    2.70  07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 13<span style="text-decoration: underline;">294</span>002 1999-10-29 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157516… <span style="color: #949494;">"</span>Swan Cr…    0.111 07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 13<span style="text-decoration: underline;">297</span>098 1999-10-15 <span style="color: #949494;">00:00:00</span> Medium     <span style="color: #949494;">"</span>157516… <span style="color: #949494;">"</span>Swan Cr…    1.44  07090002…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 257 more rows, and 130 more variables: FLOWDIR &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   WBAREACOMI &lt;int&gt;, FTYPE &lt;chr&gt;, FCODE &lt;int&gt;, Shape_Length &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;, StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, Divergence &lt;int&gt;, StartFlag &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TerminalFl &lt;dbl&gt;, DnLevel &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;, UpHydroseq &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DnLevelPat &lt;dbl&gt;, DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;int&gt;, DnHydroseq &lt;dbl&gt;, ...</span></span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DnLevelPat &lt;dbl&gt;, DnMinorHyd &lt;dbl&gt;, DnDrainCou &lt;int&gt;, DnHydroseq &lt;dbl&gt;, …</span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -155,7 +164,7 @@ have no tributaries in the upstream RPU will be included in the output.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

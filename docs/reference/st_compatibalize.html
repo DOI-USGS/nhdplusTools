@@ -19,7 +19,7 @@ same name."><meta property="og:image" content="https://usgs-r.github.io/nhdplusT
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -82,87 +82,90 @@ same name.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">st_compatibalize</span><span class="op">(</span><span class="va">sf1</span>, <span class="va">sf2</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">st_compatibalize</span><span class="op">(</span><span class="va">sf1</span>, <span class="va">sf2</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>sf1</dt>
 <dd><p>sf data.frame</p></dd>
+
+
 <dt>sf2</dt>
 <dd><p>sf data.frame</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">(</span><span class="va">one</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">sample_flines</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sample_flines.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">one</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">sample_flines</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 707 features and 0 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTILINESTRING</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -77.16175 ymin: 39.11307 xmax: -76.43622 ymax: 39.64679</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 707 x 1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 707 × 1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                             geom</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                            <span style="color: #949494; font-style: italic;">&lt;MULTILINESTRING [°]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ((-76.66157 39.27636, -76.6614 39.27636, -76.66057 39.27545, -76.66051 39.27~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ((-76.65498 39.27543, -76.65436 39.27497, -76.65398 39.27431, -76.65386 39.2~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ((-76.64835 39.27115, -76.64812 39.27115, -76.64771 39.2709, -76.64662 39.27~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ((-76.63034 39.2693, -76.63021 39.26919, -76.62808 39.26881, -76.62708 39.26~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ((-76.61201 39.25434, -76.61183 39.25413, -76.61068 39.25344, -76.60962 39.2~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ((-76.68668 39.30612, -76.68492 39.30628, -76.6835 39.30608, -76.68218 39.30~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ((-76.71434 39.32628, -76.71457 39.32592, -76.7146 39.32432, -76.71425 39.32~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ((-76.72432 39.32412, -76.7235 39.32383, -76.72247 39.32387, -76.72152 39.32~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ((-76.73594 39.34748, -76.73455 39.34652, -76.73208 39.34574, -76.73143 39.3~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ((-76.7446 39.36049, -76.7446 39.35959, -76.74451 39.35934, -76.74424 39.359~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ... with 697 more rows</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">two</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">one</span>, <span class="fl">5070</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ((-76.66157 39.27636, -76.6614 39.27636, -76.66057 39.27545, -76.66051 39.27…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ((-76.65498 39.27543, -76.65436 39.27497, -76.65398 39.27431, -76.65386 39.2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ((-76.64835 39.27115, -76.64812 39.27115, -76.64771 39.2709, -76.64662 39.27…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ((-76.63034 39.2693, -76.63021 39.26919, -76.62808 39.26881, -76.62708 39.26…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ((-76.61201 39.25434, -76.61183 39.25413, -76.61068 39.25344, -76.60962 39.2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ((-76.68668 39.30612, -76.68492 39.30628, -76.6835 39.30608, -76.68218 39.30…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ((-76.71434 39.32628, -76.71457 39.32592, -76.7146 39.32432, -76.71425 39.32…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ((-76.72432 39.32412, -76.7235 39.32383, -76.72247 39.32387, -76.72152 39.32…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ((-76.73594 39.34748, -76.73455 39.34652, -76.73208 39.34574, -76.73143 39.3…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ((-76.7446 39.36049, -76.7446 39.35959, -76.74451 39.35934, -76.74424 39.359…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 697 more rows</span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">two</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">one</span>, <span class="fl">5070</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 707 features and 0 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTILINESTRING</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 1597686 ymin: 1956259 xmax: 1663643 ymax: 2010159</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Projected CRS: NAD83 / Conus Albers</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 707 x 1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 707 × 1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                             geom</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #BCBCBC;">*</span>                                                         <span style="color: #949494; font-style: italic;">&lt;MULTILINESTRING [m]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ((1641586 1973488, 1641601 1973491, 1641690 1973404, 1641699 1973388, 164172~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ((1642159 1973499, 1642221 1973459, 1642268 1973393, 1642289 1973342, 164233~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ((1642811 1973144, 1642831 1973148, 1642871 1973127, 1642970 1973109, 164303~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ((1644361 1973252, 1644374 1973243, 1644561 1973238, 1644645 1973252, 164474~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ((1646235 1971928, 1646255 1971908, 1646367 1971852, 1646465 1971824, 164695~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ((1638811 1976321, 1638955 1976369, 1639078 1976371, 1639181 1976429, 163923~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ((1636041 1978058, 1636030 1978013, 1636063 1977837, 1636107 1977775, 163625~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ((1635254 1977649, 1635330 1977630, 1635415 1977653, 1635482 1977730, 163554~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ((1633756 1980012, 1633893 1979931, 1634118 1979888, 1634173 1979894, 163427~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ((1632738 1981292, 1632758 1981194, 1632771 1981168, 1632799 1981145, 163287~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ... with 697 more rows</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">one</span>, <span class="st">"sf_column"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"geotest"</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">one</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">one</span><span class="op">)</span> <span class="op">==</span> <span class="st">"geom"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"geotest"</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">st_compatibalize</span><span class="op">(</span><span class="va">one</span>, <span class="va">two</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ((1641586 1973488, 1641601 1973491, 1641690 1973404, 1641699 1973388, 164172…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ((1642159 1973499, 1642221 1973459, 1642268 1973393, 1642289 1973342, 164233…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ((1642811 1973144, 1642831 1973148, 1642871 1973127, 1642970 1973109, 164303…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ((1644361 1973252, 1644374 1973243, 1644561 1973238, 1644645 1973252, 164474…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ((1646235 1971928, 1646255 1971908, 1646367 1971852, 1646465 1971824, 164695…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ((1638811 1976321, 1638955 1976369, 1639078 1976371, 1639181 1976429, 163923…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ((1636041 1978058, 1636030 1978013, 1636063 1977837, 1636107 1977775, 163625…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ((1635254 1977649, 1635330 1977630, 1635415 1977653, 1635482 1977730, 163554…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ((1633756 1980012, 1633893 1979931, 1634118 1979888, 1634173 1979894, 163427…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ((1632738 1981292, 1632758 1981194, 1632771 1981168, 1632799 1981145, 163287…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 697 more rows</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">one</span>, <span class="st">"sf_column"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"geotest"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">one</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">one</span><span class="op">)</span> <span class="op">==</span> <span class="st">"geom"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"geotest"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">st_compatibalize</span><span class="op">(</span><span class="va">one</span>, <span class="va">two</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 707 features and 0 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTILINESTRING</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 1597686 ymin: 1956259 xmax: 1663643 ymax: 2010159</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Projected CRS: NAD83 / Conus Albers</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 707 x 1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 707 × 1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                             geom</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #BCBCBC;">*</span>                                                         <span style="color: #949494; font-style: italic;">&lt;MULTILINESTRING [m]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ((1641586 1973488, 1641601 1973491, 1641690 1973404, 1641699 1973388, 164172~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ((1642159 1973499, 1642221 1973459, 1642268 1973393, 1642289 1973342, 164233~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ((1642811 1973144, 1642831 1973148, 1642871 1973127, 1642970 1973109, 164303~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ((1644361 1973252, 1644374 1973243, 1644561 1973238, 1644645 1973252, 164474~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ((1646235 1971928, 1646255 1971908, 1646367 1971852, 1646465 1971824, 164695~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ((1638811 1976321, 1638955 1976369, 1639078 1976371, 1639181 1976429, 163923~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ((1636041 1978058, 1636030 1978013, 1636063 1977837, 1636107 1977775, 163625~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ((1635254 1977649, 1635330 1977630, 1635415 1977653, 1635482 1977730, 163554~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ((1633756 1980012, 1633893 1979931, 1634118 1979888, 1634173 1979894, 163427~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ((1632738 1981292, 1632758 1981194, 1632771 1981168, 1632799 1981145, 163287~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ... with 697 more rows</span></span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ((1641586 1973488, 1641601 1973491, 1641690 1973404, 1641699 1973388, 164172…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ((1642159 1973499, 1642221 1973459, 1642268 1973393, 1642289 1973342, 164233…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ((1642811 1973144, 1642831 1973148, 1642871 1973127, 1642970 1973109, 164303…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ((1644361 1973252, 1644374 1973243, 1644561 1973238, 1644645 1973252, 164474…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ((1646235 1971928, 1646255 1971908, 1646367 1971852, 1646465 1971824, 164695…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ((1638811 1976321, 1638955 1976369, 1639078 1976371, 1639181 1976429, 163923…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ((1636041 1978058, 1636030 1978013, 1636063 1977837, 1636107 1977775, 163625…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ((1635254 1977649, 1635330 1977630, 1635415 1977653, 1635482 1977730, 163554…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ((1633756 1980012, 1633893 1979931, 1634118 1979888, 1634173 1979894, 163427…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ((1632738 1981292, 1632758 1981194, 1632771 1981168, 1632799 1981145, 163287…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 697 more rows</span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -177,7 +180,7 @@ same name.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

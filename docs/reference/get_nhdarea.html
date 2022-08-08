@@ -18,7 +18,7 @@ area (POLYGON), or set of IDs."><meta property="og:image" content="https://usgs-
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@ area (POLYGON), or set of IDs.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_nhdarea</span><span class="op">(</span>AOI <span class="op">=</span> <span class="cn">NULL</span>, id <span class="op">=</span> <span class="cn">NULL</span>, t_srs <span class="op">=</span> <span class="cn">NULL</span>, buffer <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_nhdarea</span><span class="op">(</span>AOI <span class="op">=</span> <span class="cn">NULL</span>, id <span class="op">=</span> <span class="cn">NULL</span>, t_srs <span class="op">=</span> <span class="cn">NULL</span>, buffer <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -89,19 +89,28 @@ area (POLYGON), or set of IDs.</p>
 <dd><p>sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
 be provided as either a location (sf POINT) or area (sf POLYGON)
 in any Spatial Reference System.</p></dd>
+
+
 <dt>id</dt>
 <dd><p>NHD Area COMID(s)</p></dd>
+
+
 <dt>t_srs</dt>
 <dd><p>character (PROJ string or EPSG code) or numeric (EPSG code).
 A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.
 Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.</p></dd>
+
+
 <dt>buffer</dt>
 <dd><p>numeric. The amount (in meters) to buffer a POINT AOI by for an
 extended search. Default = 0.5</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a simple features (sf) object</p>
+    
+
+<p>a simple features (sf) object</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -126,7 +135,7 @@ EPSG:5070 Albers Equal Area projection</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

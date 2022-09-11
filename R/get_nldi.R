@@ -148,6 +148,8 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' basin2 <- get_nldi_basin(nldi_feature = nldi_nwis,
 #'                          simplify = FALSE, split = TRUE)
 #'
+#' if(inherits(basin, "sf") & inherits(basin2, "sf")) {
+#'
 #' length(st_coordinates(basin))
 #' length(st_coordinates(basin2))
 #'
@@ -158,6 +160,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #'
 #' plot(st_geometry(basin), border = "red", add = TRUE)
 #'
+#' }
 #' }
 get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
 

@@ -56,7 +56,7 @@ get_vaa_names <- function(updated_network = FALSE) {
 #' found at path.
 #' @param updated_network logical default FALSE. If TRUE, updated network attributes
 #' from E2NHD and National Water Model retrieved from
-#' \href{https://www.sciencebase.gov/catalog/item/60c92503d34e86b9389df1c9}{here.}
+#' \doi{10.5066/P9W79I7Q}.
 #' @return data.frame containing requested VAA data
 #' @importFrom fst read.fst
 #' @export

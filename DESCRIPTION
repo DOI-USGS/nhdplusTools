@@ -28,7 +28,7 @@ Imports: dplyr, sf, RANN, units, magrittr, jsonlite, httr, xml2, R.utils, utils,
 Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2, gifski, leaflet
 License: CC0
 Encoding: UTF-8
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Config/testthat/parallel: true
 Config/testthat/edition: 3

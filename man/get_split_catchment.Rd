@@ -27,6 +27,8 @@ point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
 
 trace <- get_raindrop_trace(point)
 
+if(inherits(trace, "sf")) {
+
 (snap_point <- sf::st_sfc(sf::st_point(trace$intersection_point[[1]]),
                           crs = 4326))
 
@@ -61,6 +63,7 @@ nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
 plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
 plot(sf::st_transform(sf::st_sfc(pour_point, crs = 4326), 3857), add = TRUE, col = "white")
+}
 }
 
 }

@@ -1,3 +1,9 @@
+nhdplusTools 0.5.7
+==========
+
+- Update reference for updated flowline attributes.
+- Fix failing example for cran checks.
+
 nhdplusTools 0.5.6
 ==========
 

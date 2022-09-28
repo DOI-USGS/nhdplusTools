@@ -59,4 +59,12 @@ test_that("fix_flowdir", {
   sf::st_geometry(fline)[1] <- sf::st_reverse(sf::st_geometry(fline)[1])
   sf::st_geometry(fline)[1] <- fix_flowdir(fline$COMID[1], fline)
   expect_equal(n1, get_node(fline[1, ], position = "end"))
+
+  fn_list <- list(flowline = fline[1, ],
+                  network = fline[fline$toCOMID == fline$COMID[1],],
+                  check_end = "start")
+
+  sf::st_geometry(fline)[1] <- sf::st_reverse(sf::st_geometry(fline)[1])
+  sf::st_geometry(fline)[1] <- fix_flowdir(fline$COMID[1], fn_list = fn_list)
+  expect_equal(n1, get_node(fline[1, ], position = "end"))
 })

@@ -28,6 +28,7 @@ point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
 
 (trace <- get_raindrop_trace(point))
 
+if(inherits(trace, "sf")) {
 bbox <- sf::st_bbox(trace) + c(-0.005, -0.005, 0.005, 0.005)
 
 nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
@@ -35,6 +36,7 @@ nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 plot(sf::st_transform(sf::st_geometry(trace)[1], 3857), add = TRUE, col = "red")
 plot(sf::st_transform(sf::st_geometry(trace)[2], 3857), add = TRUE, col = "black")
+}
 }
 
 }

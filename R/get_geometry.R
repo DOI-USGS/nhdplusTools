@@ -51,8 +51,14 @@ get_node <- function(x, position = "end") {
 #' Fix flow direction
 #' @description If flowlines aren't digitized in the expected direction,
 #' this will reorder the nodes so they are.
-#' @param comid The COMID of the flowline to check
-#' @param network The entire network to check from. Requires a "toCOMID" field.
+#' @param comid integer The COMID of the flowline to check
+#' @param network sf data.frame The entire network to check from. Requires a "toCOMID" field.
+#' @param fn_list list containing named elements `flowline`, `network`, and `check_end`,
+#' where `flowline` is the flowline to be checked and `network` the feature up or downstream
+#' of the flowline to be checked, and `check_end` is `"start"` or `"end"` depending if the
+#' `network` input is upstream (`"start"`) or downstream (`"end"`) of the flowline to be checked.
+#' This option allows pre-compilation of pairs of features which may be useful for very large
+#' numbers of flow direction checks.
 #' @return a geometry for the feature that has been reversed if needed.
 #' @importFrom sf st_reverse st_join st_geometry
 #' @export
@@ -87,14 +93,18 @@ get_node <- function(x, position = "end") {
 #' plot(n3, add = TRUE, cex = 2, col = "red")
 #'
 
-fix_flowdir <- function(comid, network) {
+fix_flowdir <- function(comid, network = NULL, fn_list = NULL) {
 
-  network <- check_names(network,
-                         "fix_flowdir",
-                         tolower = TRUE)
+  if(!is.null(network))
+    network <- check_names(network, "fix_flowdir", tolower = TRUE)
 
   try({
 
+    if(!is.null(fn_list)) {
+      f <- fn_list$flowline
+      check_line <- check_names(fn_list$network, "fix_flowdir", tolower = TRUE)
+      check_position <- fn_list$check_end
+    } else {
     f <- network[network$comid == comid, ]
 
     #FIXME: consider not supporting na tocomid
@@ -110,6 +120,7 @@ fix_flowdir <- function(comid, network) {
 
       check_position <- "end"
 
+    }
     }
 
     suppressMessages(

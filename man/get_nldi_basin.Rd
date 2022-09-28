@@ -47,6 +47,8 @@ basin
 basin2 <- get_nldi_basin(nldi_feature = nldi_nwis,
                          simplify = FALSE, split = TRUE)
 
+if(inherits(basin, "sf") & inherits(basin2, "sf")) {
+
 length(st_coordinates(basin))
 length(st_coordinates(basin2))
 
@@ -57,5 +59,6 @@ plot(st_geometry(basin2), add = TRUE)
 
 plot(st_geometry(basin), border = "red", add = TRUE)
 
+}
 }
 }

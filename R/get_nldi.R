@@ -148,6 +148,8 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' basin2 <- get_nldi_basin(nldi_feature = nldi_nwis,
 #'                          simplify = FALSE, split = TRUE)
 #'
+#' if(inherits(basin, "sf") & inherits(basin2, "sf")) {
+#'
 #' length(st_coordinates(basin))
 #' length(st_coordinates(basin2))
 #'
@@ -158,6 +160,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #'
 #' plot(st_geometry(basin), border = "red", add = TRUE)
 #'
+#' }
 #' }
 get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
 
@@ -246,8 +249,12 @@ get_nldi_characteristics <- function(nldi_feature, type="local") {
 #' \donttest{
 #' index <- get_nldi_index(c(-89.276, 42.988))
 #'
+#' if(inherits(index, "sf")) {
+#'
 #' plot_nhdplus(bbox = sf::st_bbox(sf::st_buffer(index[1,], units::set_units(1000, "m"))))
 #' plot(sf::st_geometry(sf::st_transform(index, 3857)), add = TRUE)
+#'
+#' }
 #' }
 get_nldi_index <- function(location) {
 

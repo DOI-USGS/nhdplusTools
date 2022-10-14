@@ -22,14 +22,14 @@ test_that("get_tocomid", {
 test_that("make_node_topology", {
   source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
 
-  x <- get_tocomid(
+  d <- get_tocomid(
     dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
                   AreaSqKM, LENGTHKM, GNIS_ID),
   )
 
-  expect_error(make_node_topology(x), "fromnode or tonode already in data")
+  expect_error(make_node_topology(d), "fromnode or tonode already in data")
 
-  x <- dplyr::select(x, -fromnode, -tonode)
+  x <- dplyr::select(d, -fromnode, -tonode)
 
   y <- x
   y$tocomid[1] <- NA
@@ -53,39 +53,49 @@ test_that("make_node_topology", {
   expect_equal(names(y), c("comid", "fromnode", "tonode"))
 
   # we expect the same number of tonodes
-  expect_equal(length(unique(new_hope_flowline$ToNode)), length(unique(x$tonode)))
+  expect_equal(length(unique(new_hope_flowline$ToNode)), length(unique(y$tonode)))
 
   # we expect more tonodes because we lost divergences.
   expect_equal(length(unique(new_hope_flowline$FromNode)) + sum(new_hope_flowline$Divergence == 2),
-               length(unique(x$fromnode)))
+               length(unique(y$fromnode)))
 
   # just the divergences which have unique fromids in x but don't in new hope.
-  div <- get_tocomid(sf::st_drop_geometry(dplyr::select(new_hope_flowline,
-                                                        COMID, FromNode, ToNode)),
-                     return_dendritic = FALSE, remove_coastal = FALSE)
-  div <- div[div$tocomid %in%
-               new_hope_flowline$COMID[new_hope_flowline$Divergence == 2],]
+  add_div <- get_tocomid(sf::st_drop_geometry(dplyr::select(new_hope_flowline,
+                                                            COMID, FromNode, ToNode)),
+                         return_dendritic = FALSE, remove_coastal = FALSE)
+  add_div <- add_div[add_div$tocomid %in%
+                       new_hope_flowline$COMID[new_hope_flowline$Divergence == 2],]
+
+  y <- make_node_topology(x)
 
   # we need to get the node the divergences upstream neighbor goes to
   # first get the new outlet nodes for our old ids
-  div <- dplyr::left_join(dplyr::select(div, comid, tocomid),
-                          dplyr::select(x, comid, tonode), by = "comid")
+  div <- dplyr::left_join(dplyr::select(add_div, comid, tocomid),
+                          dplyr::select(y,
+                                        comid, tonode), by = "comid")
+
   # now join upstream renaming the tonode to fromnode
-  x <- dplyr::left_join(x, dplyr::select(div, tocomid, new_fromnode = tonode),
-                 by = c("comid" = "tocomid"))
+  y <- dplyr::left_join(y, dplyr::select(div, tocomid, new_fromnode = tonode),
+                        by = c("comid" = "tocomid"))
 
-  x <- dplyr::mutate(x, fromnode = ifelse(!is.na(new_fromnode), new_fromnode, fromnode))
+  y <- dplyr::mutate(y, fromnode = ifelse(!is.na(new_fromnode),
+                                          new_fromnode, fromnode))
 
-  x <- dplyr::select(x, -new_fromnode)
+  y <- dplyr::select(y, -new_fromnode)
 
-  x <- dplyr::distinct(x)
+  y <- dplyr::distinct(y)
 
-  expect_equal(x$tonode[x$comid == 8893700], x$fromnode[x$comid == 8893714])
-  expect_equal(x$tonode[x$comid == 8893700], x$fromnode[x$comid == 8893706])
+  expect_equal(y$tonode[y$comid == 8893700], y$fromnode[y$comid == 8893714])
+  expect_equal(y$tonode[y$comid == 8893700], y$fromnode[y$comid == 8893706])
 
   # we would now expect the same number of fromnodes in each network
   expect_equal(length(unique(new_hope_flowline$FromNode)),
-               length(unique(x$fromnode)))
+               length(unique(y$fromnode)))
+
+  z <- make_node_topology(x, add_div = add_div)
+
+  expect_equal(z$fromnode, y$fromnode)
+  expect_equal(z$tonode, y$tonode)
 
   # the below was used for testing
   # check <- sf::st_drop_geometry(dplyr::left_join(new_hope_flowline, x, by = c("COMID" = "id")))

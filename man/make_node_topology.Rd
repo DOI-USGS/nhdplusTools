@@ -4,11 +4,15 @@
 \alias{make_node_topology}
 \title{get node topology from edge topology}
 \usage{
-make_node_topology(x, add = TRUE)
+make_node_topology(x, add_div = NULL, add = TRUE)
 }
 \arguments{
 \item{x}{data.frame with an identifier and to identifier in the
 first and second columns.}
+
+\item{add_div}{data.frame containing id and toid diverted paths to add.
+Should have id and toid fields in the first and second columns. Names
+are not used.}
 
 \item{add}{logical if TRUE, a additional data will be added, otherwise
 a data.frame with only an identifier and new attributes wil be returned.}
@@ -23,10 +27,20 @@ creates a node topology table from an edge topology
 \examples{
 source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
 
-x <- get_tocomid(
+x <- dplyr::select(get_tocomid(
   dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
                 AreaSqKM, LENGTHKM, GNIS_ID)
-)
+), -tonode, -fromnode)
 
-head(make_node_topology(x))
+head(y <- make_node_topology(x))
+
+# just the divergences which have unique fromids in x but don't in new hope.
+div <- get_tocomid(dplyr::select(new_hope_flowline, COMID, FromNode, ToNode),
+                   return_dendritic = FALSE,
+                   remove_coastal = FALSE)
+div <- div[div$tocomid \%in\%
+             new_hope_flowline$COMID[new_hope_flowline$Divergence == 2],]
+
+y <- make_node_topology(x, div)
+
 }

@@ -133,7 +133,7 @@ get_hyg <- function(x, add) {
 
 make_node_topology <- function(x, add_div = NULL, add = TRUE) {
 
-  orig_name <- names(x[1:2])
+  orig_name <- names(x)[1:2]
 
   hy_g <- get_hyg(x, add)
 

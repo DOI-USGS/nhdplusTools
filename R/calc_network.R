@@ -59,6 +59,7 @@ calculate_arbolate_sum <- function(x) {
 }
 
 #' @importFrom dplyr select left_join ungroup distinct
+#' @importFrom rlang .data
 #' @noRd
 #'
 accumulate_downstream <- function(x, var) {

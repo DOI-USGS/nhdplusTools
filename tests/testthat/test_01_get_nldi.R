@@ -276,8 +276,8 @@ test_that("xs", {
 
   suppressMessages(xs <- get_elev_along_path(points, 100))
 
-  expect_equal(names(xs), c("id", "distance_m", "elevation_m", "spatial_ref", "geometry",
-                            ".group"))
+  expect_true(all(names(xs) %in% c("id", "distance_m", "elevation_m", "spatial_ref", "geometry",
+                                   ".group")))
 
   expect_equal(nrow(xs), 202)
 

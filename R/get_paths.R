@@ -70,7 +70,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
                               " ", .data$ds_nameID)) %>%
     # group on toID so we can operate on upstream choices
     group_by(.data$toID) %>%
-    dplyr::group_split()
+    group_split()
 
   # reweight sets up ranked upstream paths
   if(!is.null(cl)) {
@@ -88,7 +88,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   checker <- 0
   done <- 0
 
-  x <- dplyr::arrange(x, .data$topo_sort)
+  x <- arrange(x, .data$topo_sort)
 
   topo_sort <- x$topo_sort
 
@@ -233,7 +233,7 @@ reweight <- function(x, ..., override_factor) {
 
     if(any(x$nameID != " ")) { # If any of the candidates are named.
       if(cur_name != " " & cur_name %in% x$nameID) {
-        sub <- dplyr::arrange(x[x$nameID == cur_name, ], desc(.data$weight))
+        sub <- arrange(x[x$nameID == cur_name, ], desc(.data$weight))
 
         out[1:nrow(sub), ] <- sub
 
@@ -245,7 +245,7 @@ reweight <- function(x, ..., override_factor) {
       if(rank <= total) {
         if(any(x$nameID != " ")) {
           sub <-
-            dplyr::arrange(x[x$nameID != " ", ], desc(.data$weight))
+            arrange(x[x$nameID != " ", ], desc(.data$weight))
 
           out[rank:(rank + nrow(sub) - 1), ] <- sub
 
@@ -263,17 +263,17 @@ reweight <- function(x, ..., override_factor) {
     }
 
     if(!is.null(override_factor)) {
-      out <- dplyr::mutate(out, weight = ifelse(.data$nameID == .data$ds_nameID,
+      out <- mutate(out, weight = ifelse(.data$nameID == .data$ds_nameID,
                                                 .data$weight * override_factor,
                                                 .data$weight))
     }
 
     if(rank < nrow(out)) {
-      out[rank:nrow(out), ] <- dplyr::arrange(x, desc(.data$weight))
+      out[rank:nrow(out), ] <- arrange(x, desc(.data$weight))
     }
 
     if(!is.null(override_factor)) {
-      out <- dplyr::arrange(out, desc(.data$weight))
+      out <- arrange(out, desc(.data$weight))
     }
 
     x <- out
@@ -352,6 +352,10 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
   class_x <- class(x)
+
+  hy_g <- get_hyg(x, add = TRUE, id = names(x)[1])
+
+  x <- drop_geometry(x)
 
   x <- as.data.frame(x)
 
@@ -448,12 +452,12 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
     names(out_list) <- c("terminalID", names(x)[1])
 
     ### adds grouping terminalID to x ###
-    x <- dplyr::left_join(x, out_list, by = names(x)[1])
+    x <- left_join(x, out_list, by = names(x)[1])
 
   }
 
-  if("sf" %in% class_x) {
-    try(x <- sf::st_sf(x))
+  if(!is.null(hy_g)) {
+    x <- sf::st_sf(left_join(x, hy_g, by = names(x)[1]))
   }
 
   return(x)
@@ -525,7 +529,7 @@ get_terminal <- function(x, outlets) {
 
   x <- get_sorted(x, split = TRUE, outlets = outlets)
 
-  dplyr::left_join(data.frame(ID = ordered_id),
+  left_join(data.frame(ID = ordered_id),
                    x[c("ID", "terminalID")], by = "ID")
 }
 

@@ -34,7 +34,7 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
   x <- check_names(x, "get_tocomid", tolower = TRUE)
 
-  hy_g <- get_hyg(x, add)
+  hy_g <- get_hyg(x, add, "comid")
 
   x <- drop_geometry(x)
 
@@ -92,9 +92,10 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
   }
 }
 
-get_hyg <- function(x, add) {
+#' @importFrom dplyr all_of
+get_hyg <- function(x, add, id = "comid") {
   if(add && inherits(x, "sf")) {
-    select(x, "comid")
+    select(x, all_of(id))
   } else {
     NULL
   }
@@ -135,7 +136,7 @@ make_node_topology <- function(x, add_div = NULL, add = TRUE) {
 
   orig_name <- names(x)[1:2]
 
-  hy_g <- get_hyg(x, add)
+  hy_g <- get_hyg(x, add, orig_name[1])
 
   x <- drop_geometry(x)
 

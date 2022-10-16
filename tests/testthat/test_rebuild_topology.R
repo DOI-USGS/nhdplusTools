@@ -1,3 +1,5 @@
+source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
 test_that("get_tocomid", {
 
   tocomid <- get_tocomid(sample_flines)

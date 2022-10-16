@@ -212,11 +212,7 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
   x <- check_names(x, "get_tocomid", tolower = TRUE)
 
-  hy_g <- NULL
-  if(add && inherits(x, "sf")) {
-    # need to keep geometry for later
-    hy_g <- select(x, "comid")
-  }
+  hy_g <- get_hyg(x, add, "comid")
 
   x <- drop_geometry(x)
 

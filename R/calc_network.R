@@ -66,7 +66,7 @@ accumulate_downstream <- function(x, var) {
 
   try(x <- st_drop_geometry(x), silent = TRUE)
 
-  cat_order <- select(x, .data$ID)
+  cat_order <- select(x, "ID")
 
   x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
 

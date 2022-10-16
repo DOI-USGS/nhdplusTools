@@ -22,18 +22,17 @@ test_that("navigation basics", {
 
   start <- sf::st_sfc(sf::st_point(c(-121.6678, 42.14987)), crs = sf::st_crs(4269))
 
+  expect_warning(
   net3 <-  navigate_network(start,
                            "UM",
                            output = "flowlines",
-                           trim_start = TRUE)
+                           trim_start = TRUE),
+  "Attempting to combine multipart lines into single part lines. Check results!!")
 
-  expect_warning(
   net_no_split <- navigate_network(start,
                                    "UM",
                                    output = "flowlines",
-                                   trim_start = FALSE),
-  "Attempting to combine multipart lines into single part lines. Check results!!")
-
+                                   trim_start = FALSE)
 
   expect_equal(names(net), names(net3))
 

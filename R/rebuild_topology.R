@@ -45,8 +45,8 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
   joiner_fun <- function(x) {
     left_join(x, select(x,
-                        tocomid = .data$comid,
-                        .data$fromnode),
+                        tocomid = "comid",
+                        "fromnode"),
               by = c("tonode" = "fromnode"))
   }
 
@@ -87,14 +87,14 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
   } else {
 
-    as.data.frame(select(x, .data$comid, .data$tocomid))
+    as.data.frame(select(x, "comid", "tocomid"))
 
   }
 }
 
 get_hyg <- function(x, add) {
   if(add && inherits(x, "sf")) {
-    select(x, .data$comid)
+    select(x, "comid")
   } else {
     NULL
   }
@@ -156,7 +156,7 @@ make_node_topology <- function(x, add_div = NULL, add = TRUE) {
 
   x$fromnode <- head_nodes
 
-  x <- left_join(x, select(x, .data$id, tonode = .data$fromnode),
+  x <- left_join(x, select(x, "id", tonode = "fromnode"),
                  by = c("toid" = "id"))
 
   outlets <- x$toid == 0
@@ -169,17 +169,17 @@ make_node_topology <- function(x, add_div = NULL, add = TRUE) {
     # first get the new outlet nodes for our old ids
     add_div <- drop_geometry(add_div[, 1:2])
     names(add_div)[1:2] <- c("id", "toid")
-    add_div <- left_join(select(add_div, .data$id, .data$toid),
-                         select(x, .data$id, .data$tonode), by = "id")
+    add_div <- left_join(select(add_div, "id", "toid"),
+                         select(x, "id", "tonode"), by = "id")
 
     # now join upstream renaming the tonode to fromnode
-    x <- left_join(x, select(add_div, .data$toid, new_fromnode = .data$tonode),
+    x <- left_join(x, select(add_div, "toid", new_fromnode = "tonode"),
                    by = c("id" = "toid"))
 
     x <- mutate(x, fromnode = ifelse(!is.na(.data$new_fromnode),
                                      .data$new_fromnode, .data$fromnode))
 
-    x <- select(x, -.data$new_fromnode)
+    x <- select(x, -"new_fromnode")
 
     x <- distinct(x)
   }
@@ -199,7 +199,7 @@ make_node_topology <- function(x, add_div = NULL, add = TRUE) {
 
   } else {
 
-    x <- as.data.frame(select(x, .data$id, .data$fromnode, .data$tonode))
+    x <- as.data.frame(select(x, "id", "fromnode", "tonode"))
 
     names(x)[1] <- orig_name[1]
 

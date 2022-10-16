@@ -162,7 +162,7 @@ get_flowline_index <- function(flines, points,
 
   if (nrow(flines) != nrow(fline_atts)) {
 
-    flines <- summarize(group_by(select(flines, .data$index),
+    flines <- summarize(group_by(select(flines, "index"),
                                  .data$index),
                         do_union = FALSE)
 
@@ -200,8 +200,8 @@ get_flowline_index <- function(flines, points,
       sf::st_segmentize(dfMaxLength = units::as_units(precision, "m"))
 
     fline_atts <- right_join(fline_atts,
-                             select(sf::st_set_geometry(flines, NULL),
-                                    .data$L1, precision_index = .data$index),
+                             select(drop_geometry(flines),
+                                    "L1", precision_index = "index"),
                              by = c("index" = "L1"))
 
     # downstream to upstream order
@@ -209,7 +209,7 @@ get_flowline_index <- function(flines, points,
 
 
     matched <- matcher(flines, points, search_radius, max_matches = max_matches) %>%
-      left_join(select(fline_atts, .data$COMID, .data$precision_index),
+      left_join(select(fline_atts, "COMID", "precision_index"),
                 by = c("L1" = "precision_index"))
 
     matched <- mutate(matched, nn.dists = ifelse(.data$nn.dists > search_radius,
@@ -220,7 +220,7 @@ get_flowline_index <- function(flines, points,
 
 
     matched <- matcher(flines, points, search_radius, max_matches = max_matches) %>%
-      left_join(select(fline_atts, .data$COMID, .data$index),
+      left_join(select(fline_atts, "COMID", "index"),
                 by = c("L1" = "index"))
 
     matched <- mutate(matched, nn.dists = ifelse(.data$nn.dists > search_radius,
@@ -233,19 +233,19 @@ get_flowline_index <- function(flines, points,
     filter(.data$L1 %in% matched$L1) %>%
     group_by(.data$L1) %>%
     add_len() %>%
-    left_join(select(matched, .data$L1, .data$COMID), by = "L1") %>%
-    left_join(select(fline_atts, -.data$index), by = "COMID") %>%
+    left_join(select(matched, "L1", "COMID"), by = "L1") %>%
+    left_join(select(fline_atts, -"index"), by = "COMID") %>%
     mutate(REACH_meas = round(
       .data$FromMeas + (.data$ToMeas - .data$FromMeas) * (.data$measure / 100),
       digits = 4)) %>%
     ungroup() %>% distinct()
 
-  matched <- select(matched, .data$id, node = .data$nn.idx, offset = .data$nn.dists, .data$COMID)
+  matched <- select(matched, "id", node = "nn.idx", offset = "nn.dists", "COMID")
 
   matched <- left_join(matched,
-                      distinct(select(flines, .data$index, .data$REACHCODE, .data$REACH_meas)),
+                      distinct(select(flines, "index", "REACHCODE", "REACH_meas")),
                         by = c("node" = "index")) %>%
-    select(.data$id, .data$COMID, .data$REACHCODE, .data$REACH_meas, .data$offset)
+    select("id", "COMID", "REACHCODE", "REACH_meas", "offset")
 
   return(matched)
 }
@@ -351,7 +351,7 @@ disambiguate_flowline_indexes <- function(indexes, flowpath, hydro_location) {
       group_by(.data$id) %>%
       filter(.data$metric_diff == min(.data$metric_diff)) %>%
       ungroup() %>%
-      select(-.data$metric_hl, -.data$metric_fp, -.data$metric_diff)
+      select(-"metric_hl", -"metric_fp", -"metric_diff")
 
   } else if(is.character(flowpath$metric_fp) & is.character(hydro_location$metric_hl)) {
 
@@ -364,7 +364,7 @@ disambiguate_flowline_indexes <- function(indexes, flowpath, hydro_location) {
       group_by(.data$id) %>%
       filter(.data$metric_diff == max(.data$metric_diff)) %>%
       ungroup() %>%
-      select(-.data$metric_hl, -.data$metric_fp, -.data$metric_diff)
+      select(-"metric_hl", -"metric_fp", -"metric_diff")
 
   } else  stop("flowpath and hydrolocation metrics must both be numeric or character")
 
@@ -416,7 +416,7 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL,
 
   points <- st_sf(id = seq_len(length(points)), geometry = points)
 
-  waterbodies <- select(waterbodies, wb_COMID = .data$COMID)
+  waterbodies <- select(waterbodies, wb_COMID = "COMID")
 
   points <- match_crs(points, waterbodies, "st_transform points to match waterbodies")
 
@@ -437,9 +437,9 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL,
   near_wb <- mutate(near_wb, nn.dists = ifelse(.data$nn.dists > search_radius,
                                                NA, .data$nn.dists))
 
-  out <- st_drop_geometry(st_as_sf(bind_cols(select(near_wb, near_wb_COMID = .data$wb_COMID,
-                                                    near_wb_dist = .data$nn.dists),
-                                             select(points, in_wb_COMID = .data$wb_COMID))))
+  out <- drop_geometry(st_as_sf(bind_cols(select(near_wb, near_wb_COMID = "wb_COMID",
+                                                    near_wb_dist = "nn.dists"),
+                                             select(points, in_wb_COMID = "wb_COMID"))))
 
   if(!is.null(flines)) {
 
@@ -452,13 +452,13 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL,
     flines <- drop_geometry(flines)
 
     out <- left_join(out, select(flines,
-                                 outlet_fline_COMID = .data$COMID,
-                                 .data$WBAREACOMI, .data$Hydroseq),
+                                 outlet_fline_COMID = "COMID",
+                                 "WBAREACOMI", "Hydroseq"),
                      by = c("joiner" = "WBAREACOMI"))
 
     out <- ungroup(filter(group_by(out, .data$id), is.na(Hydroseq) | Hydroseq == min(Hydroseq)))
 
-    out <- select(out, -.data$id, -.data$Hydroseq, -.data$joiner)
+    out <- select(out, -"id", -"Hydroseq", -"joiner")
 
   }
 

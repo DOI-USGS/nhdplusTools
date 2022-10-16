@@ -63,7 +63,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   }
 
   x <- x %>% # get downstream name ID added
-    left_join(drop_geometry(select(x, .data$ID, ds_nameID = .data$nameID)),
+    left_join(drop_geometry(select(x, "ID", ds_nameID = "nameID")),
               by = c("toID" = "ID")) %>%
     # if it's na, we need it to be an empty string
     mutate(ds_nameID = ifelse(is.na(.data$ds_nameID),
@@ -81,8 +81,8 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
 
   x <- x %>%
     bind_rows() %>%
-    select(.data$ID, .data$toID, .data$topo_sort,
-           .data$levelpath, .data$weight)
+    select("ID", "toID", "topo_sort",
+           "levelpath", "weight")
 
   diff = 1
   checker <- 0
@@ -151,11 +151,11 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
     group_by(.data$levelpath) %>%
     filter(.data$topo_sort == min(.data$topo_sort)) %>%
     ungroup() %>%
-    select(outletID = .data$ID, .data$levelpath)
+    select(outletID = "ID", "levelpath")
 
   x <- left_join(x, outlets, by = "levelpath")
 
-  return(select(x, .data$ID, .data$outletID, .data$topo_sort, .data$levelpath))
+  return(select(x, "ID", "outletID", "topo_sort", "levelpath"))
 }
 
 par_get_path <- function(outlet, x_in, matcher, status) {
@@ -443,7 +443,7 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
     out_list <- data.frame(ids = ids) %>%
       mutate(set = out_list) %>%
-      tidyr::unnest_longer(.data$set)
+      tidyr::unnest_longer("set")
 
     names(out_list) <- c("terminalID", names(x)[1])
 

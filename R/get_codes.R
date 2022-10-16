@@ -26,7 +26,7 @@
 get_streamorder <- function(x, status = TRUE) {
   check_names(x, "get_streamorder")
 
-  o_sort <- select(x, .data$ID)
+  o_sort <- select(x, "ID")
 
   x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
 
@@ -119,8 +119,8 @@ get_streamlevel <- function(x) {
 
   l <- x %>%
     dplyr::filter(.data$levelpathi != .data$dnlevelpat) %>%
-    dplyr::rename(ID = .data$levelpathi,
-                  toID = .data$dnlevelpat) %>%
+    dplyr::rename(ID = "levelpathi",
+                  toID = "dnlevelpat") %>%
     topo_sort_network(reverse = TRUE) %>%
     dplyr::distinct()
 
@@ -262,7 +262,7 @@ get_pfaf_9 <- function(x, mainstem, max_level, pre_pfaf = 0, assigned = NA, stat
   area_filter <- (if(nrow(trib_outlets) >= 4) 4 else nrow(trib_outlets))
   area_filter <- sort(trib_outlets$totda, decreasing = TRUE)[area_filter]
   t4_tribs <- trib_outlets[trib_outlets$totda >= area_filter, ]
-  t4_tribs <- left_join(t4_tribs, select(x, .data$ID, ms_ts = .data$topo_sort),
+  t4_tribs <- left_join(t4_tribs, select(x, "ID", ms_ts = "topo_sort"),
                         by = c("toID" = "ID")) %>% arrange(.data$ms_ts)
 
   # t4_tribs <- t4_tribs[t4_tribs$ms_ts < max(mainstem$topo_sort),]
@@ -289,7 +289,7 @@ get_pfaf_9 <- function(x, mainstem, max_level, pre_pfaf = 0, assigned = NA, stat
   out[["pfaf"]] <- out$p_id + pre_pfaf * 10
 
   if(all(sapply(out$members, function(x) all(is.na(x))))) out$members[[1]] <- mainstem$ID
-  out <- tidyr::unnest(out, cols = c(.data$members))
+  out <- tidyr::unnest(out, cols = c("members"))
   out <- list(out[!is.na(out$members), ])
 
   if(nrow(out[[1]]) == 0 | all(out[[1]]$members %in% mainstem$ID)) {
@@ -320,7 +320,7 @@ apply_fun <- function(p, p9, x, max_level, status) {
 cleanup_pfaf <- function(pfaf) {
   # Add level number
   pfaf$level <- ceiling(log10(pfaf$pfaf + 0.01))
-  pfaf <- select(pfaf, -.data$p_id, ID = .data$members)
+  pfaf <- select(pfaf, -"p_id", ID = "members")
 
   pfaf$uid <- 1:nrow(pfaf)
 
@@ -331,9 +331,9 @@ cleanup_pfaf <- function(pfaf) {
     check <- dplyr::filter(check, n() > 1 & .data$pfaf < max(.data$pfaf))$uid
   }, pfaf = pfaf))
 
-  pfaf <- pivot_wider(select(pfaf[!pfaf$uid %in% remove, ], -.data$uid),
-                      id_cols = .data$ID, names_from = "level",
-                      names_prefix = "pf_level_", values_from = .data$pfaf)
+  pfaf <- pivot_wider(select(pfaf[!pfaf$uid %in% remove, ], -"uid"),
+                      id_cols = "ID", names_from = "level",
+                      names_prefix = "pf_level_", values_from = "pfaf")
 
   # replace NAs with known values.
   for(i in 3:ncol(pfaf)) {

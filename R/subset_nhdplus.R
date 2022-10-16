@@ -860,7 +860,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 
     # Need all paths in the domain outside the RPU and their tributary relations
     # used just below. This filter avoids flowlines along the same levelpath.
-    lp_with_trib <-  filter(select(fline_sub_out, .data$levelpathi, .data$dnlevelpat),
+    lp_with_trib <-  filter(select(fline_sub_out, "levelpathi", "dnlevelpat"),
                             .data$levelpathi != .data$dnlevelpat)
 
     # join to the paths within the RPU so we have the lp_top to filter on.
@@ -876,7 +876,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 
     # first select only levelpath and dnlevelpat and get rid of cruft
     fline_sub_out <- distinct(select(ungroup(fline_sub_out),
-                                     .data$levelpathi, .data$dnlevelpat))
+                                     "levelpathi", "dnlevelpat"))
 
     # levelpaths with tributaries that are outside the domain.
     lp_with_trib <- filter(lp_with_trib, .data$dnlevelpat %in% fline_sub_out$levelpathi)
@@ -915,14 +915,14 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 
   }
 
-  fline <- select(ungroup(fline), -.data$lp_top, -.data$lp_bot)
+  fline <- select(ungroup(fline), -"lp_top", -"lp_bot")
 
   if(run_make_standalone) {
     fline <- make_standalone(fline)
   }
 
   if(!any(grepl("tocomid", orig_names, ignore.case = TRUE))) {
-    fline <- select(fline, -.data$toCOMID) # case if required for make_standalone
+    fline <- select(fline, -"toCOMID") # case if required for make_standalone
   }
 
   recase_sf(fline, orig_names)

@@ -64,8 +64,8 @@ add_plus_network_attributes <- function(net, override = 5,
 
   if(!"weight" %in% names(net)) {
     net$weight <- calculate_arbolate_sum(
-      select(net, ID = .data$comid,
-             toID = .data$tocomid, length = .data$lengthkm))
+      select(net, ID = "comid",
+             toID = "tocomid", length = "lengthkm"))
     rename_arb <- TRUE
   }
 
@@ -75,8 +75,8 @@ add_plus_network_attributes <- function(net, override = 5,
 
     lp <- get_sorted(
       dplyr::rename(net,
-                    ID = .data$comid,
-                    toID = .data$tocomid),
+                    ID = "comid",
+                    toID = "tocomid"),
       split = TRUE)
 
     lp <- split(lp, lp$terminalID)
@@ -153,11 +153,11 @@ add_plus_network_attributes <- function(net, override = 5,
 
   net <- net %>%
     left_join(select(lp,
-                     comid = .data$ID, terminalpa = .data$terminalpath,
-                     hydroseq = .data$topo_sort, levelpathi = .data$levelpath),
+                     comid = "ID", terminalpa = "terminalpath",
+                     hydroseq = "topo_sort", levelpathi = "levelpath"),
               by = "comid")
 
-  in_pathlength <- select(net, ID = .data$comid, toID = .data$tocomid, length = .data$lengthkm)
+  in_pathlength <- select(net, ID = "comid", toID = "tocomid", length = "lengthkm")
 
   pathlength <- get_pathlength(in_pathlength)
 
@@ -166,32 +166,32 @@ add_plus_network_attributes <- function(net, override = 5,
 
   net <- left_join(net,
                        select(pathlength,
-                              comid = .data$ID,
-                              .data$pathlength),
+                              comid = "ID",
+                              "pathlength"),
                        by = "comid")
 
   dn_lp <- net %>%
     left_join(select(net,
-                     .data$comid, dnlevelpat = .data$levelpathi),
+                     "comid", dnlevelpat = "levelpathi"),
               by = c("tocomid" = "comid"), ) %>%
     filter(!is.na(.data$dnlevelpat)) %>%
-    select(.data$comid, .data$dnlevelpat)
+    select("comid", "dnlevelpat")
 
   net <- left_join(net, dn_lp, by = "comid") %>%
     mutate(dnlevelpat = ifelse(is.na(.data$dnlevelpat), 0, .data$dnlevelpat))
 
   dn_hs <- net %>%
     left_join(select(net,
-                     .data$comid, dnhydroseq = .data$hydroseq),
+                     "comid", dnhydroseq = "hydroseq"),
               by = c("tocomid" = "comid")) %>%
-    select(.data$comid, .data$dnhydroseq)
+    select("comid", "dnhydroseq")
 
   net <- left_join(net, dn_hs, by = "comid") %>%
     mutate(dnhydroseq = ifelse(is.na(.data$dnhydroseq), 0, .data$dnhydroseq))
 
   if("areasqkm" %in% names(net)) {
     net$totdasqkm <- calculate_total_drainage_area(
-      select(net, ID = .data$comid, toID = .data$tocomid, area = .data$areasqkm)
+      select(net, ID = "comid", toID = "tocomid", area = "areasqkm")
     )
   }
 

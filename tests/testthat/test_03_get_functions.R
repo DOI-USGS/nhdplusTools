@@ -47,10 +47,13 @@ test_that("query water labs...",{
 test_that("huc8", {
   testthat::skip_on_cran()
   #Point
-  ptHUC8 = nhdplusTools:::get_huc8(AOI = pt)
+  ptHUC8 = get_huc8(AOI = pt)
   expect_equal(nrow(ptHUC8), 1)
   expect_equal(ptHUC8$huc8, "17010101")
   expect_equal(st_crs(ptHUC8)$epsg, 4326)
+
+  expect_error(get_huc8(AOI = rbind(pt,pt2)),
+               "AOI must be one an only one feature.")
 
   #Area
   areaHUC8 = get_huc8(AOI = area, t_srs = 5070)

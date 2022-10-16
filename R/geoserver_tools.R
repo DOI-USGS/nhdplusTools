@@ -71,6 +71,11 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   }
 
   if(!is.null(AOI)){
+
+    if(length(sf::st_geometry(AOI)) > 1) {
+      stop("AOI must be one an only one feature.")
+    }
+
     if(sf::st_geometry_type(AOI) == "POINT"){
       # If input is a POINT, buffer by 1/2 meter (in equal area projection)
       AOI = sf::st_buffer(sf::st_transform(AOI, 5070), buffer) %>%

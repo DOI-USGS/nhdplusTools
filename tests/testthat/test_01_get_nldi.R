@@ -245,8 +245,6 @@ test_that("xs", {
 
   skip_on_cran()
 
-  skip("service down")
-
   point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)
 
   xs <- get_xs_point(point, 300, 100)
@@ -278,8 +276,8 @@ test_that("xs", {
 
   suppressMessages(xs <- get_elev_along_path(points, 100))
 
-  expect_equal(names(xs), c("id", "distance_m", "elevation_m", "spatial_ref", "geometry",
-                            ".group"))
+  expect_true(all(names(xs) %in% c("id", "distance_m", "elevation_m", "spatial_ref", "geometry",
+                                   ".group")))
 
   expect_equal(nrow(xs), 202)
 

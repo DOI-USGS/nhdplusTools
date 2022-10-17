@@ -212,11 +212,7 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
   x <- check_names(x, "get_tocomid", tolower = TRUE)
 
-  hy_g <- NULL
-  if(add && inherits(x, "sf")) {
-    # need to keep geometry for later
-    hy_g <- select(x, .data$comid)
-  }
+  hy_g <- get_hyg(x, add, "comid")
 
   x <- drop_geometry(x)
 
@@ -225,8 +221,8 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
   joiner_fun <- function(x) {
     left_join(x, select(x,
-                        tocomid = .data$comid,
-                        .data$fromnode),
+                        tocomid = "comid",
+                        "fromnode"),
               by = c("tonode" = "fromnode"))
   }
 
@@ -269,7 +265,7 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
   } else {
 
-    as.data.frame(select(x, .data$comid, .data$tocomid))
+    as.data.frame(select(x, "comid", "tocomid"))
 
   }
 }

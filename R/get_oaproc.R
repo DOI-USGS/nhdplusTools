@@ -309,6 +309,7 @@ get_elev <- function(url, fun, points, num_pts, res, status) {
   data_elev
 }
 
+#' @importFrom dplyr rename
 get_xs <- function(url, fun, ...) {
   sf <- sf_post(url, fun(...))
 
@@ -316,9 +317,9 @@ get_xs <- function(url, fun, ...) {
     return(NULL)
   }
 
-  dplyr::rename(sf,
-                distance_m = .data$distance,
-                elevation_m = .data$elevation)
+  rename(sf,
+         distance_m = "distance",
+         elevation_m = "elevation")
 }
 
 sf_post <- function(url, json) {

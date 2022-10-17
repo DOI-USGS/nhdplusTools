@@ -43,7 +43,7 @@ get_node <- function(x, position = "end") {
     x <- filter(x, row_number() == 1)
   }
 
-  x <- dplyr::select(ungroup(x), .data$X, .data$Y)
+  x <- select(ungroup(x), "X", "Y")
 
   st_as_sf(x, coords = c("X", "Y"), crs = in_crs)
 }
@@ -125,7 +125,7 @@ fix_flowdir <- function(comid, network = NULL, fn_list = NULL) {
 
     suppressMessages(
       check_end <- st_join(get_node(f, position = check_position),
-                           select(check_line, check_comid = .data$comid)))
+                           select(check_line, check_comid = "comid")))
 
     reverse <- is.na(check_end$check_comid)
 

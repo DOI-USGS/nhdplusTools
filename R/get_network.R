@@ -24,10 +24,10 @@
 #'
 get_UT <- function(network, comid, distance = NULL) {
 
-  if ("sf" %in% class(network)) network <- sf::st_set_geometry(network, NULL)
+  network <- drop_geometry(network)
 
-  network <- network %>% check_names("get_UT") %>%
-    dplyr::select(get("get_UT_attributes", nhdplusTools_env))
+  network <- select(check_names(network, "get_UT"),
+                    get("get_UT_attributes", nhdplusTools_env))
 
   start_comid <- get_start_comid(network, comid)
 
@@ -111,13 +111,12 @@ get_UM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 
   network <- check_names(network, "get_UM")
 
-  main <- network %>%
-    filter(COMID %in% comid) %>%
-    select(COMID, LevelPathI, Hydroseq, Pathlength, LENGTHKM)
+  main <- select(filter(network, .data$COMID %in% comid),
+                 "COMID", "LevelPathI", "Hydroseq", "Pathlength", "LENGTHKM")
 
-  main_us <- network %>%
-    filter(LevelPathI %in% main$LevelPathI & Hydroseq >= main$Hydroseq) %>%
-    select(COMID, Hydroseq, Pathlength, LENGTHKM)
+  main_us <- select(filter(network, .data$LevelPathI %in% main$LevelPathI &
+                             .data$Hydroseq >= main$Hydroseq),
+                    "COMID", "Hydroseq", "Pathlength", "LENGTHKM")
 
   if (!is.null(distance)) {
 
@@ -133,8 +132,8 @@ get_UM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 
   }
 
-  if(sort) { main_us <-  arrange(main_us, Hydroseq) }
-  if(!include) {  main_us = filter(main_us, COMID != comid) }
+  if(sort) { main_us <-  arrange(main_us, .data$Hydroseq) }
+  if(!include) {  main_us = filter(main_us, .data$COMID != comid) }
 
   return(main_us$COMID)
 }

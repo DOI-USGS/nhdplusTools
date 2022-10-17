@@ -81,10 +81,10 @@ get_paths_internal <- function(outlets, network, cores = 1, status = FALSE,
 
   network <- drop_geometry(network)
 
-  index <- get_index_ids(select(network, .data$ID, .data$toID),
+  index <- get_index_ids(select(network, "ID", "toID"),
                          innames = c("ID", "toID"))
 
-  index <- cbind(select(network, .data$ID), index)
+  index <- cbind(select(network, "ID"), index)
 
   get_dwn <- function(ID, toid) {
     next_dn <- toid[ID]
@@ -153,9 +153,9 @@ get_paths_internal <- function(outlets, network, cores = 1, status = FALSE,
     return(paths)
   }
   lengthkm <- select(left_join(index,
-                               select(network, .data$ID, .data$lengthkm),
+                               select(network, "ID", "lengthkm"),
                                by = "ID"),
-                     .data$id, .data$lengthkm)
+                     "id", "lengthkm")
 
   if(status)
     message("Summing length of all connected pairs.")
@@ -172,12 +172,12 @@ get_paths_internal <- function(outlets, network, cores = 1, status = FALSE,
   names(path_lengths) <- c("id_1", "id_2", "network_distance_km")
 
   path_lengths <- left_join(path_lengths,
-                            select(index, ID_1 = .data$ID, .data$id),
+                            select(index, ID_1 = "ID", "id"),
                             by = c("id_1" = "id")) %>%
-    left_join(select(index, ID_2 = .data$ID, .data$id),
+    left_join(select(index, ID_2 = "ID", "id"),
               by = c("id_2" = "id"))
 
-  select(path_lengths, -.data$id_1, -.data$id_2)
+  select(path_lengths, -"id_1", -"id_2")
 }
 # utility function
 get_fl <- function(hl, net) {

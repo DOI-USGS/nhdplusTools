@@ -53,7 +53,12 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                                       "comid", "featureid", "comid",
                                       "comid",
                                       "comid",
-                                      "staid", "gage_id"))
+                                      "staid", "gage_id"),
+                       page       = c(FALSE, FALSE,
+                                      TRUE, TRUE, TRUE,
+                                      TRUE,
+                                      TRUE,
+                                      FALSE, FALSE))
 
   if(is.null(type)){ return(source) }
 
@@ -89,55 +94,104 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                      here$server,
                      "/ows")
 
-  startXML <- paste0('<?xml version="1.0"?>',
-                     '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs"
-                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
-                     ' xmlns:gml="http://www.opengis.net/gml" service="WFS"
-                        version="1.1.0" outputFormat="application/json"',
-                     ' xsi:schemaLocation="http://www.opengis.net/wfs
-                        http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                     '<wfs:Query xmlns:feature="https://cida.usgs.gov/',
-                     here$server,
-                     '" typeName="feature:',
-                     here$geoserver,
-                     '" srsName="EPSG:4269">',
-                     '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">')
-
-  filterXML <- ifelse(is.null(AOI),
-                      paste0(startXML,
-                             id_filter(ids, here$ids)),
-
-                      paste0(startXML,
-                             '<ogc:And>',
-                             filter,
-                             spatial_filter(AOI, type = here$geoserver),
-                             '</ogc:And>',
-                             '</ogc:Filter>',
-                             '</wfs:Query>',
-                             '</wfs:GetFeature>')
-  )
-
-  tryCatch({
-    if(nhdplus_debug()) {
-      message(paste(URL, "\n"))
-      message(as.character(xml2::read_xml(filterXML)))
-    }
-
-    resp <- rawToChar(httr::RETRY("POST",
-                                  URL,
-                                  body = filterXML)$content)
-  }, error = function(e) {
-    warning("Something went wrong trying to access a service.")
-    return(NULL)
-  })
-
   use_s2 <- sf::sf_use_s2()
   sf::sf_use_s2(FALSE)
 
   on.exit(sf::sf_use_s2(use_s2), add = TRUE)
 
-  out <- tryCatch({check_valid(sf::st_zm(sf::read_sf(resp)), out_prj = t_srs)},
-                 error   = function(e){ return(NULL) })
+  # prealocate a big list
+  out <- rep(list(list()), 1000)
+  start_index <- 0
+  i <- 1
+  keep_going <- TRUE
+
+  while(keep_going) {
+
+    paging <- if(here$page) {
+      paste0(' maxFeatures="', nhdplusTools_env$wfs_chunk_size,
+             '" startIndex="', start_index, '"')
+    } else {
+      ""
+    }
+
+    startXML <- paste0('<?xml version="1.0"?>',
+                       '<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+                       ' xmlns:gml="http://www.opengis.net/gml" service="WFS"
+                        version="1.1.0" outputFormat="application/json"',
+                       paging,
+                       ' xsi:schemaLocation="http://www.opengis.net/wfs
+                        http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
+                       '<wfs:Query xmlns:feature="https://cida.usgs.gov/',
+                       here$server,
+                       '" typeName="feature:',
+                       here$geoserver,
+                       '" srsName="EPSG:4269">',
+                       '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">')
+
+    filterXML <- ifelse(is.null(AOI),
+                        paste0(startXML,
+                               id_filter(ids, here$ids)),
+
+                        paste0(startXML,
+                               '<ogc:And>',
+                               filter,
+                               spatial_filter(AOI, type = here$geoserver),
+                               '</ogc:And>',
+                               '</ogc:Filter>',
+                               '</wfs:Query>',
+                               '</wfs:GetFeature>')
+    )
+
+    tryCatch({
+      if(nhdplus_debug()) {
+        message(paste(URL, "\n"))
+        message(as.character(xml2::read_xml(filterXML)))
+      }
+
+      out[[i]] <- rawToChar(httr::RETRY("POST",
+                                    URL,
+                                    body = filterXML)$content)
+    }, error = function(e) {
+      warning("Something went wrong trying to access a service.")
+      return(NULL)
+    })
+
+    out[[i]] <- tryCatch({
+      check_valid(sf::st_zm(sf::read_sf(out[[i]])),
+                  out_prj = t_srs)},
+      error = function(e) return(NULL))
+
+    if(is.null(out[[i]])) {
+      out <- NULL
+      keep_going <- FALSE
+    }
+
+    if(inherits(out[[i]], "sf") && nrow(out[[i]]) > 0) {
+
+      if(nrow(out[[i]]) < nhdplusTools_env$wfs_chunk_size) {
+        keep_going <- FALSE
+      } else {
+
+        if(here$page)
+          message(paste("Downloading next", nhdplusTools_env$wfs_chunk_size, "features."))
+
+        start_index <- start_index + nrow(out[[i]])
+        i <- i + 1
+      }
+
+    } else {
+      out[[i]] <- list()
+      keep_going <- FALSE
+    }
+
+    if(!here$page) keep_going <- FALSE
+
+  }
+
+  out <- out[1:(i-1)]
+
+  out <- bind_rows(out)
 
   if(any(is.null(out), nrow(out) == 0)) {
 
@@ -160,6 +214,8 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   }
 
 }
+
+assign("wfs_chunk_size", value = 50000, nhdplusTools_env)
 
 #' @title Construct a BBOX spatial filter for geoservers
 #' @description From an 'area of intferest' object (sf POINT or POLYGON),

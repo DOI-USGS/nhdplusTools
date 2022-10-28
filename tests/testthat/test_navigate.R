@@ -36,7 +36,7 @@ test_that("navigation basics", {
 
   expect_equal(names(net), names(net3))
 
-  expect_true(length(sf::st_geometry(net_no_split)[[5]]) > length(sf::st_geometry(net)[[5]]))
+  expect_true(length(sf::st_geometry(net_no_split)[[4]]) > length(sf::st_geometry(net)[[4]]))
 
   expect_warning(
   net4 <-  navigate_network(start,

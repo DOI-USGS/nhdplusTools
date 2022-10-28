@@ -175,10 +175,10 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
         if(here$page)
           message(paste("Downloading next", nhdplusTools_env$wfs_chunk_size, "features."))
-
-        start_index <- start_index + nrow(out[[i]])
-        i <- i + 1
       }
+
+      start_index <- start_index + nrow(out[[i]])
+      i <- i + 1
 
     } else {
       out[[i]] <- list()

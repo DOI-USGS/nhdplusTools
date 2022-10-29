@@ -58,7 +58,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                                       TRUE, TRUE, TRUE,
                                       TRUE,
                                       TRUE,
-                                      FALSE, FALSE))
+                                      FALSE, TRUE))
 
   if(is.null(type)){ return(source) }
 
@@ -99,19 +99,12 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
   on.exit(sf::sf_use_s2(use_s2), add = TRUE)
 
-  # prealocate a big list
-  out <- rep(list(list()), 1000)
-  start_index <- 0
-  i <- 1
-  keep_going <- TRUE
+  out <- spatial_filter(AOI, type = here$geoserver, tile = here$page)
 
-  while(keep_going) {
+  for(i in 1:length(out)) {
 
-    paging <- if(here$page) {
-      paste0(' maxFeatures="', nhdplusTools_env$wfs_chunk_size,
-             '" startIndex="', start_index, '"')
-    } else {
-      ""
+    if(i > 1) {
+      message("Getting tile ", i, " of ", length(out))
     }
 
     startXML <- paste0('<?xml version="1.0"?>',
@@ -119,7 +112,6 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
                        ' xmlns:gml="http://www.opengis.net/gml" service="WFS"
                         version="1.1.0" outputFormat="application/json"',
-                       paging,
                        ' xsi:schemaLocation="http://www.opengis.net/wfs
                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
                        '<wfs:Query xmlns:feature="https://cida.usgs.gov/',
@@ -136,7 +128,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                         paste0(startXML,
                                '<ogc:And>',
                                filter,
-                               spatial_filter(AOI, type = here$geoserver),
+                               out[[i]],
                                '</ogc:And>',
                                '</ogc:Filter>',
                                '</wfs:Query>',
@@ -158,40 +150,19 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
     })
 
     out[[i]] <- tryCatch({
-      check_valid(sf::st_zm(sf::read_sf(out[[i]])),
-                  out_prj = t_srs)},
+      sf::st_zm(sf::read_sf(out[[i]]))},
       error = function(e) return(NULL))
-
-    if(is.null(out[[i]])) {
-      out <- NULL
-      keep_going <- FALSE
-    }
-
-    if(inherits(out[[i]], "sf") && nrow(out[[i]]) > 0) {
-
-      if(nrow(out[[i]]) < nhdplusTools_env$wfs_chunk_size) {
-        keep_going <- FALSE
-      } else {
-
-        if(here$page)
-          message(paste("Downloading next", nhdplusTools_env$wfs_chunk_size, "features."))
-      }
-
-      start_index <- start_index + nrow(out[[i]])
-      i <- i + 1
-
-    } else {
-      out[[i]] <- list()
-      keep_going <- FALSE
-    }
-
-    if(!here$page) keep_going <- FALSE
-
   }
 
-  out <- out[1:(i-1)]
+  if(inherits(out[[1]], "data.frame")) {
+    out <- bind_rows(unify_types(out))
 
-  out <- bind_rows(out)
+    out <- check_valid(out[!duplicated(out[[here$ids]]), ],
+                       out_prj = t_srs)
+
+  } else {
+    out <- NULL
+  }
 
   if(any(is.null(out), nrow(out) == 0)) {
 
@@ -215,19 +186,49 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
 }
 
-assign("wfs_chunk_size", value = 50000, nhdplusTools_env)
+unify_types <- function(out) {
+  all_class <- bind_rows(lapply(out, function(x) {
+    vapply(x, function(x) class(x)[1], character(1))
+  }))
+
+  set_type <- function(out, n, type) {
+    lapply(out, function(x) {
+      x[[n]] <- as(x[[n]], type)
+      x
+    })
+  }
+
+  for(n in names(all_class)) {
+    if(length(unique(all_class[[n]])) > 1) {
+      if("numeric" %in% all_class[[n]]) { # prefer numeric
+        out <- set_type(out, n, "numeric")
+      } else if("integer" %in% all_class[[n]]) { # then integer
+        out <- set_type(out, n, "integer")
+      } else if("cheracter" %in% all_class[[n]]) {
+        out <- set_type(out, n, "character")
+      }
+    }
+  }
+  out
+}
+
+assign("bb_break_size", value = 2, nhdplusTools_env)
 
 #' @title Construct a BBOX spatial filter for geoservers
 #' @description From an 'area of intferest' object (sf POINT or POLYGON),
 #' generate a WMS BBOX filter to pass to a geoserver.
 #' @inheritParams get_nhdplus
 #' @param type needed if we want to use CQL, not for BBOX. Left for posterity
+#' @param break_size desired size of bbox tiles
+#' @param tile should the response be a tiled list or not?
 #' @return a character string XML filter
 #' @keywords internal
 #' @noRd
 #' @importFrom sf st_geometry_type st_buffer st_transform st_bbox
 
-spatial_filter  <- function(AOI, type = 'catchmentsp'){
+spatial_filter  <- function(AOI, type = 'catchmentsp', break_size = get("bb_break_size", nhdplusTools_env), tile = TRUE){
+
+  if(is.null(AOI)) return(list(list()))
 
   # "The current GeoServer implementation will return all the streets whose
   # ENVELOPE overlaps the BBOX provided. This may includes some nearby
@@ -253,14 +254,27 @@ spatial_filter  <- function(AOI, type = 'catchmentsp'){
   bb <- sf::st_transform(AOI, 4326) %>%
     sf::st_bbox()
 
-  paste0('<ogc:BBOX>',
-         '<ogc:PropertyName>the_geom</ogc:PropertyName>',
-         '<gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:4326">',
-         '<gml:lowerCorner>', bb$ymin, " ", bb$xmin, '</gml:lowerCorner>',
-         '<gml:upperCorner>', bb$ymax, " ", bb$xmax, '</gml:upperCorner>',
-         '</gml:Envelope>',
-         '</ogc:BBOX>')
+  if(tile) {
+    x_breaks <- seq(bb$xmin, bb$xmax, length.out = (ceiling((bb$xmax - bb$xmin) / break_size) + 1))
+    y_breaks <- seq(bb$ymin, bb$ymax, length.out = (ceiling((bb$ymax - bb$ymin) / break_size) + 1))
 
+    bb_list <- unlist(lapply(seq_len(length(x_breaks) - 1), function(x) {
+      lapply(seq_len(length(y_breaks) - 1), function(y) {
+        list(xmin = x_breaks[x], ymin = y_breaks[y], xmax = x_breaks[x + 1], ymax = y_breaks[y + 1])
+      })
+    }), recursive = FALSE)
+  } else {
+    bb_list <- list(bb)
+  }
+  lapply(bb_list, function(bb) {
+    paste0('<ogc:BBOX>',
+           '<ogc:PropertyName>the_geom</ogc:PropertyName>',
+           '<gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:4326">',
+           '<gml:lowerCorner>', bb$ymin, " ", bb$xmin, '</gml:lowerCorner>',
+           '<gml:upperCorner>', bb$ymax, " ", bb$xmax, '</gml:upperCorner>',
+           '</gml:Envelope>',
+           '</ogc:BBOX>')
+  })
 }
 
 #' @title Construct an attribute filter for geoservers

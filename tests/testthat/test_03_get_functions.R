@@ -21,7 +21,7 @@ test_that("query water labs...",{
   testthat::skip_on_cran()
   #available?
   df = nhdplusTools:::query_usgs_geoserver()
-  expect_equal(ncol(df), 4)
+  expect_equal(ncol(df), 5)
 
   # errors
   # Bad type request

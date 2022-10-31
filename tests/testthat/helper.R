@@ -25,3 +25,15 @@ get_test_dir <- function() {
   f <- list.files(pattern = "data$", recursive = TRUE, full.names = TRUE, include.dirs = TRUE)
   f[grep("testthat\\/data", f)]
 }
+
+
+check_layers <- function(out_file) {
+  expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
+  expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 1)
+  expect_true(sf::st_crs(sf::read_sf(out_file, "CatchmentSP")) ==
+                sf::st_crs(4269))
+  expect_true(sf::st_crs(sf::read_sf(out_file, "NHDWaterbody")) ==
+                sf::st_crs(4269))
+  expect_true(sf::st_crs(sf::read_sf(out_file, "NHDFlowline_Network")) ==
+                sf::st_crs(4269))
+}

@@ -1,4 +1,4 @@
-
+source(list.files(pattern = "helper.R", recursive = TRUE, full.names = TRUE))
 
 test_that("subset errors", {
 
@@ -28,6 +28,7 @@ test_that("subset runs as expected", {
 
   temp_dir <- tempdir()
   dir.create(temp_dir, recursive = TRUE, showWarnings = FALSE)
+  unlink(file.path(temp_dir, "*"))
 
   source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
@@ -56,6 +57,8 @@ test_that("subset runs as expected", {
   if (!dir.exists(temp_dir)) dir.create(temp_dir)
 
   staged_nhdplus <- stage_national_data(output_path = temp_dir)
+
+  all_comids <- readRDS(staged_nhdplus$flowline)$COMID
 
   comids <- get_UM(readRDS(staged_nhdplus$flowline), 13293392)
 
@@ -109,18 +112,7 @@ test_that("subset runs as expected", {
 
   expect_equal(length(messages), 17)
 
-  check_layers <- function() {
-    expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
-    expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 1)
-    expect_true(sf::st_crs(sf::read_sf(out_file, "CatchmentSP")) ==
-                  sf::st_crs(4269))
-    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDWaterbody")) ==
-                  sf::st_crs(4269))
-    expect_true(sf::st_crs(sf::read_sf(out_file, "NHDFlowline_Network")) ==
-                  sf::st_crs(4269))
-  }
-
-  check_layers()
+  check_layers(out_file)
 
   unlink(file.path(temp_dir, "*"))
 
@@ -131,13 +123,29 @@ test_that("subset runs as expected", {
                        overwrite = FALSE,
                        status = FALSE)
 
-  check_layers()
+  check_layers(out_file)
 
   unlink(file.path(temp_dir, "*"))
 
   nhdplus_path("../NHDPlusV21_National_Seamless.gdb")
+})
+
+test_that("subset download", {
 
   skip_on_cran()
+
+  temp_dir <- tempdir()
+  dir.create(temp_dir, recursive = TRUE, showWarnings = FALSE)
+
+  out_file <- tempfile(fileext = ".gpkg")
+
+  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
+  fl <-  sf::read_sf(sample_data, "NHDFlowline_Network")
+
+  comids <- get_UM(fl, 13293392)
+
+  all_comids <- fl$COMID
 
   # download option
   expect_true("No nhdarea features found" %in%
@@ -148,7 +156,7 @@ test_that("subset runs as expected", {
                                                       status = FALSE,
                                                       flowline_only = FALSE)))
 
-  check_layers()
+  check_layers(out_file)
 
   unlink(file.path(temp_dir, "*"))
 
@@ -159,6 +167,21 @@ test_that("subset runs as expected", {
                        status = FALSE)
 
   expect_equal(length(names(fi)), 1)
+
+  unlink(file.path(temp_dir, "*"))
+
+  bs <- get("bb_break_size", nhdplusTools:::nhdplusTools_env)
+  assign("bb_break_size", value = 0.1, nhdplusTools:::nhdplusTools_env)
+
+  fi <- subset_nhdplus(comids = all_comids,
+                       output_file = out_file,
+                       nhdplus_data = "download",
+                       overwrite = FALSE,
+                       status = FALSE)
+
+  expect_equal(nrow(fi$NHDFlowline_Network), length(all_comids))
+
+  assign("bb_break_size", value = bs, nhdplusTools:::nhdplusTools_env)
 
   })
 

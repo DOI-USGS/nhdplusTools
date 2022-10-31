@@ -1,3 +1,9 @@
+nhdplusTools 0.5.8
+==========
+
+- Address scalability issue with web service downloads. #308
+- Add ability to add node topology back to a edge list topology. #302
+
 nhdplusTools 0.5.7
 ==========
 

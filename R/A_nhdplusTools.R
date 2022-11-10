@@ -307,10 +307,6 @@ nhdplusTools_data_dir <- function(dir = NULL) {
 }
 
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage(paste(strwrap(
-    "USGS Support Package:
-    https://owi.usgs.gov/R/packages.html#support"),
-    collapse = "\n"))
   nhdplus_path(default_nhdplus_path, warn = FALSE)
 }
 

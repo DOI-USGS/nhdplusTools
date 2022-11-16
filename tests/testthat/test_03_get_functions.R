@@ -125,6 +125,8 @@ test_that("huc", {
 
   expect_equal(hu02$huc2, "17")
 
+  expect_error(get_huc(AOI = pt, type = "test"))
+
 })
 
 # ==============================================================================

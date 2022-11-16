@@ -31,7 +31,7 @@ get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "hu
 #' @export
 get_huc8 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 
-  warning("this function is deprecated -- use get_huc instead")
+  warning("this function is deprecated -- use get_huc(..., type = \"huc8\") instead")
 
   query_usgs_geoserver(AOI = AOI, ids = id, type = "huc08_legacy",
                        t_srs = t_srs, buffer = buffer)
@@ -49,7 +49,7 @@ get_huc8 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #'
 get_huc12 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 
-  warning("this function is deprecated -- use get_huc instead")
+  warning("this function is deprecated -- use get_huc(..., type = \"huc12\") instead")
 
   query_usgs_geoserver(AOI = AOI, ids = id, type = "huc12_nhdplusv2",
                        t_srs = t_srs, buffer = buffer)

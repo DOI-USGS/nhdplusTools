@@ -39,22 +39,39 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   if(is.na(t_srs))  { t_srs  <- 4326}
 
   source <- data.frame(server = 'wmadata',
-                       user_call  = c('huc08','huc12',
+                       user_call  = c('huc02', 'huc04', 'huc06',
+                                      'huc08', 'huc10', 'huc12',
+                                      'huc08_legacy', "huc12_nhdplusv2",
                                       'nhd','catchment', 'nhdarea',
                                       'nonnetwork',
                                       'waterbodies',
                                       'gagesII', "gagesII-basin"),
-                       geoserver  = c("huc08","huc12",
+                       geoserver  = c("wbd02_20201006", "wbd04_20201006",
+                                      "wbd06_20201006", "wbd08_20201006",
+                                      "wbd10_20201006", "wbd12_20201006",
+                                      "huc08", "huc12",
                                       "nhdflowline_network", "catchmentsp", 'nhdarea',
                                       "nhdflowline_nonnetwork",
                                       "nhdwaterbody",
                                       "gagesii", "gagesii_basins"),
-                       ids        = c("huc8", "huc12",
+                       geom_name = c("SHAPE", "SHAPE", "SHAPE",
+                                     "SHAPE","SHAPE","SHAPE",
+                                     "the_geom", "the_geom",
+                                     "the_geom", "the_geom", "the_geom",
+                                     "the_geom",
+                                     "the_geom",
+                                     "the_geom", "the_geom"),
+                       ids        = c("huc2", "huc4", "huc6",
+                                      "huc8", "huc10", "huc12",
+                                      "huc8", "huc12",
                                       "comid", "featureid", "comid",
                                       "comid",
                                       "comid",
                                       "staid", "gage_id"),
                        page       = c(FALSE, FALSE,
+                                      FALSE, FALSE,
+                                      FALSE, FALSE,
+                                      FALSE, FALSE,
                                       TRUE, TRUE, TRUE,
                                       TRUE,
                                       TRUE,
@@ -99,7 +116,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
   on.exit(sf::sf_use_s2(use_s2), add = TRUE)
 
-  out <- spatial_filter(AOI, type = here$geoserver, tile = here$page)
+  out <- spatial_filter(AOI, type = here$geoserver, tile = here$page, geom_name = here$geom_name)
 
   for(i in 1:length(out)) {
 
@@ -226,7 +243,10 @@ assign("bb_break_size", value = 2, nhdplusTools_env)
 #' @noRd
 #' @importFrom sf st_geometry_type st_buffer st_transform st_bbox
 
-spatial_filter  <- function(AOI, type = 'catchmentsp', break_size = get("bb_break_size", nhdplusTools_env), tile = TRUE){
+spatial_filter  <- function(AOI, type = 'catchmentsp',
+                            break_size = get("bb_break_size", nhdplusTools_env),
+                            tile = TRUE,
+                            geom_name = "the_geom"){
 
   if(is.null(AOI)) return(list(list()))
 
@@ -268,7 +288,7 @@ spatial_filter  <- function(AOI, type = 'catchmentsp', break_size = get("bb_brea
   }
   lapply(bb_list, function(bb) {
     paste0('<ogc:BBOX>',
-           '<ogc:PropertyName>the_geom</ogc:PropertyName>',
+           '<ogc:PropertyName>', geom_name, '</ogc:PropertyName>',
            '<gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:4326">',
            '<gml:lowerCorner>', bb$ymin, " ", bb$xmin, '</gml:lowerCorner>',
            '<gml:upperCorner>', bb$ymax, " ", bb$xmax, '</gml:upperCorner>',

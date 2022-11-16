@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_hydro.R
 \name{get_huc8}
 \alias{get_huc8}
-\title{Find WBD HUC 08 unit subsets}
+\title{Find WBD HUC 08 unit subsets (DEPRECATED)}
 \usage{
 get_huc8(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5)
 }

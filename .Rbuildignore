@@ -22,3 +22,4 @@ pkgdown
 Dockerfile
 data-raw
 .dockerignore
+^.*Rplots.pdf$

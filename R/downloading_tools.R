@@ -133,7 +133,7 @@ download_nhdplusv2 <- function(outdir,
 
   return(invisible(path))
   }, error = function(e) {
-    warning("Something went werong downloading nhd data.")
+    warning("Something went wrong downloading nhd data.")
     return(NULL)
   })
 }

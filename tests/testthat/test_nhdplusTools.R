@@ -150,6 +150,7 @@ test_that("prep_nhdplus removes small drainage basins", {
   expect_equal(nrow(flines), 303)
 })
 
+# TODO: hydroloom
 test_that("compatibalize", {
   one <- pt_data
 
@@ -166,6 +167,7 @@ test_that("compatibalize", {
 
 })
 
+# TODO: hydroloom
 test_that("rname geometry", {
   g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2)))
 

@@ -1,16 +1,4 @@
-#' make index ids
-#' @description makes index ids for the provided hy object. These can be used
-#' for graph traversal algorithms such that the row number and id are equal.
-#' @param x hy data.frame
-#' @importFrom dplyr rename left_join
-#' @noRd
-#' @examples
-#' x <- hy(sf::read_sf(system.file("extdata/new_hope.gpkg", package = "hydroloom")))
-#'
-#' x <- add_toids(x)
-#'
-#' index_ids <- make_index_ids(x)
-make_index_ids <- function(x) {
+make_index_ids <- function(x, format = FALSE, complete = FALSE) {
 
   if(any(duplicated(x$id))) {
     out <- data.frame(id = unique(x$id),
@@ -31,7 +19,11 @@ make_index_ids <- function(x) {
     out$toindid <- match(x$toid, x$id, nomatch = 0)
   }
 
-  out
+  if(format) {
+    format_nonden_toid(out, return_list = complete)
+  } else {
+    out
+  }
 
 }
 
@@ -72,31 +64,24 @@ make_fromids <- function(index_ids, return_list = FALSE) {
 
 }
 
-#' add toids
-#' @description Given an hy object with fromnode and tonode attributes,
-#' will return a toid attribute that is the result of joining
-#' tonode and fromnode attributes.
-#' @param x hy object without a toid attribute
-#' @param return_dendritic logical remove non dendritic paths if TRUE. Requires
-#' a "divergence" flag where 1 is main and 2 is secondary.
-#' @return hy object with toid attribute
-#' @importFrom dplyr left_join
-#' @noRd
-#' @examples
-#' x <- hy(sf::read_sf(system.file("extdata/new_hope.gpkg", package = "hydroloom")))
-#'
-#' x <- add_toids(x)
-#'
 add_toids <- function(x, return_dendritic = TRUE) {
 
   joiner_fun <- function(x) {
-    left_join(x, select(drop_geometry(x),
-                        toid = "id",
-                        "fromnode"),
-              by = c("tonode" = "fromnode"))
+    select(
+      left_join(select(drop_geometry(x), "id", "tonode"),
+                select(drop_geometry(x), toid = "id", "fromnode"),
+                by = c("tonode" = "fromnode")), -"tonode")
   }
 
-  order <- data.frame(id = x$id)
+  # slightly faster data.table
+  # joiner_fun <- function(x) {
+  #   as.data.frame(
+  #     data.table(toid = x$id,
+  #                node = x$fromnode)[data.table(id = x$id,
+  #                                              node = x$tonode),
+  #                                   on = 'node']
+  #   )[, c("id", "toid")]
+  # }
 
   if(return_dendritic) {
     if(!"divergence" %in% names(x)) {
@@ -107,14 +92,24 @@ add_toids <- function(x, return_dendritic = TRUE) {
 
   }
 
-  x <- joiner_fun(x)
+  d <- is.na(x$tonode)
 
-  x <- left_join(order, x, by = c("id"))
+  # avoid cartesian join on disconnected lines!
+  disconnected <- filter(x, d)
 
-  x$toid <- tidyr::replace_na(x$toid, 0)
+  disconnected$toid <- rep(0, nrow(disconnected))
 
+  x <- filter(x, !d)
 
-  x[ , c("id", "toid",
-         names(x)[!names(x) %in% c("id", "toid")])]
+  x <- left_join(x, joiner_fun(x), by = c("id"))
+
+  x$toid <- replace_na(x$toid, 0)
+
+  x <- bind_rows(x, disconnected)
+
+  as.data.frame(
+    x[ , c("id", "toid",
+           names(x)[!names(x) %in% c("id", "toid")])]
+  )
 
 }

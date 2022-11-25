@@ -285,33 +285,11 @@ reweight <- function(x, ..., override_factor) {
   x
 }
 
-.datatable.aware <- TRUE
-. <- fromid <- id <- NULL
-
 get_fromids <- function(index_ids, return_list = FALSE) {
-  index_ids <- data.table::as.data.table(index_ids)
 
-  froms <- merge(
-    index_ids[,list(id)],
-    data.table::setnames(index_ids, c("toid", "id"), c("id", "fromid")),
-    by = "id", all.x = TRUE
-  )
+  index_ids <- select(index_ids, indid = "id", toindid = "toid")
 
-  froms <- froms[,list(froms = list(c(fromid))), by = id]
-
-  froms_l <- lengths(froms$froms)
-  max_from <- max(froms_l)
-
-  # Convert list to matrix with NA fill
-  froms_m <- as.matrix(sapply(froms$froms, '[', seq(max_from)))
-
-  # NAs should be length 0
-  froms_l[is.na(froms_m[1, ])] <- 0
-
-  if(return_list) return(list(froms = froms_m, lengths = froms_l,
-                              froms_list = froms))
-
-  return(list(froms = froms_m, lengths = froms_l))
+  make_fromids(index_ids, return_list)
 
 }
 
@@ -464,9 +442,6 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
 }
 
 #' @noRd
-#' @param x data.frame with ID and toID (names not important)
-#' in the first and second columns.
-#' An "id" and "toid" (lowercase) will be added.
 get_index_ids <- function(x,
                           innames = c("comid", "tocomid"),
                           outnames = c("id", "toid")) {
@@ -475,9 +450,11 @@ get_index_ids <- function(x,
     stop(paste(paste(innames, collapse = ", "), "must be in input or provided."))
   }
 
-  out <- data.frame(id = seq(1, nrow(x)))
+  out <- select(x, innames)
 
-  out["toid"] <- match(x[[innames[2]]], x[[innames[1]]], nomatch = 0)
+  names(out) <- c("id", "toid")
+
+  out <- make_index_ids(out)
 
   names(out) <- outnames
 

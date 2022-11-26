@@ -442,6 +442,7 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
 }
 
 #' @noRd
+#' @importFrom tidyselect all_of
 get_index_ids <- function(x,
                           innames = c("comid", "tocomid"),
                           outnames = c("id", "toid")) {
@@ -450,7 +451,7 @@ get_index_ids <- function(x,
     stop(paste(paste(innames, collapse = ", "), "must be in input or provided."))
   }
 
-  out <- select(x, innames)
+  out <- select(x, all_of(innames))
 
   names(out) <- c("id", "toid")
 

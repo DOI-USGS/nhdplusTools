@@ -19,11 +19,7 @@ make_index_ids <- function(x, format = FALSE, complete = FALSE) {
     out$toindid <- match(x$toid, x$id, nomatch = 0)
   }
 
-  if(format) {
-    format_nonden_toid(out, return_list = complete)
-  } else {
-    out
-  }
+  out
 
 }
 

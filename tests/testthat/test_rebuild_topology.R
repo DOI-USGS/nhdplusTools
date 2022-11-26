@@ -10,9 +10,9 @@ test_that("get_tocomid", {
 
   tocomid <- get_tocomid(sample_flines, missing = NA, return_dendritic = FALSE)
 
-  expect(length(tocomid$tocomid), 714)
+  expect_equal(length(tocomid$tocomid), 714)
 
-  expect(sum(is.na(tocomid$tocomid)), 1)
+  expect_equal(sum(tocomid$tocomid == 0), 1)
 
   expect_error(get_tocomid(dplyr::select(sample_flines, -Divergence)))
 

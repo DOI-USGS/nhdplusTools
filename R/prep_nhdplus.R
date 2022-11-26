@@ -219,11 +219,11 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
   if(remove_coastal)
     x <- filter_coastal(x)
 
-  x <- rename(x, id = "comid", toid = "toid")
+  x <- rename(x, id = "comid")
 
   if("terminalpa" %in% names(x)) {
 
-    order <- data.frame(comid = x$id)
+    order <- data.frame(id = x$id)
 
     x <- group_split(group_by(x, .data$terminalpa))
     x <- bind_rows(lapply(x, add_toids, return_dendritic = return_dendritic))

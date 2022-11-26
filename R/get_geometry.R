@@ -1,3 +1,4 @@
+# TODO: deprecate hydroloom
 #' @title  Get Flowline Node
 #' @description Given one or more flowlines, returns
 #'   a particular node from the flowline.
@@ -48,6 +49,7 @@ get_node <- function(x, position = "end") {
   st_as_sf(x, coords = c("X", "Y"), crs = in_crs)
 }
 
+# TODO: deprecate in favor of hydroloom
 #' Fix flow direction
 #' @description If flowlines aren't digitized in the expected direction,
 #' this will reorder the nodes so they are.

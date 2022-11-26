@@ -103,7 +103,7 @@ add_toids <- function(x, return_dendritic = TRUE) {
 
   x <- left_join(x, joiner_fun(x), by = c("id"))
 
-  x$toid <- replace_na(x$toid, 0)
+  x$toid <- tidyr::replace_na(x$toid, 0)
 
   x <- bind_rows(x, disconnected)
 

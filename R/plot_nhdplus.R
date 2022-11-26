@@ -157,6 +157,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
   if(actually_plot) {
     st <- get_styles(plot_config)
 
+    suppressWarnings({
     prettymapr::prettymap({
       if(!add) {
         tryCatch({
@@ -198,7 +199,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
         }
       }
     },
-    drawarrow = TRUE)
+    drawarrow = TRUE)})
   }
   return(invisible(pd))
 }

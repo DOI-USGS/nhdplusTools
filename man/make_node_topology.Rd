@@ -14,8 +14,8 @@ first and second columns.}
 Should have id and toid fields in the first and second columns. Names
 are not used.}
 
-\item{add}{logical if TRUE, a additional data will be added, otherwise
-a data.frame with only an identifier and new attributes wil be returned.}
+\item{add}{logical if TRUE, a tocomid column will be added, otherwise
+a data.frame with two columns will be returned.}
 }
 \value{
 data.frame containing id, fromnode, and tonode attributes or all

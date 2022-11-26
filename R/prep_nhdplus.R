@@ -175,7 +175,7 @@ filter_coastal <- function(flines) {
   }
 }
 
-
+# TODO: document as calling hydroloom
 #' Get tocomid
 #' @description Given flowlines with fromnode and tonode attributes,
 #' will return a toid attribute that is the result of joining
@@ -219,39 +219,28 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
   if(remove_coastal)
     x <- filter_coastal(x)
 
-  joiner_fun <- function(x) {
-    left_join(x, select(x,
-                        tocomid = "comid",
-                        "fromnode"),
-              by = c("tonode" = "fromnode"))
-  }
-
-  order <- data.frame(comid = x$comid)
-
-  if(return_dendritic) {
-    if(!"divergence" %in% names(x)) {
-      stop("To remove non dendritic paths, a divergence attribute is required.")
-    }
-
-    x[["fromnode"]][which(x$divergence == 2)] <- NA
-
-  }
+  x <- rename(x, id = "comid")
 
   if("terminalpa" %in% names(x)) {
 
+    order <- data.frame(id = x$id)
+
     x <- group_split(group_by(x, .data$terminalpa))
-    x <- bind_rows(lapply(x, joiner_fun))
+    x <- bind_rows(lapply(x, add_toids, return_dendritic = return_dendritic))
+
+    x <- left_join(order, x, by = c("id"))
 
   } else {
 
-    x <- joiner_fun(x)
+    x <- add_toids(x, return_dendritic)
 
   }
 
-  x <- left_join(order, x, by = c("comid"))
+  x <- rename(x, comid = "id", tocomid = "toid")
 
-  if(!is.na(missing)) {
-    x[["tocomid"]] <- tidyr::replace_na(x[["tocomid"]], 0)
+  if(!is.na(missing) & missing != 0) {
+    repl <- x[["tocomid"]] == 0
+    x[["tocomid"]][repl] <- rep(missing, sum(repl))
   }
 
   if(add) {

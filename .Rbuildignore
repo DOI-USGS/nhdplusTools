@@ -23,3 +23,4 @@ Dockerfile
 data-raw
 .dockerignore
 ^.*Rplots.pdf$
+README.Rmd

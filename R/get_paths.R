@@ -442,7 +442,7 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
 }
 
 #' @noRd
-#' @importFrom tidyselect all_of
+#' @importFrom dplyr all_of
 get_index_ids <- function(x,
                           innames = c("comid", "tocomid"),
                           outnames = c("id", "toid")) {

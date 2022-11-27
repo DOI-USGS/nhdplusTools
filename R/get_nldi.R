@@ -125,7 +125,7 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' @param simplify logical should response geometry be simplified for
 #' visualization and performance?
 #' @param split logical should response resolve precisely to the location
-#' of the `nldi_feature`? Setting `TRUE` calls an aditional service and
+#' of the `nldi_feature`? Setting `TRUE` calls an additional service and
 #' will be slower and less robust.
 #' @return sf data.frame with result basin boundary
 #' @export

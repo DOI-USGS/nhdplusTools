@@ -58,7 +58,7 @@ and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
 aims to provide a set of tools with minimal dependencies that can be used
 to build workflows using NHDPlus data-model data.
 
-The package has three types of functionality presented in the following vegnettes:
+The package has three types of functionality presented in the following vignettes:
 
 1. Data access in the U.S. context: `vignette("US_data")`
 1. Indexing data to hydrography: `vignette("indexing")`

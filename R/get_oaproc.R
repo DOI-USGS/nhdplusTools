@@ -114,7 +114,7 @@ get_split_catchment <- function(point, upstream = TRUE) {
 #' @description Uses a cross section retrieval web services to retrieve a
 #' cross section given a point and specified width. Orientation is determined
 #' based on direction of a the flowline found near point. This function uses
-#' a 10m Natioinal Elevation Dataset request on the back end.
+#' a 10m National Elevation Dataset request on the back end.
 #' @param point sfc POINT including crs as created by:
 #' \code{sf::st_sfc(sf::st_point(.. ,..), crs)}crs.
 #' @param width Cross section width in meters.

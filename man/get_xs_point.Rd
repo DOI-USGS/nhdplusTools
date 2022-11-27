@@ -21,7 +21,7 @@ sf data.frame containing points retrieved.
 Uses a cross section retrieval web services to retrieve a
 cross section given a point and specified width. Orientation is determined
 based on direction of a the flowline found near point. This function uses
-a 10m Natioinal Elevation Dataset request on the back end.
+a 10m National Elevation Dataset request on the back end.
 }
 \examples{
 \donttest{

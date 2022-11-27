@@ -40,7 +40,7 @@ will return a toid attribute that is the result of joining
 tonode and fromnode attributes. In the case that a terminalpa
 attribute is included, the join is executed by terminalpa group.
 This is done grouped by terminalpathID because duplicate node
-ids have been encountered accross basins in some datasets. If
+ids have been encountered across basins in some datasets. If
 `remove_coastal` is `TRUE` (the default) either ftype or fcode are
 required.
 }

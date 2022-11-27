@@ -16,7 +16,7 @@ from the specified `featureSource`.}
 visualization and performance?}
 
 \item{split}{logical should response resolve precisely to the location
-of the `nldi_feature`? Setting `TRUE` calls an aditional service and
+of the `nldi_feature`? Setting `TRUE` calls an additional service and
 will be slower and less robust.}
 }
 \value{

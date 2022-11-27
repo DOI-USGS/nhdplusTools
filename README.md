@@ -203,7 +203,7 @@ is also supported.
 <https://github.com/lawinslow/hydrolinks>  
 <https://github.com/mikejohnson51/HydroData>  
 <https://github.com/ropensci/FedData>  
-<https://github.com/cheginit/hydrodata> … others – please suggest
+<https://github.com/hyriver/pygeohydro> … others – please suggest
 additions?
 
 ### Build notes:
@@ -295,7 +295,8 @@ Survey (USGS) and is provided on the condition that neither the USGS nor
 the U.S. Government shall be held liable for any damages resulting from
 the authorized or unauthorized use of the information.
 
-From: <https://www2.usgs.gov/fsp/fsp_disclaimers.asp#5>
+From:
+<https://www.usgs.gov/office-of-science-quality-and-integrity/fundamental-science-practices#5>
 
 This software is in the public domain because it contains materials that
 originally came from the U.S. Geological Survey, an agency of the United

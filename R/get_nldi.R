@@ -202,7 +202,7 @@ get_nldi_feature <- function(nldi_feature) {
   out <- tryCatch(dataRetrieval::findNLDI(origin = nldi_feature),
                   error = function(e) NULL)
 
-  return(out)
+  return(out$origin)
 }
 
 #' @title Get Catchment Characteristics

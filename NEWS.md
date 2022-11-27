@@ -1,6 +1,9 @@
-nhdplusTools 0.5.8
+nhdplusTools 0.6.0
 ==========
 
+- minor change to behavior of `navigate_nldi` the "origin" will always be named 
+as such rather than the named 1-element list being dropped to a data.frame. 
+https://github.com/DOI-USGS/dataRetrieval/issues/623
 - Address scalability issue with web service downloads. #308
 - Add ability to add node topology back to a edge list topology. #302
 

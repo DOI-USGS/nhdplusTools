@@ -36,7 +36,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
 
     comid <- tryCatch({
       as.integer(dataRetrieval::findNLDI(location = c(X = coords[1],
-                                           Y = coords[2]))$identifier)
+                                           Y = coords[2]))$origin$identifier)
 
     }, error = function(e) NULL)
 

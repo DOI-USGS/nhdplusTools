@@ -25,3 +25,4 @@ data-raw
 ^.*Rplots.pdf$
 README.Rmd
 cran-comments.md
+^CRAN-SUBMISSION$

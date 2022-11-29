@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -99,6 +99,7 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
 <div class="section level1">
 <div class="page-header"><h1 id="nhdplustools-">nhdplusTools <img src="reference/figures/logo.png" align="right" alt="" width="120"><a class="anchor" aria-label="anchor" href="#nhdplustools-"></a>
 </h1></div>
@@ -110,17 +111,19 @@
 <div class="section level3">
 <h3 id="recommended-citation">Recommended Citation:<a class="anchor" aria-label="anchor" href="#recommended-citation"></a>
 </h3>
-<pre><code>  Blodgett, D., Johnson, J.M., 2022, nhdplusTools: Tools for
-  Accessing and Working with the NHDPlus,
-  https://doi.org/10.5066/P97AS8JD</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  Blodgett, D., Johnson, J.M., <span class="dv">2022</span>, nhdplusTools<span class="sc">:</span> Tools <span class="cf">for</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  Accessing and Working with the NHDPlus,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5066</span><span class="sc">/</span>P97AS8JD</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation:<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"nhdplusTools"</span><span class="op">)</span></span></code></pre>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"nhdplusTools"</span><span class="op">)</span></span></code></pre></div>
 <p>For the latest development:</p>
-<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"USGS-R/nhdplusTools"</span><span class="op">)</span></span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"USGS-R/nhdplusTools"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="resources">Resources<a class="anchor" aria-label="anchor" href="#resources"></a>
@@ -203,7 +206,7 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 <div class="section level3">
 <h3 id="related-similar-packages">Related similar packages:<a class="anchor" aria-label="anchor" href="#related-similar-packages"></a>
 </h3>
-<p><a href="https://github.com/mbtyers/riverdist" class="external-link uri">https://github.com/mbtyers/riverdist</a><br><a href="https://github.com/jsta/nhdR" class="external-link uri">https://github.com/jsta/nhdR</a><br><a href="https://github.com/lawinslow/hydrolinks" class="external-link uri">https://github.com/lawinslow/hydrolinks</a><br><a href="https://github.com/mikejohnson51/HydroData" class="external-link uri">https://github.com/mikejohnson51/HydroData</a><br><a href="https://github.com/ropensci/FedData" class="external-link uri">https://github.com/ropensci/FedData</a><br><a href="https://github.com/cheginit/hydrodata" class="external-link uri">https://github.com/cheginit/hydrodata</a> … others – please suggest additions?</p>
+<p><a href="https://github.com/mbtyers/riverdist" class="external-link uri">https://github.com/mbtyers/riverdist</a><br><a href="https://github.com/jsta/nhdR" class="external-link uri">https://github.com/jsta/nhdR</a><br><a href="https://github.com/lawinslow/hydrolinks" class="external-link uri">https://github.com/lawinslow/hydrolinks</a><br><a href="https://github.com/mikejohnson51/HydroData" class="external-link uri">https://github.com/mikejohnson51/HydroData</a><br><a href="https://github.com/ropensci/FedData" class="external-link uri">https://github.com/ropensci/FedData</a><br><a href="https://github.com/hyriver/pygeohydro" class="external-link uri">https://github.com/hyriver/pygeohydro</a> … others – please suggest additions?</p>
 </div>
 <div class="section level3">
 <h3 id="build-notes">Build notes:<a class="anchor" aria-label="anchor" href="#build-notes"></a>
@@ -217,9 +220,9 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 <h3 id="check-notes">Check notes:<a class="anchor" aria-label="anchor" href="#check-notes"></a>
 </h3>
 <p>In addition to typical R package checking, a Dockerfile is included in this repository. Once built, it can be run with the following command.</p>
-<pre><code>docker build -t nhdplustools_test .
-
-docker run --rm -it -v $PWD:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ &amp;&amp; cp /src/.Rbuildignore /check/ &amp;&amp; cd /check &amp;&amp; Rscript -e 'devtools::build()' &amp;&amp; R CMD check --as-cran ../nhdplusTools_*"</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>docker build <span class="sc">-</span>t nhdplustools_test .</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>docker run <span class="sc">--</span>rm <span class="sc">-</span>it <span class="sc">-</span>v <span class="sc">$</span>PWD<span class="sc">:</span><span class="er">/</span>src nhdplustools_test <span class="sc">/</span>bin<span class="sc">/</span>bash <span class="sc">-</span>c <span class="st">"cp -r /src/* /check/ &amp;&amp; cp /src/.Rbuildignore /check/ &amp;&amp; cd /check &amp;&amp; Rscript -e 'devtools::build()' &amp;&amp; R CMD check --as-cran ../nhdplusTools_*"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="release-procedure">Release procedure:<a class="anchor" aria-label="anchor" href="#release-procedure"></a>
@@ -227,7 +230,7 @@ docker run --rm -it -v $PWD:/src nhdplustools_test /bin/bash -c "cp -r /src/* /c
 <ul>
 <li><p>ensure all checks pass and code coverage is adequate.</p></li>
 <li><p>ensure news has been updated</p></li>
-<li><p>convert README disclaimer to <a href="https://code.usgs.gov/water/sbtools/-/blob/v1.1.14/README.md#L113" class="external-link">released form</a></p></li>
+<li><p>convert disclaimer to <a href="https://code.usgs.gov/water/sbtools/-/blob/v1.1.14/README.md#L113" class="external-link">released form</a></p></li>
 <li><p>update version in inst/CITATION file</p></li>
 <li><p>update version in code.json file</p></li>
 <li><p>Build source package and upload to CRAN</p></li>
@@ -260,15 +263,17 @@ docker run --rm -it -v $PWD:/src nhdplustools_test /bin/bash -c "cp -r /src/* /c
 <p>Other notes: - consider running <code>lintr</code> prior to contributing. - consider running <code>goodpractice::gp()</code> on the package before contributing. - consider running <code><a href="https://devtools.r-lib.org/reference/spell_check.html" class="external-link">devtools::spell_check()</a></code> if you wrote documentation. - this package uses pkgdown. Running <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> will refresh it.</p>
 </div>
 </div>
-<div class="section level2">
-<h2 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
-</h2>
-<p>This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review. No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.</p>
-<p>From: <a href="https://www2.usgs.gov/fsp/fsp_disclaimers.asp#5" class="external-link uri">https://www2.usgs.gov/fsp/fsp_disclaimers.asp#5</a></p>
+</div>
+<div class="section level1">
+<h1 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
+</h1>
+<p>This information is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The information has not received final approval by the U.S. Geological Survey (USGS) and is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the information.</p>
+<p>From: <a href="https://www.usgs.gov/office-of-science-quality-and-integrity/fundamental-science-practices#5" class="external-link uri">https://www.usgs.gov/office-of-science-quality-and-integrity/fundamental-science-practices#5</a></p>
 <p>This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey, an agency of the United States Department of Interior. For more information, see the <a href="https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits" title="official USGS copyright policy" class="external-link">official USGS copyright policy</a></p>
+<p>Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith. This software is provided “AS IS.”</p>
 <p><a href="https://creativecommons.org/publicdomain/zero/1.0/" class="external-link"><img src="https://i.creativecommons.org/p/zero/1.0/88x31.png" alt="CC0"></a></p>
 </div>
-</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -325,7 +330,7 @@ docker run --rm -it -v $PWD:/src nhdplustools_test /bin/bash -c "cp -r /src/* /c
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

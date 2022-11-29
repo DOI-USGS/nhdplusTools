@@ -1,5 +1,5 @@
-pandoc: '2.18'
-pkgdown: 2.0.5
+pandoc: 2.19.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   advanced_network: advanced_network.html
@@ -8,7 +8,7 @@ articles:
   nhdplusTools: nhdplusTools.html
   plot_nhdplus: plot_nhdplus.html
   US_data: US_data.html
-last_built: 2022-08-07T23:59Z
+last_built: 2022-11-29T01:49Z
 urls:
   reference: https://usgs-r.github.io/nhdplusTools/reference
   article: https://usgs-r.github.io/nhdplusTools/articles

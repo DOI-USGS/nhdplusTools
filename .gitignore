@@ -14,3 +14,6 @@ tests/testthat/data/03
 docs/training_2022/padep_nhd*
 *Rplots.pdf
 pkgdown
+cran-comments.md
+.Renviron
+CRAN-SUBMISSION

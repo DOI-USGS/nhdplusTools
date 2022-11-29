@@ -106,6 +106,9 @@
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_hr_data.html</loc>
   </url>
   <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_huc.html</loc>
+  </url>
+  <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/get_huc12.html</loc>
   </url>
   <url>
@@ -212,6 +215,9 @@
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://usgs-r.github.io/nhdplusTools/reference/make_node_topology.html</loc>
   </url>
   <url>
     <loc>https://usgs-r.github.io/nhdplusTools/reference/make_standalone.html</loc>

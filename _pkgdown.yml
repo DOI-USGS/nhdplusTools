@@ -32,6 +32,7 @@ reference:
       - '`discover_nhdplus_id`'
       - '`get_nhdplus`'
       - '`get_gagesII`'
+      - '`get_huc`'
       - '`get_huc12`'
       - '`get_huc8`'
       - '`get_nhdarea`'
@@ -95,6 +96,7 @@ reference:
   - contents:
       - '`fix_flowdir`'
       - '`get_tocomid`'
+      - '`make_node_topology`'
       - '`get_sorted`'
       - '`calculate_total_drainage_area`'
       - '`calculate_arbolate_sum`'

@@ -18,7 +18,7 @@ cross section between two endpoints."><meta property="og:image" content="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -123,29 +123,40 @@ Must be on of: 1, 3, 5, 10, 30, 60.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -105.9776 ymin: 36.17531 xmax: -105.9667 ymax: 36.176</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    id    distance_m elevation_m spatial_ref             geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 0           0          <span style="text-decoration: underline;">1</span>779.           0   (-105.9667 36.176)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 1           9.74       <span style="text-decoration: underline;">1</span>778.           0 (-105.9668 36.17599)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2          19.5        <span style="text-decoration: underline;">1</span>778.           0 (-105.9669 36.17599)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 3          29.2        <span style="text-decoration: underline;">1</span>778.           0  (-105.967 36.17598)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 4          39.0        <span style="text-decoration: underline;">1</span>776.           0 (-105.9671 36.17597)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 5          48.7        <span style="text-decoration: underline;">1</span>776.           0 (-105.9672 36.17597)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 6          58.4        <span style="text-decoration: underline;">1</span>776.           0 (-105.9674 36.17596)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 7          68.2        <span style="text-decoration: underline;">1</span>775.           0 (-105.9675 36.17595)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 8          77.9        <span style="text-decoration: underline;">1</span>775.           0 (-105.9676 36.17594)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 9          87.6        <span style="text-decoration: underline;">1</span>774.           0 (-105.9677 36.17594)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    id    spatial_ref elevation_m distance_m             geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 0               0       <span style="text-decoration: underline;">1</span>779.       0      (-105.9667 36.176)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 1               0       <span style="text-decoration: underline;">1</span>778.       9.74 (-105.9668 36.17599)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2               0       <span style="text-decoration: underline;">1</span>778.      19.5  (-105.9669 36.17599)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 3               0       <span style="text-decoration: underline;">1</span>778.      29.2   (-105.967 36.17598)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 4               0       <span style="text-decoration: underline;">1</span>776.      39.0  (-105.9671 36.17597)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 5               0       <span style="text-decoration: underline;">1</span>776.      48.7  (-105.9672 36.17597)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 6               0       <span style="text-decoration: underline;">1</span>776.      58.4  (-105.9674 36.17596)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 7               0       <span style="text-decoration: underline;">1</span>775.      68.2  (-105.9675 36.17595)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 8               0       <span style="text-decoration: underline;">1</span>775.      77.9  (-105.9676 36.17594)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 9               0       <span style="text-decoration: underline;">1</span>774.      87.6  (-105.9677 36.17594)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 91 more rows</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">xs</span>, <span class="st">"sf"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">xs</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.005</span>, <span class="op">-</span><span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.005</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span>, cache_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">xs</span><span class="op">)</span>, <span class="fl">3857</span><span class="op">)</span>, pch <span class="op">=</span> <span class="st">"."</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="va">point1</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>, <span class="fl">3857</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="va">point2</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>, <span class="fl">3857</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xs</span><span class="op">$</span><span class="va">distance_m</span>, <span class="va">xs</span><span class="op">$</span><span class="va">elevation_m</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found invalid geometry, attempting to fix.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> are planar</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they are planar</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> are planar</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No nhdarea features found</span>
@@ -159,15 +170,8 @@ Must be on of: 1, 3, 5, 10, 30, 60.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Zoom: 15</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Audotdetect projection: assuming Google Mercator (epsg 3857)</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">xs</span><span class="op">)</span>, <span class="fl">3857</span><span class="op">)</span>, pch <span class="op">=</span> <span class="st">"."</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="va">point1</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>, <span class="fl">3857</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="va">point2</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>, <span class="fl">3857</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="get_xs_points-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xs</span><span class="op">$</span><span class="va">distance_m</span>, <span class="va">xs</span><span class="op">$</span><span class="va">elevation_m</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="get_xs_points-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -184,7 +188,7 @@ Must be on of: 1, 3, 5, 10, 30, 60.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

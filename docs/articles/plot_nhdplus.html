@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -227,8 +227,8 @@ with contents that look like:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">nhdplus</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
-<span><span class="co">#&gt;            layer_name geometry_type features fields</span></span>
-<span><span class="co">#&gt; 1 NHDFlowline_Network   Line String       10    138</span></span>
+<span><span class="co">#&gt;            layer_name geometry_type features fields crs_name</span></span>
+<span><span class="co">#&gt; 1 NHDFlowline_Network   Line String       10    138    NAD83</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   [1] "id"           "comid"        "fdate"        "resolution"   "gnis_id"     </span></span>
 <span><span class="co">#&gt;   [6] "gnis_name"    "lengthkm"     "reachcode"    "flowdir"      "wbareacomi"  </span></span>
@@ -374,7 +374,15 @@ with transparency if that’s of interest.</p>
 <span>       adj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="op">}</span>, drawarrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Zoom: 10</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></span>
 <span><span class="co">#&gt; Error occured while plotting:  Error in UseMethod("st_transform"): no applicable method for 'st_transform' applied to an object of class "list"</span></span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/plot-1.png" width="432"></p>
@@ -443,7 +451,7 @@ suggestions.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

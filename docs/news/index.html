@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -73,7 +73,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.6" id="nhdplustools-056">nhdplusTools 0.5.6<a class="anchor" aria-label="anchor" href="#nhdplustools-056"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.0" id="nhdplustools-060">nhdplusTools 0.6.0<small>2022-11-28</small><a class="anchor" aria-label="anchor" href="#nhdplustools-060"></a></h2>
+<ul><li>minor change to behavior of <code>navigate_nldi</code> the “origin” will always be named as such rather than the named 1-element list being dropped to a data.frame. <a href="https://github.com/DOI-USGS/dataRetrieval/issues/623" class="external-link uri">https://github.com/DOI-USGS/dataRetrieval/issues/623</a>
+</li>
+<li>Address scalability issue with web service downloads. <a href="https://github.com/usgs-r/nhdplusTools/issues/308" class="external-link">#308</a></li>
+<li>Add ability to add node topology back to a edge list topology. <a href="https://github.com/usgs-r/nhdplusTools/issues/302" class="external-link">#302</a></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.5.7" id="nhdplustools-057">nhdplusTools 0.5.7<small>2022-09-16</small><a class="anchor" aria-label="anchor" href="#nhdplustools-057"></a></h2>
+<ul><li>Update reference for updated flowline attributes.</li>
+<li>Fix failing example for cran checks.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.5.6" id="nhdplustools-056">nhdplusTools 0.5.6<small>2022-08-08</small><a class="anchor" aria-label="anchor" href="#nhdplustools-056"></a></h2>
 <ul><li>Update URL for NHDPlusV2 download</li>
 <li>make geometry validity checks more robust</li>
 </ul></div>
@@ -139,7 +151,7 @@ To cite nhdplusTools in publications, please use:
 <div class="section level3">
 <h3 id="subsetting-and-data-utilities-0-5-0">Subsetting and data utilities<a class="anchor" aria-label="anchor" href="#subsetting-and-data-utilities-0-5-0"></a></h3>
 <ul><li>New function <code><a href="../reference/subset_vpu.html">subset_vpu()</a></code> wraps <code><a href="../reference/subset_rpu.html">subset_rpu()</a></code> and will subset a vector procesing unit.</li>
-<li>New function <code><a href="../reference/fix_flowdir.html">fix_flowdir()</a></code> will re-order geometry nodes such that their order cooresponds to the convention used in nhdplus data.</li>
+<li>New function <code><a href="../reference/fix_flowdir.html">fix_flowdir()</a></code> will re-order geometry nodes such that their order corresponds to the convention used in nhdplus data.</li>
 <li>
 <code><a href="../reference/get_vaa.html">get_vaa()</a></code> will now return an updated nhdplus network attribute set derived from multiple improved sources.</li>
 </ul></div>
@@ -189,7 +201,7 @@ To cite nhdplusTools in publications, please use:
 <p>Version 0.4.0 adds new functionality for data access via web services and updates the usability and flexibility of data discovery and subsetting functions. This release includes significant rework of functions related to network navigation and web-service data subsetting.</p>
 <ul><li>Previsouly, <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> included internal functionality for downloading data via web service. This code for subsetting NHDPlus via web service was completely rewritten and a number of new web-service data access functions were added. The <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> function has been added and is for web-service data access only. <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code>, which will output a subset to a local <code>.gpkg</code> file, now uses <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> for download functionality.</li>
 <li>
-<code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> and most other <a href="https://waterdata.usgs.gov/blog/nldi-intro/" class="external-link">NLDI</a> functions are now based on an NLDI client in the <a href="https://code.usgs.gov/water/dataRetrieval" class="external-link"><code>dataRetrieval</code></a> package. Functionality has been maintained backward compatible with <code>nhdplusTools</code> v0.3 as much as possible with some minor modifications to accomadate changes in dataRetrieval. The response format from <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> has been changed slightly in v0.4, it now includes both the origin feature and navigation type(s) as a list. Two un-needed nldi discovery functions were removed.</li>
+<code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> and most other <a href="https://waterdata.usgs.gov/blog/nldi-intro/" class="external-link">NLDI</a> functions are now based on an NLDI client in the <a href="https://code.usgs.gov/water/dataRetrieval" class="external-link"><code>dataRetrieval</code></a> package. Functionality has been maintained backward compatible with <code>nhdplusTools</code> v0.3 as much as possible with some minor modifications to accommodate changes in dataRetrieval. The response format from <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> has been changed slightly in v0.4, it now includes both the origin feature and navigation type(s) as a list. Two un-needed nldi discovery functions were removed.</li>
 <li>Functions to download and cache all NHDPlus VAAs (in a 195mb <code>.fst</code> file) for use in network navigation and other applications have been added. These can be used with any nhdplusTools functions that do not require geometry.</li>
 <li>
 <code><a href="../reference/get_levelpaths.html">get_levelpaths()</a></code> now has an <code>override_factor</code> parameter that will cause stream leveling to follow the weight rather than the name input if the weight is <code>override_factor</code> times larger than the name indication.</li>
@@ -282,7 +294,7 @@ To cite nhdplusTools in publications, please use:
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

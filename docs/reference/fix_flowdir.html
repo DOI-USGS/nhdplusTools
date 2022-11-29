@@ -18,7 +18,7 @@ this will reorder the nodes so they are."><meta property="og:image" content="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -80,17 +80,26 @@ this will reorder the nodes so they are.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fix_flowdir</span><span class="op">(</span><span class="va">comid</span>, <span class="va">network</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fix_flowdir</span><span class="op">(</span><span class="va">comid</span>, network <span class="op">=</span> <span class="cn">NULL</span>, fn_list <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>comid</dt>
-<dd><p>The COMID of the flowline to check</p></dd>
+<dd><p>integer The COMID of the flowline to check</p></dd>
 
 
 <dt>network</dt>
-<dd><p>The entire network to check from. Requires a "toCOMID" field.</p></dd>
+<dd><p>sf data.frame The entire network to check from. Requires a "toCOMID" field.</p></dd>
+
+
+<dt>fn_list</dt>
+<dd><p>list containing named elements `flowline`, `network`, and `check_end`,
+where `flowline` is the flowline to be checked and `network` the feature up or downstream
+of the flowline to be checked, and `check_end` is `"start"` or `"end"` depending if the
+`network` input is upstream (`"start"`) or downstream (`"end"`) of the flowline to be checked.
+This option allows pre-compilation of pairs of features which may be useful for very large
+numbers of flow direction checks.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -178,7 +187,7 @@ this will reorder the nodes so they are.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -338,7 +338,7 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
   x <- as.data.frame(x)
 
   # nrow to reuse
-  n <- nrow(x)
+  n_row <- nrow(x)
 
   # index for fast traversal
   index_ids <- get_index_ids(x, innames = names(x)[1:2])
@@ -353,7 +353,7 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
   froms <- get_fromids(index_ids)
 
   # Some vectors to track results
-  to_visit <- out <- rep(0, n)
+  to_visit <- out <- rep(0, n_row)
 
   if(split) {
     set <- out
@@ -373,6 +373,8 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
     n <- 1
     # v is a pointer into the to_visit vector
     v <- 1
+
+    trk <- 1
 
     while(v > 0) {
 
@@ -399,6 +401,12 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
       # go to the last element added in to_visit
       v <- v - 1
       node <- to_visit[v]
+
+      trk <- trk + 1
+
+      if(trk > n_row * 2) {
+        stop("runaway while loop, something wrong with the network?")
+      }
 
     }
 

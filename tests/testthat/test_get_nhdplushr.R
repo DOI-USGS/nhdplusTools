@@ -11,12 +11,12 @@ test_that("we get urls for nhdplushr", {
   expect_equal(length(urls), 11)
 })
 
-get_test_file(work_dir)
-
-out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
-
 test_that("get_nhdplushr layers and gpkg", {
   skip_on_cran()
+
+  get_test_file(work_dir)
+
+  out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
 
   layers <- sf::st_layers(out_gpkg)
   expect_equal(layers$name, c("NHDFlowline", "NHDPlusCatchment"))
@@ -38,6 +38,12 @@ test_that("get_nhdplushr layers and gpkg", {
 })
 
 test_that("nhdplus hr waterbody", {
+  skip_on_cran()
+
+  get_test_file(work_dir)
+
+  out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
+
   out <- get_nhdplushr(work_dir, layers = c("NHDFlowline",
                                             "NHDWaterbody"),
                        out_gpkg = out_gpkg)
@@ -50,6 +56,10 @@ test_that("nhdplus hr waterbody", {
 
 test_that("get_nhdplushr overwrite gpkg and pattern", {
   skip_on_cran()
+
+  get_test_file(work_dir)
+
+  out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
 
   layer <- c("NHDFlowline")
   out_sub <- get_nhdplushr(work_dir, out_gpkg = out_gpkg,
@@ -88,6 +98,9 @@ test_that("get_nhdplushr overwrite gpkg and pattern", {
 
 test_that("get_nhdplushr simp and proj", {
   skip_on_cran()
+
+  get_test_file(work_dir)
+
   out <- get_nhdplushr(work_dir)
 
   out_sub <- get_nhdplushr(work_dir, proj = 5070)
@@ -109,6 +122,11 @@ test_that("get_nhdplushr simp and proj", {
 
 test_that("get_nhdplushr rename and keep_cols", {
   skip_on_cran()
+
+  get_test_file(work_dir)
+
+  out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
+
   out_sub <- get_nhdplushr(work_dir,
                            keep_cols = c("COMID", "FEATUREID", "StreamOrde", "AreaSqKM"),
                            check_terminals = FALSE)
@@ -122,6 +140,9 @@ test_that("get_nhdplushr rename and keep_cols", {
 
 test_that("make_standalone", {
   skip_on_cran()
+
+  get_test_file(work_dir)
+
   fl <- get_nhdplushr(work_dir, check_terminals = FALSE)$NHDFlowline
 
   sa <- make_standalone(fl)

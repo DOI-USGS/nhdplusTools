@@ -21,7 +21,7 @@ Take Aways:
     - [mainstems paper](https://www.sciencedirect.com/science/article/pii/S1364815220309841?via%3Dihub#fig1)
     - [HY_Features](https://docs.opengeospatial.org/is/14-111r6/14-111r6.html#figure5)
   - catchment identifiers and path identifiers.
-    - [Advanced Network Attributes vignette](https://usgs-r.github.io/nhdplusTools/articles/advanced_network.html)
+    - [Advanced Network Attributes vignette](https://doi-usgs.github.io/nhdplusTools/articles/advanced_network.html)
   - COMID, nhdplusv2_comid, nhdplushr_nhdplusid, and "ID". And also REACHCODE.
     - qualified identifiers vs unqualified identifiers
     - three distinct types of topology
@@ -46,12 +46,12 @@ Take Aways:
 1. Some approaches for crosswalking hydrographic datasets with eachother
 
 - nhdplusTools indexing and hydrologic locations
-  - [indexing and referencing vignette](https://usgs-r.github.io/nhdplusTools/articles/indexing.html)
+  - [indexing and referencing vignette](https://doi-usgs.github.io/nhdplusTools/articles/indexing.html)
 - crosswalking datasets and dissambiguation
   - Reachcode + the network
   - Other strategies - names, drainage area, etc.
 - Retrieving additional data for a given domain.
-  - [US Data vignette](https://usgs-r.github.io/nhdplusTools/articles/US_data.html)
+  - [US Data vignette](https://doi-usgs.github.io/nhdplusTools/articles/US_data.html)
   - [NLDI Catchment Characteristics](https://waterdata.usgs.gov/blog/nldi_update/)
 - mapping and visualization
   - Grouping

@@ -30,7 +30,7 @@ knitr::opts_chunk$set(
 
 The nhdplusTools package contains a wide range of hydrographic data utilities. Many are globally-applicable hydrographic data manipulation and processing tools. Others are specific to a U.S. context, focused on particular US datasets and sources.
 
-Detailed documentation of all the package functions can be found at the **[Reference page](https://usgs-r.github.io/nhdplusTools/reference/)**.
+Detailed documentation of all the package functions can be found at the **[Reference page](https://doi-usgs.github.io/nhdplusTools/reference/)**.
 
 For data discovery and access in a U.S. context, start with the **US Data vignette** `vignette("US_data")`.
 
@@ -48,7 +48,7 @@ For the latest CRAN release of nhdplusTools, use:
 The easiest way to install the latest `nhdplusTools` development is with the `remotes` package like this:
 ```{r install, echo = TRUE, eval = FALSE}
 # install.packages("remotes")
-# remotes::install_github("usgs-r/nhdplusTools")
+# remotes::install_github("doi-usgs/nhdplusTools")
 ```
 
 The `nhdplusTools` package is intended to provide a reusable set of tools to

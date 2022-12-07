@@ -1,3 +1,7 @@
+nhdplusTools 0.6.1
+==========
+No functional changes. Package migrated to new repository: https://github.com/DOI-USGS/nhdplusTools
+
 nhdplusTools 0.6.0
 ==========
 
@@ -112,7 +116,7 @@ nhdplusTools 0.4.3
 
 - New function added: `get_streamlevel()` calculates stream level, a bottom up level path order used by nhdplus to categorize complete river levels.
 
-- nhdplusTools internals have started to be refactored to use all lower case attribute names. No changes should be seen from outside the package, but please [report issues](https://github.com/USGS-R/nhdplusTools/issues) with attribute naming.
+- nhdplusTools internals have started to be refactored to use all lower case attribute names. No changes should be seen from outside the package, but please [report issues](https://github.com/DOI-USGS/nhdplusTools/issues) with attribute naming.
 - Package testing now runs in parallel and uses revision 3 of the testthat package.
 
 nhdplusTools 0.4.2

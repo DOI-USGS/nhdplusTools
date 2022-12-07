@@ -8,7 +8,7 @@ if(!exists("work_dir")) {
 
 if(!file.exists(file.path(work_dir, "03_sub.gpkg"))) {
 
-  download_pkg_data("03_sub.zip", "https://usgs-r.github.io/nhdplusTools/data/03_sub.zip", work_dir)
+  download_pkg_data("03_sub.zip", "https://doi-usgs.github.io/nhdplusTools/data/03_sub.zip", work_dir)
 
 }
 

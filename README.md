@@ -3,8 +3,8 @@
 
 # nhdplusTools <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
-![R-CMD-check](https://github.com/usgs-r/nhdplusTools/workflows/R-CMD-check/badge.svg)
-[![codecov](https://codecov.io/gh/usgs-r/nhdplusTools/branch/master/graph/badge.svg)](https://app.codecov.io/gh/usgs-r/nhdplusTools)
+![R-CMD-check](https://github.com/doi-usgs/nhdplusTools/workflows/R-CMD-check/badge.svg)
+[![codecov](https://codecov.io/gh/doi-usgs/nhdplusTools/branch/master/graph/badge.svg)](https://app.codecov.io/gh/doi-usgs/nhdplusTools)
 [![CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
@@ -32,17 +32,18 @@ For the latest development:
 
 ``` r
 install.packages("remotes")
-remotes::install_github("USGS-R/nhdplusTools")
+remotes::install_github("DOI-USGS/nhdplusTools")
 ```
 
 ### Resources
 
 See the [“Get
-Started”](https://usgs-r.github.io/nhdplusTools/articles/nhdplusTools.html)
+Started”](https://doi-usgs.github.io/nhdplusTools/articles/nhdplusTools.html)
 vignette showing the gneral workflow and functionality of
 nhdplusTools.  
-See a set of [slides](https://usgs-r.github.io/nhdplusTools/awra_2019/)
-illustrating how to use nhdplusTools with other USGS-R packages.
+See a set of
+[slides](https://doi-usgs.github.io/nhdplusTools/awra_2019/)
+illustrating how to use nhdplusTools with other DOI-USGS packages.
 
 ### Terminology:
 
@@ -75,12 +76,12 @@ used for polygon representations of catchments.
 here.](https://www.epa.gov/waterdata/nhdplus-national-data)
 
 For data subsetting, also see:
-[`get_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html),
-[`subset_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html),
-[`navigate_network`](https://usgs-r.github.io/nhdplusTools/reference/navigate_network.html),
-[`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html)
+[`get_nhdplus`](https://doi-usgs.github.io/nhdplusTools/reference/get_nhdplus.html),
+[`subset_nhdplus`](https://doi-usgs.github.io/nhdplusTools/reference/subset_nhdplus.html),
+[`navigate_network`](https://doi-usgs.github.io/nhdplusTools/reference/navigate_network.html),
+[`download_nhdplushr`](https://doi-usgs.github.io/nhdplusTools/reference/download_nhdplushr.html)
 and
-[`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
+[`get_nhdplushr`](https://doi-usgs.github.io/nhdplusTools/reference/get_nhdplushr.html)
 
 ## Package Vision
 

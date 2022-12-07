@@ -3,7 +3,7 @@
 
 This directory contains R workflow artifacts and associated slides for a presentation given at the AWRA Annual Meeting in November, 2019 in Salt Lake City, Utah.
 
-[AWRA Slides](https://usgs-r.github.io/nhdplusTools/awra_2019/#/)
+[AWRA Slides](https://doi-usgs.github.io/nhdplusTools/awra_2019/#/)
 
 To reproduce this work flow, you should:  
 
@@ -15,7 +15,7 @@ To reproduce this work flow, you should:
    
    ```
    install.packages(c("drake", "dataRetrieval", "nhdplusTools", "EGRET", "remotes"))
-   remotes::install_github("usgs-r/intersectr")
+   remotes::install_github("doi-usgs/intersectr")
    ```
    
 1) Open the `AWRA_National_2019.Rpres` file in Rstudio with this Rproject open and you should have a "preview" button at the top of the page.

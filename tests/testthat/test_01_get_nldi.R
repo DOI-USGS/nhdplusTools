@@ -101,11 +101,11 @@ test_that("basin works", {
   expect_true(length(sf::st_coordinates(nav)) < length(sf::st_coordinates(basin2)))
 
   expect_true(!sf::st_crosses(sf::st_cast(nav, "LINESTRING"),
-                              st_buffer(site, units::set_units(50, "m")),
+                              sf::st_buffer(site, units::set_units(50, "m")),
                                  sparse = FALSE))
 
   expect_true(sf::st_crosses(sf::st_cast(basin2, "LINESTRING"),
-                             st_buffer(site, units::set_units(50, "m")),
+                             sf::st_buffer(site, units::set_units(50, "m")),
                              sparse = FALSE))
 })
 

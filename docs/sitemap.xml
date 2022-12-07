@@ -1,282 +1,282 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/404.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/404.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/articles/advanced_network.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/advanced_network.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/articles/index.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/articles/indexing.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/indexing.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/articles/nhdplushr.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/nhdplushr.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/articles/nhdplusTools.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/nhdplusTools.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/articles/plot_nhdplus.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/plot_nhdplus.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/articles/point_indexing.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/point_indexing.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/articles/US_data.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/US_data.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/authors.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/authors.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/awra_2019/index.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/awra_2019/index.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/DISCLAIMER.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/DISCLAIMER.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/index.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/index.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/LICENSE-text.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/news/index.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/news/index.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/add_plus_network_attributes.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/add_plus_network_attributes.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/align_nhdplus_names.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/align_nhdplus_names.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/calculate_arbolate_sum.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/calculate_arbolate_sum.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/calculate_total_drainage_area.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/calculate_total_drainage_area.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/disambiguate_flowline_indexes.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/disambiguate_flowline_indexes.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/discover_nhdplus_id.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/discover_nhdplus_id.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/discover_nldi_characteristics.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/discover_nldi_characteristics.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/download_nhdplushr.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/download_nhdplusv2.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/download_nhdplusv2.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/download_rf1.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/download_rf1.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/download_vaa.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/download_vaa.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/download_wbd.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/download_wbd.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/fix_flowdir.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/fix_flowdir.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_boundaries.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_boundaries.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_DD.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_DD.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_DM.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_DM.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_elev_along_path.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_elev_along_path.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_flowline_index.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_flowline_index.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_gagesII.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_gagesII.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_hr_data.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_hr_data.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_huc.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_huc.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_huc12.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_huc12.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_huc8.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_huc8.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_hydro_location.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_hydro_location.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_levelpaths.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_levelpaths.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nhdarea.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_nhdarea.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_nhdplus.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_nhdplushr.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nldi_basin.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_nldi_basin.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nldi_characteristics.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_nldi_characteristics.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nldi_feature.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_nldi_feature.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nldi_index.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_nldi_index.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_node.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_node.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_nwis.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_nwis.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_partial_length.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_partial_length.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_pathlength.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_pathlength.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_path_lengths.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_path_lengths.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_path_members.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_path_members.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_pfaf.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_pfaf.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_raindrop_trace.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_raindrop_trace.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_sorted.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_sorted.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_split_catchment.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_split_catchment.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_streamlevel.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_streamlevel.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_streamorder.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_streamorder.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_terminal.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_terminal.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_tocomid.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_tocomid.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_UM.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_UM.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_UT.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_UT.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_vaa.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_vaa.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_vaa_names.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_vaa_names.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_vaa_path.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_vaa_path.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_waterbodies.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_waterbodies.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_waterbody_index.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_waterbody_index.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_wb_outlet.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_wb_outlet.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_xs_point.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_xs_point.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/get_xs_points.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_xs_points.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/index.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/make_node_topology.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/make_node_topology.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/make_standalone.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/make_standalone.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/map_nhdplus.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/map_nhdplus.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/navigate_network.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/navigate_network.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/navigate_nldi.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/navigate_nldi.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/nhdplusTools_data_dir.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/nhdplusTools_data_dir.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/nhdplus_path.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/nhdplus_path.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/plot_nhdplus.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/plot_nhdplus.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/prepare_nhdplus.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/prepare_nhdplus.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/query_usgs_geoserver.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/query_usgs_geoserver.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/rename_geometry.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/rename_geometry.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/rescale_measures.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/rescale_measures.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/rpu.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/rpu.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/rpu_boundaries.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/rpu_boundaries.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/stage_national_data.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/stage_national_data.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/st_compatibalize.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/st_compatibalize.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/subset_nhdplus.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/subset_rpu.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/subset_rpu.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/subset_vpu.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/subset_vpu.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/vpu.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/vpu.html</loc>
   </url>
   <url>
-    <loc>https://usgs-r.github.io/nhdplusTools/reference/vpu_boundaries.html</loc>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/vpu_boundaries.html</loc>
   </url>
 </urlset>

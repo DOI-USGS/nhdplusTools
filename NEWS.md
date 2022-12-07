@@ -1,3 +1,7 @@
+nhdplusTools 0.6.1
+==========
+No functional changes. Package migrated to new repository: https://github.com/DOI-USGS/nhdplusTools
+
 nhdplusTools 0.6.0
 ==========
 

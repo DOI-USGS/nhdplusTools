@@ -175,7 +175,6 @@ filter_coastal <- function(flines) {
   }
 }
 
-# TODO: document as calling hydroloom
 #' Get tocomid
 #' @description Given flowlines with fromnode and tonode attributes,
 #' will return a toid attribute that is the result of joining
@@ -184,7 +183,7 @@ filter_coastal <- function(flines) {
 #' This is done grouped by terminalpathID because duplicate node
 #' ids have been encountered across basins in some datasets. If
 #' `remove_coastal` is `TRUE` (the default) either ftype or fcode are
-#' required.
+#' required. Uses the \link[hydroloom]{add_toids} functin.
 #' @param x data.frame with comid, tonode, fromnode, and (optionally)
 #' divergence and terminalpa attributes.
 #' @param return_dendritic logical if TRUE, a divergence attribute is required
@@ -199,6 +198,7 @@ filter_coastal <- function(flines) {
 #' a data.frame with two columns will be returned.
 #' @return data.frame containing comid and tocomid attributes or all
 #' attributes provided with comid and tocomid in the first and second columns..
+#' @importFrom hydroloom add_toids
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))

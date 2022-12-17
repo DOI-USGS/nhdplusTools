@@ -23,9 +23,11 @@ Description: Tools for traversing and working with National Hydrography Dataset 
 URL: https://doi-usgs.github.io/nhdplusTools/ https://github.com/doi-usgs/nhdplusTools/
 BugReports: https://github.com/doi-usgs/nhdplusTools/issues/
 Depends:
-    R (>= 4.0)
+    R (>= 4.0),
+    hydroloom
 Imports: dplyr, rlang, sf, RANN, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, rosm, prettymapr, fst, dataRetrieval, tools, zip, pbapply
 Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2, gifski, leaflet
+Remotes: doi-usgs/hydroloom
 License: CC0
 Encoding: UTF-8
 RoxygenNote: 7.2.2

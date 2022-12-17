@@ -285,11 +285,12 @@ reweight <- function(x, ..., override_factor) {
   x
 }
 
+# TODO: import make_fromids explicitely
 get_fromids <- function(index_ids, return_list = FALSE) {
 
   index_ids <- select(index_ids, indid = "id", toindid = "toid")
 
-  make_fromids(index_ids, return_list)
+  hydroloom:::make_fromids(index_ids, return_list)
 
 }
 
@@ -451,6 +452,7 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
 #' @noRd
 #' @importFrom dplyr all_of
+#' @importFrom hydroloom make_index_ids
 get_index_ids <- function(x,
                           innames = c("comid", "tocomid"),
                           outnames = c("id", "toid")) {

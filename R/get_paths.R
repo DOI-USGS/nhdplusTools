@@ -285,12 +285,12 @@ reweight <- function(x, ..., override_factor) {
   x
 }
 
-# TODO: import make_fromids explicitely
+#' @importFrom hydroloom make_fromids
 get_fromids <- function(index_ids, return_list = FALSE) {
 
   index_ids <- select(index_ids, indid = "id", toindid = "toid")
 
-  hydroloom:::make_fromids(index_ids, return_list)
+  make_fromids(index_ids, return_list)
 
 }
 

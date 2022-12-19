@@ -8,14 +8,12 @@ inst/doc/*.html
 docs
 _pkgdown.yml
 data-raw
-vignettes/rosm.cache
 DISCLAIMER.md
 code.json
 ^doc$
 ^Meta$
 .Renviron
 tests/testthat/data/03
-rosm.cache
 pkgdown
 .gitlab-ci.yml
 .github

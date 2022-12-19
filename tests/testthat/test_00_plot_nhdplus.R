@@ -1,13 +1,13 @@
 
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
-test_that("osm_cache_dir", {
+test_that("tile_cache_dir", {
   testthat::skip_on_cran()
-  dir <- nhdplusTools:::osm_cache_dir()
+  dir <- nhdplusTools:::tile_cache_dir()
 
   expect_equal(dir,
                file.path(nhdplusTools_data_dir(),
-                         "osm.cache"))
+                         "tile_cache_dir"))
 
   temp_test <- file.path(tempdir(check = TRUE), "temptest.txt")
 
@@ -17,9 +17,9 @@ test_that("osm_cache_dir", {
 
   nhdplusTools_data_dir(temp_test)
 
-  dir <- nhdplusTools:::osm_cache_dir()
+  dir <- nhdplusTools:::tile_cache_dir()
 
-  expect_equal(dir, file.path(tempdir(check = TRUE), "osm.cache"))
+  expect_equal(dir, file.path(tempdir(check = TRUE), "tile_cache_dir"))
 
   nhdplusTools_data_dir(orig_dir)
 })

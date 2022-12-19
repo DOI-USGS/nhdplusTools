@@ -195,7 +195,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   }
 
   if(!is.null(out)) {
-    return(out)
+    return(select(out, -any_of("id")))
   } else {
     warning(paste("No", here$user_call, "features found"), call. = FALSE)
     NULL

@@ -162,7 +162,7 @@ test_that("get_UT works", {
   test_error <- rbind(pt_data, pt_data)
 
   expect_error(get_UT(test_error, 11687180),
-               "Found duplicate ID for starting catchment. Duplicate rows in network?")
+               "Found duplicate id for starting catchment. Duplicate rows in network?")
 })
 
 test_that("get_UT works with distance", {

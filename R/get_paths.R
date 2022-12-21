@@ -330,122 +330,16 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #'
 get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
-  class_x <- class(x)
+  orig_names <- names(x)[1:2]
 
-  hy_g <- get_hyg(x, add = TRUE, id = names(x)[1])
+  names(x)[1:2] <- c("id", "toid")
 
-  x <- drop_geometry(x)
+  x <- hydroloom::sort_network(x, split, outlets)
 
-  x <- as.data.frame(x)
+  names(x)[1:2] <- orig_names
 
-  # nrow to reuse
-  n_row <- nrow(x)
-
-  # index for fast traversal
-  index_ids <- get_index_ids(x, innames = names(x)[1:2])
-
-  if(!is.null(outlets)) {
-    starts <- which(x[, 1] %in% outlets)
-  } else {
-    # All the start nodes
-    starts <- which(index_ids$toid == 0)
-  }
-
-  froms <- get_fromids(index_ids)
-
-  # Some vectors to track results
-  to_visit <- out <- rep(0, n_row)
-
-  if(split) {
-    set <- out
-    out_list <- rep(list(list()), length(starts))
-  }
-
-  # output order tracker
-  o <- 1
-  set_id <- 1
-
-  for(s in starts) {
-
-    # Set up the starting node
-    node <- s
-
-    # within set node tracker for split = TRUE
-    n <- 1
-    # v is a pointer into the to_visit vector
-    v <- 1
-
-    trk <- 1
-
-    while(v > 0) {
-
-      # track the order that nodes were visited
-      out[node] <- o
-      # increment to the next node
-      o <- o + 1
-
-      if(split) {
-        set[n] <- node
-        n <- n + 1
-      }
-
-      # does nothing if froms_l[node] == 0
-
-      for(from in seq_len(froms$lengths[node])) {
-        if(node <= ncol(froms$froms) &&
-           !is.na(next_node <- froms$froms[from, node])) {
-          # Add the next node to visit to the tracking vector
-          to_visit[v] <- next_node
-          v <- v + 1
-        }}
-
-      # go to the last element added in to_visit
-      v <- v - 1
-      node <- to_visit[v]
-
-      trk <- trk + 1
-
-      if(trk > n_row * 2) {
-        stop("runaway while loop, something wrong with the network?")
-      }
-
-    }
-
-    if(split) {
-      out_list[[set_id]] <- x[set[1:(n - 1)], 1]
-      set_id <- set_id + 1
-    }
-  }
-
-  if(split) names(out_list) <- x[starts, 1]
-
-  ### rewrites x into the correct order. ###
-  if(o - 1 != nrow(x)) {
-    x <- x[which(out != 0), ]
-    out <- out[out != 0]
-  }
-
-  x <- x[order(out)[(o-1):1], ]
-
-  if(split) {
-
-    # this is only two columns
-    ids <- methods::as(names(out_list), class(x[1, 1]))
-
-    out_list <- data.frame(ids = ids) %>%
-      mutate(set = out_list) %>%
-      tidyr::unnest_longer("set")
-
-    names(out_list) <- c("terminalID", names(x)[1])
-
-    ### adds grouping terminalID to x ###
-    x <- left_join(x, out_list, by = names(x)[1])
-
-  }
-
-  if(!is.null(hy_g)) {
-    x <- sf::st_sf(left_join(x, hy_g, by = names(x)[1]))
-  }
+  if(split)
+    names(x)[names(x) == "terminal_id"] <- "terminalID"
 
   return(x)
 }

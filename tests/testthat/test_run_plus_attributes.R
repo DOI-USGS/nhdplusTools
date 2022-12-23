@@ -4,14 +4,14 @@ test_that("basic two flowline network", {
                             tocomid = c(0, 6170348),
                             gnis_id = c(" ", " "),
                             areasqkm = c(0.1089, 0),
-                            lengthkm = c(0.224, 0.152),
-                            levelpathi = c(150042200, 150042200)),
+                            lengthkm = c(0.224, 0.152)),
                        class = "data.frame",
                        row.names = c(NA, -2L))
 
   expect_warning(net_new <-
     add_plus_network_attributes(
-      dplyr::rename(net_new, nameID = gnis_id), status = FALSE))
+      dplyr::rename(net_new, nameID = gnis_id), status = FALSE),
+    "get_levelpaths is deprecated")
 
 
   expect_equal(nrow(net_new), 2)
@@ -33,8 +33,10 @@ test_that("example", {
 
   expect_s3_class(get_sorted(sf::st_sf(test_flowline, sf::st_geometry(walker_flowline))), "sf")
 
+  expect_warning(
   mess <- capture_output(fl <- add_plus_network_attributes(test_flowline,
                                                            status = TRUE))
+  )
 
   expect_true(grepl("+| 100% elapsed=", mess))
 

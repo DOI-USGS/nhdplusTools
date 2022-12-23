@@ -44,7 +44,7 @@ make_node_topology <- function(x, add_div = NULL, add = TRUE) {
 
   hy_g <- get_hyg(x, add, orig_name[1])
 
-  x <- drop_geometry(x)
+  x <- as.data.frame(drop_geometry(x))
 
   if(length(unique(x[, 1])) != nrow(x)) stop("duplicate identifiers found")
 

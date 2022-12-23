@@ -114,8 +114,11 @@ test_that("get_pfaf", {
 
   fl$nameID = ""
   fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+
+  expect_warning(
   fl <- dplyr::left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),
                                                    weight = totda)), by = "ID")
+  )
 
   pfaf <- get_pfaf(fl, max_level = 2)
 

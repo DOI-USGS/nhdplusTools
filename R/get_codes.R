@@ -7,6 +7,7 @@
 #' @param status logical show progress update messages?
 #' @return numeric stream order in same order as input
 #' @importFrom dplyr left_join select
+#' @importFrom hydroloom add_streamorder
 #' @export
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
@@ -26,51 +27,7 @@
 get_streamorder <- function(x, status = TRUE) {
   check_names(x, "get_streamorder")
 
-  o_sort <- select(x, "ID")
-
-  x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
-
-  # First sort so we have upstream first and outlets last.
-  x <- get_sorted(x)
-
-  # Now generate a working index against the sorted data.
-  index_ids <- get_index_ids(x, innames = c("ID", "toID"))
-
-  # Find fromids from the working index.
-  # columns of the included matrix correspond to the index ids.
-  # rows of the matrix correspond to adjacent upstream ids
-  froms <- get_fromids(index_ids)
-
-  # will fill in order as we go in this
-  order <- rep(1, nrow(x))
-
-  for(i in seq_len(nrow(x))) {
-
-    # nothing to do if nothing upstream
-    if((l <- froms$lengths[i]) > 0) {
-
-      # these are the upstream orders
-      orders <- order[froms$froms[1:l,i]]
-
-      # Need the max upstream order for this work
-      m <- max(orders)
-
-      # the core stream order algorithm.
-      # if more than one upstream order is the same
-      # as the max upstream order, increment by one.
-      # otherwise use the max upstream order.
-      if(length(orders[orders == m]) > 1) {
-        order[i] <- m + 1
-      } else {
-        order[i] <- m
-      }
-
-    }
-  }
-
-  left_join(o_sort,
-            bind_cols(x, data.frame(order = order)),
-            by = "ID")[["order"]]
+  add_streamorder(x, status)$stream_order
 
 }
 
@@ -89,6 +46,7 @@ get_streamorder <- function(x, status = TRUE) {
 #' assumed to be coastal.
 #'
 #' @return numeric stream order in same order as input
+#' @importFrom hydroloom add_streamlevel
 #' @export
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
@@ -115,40 +73,10 @@ get_streamlevel <- function(x) {
 
   check_names(x, "get_streamlevel")
 
-  x$dnlevelpat[is.na(x$dnlevelpat)] <- 0
+  coastal <- NULL
+  coastal <- if("coastal" %in% names(x)) "coastal"
 
-  l <- x %>%
-    dplyr::filter(.data$levelpathi != .data$dnlevelpat) %>%
-    dplyr::rename(ID = "levelpathi",
-                  toID = "dnlevelpat") %>%
-    topo_sort_network(reverse = TRUE) %>%
-    dplyr::distinct()
-
-  l$level <- rep(0, nrow(l))
-
-  l$level[!l$toID %in% l$ID] <- 1
-
-  if("coastal" %in% names(l)) {
-    l$level[l$level == 1 & !l$coastal] <- 4
-  }
-
-  id <- l$ID
-  toid <- l$toID
-  level <- l$level
-
-  toids <- match(toid, id)
-
-  # walk the network from bottom path up
-  for(i in seq_len(length(id))) {
-    if(!is.na(toids[i])) {
-
-      level[i] <- # level at current
-        level[toids[i]] + 1 # level of downstream + 1
-
-    }
-  }
-
-  left_join(x, data.frame(levelpathi = id, out = level), by = "levelpathi")$out
+  add_streamlevel(x, coastal)$stream_level
 
 }
 

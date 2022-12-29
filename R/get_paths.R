@@ -138,6 +138,8 @@ get_index_ids <- function(x,
 
   out <- make_index_ids(out)
 
+  out <- hydroloom:::unnest(out$to_list, "toindid")
+
   names(out) <- outnames
 
   out

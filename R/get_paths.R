@@ -197,13 +197,11 @@ get_terminal <- function(x, outlets) {
 }
 
 #' Get Path Length
-#' @description Generates the main path length to a basin's
-#' terminal path.
+#' @description Generates the main path length to a basin's terminal path.
 #' @param x data.frame with ID, toID, length columns.
-#' @importFrom dplyr arrange
-#' @importFrom methods as
+#' @importFrom hydroloom add_pathlength
 #' @export
-#' @return data.frame containing levelpaths for each ID
+#' @return data.frame containing pathlength for each ID
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #'
@@ -214,21 +212,10 @@ get_terminal <- function(x, outlets) {
 #'
 get_pathlength <- function(x) {
 
-  x <- topo_sort_network(x)
+  x <- select(drop_geometry(x), all_of(c("id" = "ID", "toid" = "toID",
+                                         "length_km" = "length")))
 
-  id <- x$ID
-  toid <- x$toID
-  le <- x$length
-  leo <- rep(0, length(le))
+  x <- add_pathlength(x)
 
-  toids <- match(toid, id)
-
-  for(i in seq_len(length(id))) {
-    if((tid <- toid[i]) != 0) {
-
-      leo[i] <- le[toids[i]] + leo[toids[i]]
-
-    }
-  }
-  return(data.frame(ID = id, pathlength = leo))
+  return(data.frame(ID = x$id, pathlength = x$pathlength_km))
 }

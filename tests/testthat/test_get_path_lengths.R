@@ -12,13 +12,17 @@ test_that("path_lengths", {
 
   fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm = lengthkm)
 
+  expect_warning(
   pl <- get_path_members(outlets, fl)
+  )
 
   expect_equal(nrow(pl), 10)
 
   expect_type(pl$path, "list")
 
+  expect_warning(
   pl <- get_path_lengths(outlets, fl)
+  )
 
   expect_equal(pl$network_distance_km[pl$ID_1 == 5329357 & pl$ID_2 == 5329365],
                3.6, tolerance = 0.01)
@@ -29,15 +33,19 @@ test_that("path_lengths", {
 
   outlets <- c(outlets, 5329303) # add the terminal
 
+  expect_warning(
   pl <- get_path_lengths(outlets, fl)
+  )
 
   expect_equal(nrow(pl), 15)
 
   expect_equal(pl$network_distance_km[pl$ID_1 == 5329317 & pl$ID_2 == 5329303],
                5.8, tolerance = 0.01)
 
+  expect_warning(
   expect_error(get_path_lengths(c(outlets, 12345), fl),
-               "All outlets must be in network.")
+               "All outlets must be in x.")
+  )
 })
 
 test_that("get_partial_length", {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_path_lengths.R
 \name{get_path_lengths}
 \alias{get_path_lengths}
-\title{Get Path Lengths}
+\title{Get Path Lengths (DEPRECATED)}
 \usage{
 get_path_lengths(outlets, network, cores = 1, status = FALSE)
 }
@@ -36,15 +36,6 @@ fline <- nhdplusTools::get_tocomid(fline, add = TRUE)
 
 fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm)
 
-path_lengths <- get_path_lengths(outlets, fl)
-
-outlet_geo <- sf::st_sf(
-  dplyr::left_join(data.frame(ID = outlets),
-                   dplyr::select(fline, ID = comid), by = "ID"))
-
-sf::st_geometry(outlet_geo) <- sf::st_geometry(nhdplusTools::get_node(outlet_geo))
-
-plot(sf::st_geometry(fl))
-plot(sf::st_geometry(outlet_geo), add = TRUE)
+get_path_lengths(outlets, fl)
 
 }

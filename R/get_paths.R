@@ -57,7 +57,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   x <- add_levelpaths(x, weight_attribute = "weight", name_attribute = "nameID",
                       override_factor = override_factor)
 
-  return(as.data.frame(select(x, all_of(c("ID" = "id", "outletID" = "outlet_id",
+  return(as.data.frame(select(x, all_of(c("ID" = "id", "outletID" = "levelpath_outlet_id",
                             "topo_sort" = "topo_sort", "levelpath" = "levelpath")))))
 }
 

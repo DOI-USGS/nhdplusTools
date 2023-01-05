@@ -421,8 +421,10 @@ hydroloom::rename_geometry
 #' @export
 hydroloom::get_node
 
-
 #' @importFrom hydroloom fix_flowdir
 #' @export
 hydroloom::fix_flowdir
 
+#' @importFrom hydroloom rescale_measures
+#' @export
+hydroloom::rescale_measures

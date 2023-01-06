@@ -428,3 +428,7 @@ hydroloom::fix_flowdir
 #' @importFrom hydroloom rescale_measures
 #' @export
 hydroloom::rescale_measures
+
+#' @importFrom hydroloom get_hydro_location
+#' @export
+hydroloom::get_hydro_location

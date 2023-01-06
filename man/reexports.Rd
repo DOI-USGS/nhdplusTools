@@ -8,6 +8,7 @@
 \alias{get_node}
 \alias{fix_flowdir}
 \alias{rescale_measures}
+\alias{get_hydro_location}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -15,6 +16,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{hydroloom}{\code{\link[hydroloom]{fix_flowdir}}, \code{\link[hydroloom]{get_node}}, \code{\link[hydroloom]{rename_geometry}}, \code{\link[hydroloom]{rescale_measures}}, \code{\link[hydroloom]{st_compatibalize}}}
+  \item{hydroloom}{\code{\link[hydroloom]{fix_flowdir}}, \code{\link[hydroloom]{get_hydro_location}}, \code{\link[hydroloom]{get_node}}, \code{\link[hydroloom]{rename_geometry}}, \code{\link[hydroloom]{rescale_measures}}, \code{\link[hydroloom]{st_compatibalize}}}
 }}
 

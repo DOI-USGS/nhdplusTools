@@ -432,3 +432,7 @@ hydroloom::rescale_measures
 #' @importFrom hydroloom get_hydro_location
 #' @export
 hydroloom::get_hydro_location
+
+#' @importFrom hydroloom get_partial_length
+#' @export
+hydroloom::get_partial_length

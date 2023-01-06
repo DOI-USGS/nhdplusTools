@@ -115,6 +115,7 @@ get_flowline_index <- function(flines, points,
 #' @return data.frame indexes deduplicated according to the minimum difference
 #' between the values in the metric columns. If two or more result in the same "minimum"
 #' value, duplicates will be returned.
+#' @importFrom hydroloom disambiguate_indexes
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
@@ -157,49 +158,12 @@ get_flowline_index <- function(flines, points,
 disambiguate_flowline_indexes <- function(indexes, flowpath, hydro_location) {
   check_names(indexes, "disambiguate_flowline_indexes")
 
-  flowpath <- drop_geometry(flowpath)
-  hydro_location <- drop_geometry(hydro_location)
+  indexes <- rename(indexes, all_of(c(point_id = "id")))
 
-  if(ncol(flowpath) != 2 | ncol(hydro_location) != 2) {
-    stop("flowpath and hydrolocation must be two-column data.frames")
-  }
+  out <- disambiguate_indexes(indexes, flowpath, hydro_location)
 
-  names(flowpath) <- c("comid", "metric_fp")
+  rename(out, all_of(c(id = "point_id")))
 
-  names(hydro_location) <- c('id', "metric_hl")
-
-  if(is.numeric(flowpath$metric_fp) & is.numeric(hydro_location$metric_hl)) {
-
-    indexes %>%
-      left_join(flowpath, by = c("COMID" = "comid")) %>%
-      left_join(hydro_location, by = "id") %>%
-      mutate(metric_diff = abs(.data$metric_fp - .data$metric_hl)) %>%
-      group_by(.data$id) %>%
-      filter(.data$metric_diff == min(.data$metric_diff)) %>%
-      ungroup() %>%
-      select(-"metric_hl", -"metric_fp", -"metric_diff")
-
-  } else if(is.character(flowpath$metric_fp) & is.character(hydro_location$metric_hl)) {
-
-    indexes %>%
-      left_join(flowpath, by = c("COMID" = "comid")) %>%
-      left_join(hydro_location, by = "id") %>%
-      mutate(metric_diff = sapply(mapply(c, .data$metric_fp, .data$metric_hl,
-                                         USE.NAMES = FALSE, SIMPLIFY = FALSE),
-                                  string_score)) %>%
-      group_by(.data$id) %>%
-      filter(.data$metric_diff == max(.data$metric_diff)) %>%
-      ungroup() %>%
-      select(-"metric_hl", -"metric_fp", -"metric_diff")
-
-  } else  stop("flowpath and hydrolocation metrics must both be numeric or character")
-
-}
-
-string_score <- function(x) {
-  raw_score <- as.numeric(utils::adist(x[[1]], x[[2]], ignore.case = TRUE))
-
-  (1 - (raw_score) / max(c(nchar(x[[1]]), nchar(x[[2]]))))
 }
 
 #' @title Get Waterbody Index

@@ -198,5 +198,81 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
   return(path)
 }
 
+#' Get catchment characteristics metadata table
+#' @description Download and cache table of catchment characteristics.
+#'
+#' Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes
+#' for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
+#' Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
+#' Geological Survey data release, \doi{10.5066/F7765D7V}.
+#' @param cache logical should cached metadata be used?
+#' @export
+#' @example get_characteristics_metadata()
+get_characteristics_metadata <- function(cache = TRUE) {
 
+  tryCatch({
+    u <- "https://prod-is-usgs-sb-prod-publish.s3.amazonaws.com/5669a79ee4b08895842a1d47/metadata_table.tsv"
 
+    f <- file.path(nhdplusTools_data_dir(), "metadata_table.tsv")
+
+    if(!cache) unlink(f, force = TRUE)
+
+    if(!file.exists(f)) resp <- httr::RETRY("GET", u, httr::write_disk(f))
+
+    read.delim(f, sep = "\t")
+  },
+  error = function(e) {
+    warning(e)
+    NULL
+  })
+}
+
+#' Get Catchment Characteristics
+#' @description Downloads (subsets of) catchment characteristics from a cloud data
+#' store. See \link{get_characteristics_metadata} for available characteristics.
+#'
+#' Source:
+#' Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes
+#' for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
+#' Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
+#' Geological Survey data release, \doi{10.5066/F7765D7V}.
+#'
+#' @param varname character vector of desired variables
+#' @param ids numeric vector of identifiers (comids) from the specified fabric
+#' @param reference_fabric (not used) will be used to allow future specification
+#' of alternate reference fabrics
+#' @importFrom dplyr bind_rows filter select everything collect
+#' @export
+#' @example get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
+#'
+get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdplusv2"){
+
+  metadata <- get_characteristics_metadata()
+
+  bind_rows(
+    lapply(varname, function(x) {
+      i <- metadata[metadata$ID == x,]
+
+      id <- gsub("https://www.sciencebase.gov/catalog/item/", "", i$datasetURL)
+
+      bucket <- arrow::s3_bucket("s3://prod-is-usgs-sb-prod-publish", anonymous = TRUE, region = "us-west-2")
+
+      end <- ifelse(grepl("CAT", x, ), "_cat.parquet",
+                    ifelse(grep("TOT", x), "_tot_parquet",
+                           "_acc.parquet"))
+
+      ds <- arrow::open_dataset(paste0("s3://anonymous@prod-is-usgs-sb-prod-publish/",
+                                       id, "/", id, end, "?region=us-west-2"))
+
+      sub <- filter(ds, COMID %in% ids)
+
+      att <- collect(sub)
+
+      att$characteristic_id <- x
+      att$percent_nodata <- 0
+
+      select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",
+                           characteristic_value = x, percent_nodata = "percent_nodata")))
+    })
+  )
+}

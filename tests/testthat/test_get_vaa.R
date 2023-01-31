@@ -31,3 +31,19 @@ test_that("vaa examples", {
 
   expect_true("tocomid" %in% get_vaa_names(updated_network = TRUE))
 })
+
+test_that("catchment chars" {
+  meta <- nhdplusTools::get_characteristics_metadata()
+
+  expect_true(inherits(meta, "data.frame"))
+
+  expect_equal(names(meta), c("ID", "description", "units", "datasetLabel", "datasetURL",
+                              "themeLabel", "themeURL", "watershedType"))
+
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+
+  dat <- nhdplusTools::get_catchment_characteristics(meta$ID[1], walker_catchment$FEATUREID)
+
+  expect_equal(names(dat), c("characteristic_id", "comid",
+                             "characteristic_value", "percent_nodata"))
+})

@@ -29,7 +29,7 @@ Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devt
 Remotes: doi-usgs/hydroloom
 License: CC0
 Encoding: UTF-8
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Config/testthat/parallel: true
 Config/testthat/edition: 3

@@ -4,9 +4,12 @@
 \alias{get_characteristics_metadata}
 \title{Get catchment characteristics metadata table}
 \usage{
-get_characteristics_metadata(cache = TRUE)
+get_characteristics_metadata(search, cache = TRUE)
 }
 \arguments{
+\item{search}{character string of length 1 to free search the metadata table.
+If no search term is provided the entire table is returned.}
+
 \item{cache}{logical should cached metadata be used?}
 }
 \description{

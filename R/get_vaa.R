@@ -205,26 +205,45 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 #' for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
 #' Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
 #' Geological Survey data release, \doi{10.5066/F7765D7V}.
+#' @param search character string of length 1 to free search the metadata table.
+#' If no search term is provided the entire table is returned.
 #' @param cache logical should cached metadata be used?
 #' @export
 #' @example get_characteristics_metadata()
-get_characteristics_metadata <- function(cache = TRUE) {
+get_characteristics_metadata <- function(search, cache = TRUE) {
 
   tryCatch({
     u <- "https://prod-is-usgs-sb-prod-publish.s3.amazonaws.com/5669a79ee4b08895842a1d47/metadata_table.tsv"
 
     f <- file.path(nhdplusTools_data_dir(), "metadata_table.tsv")
+    r <- file.path(nhdplusTools_data_dir(), "metadata_table.rds")
 
-    if(!cache) unlink(f, force = TRUE)
+    if(!cache) unlink(r, force = TRUE)
 
-    if(!file.exists(f)) resp <- httr::RETRY("GET", u, httr::write_disk(f))
+    if(file.exists(r)) {
+      out <- readRDS(r)
+    } else {
 
-    read.delim(f, sep = "\t")
+      if(!file.exists(f)) resp <- httr::RETRY("GET", u, httr::write_disk(f))
+
+      out <- read.delim(f, sep = "\t")
+
+      saveRDS(out, r)
+
+      unlink(f)
+    }
   },
   error = function(e) {
     warning(e)
-    NULL
+    out <- NULL
   })
+
+  if(!missing(search)) {
+    return(out[unique(unlist(
+      mapply(grep, search, out, ignore.case = TRUE)
+    )), ])
+  }
+  out
 }
 
 #' Get Catchment Characteristics
@@ -258,7 +277,7 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
       bucket <- arrow::s3_bucket("s3://prod-is-usgs-sb-prod-publish", anonymous = TRUE, region = "us-west-2")
 
       end <- ifelse(grepl("CAT", x, ), "_cat.parquet",
-                    ifelse(grep("TOT", x), "_tot_parquet",
+                    ifelse(grepl("TOT", x), "_tot.parquet",
                            "_acc.parquet"))
 
       ds <- arrow::open_dataset(paste0("s3://anonymous@prod-is-usgs-sb-prod-publish/",

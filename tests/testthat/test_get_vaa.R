@@ -32,7 +32,13 @@ test_that("vaa examples", {
   expect_true("tocomid" %in% get_vaa_names(updated_network = TRUE))
 })
 
-test_that("catchment chars" {
+test_that("catchment chars", {
+
+  httptest::without_internet({
+    suppressMessages(expect_warning(w <- get_characteristics_metadata(cache = FALSE)))
+    expect_null(w)
+  })
+
   meta <- nhdplusTools::get_characteristics_metadata(cache = FALSE)
 
   expect_true(inherits(meta, "data.frame"))
@@ -51,7 +57,7 @@ test_that("catchment chars" {
 
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
-  dat <- nhdplusTools::get_catchment_characteristics(c("CAT_BFI", "ACC_BFI", "TOT_BFI"), walker_catchment$FEATUREID)
+  dat <- get_catchment_characteristics(c("CAT_BFI", "ACC_BFI", "TOT_BFI"), walker_catchment$FEATUREID)
 
   expect_equal(names(dat), c("characteristic_id", "comid",
                              "characteristic_value", "percent_nodata"))
@@ -59,5 +65,10 @@ test_that("catchment chars" {
   expect_true(all(c("CAT_BFI", "ACC_BFI", "TOT_BFI") %in% dat$characteristic_id))
 
   expect_true(all(walker_catchment$FEATUREID %in% dat$comid))
+
+  expect_warning(w <- get_catchment_characteristics("CAT_CFI",
+                                                    walker_catchment$FEATUREID),
+                 "Variable CAT_CFI not found in metadata.")
+  expect_null(w)
 
 })

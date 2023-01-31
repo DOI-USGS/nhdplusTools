@@ -212,7 +212,7 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 #' @example get_characteristics_metadata()
 get_characteristics_metadata <- function(search, cache = TRUE) {
 
-  tryCatch({
+  out <- tryCatch({
     u <- "https://prod-is-usgs-sb-prod-publish.s3.amazonaws.com/5669a79ee4b08895842a1d47/metadata_table.tsv"
 
     f <- file.path(nhdplusTools_data_dir(), "metadata_table.tsv")
@@ -231,12 +231,14 @@ get_characteristics_metadata <- function(search, cache = TRUE) {
       saveRDS(out, r)
 
       unlink(f)
+
+      out
     }
-  },
-  error = function(e) {
-    warning(e)
-    out <- NULL
+  }, error = function(e) {
+    NULL
   })
+
+  if(is.null(out)) warning("Problem getting metadata, no internet?")
 
   if(!missing(search)) {
     return(out[unique(unlist(
@@ -261,6 +263,7 @@ get_characteristics_metadata <- function(search, cache = TRUE) {
 #' @param reference_fabric (not used) will be used to allow future specification
 #' of alternate reference fabrics
 #' @importFrom dplyr bind_rows filter select everything collect
+#' @importFrom arrow s3_bucket open_dataset
 #' @export
 #' @example get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
 #'
@@ -268,30 +271,44 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
 
   metadata <- get_characteristics_metadata()
 
-  bind_rows(
-    lapply(varname, function(x) {
-      i <- metadata[metadata$ID == x,]
+  out <- tryCatch({
+    bind_rows(
+      lapply(varname, function(x) {
+        if(!x %in% metadata$ID) stop(paste("Variable", x, "not found in metadata."))
 
-      id <- gsub("https://www.sciencebase.gov/catalog/item/", "", i$datasetURL)
+        i <- metadata[metadata$ID == x,]
 
-      bucket <- arrow::s3_bucket("s3://prod-is-usgs-sb-prod-publish", anonymous = TRUE, region = "us-west-2")
+        id <- gsub("https://www.sciencebase.gov/catalog/item/", "", i$datasetURL)
 
-      end <- ifelse(grepl("CAT", x, ), "_cat.parquet",
-                    ifelse(grepl("TOT", x), "_tot.parquet",
-                           "_acc.parquet"))
+        bucket <- s3_bucket("s3://prod-is-usgs-sb-prod-publish", anonymous = TRUE, region = "us-west-2")
 
-      ds <- arrow::open_dataset(paste0("s3://anonymous@prod-is-usgs-sb-prod-publish/",
-                                       id, "/", id, end, "?region=us-west-2"))
+        end <- ifelse(grepl("CAT", x, ), "_cat.parquet",
+                      ifelse(grepl("TOT", x), "_tot.parquet",
+                             "_acc.parquet"))
 
-      sub <- filter(ds, COMID %in% ids)
+        ds <- open_dataset(paste0("s3://anonymous@prod-is-usgs-sb-prod-publish/",
+                                         id, "/", id, end, "?region=us-west-2"))
 
-      att <- collect(sub)
+        sub <- filter(ds, COMID %in% ids)
 
-      att$characteristic_id <- x
-      att$percent_nodata <- 0
+        att <- collect(sub)
 
-      select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",
-                           characteristic_value = x, percent_nodata = "percent_nodata")))
+        att$characteristic_id <- x
+        att$percent_nodata <- 0
+
+        select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",
+                             characteristic_value = x, percent_nodata = "percent_nodata")))
+      })
+    )}, error = function(e) {
+      e
     })
-  )
+
+  if(!inherits(out, "data.frame")) {
+    warning(paste0("Issue getting characteristics. Error was: \n",
+                   out))
+    out <- NULL
+  }
+
+  out
+
 }

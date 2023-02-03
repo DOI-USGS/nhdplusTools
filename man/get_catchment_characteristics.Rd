@@ -7,7 +7,8 @@
 get_catchment_characteristics(varname, ids, reference_fabric = "nhdplusv2")
 }
 \arguments{
-\item{varname}{character vector of desired variables}
+\item{varname}{character vector of desired variables. If repeated varnames
+are provided, they will be downloaded once but duplicated in the output.}
 
 \item{ids}{numeric vector of identifiers (comids) from the specified fabric}
 
@@ -23,4 +24,8 @@ Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes
 for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
 Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
 Geological Survey data release, \doi{10.5066/F7765D7V}.
+}
+\examples{
+get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
+
 }

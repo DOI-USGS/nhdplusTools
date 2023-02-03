@@ -209,7 +209,8 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 #' If no search term is provided the entire table is returned.
 #' @param cache logical should cached metadata be used?
 #' @export
-#' @example get_characteristics_metadata()
+#' @examples
+#' get_characteristics_metadata()
 get_characteristics_metadata <- function(search, cache = TRUE) {
 
   out <- tryCatch({
@@ -258,57 +259,71 @@ get_characteristics_metadata <- function(search, cache = TRUE) {
 #' Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
 #' Geological Survey data release, \doi{10.5066/F7765D7V}.
 #'
-#' @param varname character vector of desired variables
+#' @param varname character vector of desired variables. If repeated varnames
+#' are provided, they will be downloaded once but duplicated in the output.
 #' @param ids numeric vector of identifiers (comids) from the specified fabric
 #' @param reference_fabric (not used) will be used to allow future specification
 #' of alternate reference fabrics
 #' @importFrom dplyr bind_rows filter select everything collect
 #' @importFrom arrow s3_bucket open_dataset
 #' @export
-#' @example get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
+#' @examples
+#' get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
 #'
 get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdplusv2"){
 
   metadata <- get_characteristics_metadata()
 
   out <- tryCatch({
-    bind_rows(
-      lapply(varname, function(x) {
-        if(!x %in% metadata$ID) stop(paste("Variable", x, "not found in metadata."))
+    lapply(unique(varname), function(x) {
+      if(!x %in% metadata$ID) stop(paste("Variable", x, "not found in metadata."))
 
-        i <- metadata[metadata$ID == x,]
+      i <- metadata[metadata$ID == x,]
 
-        id <- gsub("https://www.sciencebase.gov/catalog/item/", "", i$datasetURL)
+      id <- gsub("https://www.sciencebase.gov/catalog/item/", "", i$datasetURL)
 
-        bucket <- s3_bucket("s3://prod-is-usgs-sb-prod-publish", anonymous = TRUE, region = "us-west-2")
+      bucket <- s3_bucket("s3://prod-is-usgs-sb-prod-publish", anonymous = TRUE, region = "us-west-2")
 
-        end <- ifelse(grepl("CAT", x, ), "_cat.parquet",
-                      ifelse(grepl("TOT", x), "_tot.parquet",
-                             "_acc.parquet"))
+      end <- ifelse(grepl("CAT", x, ), "_cat.parquet",
+                    ifelse(grepl("TOT", x), "_tot.parquet",
+                           "_acc.parquet"))
 
-        ds <- open_dataset(paste0("s3://anonymous@prod-is-usgs-sb-prod-publish/",
-                                         id, "/", id, end, "?region=us-west-2"))
+      ds <- open_dataset(paste0("s3://anonymous@prod-is-usgs-sb-prod-publish/",
+                                id, "/", id, end, "?region=us-west-2"))
 
-        sub <- filter(ds, COMID %in% ids)
+      sub <- filter(ds, COMID %in% ids)
 
-        att <- collect(sub)
+      att <- collect(sub)
 
-        att$characteristic_id <- x
-        att$percent_nodata <- 0
+      att$characteristic_id <- x
+      att$percent_nodata <- 0
 
-        select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",
-                             characteristic_value = x, percent_nodata = "percent_nodata")))
-      })
-    )}, error = function(e) {
-      e
+      select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",
+                           characteristic_value = x, percent_nodata = "percent_nodata")))
     })
+  }, error = function(e) {
+    e
+  })
 
-  if(!inherits(out, "data.frame")) {
+  df <- sapply(out, is.data.frame)
+
+  if(!all(df)) {
     warning(paste0("Issue getting characteristics. Error was: \n",
-                   out))
-    out <- NULL
+                   out[!df]))
+    return(NULL)
   }
 
-  out
+  names(out) <- unique(varname)
 
+  varname <- stats::setNames(make.unique(varname, sep = "||"), varname)
+
+  out <- lapply(1:length(varname), function(i) {
+    out <- out[names(varname)[i]]
+
+    out[[1]]$characteristic_id <- varname[[i]]
+
+    out[[1]]
+  })
+
+  bind_rows(out)
 }

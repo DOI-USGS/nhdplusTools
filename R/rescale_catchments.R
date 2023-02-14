@@ -92,6 +92,10 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
 #' spatial averages, when splitting, the average condition is apportioned evenly
 #' to each split. In some cases, such as with land cover or elevation, this may
 #' not be appropriate and source data should be used to derive new characteristics.
+#' In addition, this function handles catchment areas for split catchments but
+#' makes no adjustments for the length of flowlines in those catchments.
+#' Therefore, requests for length-weighted mean values may not be appropriate
+#' when working with split catchments.
 #'
 #' @param vars data.frame containing `characteristic_id` retrieved from
 #' \link{get_characteristics_metadata} and `summary_statistic` indicating
@@ -110,12 +114,41 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
 #' not provided, either no split catchments can be considered or the `catchment_areas`
 #' parameter is required.
 #'
-#' @param catchment_characteristics data.frame as returned by
-#' \link{get_catchment_characteristics}.
+#' @param catchment_characteristics data.frame containing columns
+#' "characteristic_id", "comid", "characteristic_value", and "percent_nodata".
+#' If not provided, it will be retrieved from \link{get_catchment_characteristics}
+#' using the characteristic ids from `vars` and the comids from `lookup_table`.
 #'
 #' @param catchment_areas data.frame containing columns "comid", "areasqkm",
 #' "split_catchment_areasqkm", and "split_area_prop". If not provided, it will
 #' be retrieved from `refactored_areas` and/or \link{get_vaa}.
+#'
+#' @examples
+#' \donttest{
+#' vars <- data.frame(characteristic_id = c("CAT_IMPV11","CAT_BASIN_AREA"),
+#'                    summary_statistic = c("area_weighted_mean","sum"))
+#' lookup_table <- data.frame(id = rep(10012268, 2),
+#'                            comid = c(4146596, 4147382),
+#'                            member_comid = c(4146596, 4147382))
+#' rescale_catchment_characteristics(vars, lookup_table)
+#'
+#' vars <- data.frame(characteristic_id = c("CAT_ELEV_MIN","CAT_ELEV_MAX"),
+#'                    summary_statistic = c("min","max"))
+#' lookup_table <- data.frame(id = rep(10012268, 2),
+#'                            comid = c(4146596, 4147382),
+#'                            member_comid = c(4146596, 4147382))
+#' rescale_catchment_characteristics(vars, lookup_table)
+#'
+#' vars <- data.frame(characteristic_id = c("CAT_EWT","CAT_TWI", "CAT_BASIN_AREA"),
+#'                    summary_statistic = c("area_weighted_mean", "area_weighted_mean","sum"))
+#' lookup_table <- data.frame(id = c(10012268, 10012268, 10024047, 10024048),
+#'                            comid = c(4146596, 4147382, 4147396, 4147396),
+#'                            member_comid = c("4146596", "4147382", "4147396.1", "4147396.2"))
+#' comid_areas <- data.frame(featureid = c("4146596", "4147382", "4147396.1", "4147396.2"),
+#'                                areasqkm = c(0.9558, 11.9790, 6.513294, 1.439999))
+#' rescale_catchment_characteristics(vars, lookup_table, refactored_areas = comid_areas)
+#'
+#'  }
 #'
 #' @importFrom dplyr left_join rename_with mutate across group_by summarize ungroup distinct starts_with any_of
 #' @importFrom tidyr pivot_wider
@@ -150,6 +183,8 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
     # download characteristics for the requested comids
     catchment_characteristics <- get_catchment_characteristics(varname = vars$characteristic_id,
                                               ids = unique(lookup_table$comid))
+    # omit any duplicated rows in the returned attribute table
+    catchment_characteristics <- distinct(catchment_characteristics)
 
   }
 

@@ -2,7 +2,7 @@ rescale_characteristics <- function(vars, lookup_table) {
   # assign columns based on the desired summary operation
   cols_sum <- vars$characteristic_id[vars$summary_statistic == "sum"]
   cols_area_wtd_mean <- vars$characteristic_id[vars$summary_statistic == "area_weighted_mean"]
-  cols_length_wtd_mean <- vars$characteristic_id[vars$aggregation_statistic == "length_weighted_mean"]
+  cols_length_wtd_mean <- vars$characteristic_id[vars$summary_statistic == "length_weighted_mean"]
   cols_min <- vars$characteristic_id[vars$summary_statistic == "min"]
   cols_max <- vars$characteristic_id[vars$summary_statistic == "max"]
 
@@ -13,11 +13,11 @@ rescale_characteristics <- function(vars, lookup_table) {
     summarize(
       areasqkm_sum = sum(.data$split_catchment_areasqkm),
       lengthkm_sum = sum(.data$lengthkm),
-      across(any_of(cols_area_wtd_mean), weighted.mean, w = .data$split_catchment_areasqkm, na.rm = TRUE, .names = "{col}_area_wtd"),
-      across(any_of(cols_length_wtd_mean), weighted.mean, w = .data$lengthkm, na.rm = TRUE, .names = "{col}_length_wtd"),
-      across(any_of(cols_sum), sum, na.rm = TRUE, .names = "{col}_sum"),
-      across(any_of(cols_min), min, na.rm = TRUE, .names = "{col}_min"),
-      across(any_of(cols_max), max, na.rm = TRUE, .names = "{col}_max")
+      across(any_of(cols_area_wtd_mean), \(x) weighted.mean(x, w = split_catchment_areasqkm, na.rm = TRUE), .names = "{col}_area_wtd"),
+      across(any_of(cols_length_wtd_mean), \(x) weighted.mean(x, w = lengthkm, na.rm = TRUE), .names = "{col}_length_wtd"),
+      across(any_of(cols_sum), \(x) sum(x, na.rm = TRUE), .names = "{col}_sum"),
+      across(any_of(cols_min), \(x) min(x, na.rm = TRUE), .names = "{col}_min"),
+      across(any_of(cols_max), \(x) max(x, na.rm = TRUE), .names = "{col}_max")
     ) |>
     ungroup()
 }
@@ -46,7 +46,7 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
   # fetch basin area for all comids
   catchment_areas <- nhdplusTools::get_vaa(atts = c("comid", "areasqkm", "lengthkm")) |>
     select(all_of(c("comid", "areasqkm", "lengthkm"))) |>
-    right_join(comids_fmt, by = "comid")
+    right_join(comids_fmt, by = "comid", multiple = "all")
 
   # handle "split" catchments (if applicable)
   if(all(comids_fmt$member_comid == as.character(comids_fmt$comid))) {
@@ -204,7 +204,7 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
   # combine the nldi characteristics with the catchment identifier and basin area
   lookup_table <- lookup_table |>
     left_join(catchment_areas, by = c("member_comid","comid")) |>
-    left_join(catchment_characteristics, by = "comid")
+    left_join(catchment_characteristics, by = "comid", multiple = "all")
 
   # rescale the nldi characteristics if needed (i.e., for split catchments)
   if(!all(lookup_table$comid == lookup_table$member_comid)){

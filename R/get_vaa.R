@@ -56,7 +56,7 @@ get_vaa_names <- function(updated_network = FALSE) {
 #' found at path.
 #' @param updated_network logical default FALSE. If TRUE, updated network attributes
 #' from E2NHD and National Water Model retrieved from
-#' \doi{10.5066/P9W79I7Q}.
+#' \doi{10.5066/P976XCVT}.
 #' @return data.frame containing requested VAA data
 #' @importFrom fst read.fst
 #' @export
@@ -298,8 +298,9 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
       att$characteristic_id <- x
       att$percent_nodata <- 0
 
+      distinct(
       select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",
-                           characteristic_value = x, percent_nodata = "percent_nodata")))
+                           characteristic_value = x, percent_nodata = "percent_nodata"))))
     })
   }, error = function(e) {
     e

@@ -183,8 +183,6 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
     # download characteristics for the requested comids
     catchment_characteristics <- get_catchment_characteristics(varname = vars$characteristic_id,
                                               ids = unique(lookup_table$comid))
-    # omit any duplicated rows in the returned attribute table
-    catchment_characteristics <- distinct(catchment_characteristics)
 
   }
 

@@ -284,19 +284,25 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
 
       bucket <- s3_bucket("s3://prod-is-usgs-sb-prod-publish", anonymous = TRUE, region = "us-west-2")
 
-      end <- ifelse(grepl("CAT", x, ), "_cat.parquet",
-                    ifelse(grepl("TOT", x), "_tot.parquet",
+      end <- ifelse(grepl("local", i$watershedType, ), "_cat.parquet",
+                    ifelse(grepl("tot", i$watershedType), "_tot.parquet",
                            "_acc.parquet"))
 
       ds <- open_dataset(paste0("s3://anonymous@prod-is-usgs-sb-prod-publish/",
                                 id, "/", id, end, "?region=us-west-2"))
 
-      sub <- filter(ds, COMID %in% ids)
+      sub <- filter(select(ds, any_of(c("COMID", x, "percent_nodata"))),
+                           .data$COMID %in% ids)
 
       att <- collect(sub)
 
       att$characteristic_id <- x
-      att$percent_nodata <- 0
+
+      att <- dplyr::mutate_all(att, ~ifelse(. == -9999, NA, .))
+
+      if(!"percent_nodata" %in% names(att)) {
+        att$percent_nodata <- 0
+      }
 
       distinct(
       select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",

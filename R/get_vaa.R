@@ -280,16 +280,7 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
 
       i <- metadata[metadata$ID == x,]
 
-      id <- gsub("https://www.sciencebase.gov/catalog/item/", "", i$datasetURL)
-
-      bucket <- s3_bucket("s3://prod-is-usgs-sb-prod-publish", anonymous = TRUE, region = "us-west-2")
-
-      end <- ifelse(grepl("local", i$watershedType, ), "_cat.parquet",
-                    ifelse(grepl("tot", i$watershedType), "_tot.parquet",
-                           "_acc.parquet"))
-
-      ds <- open_dataset(paste0("s3://anonymous@prod-is-usgs-sb-prod-publish/",
-                                id, "/", id, end, "?region=us-west-2"))
+      ds <- open_dataset(metadata$s3_url)
 
       sub <- filter(select(ds, any_of(c("COMID", x, "percent_nodata"))),
                            .data$COMID %in% ids)

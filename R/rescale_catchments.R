@@ -6,6 +6,11 @@ rescale_characteristics <- function(vars, lookup_table) {
   cols_min <- vars$characteristic_id[vars$summary_statistic == "min"]
   cols_max <- vars$characteristic_id[vars$summary_statistic == "max"]
 
+  vars_nodata <- names(select(lookup_table, starts_with("percent_nodata")))
+  if(length(vars_nodata) > 0) {
+    cols_area_wtd_mean <- c(cols_area_wtd_mean, vars_nodata)
+  }
+
   # rescale NHDPlusv2 attributes to desired catchments
   # !note that there are currently no adjustments made for the length of split flowlines
   lookup_table |>
@@ -190,9 +195,10 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
 
   # pivot to wide format
   catchment_characteristics <- pivot_wider(catchment_characteristics,
-                                          id_cols = !"percent_nodata",
-                                          names_from = "characteristic_id",
-                                          values_from = "characteristic_value")
+                                           names_from = "characteristic_id",
+                                           values_from = c("characteristic_value", "percent_nodata"))
+  catchment_characteristics <- rename_with(.data = catchment_characteristics,
+                                           .fn = ~gsub("characteristic_value_", "", .x, fixed = TRUE))
 
   if(is.null(catchment_areas)) {
     # get comid catchment areas, adjusting area for catchments that have been "split"

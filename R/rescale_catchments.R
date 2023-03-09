@@ -218,7 +218,7 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
     left_join(catchment_areas, by = c("member_comid","comid")) |>
     left_join(catchment_characteristics, by = "comid", multiple = "all")
 
-  # rescale certain nldi characteristics for split catchments (if applicable)
+  # rescale the nldi characteristics if needed (i.e., for split catchments)
   if(!all(lookup_table$comid == lookup_table$member_comid)){
     lookup_table <- mutate(lookup_table,
                            across(any_of(var_names), ~.x*.data$split_area_prop, .names = "{col}_rescaled"))

@@ -307,10 +307,6 @@ nhdplusTools_data_dir <- function(dir = NULL) {
 }
 
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage(paste(strwrap(
-    "USGS Support Package:
-    https://owi.usgs.gov/R/packages.html#support"),
-    collapse = "\n"))
   nhdplus_path(default_nhdplus_path, warn = FALSE)
 }
 
@@ -395,7 +391,7 @@ align_nhdplus_names <- function(x){
 
 }
 
-
+# TODO: deprecate moved to hydroloom
 drop_geometry <- function(x) {
   if("sf" %in% class(x)) {
     sf::st_drop_geometry(x)
@@ -404,6 +400,7 @@ drop_geometry <- function(x) {
   }
 }
 
+# TODO: deprecate moved to hydroloom
 #' make spatial inputs compatible
 #' @description makes sf1 compatible with sf2 by projecting into
 #' the projection of 2 and ensuring that the geometry columns are the
@@ -431,6 +428,7 @@ st_compatibalize <- function(sf1, sf2) {
 
 }
 
+# TODO: deprecate moved to hydroloom
 #' rename_geometry
 #' @description correctly renames the geometry column
 #' of a sf object.

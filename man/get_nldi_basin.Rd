@@ -16,7 +16,7 @@ from the specified `featureSource`.}
 visualization and performance?}
 
 \item{split}{logical should response resolve precisely to the location
-of the `nldi_feature`? Setting `TRUE` calls an aditional service and
+of the `nldi_feature`? Setting `TRUE` calls an additional service and
 will be slower and less robust.}
 }
 \value{
@@ -47,6 +47,8 @@ basin
 basin2 <- get_nldi_basin(nldi_feature = nldi_nwis,
                          simplify = FALSE, split = TRUE)
 
+if(inherits(basin, "sf") & inherits(basin2, "sf")) {
+
 length(st_coordinates(basin))
 length(st_coordinates(basin2))
 
@@ -57,5 +59,6 @@ plot(st_geometry(basin2), add = TRUE)
 
 plot(st_geometry(basin), border = "red", add = TRUE)
 
+}
 }
 }

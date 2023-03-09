@@ -3,11 +3,13 @@
 test_that("navigation basics", {
   skip_on_cran()
 
+  expect_warning(
   # 06287800
   net <-  navigate_network(list(featureSource = "nwissite", featureID = "USGS-11486500"),
                            "UM",
                            output = "flowlines",
-                           trim_start = TRUE)
+                           trim_start = TRUE),
+  "Attempting to combine multipart lines into single part lines. Check results!!")
 
   expect_equal(nrow(net), 5)
 
@@ -20,25 +22,28 @@ test_that("navigation basics", {
 
   start <- sf::st_sfc(sf::st_point(c(-121.6678, 42.14987)), crs = sf::st_crs(4269))
 
+  expect_warning(
   net3 <-  navigate_network(start,
                            "UM",
                            output = "flowlines",
-                           trim_start = TRUE)
+                           trim_start = TRUE),
+  "Attempting to combine multipart lines into single part lines. Check results!!")
 
   net_no_split <- navigate_network(start,
                                    "UM",
                                    output = "flowlines",
                                    trim_start = FALSE)
 
-
   expect_equal(names(net), names(net3))
 
   expect_true(length(sf::st_geometry(net_no_split)[[5]]) > length(sf::st_geometry(net)[[5]]))
 
+  expect_warning(
   net4 <-  navigate_network(start,
                             "UM", network = net_no_split,
                             output = "flowlines",
-                            trim_start = TRUE)
+                            trim_start = TRUE),
+  "Attempting to combine multipart lines into single part lines. Check results!!")
 
   expect_equal(names(net4), names(net))
   expect_equal(nrow(net4), nrow(net))
@@ -58,10 +63,12 @@ test_that("navigation basics", {
                                 output = "flowlines",
                                 trim_start = TRUE))
 
+  expect_warning(
   net5 <-  navigate_network(start,
                             "UM", network = net_no_split,
                             output = "nwissite",
-                            trim_start = TRUE)
+                            trim_start = TRUE),
+  "Attempting to combine multipart lines into single part lines. Check results!!")
 })
 
 test_that("walker", {

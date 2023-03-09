@@ -11,7 +11,7 @@ test_that("get streamorder", {
 
     test_flowline$order <- get_streamorder(test_flowline)
 
-    walker_flowline <- left_join(walker_flowline, test_flowline, by = c("COMID" = "ID"))
+    walker_flowline <- dplyr::left_join(walker_flowline, test_flowline, by = c("COMID" = "ID"))
 
     expect_equal(walker_flowline$order, walker_flowline$StreamOrde)
 
@@ -29,7 +29,7 @@ test_that("get streamorder", {
 
     test_flowline$order <- get_streamorder(test_flowline)
 
-    pt_data <- left_join(filter(pt_data, COMID %in% test_flowline$ID),
+    pt_data <- dplyr::left_join(dplyr::filter(pt_data, COMID %in% test_flowline$ID),
                          test_flowline, by = c("COMID" = "ID"))
 
     expect_equal(pt_data$order, pt_data$StreamOrde)
@@ -91,7 +91,7 @@ test_that("get_pfaf", {
 
   expect_true(all(!is.na(c(pfaf$pf_level_1, pfaf$pf_level_4))))
 
-  fl <- left_join(fl, pfaf, by = "ID")
+  fl <- dplyr::left_join(fl, pfaf, by = "ID")
 
   expect_equal(pfaf$pf_level_3[pfaf$ID == 15000500061836], 611)
 
@@ -107,14 +107,14 @@ test_that("get_pfaf", {
 
   fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE)
 
-  fl <- select(walker_flowline, COMID, AreaSqKM) %>%
-    left_join(fl, by = "COMID") %>%
-    st_sf() %>%
-    select(ID = COMID, toID = toCOMID, area = AreaSqKM)
+  fl <- dplyr::select(walker_flowline, COMID, AreaSqKM) %>%
+    dplyr::left_join(fl, by = "COMID") %>%
+    sf::st_sf() %>%
+    dplyr::select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
   fl$nameID = ""
   fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
-  fl <- left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),
+  fl <- dplyr::left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),
                                                    weight = totda)), by = "ID")
 
   pfaf <- get_pfaf(fl, max_level = 2)

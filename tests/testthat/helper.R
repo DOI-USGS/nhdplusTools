@@ -12,7 +12,7 @@ get_test_file <- function(temp_dir) {
   check_location <- check_locations[file.exists(check_locations)]
   if(length(check_location) == 0) {
     temp_file <- file.path(temp_dir, "temp.zip")
-    download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
+    download.file("https://doi-usgs.github.io/nhdplusTools/data/03_sub.zip",
                   temp_file, quiet = FALSE)
   } else {
     temp_file <- check_location[1]
@@ -24,4 +24,16 @@ get_test_file <- function(temp_dir) {
 get_test_dir <- function() {
   f <- list.files(pattern = "data$", recursive = TRUE, full.names = TRUE, include.dirs = TRUE)
   f[grep("testthat\\/data", f)]
+}
+
+
+check_layers <- function(out_file) {
+  expect_equal(nrow(sf::read_sf(out_file, "CatchmentSP")), 4)
+  expect_equal(nrow(sf::read_sf(out_file, "NHDWaterbody")), 1)
+  expect_true(sf::st_crs(sf::read_sf(out_file, "CatchmentSP")) ==
+                sf::st_crs(4269))
+  expect_true(sf::st_crs(sf::read_sf(out_file, "NHDWaterbody")) ==
+                sf::st_crs(4269))
+  expect_true(sf::st_crs(sf::read_sf(out_file, "NHDFlowline_Network")) ==
+                sf::st_crs(4269))
 }

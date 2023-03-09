@@ -21,15 +21,15 @@ test_that("query water labs...",{
   testthat::skip_on_cran()
   #available?
   df = nhdplusTools:::query_usgs_geoserver()
-  expect_equal(ncol(df), 4)
+  expect_equal(ncol(df), 6)
 
   # errors
   # Bad type request
   expect_error(query_usgs_geoserver(AOI = pt, type = 'wrong'))
   # Missing AOI and ID(s)
-  expect_error(query_usgs_geoserver(AOI = NULL, id = NULL,  type = 'huc8'))
+  expect_error(query_usgs_geoserver(AOI = NULL, id = NULL,  type = 'huc8_legacy'))
   # Providing both an AOI and ID(s)
-  expect_error(query_usgs_geoserver(AOI = pt, id = 17010101,  type = 'huc8'))
+  expect_error(query_usgs_geoserver(AOI = pt, id = 17010101,  type = 'huc8_legacy'))
 })
 
 # Walk our way through the 7 different offerings...
@@ -47,40 +47,86 @@ test_that("query water labs...",{
 test_that("huc8", {
   testthat::skip_on_cran()
   #Point
-  ptHUC8 = nhdplusTools:::get_huc8(AOI = pt)
+  expect_warning({
+  ptHUC8 = get_huc8(AOI = pt)
+  })
   expect_equal(nrow(ptHUC8), 1)
   expect_equal(ptHUC8$huc8, "17010101")
-  expect_equal(st_crs(ptHUC8)$epsg, 4326)
+  expect_equal(sf::st_crs(ptHUC8)$epsg, 4326)
+
+  expect_warning({
+  expect_error(get_huc8(AOI = rbind(pt,pt2)),
+               "AOI must be one an only one feature.")
+  })
 
   #Area
+  expect_warning({
   areaHUC8 = get_huc8(AOI = area, t_srs = 5070)
-  expect_equal(st_crs(areaHUC8)$epsg, 5070)
+  })
+  expect_equal(sf::st_crs(areaHUC8)$epsg, 5070)
   expect_equal(nrow(areaHUC8), 1)
-
   #ID
+  expect_warning({
   ptHUC8id = get_huc8(id = "17010101")
+  })
   expect_identical(ptHUC8$id, ptHUC8id$id)
-  expect_true(st_crs(ptHUC8) == st_crs(ptHUC8id) )
+  expect_true(sf::st_crs(ptHUC8) == sf::st_crs(ptHUC8id) )
 })
 
 # ==============================================================================
 
-test_that("huc12", {
+test_that("huc", {
   testthat::skip_on_cran()
   #Point
+  expect_warning({
   ptHUC12 = get_huc12(AOI = pt)
+  })
   expect_equal(nrow(ptHUC12), 1)
   expect_equal(ptHUC12$huc12, "170101010306")
   #Area
+  expect_warning({
   areaHUC12 = get_huc12(AOI = area)
   expect_equal(nrow(areaHUC12), 2)
+  })
   #ID
+  expect_warning({
   HUC12id = get_huc12(id = "170101010306")
+  })
   expect_identical(ptHUC12$huc12, HUC12id$huc12)
   # multi-id... only need to check once
+  expect_warning({
   HUC12id2 = get_huc12(id = areaHUC12$huc12) %>%
-    st_transform(st_crs(area))
+    sf::st_transform(sf::st_crs(area))
+  })
+
   expect_identical(HUC12id2$geometry, areaHUC12$geometry)
+
+  hu12 <- get_huc(AOI = pt, type = "huc12")
+
+  expect_equal(hu12$huc12, "170101010806")
+
+  hu10 <- get_huc(AOI = pt, type = "huc10")
+
+  expect_equal(hu10$huc10, "1701010108")
+
+  hu08 <- get_huc(AOI = pt, type = "huc08")
+
+  expect_equal(hu08$huc8, "17010101")
+
+  hu06 <- get_huc(AOI = pt, type = "huc06")
+
+  expect_equal(hu06$huc6, "170101")
+
+  hu04 <- get_huc(AOI = pt, type = "huc04")
+
+  expect_equal(hu04$huc4, "1701")
+
+  hu02 <- get_huc(AOI = pt, type = "huc02")
+
+  expect_equal(hu02$huc2, "17")
+
+  expect_error(get_huc(AOI = pt, type = "test"))
+
 })
 
 # ==============================================================================

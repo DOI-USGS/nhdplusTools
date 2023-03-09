@@ -19,7 +19,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Plotting with nhdplusTools">
 <meta property="og:description" content="nhdplusTools">
-<meta property="og:image" content="https://usgs-r.github.io/nhdplusTools/logo.png">
+<meta property="og:image" content="https://doi-usgs.github.io/nhdplusTools/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/usgs-r/nhdplusTools/" class="external-link">
+  <a href="https://github.com/doi-usgs/nhdplusTools/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -104,7 +104,7 @@
                         <h4 data-toc-skip class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/usgs-r/nhdplusTools/blob/HEAD/vignettes/plot_nhdplus.Rmd" class="external-link"><code>vignettes/plot_nhdplus.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/doi-usgs/nhdplusTools/blob/HEAD/vignettes/plot_nhdplus.Rmd" class="external-link"><code>vignettes/plot_nhdplus.Rmd</code></a></small>
       <div class="hidden name"><code>plot_nhdplus.Rmd</code></div>
 
     </div>
@@ -122,7 +122,7 @@ approach to building maps with NHDPlus data.</p>
 <p><strong><code>plot_nhdplus</code> is a work in progress. Not all
 inputs in the function have been implemented as of 11/18/2019 and
 additional functionality will be added later. Please leave feature
-requests and issues you find in an <a href="https://github.com/USGS-R/nhdplusTools/pulls" class="external-link">issue
+requests and issues you find in an <a href="https://github.com/DOI-USGS/nhdplusTools/" class="external-link">issue
 here</a>.</strong></p>
 <p><code>plot_nhdplus</code> is a function that makes getting a simple
 plot of NHDPlus data as easy as possible. It works with other functions
@@ -195,7 +195,7 @@ other options are possible with <code>discover_nhdplus_id</code> and
 <code><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">dataRetrieval::get_nldi_sources</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://usgs-r.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi-usgs.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span></span>
 <span><span class="va">nwissite</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, </span>
 <span>                     featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span></span>
 <span></span>
@@ -227,8 +227,8 @@ with contents that look like:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">nhdplus</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
-<span><span class="co">#&gt;            layer_name geometry_type features fields</span></span>
-<span><span class="co">#&gt; 1 NHDFlowline_Network   Line String       10    138</span></span>
+<span><span class="co">#&gt;            layer_name geometry_type features fields crs_name</span></span>
+<span><span class="co">#&gt; 1 NHDFlowline_Network   Line String       10    138    NAD83</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   [1] "id"           "comid"        "fdate"        "resolution"   "gnis_id"     </span></span>
 <span><span class="co">#&gt;   [6] "gnis_name"    "lengthkm"     "reachcode"    "flowdir"      "wbareacomi"  </span></span>
@@ -374,7 +374,15 @@ with transparency if that’s of interest.</p>
 <span>       adj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="op">}</span>, drawarrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Zoom: 10</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></span>
 <span><span class="co">#&gt; Error occured while plotting:  Error in UseMethod("st_transform"): no applicable method for 'st_transform' applied to an object of class "list"</span></span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/plot-1.png" width="432"></p>
@@ -443,7 +451,7 @@ suggestions.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

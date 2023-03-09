@@ -59,13 +59,14 @@ calculate_arbolate_sum <- function(x) {
 }
 
 #' @importFrom dplyr select left_join ungroup distinct
+#' @importFrom rlang .data
 #' @noRd
 #'
 accumulate_downstream <- function(x, var) {
 
   try(x <- st_drop_geometry(x), silent = TRUE)
 
-  cat_order <- select(x, .data$ID)
+  cat_order <- select(x, "ID")
 
   x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
 

@@ -21,13 +21,15 @@ sf data.frame containing points retrieved.
 Uses a cross section retrieval web services to retrieve a
 cross section given a point and specified width. Orientation is determined
 based on direction of a the flowline found near point. This function uses
-a 10m Natioinal Elevation Dataset request on the back end.
+a 10m National Elevation Dataset request on the back end.
 }
 \examples{
 \donttest{
 point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)
 
 (xs <- get_xs_point(point, 300, 100))
+
+if(inherits(xs, "sf")) {
 
 bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 
@@ -37,7 +39,7 @@ plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "
 plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 
 plot(xs$distance_m, xs$elevation_m)
-
+}
 }
 
 }

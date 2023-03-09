@@ -1,5 +1,3 @@
-
-
 test_that("reweight", {
   x <- readRDS(list.files(pattern = "reweight_test.rds",
                           full.names = TRUE, recursive = TRUE))
@@ -8,6 +6,26 @@ test_that("reweight", {
 
   w <- nhdplusTools:::reweight(x, override_factor = 2)
   expect_equal(w$weight[w$nameID == w$ds_nameID], 1)
+})
+
+test_that("degenerate levelpath", {
+  x <- structure(list(ID = c(203071, 202863, 202883, 205509, 203069, 202875, 942110034),
+                      toID = c(202863, 202883, 205509, 203069, 202875, 942110034, 0),
+                      fcode = c(33600, 33600, 33600, 33600, 33600, 46006, 55800),
+                      nameID = c(630020286, 630020286, 630020286, 630020286, 630020286, 630020286, 630020286),
+                      lengthkm = c(14.962, 4.881, 13.204, 2.054, 9.601, 2.893, 10.988),
+                      reachcode = c("12110208001272", "12110208000093", "12110208001144",
+                                    "12110208001144", "12110208001144", "12110208000099", "12110208017253"),
+                      frommeas = c(0, 0, 46.98279, 38.69724, 0, 0, 0),
+                      tomeas = c(99.35641, 100, 100, 46.98279, 38.69724, 100, 100),
+                      areasqkm = c(21.7197, 1019.7891, 74.0889, 37.3122, 530.9604, 5.562, 17.8893),
+                      weight = c(14.962, 19.843, 33.047, 35.101, 44.702, 47.595, 58.583),
+                      terminalID = c(942110034, 942110034, 942110034, 942110034, 942110034, 942110034, 942110034
+                      )), row.names = c(NA, 7L), class = "data.frame")
+
+  y <- nhdplusTools::get_levelpaths(x)
+
+  expect_equal(nrow(y), nrow(x))
 })
 
 test_that("calculate level path", {

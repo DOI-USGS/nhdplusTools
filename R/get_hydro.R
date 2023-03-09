@@ -1,26 +1,57 @@
-#' @title Find WBD HUC 08 unit subsets
+#' @title Find WBD HUC 12 unit subsets
+#' @description Subsets the WBD level 12 features by location (POINT),
+#' area (POLYGON), or set of IDs.
+#' @inherit query_usgs_geoserver details return
+#' @inheritParams query_usgs_geoserver
+#' @param id WBD HUC ID(s)
+#' @param type character. Type of feature to return
+#' ('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12').
+#' See /link{download_nhdplusv2} for documentation of that dataset.
+#' @export
+#'
+get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "huc12") {
+
+  allow_types <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12')
+
+  if(!type %in% allow_types) {
+    stop("type must be one of ", paste(allow_types, collapse = " "))
+  }
+
+  query_usgs_geoserver(AOI = AOI, ids = id, type = type,
+                       t_srs = t_srs, buffer = buffer)
+
+}
+
+#' @title Find WBD HUC 08 unit subsets (DEPRECATED)
 #' @description Subsets the WBD level 08 features by location (POINT),
 #' area (POLYGON), or set of IDs.
 #' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id WBD HUC08 ID(s)
 #' @export
-
 get_huc8 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
-  query_usgs_geoserver(AOI = AOI, ids = id, type = "huc08",
+
+  warning("this function is deprecated -- use get_huc(..., type = \"huc8\") instead")
+
+  query_usgs_geoserver(AOI = AOI, ids = id, type = "huc08_legacy",
                        t_srs = t_srs, buffer = buffer)
 }
 
-#' @title Find WBD HUC 12 unit subsets
+#' @title Find WBD HUC 12 unit subsets (DEPRECATED)
 #' @description Subsets the WBD level 12 features by location (POINT),
-#' area (POLYGON), or set of IDs.
+#' area (POLYGON), or set of IDs. Derived from a static snapshot of
+#' HUC 12s from: https://doi.org/10.5066/P9BTKP3T
 #' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id WBD HUC12 ID(s)
+#' See /link{download_nhdplusv2} for documentation of that dataset.
 #' @export
-
+#'
 get_huc12 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
-  query_usgs_geoserver(AOI = AOI, ids = id, type = "huc12",
+
+  warning("this function is deprecated -- use get_huc(..., type = \"huc12\") instead")
+
+  query_usgs_geoserver(AOI = AOI, ids = id, type = "huc12_nhdplusv2",
                        t_srs = t_srs, buffer = buffer)
 }
 

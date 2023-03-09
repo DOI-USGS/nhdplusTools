@@ -9,7 +9,7 @@ get_vaa_names(updated_network = FALSE)
 \arguments{
 \item{updated_network}{logical default FALSE. If TRUE, updated network attributes
 from E2NHD and National Water Model retrieved from
-\href{https://www.sciencebase.gov/catalog/item/60c92503d34e86b9389df1c9}{here.}}
+\doi{10.5066/P9W79I7Q}.}
 }
 \value{
 character vector

@@ -157,6 +157,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
   if(actually_plot) {
     st <- get_styles(plot_config)
 
+    suppressWarnings({
     prettymapr::prettymap({
       if(!add) {
         tryCatch({
@@ -198,7 +199,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
         }
       }
     },
-    drawarrow = TRUE)
+    drawarrow = TRUE)})
   }
   return(invisible(pd))
 }
@@ -668,9 +669,9 @@ get_wb_outlet <- function(lake_id, network) {
                            align = FALSE, tolower = FALSE)
     if (lake_id %in% network$WBArea_Permanent_Identifier){
     outlet <- network %>%
-      dplyr::filter(.data$WBArea_Permanent_Identifier == lake_id) %>%
-      dplyr::group_by(.data$WBArea_Permanent_Identifier) %>%
-      dplyr::filter(.data$Hydroseq == min(.data$Hydroseq))
+      filter(.data$WBArea_Permanent_Identifier == lake_id) %>%
+      group_by(.data$WBArea_Permanent_Identifier) %>%
+      filter(.data$Hydroseq == min(.data$Hydroseq))
     return(outlet)
     } else {
       stop("Lake Permanent Identifier no associated with NHDPlus HR Flowlines")
@@ -680,9 +681,9 @@ get_wb_outlet <- function(lake_id, network) {
 
     if (lake_id %in% network$wbareacomi){
       outlet <- network %>%
-        dplyr::filter(.data$wbareacomi == lake_id) %>%
-        dplyr::group_by(.data$wbareacomi) %>%
-        dplyr::filter(.data$hydroseq == min(.data$hydroseq))
+        filter(.data$wbareacomi == lake_id) %>%
+        group_by(.data$wbareacomi) %>%
+        filter(.data$hydroseq == min(.data$hydroseq))
       return(outlet)
     } else {
       stop("Lake COMID is not associated with NHDPlus flowlines and no outlet")

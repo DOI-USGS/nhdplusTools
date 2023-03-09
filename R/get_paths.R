@@ -63,14 +63,14 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
   }
 
   x <- x %>% # get downstream name ID added
-    left_join(drop_geometry(select(x, .data$ID, ds_nameID = .data$nameID)),
+    left_join(drop_geometry(select(x, "ID", ds_nameID = "nameID")),
               by = c("toID" = "ID")) %>%
     # if it's na, we need it to be an empty string
     mutate(ds_nameID = ifelse(is.na(.data$ds_nameID),
                               " ", .data$ds_nameID)) %>%
     # group on toID so we can operate on upstream choices
     group_by(.data$toID) %>%
-    dplyr::group_split()
+    group_split()
 
   # reweight sets up ranked upstream paths
   if(!is.null(cl)) {
@@ -81,14 +81,14 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
 
   x <- x %>%
     bind_rows() %>%
-    select(.data$ID, .data$toID, .data$topo_sort,
-           .data$levelpath, .data$weight)
+    select("ID", "toID", "topo_sort",
+           "levelpath", "weight")
 
   diff = 1
   checker <- 0
   done <- 0
 
-  x <- dplyr::arrange(x, .data$topo_sort)
+  x <- arrange(x, .data$topo_sort)
 
   topo_sort <- x$topo_sort
 
@@ -151,11 +151,11 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
     group_by(.data$levelpath) %>%
     filter(.data$topo_sort == min(.data$topo_sort)) %>%
     ungroup() %>%
-    select(outletID = .data$ID, .data$levelpath)
+    select(outletID = "ID", "levelpath")
 
   x <- left_join(x, outlets, by = "levelpath")
 
-  return(select(x, .data$ID, .data$outletID, .data$topo_sort, .data$levelpath))
+  return(select(x, "ID", "outletID", "topo_sort", "levelpath"))
 }
 
 par_get_path <- function(outlet, x_in, matcher, status) {
@@ -233,7 +233,7 @@ reweight <- function(x, ..., override_factor) {
 
     if(any(x$nameID != " ")) { # If any of the candidates are named.
       if(cur_name != " " & cur_name %in% x$nameID) {
-        sub <- dplyr::arrange(x[x$nameID == cur_name, ], desc(.data$weight))
+        sub <- arrange(x[x$nameID == cur_name, ], desc(.data$weight))
 
         out[1:nrow(sub), ] <- sub
 
@@ -245,7 +245,7 @@ reweight <- function(x, ..., override_factor) {
       if(rank <= total) {
         if(any(x$nameID != " ")) {
           sub <-
-            dplyr::arrange(x[x$nameID != " ", ], desc(.data$weight))
+            arrange(x[x$nameID != " ", ], desc(.data$weight))
 
           out[rank:(rank + nrow(sub) - 1), ] <- sub
 
@@ -263,17 +263,17 @@ reweight <- function(x, ..., override_factor) {
     }
 
     if(!is.null(override_factor)) {
-      out <- dplyr::mutate(out, weight = ifelse(.data$nameID == .data$ds_nameID,
+      out <- mutate(out, weight = ifelse(.data$nameID == .data$ds_nameID,
                                                 .data$weight * override_factor,
                                                 .data$weight))
     }
 
     if(rank < nrow(out)) {
-      out[rank:nrow(out), ] <- dplyr::arrange(x, desc(.data$weight))
+      out[rank:nrow(out), ] <- arrange(x, desc(.data$weight))
     }
 
     if(!is.null(override_factor)) {
-      out <- dplyr::arrange(out, desc(.data$weight))
+      out <- arrange(out, desc(.data$weight))
     }
 
     x <- out
@@ -285,33 +285,11 @@ reweight <- function(x, ..., override_factor) {
   x
 }
 
-.datatable.aware <- TRUE
-. <- fromid <- id <- NULL
-
 get_fromids <- function(index_ids, return_list = FALSE) {
-  index_ids <- data.table::as.data.table(index_ids)
 
-  froms <- merge(
-    index_ids[,list(id)],
-    data.table::setnames(index_ids, c("toid", "id"), c("id", "fromid")),
-    by = "id", all.x = TRUE
-  )
+  index_ids <- select(index_ids, indid = "id", toindid = "toid")
 
-  froms <- froms[,list(froms = list(c(fromid))), by = id]
-
-  froms_l <- lengths(froms$froms)
-  max_from <- max(froms_l)
-
-  # Convert list to matrix with NA fill
-  froms_m <- as.matrix(sapply(froms$froms, '[', seq(max_from)))
-
-  # NAs should be length 0
-  froms_l[is.na(froms_m[1, ])] <- 0
-
-  if(return_list) return(list(froms = froms_m, lengths = froms_l,
-                              froms_list = froms))
-
-  return(list(froms = froms_m, lengths = froms_l))
+  make_fromids(index_ids, return_list)
 
 }
 
@@ -353,10 +331,14 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
   class_x <- class(x)
 
+  hy_g <- get_hyg(x, add = TRUE, id = names(x)[1])
+
+  x <- drop_geometry(x)
+
   x <- as.data.frame(x)
 
   # nrow to reuse
-  n <- nrow(x)
+  n_row <- nrow(x)
 
   # index for fast traversal
   index_ids <- get_index_ids(x, innames = names(x)[1:2])
@@ -371,7 +353,7 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
   froms <- get_fromids(index_ids)
 
   # Some vectors to track results
-  to_visit <- out <- rep(0, n)
+  to_visit <- out <- rep(0, n_row)
 
   if(split) {
     set <- out
@@ -391,6 +373,8 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
     n <- 1
     # v is a pointer into the to_visit vector
     v <- 1
+
+    trk <- 1
 
     while(v > 0) {
 
@@ -418,6 +402,12 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
       v <- v - 1
       node <- to_visit[v]
 
+      trk <- trk + 1
+
+      if(trk > n_row * 2) {
+        stop("runaway while loop, something wrong with the network?")
+      }
+
     }
 
     if(split) {
@@ -443,26 +433,24 @@ get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
     out_list <- data.frame(ids = ids) %>%
       mutate(set = out_list) %>%
-      tidyr::unnest_longer(.data$set)
+      tidyr::unnest_longer("set")
 
     names(out_list) <- c("terminalID", names(x)[1])
 
     ### adds grouping terminalID to x ###
-    x <- dplyr::left_join(x, out_list, by = names(x)[1])
+    x <- left_join(x, out_list, by = names(x)[1])
 
   }
 
-  if("sf" %in% class_x) {
-    try(x <- sf::st_sf(x))
+  if(!is.null(hy_g)) {
+    x <- sf::st_sf(left_join(x, hy_g, by = names(x)[1]))
   }
 
   return(x)
 }
 
 #' @noRd
-#' @param x data.frame with ID and toID (names not important)
-#' in the first and second columns.
-#' An "id" and "toid" (lowercase) will be added.
+#' @importFrom dplyr all_of
 get_index_ids <- function(x,
                           innames = c("comid", "tocomid"),
                           outnames = c("id", "toid")) {
@@ -471,9 +459,11 @@ get_index_ids <- function(x,
     stop(paste(paste(innames, collapse = ", "), "must be in input or provided."))
   }
 
-  out <- data.frame(id = seq(1, nrow(x)))
+  out <- select(x, all_of(innames))
 
-  out["toid"] <- match(x[[innames[2]]], x[[innames[1]]], nomatch = 0)
+  names(out) <- c("id", "toid")
+
+  out <- make_index_ids(out)
 
   names(out) <- outnames
 
@@ -525,7 +515,7 @@ get_terminal <- function(x, outlets) {
 
   x <- get_sorted(x, split = TRUE, outlets = outlets)
 
-  dplyr::left_join(data.frame(ID = ordered_id),
+  left_join(data.frame(ID = ordered_id),
                    x[c("ID", "terminalID")], by = "ID")
 }
 

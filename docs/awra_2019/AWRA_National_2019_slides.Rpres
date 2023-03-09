@@ -56,7 +56,7 @@ common water resources applications in the R programming
 language. 
 
 A companion workflow to get all the data and perform
-processing operations is <a href = "https://github.com/USGS-R/nhdplusTools/blob/master/docs/awra_2019/get_data.R" target = "_blank">available here.</a>
+processing operations is <a href = "https://github.com/DOI-USGS/nhdplusTools/blob/master/docs/awra_2019/get_data.R" target = "_blank">available here.</a>
 
 ***
   
@@ -120,7 +120,7 @@ loadd(eList)
 plotConcHist(eList)
 ```
 ***
-<small>Exploration and Graphics for RivEr Trends (<a href="http://usgs-r.github.io/EGRET/" target = "_blank">EGRET</a>): A package for analysis of long-term changes in water quality and streamflow.</small>
+<small>Exploration and Graphics for RivEr Trends (<a href="http://doi-usgs.github.io/EGRET/" target = "_blank">EGRET</a>): A package for analysis of long-term changes in water quality and streamflow.</small>
 ```{r trend1, echo = FALSE}
 plot(eList)
 ```
@@ -140,7 +140,7 @@ plot(eList)
 ***
 
 **Resources:**
-* <a href="https://github.com/USGS-R" target="_blank">Github USGS-R</a>
+* <a href="https://github.com/DOI-USGS" target="_blank">Github DOI-USGS</a>
 * <a href="https://owi.usgs.gov/R/" target="_blank">USGS Resources</a>
 * <a href="https://waterdata.usgs.gov/blog/tags/r/" target="_blank">USGS Blogs</a>
 * <a href="https://cran.r-project.org/web/views/Hydrology.html" target="_blank">Hydro CRAN Task View</a>
@@ -153,7 +153,7 @@ Spatial Data Access
 ========================================================
 class: small-code
 
-<a href="https://usgs-r.github.io/nhdplusTools/articles/nhdplusTools.html" target="_blank">**See a nhdplusTools tutorial here.**</a>
+<a href="https://doi-usgs.github.io/nhdplusTools/articles/nhdplusTools.html" target="_blank">**See a nhdplusTools tutorial here.**</a>
 
 ```{r spatial, eval = FALSE, echo = TRUE}
 library(nhdplusTools)
@@ -247,7 +247,7 @@ prettymap(title = paste("NHDPlus and NLDI data for the", outlet_name),
   plot(gt(wqpsite), col = "red", pch = 46, cex = 1.25, add = TRUE)
   plot(gt(nwissite), col = "black", bg = "lightgrey", pch = 24, add = TRUE)})
 ```
-<small>See the <a href = "https://github.com/USGS-R/nhdplusTools/tree/master/docs/awra_2019" target = "_blank">project source code</a> for legend code.  
+<small>See the <a href = "https://github.com/DOI-USGS/nhdplusTools/tree/master/docs/awra_2019" target = "_blank">project source code</a> for legend code.  
 While extremely configurable, base-R plotting can be tedious. `ggplot2` offers a different approach to plotting that some find more convenient.</small>
 
 ========================================================
@@ -321,7 +321,7 @@ Spatial Intersection
 ========================================================
 class: small-code
 
-The code below shows the anatomy of an <a href="https://github.com/USGS-R/intersectr" target="_blank">`intersectr`</a> workflow. It uses <a href="https://cida.usgs.gov/thredds/dodsC/UofIMETDATA.html" target="_blank">an OPeNDAP service</a> to access remote data the same way it could a local NetCDF file.  
+The code below shows the anatomy of an <a href="https://github.com/DOI-USGS/intersectr" target="_blank">`intersectr`</a> workflow. It uses <a href="https://cida.usgs.gov/thredds/dodsC/UofIMETDATA.html" target="_blank">an OPeNDAP service</a> to access remote data the same way it could a local NetCDF file.  
 ```{r intersectr, eval = FALSE}
 library(intersectr)
 cells <- create_cell_geometry(x_coords, y_coords, nc_projection, catchment)
@@ -434,7 +434,7 @@ left: 40%
 - All data from web services
 - All functionality in the open source
 - Check out the <a href="https://cran.r-project.org/web/views/Hydrology.html" target="_blank">CRAN Hydro-task view</a>
-- <a href="https://owi.usgs.gov/R/index.html" target="_blank">USGS-R is a great place to learn more!</a>
+- <a href="https://owi.usgs.gov/R/index.html" target="_blank">DOI-USGS is a great place to learn more!</a>
 </small>
 
 ***

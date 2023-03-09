@@ -15,6 +15,7 @@
 #'
 #' (trace <- get_raindrop_trace(point))
 #'
+#' if(inherits(trace, "sf")) {
 #' bbox <- sf::st_bbox(trace) + c(-0.005, -0.005, 0.005, 0.005)
 #'
 #' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
@@ -22,6 +23,7 @@
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 #' plot(sf::st_transform(sf::st_geometry(trace)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_geometry(trace)[2], 3857), add = TRUE, col = "black")
+#' }
 #' }
 #'
 get_raindrop_trace <- function(point, direction = "down") {
@@ -58,6 +60,8 @@ get_raindrop_trace <- function(point, direction = "down") {
 #'
 #' trace <- get_raindrop_trace(point)
 #'
+#' if(inherits(trace, "sf")) {
+#'
 #' (snap_point <- sf::st_sfc(sf::st_point(trace$intersection_point[[1]]),
 #'                           crs = 4326))
 #'
@@ -92,6 +96,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
 #' plot(sf::st_transform(sf::st_sfc(pour_point, crs = 4326), 3857), add = TRUE, col = "white")
+#' }
 #'}
 #'
 get_split_catchment <- function(point, upstream = TRUE) {
@@ -109,7 +114,7 @@ get_split_catchment <- function(point, upstream = TRUE) {
 #' @description Uses a cross section retrieval web services to retrieve a
 #' cross section given a point and specified width. Orientation is determined
 #' based on direction of a the flowline found near point. This function uses
-#' a 10m Natioinal Elevation Dataset request on the back end.
+#' a 10m National Elevation Dataset request on the back end.
 #' @param point sfc POINT including crs as created by:
 #' \code{sf::st_sfc(sf::st_point(.. ,..), crs)}crs.
 #' @param width Cross section width in meters.
@@ -122,6 +127,8 @@ get_split_catchment <- function(point, upstream = TRUE) {
 #'
 #' (xs <- get_xs_point(point, 300, 100))
 #'
+#' if(inherits(xs, "sf")) {
+#'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
 #' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
@@ -130,7 +137,7 @@ get_split_catchment <- function(point, upstream = TRUE) {
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 #'
 #' plot(xs$distance_m, xs$elevation_m)
-#'
+#' }
 #' }
 #'
 get_xs_point <- function(point, width, num_pts) {
@@ -163,6 +170,8 @@ get_xs_point <- function(point, width, num_pts) {
 #'
 #' (xs <- get_xs_points(point1, point2, 100))
 #'
+#' if(inherits(xs, "sf")) {
+#'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
 #' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
@@ -172,7 +181,7 @@ get_xs_point <- function(point, width, num_pts) {
 #' plot(sf::st_transform(sf::st_sfc(point2, crs = 4326), 3857), add = TRUE)
 #'
 #' plot(xs$distance_m, xs$elevation_m)
-#'
+#' }
 #' }
 #'
 get_xs_points <- function(point1, point2, num_pts, res = 1) {
@@ -220,7 +229,8 @@ check_res <- function(res) {
 #'
 #' (xs <- get_elev_along_path(points, 100))
 #'
-#' if(!is.null(xs)) {
+#' if(inherits(xs, "sf")) {
+#'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
 #' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
@@ -299,6 +309,7 @@ get_elev <- function(url, fun, points, num_pts, res, status) {
   data_elev
 }
 
+#' @importFrom dplyr rename
 get_xs <- function(url, fun, ...) {
   sf <- sf_post(url, fun(...))
 
@@ -306,9 +317,9 @@ get_xs <- function(url, fun, ...) {
     return(NULL)
   }
 
-  dplyr::rename(sf,
-                distance_m = .data$distance,
-                elevation_m = .data$elevation)
+  rename(sf,
+         distance_m = "distance",
+         elevation_m = "elevation")
 }
 
 sf_post <- function(url, json) {

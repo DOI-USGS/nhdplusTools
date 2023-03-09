@@ -36,7 +36,8 @@ points <- sf::st_as_sf(c(point1, point2, point3))
 
 (xs <- get_elev_along_path(points, 100))
 
-if(!is.null(xs)) {
+if(inherits(xs, "sf")) {
+
 bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 
 nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)

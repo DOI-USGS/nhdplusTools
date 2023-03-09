@@ -328,7 +328,7 @@ plot(sf::st_geometry(waterbody), col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 
 ## Indexing
 
-nhdplusTools supports a number of indexing use cases. [See the function index for specifics](https://usgs-r.github.io/nhdplusTools/reference/index.html#indexing-and-network-navigation).
+nhdplusTools supports a number of indexing use cases. [See the function index for specifics](https://doi-usgs.github.io/nhdplusTools/reference/index.html#indexing-and-network-navigation).
 
 Using the data above, we can use the `get_flowline_index()` function to get the comid, reachcode, and measure of our starting point like this.
 

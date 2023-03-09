@@ -150,27 +150,7 @@ test_that("prep_nhdplus removes small drainage basins", {
   expect_equal(nrow(flines), 303)
 })
 
-test_that("get_tocomid", {
-
-  tocomid <- get_tocomid(sample_flines)
-
-  expect_equal(nrow(tocomid), nrow(sample_flines))
-
-  expect_true(!any(is.na(tocomid$tocomid)))
-
-  tocomid <- get_tocomid(sample_flines, missing = NA, return_dendritic = FALSE)
-
-  expect(length(tocomid$tocomid), 714)
-
-  expect(sum(is.na(tocomid$tocomid)), 1)
-
-  expect_error(get_tocomid(dplyr::select(sample_flines, -Divergence)))
-
-  tocomid <- get_tocomid(sample_flines, add = FALSE)
-
-  expect_equal(names(tocomid), c("comid", "tocomid"))
-})
-
+# TODO: hydroloom
 test_that("compatibalize", {
   one <- pt_data
 
@@ -187,6 +167,7 @@ test_that("compatibalize", {
 
 })
 
+# TODO: hydroloom
 test_that("rname geometry", {
   g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2)))
 

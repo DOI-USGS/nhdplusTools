@@ -10,11 +10,11 @@ f2 <- "new_hope_wbd.gpkg"
 if(!file.exists(file.path(data_dir, "new_hope.gpkg"))) {
 
   download_pkg_data(f,
-                    "https://usgs-r.github.io/nhdplusTools/data/new_hope.gpkg",
+                    "https://doi-usgs.github.io/nhdplusTools/data/new_hope.gpkg",
                     data_dir)
 
   download_pkg_data(f2,
-                    "https://usgs-r.github.io/nhdplusTools/data/new_hope_wbd.gpkg",
+                    "https://doi-usgs.github.io/nhdplusTools/data/new_hope_wbd.gpkg",
                     data_dir)
 }
 

@@ -4,12 +4,19 @@
 \alias{fix_flowdir}
 \title{Fix flow direction}
 \usage{
-fix_flowdir(comid, network)
+fix_flowdir(comid, network = NULL, fn_list = NULL)
 }
 \arguments{
-\item{comid}{The COMID of the flowline to check}
+\item{comid}{integer The COMID of the flowline to check}
 
-\item{network}{The entire network to check from. Requires a "toCOMID" field.}
+\item{network}{sf data.frame The entire network to check from. Requires a "toCOMID" field.}
+
+\item{fn_list}{list containing named elements `flowline`, `network`, and `check_end`,
+where `flowline` is the flowline to be checked and `network` the feature up or downstream
+of the flowline to be checked, and `check_end` is `"start"` or `"end"` depending if the
+`network` input is upstream (`"start"`) or downstream (`"end"`) of the flowline to be checked.
+This option allows pre-compilation of pairs of features which may be useful for very large
+numbers of flow direction checks.}
 }
 \value{
 a geometry for the feature that has been reversed if needed.

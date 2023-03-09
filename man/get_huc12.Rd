@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_hydro.R
 \name{get_huc12}
 \alias{get_huc12}
-\title{Find WBD HUC 12 unit subsets}
+\title{Find WBD HUC 12 unit subsets (DEPRECATED)}
 \usage{
 get_huc12(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5)
 }
@@ -11,7 +11,8 @@ get_huc12(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5)
 be provided as either a location (sf POINT) or area (sf POLYGON)
 in any Spatial Reference System.}
 
-\item{id}{WBD HUC12 ID(s)}
+\item{id}{WBD HUC12 ID(s)
+See /link{download_nhdplusv2} for documentation of that dataset.}
 
 \item{t_srs}{character (PROJ string or EPSG code) or numeric (EPSG code).
 A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.
@@ -25,7 +26,8 @@ a simple features (sf) object
 }
 \description{
 Subsets the WBD level 12 features by location (POINT),
-area (POLYGON), or set of IDs.
+area (POLYGON), or set of IDs. Derived from a static snapshot of
+HUC 12s from: https://doi.org/10.5066/P9BTKP3T
 }
 \details{
 The returned object(s) will have the same

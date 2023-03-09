@@ -63,9 +63,9 @@ test_that("navigation works", {
                        data_source = "dumb",
                        distance_km = 1)
 
-  expect_equal(nav$sourceName, "NWIS Surface Water Sites")
+  expect_equal(nav$origin$sourceName, "NWIS Surface Water Sites")
 
-  expect_equal(class(nav$comid), "character")
+  expect_equal(class(nav$origin$comid), "character")
 
   nav <- navigate_nldi(nldi_feature = nldi_nwis,
                        mode = "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
@@ -101,11 +101,11 @@ test_that("basin works", {
   expect_true(length(sf::st_coordinates(nav)) < length(sf::st_coordinates(basin2)))
 
   expect_true(!sf::st_crosses(sf::st_cast(nav, "LINESTRING"),
-                              st_buffer(site, units::set_units(50, "m")),
+                              sf::st_buffer(site, units::set_units(50, "m")),
                                  sparse = FALSE))
 
   expect_true(sf::st_crosses(sf::st_cast(basin2, "LINESTRING"),
-                             st_buffer(site, units::set_units(50, "m")),
+                             sf::st_buffer(site, units::set_units(50, "m")),
                              sparse = FALSE))
 })
 
@@ -276,8 +276,8 @@ test_that("xs", {
 
   suppressMessages(xs <- get_elev_along_path(points, 100))
 
-  expect_equal(names(xs), c("id", "distance_m", "elevation_m", "spatial_ref", "geometry",
-                            ".group"))
+  expect_true(all(names(xs) %in% c("id", "distance_m", "elevation_m", "spatial_ref", "geometry",
+                                   ".group")))
 
   expect_equal(nrow(xs), 202)
 

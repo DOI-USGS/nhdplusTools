@@ -240,9 +240,9 @@ make_standalone <- function(flowlines) {
                                flowlines$Hydroseq != flowlines$TerminalPa), ]
 
     outlets <- select(drop_geometry(flowlines),
-                      .data$COMID, .data$toCOMID,
-                      .data$Hydroseq, .data$TerminalPa,
-                      .data$LevelPathI)
+                      "COMID", "toCOMID",
+                      "Hydroseq", "TerminalPa",
+                      "LevelPathI")
 
     outlets <- filter(outlets,
                       (is.na(.data$toCOMID) | .data$toCOMID == 0 | !.data$toCOMID %in% .data$COMID)
@@ -254,20 +254,20 @@ make_standalone <- function(flowlines) {
     flowlines <- flowlines[!(flowlines$FCODE == 566 & flowlines$TerminalFl != 1), ]
 
     outlets <- select(drop_geometry(flowlines),
-                      .data$COMID, .data$ToNode,
-                      .data$FromNode, .data$TerminalFl,
-                      .data$Hydroseq, .data$TerminalPa,
-                      .data$LevelPathI)
+                      "COMID", "ToNode",
+                      "FromNode", "TerminalFl",
+                      "Hydroseq", "TerminalPa",
+                      "LevelPathI")
 
     outlets <- left_join(outlets,
                          select(outlets,
-                                toCOMID = .data$COMID, .data$FromNode),
+                                toCOMID = "COMID", "FromNode"),
                          by = c("ToNode" = "FromNode"))
 
     outlets <- filter(outlets,
                       is.na(.data$toCOMID) & .data$TerminalFl == 0)
   }
-  outlets <- select(outlets, .data$Hydroseq, .data$LevelPathI, .data$COMID)
+  outlets <- select(outlets, "Hydroseq", "LevelPathI", "COMID")
 
   for(i in seq_len(nrow(outlets))) {
     flowlines = fix_term(outlets[i, ], flowlines)

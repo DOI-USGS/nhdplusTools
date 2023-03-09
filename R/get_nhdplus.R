@@ -93,14 +93,18 @@ get_nhdplus <- function(AOI = NULL,
   if(any(c("flowline", "outlet") %in% realization)){
     geoms$flowline    <- query_usgs_geoserver(AOI = AOI, ids = comid, type = 'nhd',
                                                 filter = streamorder_filter(streamorder),
-                                                t_srs = t_srs)
+                                              t_srs = t_srs)
 
     if("outlet" %in% realization){
       geoms$outlet          <- geoms$flowline
-      geoms$outlet$geometry <- st_geometry(
-        get_node(geoms$outlet,
-                 position = "end")
-      )
+      geoms$outlet$geometry <-
+        tryCatch({st_geometry(
+          get_node(geoms$outlet,
+                   position = "end")
+        )}, error = function(e) {
+          warning(paste("error getting outlet node:", e))
+          NULL
+        })
     }
   }
 

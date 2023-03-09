@@ -195,8 +195,7 @@ test_that("get location", {
   expect_equal(sf::st_coordinates(locations)[, 1:2],
                structure(c(-76.8693957911233, -76.9176139910484, -76.8810037244386,
                            39.4932572053652, 39.4090934721626, 39.3632976055671),
-                         .Dim = 3:2, .Dimnames = list(c("1", "2", "3"),
-                                                      c("X", "Y"))))
+                         .Dim = 3:2, .Dimnames = list(NULL, c("X", "Y"))))
 
   points <- sf::st_sfc(sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328))),
                                   crs = 4326))

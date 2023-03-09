@@ -2,8 +2,8 @@
 test_that("rescale", {
   skip_on_cran()
 
-  vars <- data.frame(characteristic_id = c("CAT_EWT", "CAT_EWT", "CAT_EWT"),
-                     summary_statistic = c("area_weighted_mean", "min","sum"))
+  vars <- data.frame(characteristic_id = c("CAT_EWT", "CAT_EWT", "CAT_EWT", "CAT_EWT", "CAT_BASIN_AREA"),
+                     summary_statistic = c("area_weighted_mean", "min", "sum", "max", "sum"))
 
   # file_name <- "refactor_02.gpkg"
   # file_path <- file.path(tempdir(), file_name)
@@ -45,6 +45,42 @@ test_that("rescale", {
   expect_equal(length(unique(d$lookup_table$id)), nrow(rescale))
 
   expect_equal(rescale, rescale_2)
+
+  expect_equal(round(rescale$areasqkm_sum,0), round(rescale$CAT_BASIN_AREA_sum,0))
+
+  test_id1 <- 10012268
+  comids1 <- filter(d$lookup_table, id == test_id1)
+  vars_comids1 <- left_join(x = left_join(x = comids1,
+                                          y = filter(d$catchment_characteristic,
+                                                     comid %in% comids1$comid,
+                                                     characteristic_id == "CAT_EWT"),
+                                          by = "comid"),
+                            y = select(d$catchment_areas, c("member_comid","split_catchment_areasqkm","split_area_prop")),
+                            by = "member_comid")
+  vars_comids1 <- mutate(vars_comids1, area_rescaled = split_catchment_areasqkm*split_area_prop)
+  rescale_test1 <- filter(rescale, id == test_id1)
+  expect_equal(min(vars_comids1$characteristic_value),rescale_test1$CAT_EWT_min)
+  expect_equal(sum(vars_comids1$characteristic_value),rescale_test1$CAT_EWT_sum)
+  expect_equal(max(vars_comids1$characteristic_value),rescale_test1$CAT_EWT_max)
+  expect_equal(weighted.mean(vars_comids1$characteristic_value, vars_comids1$area_rescaled),
+               rescale_test1$CAT_EWT_area_wtd)
+
+  test_id2 <- 10024048
+  comids2 <- filter(d$lookup_table, id == test_id2)
+  vars_comids2 <- left_join(x = left_join(x = comids2,
+                                          y = filter(d$catchment_characteristic,
+                                                     comid %in% comids2$comid,
+                                                     characteristic_id == "CAT_EWT"),
+                                          by = "comid"),
+                            y = select(d$catchment_areas, c("member_comid","split_catchment_areasqkm","split_area_prop")),
+                            by = "member_comid")
+  vars_comids2 <- mutate(vars_comids2, area_rescaled = split_catchment_areasqkm*split_area_prop)
+  rescale_test2 <- filter(rescale, id == test_id2)
+  expect_equal(min(vars_comids2$characteristic_value),rescale_test2$CAT_EWT_min)
+  expect_equal(sum(vars_comids2$characteristic_value*vars_comids2$split_area_prop),rescale_test2$CAT_EWT_sum)
+  expect_equal(max(vars_comids2$characteristic_value),rescale_test2$CAT_EWT_max)
+  expect_equal(weighted.mean(vars_comids2$characteristic_value*vars_comids2$split_area_prop, vars_comids2$area_rescaled),
+               rescale_test2$CAT_EWT_area_wtd)
 
   borked <- dplyr::rename(d$lookup_table, borked = "member_comid")
 

@@ -26,3 +26,4 @@ data-raw
 README.Rmd
 cran-comments.md
 ^CRAN-SUBMISSION$
+temp.R

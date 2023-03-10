@@ -11,6 +11,21 @@ Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://
 
 ## nhdplusTools: Tools for Accessing and Working with the NHDPlus
 
+*New nhdplusTools is coming*
+
+`nhdplusTools` is being split into two packages. A new package
+[`hydroloom`](https://github.com/DOI-USGS/hydroloom) is now available
+for testing. It contains all nhdplusTools functionality not related to
+specific dataset schemas. See [this
+issue](https://github.com/DOI-USGS/nhdplusTools/issues/307) for details.
+The transition to `hydroloom` should occur in Fall 2023. In the mean
+time, you can install the `hydroloom` version of nhdplusTools with:
+
+`remotes::install_github("doi-usgs/nhdplusTools@hydroloom")`
+
+Please submit issues at:
+<https://github.com/DOI-USGS/nhdplusTools/issues>
+
 This package is a growing set of tools for manipulation of hydrographic
 data using the NHDPlus data model. There is no specific funding or plan
 to continue development of this package long term but ongoing support is

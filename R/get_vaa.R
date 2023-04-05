@@ -295,6 +295,8 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
         att$percent_nodata <- 0
       }
 
+      att <- mutate(att, percent_nodata = ifelse(is.na(.data[[i$ID]]), 100, percent_nodata))
+
       distinct(
       select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",
                            characteristic_value = x, percent_nodata = "percent_nodata"))))

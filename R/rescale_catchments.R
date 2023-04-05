@@ -6,6 +6,19 @@ rescale_characteristics <- function(vars, lookup_table) {
   cols_min <- vars$characteristic_id[vars$summary_statistic == "min"]
   cols_max <- vars$characteristic_id[vars$summary_statistic == "max"]
 
+  # adjust certain column names to use rescaled values for split catchments (if applicable)
+  if(!all(lookup_table$comid == lookup_table$member_comid)){
+    cols_area_wtd_mean <- paste0(cols_area_wtd_mean, "_rescaled")
+    cols_sum <- paste0(cols_sum, "_rescaled")
+  }
+
+  # adjust column names to include percent_nodata columns
+  vars_nodata <- names(select(lookup_table, starts_with("percent_nodata")))
+  vars_nodata <- grep("[0-9]+$", vars_nodata, value = TRUE, invert = TRUE)
+  if(length(vars_nodata) > 0) {
+    cols_area_wtd_mean <- c(cols_area_wtd_mean, vars_nodata)
+  }
+
   # rescale NHDPlusv2 attributes to desired catchments
   # !note that there are currently no adjustments made for the length of split flowlines
   lookup_table |>
@@ -19,7 +32,8 @@ rescale_characteristics <- function(vars, lookup_table) {
       across(any_of(cols_min), \(x) min(x, na.rm = TRUE), .names = "{col}_min"),
       across(any_of(cols_max), \(x) max(x, na.rm = TRUE), .names = "{col}_max")
     ) |>
-    ungroup()
+    ungroup() |>
+    rename_with(~gsub("_rescaled", "", .), contains("_rescaled"))
 }
 
 #' @description
@@ -33,7 +47,6 @@ rescale_characteristics <- function(vars, lookup_table) {
 #' "areasqkm." Used to retrieve adjusted catchment areas in the case of split
 #' catchments.
 #'
-#' @importFrom sf st_drop_geometry
 #' @importFrom dplyr mutate select right_join left_join filter rename bind_rows
 #' @noRd
 #'
@@ -190,9 +203,10 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
 
   # pivot to wide format
   catchment_characteristics <- pivot_wider(catchment_characteristics,
-                                          id_cols = !"percent_nodata",
-                                          names_from = "characteristic_id",
-                                          values_from = "characteristic_value")
+                                           names_from = "characteristic_id",
+                                           values_from = c("characteristic_value", "percent_nodata"))
+  catchment_characteristics <- rename_with(.data = catchment_characteristics,
+                                           .fn = ~gsub("characteristic_value_", "", .x, fixed = TRUE))
 
   if(is.null(catchment_areas)) {
     # get comid catchment areas, adjusting area for catchments that have been "split"
@@ -206,7 +220,8 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
 
   # rescale the nldi characteristics if needed (i.e., for split catchments)
   if(!all(lookup_table$comid == lookup_table$member_comid)){
-    lookup_table <- mutate(lookup_table, across(any_of(var_names), ~.x*.data$split_area_prop))
+    lookup_table <- mutate(lookup_table,
+                           across(any_of(var_names), ~.x*.data$split_area_prop, .names = "{col}_rescaled"))
   }
 
   return(rescale_characteristics(vars, lookup_table))

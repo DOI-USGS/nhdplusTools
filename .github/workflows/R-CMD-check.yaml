@@ -45,16 +45,6 @@ jobs:
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
 
-          # install spatial dependencies
-          sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
-          sudo apt update
-          sudo apt install \
-            libudunits2-dev \
-            libgdal-dev \
-            libgeos-dev \
-            libproj-dev
-
-
       - name: Install dependencies
         run: |
           install.packages(c("remotes"))

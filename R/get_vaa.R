@@ -280,7 +280,7 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
 
       i <- metadata[metadata$ID == x,]
 
-      ds <- open_dataset(metadata$s3_url)
+      ds <- open_dataset(i$s3_url)
 
       sub <- filter(select(ds, any_of(c("COMID", x, "percent_nodata"))),
                            .data$COMID %in% ids)

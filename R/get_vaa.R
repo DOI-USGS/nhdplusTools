@@ -208,6 +208,7 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 #' @param search character string of length 1 to free search the metadata table.
 #' If no search term is provided the entire table is returned.
 #' @param cache logical should cached metadata be used?
+#' @importFrom utils read.delim
 #' @export
 #' @examples
 #' get_characteristics_metadata()
@@ -280,6 +281,10 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
 
       i <- metadata[metadata$ID == x,]
 
+      if(nrow(i) > 1) warning(paste("multiple attributes found for variable,", x, "using the first one."))
+
+      i <- i[1,]
+
       ds <- open_dataset(i$s3_url)
 
       sub <- filter(select(ds, any_of(c("COMID", x, "percent_nodata"))),
@@ -295,7 +300,7 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
         att$percent_nodata <- 0
       }
 
-      att <- mutate(att, percent_nodata = ifelse(is.na(.data[[i$ID]]), 100, percent_nodata))
+      att <- mutate(att, percent_nodata = ifelse(is.na(.data[[i$ID]]), 100, .data$percent_nodata))
 
       distinct(
       select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",

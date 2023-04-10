@@ -163,7 +163,7 @@ get_pfaf <- function(x, max_level = 2, status = FALSE) {
 
   x <- select(x, -all_of(c("toID", "totda", "outletID", "topo_sort", "levelpath")))
 
-  x <- filter(x, !is.na(pf_level_1))
+  x <- filter(x, !is.na(.data$pf_level_1))
 
   return(x)
 }

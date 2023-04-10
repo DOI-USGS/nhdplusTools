@@ -73,7 +73,7 @@ get_paths_internal <- function(outlets, network, cores = 1, status = FALSE,
 
   if(!lengths) {
 
-    return(select(paths, -network_distance_km))
+    return(select(paths, -any_of("network_distance_km")))
   }
 
   select(paths, all_of(c(ID_1 = "id_1", ID_2 = "id_2", "network_distance_km")))

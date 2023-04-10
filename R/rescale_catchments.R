@@ -22,12 +22,12 @@ rescale_characteristics <- function(vars, lookup_table) {
   # rescale NHDPlusv2 attributes to desired catchments
   # !note that there are currently no adjustments made for the length of split flowlines
   lookup_table |>
-    group_by(id) |>
+    group_by(.data$id) |>
     summarize(
       areasqkm_sum = sum(.data$split_catchment_areasqkm),
       lengthkm_sum = sum(.data$lengthkm),
-      across(any_of(cols_area_wtd_mean), \(x) weighted.mean(x, w = split_catchment_areasqkm, na.rm = TRUE), .names = "{col}_area_wtd"),
-      across(any_of(cols_length_wtd_mean), \(x) weighted.mean(x, w = lengthkm, na.rm = TRUE), .names = "{col}_length_wtd"),
+      across(any_of(cols_area_wtd_mean), \(x) weighted.mean(x, w = .data$split_catchment_areasqkm, na.rm = TRUE), .names = "{col}_area_wtd"),
+      across(any_of(cols_length_wtd_mean), \(x) weighted.mean(x, w = .data$lengthkm, na.rm = TRUE), .names = "{col}_length_wtd"),
       across(any_of(cols_sum), \(x) sum(x, na.rm = TRUE), .names = "{col}_sum"),
       across(any_of(cols_min), \(x) min(x, na.rm = TRUE), .names = "{col}_min"),
       across(any_of(cols_max), \(x) max(x, na.rm = TRUE), .names = "{col}_max")
@@ -48,6 +48,7 @@ rescale_characteristics <- function(vars, lookup_table) {
 #' catchments.
 #'
 #' @importFrom dplyr mutate select right_join left_join filter rename bind_rows
+#' @importFrom stats weighted.mean
 #' @noRd
 #'
 get_catchment_areas <- function(comids, refactored_areas = NULL){
@@ -164,7 +165,7 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
 #'  }
 #'
 #' @importFrom dplyr left_join rename_with mutate across group_by summarize ungroup distinct starts_with any_of
-#' @importFrom tidyr pivot_wider
+#' @importFrom tidyr pivot_wider contains
 #' @export
 #'
 rescale_catchment_characteristics <- function(vars, lookup_table,

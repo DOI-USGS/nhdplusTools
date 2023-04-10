@@ -262,7 +262,8 @@ make_standalone <- function(flowlines) {
     outlets <- left_join(outlets,
                          select(outlets,
                                 toCOMID = "COMID", "FromNode"),
-                         by = c("ToNode" = "FromNode"))
+                         by = c("ToNode" = "FromNode"),
+                         relationship = "many-to-many")
 
     outlets <- filter(outlets,
                       is.na(.data$toCOMID) & .data$TerminalFl == 0)

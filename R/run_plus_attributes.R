@@ -96,36 +96,32 @@ add_plus_network_attributes <- function(net, override = 5,
 
     message("running large networks")
 
+    if(inherits(cores, "cluster")) stop("passing a cluster object no longer supported")
+    message("the future plan is being modified and will be changed back on exit")
+    oplan <- future::plan(future::multisession, workers = cores)
+    on.exit(future::plan(oplan), add = TRUE)
+
   }
 
-  lp <- pbapply::pblapply(X = lp,
-                          FUN = function(x, override, cores) {
-                            nhdplusTools::get_levelpaths(x,
-                                                         override_factor = override,
-                                                         cores = cores)
-                          },
-                          override = override, cores = cores)
+  lp <- lapply(X = lp,
+               FUN = function(x, override) {
+                 get_levelpaths_internal(x, override_factor = override)
+               }, override = override)
 
   if(!is.null(cores)) {
 
-    run_small <- function(small_lp, override, cl) {
-
-      if(!is.null(cl)) {
-        cl <- parallel::makeCluster(cl)
-        on.exit(parallel::stopCluster(cl))
-      }
+    run_small <- function(small_lp, overridel) {
 
       message("running small networks")
 
-      small_lp <- pbapply::pblapply(cl = cl, X = small_lp,
-                                    FUN = function(x, override) {
-                                      nhdplusTools::get_levelpaths(x, override)
-                                    },
-                                    override = override)
+      small_lp <- future.apply::future_lapply(X = small_lp,
+                                              FUN = function(x, override, get_levelpaths_internal) {
+                                                get_levelpaths_internal(x, override)
+                                              }, override = override, get_levelpaths_internal = get_levelpaths_internal)
 
     }
 
-    lp <- c(lp, run_small(small_lp, override, cores))
+    lp <- c(lp, run_small(small_lp, override))
 
   }
 

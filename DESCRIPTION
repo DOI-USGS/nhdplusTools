@@ -28,8 +28,8 @@ URL: https://doi-usgs.github.io/nhdplusTools/ https://github.com/doi-usgs/nhdplu
 BugReports: https://github.com/doi-usgs/nhdplusTools/issues/
 Depends:
     R (>= 4.0)
-Imports: hydroloom, dplyr, rlang, sf, RANN, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles, mapsf, fst, arrow, dataRetrieval, tools, zip, pbapply
-Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2, gifski, leaflet, httptest
+Imports: hydroloom, dplyr, sf, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles, mapsf, fst, arrow, dataRetrieval, tools, zip, pbapply, future.apply
+Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2, gifski, leaflet, httptest, future
 Remotes: doi-usgs/hydroloom
 License: CC0
 Encoding: UTF-8

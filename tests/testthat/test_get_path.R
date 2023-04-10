@@ -102,10 +102,10 @@ test_that("degenerate", {
   net <- structure(list(ID = 11000020, toID = 0, nameID = "constant",
                         lengthkm = 12.2243026760847, areasqkm = 54.2851667150928,
                         weight = 12.2243026760847, terminalID = 11000020), row.names = 2938080L, class = "data.frame")
-  expect_warning(
+
+  suppressWarnings(
   er <- get_levelpaths(net, 5)
   )
-
   expect_equal(er$topo_sort, 1)
 
   expect_equal(er$levelpath, 1)
@@ -144,11 +144,10 @@ test_that("from vignette works", {
   expect_equal(length(unique(fpath$levelpath)),
                length(unique(fpath$outletID)))
 
-  expect_warning(
   plus <- add_plus_network_attributes(dplyr::select(fpath, comid, tocomid,
                                                     lengthkm, areasqkm,
                                                     nameID = gnis_id),
                                       status = FALSE)
-  )
+
   expect_s3_class(plus, "sf")
 })

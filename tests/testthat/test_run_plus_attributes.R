@@ -8,10 +8,9 @@ test_that("basic two flowline network", {
                        class = "data.frame",
                        row.names = c(NA, -2L))
 
-  expect_warning(net_new <-
+  net_new <-
     add_plus_network_attributes(
-      dplyr::rename(net_new, nameID = gnis_id), status = FALSE),
-    "get_levelpaths is deprecated")
+      dplyr::rename(net_new, nameID = gnis_id), status = FALSE)
 
 
   expect_equal(nrow(net_new), 2)
@@ -33,9 +32,8 @@ test_that("example", {
 
   expect_s3_class(get_sorted(sf::st_sf(test_flowline, sf::st_geometry(walker_flowline))), "sf")
 
-  expect_warning(
   mess <- capture_output(fl <- add_plus_network_attributes(test_flowline,
-                                                           status = TRUE))
+                                                           status = TRUE)
   )
 
   expect_true(grepl("+| 100% elapsed=", mess))

@@ -53,7 +53,8 @@ test_that("catchment chars", {
   expect_equal(nrow(meta), 3)
 
   expect_equal(names(meta), c("ID", "description", "units", "datasetLabel", "datasetURL",
-                              "themeLabel", "themeURL", "watershedType"))
+                              "themeLabel", "themeURL", "watershedType",
+                              "sbid", "end", "s3_url", "http_url"))
 
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 

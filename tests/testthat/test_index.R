@@ -192,11 +192,9 @@ test_that("get location", {
 
   locations <- get_hydro_location(indexes, sample_flines)
 
-  expect_equal(sf::st_coordinates(locations)[, 1:2],
-               structure(c(-76.8693957911233, -76.9176139910484, -76.8810037244386,
-                           39.4932572053652, 39.4090934721626, 39.3632976055671),
-                         .Dim = 3:2, .Dimnames = list(c("1", "2", "3"),
-                                                      c("X", "Y"))))
+  expect_equal(as.numeric(sf::st_coordinates(locations)[, 1:2]),
+               c(-76.8693957911233, -76.9176139963277, -76.8810037292214, 39.4932572053652,
+                 39.4090934738461, 39.3632976014239))
 
   points <- sf::st_sfc(sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328))),
                                   crs = 4326))

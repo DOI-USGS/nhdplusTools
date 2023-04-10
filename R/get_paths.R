@@ -43,8 +43,6 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
 
   warning("get_levelpaths is deprecated in favor of add_levelpaths in the hydroloom package.")
 
-  x <- check_names(drop_geometry(x), "get_levelpaths")
-
   if(!is.null(cores)) {
     if(inherits(cores, "cluster")) stop("passing a cluster object no longer supported")
     message("the future plan is being modified and will be changed back on exit")
@@ -52,13 +50,20 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
     on.exit(future::plan(oplan), add = TRUE)
   }
 
+  get_levelpaths_internal(x, override_factor)
+
+}
+
+get_levelpaths_internal <- function(x, override_factor) {
+  x <- check_names(drop_geometry(x), "get_levelpaths")
+
   x <- hy(select(x, all_of(c(id = "ID", toid = "toID", "nameID", "weight"))))
 
   x <- add_levelpaths(x, weight_attribute = "weight", name_attribute = "nameID",
                       override_factor = override_factor)
 
   return(as.data.frame(select(x, all_of(c("ID" = "id", "outletID" = "levelpath_outlet_id",
-                            "topo_sort" = "topo_sort", "levelpath" = "levelpath")))))
+                                          "topo_sort" = "topo_sort", "levelpath" = "levelpath")))))
 }
 
 #' @importFrom hydroloom make_fromids

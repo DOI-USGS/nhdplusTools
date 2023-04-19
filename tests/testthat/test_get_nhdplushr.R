@@ -4,9 +4,13 @@ work_dir <- file.path(tempdir(), "test_hr")
 dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
 out_gpkg <- file.path(work_dir, "temp.gpkg")
 
-test_that("we get urls for nhdplushr", {
+test_that("we get urls for nhdplushr and base", {
   skip_on_cran()
   urls <- download_nhdplushr(work_dir, c("01", "0203"), download_files = FALSE)
+
+  expect_equal(length(urls), 11)
+
+  urls <- download_nhd(work_dir, c("01", "0203"), download_files = FALSE)
 
   expect_equal(length(urls), 11)
 })

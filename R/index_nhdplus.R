@@ -234,7 +234,7 @@ get_flowline_index <- function(flines, points,
     group_by(.data$L1) %>%
     add_len() %>%
     left_join(select(matched, "L1", "COMID"), by = "L1") %>%
-    left_join(select(fline_atts, -"index"), by = "COMID") %>%
+    left_join(select(fline_atts, -"index"), by = "COMID", relationship = "many-to-many") %>%
     mutate(REACH_meas = round(
       .data$FromMeas + (.data$ToMeas - .data$FromMeas) * (.data$measure / 100),
       digits = 4)) %>%
@@ -454,7 +454,8 @@ get_waterbody_index <- function(waterbodies, points, flines = NULL,
     out <- left_join(out, select(flines,
                                  outlet_fline_COMID = "COMID",
                                  "WBAREACOMI", "Hydroseq"),
-                     by = c("joiner" = "WBAREACOMI"))
+                     by = c("joiner" = "WBAREACOMI"),
+                     relationship = "many-to-many")
 
     out <- ungroup(filter(group_by(out, .data$id), is.na(Hydroseq) | Hydroseq == min(Hydroseq)))
 

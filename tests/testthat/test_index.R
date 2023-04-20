@@ -4,7 +4,10 @@ source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 
 flines_in <- sample_flines
 
-flines_in <- sf::st_transform(flines_in, 4269)
+suppressWarnings(
+flines_in <- sf::st_zm(sf::st_cast(sf::st_transform(flines_in, 4269),
+                                   "LINESTRING"))
+)
 
 test_that("point indexing to nearest existing node works as expected", {
     skip_on_cran()
@@ -130,6 +133,10 @@ test_that("disambiguate", {
                               totda = c(23.6, 7.3, 427.9),
                               nameid = c("Patapsco", "", "Falls Run River"))
 
+  suppressWarnings(
+    sample_flines <- sf::st_zm(sf::st_cast(sample_flines, "LINESTRING"))
+  )
+
   flowpath <- dplyr::select(sample_flines,
                             comid = COMID,
                             totda = TotDASqKM,
@@ -182,6 +189,10 @@ test_that("rescale", {
 
 test_that("get location", {
   source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+  suppressWarnings(
+    sample_flines <- sf::st_zm(sf::st_cast(sample_flines, "LINESTRING"))
+  )
 
   points <- sf::st_sfc(sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
                                        sf::st_point(c(-76.91711, 39.40884)),

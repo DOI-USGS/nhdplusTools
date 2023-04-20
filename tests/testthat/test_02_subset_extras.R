@@ -183,10 +183,14 @@ test_that("big rpu test", {
                                vaa[c("comid", "rpuid", "vpuid")],
                                by = "comid")
 
+  suppressWarnings(
   vaa_new$arbolatesu <- calculate_arbolate_sum(
     dplyr::select(vaa_new, ID = comid, toID = tocomid, length = lengthkm))
+  )
 
+  suppressWarnings(
   sub <- subset_rpu(vaa_new, "14a", strict = TRUE)
+  )
 
   expect_equal(names(sub), names(vaa_new))
 

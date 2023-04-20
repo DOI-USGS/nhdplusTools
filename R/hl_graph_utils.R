@@ -79,7 +79,9 @@ add_toids <- function(x, return_dendritic = TRUE) {
     select(
       left_join(select(drop_geometry(x), "id", "tonode"),
                 select(drop_geometry(x), toid = "id", "fromnode"),
-                by = c("tonode" = "fromnode")), -"tonode")
+                by = c("tonode" = "fromnode"),
+                relationship = "many-to-many"),
+      -"tonode")
   }
 
   # slightly faster data.table

@@ -102,9 +102,12 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
       gdb_in_dir <- gdb_in_dir[grepl(paste0(".*", hu04, ".*\\.gdb"), gdb_in_dir, ignore.case = TRUE)]
 
       if(download_files & !dir.exists(gsub(".zip", ".gdb", out_file)) &
-         !dir.exists(gdb_in_dir)) {
-        download.file(url, out_file)
+         !(length(gdb_in_dir) > 0 && !dir.exists(gdb_in_dir))) {
+
+        httr::RETRY("GET", url, httr::write_disk(out_file), httr::progress())
+
         zip::unzip(out_file, exdir = out[length(out)])
+
         unlink(out_file)
       } else if(!download_files) {
         out <- c(out, url)

@@ -138,7 +138,9 @@ get_DM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 #'      col = "blue", add = TRUE, lwd = 2)
 #'
 get_DD <- function(network, comid, distance = NULL) {
+
   navigate_hydro_network(network, comid, "DD", distance)
+
 }
 
 #' Navigate Network

@@ -1,3 +1,7 @@
+nhdplusTools 0.6.2
+==========
+Update a test for a change in sf
+
 nhdplusTools 0.6.1
 ==========
 No functional changes. Package migrated to new repository: https://github.com/DOI-USGS/nhdplusTools

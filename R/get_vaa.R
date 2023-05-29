@@ -226,6 +226,8 @@ get_characteristics_metadata <- function(search, cache = TRUE) {
       out <- readRDS(r)
     } else {
 
+      if(!dir.exists(dirname(f))) dir.create(dirname(f), recursive = TRUE)
+
       if(!file.exists(f)) resp <- httr::RETRY("GET", u, httr::write_disk(f))
 
       out <- read.delim(f, sep = "\t")

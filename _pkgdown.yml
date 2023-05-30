@@ -10,6 +10,7 @@ reference:
       - '`get_nhdplushr`'
       - '`get_hr_data`'
       - '`download_nhdplusv2`'
+      - '`download_nhd`'
       - '`download_rf1`'
       - '`download_wbd`'
       - '`download_vaa`'
@@ -20,6 +21,9 @@ reference:
       - '`rpu_boundaries`'
       - '`vpu_boundaries`'
       - '`get_boundaries`'
+      - '`get_characteristics_metadata`'
+      - '`get_catchment_characteristics`'
+      - '`rescale_catchment_characteristics`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are

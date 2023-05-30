@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -60,9 +60,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
-    </li>
-    <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
     </li>
     <li>
@@ -70,9 +67,6 @@
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul>
 </li>
@@ -115,7 +109,8 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p><code>nhdplusTools</code> offers a few indexing functions and some
-supporting functions that are worth being aware of.</p>
+supporting functions that are worth being aware of. Most of these
+functions wrap similar but more general functions from <a href="https://doi-usgs.github.io/hydroloom/reference/index.html#indexing-and-linear-referencing" class="external-link"><code>hydroloom</code></a>.</p>
 <p>The core functions are: <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> and
 <code><a href="../reference/get_waterbody_index.html">get_waterbody_index()</a></code> – they do the heavy lifting of
 finding flowlines and waterbodies near point locations.</p>
@@ -123,14 +118,14 @@ finding flowlines and waterbodies near point locations.</p>
 <code><a href="../reference/disambiguate_flowline_indexes.html">disambiguate_flowline_indexes()</a></code> uses numeric or character
 attributes to attempt to determine the best flowline match when many
 near by matches exist. This is especially useful for mainstem /
-tributary disambiguation. - <code><a href="../reference/get_hydro_location.html">get_hydro_location()</a></code> retrieves
+tributary disambiguation. - <code><a href="https://doi-usgs.github.io/hydroloom/reference/get_hydro_location.html" class="external-link">get_hydro_location()</a></code> retrieves
 the point location of an index along a flowline. -
-<code><a href="../reference/rescale_measures.html">rescale_measures()</a></code> converts 0:100 reachcode measures to
-0:100 flowline measures. - <code><a href="../reference/get_partial_length.html">get_partial_length()</a></code> retrieves a
+<code><a href="https://doi-usgs.github.io/hydroloom/reference/rescale_measures.html" class="external-link">rescale_measures()</a></code> converts 0:100 reachcode measures to
+0:100 flowline measures. - <code><a href="https://doi-usgs.github.io/hydroloom/reference/get_partial_length.html" class="external-link">get_partial_length()</a></code> retrieves a
 partial length (upstream and downstream) of an index location. -
 <code><a href="../reference/get_path_lengths.html">get_path_lengths()</a></code> retrieves the distance between the
 outlets of pairs of flowlines. Use with
-<code><a href="../reference/get_partial_length.html">get_partial_length()</a></code> to determine network distance between
+<code><a href="https://doi-usgs.github.io/hydroloom/reference/get_partial_length.html" class="external-link">get_partial_length()</a></code> to determine network distance between
 indexes.</p>
 <p>For waterbody indexes, the <code><a href="../reference/get_wb_outlet.html">get_wb_outlet()</a></code> function is
 helpful too determine which flowline is the outlet of a waterbody.</p>
@@ -149,9 +144,6 @@ whole NHDPlus flowline layer and run the calculations.</p>
 <span><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"natseamless.gpkg"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">flowlines</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDATE,</span></span>
-<span><span class="co">#&gt; 1999-10-15T05:00:00Z, successfully parsed</span></span>
 <span><span class="va">gages</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Gage"</span><span class="op">)</span></span></code></pre></div>
 <p>Now we can call <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> on the data we just
 loaded. The <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> function has an input,
@@ -168,6 +160,10 @@ the bounding box of your input points.</p>
 <span>                              <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>, <span class="fl">5070</span><span class="op">)</span>, </span>
 <span>                              search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">200</span>, <span class="st">"meters"</span><span class="op">)</span>, </span>
 <span>                              max_matches <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; dropping z coordinates, this may be slow</span></span>
 <span></span>
 <span><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>                               geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span>, </span>
@@ -321,6 +317,10 @@ for disambiguation down below.</p>
 <span>                                  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>, </span>
 <span>                                  search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="st">"degrees"</span><span class="op">)</span>, </span>
 <span>                                  max_matches <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; dropping z coordinates, this may be slow</span></span>
 <span></span>
 <span><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">42</span>, </span>
 <span>                               geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">[</span><span class="fl">42</span><span class="op">]</span><span class="op">)</span>, </span>
@@ -422,9 +422,6 @@ NHDPlus geometry and use the source <code>LonSite</code> and
 <code>LatSite</code> attributes for geometry.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"NHDWaterbody"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDATE,</span></span>
-<span><span class="co">#&gt; 1999-10-29T05:00:00Z, successfully parsed</span></span>
 <span></span>
 <span><span class="va">gages</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">LonSite</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -444,6 +441,10 @@ like.</p>
 <span>                                <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">flowlines</span>, <span class="fl">5070</span><span class="op">)</span>, </span>
 <span>                                <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">gages</span>, <span class="fl">5070</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>                                search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">200</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; dropping z coordinates, this may be slow</span></span>
 <span>                              </span>
 <span><span class="va">indexed_gages</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">gages</span>, </span>
 <span>                                      orig_REACHCODE <span class="op">=</span> <span class="va">REACHCODE</span>, </span>
@@ -530,7 +531,7 @@ like.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

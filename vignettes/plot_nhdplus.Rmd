@@ -92,8 +92,7 @@ plot_nhdplus(list(list("comid", "13293970"),
              nhdplus_data = sample_data,
              plot_config = list(basin = list(lwd = 2),
                                 outlets = list(huc12pp = list(cex = 1.5),
-                                               comid = list(col = "green"))),
-             stoponlargerequest = FALSE)
+                                               comid = list(col = "green"))))
 ```
 
 We can also plot NHDPlus data without an outlet at all. 

@@ -20,7 +20,7 @@ the domain is independently complete."><meta property="og:image" content="https:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -38,9 +38,6 @@ the domain is independently complete."><meta property="og:image" content="https:
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
-    </li>
-    <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
     </li>
     <li>
@@ -48,9 +45,6 @@ the domain is independently complete."><meta property="og:image" content="https:
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul></li>
 <li>
@@ -114,16 +108,16 @@ the domain is independently complete.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -79.01402 ymin: 35.79464 xmax: -79.00523 ymax: 35.80153</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  GRS 1980(IUGG, 1980)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 58</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Permanen…¹ FDate               Resol…² GNIS_ID GNIS_…³ LENGT…⁴ REACH…⁵ FlowDir</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 46353268   2012-03-11 <span style="color: #949494;">06:52:19</span>       2 009910… New Ho…    1.10 030300…       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 50 more variables: WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   FCODE &lt;int&gt;, MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Permanent_Identifier FDate               Resolution GNIS_ID GNIS_Name LENGTHKM</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 46353268             2012-03-11 <span style="color: #949494;">06:52:19</span>          2 009910… New Hope…     1.10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 52 more variables: REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   StreamLeve &lt;dbl&gt;, StreamOrde &lt;dbl&gt;, StreamCalc &lt;dbl&gt;, FromNode &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;, UpHydroseq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, …</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;, …</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">TerminalPa</span> <span class="op">==</span> <span class="va">outlet</span><span class="op">$</span><span class="va">Hydroseq</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2691</span>
 <span class="r-in"><span></span></span>
@@ -136,16 +130,16 @@ the domain is independently complete.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -79.01402 ymin: 35.79464 xmax: -79.00523 ymax: 35.80153</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  GRS 1980(IUGG, 1980)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 58</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Permanen…¹ FDate               Resol…² GNIS_ID GNIS_…³ LENGT…⁴ REACH…⁵ FlowDir</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 46353268   2012-03-11 <span style="color: #949494;">06:52:19</span>       2 009910… New Ho…    1.10 030300…       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 50 more variables: WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   FCODE &lt;int&gt;, MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Permanent_Identifier FDate               Resolution GNIS_ID GNIS_Name LENGTHKM</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 46353268             2012-03-11 <span style="color: #949494;">06:52:19</span>          2 009910… New Hope…     1.10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 52 more variables: REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   StreamLeve &lt;dbl&gt;, StreamOrde &lt;dbl&gt;, StreamCalc &lt;dbl&gt;, FromNode &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TerminalFl &lt;dbl&gt;, UpLevelPat &lt;dbl&gt;, UpHydroseq &lt;dbl&gt;, DnLevel &lt;dbl&gt;, …</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, Divergence &lt;dbl&gt;, StartFlag &lt;dbl&gt;, …</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">TerminalPa</span> <span class="op">==</span> <span class="va">outlet</span><span class="op">$</span><span class="va">Hydroseq</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2691</span>
 <span class="r-in"><span></span></span>
@@ -179,6 +173,87 @@ the domain is independently complete.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">flowline_mod</span> <span class="op">&lt;-</span> <span class="fu">make_standalone</span><span class="op">(</span><span class="va">subset</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> defaulting to comid rather than permanent_identifier</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">terminals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">flowline_mod</span><span class="op">$</span><span class="va">TerminalPa</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -208,7 +283,7 @@ the domain is independently complete.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

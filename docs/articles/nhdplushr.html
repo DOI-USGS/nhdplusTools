@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -60,9 +60,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
-    </li>
-    <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
     </li>
     <li>
@@ -70,9 +67,6 @@
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul>
 </li>
@@ -133,11 +127,8 @@ behavior.</em></p>
 <span></span>
 <span><span class="co"># Make a plot and get some background NHDPlusV2 data.</span></span>
 <span><span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>, streamorder <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                          nhdplus_data <span class="op">=</span> <span class="va">sample_data</span>,</span>
-<span>                          stoponlargerequest <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Zoom: 10</span></span>
-<span><span class="co">#&gt; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></span>
-<span><span class="co">#&gt; Audotdetect projection: assuming Google Mercator (epsg 3857)</span></span></code></pre></div>
+<span>                          nhdplus_data <span class="op">=</span> <span class="va">sample_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Zoom set to: 11</span></span></code></pre></div>
 <p><img src="nhdplushr_files/figure-html/tldr-1.png" width="576"></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -150,30 +141,25 @@ behavior.</em></p>
 <span><span class="co"># Projection and simplification for demo purposes.</span></span>
 <span><span class="va">hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, out_gpkg <span class="op">=</span> <span class="va">hr_gpkg</span>,</span>
 <span>                    proj <span class="op">=</span> <span class="fl">3857</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDate,</span></span>
-<span><span class="co">#&gt; 2012-03-19T06:36:18Z, successfully parsed</span></span>
 <span></span>
 <span><span class="op">(</span><span class="va">start_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
 <span>                                   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">outlets</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
 <span>                                   search_radius <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span> <span class="co"># meters albers eq area</span></span>
-<span><span class="co">#&gt; Warning in check_search_radius(search_radius, points): search_radius units not</span></span>
-<span><span class="co">#&gt; set, trying units of points.</span></span>
+<span><span class="co">#&gt; Warning in hydroloom:::check_search_radius(search_radius, points):</span></span>
+<span><span class="co">#&gt; search_radius units not set, trying units of points.</span></span>
+<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
 <span><span class="co">#&gt;   id          COMID      REACHCODE REACH_meas   offset</span></span>
 <span><span class="co">#&gt; 1  1 22001000032700 07090002006114    37.6572 87.71874</span></span>
 <span></span>
 <span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">start_index</span><span class="op">$</span><span class="va">COMID</span><span class="op">)</span></span>
+<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span></span>
 <span><span class="va">hr_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span><span class="va">ids</span>, nhdplus_data <span class="op">=</span> <span class="va">hr_gpkg</span><span class="op">)</span></span>
 <span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
 <span><span class="co">#&gt; Reading NHDFlowline</span></span>
 <span><span class="co">#&gt; 366 comids of 366</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDate,</span></span>
-<span><span class="co">#&gt; 2012-03-19T06:36:18Z, successfully parsed</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 74 in column FDate,</span></span>
-<span><span class="co">#&gt; 2012-03-18T17:56:12Z, successfully parsed</span></span>
 <span><span class="co">#&gt; Writing NHDFlowline</span></span>
 <span><span class="co">#&gt; Reading NHDPlusCatchment</span></span>
 <span><span class="co">#&gt; 366 comids of 366</span></span>
@@ -188,11 +174,12 @@ top of it.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>, streamorder <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>             nhdplus_data <span class="op">=</span> <span class="va">sample_data</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>             plot_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>flowline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>,</span>
-<span>                                basin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>             stoponlargerequest <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Zoom: 10</span></span>
-<span><span class="co">#&gt; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></span>
-<span><span class="co">#&gt; Audotdetect projection: assuming Google Mercator (epsg 3857)</span></span>
+<span>                                basin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
+<span><span class="co">#&gt; although coordinates are longitude/latitude, st_intersects assumes that they</span></span>
+<span><span class="co">#&gt; are planar</span></span>
+<span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
+<span><span class="co">#&gt; Zoom set to: 11</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDPlusCatchment</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.25</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -248,6 +235,7 @@ demonstrates a few behaviors of <code><a href="../reference/get_nhdplushr.html">
 give us back a list with flowlines and catchments as sf data.frames.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span><span class="op">)</span></span>
+<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">hr</span>, <span class="va">class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      NHDFlowline  NHDPlusCatchment</span></span>
 <span><span class="co">#&gt; [1,] "sf"         "sf"            </span></span>
@@ -260,9 +248,10 @@ give us back a list with flowlines and catchments as sf data.frames.</p>
 the <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> documentation.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span>, layers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NHDFlowline"</span>, <span class="st">"NHDWaterbody"</span>, <span class="st">"NHDArea"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: organizePolygons() received a polygon with more than 100 parts.</span></span>
-<span><span class="co">#&gt; The processing may be really slow. You can skip the processing by setting</span></span>
+<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
+<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, : GDAL</span></span>
+<span><span class="co">#&gt; Message 1: organizePolygons() received a polygon with more than 100 parts. The</span></span>
+<span><span class="co">#&gt; processing may be really slow.  You can skip the processing by setting</span></span>
 <span><span class="co">#&gt; METHOD=SKIP, or only make it analyze counter-clock wise parts by setting</span></span>
 <span><span class="co">#&gt; METHOD=ONLY_CCW if you can assume that the outline of holes is counter-clock</span></span>
 <span><span class="co">#&gt; wise defined</span></span>
@@ -286,9 +275,6 @@ results to a standalone database for later use.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">demo_gpkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"demo.gpkg"</span><span class="op">)</span></span>
 <span><span class="va">hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span>, out_gpkg <span class="op">=</span> <span class="va">demo_gpkg</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDate,</span></span>
-<span><span class="co">#&gt; 2012-03-19T06:36:18Z, successfully parsed</span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">demo_gpkg</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
@@ -316,6 +302,7 @@ network.</em></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">demo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span>, layers <span class="op">=</span> <span class="st">"NHDFlowline"</span>, </span>
 <span>                               min_size_sqkm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, </span>
 <span>     lwd <span class="op">=</span> <span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">$</span><span class="va">StreamOrde</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="nhdplushr_files/figure-html/get_nhdplushr4-1.png" width="576"></p>
@@ -326,6 +313,7 @@ network.</em></p>
 <span>                      keep_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"COMID"</span>, <span class="st">"StreamOrde"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in CPL_crs_from_input(x): GDAL Message 1: +init=epsg:XXXX syntax is</span></span>
 <span><span class="co">#&gt; deprecated. It might return a CRS with a non-EPSG compliant axis order.</span></span>
+<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "COMID"      "StreamOrde" "Shape"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, </span>
@@ -361,6 +349,7 @@ further use.</p>
 <span></span>
 <span><span class="co"># Create a standalone basin with the results for comparison.</span></span>
 <span><span class="va">standalone_demo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_standalone.html">make_standalone</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span></span>
+<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span></span>
 <span><span class="va">demo_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">TotDASqKM</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TotDASqKM</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
@@ -383,13 +372,13 @@ further use.</p>
 <span><span class="co">#&gt; Bounding box:  xmin: NA ymin: NA xmax: NA ymax: NA</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  NAD83</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 58</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 58 variables: Permanent_Identifier &lt;chr&gt;, FDate &lt;dttm&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Resolution &lt;int&gt;, GNIS_ID &lt;chr&gt;, GNIS_Name &lt;chr&gt;, LENGTHKM &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   FTYPE &lt;int&gt;, FCODE &lt;int&gt;, MainPath &lt;int&gt;, InNetwork &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   VisibilityFilter &lt;int&gt;, Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Enabled &lt;int&gt;, Shape &lt;GEOMETRY [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, …</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 58 variables: Permanent_Identifier &lt;chr&gt;, FDate &lt;dttm&gt;, Resolution &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   GNIS_ID &lt;chr&gt;, GNIS_Name &lt;chr&gt;, LENGTHKM &lt;dbl&gt;, REACHCODE &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Shape &lt;GEOMETRY [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;, StreamCalc &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, LevelPathI &lt;dbl&gt;, …</span></span></span>
 <span><span class="op">(</span><span class="va">standalone</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">standalone_demo</span>, <span class="va">TerminalPa</span> <span class="op">==</span> <span class="va">standalone_demo_outlet</span><span class="op">$</span><span class="va">Hydroseq</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Simple feature collection with 5358 features and 57 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTILINESTRING</span></span>
@@ -397,25 +386,25 @@ further use.</p>
 <span><span class="co">#&gt; Bounding box:  xmin: -90.68076 ymin: 41.27482 xmax: -88.1999 ymax: 43.74949</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  NAD83</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5,358 × 58</span></span></span>
-<span><span class="co">#&gt;    Permane…¹ FDate               Resol…² GNIS_ID GNIS_…³ LENGT…⁴ REACH…⁵ FlowDir</span></span>
-<span><span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 156038282 2012-03-19 <span style="color: #949494;">01:32:25</span>       2 004155… Pecato…   1.34  070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 155714162 2014-10-28 <span style="color: #949494;">19:00:00</span>       2 004248… Fairfi…   0.417 070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 156035374 2012-03-19 <span style="color: #949494;">01:35:08</span>       2 015619… Gordon…   0.39  070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 145600320 2012-03-19 <span style="color: #949494;">01:34:47</span>       2 004168… Rock C…   0.352 070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 155712981 2012-03-19 <span style="color: #949494;">02:05:43</span>       2 <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>        0.034 070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 137417698 2012-03-18 <span style="color: #949494;">13:07:30</span>       2 015750… Sugar …   0.798 070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 156037500 2012-03-19 <span style="color: #949494;">01:33:10</span>       2 <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>        0.009 070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 145599800 2012-03-19 <span style="color: #949494;">01:34:47</span>       2 004145… North …   0.665 070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 143246785 2012-03-18 <span style="color: #949494;">12:56:42</span>       2 004168… Rock R…   0.165 070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 155712415 2012-03-19 <span style="color: #949494;">02:05:51</span>       2 004241… Willow…   2.11  070900…       1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 5,348 more rows, 50 more variables: WBArea_Permanent_Identifier &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   FTYPE &lt;int&gt;, FCODE &lt;int&gt;, MainPath &lt;int&gt;, InNetwork &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   VisibilityFilter &lt;int&gt;, Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Enabled &lt;int&gt;, Shape &lt;MULTILINESTRING [°]&gt;, StreamLeve &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   StreamOrde &lt;int&gt;, StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Hydroseq &lt;dbl&gt;, LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ArbolateSu &lt;dbl&gt;, Divergence &lt;int&gt;, StartFlag &lt;int&gt;, TerminalFl &lt;dbl&gt;, …</span></span></span>
+<span><span class="co">#&gt;    Permanent_Identifier FDate               Resolution GNIS_ID  GNIS_Name       </span></span>
+<span><span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 156038282            2012-03-19 <span style="color: #949494;">01:32:25</span>          2 00415503 Pecatonica River</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 155714162            2014-10-28 <span style="color: #949494;">19:00:00</span>          2 00424882 Fairfield Ditch…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 156035374            2012-03-19 <span style="color: #949494;">01:35:08</span>          2 01561947 Gordon Creek    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 145600320            2012-03-19 <span style="color: #949494;">01:34:47</span>          2 00416806 Rock Creek      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 155712981            2012-03-19 <span style="color: #949494;">02:05:43</span>          2 <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 137417698            2012-03-18 <span style="color: #949494;">13:07:30</span>          2 01575030 Sugar River     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 156037500            2012-03-19 <span style="color: #949494;">01:33:10</span>          2 <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 145599800            2012-03-19 <span style="color: #949494;">01:34:47</span>          2 00414599 North Fork Kent…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 143246785            2012-03-18 <span style="color: #949494;">12:56:42</span>          2 00416824 Rock River      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 155712415            2012-03-19 <span style="color: #949494;">02:05:51</span>          2 00424170 Willow Creek    </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 5,348 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 53 more variables: LENGTHKM &lt;dbl&gt;, REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Shape &lt;MULTILINESTRING [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, …</span></span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">standalone</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="nhdplushr_files/figure-html/make_standalone-1.png" width="576"></p>
@@ -439,7 +428,7 @@ further use.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

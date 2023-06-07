@@ -74,6 +74,7 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 
       if(download_files & !dir.exists(gsub(".zip", ".gdb", out_file)) &
          !dir.exists(file.path(dirname(out_file), paste0(hu04, ".gdb")))) {
+        options(timeout = 10000)
         download.file(url, out_file)
         zip::unzip(out_file, exdir = out[length(out)])
         unlink(out_file)

@@ -1,3 +1,21 @@
+nhdplusTools 0.7.0
+==========
+This release adds three new functions.
+
+- `get_characteristics_metadata()`
+- `get_catchment_characteristics()`
+- `rescale_catchment_characteristics()`
+
+These functions are designed to provide access to:
+
+Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes
+for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
+Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
+Geological Survey data release, \doi{10.5066/F7765D7V}.
+
+See https://github.com/DOI-USGS/nhdplusTools/issues/304 and 
+https://github.com/DOI-USGS/nhdplusTools/issues/303 for details.
+
 nhdplusTools 0.6.2
 ==========
 Update a test for a change in sf

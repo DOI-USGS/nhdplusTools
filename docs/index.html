@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -103,17 +103,21 @@
 <div class="section level1">
 <div class="page-header"><h1 id="nhdplustools-">nhdplusTools <img src="reference/figures/logo.png" align="right" alt="" width="120"><a class="anchor" aria-label="anchor" href="#nhdplustools-"></a>
 </h1></div>
-
+<p><img src="https://github.com/doi-usgs/nhdplusTools/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"><a href="https://app.codecov.io/gh/doi-usgs/nhdplusTools" class="external-link"><img src="https://codecov.io/gh/doi-usgs/nhdplusTools/branch/master/graph/badge.svg" alt="codecov"></a> <a href="https://cran.r-project.org/package=nhdplusTools" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools" alt="CRAN Downloads"></a> <a href="https://cran.r-project.org/package=nhdplusTools" class="external-link"><img src="https://www.r-pkg.org/badges/version/nhdplusTools" alt="CRAN"></a></p>
 <div class="section level2">
 <h2 id="nhdplustools-tools-for-accessing-and-working-with-the-nhdplus">nhdplusTools: Tools for Accessing and Working with the NHDPlus<a class="anchor" aria-label="anchor" href="#nhdplustools-tools-for-accessing-and-working-with-the-nhdplus"></a>
 </h2>
+<p><em>New nhdplusTools is coming</em></p>
+<p><code>nhdplusTools</code> is being split into two packages. A new package <a href="https://github.com/DOI-USGS/hydroloom" class="external-link"><code>hydroloom</code></a> is now available for testing. It contains all nhdplusTools functionality not related to specific dataset schemas. See <a href="https://github.com/DOI-USGS/nhdplusTools/issues/307" class="external-link">this issue</a> for details. The transition to <code>hydroloom</code> should occur in Fall 2023. In the mean time, you can install the <code>hydroloom</code> version of nhdplusTools with:</p>
+<p><code>remotes::install_github("doi-usgs/nhdplusTools@hydroloom")</code></p>
+<p>Please submit issues at: <a href="https://github.com/DOI-USGS/nhdplusTools/issues" class="external-link uri">https://github.com/DOI-USGS/nhdplusTools/issues</a></p>
 <p>This package is a growing set of tools for manipulation of hydrographic data using the NHDPlus data model. There is no specific funding or plan to continue development of this package long term but ongoing support is available due to use of the package in project work.</p>
 <div class="section level3">
 <h3 id="recommended-citation">Recommended Citation:<a class="anchor" aria-label="anchor" href="#recommended-citation"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  Blodgett, D., Johnson, J.M., <span class="dv">2022</span>, nhdplusTools<span class="sc">:</span> Tools <span class="cf">for</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  Accessing and Working with the NHDPlus,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5066</span><span class="sc">/</span>P97AS8JD</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>  Blodgett, D., Johnson, J.M., <span class="dv">2022</span>, nhdplusTools<span class="sc">:</span> Tools <span class="cf">for</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  Accessing and Working with the NHDPlus,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5066</span><span class="sc">/</span>P97AS8JD</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation:<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -220,9 +224,9 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 <h3 id="check-notes">Check notes:<a class="anchor" aria-label="anchor" href="#check-notes"></a>
 </h3>
 <p>In addition to typical R package checking, a Dockerfile is included in this repository. Once built, it can be run with the following command.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>docker build <span class="sc">-</span>t nhdplustools_test .</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>docker run <span class="sc">--</span>rm <span class="sc">-</span>it <span class="sc">-</span>v <span class="sc">$</span>PWD<span class="sc">:</span><span class="er">/</span>src nhdplustools_test <span class="sc">/</span>bin<span class="sc">/</span>bash <span class="sc">-</span>c <span class="st">"cp -r /src/* /check/ &amp;&amp; cp /src/.Rbuildignore /check/ &amp;&amp; cd /check &amp;&amp; Rscript -e 'devtools::build()' &amp;&amp; R CMD check --as-cran ../nhdplusTools_*"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>docker build <span class="sc">-</span>t nhdplustools_test .</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>docker run <span class="sc">--</span>rm <span class="sc">-</span>it <span class="sc">-</span>v <span class="sc">$</span>PWD<span class="sc">:</span><span class="er">/</span>src nhdplustools_test <span class="sc">/</span>bin<span class="sc">/</span>bash <span class="sc">-</span>c <span class="st">"cp -r /src/* /check/ &amp;&amp; cp /src/.Rbuildignore /check/ &amp;&amp; cd /check &amp;&amp; Rscript -e 'devtools::build()' &amp;&amp; R CMD check --as-cran ../nhdplusTools_*"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="release-procedure">Release procedure:<a class="anchor" aria-label="anchor" href="#release-procedure"></a>
@@ -310,14 +314,7 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://app.codecov.io/gh/doi-usgs/nhdplusTools" class="external-link"><img src="https://codecov.io/gh/doi-usgs/nhdplusTools/branch/master/graph/badge.svg" alt="codecov"></a></li>
-<li><a href="https://cran.r-project.org/package=nhdplusTools" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools" alt="CRAN Downloads"></a></li>
-<li><a href="https://cran.r-project.org/package=nhdplusTools" class="external-link"><img src="https://www.r-pkg.org/badges/version/nhdplusTools" alt="CRAN"></a></li>
-</ul>
-</div>
+
 
   </div>
 </div>
@@ -330,7 +327,7 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

@@ -56,7 +56,7 @@ get_vaa_names <- function(updated_network = FALSE) {
 #' found at path.
 #' @param updated_network logical default FALSE. If TRUE, updated network attributes
 #' from E2NHD and National Water Model retrieved from
-#' \doi{10.5066/P9W79I7Q}.
+#' \doi{10.5066/P976XCVT}.
 #' @return data.frame containing requested VAA data
 #' @importFrom fst read.fst
 #' @export
@@ -198,5 +198,139 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
   return(path)
 }
 
+#' Get catchment characteristics metadata table
+#' @description Download and cache table of catchment characteristics.
+#'
+#' Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes
+#' for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
+#' Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
+#' Geological Survey data release, \doi{10.5066/F7765D7V}.
+#' @param search character string of length 1 to free search the metadata table.
+#' If no search term is provided the entire table is returned.
+#' @param cache logical should cached metadata be used?
+#' @importFrom utils read.delim
+#' @export
+#' @examples
+#' get_characteristics_metadata()
+get_characteristics_metadata <- function(search, cache = TRUE) {
 
+  out <- tryCatch({
+    u <- "https://prod-is-usgs-sb-prod-publish.s3.amazonaws.com/5669a79ee4b08895842a1d47/metadata_table.tsv"
 
+    f <- file.path(nhdplusTools_data_dir(), "metadata_table.tsv")
+    r <- file.path(nhdplusTools_data_dir(), "metadata_table.rds")
+
+    if(!cache) unlink(r, force = TRUE)
+
+    if(file.exists(r)) {
+      out <- readRDS(r)
+    } else {
+
+      if(!dir.exists(dirname(f))) dir.create(dirname(f), recursive = TRUE)
+
+      if(!file.exists(f)) resp <- httr::RETRY("GET", u, httr::write_disk(f))
+
+      out <- read.delim(f, sep = "\t")
+
+      saveRDS(out, r)
+
+      unlink(f)
+
+      out
+    }
+  }, error = function(e) {
+    NULL
+  })
+
+  if(is.null(out)) warning("Problem getting metadata, no internet?")
+
+  if(!missing(search)) {
+    return(out[unique(unlist(
+      mapply(grep, search, out, ignore.case = TRUE)
+    )), ])
+  }
+  out
+}
+
+#' Get Catchment Characteristics
+#' @description Downloads (subsets of) catchment characteristics from a cloud data
+#' store. See \link{get_characteristics_metadata} for available characteristics.
+#'
+#' Source:
+#' Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes
+#' for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
+#' Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
+#' Geological Survey data release, \doi{10.5066/F7765D7V}.
+#'
+#' @param varname character vector of desired variables. If repeated varnames
+#' are provided, they will be downloaded once but duplicated in the output.
+#' @param ids numeric vector of identifiers (comids) from the specified fabric
+#' @param reference_fabric (not used) will be used to allow future specification
+#' of alternate reference fabrics
+#' @importFrom dplyr bind_rows filter select everything collect
+#' @importFrom arrow s3_bucket open_dataset
+#' @export
+#' @examples
+#' get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
+#'
+get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdplusv2"){
+
+  metadata <- get_characteristics_metadata()
+
+  out <- tryCatch({
+    lapply(unique(varname), function(x) {
+      if(!x %in% metadata$ID) stop(paste("Variable", x, "not found in metadata."))
+
+      i <- metadata[metadata$ID == x,]
+
+      if(nrow(i) > 1) warning(paste("multiple attributes found for variable,", x, "using the first one."))
+
+      i <- i[1,]
+
+      ds <- open_dataset(i$s3_url)
+
+      sub <- filter(select(ds, any_of(c("COMID", x, "percent_nodata"))),
+                           .data$COMID %in% ids)
+
+      att <- collect(sub)
+
+      att$characteristic_id <- x
+
+      att <- dplyr::mutate_all(att, ~ifelse(. == -9999, NA, .))
+
+      if(!"percent_nodata" %in% names(att)) {
+        att$percent_nodata <- 0
+      }
+
+      att <- mutate(att, percent_nodata = ifelse(is.na(.data[[i$ID]]), 100, .data$percent_nodata))
+
+      distinct(
+      select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",
+                           characteristic_value = x, percent_nodata = "percent_nodata"))))
+    })
+  }, error = function(e) {
+    e
+  })
+
+  df <- sapply(out, is.data.frame)
+
+  if(!all(df)) {
+    warning(paste0("Issue getting characteristics. Error was: \n",
+                   out[!df]))
+    return(NULL)
+  }
+
+  names(out) <- unique(varname)
+
+  varname <- stats::setNames(make.unique(varname, sep = "||"), varname)
+
+  out <- lapply(1:length(varname), function(i) {
+    out <- out[names(varname)[i]]
+
+    out[[1]]$characteristic_id <- varname[[i]]
+
+    out[[1]]
+  })
+
+  bind_rows(out)
+}

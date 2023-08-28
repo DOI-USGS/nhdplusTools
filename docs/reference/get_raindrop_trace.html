@@ -18,7 +18,7 @@ nhdplus digital elevation model to the nearest downslop flowline."><meta propert
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -116,12 +116,11 @@ portion of flowline.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -89.21572 ymin: 42.94986 xmax: -89.20944 ymax: 42.95699</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   id                 gnis_name       comid reachcode     raind…¹ measure inter…²</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> downstreamFlowline Yahara River 13<span style="text-decoration: underline;">297</span>178 070900020073…    273.    29.7 &lt;dbl&gt;  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> raindropPath       <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>                <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>   &lt;dbl&gt;  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: geometry &lt;LINESTRING [°]&gt;, and abbreviated variable</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   names ¹​raindrop_pathDist, ²​intersection_point</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id    gnis_name   comid reachcode raindrop_pathDist measure intersection_point</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> down… Yahara R…  1.33<span style="color: #949494;">e</span>7 07090002…              273.    29.7 <span style="color: #949494;">&lt;dbl [2]&gt;</span>         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> rain… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  <span style="color: #BB0000;">NA</span>                      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>   <span style="color: #949494;">&lt;dbl [0]&gt;</span>         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;LINESTRING [°]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">trace</span>, <span class="st">"sf"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">trace</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.005</span>, <span class="op">-</span><span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.005</span><span class="op">)</span></span></span>
@@ -171,7 +170,7 @@ portion of flowline.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

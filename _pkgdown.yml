@@ -20,6 +20,8 @@ reference:
       - '`rpu_boundaries`'
       - '`vpu_boundaries`'
       - '`get_boundaries`'
+      - '`get_characteristics_metadata`'
+      - '`get_catchment_characteristics`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are
@@ -88,6 +90,7 @@ reference:
       - '`prepare_nhdplus`'
       - '`get_vaa_names`'
       - '`get_vaa_path`'
+      - '`rescale_catchment_characteristics`'
   - title: Network Attributes
     desc: >
       Functions that generate common river network attributes. These can be

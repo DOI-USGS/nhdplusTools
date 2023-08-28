@@ -151,7 +151,7 @@ class(st_geometry(basin))
 
 Our file has four layers: network flowlines, simplified catchments, nhd area features, and nhd waterbody features. 
 
-The flowlines have a large set of attributes from the NHDPlus dataset. And the nwis sites have a few attributes that came from the NLDI. Attributes for NWIS sites can be found using the [dataRetrieval package.](https://owi.usgs.gov/R/dataRetrieval.html)
+The flowlines have a large set of attributes from the NHDPlus dataset. And the nwis sites have a few attributes that came from the NLDI. Attributes for NWIS sites can be found using the [dataRetrieval package.](https://doi-usgs.github.io/dataRetrieval/)
 
 See the NHDPlus user guide [linked here](https://www.epa.gov/waterdata/learn-more#Documentation) for more on what these layers are and what the flowline attributes entail.
 

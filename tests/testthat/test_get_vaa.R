@@ -34,6 +34,8 @@ test_that("vaa examples", {
 
 test_that("catchment chars", {
 
+  skip_on_cran()
+
   httptest::without_internet({
     suppressMessages(expect_warning(w <- get_characteristics_metadata(cache = FALSE)))
     expect_null(w)

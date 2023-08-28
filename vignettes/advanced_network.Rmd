@@ -38,7 +38,7 @@ oldoption <- options(scipen = 9999,
 
 ### Terminology
 
-The terms used below are derived from concepts of [graph theory](https://en.wikipedia.org/wiki/Graph_theory), the [HY\_Features](http://opengeospatial.github.io/HY_Features/) data model, and the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus) data model. Many of the concepts here are also presented in: [Mainstems: A logical data model implementing *mainstem* and *drainage* basin feature types based on WaterML2 Part 3: HY Features concepts](https://pubs.er.usgs.gov/publication/70216698).
+The terms used below are derived from concepts of [graph theory](https://en.wikipedia.org/wiki/Graph_theory), the [HY\_Features](http://opengeospatial.github.io/HY_Features/) data model, and the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus) data model. Many of the concepts here are also presented in: [Mainstems: A logical data model implementing *mainstem* and *drainage* basin feature types based on WaterML2 Part 3: HY Features concepts](https://pubs.usgs.gov/publication/70216698).
 
 # Introduction
 
@@ -118,7 +118,7 @@ A level path is derived from "stream level" which assigns an integer value to ma
 
 "Stream leveling", then, is the process of establishing uniquely identified "level paths" through a stream network. This is accomplished with a set of rules that determine which tributary should be considered dominant at every confluence to establish the "mainstem rivers" for each "drainage basin" in a network. `nhdplusTools` supports creation of streamlevel with the `get_streamlevel()` function, and the creation of level path with `get_levelpath()`. The convention used in NHDPlus is to assign the levelpath as the hydrosequence of the path's outlet. 
 
-See [Mainstems: A logical data model implementing *mainstem* and *drainage* basin feature types based on WaterML2 Part 3: HY Features concepts](https://pubs.er.usgs.gov/publication/70216698) for an in depth discussion of these concepts.
+See [Mainstems: A logical data model implementing *mainstem* and *drainage* basin feature types based on WaterML2 Part 3: HY Features concepts](https://pubs.usgs.gov/publication/70216698) for an in depth discussion of these concepts.
 
 ## Other Derived Network Attributes
 

@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -213,9 +213,6 @@ you tell it. If you call it and its output files exist, it won’t
 overwrite and just return the paths to your staged files.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">staged_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stage_national_data.html">stage_national_data</a></span><span class="op">(</span>output_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDATE,</span></span>
-<span><span class="co">#&gt; 1999-10-15T05:00:00Z, successfully parsed</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">staged_data</span>, <span class="va">basename</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 3</span></span>
@@ -299,22 +296,6 @@ download additional data (just change <code>download_files</code> to
 <span><span class="va">hr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, </span>
 <span>                         out_gpkg <span class="op">=</span> <span class="va">out_gpkg</span>, </span>
 <span>                         layers <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDate,</span></span>
-<span><span class="co">#&gt; 2012-03-11T11:45:43Z, successfully parsed</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDate,</span></span>
-<span><span class="co">#&gt; 2002-07-19T05:00:00Z, successfully parsed</span></span>
-<span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDate,</span></span>
-<span><span class="co">#&gt; 2002-07-19T05:00:00Z, successfully parsed</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDate,</span></span>
-<span><span class="co">#&gt; 2002-07-19T00:00:00Z, successfully parsed</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDate,</span></span>
-<span><span class="co">#&gt; 2015-03-06T16:55:30Z, successfully parsed</span></span>
 <span><span class="op">(</span><span class="va">layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
@@ -374,12 +355,11 @@ functionality.</p>
 <span><span class="co">#&gt; Bounding box:  xmin: -89.37037 ymin: 43.08522 xmax: -89.35393 ymax: 43.09491</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 8</span></span></span>
-<span><span class="co">#&gt;   id           gnis_name       comid reachcode      raindrop_p…¹ measure inter…²</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> nhdFlowline  Yahara River 13<span style="text-decoration: underline;">293</span>750 07090002007373         124.    40.1 &lt;dbl&gt;  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> raindropPath <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>                      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>   &lt;dbl&gt;  </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 1 more variable: geometry &lt;LINESTRING [°]&gt;, and abbreviated variable</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   names ¹​raindrop_pathDist, ²​intersection_point</span></span></span>
+<span><span class="co">#&gt;   id    gnis_name   comid reachcode raindrop_pathDist measure intersection_point</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> nhdF… Yahara R…  1.33<span style="color: #949494;">e</span>7 07090002…              124.    40.1 <span style="color: #949494;">&lt;dbl [2]&gt;</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> rain… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  <span style="color: #BB0000;">NA</span>                      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>   <span style="color: #949494;">&lt;dbl [0]&gt;</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;LINESTRING [°]&gt;</span></span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">start_comid</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -404,9 +384,11 @@ the NLDI for an identifier of a given feature from any of its
 below.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">get_nldi_sources</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">source</span></span>
-<span><span class="co">#&gt;  [1] "ca_gages"       "geoconnex-demo" "gfv11_pois"     "huc12pp"       </span></span>
-<span><span class="co">#&gt;  [5] "nmwdi-st"       "nwisgw"         "nwissite"       "ref_gage"      </span></span>
-<span><span class="co">#&gt;  [9] "vigil"          "wade"           "WQP"            "comid"</span></span>
+<span><span class="co">#&gt;  [1] "ca_gages"          "census2020-nhdpv2" "epa_nrsa"         </span></span>
+<span><span class="co">#&gt;  [4] "geoconnex-demo"    "gfv11_pois"        "huc12pp"          </span></span>
+<span><span class="co">#&gt;  [7] "nmwdi-st"          "npdes"             "nwisgw"           </span></span>
+<span><span class="co">#&gt; [10] "nwissite"          "ref_gage"          "vigil"            </span></span>
+<span><span class="co">#&gt; [13] "wade"              "WQP"               "comid"</span></span>
 <span></span>
 <span><span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, </span>
 <span>                     featureID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">start_comid</span><span class="op">$</span><span class="va">comid</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
@@ -585,30 +567,15 @@ this section.</p>
 <span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
 <span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
 <span><span class="co">#&gt; 168 comids of 168</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDATE,</span></span>
-<span><span class="co">#&gt; 1999-10-15T05:00:00Z, successfully parsed</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 5 in column FDATE,</span></span>
-<span><span class="co">#&gt; 1999-10-29T05:00:00Z, successfully parsed</span></span>
 <span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
 <span><span class="co">#&gt; Reading CatchmentSP</span></span>
 <span><span class="co">#&gt; 168 comids of 168</span></span>
 <span><span class="co">#&gt; Writing CatchmentSP</span></span>
 <span><span class="co">#&gt; Reading NHDArea</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDATE,</span></span>
-<span><span class="co">#&gt; 1999-10-15T05:00:00Z, successfully parsed</span></span>
 <span><span class="co">#&gt; Writing NHDArea</span></span>
 <span><span class="co">#&gt; Reading NHDWaterbody</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDATE,</span></span>
-<span><span class="co">#&gt; 1999-10-29T05:00:00Z, successfully parsed</span></span>
 <span><span class="co">#&gt; Writing NHDWaterbody</span></span>
 <span><span class="co">#&gt; Reading NHDFlowline_NonNetwork</span></span>
-<span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
-<span><span class="co">#&gt; GDAL Message 1: Non-conformant content for record 1 in column FDATE,</span></span>
-<span><span class="co">#&gt; 1999-10-29T05:00:00Z, successfully parsed</span></span>
 <span><span class="co">#&gt; Writing NHDFlowline_NonNetwork</span></span>
 <span><span class="co">#&gt; Reading Gage</span></span>
 <span><span class="co">#&gt; Writing Gage</span></span>
@@ -654,7 +621,8 @@ and measure of our starting point like this.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">start_point</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in match_crs(flines, points, paste("crs of lines and points don't</span></span>
-<span><span class="co">#&gt; match.", : crs of lines and points don't match. attempting st_transform of lines</span></span>
+<span><span class="co">#&gt; match.", : crs of lines and points don't match. attempting st_transform of</span></span>
+<span><span class="co">#&gt; lines</span></span>
 <span><span class="co">#&gt;   id    COMID      REACHCODE REACH_meas       offset</span></span>
 <span><span class="co">#&gt; 1  1 13293750 07090002007373    41.8003 0.0009621378</span></span></code></pre></div>
 <p><code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> will work with a list of points
@@ -665,7 +633,8 @@ above.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gage</span><span class="op">)</span>, precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in match_crs(flines, points, paste("crs of lines and points don't</span></span>
-<span><span class="co">#&gt; match.", : crs of lines and points don't match. attempting st_transform of lines</span></span>
+<span><span class="co">#&gt; match.", : crs of lines and points don't match. attempting st_transform of</span></span>
+<span><span class="co">#&gt; lines</span></span>
 <span><span class="co">#&gt;    id    COMID      REACHCODE REACH_meas         offset</span></span>
 <span><span class="co">#&gt; 1   1 13293744 07090002007743    29.3045 0.000016031339</span></span>
 <span><span class="co">#&gt; 2   2 13294276 07090002008387    50.4424 0.000012319388</span></span>
@@ -718,7 +687,7 @@ about it or the reference page that describes it.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

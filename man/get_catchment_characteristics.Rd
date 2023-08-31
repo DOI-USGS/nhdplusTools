@@ -25,3 +25,8 @@ for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
 Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
 Geological Survey data release, \doi{10.5066/F7765D7V}.
 }
+\examples{
+\donttest{
+  get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
+}
+}

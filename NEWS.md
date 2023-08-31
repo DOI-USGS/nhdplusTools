@@ -1,3 +1,7 @@
+nhdplusTools 0.7.1
+==========
+This release fixes a minor example issue for CRAN checks
+
 nhdplusTools 0.7.0
 ==========
 This release adds three new functions.

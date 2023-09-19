@@ -408,8 +408,6 @@ get_cl <- function(cl) {
   return(cl)
 }
 
-#' @importFrom hydroloom drop_geometry
-
 #' @importFrom hydroloom st_compatibalize
 #' @export
 hydroloom::st_compatibalize

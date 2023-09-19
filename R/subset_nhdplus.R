@@ -768,7 +768,7 @@ subset_vpu <- function(fline, vpu,
 
   fline <- check_names(fline, "subset_vpu", tolower = TRUE)
 
-  all_rpuid <- unique(filter(drop_geometry(fline),
+  all_rpuid <- unique(filter(st_drop_geometry(fline),
                              .data$vpuid == vpu)[["rpuid"]])
 
   all_rpuid <- all_rpuid[(!is.na(all_rpuid) & !is.null(all_rpuid))]
@@ -846,7 +846,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 
   # For flowlines labeled as in the RPU, find the top and bottom of each
   # LevelPath. This was required for some unique network situations.
-  fline_sub_in <- filter(drop_geometry(fline), .data$rpuid %in% rpu)
+  fline_sub_in <- filter(st_drop_geometry(fline), .data$rpuid %in% rpu)
 
   fline_sub_in <- group_by(fline_sub_in, .data$levelpathi)
 
@@ -856,7 +856,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 
   if(!strict) {
     # find flowlines completely outside the RPU
-    fline_sub_out <- filter(drop_geometry(fline), !.data$rpuid %in% rpu)
+    fline_sub_out <- filter(st_drop_geometry(fline), !.data$rpuid %in% rpu)
 
     # Need all paths in the domain outside the RPU and their tributary relations
     # used just below. This filter avoids flowlines along the same levelpath.
@@ -932,7 +932,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 get_all_navigable <- function(fline, rpu) {
 
   # Find all outlets of current rpu and sort by size
-  outlets <- filter(drop_geometry(fline), .data$rpuid %in% rpu)
+  outlets <- filter(st_drop_geometry(fline), .data$rpuid %in% rpu)
 
   outlets <- filter(outlets, .data$hydroseq == .data$terminalpa |
                       !.data$tocomid %in% .data$comid)

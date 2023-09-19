@@ -42,7 +42,7 @@ add_plus_network_attributes <- function(net, override = 5,
   if(inherits(net, "sf")) {
     add_sf <- TRUE
     geom <- dplyr::select(net)
-    net <- drop_geometry(net)
+    net <- st_drop_geometry(net)
   }
 
   check_names(net, "add_plus_network_attributes", align = FALSE)

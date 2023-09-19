@@ -55,7 +55,7 @@ get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NU
 }
 
 get_levelpaths_internal <- function(x, override_factor) {
-  x <- check_names(drop_geometry(x), "get_levelpaths")
+  x <- check_names(st_drop_geometry(x), "get_levelpaths")
 
   x <- hy(select(x, all_of(c(id = "ID", toid = "toID", "nameID", "weight"))))
 
@@ -218,7 +218,7 @@ get_terminal <- function(x, outlets) {
 #'
 get_pathlength <- function(x) {
 
-  x <- select(drop_geometry(x), all_of(c("id" = "ID", "toid" = "toID",
+  x <- select(st_drop_geometry(x), all_of(c("id" = "ID", "toid" = "toID",
                                          "length_km" = "length")))
 
   x <- add_pathlength(x)

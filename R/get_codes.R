@@ -152,7 +152,7 @@ get_pfaf <- function(x, max_level = 2, status = FALSE) {
 
   warning("get_pfaf is deprecated, please use hydroloom")
 
-  x <- drop_geometry(x)
+  x <- st_drop_geometry(x)
 
   check_names(x, "get_pfaf")
 

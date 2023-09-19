@@ -72,7 +72,7 @@ prepare_nhdplus <- function(flines,
 
   if ("sf" %in% class(flines)) {
     if (warn) warning("removing geometry")
-    flines <- drop_geometry(flines)
+    flines <- st_drop_geometry(flines)
   }
 
   orig_rows <- nrow(flines)
@@ -214,7 +214,7 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
   hy_g <- get_hyg(x, add, "comid")
 
-  x <- drop_geometry(x)
+  x <- st_drop_geometry(x)
 
   if(remove_coastal)
     x <- filter_coastal(x)

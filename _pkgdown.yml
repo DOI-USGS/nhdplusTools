@@ -92,6 +92,7 @@ reference:
       - '`prepare_nhdplus`'
       - '`get_vaa_names`'
       - '`get_vaa_path`'
+      - '`rescale_catchment_characteristics`'
   - title: Network Attributes
     desc: >
       Functions that generate common river network attributes. These can be

@@ -109,9 +109,9 @@
 <div class="section level3">
 <h3 id="recommended-citation">Recommended Citation:<a class="anchor" aria-label="anchor" href="#recommended-citation"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  Blodgett, D., Johnson, J.M., <span class="dv">2022</span>, nhdplusTools<span class="sc">:</span> Tools <span class="cf">for</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  Accessing and Working with the NHDPlus,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5066</span><span class="sc">/</span>P97AS8JD</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>  Blodgett, D., Johnson, J.M., <span class="dv">2022</span>, nhdplusTools<span class="sc">:</span> Tools <span class="cf">for</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  Accessing and Working with the NHDPlus,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5066</span><span class="sc">/</span>P97AS8JD</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation:<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -161,7 +161,7 @@
 <h3 id="data-model">Data Model<a class="anchor" aria-label="anchor" href="#data-model"></a>
 </h3>
 <p>Given that <code>nhdplusTools</code> is focused on working with NHDPlus data, the NHDPlus data model will largely govern the data model the package is designed to work with. That said, much of the package functionality also uses concepts from the HY_Features standard.</p>
-<p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a holistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can <em>only</em> be characterized fully through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given NHD flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as an identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a collection of data that together fully describe an NHDPlus catchment. <a href="http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1" class="external-link">See the NHDPlus mapping to HY_Features in the HY_Features specification.</a></p>
+<p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a holistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can <em>only</em> be characterized fully through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given NHD flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as an identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a collection of data that together fully describe an NHDPlus catchment. <a href="https://docs.ogc.org/is/14-111r6/14-111r6.html#annexD_1" class="external-link">See the NHDPlus mapping to HY_Features in the HY_Features specification.</a></p>
 <p>Below is a description of the scope of data used by the <code>nhdplusTools</code> package. While other data and attributes may come into scope, it should only be done as a naive pass-through, as in data subsetting, or with considerable deliberation.</p>
 <div class="section level5">
 <h5 id="flowlines-and-waterbodies">Flowlines and Waterbodies<a class="anchor" aria-label="anchor" href="#flowlines-and-waterbodies"></a>
@@ -211,9 +211,9 @@
 <h3 id="check-notes">Check notes:<a class="anchor" aria-label="anchor" href="#check-notes"></a>
 </h3>
 <p>In addition to typical R package checking, a Dockerfile is included in this repository. Once built, it can be run with the following command.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>docker build <span class="sc">-</span>t nhdplustools_test .</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>docker run <span class="sc">--</span>rm <span class="sc">-</span>it <span class="sc">-</span>v <span class="sc">$</span>PWD<span class="sc">:</span><span class="er">/</span>src nhdplustools_test <span class="sc">/</span>bin<span class="sc">/</span>bash <span class="sc">-</span>c <span class="st">"cp -r /src/* /check/ &amp;&amp; cp /src/.Rbuildignore /check/ &amp;&amp; cd /check &amp;&amp; Rscript -e 'devtools::build()' &amp;&amp; R CMD check --as-cran ../nhdplusTools_*"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>docker build <span class="sc">-</span>t nhdplustools_test .</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>docker run <span class="sc">--</span>rm <span class="sc">-</span>it <span class="sc">-</span>v <span class="sc">$</span>PWD<span class="sc">:</span><span class="er">/</span>src nhdplustools_test <span class="sc">/</span>bin<span class="sc">/</span>bash <span class="sc">-</span>c <span class="st">"cp -r /src/* /check/ &amp;&amp; cp /src/.Rbuildignore /check/ &amp;&amp; cd /check &amp;&amp; Rscript -e 'devtools::build()' &amp;&amp; R CMD check --as-cran ../nhdplusTools_*"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="release-procedure">Release procedure:<a class="anchor" aria-label="anchor" href="#release-procedure"></a>

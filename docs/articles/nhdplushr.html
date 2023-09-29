@@ -146,7 +146,7 @@ behavior.</em></p>
 <span>                                   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">outlets</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
 <span>                                   search_radius <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span> <span class="co"># meters albers eq area</span></span>
 <span><span class="co">#&gt; Warning in hydroloom:::check_search_radius(search_radius, points):</span></span>
-<span><span class="co">#&gt; search_radius units not set, trying units of points.</span></span>
+<span><span class="co">#&gt; search_radius units not set, trying units of points CRS.</span></span>
 <span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
 <span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
@@ -175,10 +175,6 @@ top of it.</p>
 <span>             nhdplus_data <span class="op">=</span> <span class="va">sample_data</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>             plot_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>flowline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>,</span>
 <span>                                basin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
-<span><span class="co">#&gt; although coordinates are longitude/latitude, st_intersects assumes that they</span></span>
-<span><span class="co">#&gt; are planar</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
 <span><span class="co">#&gt; Zoom set to: 11</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDPlusCatchment</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.25</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

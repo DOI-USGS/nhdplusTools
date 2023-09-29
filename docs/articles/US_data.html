@@ -40,7 +40,11 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
+<<<<<<< HEAD
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+=======
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+>>>>>>> main
       </span>
     </div>
 
@@ -291,7 +295,10 @@ download additional data (just change <code>download_files</code> to
 <span><span class="va">hr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, </span>
 <span>                         out_gpkg <span class="op">=</span> <span class="va">out_gpkg</span>, </span>
 <span>                         layers <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<<<<<<< HEAD
 <span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
+=======
+>>>>>>> main
 <span><span class="op">(</span><span class="va">layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
@@ -380,10 +387,18 @@ the NLDI for an identifier of a given feature from any of its
 below.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">get_nldi_sources</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">source</span></span>
+<<<<<<< HEAD
 <span><span class="co">#&gt;  [1] "ca_gages"       "epa_nrsa"       "geoconnex-demo" "gfv11_pois"    </span></span>
 <span><span class="co">#&gt;  [5] "huc12pp"        "nmwdi-st"       "nwisgw"         "nwissite"      </span></span>
 <span><span class="co">#&gt;  [9] "ref_gage"       "vigil"          "wade"           "WQP"           </span></span>
 <span><span class="co">#&gt; [13] "comid"</span></span>
+=======
+<span><span class="co">#&gt;  [1] "ca_gages"          "census2020-nhdpv2" "epa_nrsa"         </span></span>
+<span><span class="co">#&gt;  [4] "geoconnex-demo"    "gfv11_pois"        "huc12pp"          </span></span>
+<span><span class="co">#&gt;  [7] "nmwdi-st"          "npdes"             "nwisgw"           </span></span>
+<span><span class="co">#&gt; [10] "nwissite"          "ref_gage"          "vigil"            </span></span>
+<span><span class="co">#&gt; [13] "wade"              "WQP"               "comid"</span></span>
+>>>>>>> main
 <span></span>
 <span><span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, </span>
 <span>                     featureID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">start_comid</span><span class="op">$</span><span class="va">comid</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
@@ -615,10 +630,16 @@ the function index for specifics</a>.</p>
 and measure of our starting point like this.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">start_point</span><span class="op">)</span></span>
+<<<<<<< HEAD
 <span><span class="co">#&gt; Warning in match_crs(x, points, paste("crs of lines and points don't match.", :</span></span>
 <span><span class="co">#&gt; crs of lines and points don't match. attempting st_transform of lines</span></span>
 <span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
 <span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+=======
+<span><span class="co">#&gt; Warning in match_crs(flines, points, paste("crs of lines and points don't</span></span>
+<span><span class="co">#&gt; match.", : crs of lines and points don't match. attempting st_transform of</span></span>
+<span><span class="co">#&gt; lines</span></span>
+>>>>>>> main
 <span><span class="co">#&gt;   id    COMID      REACHCODE REACH_meas       offset</span></span>
 <span><span class="co">#&gt; 1  1 13293750 07090002007373    41.8003 0.0009621378</span></span></code></pre></div>
 <p><code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> will work with a list of points
@@ -628,8 +649,14 @@ above.</p>
 <code class="sourceCode R"><span><span class="va">gage</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"Gage"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gage</span><span class="op">)</span>, precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<<<<<<< HEAD
 <span><span class="co">#&gt; Warning in match_crs(x, points, paste("crs of lines and points don't match.", :</span></span>
 <span><span class="co">#&gt; crs of lines and points don't match. attempting st_transform of lines</span></span>
+=======
+<span><span class="co">#&gt; Warning in match_crs(flines, points, paste("crs of lines and points don't</span></span>
+<span><span class="co">#&gt; match.", : crs of lines and points don't match. attempting st_transform of</span></span>
+<span><span class="co">#&gt; lines</span></span>
+>>>>>>> main
 <span><span class="co">#&gt;    id    COMID      REACHCODE REACH_meas         offset</span></span>
 <span><span class="co">#&gt; 1   1 13293744 07090002007743    29.3045 0.000016031339</span></span>
 <span><span class="co">#&gt; 2   2 13294276 07090002008387    50.4424 0.000012319388</span></span>

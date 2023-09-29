@@ -134,7 +134,7 @@ attributes that describe characteristics of the catchment’s interior. In
 this way, the COMID identifier is actually an identifier for a
 collection of data that together fully describe an NHDPlus catchment.
 [See the NHDPlus mapping to HY_Features in the HY_Features
-specification.](http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1)
+specification.](https://docs.ogc.org/is/14-111r6/14-111r6.html#annexD_1)
 
 Below is a description of the scope of data used by the `nhdplusTools`
 package. While other data and attributes may come into scope, it should

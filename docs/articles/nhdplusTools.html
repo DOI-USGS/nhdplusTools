@@ -379,9 +379,9 @@ below.</p>
 <code class="sourceCode R"><span><span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">get_nldi_sources</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">source</span></span>
 <span><span class="co">#&gt;  [1] "ca_gages"          "census2020-nhdpv2" "epa_nrsa"         </span></span>
 <span><span class="co">#&gt;  [4] "geoconnex-demo"    "gfv11_pois"        "huc12pp"          </span></span>
-<span><span class="co">#&gt;  [7] "nmwdi-st"          "nwisgw"            "nwissite"         </span></span>
-<span><span class="co">#&gt; [10] "ref_gage"          "vigil"             "wade"             </span></span>
-<span><span class="co">#&gt; [13] "WQP"               "comid"</span></span>
+<span><span class="co">#&gt;  [7] "nmwdi-st"          "npdes"             "nwisgw"           </span></span>
+<span><span class="co">#&gt; [10] "nwissite"          "ref_gage"          "vigil"            </span></span>
+<span><span class="co">#&gt; [13] "wade"              "WQP"               "comid"</span></span>
 <span></span>
 <span><span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, </span>
 <span>                     featureID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">start_comid</span><span class="op">$</span><span class="va">comid</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
@@ -628,34 +628,36 @@ above.</p>
 <span><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gage</span><span class="op">)</span>, precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in match_crs(x, points, paste("crs of lines and points don't match.", :</span></span>
 <span><span class="co">#&gt; crs of lines and points don't match. attempting st_transform of lines</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
 <span><span class="co">#&gt;    id    COMID      REACHCODE REACH_meas         offset</span></span>
 <span><span class="co">#&gt; 1   1 13293744 07090002007743    29.3045 0.000016031339</span></span>
-<span><span class="co">#&gt; 2   2 13294276 07090002008387    50.4424 0.000012319388</span></span>
-<span><span class="co">#&gt; 3   3 13294264 07090002007650    13.4601 0.000020924187</span></span>
-<span><span class="co">#&gt; 4   4 13293750 07090002007373    10.6795 0.000025343524</span></span>
-<span><span class="co">#&gt; 5   5 13294312 07090002008383     1.3256 0.000002976034</span></span>
-<span><span class="co">#&gt; 6   6 13294264 07090002007650    53.7358 0.000033122595</span></span>
-<span><span class="co">#&gt; 7   7 13294264 07090002007650     6.9114 0.000002256005</span></span>
-<span><span class="co">#&gt; 8   9 13294300 07090002008379    71.0369 0.000016082151</span></span>
+<span><span class="co">#&gt; 2   2 13294276 07090002008387    14.8355 0.000012319388</span></span>
+<span><span class="co">#&gt; 3   3 13294264 07090002007650    56.4439 0.000020924187</span></span>
+<span><span class="co">#&gt; 4   4 13293750 07090002007373    42.5089 0.000025343524</span></span>
+<span><span class="co">#&gt; 5   5 13294312 07090002008383     1.2211 0.000002976034</span></span>
+<span><span class="co">#&gt; 6   6 13294264 07090002007650    41.0519 0.000033122595</span></span>
+<span><span class="co">#&gt; 7   7 13294264 07090002007650     2.0872 0.000002256005</span></span>
+<span><span class="co">#&gt; 8   9 13294300 07090002008379    85.4441 0.000016082151</span></span>
 <span><span class="co">#&gt; 9  10 13293690 07090002007648     0.7642 0.000014026098</span></span>
-<span><span class="co">#&gt; 10 11 13294264 07090002007650     8.4036 0.008204857099</span></span>
-<span><span class="co">#&gt; 11 13 13294176 07090002007664    12.0361 0.000031905454</span></span>
+<span><span class="co">#&gt; 10 11 13294264 07090002007650    71.4042 0.008204867456</span></span>
+<span><span class="co">#&gt; 11 13 13294176 07090002007664     6.1174 0.000031905454</span></span>
 <span><span class="co">#&gt; 12 15 13294290 07090002008374    88.0213 0.000027985042</span></span>
-<span><span class="co">#&gt; 13 16 13294138 07090002007709    54.6248 0.000010977009</span></span>
-<span><span class="co">#&gt; 14 18 13293486 07090002007724    28.9826 0.000012426106</span></span>
-<span><span class="co">#&gt; 15 19 13293512 07090002007723    67.1840 0.000010481501</span></span>
-<span><span class="co">#&gt; 16 20 13294176 07090002007664    42.3100 0.000012406860</span></span>
-<span><span class="co">#&gt; 17 22 13293474 07090002007713    66.1583 0.000006053102</span></span>
-<span><span class="co">#&gt; 18 23 13293520 07090002007676    45.5538 0.000030263717</span></span>
-<span><span class="co">#&gt; 19 24 13293876 07090002007627    54.6477 0.000025453648</span></span>
+<span><span class="co">#&gt; 13 16 13294138 07090002007709    73.3717 0.000010977009</span></span>
+<span><span class="co">#&gt; 14 18 13293486 07090002007724     8.8530 0.000012426106</span></span>
+<span><span class="co">#&gt; 15 19 13293512 07090002007723     5.9868 0.000010481501</span></span>
+<span><span class="co">#&gt; 16 20 13294176 07090002007664    16.9958 0.000012406860</span></span>
+<span><span class="co">#&gt; 17 22 13293474 07090002007713    72.0814 0.000006053102</span></span>
+<span><span class="co">#&gt; 18 23 13293520 07090002007676    18.1942 0.000030263717</span></span>
+<span><span class="co">#&gt; 19 24 13293876 07090002007627    60.1357 0.000025453648</span></span>
 <span><span class="co">#&gt; 20 25 13294374 07090002007633    46.8761 0.000002619625</span></span>
-<span><span class="co">#&gt; 21 26 13293512 07090002007723    49.3024 0.000025778329</span></span>
-<span><span class="co">#&gt; 22 27 13294264 07090002007650    90.8928 0.000013950790</span></span>
-<span><span class="co">#&gt; 23 28 13294344 07090002007629    12.2123 0.000007648685</span></span>
+<span><span class="co">#&gt; 21 26 13293512 07090002007723    68.1716 0.000025778329</span></span>
+<span><span class="co">#&gt; 22 27 13294264 07090002007650    97.1673 0.000013950790</span></span>
+<span><span class="co">#&gt; 23 28 13294344 07090002007629     6.5788 0.000007648685</span></span>
 <span><span class="co">#&gt; 24 29 13293456 07090002007738    90.8364 0.000036283275</span></span>
-<span><span class="co">#&gt; 25 30 13294344 07090002007629    51.4760 0.000012934585</span></span>
-<span><span class="co">#&gt; 26 31 13293512 07090002007723    47.7360 0.000022459225</span></span>
-<span><span class="co">#&gt; 27 32 13294344 07090002007629    12.2123 0.000007648685</span></span>
+<span><span class="co">#&gt; 25 30 13294344 07090002007629    27.7300 0.000012934585</span></span>
+<span><span class="co">#&gt; 26 31 13293512 07090002007723    67.6223 0.000022459225</span></span>
+<span><span class="co">#&gt; 27 32 13294344 07090002007629     6.5788 0.000007648685</span></span>
 <span><span class="co">#&gt; 28 33 13293576 07090002008236     2.7112 0.000009945223</span></span></code></pre></div>
 <p>For more info about <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> and other
 indexing functions, see the article <code><a href="../articles/indexing.html">vignette("indexing")</a></code>

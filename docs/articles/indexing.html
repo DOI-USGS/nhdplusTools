@@ -118,14 +118,14 @@ finding flowlines and waterbodies near point locations.</p>
 <code><a href="../reference/disambiguate_flowline_indexes.html">disambiguate_flowline_indexes()</a></code> uses numeric or character
 attributes to attempt to determine the best flowline match when many
 near by matches exist. This is especially useful for mainstem /
-tributary disambiguation. - <code><a href="https://doi-usgs.github.io/hydroloom/reference/get_hydro_location.html" class="external-link">get_hydro_location()</a></code> retrieves
+tributary disambiguation. - <code><a href="https://rdrr.io/pkg/hydroloom/man/get_hydro_location.html" class="external-link">get_hydro_location()</a></code> retrieves
 the point location of an index along a flowline. -
-<code><a href="https://doi-usgs.github.io/hydroloom/reference/rescale_measures.html" class="external-link">rescale_measures()</a></code> converts 0:100 reachcode measures to
-0:100 flowline measures. - <code><a href="https://doi-usgs.github.io/hydroloom/reference/get_partial_length.html" class="external-link">get_partial_length()</a></code> retrieves a
+<code><a href="https://rdrr.io/pkg/hydroloom/man/rescale_measures.html" class="external-link">rescale_measures()</a></code> converts 0:100 reachcode measures to
+0:100 flowline measures. - <code><a href="https://rdrr.io/pkg/hydroloom/man/get_partial_length.html" class="external-link">get_partial_length()</a></code> retrieves a
 partial length (upstream and downstream) of an index location. -
 <code><a href="../reference/get_path_lengths.html">get_path_lengths()</a></code> retrieves the distance between the
 outlets of pairs of flowlines. Use with
-<code><a href="https://doi-usgs.github.io/hydroloom/reference/get_partial_length.html" class="external-link">get_partial_length()</a></code> to determine network distance between
+<code><a href="https://rdrr.io/pkg/hydroloom/man/get_partial_length.html" class="external-link">get_partial_length()</a></code> to determine network distance between
 indexes.</p>
 <p>For waterbody indexes, the <code><a href="../reference/get_wb_outlet.html">get_wb_outlet()</a></code> function is
 helpful too determine which flowline is the outlet of a waterbody.</p>
@@ -225,51 +225,10 @@ for the sake of demonstration)</p>
 <span>                              search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="st">"degrees"</span><span class="op">)</span>, </span>
 <span>                              precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
-<span><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; dropping z coordinates, this may be slow</span></span>
 <span></span>
 <span><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">indexes</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span></code></pre></div>
 <p>Now lets look at out comparison again.</p>
@@ -299,8 +258,8 @@ for the sake of demonstration)</p>
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">matched</span><span class="op">$</span><span class="va">REACH_meas_diff</span>, </span>
 <span>               probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     0%    10%    25%    50%    75%    90%   100% </span></span>
-<span><span class="co">#&gt; -50.36  -1.81  -0.66  -0.18   0.04   0.77  38.44</span></span></code></pre></div>
+<span><span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span></span>
+<span><span class="co">#&gt; -1.31 -0.66 -0.34 -0.05  0.14  0.68  1.29</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="finding-multiple-indexes">Finding multiple indexes<a class="anchor" aria-label="anchor" href="#finding-multiple-indexes"></a>

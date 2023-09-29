@@ -114,7 +114,7 @@ test_that("multipart indexing", {
                                                            search_radius = 500))
 
   expect_true(all(c("Attempting to combine multipart lines into single part lines. Check results!!",
-                    "search_radius units not set, trying units of points.")
+                    "search_radius units not set, trying units of points CRS.")
                   %in% warn))
 
   expect_true(all(index$COMID == 51664))

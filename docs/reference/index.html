@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -35,9 +35,6 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
-    </li>
-    <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
     </li>
     <li>
@@ -45,9 +42,6 @@
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul></li>
 <li>
@@ -95,6 +89,10 @@
           <p><code><a href="download_nhdplusv2.html">download_nhdplusv2()</a></code> </p>
         </td>
         <td><p>Download seamless National Hydrography Dataset Version 2 (NHDPlusV2)</p></td>
+      </tr><tr><td>
+          <p><code><a href="download_nhd.html">download_nhd()</a></code> </p>
+        </td>
+        <td><p>Download NHD</p></td>
       </tr><tr><td>
           <p><code><a href="download_rf1.html">download_rf1()</a></code> </p>
         </td>
@@ -145,6 +143,10 @@ Vector Processing Unit boundaries</p></td>
           <p><code><a href="get_catchment_characteristics.html">get_catchment_characteristics()</a></code> </p>
         </td>
         <td><p>Get Catchment Characteristics</p></td>
+      </tr><tr><td>
+          <p><code><a href="rescale_catchment_characteristics.html">rescale_catchment_characteristics()</a></code> </p>
+        </td>
+        <td><p>Rescale Catchment Characteristics</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="discovery-and-subsetting">Discovery and Subsetting <a href="#discovery-and-subsetting" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Functions for finding and saving the part of the NHDPlus you are interested in working with. (All U.S. context)</p>
@@ -234,9 +236,9 @@ Vector Processing Unit boundaries</p></td>
         </td>
         <td><p>Get Flowline Index</p></td>
       </tr><tr><td>
-          <p><code><a href="get_hydro_location.html">get_hydro_location()</a></code> </p>
+          <p><code><a href="reexports.html">reexports</a></code> <code><a href="reexports.html">st_compatibalize</a></code> <code><a href="reexports.html">rename_geometry</a></code> <code><a href="reexports.html">get_node</a></code> <code><a href="reexports.html">fix_flowdir</a></code> <code><a href="reexports.html">rescale_measures</a></code> <code><a href="reexports.html">get_hydro_location</a></code> <code><a href="reexports.html">get_partial_length</a></code> </p>
         </td>
-        <td><p>Get Hydro Location</p></td>
+        <td><p>Objects exported from other packages</p></td>
       </tr><tr><td>
           <p><code><a href="get_waterbody_index.html">get_waterbody_index()</a></code> </p>
         </td>
@@ -250,29 +252,17 @@ Vector Processing Unit boundaries</p></td>
         </td>
         <td><p>Get NLDI Index</p></td>
       </tr><tr><td>
-          <p><code><a href="get_node.html">get_node()</a></code> </p>
-        </td>
-        <td><p>Get Flowline Node</p></td>
-      </tr><tr><td>
-          <p><code><a href="rescale_measures.html">rescale_measures()</a></code> </p>
-        </td>
-        <td><p>Rescale reachcode measure to comid flowline measure</p></td>
-      </tr><tr><td>
           <p><code><a href="disambiguate_flowline_indexes.html">disambiguate_flowline_indexes()</a></code> </p>
         </td>
         <td><p>Disambiguate Flowline Indexes</p></td>
       </tr><tr><td>
-          <p><code><a href="get_partial_length.html">get_partial_length()</a></code> </p>
-        </td>
-        <td><p>Get Partial Flowline Length</p></td>
-      </tr><tr><td>
           <p><code><a href="get_path_lengths.html">get_path_lengths()</a></code> </p>
         </td>
-        <td><p>Get Path Lengths</p></td>
+        <td><p>Get Path Lengths (DEPRECATED)</p></td>
       </tr><tr><td>
           <p><code><a href="get_path_members.html">get_path_members()</a></code> </p>
         </td>
-        <td><p>Get Path Members</p></td>
+        <td><p>Get Path Members (DEPRECATED)</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="network-navigation">Network Navigation <a href="#network-navigation" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Functions to traverse and return network subsets. All except <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> have applicability outside the U.S. context.</p>
@@ -306,13 +296,9 @@ Vector Processing Unit boundaries</p></td>
           <p class="section-desc"></p><p>Functions that make the package easier to work with.</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="st_compatibalize.html">st_compatibalize()</a></code> </p>
+          <p><code><a href="reexports.html">reexports</a></code> <code><a href="reexports.html">st_compatibalize</a></code> <code><a href="reexports.html">rename_geometry</a></code> <code><a href="reexports.html">get_node</a></code> <code><a href="reexports.html">fix_flowdir</a></code> <code><a href="reexports.html">rescale_measures</a></code> <code><a href="reexports.html">get_hydro_location</a></code> <code><a href="reexports.html">get_partial_length</a></code> </p>
         </td>
-        <td><p>make spatial inputs compatible</p></td>
-      </tr><tr><td>
-          <p><code><a href="rename_geometry.html">rename_geometry()</a></code> </p>
-        </td>
-        <td><p>rename_geometry</p></td>
+        <td><p>Objects exported from other packages</p></td>
       </tr><tr><td>
           <p><code><a href="align_nhdplus_names.html">align_nhdplus_names()</a></code> </p>
         </td>
@@ -325,10 +311,6 @@ Vector Processing Unit boundaries</p></td>
           <p><code><a href="nhdplusTools_data_dir.html">nhdplusTools_data_dir()</a></code> </p>
         </td>
         <td><p>Get or set nhdplusTools data directory</p></td>
-      </tr><tr><td>
-          <p><code><a href="stage_national_data.html">stage_national_data()</a></code> </p>
-        </td>
-        <td><p>Stage NHDPlus National Data (deprecated)</p></td>
       </tr><tr><td>
           <p><code><a href="plot_nhdplus.html">plot_nhdplus()</a></code> </p>
         </td>
@@ -358,9 +340,9 @@ Vector Processing Unit boundaries</p></td>
           <p class="section-desc"></p><p>Functions that generate common river network attributes. These can be used with any data that adheres to the supported data model. See function documentation for specifics.</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="fix_flowdir.html">fix_flowdir()</a></code> </p>
+          <p><code><a href="reexports.html">reexports</a></code> <code><a href="reexports.html">st_compatibalize</a></code> <code><a href="reexports.html">rename_geometry</a></code> <code><a href="reexports.html">get_node</a></code> <code><a href="reexports.html">fix_flowdir</a></code> <code><a href="reexports.html">rescale_measures</a></code> <code><a href="reexports.html">get_hydro_location</a></code> <code><a href="reexports.html">get_partial_length</a></code> </p>
         </td>
-        <td><p>Fix flow direction</p></td>
+        <td><p>Objects exported from other packages</p></td>
       </tr><tr><td>
           <p><code><a href="get_tocomid.html">get_tocomid()</a></code> </p>
         </td>
@@ -368,7 +350,7 @@ Vector Processing Unit boundaries</p></td>
       </tr><tr><td>
           <p><code><a href="make_node_topology.html">make_node_topology()</a></code> </p>
         </td>
-        <td><p>get node topology from edge topology</p></td>
+        <td><p>get node topology from edge topology (DEPRECATED)</p></td>
       </tr><tr><td>
           <p><code><a href="get_sorted.html">get_sorted()</a></code> </p>
         </td>
@@ -388,7 +370,7 @@ Vector Processing Unit boundaries</p></td>
       </tr><tr><td>
           <p><code><a href="get_levelpaths.html">get_levelpaths()</a></code> </p>
         </td>
-        <td><p>Get Level Paths</p></td>
+        <td><p>Get Level Paths (DEPRECATED)</p></td>
       </tr><tr><td>
           <p><code><a href="get_pathlength.html">get_pathlength()</a></code> </p>
         </td>
@@ -408,7 +390,7 @@ Vector Processing Unit boundaries</p></td>
       </tr><tr><td>
           <p><code><a href="get_pfaf.html">get_pfaf()</a></code> </p>
         </td>
-        <td><p>Get Pfafstetter Codes (Experimental)</p></td>
+        <td><p>Get Pfafstetter Codes (DEPRECATED)</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

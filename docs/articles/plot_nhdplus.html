@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -60,9 +60,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
-    </li>
-    <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
     </li>
     <li>
@@ -70,9 +67,6 @@
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul>
 </li>
@@ -170,8 +164,7 @@ documentation for more details.</p>
 <span>             nhdplus_data <span class="op">=</span> <span class="va">sample_data</span>,</span>
 <span>             plot_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>basin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>                                outlets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>huc12pp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>,</span>
-<span>                                               comid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>             stoponlargerequest <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span>                                               comid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/plot_styles-1.png" width="432"></p>
 <p>We can also plot NHDPlus data without an outlet at all.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -272,7 +265,7 @@ with contents that look like:</p>
 nhd area features, and nhd waterbody features.</p>
 <p>The flowlines have a large set of attributes from the NHDPlus
 dataset. And the nwis sites have a few attributes that came from the
-NLDI. Attributes for NWIS sites can be found using the <a href="https://owi.usgs.gov/R/dataRetrieval.html" class="external-link">dataRetrieval
+NLDI. Attributes for NWIS sites can be found using the <a href="https://doi-usgs.github.io/dataRetrieval/" class="external-link">dataRetrieval
 package.</a></p>
 <p>See the NHDPlus user guide <a href="https://www.epa.gov/waterdata/learn-more#Documentation" class="external-link">linked
 here</a> for more on what these layers are and what the flowline

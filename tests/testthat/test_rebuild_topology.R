@@ -29,18 +29,19 @@ test_that("make_node_topology", {
                   AreaSqKM, LENGTHKM, GNIS_ID),
   )
 
-  expect_error(make_node_topology(d), "fromnode or tonode already in data")
+  expect_warning(
+  expect_error(make_node_topology(d), "fromnode or tonode already in data"))
 
   x <- dplyr::select(d, -fromnode, -tonode)
 
   y <- x
-  y$tocomid[1] <- NA
-  expect_error(make_node_topology(y), "NA toids found -- must be 0")
 
   y$tocomid[1] <- 12345
-  expect_error(make_node_topology(y), "Not all non zero toids are in ids")
+  expect_warning(
+  expect_error(make_node_topology(y), "Not all non zero toids are in ids"))
 
-  y <- make_node_topology(x)
+  expect_warning(
+  y <- make_node_topology(x))
 
   expect_s3_class(y, "sf")
 
@@ -48,7 +49,8 @@ test_that("make_node_topology", {
                            "divergence", "ftype", "areasqkm", "lengthkm",
                            "gnis_id", "geom"))
 
-  y <- make_node_topology(x, add = FALSE)
+  expect_warning(
+  y <- make_node_topology(x, add = FALSE))
 
   expect_s3_class(y, 'data.frame', exact = TRUE)
 
@@ -68,7 +70,8 @@ test_that("make_node_topology", {
   add_div <- add_div[add_div$tocomid %in%
                        new_hope_flowline$COMID[new_hope_flowline$Divergence == 2],]
 
-  y <- make_node_topology(x)
+  expect_warning(
+  y <- make_node_topology(x))
 
   # we need to get the node the divergences upstream neighbor goes to
   # first get the new outlet nodes for our old ids
@@ -94,7 +97,8 @@ test_that("make_node_topology", {
   expect_equal(length(unique(new_hope_flowline$FromNode)),
                length(unique(y$fromnode)))
 
-  z <- make_node_topology(x, add_div = add_div)
+  expect_warning(
+  z <- make_node_topology(x, add_div = add_div))
 
   expect_equal(z$fromnode, y$fromnode)
   expect_equal(z$tonode, y$tonode)

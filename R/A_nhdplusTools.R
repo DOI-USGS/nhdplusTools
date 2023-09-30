@@ -3,7 +3,7 @@ vaa_hydroshare <-
   'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
 
 vaa_sciencebase <-
-  'https://www.sciencebase.gov/catalog/file/get/60c92503d34e86b9389df1c9?name=enhd_nhdplusatts.fst'
+  'https://www.sciencebase.gov/catalog/file/get/63cb311ed34e06fef14f40a3?name=enhd_nhdplusatts.fst'
 
 nhdplusTools_env <- new.env()
 
@@ -249,10 +249,11 @@ default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
 
 assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
-nhdhr_bucket <- "https://prd-tnm.s3.amazonaws.com/"
+nhd_bucket <- "https://prd-tnm.s3.amazonaws.com/"
 nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/"
+nhd_file_list <- "?prefix=StagedProducts/Hydrography/NHD/HU4/GDB/"
 
-assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
+assign("nhd_bucket", nhd_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
 
 assign("nhdpt_dat_dir",
@@ -391,65 +392,6 @@ align_nhdplus_names <- function(x){
 
 }
 
-# TODO: deprecate moved to hydroloom
-drop_geometry <- function(x) {
-  if("sf" %in% class(x)) {
-    sf::st_drop_geometry(x)
-  } else {
-    x
-  }
-}
-
-# TODO: deprecate moved to hydroloom
-#' make spatial inputs compatible
-#' @description makes sf1 compatible with sf2 by projecting into
-#' the projection of 2 and ensuring that the geometry columns are the
-#' same name.
-#' @param sf1 sf data.frame
-#' @param sf2 sf data.frame
-#' @export
-#' @examples
-#'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#'
-#' (one <- dplyr::select(sample_flines))
-#' (two <- sf::st_transform(one, 5070))
-#'
-#' attr(one, "sf_column") <- "geotest"
-#' names(one)[names(one) == "geom"] <- "geotest"
-#'
-#' st_compatibalize(one, two)
-#'
-st_compatibalize <- function(sf1, sf2) {
-
-  sf1 <- st_transform(sf1, st_crs(sf2))
-
-  rename_geometry(sf1, attr(sf2, "sf_column"))
-
-}
-
-# TODO: deprecate moved to hydroloom
-#' rename_geometry
-#' @description correctly renames the geometry column
-#' of a sf object.
-#' @param g sf data.table
-#' @param name character name to be used for geometry
-#' @export
-#' @examples
-#'
-#' (g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2))))
-#' rename_geometry(g, "geometry")
-#'
-rename_geometry <- function(g, name){
-  current = attr(g, "sf_column")
-
-  names(g)[names(g)==current] = name
-
-  attr(g, "sf_column") <- name
-
-  g
-}
-
 get_cl <- function(cl) {
   if(!is.null(cl)) {
     if(!requireNamespace("parallel", quietly = TRUE)) {
@@ -465,3 +407,31 @@ get_cl <- function(cl) {
   }
   return(cl)
 }
+
+#' @importFrom hydroloom st_compatibalize
+#' @export
+hydroloom::st_compatibalize
+
+#' @importFrom hydroloom rename_geometry
+#' @export
+hydroloom::rename_geometry
+
+#' @importFrom hydroloom get_node
+#' @export
+hydroloom::get_node
+
+#' @importFrom hydroloom fix_flowdir
+#' @export
+hydroloom::fix_flowdir
+
+#' @importFrom hydroloom rescale_measures
+#' @export
+hydroloom::rescale_measures
+
+#' @importFrom hydroloom get_hydro_location
+#' @export
+hydroloom::get_hydro_location
+
+#' @importFrom hydroloom get_partial_length
+#' @export
+hydroloom::get_partial_length

@@ -3,7 +3,6 @@
 pkgdown
 docs
 data-raw
-rosm.cache
 .Renviron
 .Rproj.user
 .Rhistory

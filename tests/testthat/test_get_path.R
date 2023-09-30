@@ -1,13 +1,3 @@
-test_that("reweight", {
-  x <- readRDS(list.files(pattern = "reweight_test.rds",
-                          full.names = TRUE, recursive = TRUE))
-  w <- nhdplusTools:::reweight(x, override_factor = 5)
-  expect_equal(w$weight[w$nameID == w$ds_nameID], 2)
-
-  w <- nhdplusTools:::reweight(x, override_factor = 2)
-  expect_equal(w$weight[w$nameID == w$ds_nameID], 1)
-})
-
 test_that("degenerate levelpath", {
   x <- structure(list(ID = c(203071, 202863, 202883, 205509, 203069, 202875, 942110034),
                       toID = c(202863, 202883, 205509, 203069, 202875, 942110034, 0),
@@ -23,8 +13,9 @@ test_that("degenerate levelpath", {
                       terminalID = c(942110034, 942110034, 942110034, 942110034, 942110034, 942110034, 942110034
                       )), row.names = c(NA, 7L), class = "data.frame")
 
+  expect_warning(
   y <- nhdplusTools::get_levelpaths(x)
-
+  )
   expect_equal(nrow(y), nrow(x))
 })
 
@@ -40,9 +31,10 @@ test_that("calculate level path", {
     weight = walker_flowline$ArbolateSu,
     stringsAsFactors = FALSE)
 
+  expect_warning(
   test_flowline_out <- left_join(test_flowline,
                                  get_levelpaths(test_flowline, status = TRUE), by = "ID")
-
+  )
   nhdp_lp <- sort(unique(walker_flowline$LevelPathI))
   nhdt_lp <- sort(unique(test_flowline_out$levelpath))
 
@@ -59,15 +51,17 @@ test_that("calculate level path", {
   # break the data
   test_flowline$nameID[test_flowline$ID == 5329293] <- " "
   test_flowline$nameID[test_flowline$ID == 5329295] <- "255208"
+  expect_warning(
   test_flowline_out2 <- left_join(test_flowline,
                                   get_levelpaths(test_flowline, status = TRUE), by = "ID")
-
+  )
   expect_equal(test_flowline_out2$levelpath[test_flowline_out2$ID == 5329295], 1)
 
+  expect_warning(
   test_flowline_out2 <- left_join(test_flowline,
                                   get_levelpaths(test_flowline, override_factor = 10,
                                                  status = TRUE), by = "ID")
-
+  )
   expect_equal(test_flowline_out$levelpath, test_flowline_out2$levelpath)
 })
 
@@ -86,15 +80,15 @@ test_that("hr levelpath", {
     st_sf() %>%
     select(ID = COMID, toID = toCOMID, weight = ArbolateSu, nameID = GNIS_Name)
 
+  expect_warning(expect_message(
   lp <- get_levelpaths(sf::st_set_geometry(fl, NULL), cores = 2)
+  ))
 
-  cores <- parallel::makeCluster(2)
-
-  lp <- get_levelpaths(sf::st_set_geometry(fl, NULL), cores = cores)
-
-  parallel::stopCluster(cores)
-
+  expect_warning(expect_warning(expect_message(
   expect_error(get_levelpaths(sf::st_set_geometry(fl, NULL), cores = "char"))
+  )))
+
+  future::plan(future::sequential)
 
   # Same number of total flowlines
   expect_equal(length(unique(hr_flowline$LevelPathI)), length(unique(lp$levelpath)))
@@ -109,8 +103,9 @@ test_that("degenerate", {
                         lengthkm = 12.2243026760847, areasqkm = 54.2851667150928,
                         weight = 12.2243026760847, terminalID = 11000020), row.names = 2938080L, class = "data.frame")
 
+  suppressWarnings(
   er <- get_levelpaths(net, 5)
-
+  )
   expect_equal(er$topo_sort, 1)
 
   expect_equal(er$levelpath, 1)
@@ -129,18 +124,19 @@ test_that("from vignette works", {
   fpath[["arbolatesum"]] <- calculate_arbolate_sum(
     dplyr::select(fpath, ID = comid, toID = tocomid, length = lengthkm))
 
+  expect_warning(
   lp <- get_levelpaths(
     dplyr::select(fpath, ID = comid, toID = tocomid,
                   nameID = gnis_id, weight = arbolatesum),
     status = FALSE)
-
+  )
   fpath <- dplyr::left_join(fpath, lp, by = c("comid" = "ID"))
 
-  expect_equal(names(fpath),
+  expect_true(all(names(fpath) %in%
                c("comid", "tocomid", "areasqkm", "lengthkm",
                  "gnis_id", "terminalID",
                  "arbolatesum", "outletID",
-                 "topo_sort", "levelpath", "geom"))
+                 "topo_sort", "levelpath", "geom")))
 
   expect_equal(length(unique(fpath$levelpath)),
                length(unique(new_hope_flowline$LevelPathI)))

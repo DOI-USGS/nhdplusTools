@@ -41,5 +41,4 @@ DM_COMIDs <- get_DM(sample_flines, start_COMID, distance = 40)
 plot(dplyr::filter(sample_flines, COMID \%in\% DM_COMIDs)$geom,
      col = "blue", add = TRUE, lwd = 2)
 
-
 }

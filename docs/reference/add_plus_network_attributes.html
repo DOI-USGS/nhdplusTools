@@ -21,7 +21,7 @@ respectively. If a number of cores is specified, parallel execution will be used
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -39,9 +39,6 @@ respectively. If a number of cores is specified, parallel execution will be used
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
-    </li>
-    <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
     </li>
     <li>
@@ -49,9 +46,6 @@ respectively. If a number of cores is specified, parallel execution will be used
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul></li>
 <li>
@@ -149,6 +143,8 @@ rather than recreated.</p></dd>
 <span class="r-in"><span>  areasqkm <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">AreaSqKM</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">add_plus_network_attributes</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required namespace: future</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required namespace: future.apply</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 62 × 14</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     comid tocomid nameID lengthkm areasqkm weight terminalpa hydroseq levelpathi</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>

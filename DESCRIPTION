@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 0.7.0
+Version: 1.0.0
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -18,14 +18,18 @@ Authors@R: c(person(given = "David",
             person(given = "Josh", 
                    family = "Erickson", 
                    role = "ctb", 
-                   email = "joshualerickson@gmail.com"))
+                   email = "joshualerickson@gmail.com"),
+            person(given = "Lauren",
+                   family = "Koenig",
+                   role = "ctb",
+                   comment = c(ORCID = "0000-0002-7790-330X")))
 Description: Tools for traversing and working with National Hydrography Dataset Plus (NHDPlus) data. All methods implemented in 'nhdplusTools' are available in the NHDPlus documentation available from the US Environmental Protection Agency <https://www.epa.gov/waterdata/basic-information>.
 URL: https://doi-usgs.github.io/nhdplusTools/ https://github.com/doi-usgs/nhdplusTools/
 BugReports: https://github.com/doi-usgs/nhdplusTools/issues/
 Depends:
     R (>= 4.0)
-Imports: dplyr, rlang, sf, RANN, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, rosm, prettymapr, fst, dataRetrieval, tools, zip, pbapply, arrow
-Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2, gifski, leaflet, httptest
+Imports: hydroloom, dplyr, sf, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles, mapsf, fst, arrow, dataRetrieval, tools, zip, pbapply, future.apply
+Suggests: testthat, knitr, rmarkdown, markdown, ggmap, ggplot2, sp, lwgeom, devtools, codetools, data.table, parallel, s2, gifski, leaflet, httptest, future
 License: CC0
 Encoding: UTF-8
 RoxygenNote: 7.2.3

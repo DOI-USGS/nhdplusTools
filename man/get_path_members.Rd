@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_path_lengths.R
 \name{get_path_members}
 \alias{get_path_members}
-\title{Get Path Members}
+\title{Get Path Members (DEPRECATED)}
 \usage{
 get_path_members(outlets, network, cores = 1, status = FALSE)
 }

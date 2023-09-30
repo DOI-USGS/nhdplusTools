@@ -9,14 +9,15 @@
 #' @param overwrite passed on the \link{subset_nhdplus}.
 #' @param plot_config list containing plot configuration, see details.
 #' @param basemap character indicating which basemap type to use. Chose from:
-#' \link[rosm]{osm.types}.
+#' \link[maptiles]{get_tiles}.
+#' @param zoom integer passed on to \link[maptiles]{get_tiles}. This value will
+#' override the default set by the package.
 #' @param add boolean should this plot be added to an already built map.
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
 #' @param flowline_only boolean only subset and plot flowlines only, default=FALSE
 #' @param cache_data character path to rds file where all plot data can be cached.
 #' If file doesn't exist, it will be created. If set to FALSE, all caching will
 #' be turned off -- this includes basemap tiles.
-#' @param ... parameters passed on to rosm.
 #' @return data.frame plot data is returned invisibly in NAD83 Lat/Lon.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
@@ -123,9 +124,10 @@
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
-                         basemap = "cartolight", add = FALSE, actually_plot = TRUE,
+                         basemap = "Esri.NatGeoWorldMap",
+                         zoom = NULL, add = FALSE, actually_plot = TRUE,
                          overwrite = TRUE, flowline_only = NULL,
-                         cache_data = NULL, ...) {
+                         cache_data = NULL) {
 
   gt <- function(x) { sf::st_geometry(sf::st_transform(x, 3857)) }
 
@@ -141,9 +143,9 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
         save <- TRUE
       }
     }
-    cache_osm <- osm_cache_dir()
+    cache_tiles <- tile_cache_dir()
   } else {
-    cache_osm <- file.path(tempdir(check = TRUE), "osm.cache")
+    cache_tiles <- file.path(tempdir(check = TRUE), "tile_cache_dir")
   }
 
   if(fetch)
@@ -158,14 +160,30 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
     st <- get_styles(plot_config)
 
     suppressWarnings({
-    prettymapr::prettymap({
       if(!add) {
         tryCatch({
-        rosm::osm.plot(pd$plot_bbox, type = basemap,
-                       quiet = TRUE, progress = "none",
-                       cachedir = cache_osm, ...)},
-        error = function(e) {
-          warning("Something went wrong trying to get the basemap.")
+          bb <- gt(pd[[get_plot_bound(pd)]])
+
+          if(is.null(zoom)) {
+            zoom <- set_zoom(bb)
+          }
+
+          message(paste("Zoom set to:", zoom))
+
+          tiles <- maptiles::get_tiles(bb, zoom = zoom, crop = FALSE,
+                                       cachedir = cache_tiles,
+                                       verbose = FALSE, provider = basemap)
+
+          mapsf::mf_map(bb, type = "base", col = NA, border = NA)
+
+          maptiles::plot_tiles(tiles, add = TRUE)
+
+          mapsf::mf_map(bb, type = "base", add = TRUE, col = NA, border = NA)
+          mapsf::mf_arrow(adjust = bb)
+          mapsf::mf_scale()
+
+        },error = function(e) {
+          warning(paste("Something went wrong trying to get the basemap. \n", e))
           return(NULL)
         })
       }
@@ -198,27 +216,26 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          cex = st$outlets[[st_type]]$cex, add = TRUE)
         }
       }
-    },
-    drawarrow = TRUE)})
+    })
   }
   return(invisible(pd))
 }
 
-osm_cache_dir <- function() {
-  osm_dir <- file.path(nhdplusTools_data_dir(),
-                       "osm.cache")
+tile_cache_dir <- function() {
+  tile_cache_dir <- file.path(nhdplusTools_data_dir(),
+                       "tile_cache_dir")
 
-  # Checks to see if osm_dir is writable
-  test_dir <- file.path(osm_dir, "test")
+  # Checks to see if tile_cache_dir is writable
+  test_dir <- file.path(tile_cache_dir, "test")
   dir.create(test_dir, recursive = TRUE, showWarnings = FALSE)
 
   if(!dir.exists(test_dir)) {
     # just use tempdir() which is for sure writable.
-    return(file.path(tempdir(check = TRUE), "osm.cache")) #notest
+    return(file.path(tempdir(check = TRUE), "tile_cache_dir")) #notest
   } else {
     # cleanup and return
     unlink(test_dir, recursive = TRUE)
-    return(osm_dir)
+    return(tile_cache_dir)
   }
 }
 
@@ -250,6 +267,38 @@ get_styles <- function(plot_config) {
 
   conf
 
+}
+
+get_plot_bound <- function(pd) {
+
+  if(!is.null(pd$catchment)) {
+    "catchment"
+  } else if(!is.null(pd$basin)) {
+    "basin"
+  } else {
+    "flowline"
+  }
+
+}
+
+set_zoom <- function(pb) {
+  bb <- st_bbox(pb)
+
+  dim <- max(abs(bb[3] - bb[1]), abs(bb[4] - bb[2]))
+
+  if(dim < 100000 & dim >= 60000) {
+    10
+  } else if(dim < 60000 & dim >= 20000) {
+    11
+  } else if(dim < 20000) {
+    12
+  } else if(dim < 150000 & dim >= 80000) {
+    9
+  } else if(dim < 200000 & dim >= 150000) {
+    8
+  } else {
+    7
+  }
 }
 
 validate_plot_config <- function(plot_config) {

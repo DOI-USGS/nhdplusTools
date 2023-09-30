@@ -271,8 +271,9 @@ get_characteristics_metadata <- function(search, cache = TRUE) {
 #' @importFrom arrow s3_bucket open_dataset
 #' @export
 #' @examples
-#' get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
-#'
+#' \donttest{
+#'   get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
+#' }
 get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdplusv2"){
 
   metadata <- get_characteristics_metadata()

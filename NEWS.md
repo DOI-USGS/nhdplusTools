@@ -1,3 +1,58 @@
+nhdplusTools 1.0.0
+==========
+
+## `hydroloom` 
+
+v1.0.0 should be backward compatible with v0.7 but deprecation warnings have been added and one previously deprecated function has been removed. 
+
+This release evolves `nhdplusTools` to use [`hydroloom`](https://doi-usgs.github.io/hydroloom/articles/hydroloom.html) as a core dependency. `nhdplusTools` now depends on `hydroloom` for all network navigation and indexing functionality that is not specific to the nhdplus data model or specific to a US-context.
+
+Specific functions imported from [`hydroloom`](https://doi-usgs.github.io/hydroloom/articles/hydroloom.html) include:
+
+- hy
+- accumulate_downstream
+- add_levelpaths
+- add_pathlength
+- add_pfafstetter
+- add_streamlevel
+- add_streamorder
+- add_toids
+- disambiguate_indexes
+- fix_flowdir
+- get_hydro_location
+- get_node
+- get_partial_length
+- index_points_to_lines
+- index_points_to_waterbodies
+- make_fromids
+- make_index_ids
+- navigate_connected_paths
+- navigate_hydro_network
+- rename_geometry
+- rescale_measures
+- sort_network
+- st_compatibalize
+
+[See the `hydroloom` reference list for details about these functions.](https://doi-usgs.github.io/hydroloom/reference/index.html)
+
+With these functions migrated to hydroloom, a number of `nhdplusTools` functions are now deprecated in favor of the `hyroloom` implementation.
+
+- `make_node_topology()`
+- `get_pfaf()`
+- `get_path_members()`
+- `get_path_lengths()`
+- `get_levelpaths()`
+- `get_terminal()`
+- `make_node_topology()`
+
+In v1.0.0, the `download_nhd()` function was added.
+
+In v1.0.0, the stage_national_data (previously deprecated) function was removed.
+
+nhdplusTools 0.7.1
+==========
+This release fixes a minor example issue for CRAN checks
+
 nhdplusTools 0.7.0
 ==========
 This release adds three new functions.

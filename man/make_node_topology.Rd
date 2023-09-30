@@ -2,7 +2,7 @@
 % Please edit documentation in R/rebuild_topology.R
 \name{make_node_topology}
 \alias{make_node_topology}
-\title{get node topology from edge topology}
+\title{get node topology from edge topology (DEPRECATED)}
 \usage{
 make_node_topology(x, add_div = NULL, add = TRUE)
 }

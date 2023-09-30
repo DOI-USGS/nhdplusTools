@@ -42,7 +42,7 @@ attribute is included, the join is executed by terminalpa group.
 This is done grouped by terminalpathID because duplicate node
 ids have been encountered across basins in some datasets. If
 `remove_coastal` is `TRUE` (the default) either ftype or fcode are
-required.
+required. Uses the \link[hydroloom]{add_toids} functin.
 }
 \examples{
 source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))

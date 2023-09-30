@@ -239,7 +239,7 @@ make_standalone <- function(flowlines) {
     flowlines <- flowlines[!(flowlines$FCODE == 566 &
                                flowlines$Hydroseq != flowlines$TerminalPa), ]
 
-    outlets <- select(drop_geometry(flowlines),
+    outlets <- select(st_drop_geometry(flowlines),
                       "COMID", "toCOMID",
                       "Hydroseq", "TerminalPa",
                       "LevelPathI")
@@ -253,7 +253,7 @@ make_standalone <- function(flowlines) {
     # Remove non-terminal coastal flowlines
     flowlines <- flowlines[!(flowlines$FCODE == 566 & flowlines$TerminalFl != 1), ]
 
-    outlets <- select(drop_geometry(flowlines),
+    outlets <- select(st_drop_geometry(flowlines),
                       "COMID", "ToNode",
                       "FromNode", "TerminalFl",
                       "Hydroseq", "TerminalPa",
@@ -295,7 +295,7 @@ fix_term <- function(term, flowlines) {
     flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1
   }
   # Change all terminal path IDs to match the new Termal ID of the basin.
-  ut <- get_UT(flowlines, term_comid)
+  ut <- get_UT(select(flowlines, -any_of(c("Permanent_Identifier"))), term_comid)
   flowlines$TerminalPa[flowlines$COMID %in% ut] <- term_hydroseq
 
   # Change the mainstem levelpath ID to match the new Terminal ID of the basin.

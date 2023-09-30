@@ -27,6 +27,7 @@
 #' @importFrom sf st_crs st_geometry_type st_buffer st_transform st_zm read_sf st_bbox st_as_sfc
 #' @importFrom httr POST RETRY
 #' @importFrom dplyr filter
+#' @importFrom methods as
 
 query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                                  type = NULL, filter = NULL,
@@ -195,7 +196,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   }
 
   if(!is.null(out)) {
-    return(out)
+    return(select(out, -any_of("id")))
   } else {
     warning(paste("No", here$user_call, "features found"), call. = FALSE)
     NULL

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_paths.R
 \name{get_levelpaths}
 \alias{get_levelpaths}
-\title{Get Level Paths}
+\title{Get Level Paths (DEPRECATED)}
 \usage{
 get_levelpaths(x, override_factor = NULL, status = FALSE, cores = NULL)
 }

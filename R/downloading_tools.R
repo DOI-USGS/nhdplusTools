@@ -1,19 +1,17 @@
 #' Download NHDPlus HiRes
 #' @param nhd_dir character directory to save output into
 #' @param hu_list character vector of hydrologic region(s) to download.
-#' Use \link{get_huc8} to find HU codes of interest. Accepts two digit
+#' Use \link{get_huc} to find HU codes of interest. Accepts two digit
 #' and four digit codes.
 #' @param download_files boolean if FALSE, only URLs to files will be returned
 #' can be hu02s and/or hu04s
 #'
 #' @return character Paths to geodatabases created.
-#' @importFrom xml2 read_xml xml_ns_strip xml_find_all xml_text
-#' @importFrom utils download.file
-#' @importFrom zip unzip
 #' @export
 #' @examples
 #' \donttest{
-#' hu <- nhdplusTools::get_huc8(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326))
+#' hu <- get_huc(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326),
+#'                             type = "huc08")
 #'
 #' (hu <- substr(hu$huc8, 1, 2))
 #'
@@ -21,9 +19,37 @@
 #' }
 download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 
-  nhdhr_bucket <- get("nhdhr_bucket", envir = nhdplusTools_env)
-  nhdhr_file_list <- get("nhdhr_file_list", envir = nhdplusTools_env)
+  download_nhd_internal(get("nhd_bucket", envir = nhdplusTools_env),
+               get("nhdhr_file_list", envir = nhdplusTools_env),
+               "NHDPLUS_H_", nhd_dir, hu_list, download_files)
+}
 
+#' Download NHD
+#' @inheritParams download_nhdplushr
+#'
+#' @return character Paths to geodatabases created.
+#' @export
+#' @examples
+#' \donttest{
+#' hu <- get_huc(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326),
+#'                             type = "huc08")
+#'
+#' (hu <- substr(hu$huc8, 1, 2))
+#'
+#' download_nhd(tempdir(), c(hu, "0203"), download_files = FALSE)
+#' }
+download_nhd <- function(nhd_dir, hu_list, download_files = TRUE) {
+
+  download_nhd_internal(get("nhd_bucket", envir = nhdplusTools_env),
+               get("nhd_file_list", envir = nhdplusTools_env),
+               "NHD_H_",
+               nhd_dir, hu_list, download_files)
+}
+
+#' @importFrom xml2 read_xml xml_ns_strip xml_find_all xml_text
+#' @importFrom utils download.file
+#' @importFrom zip unzip
+download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_list, download_files = TRUE) {
   hu02_list <- unique(substr(hu_list, 1, 2))
   hu04_list <- hu_list[which(nchar(hu_list) == 4)]
   subset_hu02 <- sapply(hu02_list, function(x)
@@ -43,8 +69,8 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
     }
 
     file_list <- tryCatch({
-      read_xml(paste0(nhdhr_bucket, nhdhr_file_list,
-                      "NHDPLUS_H_", hu02)) %>%
+      read_xml(paste0(bucket, file_list_snip,
+                      prefix, hu02)) %>%
         xml_ns_strip() %>%
         xml_find_all(xpath = "//Key") %>%
         xml_text()
@@ -67,15 +93,21 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
     for(key in file_list) {
       dir_out <- ifelse(is.null(out[length(out)]), "", out[length(out)])
       out_file <- file.path(dir_out, basename(key))
-      url <- paste0(nhdhr_bucket, key)
+      url <- paste0(bucket, key)
 
       hu04 <- regexec("[0-9][0-9][0-9][0-9]", out_file)[[1]]
       hu04 <- substr(out_file, hu04, hu04 + 3)
 
+      gdb_in_dir <- list.files(dirname(out_file), full.names = TRUE)
+      gdb_in_dir <- gdb_in_dir[grepl(paste0(".*", hu04, ".*\\.gdb"), gdb_in_dir, ignore.case = TRUE)]
+
       if(download_files & !dir.exists(gsub(".zip", ".gdb", out_file)) &
-         !dir.exists(file.path(dirname(out_file), paste0(hu04, ".gdb")))) {
-        download.file(url, out_file)
+         !(length(gdb_in_dir) > 0 && !dir.exists(gdb_in_dir))) {
+
+        httr::RETRY("GET", url, httr::write_disk(out_file), httr::progress())
+
         zip::unzip(out_file, exdir = out[length(out)])
+
         unlink(out_file)
       } else if(!download_files) {
         out <- c(out, url)

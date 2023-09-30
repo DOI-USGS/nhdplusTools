@@ -69,7 +69,7 @@ test_that("huc8", {
   expect_warning({
   ptHUC8id = get_huc8(id = "17010101")
   })
-  expect_identical(ptHUC8$id, ptHUC8id$id)
+  expect_identical(ptHUC8$huc8, ptHUC8id$huc8)
   expect_true(sf::st_crs(ptHUC8) == sf::st_crs(ptHUC8id) )
 })
 

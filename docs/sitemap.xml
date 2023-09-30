@@ -67,6 +67,9 @@
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/discover_nldi_characteristics.html</loc>
   </url>
   <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/download_nhd.html</loc>
+  </url>
+  <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/download_nhdplushr.html</loc>
   </url>
   <url>
@@ -251,6 +254,9 @@
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/query_usgs_geoserver.html</loc>
+  </url>
+  <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/reexports.html</loc>
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/rename_geometry.html</loc>

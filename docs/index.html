@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -60,9 +60,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/advanced_network.html">Advanced Network Attributes</a>
-    </li>
-    <li>
       <a href="articles/indexing.html">Indexing and Referencing</a>
     </li>
     <li>
@@ -70,9 +67,6 @@
     </li>
     <li>
       <a href="articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul>
 </li>
@@ -132,28 +126,21 @@
 <div class="section level3">
 <h3 id="resources">Resources<a class="anchor" aria-label="anchor" href="#resources"></a>
 </h3>
-<p>See the <a href="https://doi-usgs.github.io/nhdplusTools/articles/nhdplusTools.html">“Get Started”</a> vignette showing the gneral workflow and functionality of nhdplusTools.<br>
-See a set of <a href="https://doi-usgs.github.io/nhdplusTools/awra_2019/">slides</a> illustrating how to use nhdplusTools with other DOI-USGS packages.</p>
-</div>
-<div class="section level3">
-<h3 id="terminology">Terminology:<a class="anchor" aria-label="anchor" href="#terminology"></a>
-</h3>
-<p>The following definitions have been used as much as possible throughout the package.<br>
-Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic representation of a flowing body of water. Flowline is generally used when referring to geometry.<br><strong>Flowpath:</strong> The HY_Features name for a hydrologic feature that is the primary path water follows through a catchment; either from headwater to outlet or inlet to outlet. Flowpath is used when describing aspects of the abstract flowpath featuretype, generally in relation to a flowpath’s relationship to a catchment.</p>
-<p>Terms used for hydrologic units:<br><strong>Catchment:</strong> The most abstract unit of hydrology in HY_Features is the catchment. It is a physiographic unit with zero or one inlets and one outlet. It does not inherently have any conceptual realizations. Rather, a given catchment can be realized in a number of ways; flowpath, divide, and networks of flowpaths and divides are the primary realizations.<br><strong>Catchment divide:</strong> NHD “catchment” polygons are more accurately described as “catchment divide” features. Because of the overlap with the HY_Features abstract “catchment” feature type, “catchment divide” is used for polygon representations of catchments.</p>
+<p>For data discovery and access in a U.S. context, start with the <a href="https://doi-usgs.github.io/nhdplusTools/articles/nhdplusTools.html"><strong>Getting Started page</strong></a>.</p>
+<p>Detailed documentation of all the package functions can be found at the <a href="https://doi-usgs.github.io/nhdplusTools/reference/"><strong>Reference page</strong></a>.</p>
 </div>
 <div class="section level3">
 <h3 id="data">Data:<a class="anchor" aria-label="anchor" href="#data"></a>
 </h3>
-<p><a href="https://www.epa.gov/waterdata/nhdplus-national-data" class="external-link">A National Dataset of NHDPlusV2.1 is available here.</a></p>
-<p>For data subsetting, also see: <a href="https://doi-usgs.github.io/nhdplusTools/reference/get_nhdplus.html"><code>get_nhdplus</code></a>, <a href="https://doi-usgs.github.io/nhdplusTools/reference/subset_nhdplus.html"><code>subset_nhdplus</code></a>, <a href="https://doi-usgs.github.io/nhdplusTools/reference/navigate_network.html"><code>navigate_network</code></a>, <a href="https://doi-usgs.github.io/nhdplusTools/reference/download_nhdplushr.html"><code>download_nhdplushr</code></a> and <a href="https://doi-usgs.github.io/nhdplusTools/reference/get_nhdplushr.html"><code>get_nhdplushr</code></a></p>
+<p><code>nhdplusTools</code>, is designed to provide easy access to data associated with the U.S. National Hydrography Dataset. Many functions provided in <code>nhdplusTools</code> are thin wrappers around functions that have been migrated to <code>hydroloom</code>.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="package-vision">Package Vision<a class="anchor" aria-label="anchor" href="#package-vision"></a>
 </h2>
-<p>The <code>nhdplusTools</code> package is intended to provide a reusable set of tools to subset, relate data to, and generate network attributes for NHDPlus data.</p>
-<p>It implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus" class="external-link">NHDPlus</a> dataset and the <a href="http://opengeospatial.github.io/HY_Features/" class="external-link">HY_Features</a> data model. The package aims to provide a set of tools that can be used to build workflows using NHDPlus data.</p>
+<p>The <code>nhdplusTools</code> package is intended to provide a reusable set of tools to subset, relate data to, and generate network attributes for U.S. NHDPlus data.</p>
+<p>General, globally applicable functionality has been moved to <a href="https://github.com/DOI-USGS/hydroloom" class="external-link"><code>hydroloom</code></a></p>
+<p><code>nhdplusTools</code> implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus" class="external-link">NHDPlus</a> dataset and the <a href="http://opengeospatial.github.io/HY_Features/" class="external-link">HY_Features</a> data model. The package aims to provide a set of tools that can be used to build workflows using NHDPlus data.</p>
 <p><strong>This vision is intended as a guide to contributors – conveying what kinds of contributions are of interest to the package’s long term vision. It is a reflection of the current thinking and is open to discussion and modification.</strong></p>
 <div class="section level3">
 <h3 id="functional-vision">Functional Vision<a class="anchor" aria-label="anchor" href="#functional-vision"></a>
@@ -174,12 +161,12 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 <h3 id="data-model">Data Model<a class="anchor" aria-label="anchor" href="#data-model"></a>
 </h3>
 <p>Given that <code>nhdplusTools</code> is focused on working with NHDPlus data, the NHDPlus data model will largely govern the data model the package is designed to work with. That said, much of the package functionality also uses concepts from the HY_Features standard.</p>
-<p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a holistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can <em>only</em> be characterized fully through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given NHD flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as an identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a collection of data that together fully describe an NHDPlus catchment. <a href="http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1" class="external-link">See the NHDPlus mapping to HY_Features in the HY_Features specification.</a></p>
-<p>Below is a description of the expected scope of data to be used by the <code>nhdplusTools</code> package. While other data and attributes may come into scope, it should only be done as a naive pass-through, as in data subsetting, or with considerable deliberation.</p>
+<p><em>Note:</em> The HY_Features standard is based on the notion that a “catchment” is a holistic feature that can be “realized” (some might say modeled) in a number of ways. In other words, a catchment can <em>only</em> be characterized fully through a collection of different conceptual representations. In NHDPlus, the “catchment” feature is the polygon feature that describes the drainage divide around the hydrologic unit that contributes surface flow to a given NHD flowline. While this may seem like a significant difference, in reality, the NHDPlus COMID identifier lends itself very well to the HY_Features catchment concept. The COMID is used as an identifier for the catchment polygon, the flowline that connects the catchment inlet and outlet, and value added attributes that describe characteristics of the catchment’s interior. In this way, the COMID identifier is actually an identifier for a collection of data that together fully describe an NHDPlus catchment. <a href="https://docs.ogc.org/is/14-111r6/14-111r6.html#annexD_1" class="external-link">See the NHDPlus mapping to HY_Features in the HY_Features specification.</a></p>
+<p>Below is a description of the scope of data used by the <code>nhdplusTools</code> package. While other data and attributes may come into scope, it should only be done as a naive pass-through, as in data subsetting, or with considerable deliberation.</p>
 <div class="section level5">
 <h5 id="flowlines-and-waterbodies">Flowlines and Waterbodies<a class="anchor" aria-label="anchor" href="#flowlines-and-waterbodies"></a>
 </h5>
-<p>Flowline geometry is a mix of 1-d streams and 1-d “artificial paths”. In order to complete the set of features meant to represent water, we need to include waterbody and potentially NHDArea polygons (double line stream overlays).</p>
+<p>Flowline geometry is a mix of 1-d streams and 1-d “artificial paths”. In order to complete the set of features meant to represent water, we need to include waterbody polygons.</p>
 </div>
 <div class="section level5">
 <h5 id="catchment-polygons">Catchment Polygons<a class="anchor" aria-label="anchor" href="#catchment-polygons"></a>
@@ -199,7 +186,7 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 <div class="section level5">
 <h5 id="web-vs-local-data">Web vs Local Data<a class="anchor" aria-label="anchor" href="#web-vs-local-data"></a>
 </h5>
-<p>Web services will generally be avoided. However, applications that would require loading significant amounts of data to perform something that can be accomplished with a web service very quickly will be considered. Systems like the <a href="https://waterdata.usgs.gov/blog/nldi-intro/" class="external-link">Network Linked Data Index</a> are used for data discovery.</p>
+<p><code>nhdplusTools</code> offers a mix of web service and local data functionality. Web services have generally been avoided for large processes. However, applications that would require loading significant amounts of data to perform something that can be accomplished with a web service very quickly are supported. Systems like the <a href="https://waterdata.usgs.gov/blog/nldi-intro/" class="external-link">Network Linked Data Index</a> are used for data discovery.</p>
 </div>
 <div class="section level5">
 <h5 id="nhdplus-version">NHDPlus Version<a class="anchor" aria-label="anchor" href="#nhdplus-version"></a>
@@ -232,21 +219,23 @@ Terms for rivers:<br><strong>Flowline:</strong> The NHD name for a hydrographic 
 <h3 id="release-procedure">Release procedure:<a class="anchor" aria-label="anchor" href="#release-procedure"></a>
 </h3>
 <ul>
-<li><p>ensure all checks pass and code coverage is adequate.</p></li>
-<li><p>ensure news has been updated</p></li>
-<li><p>convert disclaimer to <a href="https://code.usgs.gov/water/sbtools/-/blob/v1.1.14/README.md#L113" class="external-link">released form</a></p></li>
-<li><p>update version in inst/CITATION file</p></li>
-<li><p>update version in code.json file</p></li>
-<li><p>Build source package and upload to CRAN</p></li>
-<li><p>Once a new version has been accepted by cran,</p></li>
-<li><p>ensure pkgdown is up to date</p></li>
-<li><p>commit, push, and PR/MR changes</p></li>
-<li><p>create release page and tag</p></li>
-<li><p>attach cran tar.gz to release page</p></li>
-<li><p>update DOI to point to release page</p></li>
-<li><p>switch README disclaimer back to <a href="https://code.usgs.gov/water/sbtools#disclaimer" class="external-link">“dev” mode.</a></p></li>
-<li><p>Update version in Description.</p></li>
-<li><p>push an PR/MR changes.</p></li>
+<li>ensure all checks pass and code coverage is adequate.</li>
+<li>ensure news has been updated</li>
+<li>convert disclaimer to <a href="https://code.usgs.gov/water/sbtools/-/blob/v1.1.14/README.md#L113" class="external-link">released form</a>
+</li>
+<li>update version in inst/CITATION file</li>
+<li>update version in code.json file</li>
+<li>Build source package and upload to CRAN</li>
+<li>Once a new version has been accepted by cran,</li>
+<li>ensure pkgdown is up to date</li>
+<li>commit, push, and PR/MR changes</li>
+<li>create release page and tag</li>
+<li>attach cran tar.gz to release page</li>
+<li>update DOI to point to release page</li>
+<li>switch README disclaimer back to <a href="https://code.usgs.gov/water/sbtools#disclaimer" class="external-link">“dev” mode.</a>
+</li>
+<li>Update version in Description.</li>
+<li>push an PR/MR changes.</li>
 </ul>
 </div>
 <div class="section level3">

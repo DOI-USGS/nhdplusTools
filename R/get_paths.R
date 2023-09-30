@@ -1,4 +1,4 @@
-#' Get Level Paths
+#' Get Level Paths (DEPRECATED)
 #' @description Calculates level paths using the stream-leveling approach of
 #' NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
 #' levelpath outlet identifier is provided in output. If arbolate sum is provided in
@@ -12,6 +12,7 @@
 #' @param cores numeric number of cores to use in initial path ranking calculations.
 #' @return data.frame with ID, outletID, topo_sort, and levelpath columns.
 #' See details for more info.
+#' @importFrom hydroloom add_levelpaths hy
 #' @details
 #' \enumerate{
 #'   \item levelpath provides an identifier for the collection of flowlines
@@ -40,251 +41,32 @@
 #'
 get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NULL) {
 
-  x <- check_names(drop_geometry(x), "get_levelpaths")
-
-  x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
-
-  x[["nameID"]][is.na(x[["nameID"]])] <- " " # NHDPlusHR uses NA for empty names.
-  x[["nameID"]][x[["nameID"]] == "-1"] <- " "
-
-  x <- get_sorted(x)
-
-  x[["topo_sort"]] <- seq(nrow(x), 1)
-  x[["levelpath"]] <- rep(0, nrow(x))
-
-  stop_cluster <- FALSE
-  cl <- NULL
+  warning("get_levelpaths is deprecated in favor of add_levelpaths in the hydroloom package.")
 
   if(!is.null(cores)) {
-    cl <- get_cl(cores)
-    if(!inherits(cores, "cluster")) {
-      on.exit(parallel::stopCluster(cl))
-    }
+    if(inherits(cores, "cluster")) stop("passing a cluster object no longer supported")
+    message("the future plan is being modified and will be changed back on exit")
+    oplan <- future::plan(future::multisession, workers = cores)
+    on.exit(future::plan(oplan), add = TRUE)
   }
 
-  x <- x %>% # get downstream name ID added
-    left_join(drop_geometry(select(x, "ID", ds_nameID = "nameID")),
-              by = c("toID" = "ID")) %>%
-    # if it's na, we need it to be an empty string
-    mutate(ds_nameID = ifelse(is.na(.data$ds_nameID),
-                              " ", .data$ds_nameID)) %>%
-    # group on toID so we can operate on upstream choices
-    group_by(.data$toID) %>%
-    group_split()
+  get_levelpaths_internal(x, override_factor)
 
-  # reweight sets up ranked upstream paths
-  if(!is.null(cl)) {
-    x <- parallel::parLapply(cl, x, reweight, override_factor = override_factor)
-  } else {
-    x <- lapply(x, reweight, override_factor = override_factor)
-  }
-
-  x <- x %>%
-    bind_rows() %>%
-    select("ID", "toID", "topo_sort",
-           "levelpath", "weight")
-
-  diff = 1
-  checker <- 0
-  done <- 0
-
-  x <- arrange(x, .data$topo_sort)
-
-  topo_sort <- x$topo_sort
-
-  if(!is.null(cl)) {
-    matcher <- parallel::parSapply(cl = cl, X = x$ID,
-                                   FUN = function(id, df) {
-      which(x$toID == id)
-    }, df = x)
-  } else {
-    matcher <- sapply(x$ID, function(id, df) {
-      which(x$toID == id)
-    }, df = x)
-  }
-
-  names(matcher) <- x$ID
-
-  x$done <- rep(FALSE, nrow(x))
-
-  outlets <- filter(x, .data$toID == 0)
-
-  while(done < nrow(x) & checker < 10000000) {
-    tail_topo <- outlets$topo_sort
-
-    pathIDs <- if(nrow(outlets) == 1) {
-      list(par_get_path(as.list(outlets), x, matcher, status))
-    } else if(!is.null(cl)) {
-      parallel::parApply(cl = cl,
-                         outlets[sample(nrow(outlets)), ], 1, par_get_path,
-                         x_in = x, matcher = matcher,
-                         status = status)
-    } else {
-      apply(outlets, 1, par_get_path,
-             x_in = x, matcher = matcher,
-             status = status)
-    }
-
-    pathIDs <- do.call(rbind, pathIDs)
-
-    reset <- match(pathIDs$ID, x$ID)
-
-    x$levelpath[reset] <- pathIDs$levelpath
-
-    n_reset <- length(reset)
-
-    done <- done + n_reset
-
-    x$done[reset] <- rep(TRUE, n_reset)
-
-    outlets <- x[x$toID %in% pathIDs$ID &
-                   !x$ID %in% pathIDs$ID, ]
-
-    checker <- checker + 1
-
-    if(status && checker %% 1000 == 0) {
-      message(paste(done, "of", nrow(x), "remaining."))
-    }
-  }
-
-  outlets <- x %>%
-    group_by(.data$levelpath) %>%
-    filter(.data$topo_sort == min(.data$topo_sort)) %>%
-    ungroup() %>%
-    select(outletID = "ID", "levelpath")
-
-  x <- left_join(x, outlets, by = "levelpath")
-
-  return(select(x, "ID", "outletID", "topo_sort", "levelpath"))
 }
 
-par_get_path <- function(outlet, x_in, matcher, status) {
-  out <- get_path(x = x_in, tailID = outlet[names(outlet) == "ID"][[1]],
-                  matcher = matcher, status = status)
-  data.frame(ID = out, levelpath = rep(outlet[names(outlet) == "topo_sort"][[1]], length(out)))
+get_levelpaths_internal <- function(x, override_factor) {
+  x <- check_names(st_drop_geometry(x), "get_levelpaths")
+
+  x <- hy(select(x, all_of(c(id = "ID", toid = "toID", "nameID", "weight"))))
+
+  x <- add_levelpaths(x, weight_attribute = "weight", name_attribute = "nameID",
+                      override_factor = override_factor)
+
+  return(as.data.frame(select(x, all_of(c("ID" = "id", "outletID" = "levelpath_outlet_id",
+                                          "topo_sort" = "topo_sort", "levelpath" = "levelpath")))))
 }
 
-#' get level path
-#' @noRd
-#' @description Recursively walks up a network following the nameID
-#' or, if no nameID exists, maximum weight column.
-#' @param x data.frame with ID, toID, nameID and weight columns.
-#' @param tailID integer or numeric ID of outlet catchment.
-#' @param override_factor numeric follow weight if this many times larger
-#' @param status print status?
-#'
-get_path <- function(x, tailID, matcher, status) {
-
-  keep_going <- TRUE
-  tracker <- rep(NA, nrow(x))
-  counter <- 1
-
-  toID <- NULL
-
-  while(keep_going) {
-    tryCatch({
-      next_tails <- x[matcher[[as.character(tailID)]], ]
-
-      if(nrow(next_tails) > 1) {
-
-        next_tails <- next_tails[next_tails$weight == max(next_tails$weight), ]
-
-      }
-
-      if(nrow(next_tails) == 0) {
-
-        keep_going <- FALSE
-
-      }
-
-      if(tailID %in% tracker) stop(paste0("loop at", tailID))
-
-      tracker[counter] <- tailID
-
-      counter <- counter + 1
-
-      tailID <- next_tails$ID
-
-      if(status && counter %% 1000 == 0) message(paste("long mainstem", counter))
-    }, error = function(e) {
-      stop(paste0("Error with outlet tailID ", tailID, "\n",
-                  "Original error was \n", e))
-    })
-
-  }
-
-
-  return(tracker[!is.na(tracker)])
-}
-
-reweight <- function(x, ..., override_factor) {
-
-  if(nrow(x) > 1) {
-
-    cur_name <- x$ds_nameID[1]
-
-    max_weight <- max(x$weight)
-
-    rank <- 1
-
-    total <- nrow(x)
-
-    out <- x
-
-    if(any(x$nameID != " ")) { # If any of the candidates are named.
-      if(cur_name != " " & cur_name %in% x$nameID) {
-        sub <- arrange(x[x$nameID == cur_name, ], desc(.data$weight))
-
-        out[1:nrow(sub), ] <- sub
-
-        rank <- rank + nrow(sub)
-
-        x <- x[!x$ID %in% sub$ID, ]
-      }
-
-      if(rank <= total) {
-        if(any(x$nameID != " ")) {
-          sub <-
-            arrange(x[x$nameID != " ", ], desc(.data$weight))
-
-          out[rank:(rank + nrow(sub) - 1), ] <- sub
-
-          rank <- rank + nrow(sub)
-
-          x <- x[!x$ID %in% sub$ID, ]
-
-        }
-
-        if(rank <= total) {
-          out[rank:total, ] <- x
-        }
-
-      }
-    }
-
-    if(!is.null(override_factor)) {
-      out <- mutate(out, weight = ifelse(.data$nameID == .data$ds_nameID,
-                                                .data$weight * override_factor,
-                                                .data$weight))
-    }
-
-    if(rank < nrow(out)) {
-      out[rank:nrow(out), ] <- arrange(x, desc(.data$weight))
-    }
-
-    if(!is.null(override_factor)) {
-      out <- arrange(out, desc(.data$weight))
-    }
-
-    x <- out
-
-  }
-
-  x$weight <- seq(nrow(x), 1)
-
-  x
-}
-
+#' @importFrom hydroloom make_fromids
 get_fromids <- function(index_ids, return_list = FALSE) {
 
   index_ids <- select(index_ids, indid = "id", toindid = "toid")
@@ -313,6 +95,7 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' emanating from these outlets will be considered and returned.
 #' @return data.frame containing a topologically sorted version
 #' of the requested network and optionally a terminal id.
+#' @importFrom hydroloom sort_network
 #' @examples
 #' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
 #'
@@ -329,128 +112,23 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #'
 get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
-  class_x <- class(x)
+  orig_names <- names(x)[1:2]
 
-  hy_g <- get_hyg(x, add = TRUE, id = names(x)[1])
+  names(x)[1:2] <- c("id", "toid")
 
-  x <- drop_geometry(x)
+  x <- sort_network(x, split, outlets)
 
-  x <- as.data.frame(x)
+  names(x)[1:2] <- orig_names
 
-  # nrow to reuse
-  n_row <- nrow(x)
-
-  # index for fast traversal
-  index_ids <- get_index_ids(x, innames = names(x)[1:2])
-
-  if(!is.null(outlets)) {
-    starts <- which(x[, 1] %in% outlets)
-  } else {
-    # All the start nodes
-    starts <- which(index_ids$toid == 0)
-  }
-
-  froms <- get_fromids(index_ids)
-
-  # Some vectors to track results
-  to_visit <- out <- rep(0, n_row)
-
-  if(split) {
-    set <- out
-    out_list <- rep(list(list()), length(starts))
-  }
-
-  # output order tracker
-  o <- 1
-  set_id <- 1
-
-  for(s in starts) {
-
-    # Set up the starting node
-    node <- s
-
-    # within set node tracker for split = TRUE
-    n <- 1
-    # v is a pointer into the to_visit vector
-    v <- 1
-
-    trk <- 1
-
-    while(v > 0) {
-
-      # track the order that nodes were visited
-      out[node] <- o
-      # increment to the next node
-      o <- o + 1
-
-      if(split) {
-        set[n] <- node
-        n <- n + 1
-      }
-
-      # does nothing if froms_l[node] == 0
-
-      for(from in seq_len(froms$lengths[node])) {
-        if(node <= ncol(froms$froms) &&
-           !is.na(next_node <- froms$froms[from, node])) {
-          # Add the next node to visit to the tracking vector
-          to_visit[v] <- next_node
-          v <- v + 1
-        }}
-
-      # go to the last element added in to_visit
-      v <- v - 1
-      node <- to_visit[v]
-
-      trk <- trk + 1
-
-      if(trk > n_row * 2) {
-        stop("runaway while loop, something wrong with the network?")
-      }
-
-    }
-
-    if(split) {
-      out_list[[set_id]] <- x[set[1:(n - 1)], 1]
-      set_id <- set_id + 1
-    }
-  }
-
-  if(split) names(out_list) <- x[starts, 1]
-
-  ### rewrites x into the correct order. ###
-  if(o - 1 != nrow(x)) {
-    x <- x[which(out != 0), ]
-    out <- out[out != 0]
-  }
-
-  x <- x[order(out)[(o-1):1], ]
-
-  if(split) {
-
-    # this is only two columns
-    ids <- methods::as(names(out_list), class(x[1, 1]))
-
-    out_list <- data.frame(ids = ids) %>%
-      mutate(set = out_list) %>%
-      tidyr::unnest_longer("set")
-
-    names(out_list) <- c("terminalID", names(x)[1])
-
-    ### adds grouping terminalID to x ###
-    x <- left_join(x, out_list, by = names(x)[1])
-
-  }
-
-  if(!is.null(hy_g)) {
-    x <- sf::st_sf(left_join(x, hy_g, by = names(x)[1]))
-  }
+  if(split)
+    names(x)[names(x) == "terminal_id"] <- "terminalID"
 
   return(x)
 }
 
 #' @noRd
 #' @importFrom dplyr all_of
+#' @importFrom hydroloom make_index_ids
 get_index_ids <- function(x,
                           innames = c("comid", "tocomid"),
                           outnames = c("id", "toid")) {
@@ -465,6 +143,10 @@ get_index_ids <- function(x,
 
   out <- make_index_ids(out)
 
+  out <- tidyr::unnest(out$to_list, "toindid")
+
+  out <- select(out, "indid", "toindid")
+
   names(out) <- outnames
 
   out
@@ -474,11 +156,12 @@ get_index_ids <- function(x,
 #' @noRd
 #' @param x data.frame with ID and toID
 #' @param rev logical if TRUE (default) top down
+#' @importFrom tidyr replace_na
 topo_sort_network <- function(x, reverse = TRUE) {
 
   if(any(x$ID == 0)) stop("ID 0 must not be present. It is used as the outlet ID.")
 
-  x[["toID"]] <- tidyr::replace_na(x[["toID"]], 0)
+  x[["toID"]] <- replace_na(x[["toID"]], 0)
 
   x <- get_sorted(x[, c("ID", "toID", names(x)[!names(x) %in% c("ID", "toID")])])
 
@@ -520,13 +203,11 @@ get_terminal <- function(x, outlets) {
 }
 
 #' Get Path Length
-#' @description Generates the main path length to a basin's
-#' terminal path.
+#' @description Generates the main path length to a basin's terminal path.
 #' @param x data.frame with ID, toID, length columns.
-#' @importFrom dplyr arrange
-#' @importFrom methods as
+#' @importFrom hydroloom add_pathlength
 #' @export
-#' @return data.frame containing levelpaths for each ID
+#' @return data.frame containing pathlength for each ID
 #' @examples
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #'
@@ -537,21 +218,10 @@ get_terminal <- function(x, outlets) {
 #'
 get_pathlength <- function(x) {
 
-  x <- topo_sort_network(x)
+  x <- select(st_drop_geometry(x), all_of(c("id" = "ID", "toid" = "toID",
+                                         "length_km" = "length")))
 
-  id <- x$ID
-  toid <- x$toID
-  le <- x$length
-  leo <- rep(0, length(le))
+  x <- add_pathlength(x)
 
-  toids <- match(toid, id)
-
-  for(i in seq_len(length(id))) {
-    if((tid <- toid[i]) != 0) {
-
-      leo[i] <- le[toids[i]] + leo[toids[i]]
-
-    }
-  }
-  return(data.frame(ID = id, pathlength = leo))
+  return(data.frame(ID = x$id, pathlength = x$pathlength_km))
 }

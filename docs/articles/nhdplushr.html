@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -60,9 +60,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
-    </li>
-    <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
     </li>
     <li>
@@ -70,9 +67,6 @@
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul>
 </li>
@@ -133,11 +127,8 @@ behavior.</em></p>
 <span></span>
 <span><span class="co"># Make a plot and get some background NHDPlusV2 data.</span></span>
 <span><span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>, streamorder <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                          nhdplus_data <span class="op">=</span> <span class="va">sample_data</span>,</span>
-<span>                          stoponlargerequest <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Zoom: 10</span></span>
-<span><span class="co">#&gt; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></span>
-<span><span class="co">#&gt; Audotdetect projection: assuming Google Mercator (epsg 3857)</span></span></code></pre></div>
+<span>                          nhdplus_data <span class="op">=</span> <span class="va">sample_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Zoom set to: 11</span></span></code></pre></div>
 <p><img src="nhdplushr_files/figure-html/tldr-1.png" width="576"></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -154,12 +145,16 @@ behavior.</em></p>
 <span><span class="op">(</span><span class="va">start_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
 <span>                                   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">outlets</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
 <span>                                   search_radius <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span> <span class="co"># meters albers eq area</span></span>
-<span><span class="co">#&gt; Warning in check_search_radius(search_radius, points): search_radius units not</span></span>
-<span><span class="co">#&gt; set, trying units of points.</span></span>
+<span><span class="co">#&gt; Warning in hydroloom:::check_search_radius(search_radius, points):</span></span>
+<span><span class="co">#&gt; search_radius units not set, trying units of points CRS.</span></span>
+<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
+<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
 <span><span class="co">#&gt;   id          COMID      REACHCODE REACH_meas   offset</span></span>
 <span><span class="co">#&gt; 1  1 22001000032700 07090002006114    37.6572 87.71874</span></span>
 <span></span>
 <span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">start_index</span><span class="op">$</span><span class="va">COMID</span><span class="op">)</span></span>
+<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span></span>
 <span><span class="va">hr_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span><span class="va">ids</span>, nhdplus_data <span class="op">=</span> <span class="va">hr_gpkg</span><span class="op">)</span></span>
 <span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
@@ -179,11 +174,8 @@ top of it.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>, streamorder <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>             nhdplus_data <span class="op">=</span> <span class="va">sample_data</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>             plot_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>flowline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>,</span>
-<span>                                basin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>             stoponlargerequest <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Zoom: 10</span></span>
-<span><span class="co">#&gt; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</span></span>
-<span><span class="co">#&gt; Audotdetect projection: assuming Google Mercator (epsg 3857)</span></span>
+<span>                                basin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Zoom set to: 11</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDPlusCatchment</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.25</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

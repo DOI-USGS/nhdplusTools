@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_codes.R
 \name{get_pfaf}
 \alias{get_pfaf}
-\title{Get Pfafstetter Codes (Experimental)}
+\title{Get Pfafstetter Codes (DEPRECATED)}
 \usage{
 get_pfaf(x, max_level = 2, status = FALSE)
 }

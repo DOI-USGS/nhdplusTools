@@ -124,7 +124,8 @@
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
-                         basemap = "Wikimedia", zoom = NULL, add = FALSE, actually_plot = TRUE,
+                         basemap = "Esri.NatGeoWorldMap",
+                         zoom = NULL, add = FALSE, actually_plot = TRUE,
                          overwrite = TRUE, flowline_only = NULL,
                          cache_data = NULL) {
 

@@ -11,7 +11,7 @@ plot_nhdplus(
   nhdplus_data = NULL,
   gpkg = NULL,
   plot_config = NULL,
-  basemap = "Wikimedia",
+  basemap = "Esri.NatGeoWorldMap",
   zoom = NULL,
   add = FALSE,
   actually_plot = TRUE,

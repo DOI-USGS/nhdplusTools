@@ -86,7 +86,6 @@ reference:
       - '`align_nhdplus_names`'
       - '`nhdplus_path`'
       - '`nhdplusTools_data_dir`'
-      - '`stage_national_data`'
       - '`plot_nhdplus`'
       - '`map_nhdplus`'
       - '`prepare_nhdplus`'

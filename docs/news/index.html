@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -66,6 +66,49 @@
       <small>Source: <a href="https://github.com/doi-usgs/nhdplusTools/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.0.0" id="nhdplustools-100">nhdplusTools 1.0.0<a class="anchor" aria-label="anchor" href="#nhdplustools-100"></a></h2>
+<div class="section level3">
+<h3 id="hydroloom-1-0-0"><code>hydroloom</code><a class="anchor" aria-label="anchor" href="#hydroloom-1-0-0"></a></h3>
+<p>v1.0.0 should be backward compatible with v0.7 but deprecation warnings have been added and one previously deprecated function has been removed.</p>
+<p>This release evolves <code>nhdplusTools</code> to use <a href="https://doi-usgs.github.io/hydroloom/articles/hydroloom.html" class="external-link"><code>hydroloom</code></a> as a core dependency. <code>nhdplusTools</code> now depends on <code>hydroloom</code> for all network navigation and indexing functionality that is not specific to the nhdplus data model or specific to a US-context.</p>
+<p>Specific functions imported from <a href="https://doi-usgs.github.io/hydroloom/articles/hydroloom.html" class="external-link"><code>hydroloom</code></a> include:</p>
+<ul><li>hy</li>
+<li>accumulate_downstream</li>
+<li>add_levelpaths</li>
+<li>add_pathlength</li>
+<li>add_pfafstetter</li>
+<li>add_streamlevel</li>
+<li>add_streamorder</li>
+<li>add_toids</li>
+<li>disambiguate_indexes</li>
+<li>fix_flowdir</li>
+<li>get_hydro_location</li>
+<li>get_node</li>
+<li>get_partial_length</li>
+<li>index_points_to_lines</li>
+<li>index_points_to_waterbodies</li>
+<li>make_fromids</li>
+<li>make_index_ids</li>
+<li>navigate_connected_paths</li>
+<li>navigate_hydro_network</li>
+<li>rename_geometry</li>
+<li>rescale_measures</li>
+<li>sort_network</li>
+<li>st_compatibalize</li>
+</ul><p><a href="https://doi-usgs.github.io/hydroloom/reference/index.html" class="external-link">See the <code>hydroloom</code> reference list for details about these functions.</a></p>
+<p>With these functions migrated to hydroloom, a number of <code>nhdplusTools</code> functions are now deprecated in favor of the <code>hyroloom</code> implementation.</p>
+<ul><li><code><a href="../reference/make_node_topology.html">make_node_topology()</a></code></li>
+<li><code><a href="../reference/get_pfaf.html">get_pfaf()</a></code></li>
+<li><code><a href="../reference/get_path_members.html">get_path_members()</a></code></li>
+<li><code><a href="../reference/get_path_lengths.html">get_path_lengths()</a></code></li>
+<li><code><a href="../reference/get_levelpaths.html">get_levelpaths()</a></code></li>
+<li><code><a href="../reference/get_terminal.html">get_terminal()</a></code></li>
+<li><code><a href="../reference/make_node_topology.html">make_node_topology()</a></code></li>
+</ul><p>In v1.0.0, the <code><a href="../reference/download_nhd.html">download_nhd()</a></code> function was added.</p>
+<p>In v1.0.0, the stage_national_data (previously deprecated) function was removed.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.1" id="nhdplustools-071">nhdplusTools 0.7.1<small>2023-08-31</small><a class="anchor" aria-label="anchor" href="#nhdplustools-071"></a></h2>
 <p>This release fixes a minor example issue for CRAN checks</p>
@@ -223,7 +266,7 @@ To cite nhdplusTools in publications, please use:
 <code><a href="../reference/get_levelpaths.html">get_levelpaths()</a></code> now has an <code>override_factor</code> parameter that will cause stream leveling to follow the weight rather than the name input if the weight is <code>override_factor</code> times larger than the name indication.</li>
 </ul><p><em>Functions Added</em> * <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> * <code><a href="../reference/get_nhdarea.html">get_nhdarea()</a></code> * <code><a href="../reference/get_waterbodies.html">get_waterbodies()</a></code> * <code><a href="../reference/get_gagesII.html">get_gagesII()</a></code> * <code><a href="../reference/get_huc12.html">get_huc12()</a></code> * <code><a href="../reference/get_huc8.html">get_huc8()</a></code> * <code><a href="../reference/download_vaa.html">download_vaa()</a></code> * <code><a href="../reference/get_vaa.html">get_vaa()</a></code> * <code><a href="../reference/get_vaa_names.html">get_vaa_names()</a></code> * <code><a href="../reference/get_vaa_path.html">get_vaa_path()</a></code></p>
 <p><em>Functions Removed</em> * <code>discover_nldi_navigation()</code> * <code>discover_nldi_sources()</code></p>
-<p><em>Functions Deprecated</em> * <code><a href="../reference/stage_national_data.html">stage_national_data()</a></code></p>
+<p><em>Functions Deprecated</em> * <code>stage_national_data()</code></p>
 <p><em>Functions with Consolodated Internals</em> * <code><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id()</a></code> * <code><a href="../reference/get_nldi_basin.html">get_nldi_basin()</a></code> * <code><a href="../reference/get_nldi_feature.html">get_nldi_feature()</a></code> * <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> * <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code></p>
 <p>Finally, the handling of data and caching in the package has been overhauled. These changes are non-functional, but aim to decrease data downloads by caching rather than using temp directories.</p>
 </div>

@@ -295,7 +295,7 @@ fix_term <- function(term, flowlines) {
     flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1
   }
   # Change all terminal path IDs to match the new Termal ID of the basin.
-  ut <- get_UT(flowlines, term_comid)
+  ut <- get_UT(select(flowlines, -any_of(c("Permanent_Identifier"))), term_comid)
   flowlines$TerminalPa[flowlines$COMID %in% ut] <- term_hydroseq
 
   # Change the mainstem levelpath ID to match the new Terminal ID of the basin.

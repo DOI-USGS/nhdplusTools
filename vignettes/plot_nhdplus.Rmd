@@ -159,7 +159,7 @@ In order to maximize flexibility and make sure we understand what's going on wit
 
 In this example, we have to plot just the geometry, extracted with `st_geometry` and we need to project the geometry into the plotting coordinate reference system, [EPSG:3857 also known as "web mercator"](https://en.wikipedia.org/wiki/Web_Mercator). The reason we have to make this transformation is that practically all basemap tiles are in this projection and reprojection of pre-rendered tiles doesn't look good. We do this with a simple `prep_layer` function.
 
-The `mapsf`, `maptiles`, and base `plot` commands put data onto the R plotting device so the first to be plotted is on the bottom. A couple hints here. `lwd` is line width. `pch` is point style. `cex` is an expansion factor. Colors shown below are [basic R colors.](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) the `rgb` function is handy for creating colors with transparency if that's of interest.
+The `mapsf`, `maptiles`, and base `plot` commands put data onto the R plotting device so the first to be plotted is on the bottom. A couple hints here. `lwd` is line width. `pch` is point style. `cex` is an expansion factor. Colors shown below are basic R colors. the `rgb` function is handy for creating colors with transparency if that's of interest.
 
 ```{r plot}
 prep_layer <- function(x) st_geometry(st_transform(x, 3857))
@@ -203,7 +203,7 @@ text(label_pos[,1],label_pos[,2],
 
 ## Plotting with ggplot2
 
-Below is a very similar example using [`ggmap`](https://github.com/dkahle/ggmap) and [`ggplot2` `geom_sf`](https://ggplot2.`tidyverse`.org/reference/ggsf.html). Note that ggmap takes case of projections for us, which should either make you happy because it _just works_ or very nervous because it _just works_. 
+Below is a very similar example using [`ggmap`](https://github.com/dkahle/ggmap) and [`ggplot2` `geom_sf`](https://ggplot2.tidyverse.org/reference/ggsf.html). Note that ggmap takes case of projections for us, which should either make you happy because it _just works_ or very nervous because it _just works_. 
 
 ```{r ggmap, message=FALSE, warning=FALSE}
 library(ggmap)

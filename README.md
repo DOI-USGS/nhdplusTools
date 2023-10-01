@@ -226,7 +226,7 @@ be able to do that without your help!
 1)  Contributions should be thoroughly tested with
     [`testthat`](https://testthat.r-lib.org/).  
 2)  Code style should attempt to follow the [`tidyverse` style
-    guide.](https://style.%60tidyverse%60.org/)  
+    guide.](https://style.tidyverse.org/)  
 3)  Please attempt to describe what you want to do prior to contributing
     by submitting an issue.  
 4)  Please follow the typical github [fork - pull-request

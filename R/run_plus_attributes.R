@@ -110,14 +110,16 @@ add_plus_network_attributes <- function(net, override = 5,
 
   if(!is.null(cores)) {
 
-    run_small <- function(small_lp, overridel) {
+    run_small <- function(small_lp, override) {
 
       message("running small networks")
 
-      small_lp <- future.apply::future_lapply(X = small_lp,
-                                              FUN = function(x, override, get_levelpaths_internal) {
-                                                get_levelpaths_internal(x, override)
-                                              }, override = override, get_levelpaths_internal = get_levelpaths_internal)
+      small_lp <- pbapply::pblapply(X = small_lp,
+                                    FUN = function(x, override, get_levelpaths_internal) {
+                                      get_levelpaths_internal(x, override)
+                                    }, override = override,
+                                    get_levelpaths_internal = get_levelpaths_internal,
+                                    cl = "future")
 
     }
 

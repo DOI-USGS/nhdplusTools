@@ -231,7 +231,6 @@ demonstrates a few behaviors of <code><a href="../reference/get_nhdplushr.html">
 give us back a list with flowlines and catchments as sf data.frames.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span><span class="op">)</span></span>
-<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">hr</span>, <span class="va">class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      NHDFlowline  NHDPlusCatchment</span></span>
 <span><span class="co">#&gt; [1,] "sf"         "sf"            </span></span>
@@ -244,7 +243,6 @@ give us back a list with flowlines and catchments as sf data.frames.</p>
 the <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> documentation.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span>, layers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NHDFlowline"</span>, <span class="st">"NHDWaterbody"</span>, <span class="st">"NHDArea"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, : GDAL</span></span>
 <span><span class="co">#&gt; Message 1: organizePolygons() received a polygon with more than 100 parts. The</span></span>
 <span><span class="co">#&gt; processing may be really slow.  You can skip the processing by setting</span></span>
@@ -298,7 +296,6 @@ network.</em></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">demo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span>, layers <span class="op">=</span> <span class="st">"NHDFlowline"</span>, </span>
 <span>                               min_size_sqkm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, </span>
 <span>     lwd <span class="op">=</span> <span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">$</span><span class="va">StreamOrde</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="nhdplushr_files/figure-html/get_nhdplushr4-1.png" width="576"></p>
@@ -309,7 +306,6 @@ network.</em></p>
 <span>                      keep_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"COMID"</span>, <span class="st">"StreamOrde"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in CPL_crs_from_input(x): GDAL Message 1: +init=epsg:XXXX syntax is</span></span>
 <span><span class="co">#&gt; deprecated. It might return a CRS with a non-EPSG compliant axis order.</span></span>
-<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "COMID"      "StreamOrde" "Shape"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, </span>
@@ -345,7 +341,6 @@ further use.</p>
 <span></span>
 <span><span class="co"># Create a standalone basin with the results for comparison.</span></span>
 <span><span class="va">standalone_demo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_standalone.html">make_standalone</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span></span>
-<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span></span>
 <span><span class="va">demo_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">TotDASqKM</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TotDASqKM</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
@@ -388,11 +383,11 @@ further use.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 155714162            2014-10-28 <span style="color: #949494;">19:00:00</span>          2 00424882 Fairfield Ditch…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 156035374            2012-03-19 <span style="color: #949494;">01:35:08</span>          2 01561947 Gordon Creek    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 145600320            2012-03-19 <span style="color: #949494;">01:34:47</span>          2 00416806 Rock Creek      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 155712981            2012-03-19 <span style="color: #949494;">02:05:43</span>          2 <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 137417698            2012-03-18 <span style="color: #949494;">13:07:30</span>          2 01575030 Sugar River     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 155712981            2012-03-19 <span style="color: #949494;">02:05:44</span>          2 <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 137417698            2012-03-18 <span style="color: #949494;">13:07:31</span>          2 01575030 Sugar River     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 156037500            2012-03-19 <span style="color: #949494;">01:33:10</span>          2 <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>              </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 145599800            2012-03-19 <span style="color: #949494;">01:34:47</span>          2 00414599 North Fork Kent…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 143246785            2012-03-18 <span style="color: #949494;">12:56:42</span>          2 00416824 Rock River      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 143246785            2012-03-18 <span style="color: #949494;">12:56:43</span>          2 00416824 Rock River      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 155712415            2012-03-19 <span style="color: #949494;">02:05:51</span>          2 00424170 Willow Creek    </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 5,348 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 53 more variables: LENGTHKM &lt;dbl&gt;, REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;,</span></span></span>

@@ -1,6 +1,8 @@
 nhdplusTools 1.0.0
 ==========
 
+`nhdplusTools` has been split into two packages. A new package [`hydroloom`](https://github.com/DOI-USGS/hydroloom) is now available. It contains all nhdplusTools functionality not related to specific dataset schemas. See [this issue](https://github.com/DOI-USGS/nhdplusTools/issues/307) for details.
+
 ## `hydroloom` 
 
 v1.0.0 should be backward compatible with v0.7 but deprecation warnings have been added and one previously deprecated function has been removed. 
@@ -47,7 +49,7 @@ With these functions migrated to hydroloom, a number of `nhdplusTools` functions
 
 In v1.0.0, the `download_nhd()` function was added.
 
-In v1.0.0, the stage_national_data (previously deprecated) function was removed.
+In v1.0.0, the `stage_national_data` (previously deprecated) function was removed.
 
 nhdplusTools 0.7.1
 ==========

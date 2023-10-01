@@ -15,7 +15,7 @@ get_hyg <- function(x, add, id = "comid") {
 #' Should have id and toid fields in the first and second columns. Names
 #' are not used.
 #' @return data.frame containing id, fromnode, and tonode attributes or all
-#' attributes provided with id, fromnode and tonodde in the first three columns.
+#' attributes provided with id, fromnode and tonode in the first three columns.
 #' @export
 #' @examples
 #' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))

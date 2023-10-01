@@ -15,7 +15,7 @@ of the point provided is returned in addition to the local catchment.}
 }
 \value{
 sf data.frame containing the local catchment, the split portion
-and optionally the total dranage basin.
+and optionally the total drainage basin.
 }
 \description{
 Uses catchment splitting web service to retrieve

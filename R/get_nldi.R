@@ -47,11 +47,11 @@ type_check <- function(type) {
 #' @description Navigate the Network Linked Data Index network.
 #' @param nldi_feature list with names `featureSource` and `featureID` where
 #' `featureSource` is derived from the "source" column of  the response of
-#' dataRetrieval::get_nldi_sources() and the `featureID` is a known identifier
+#' \link[dataRetrieval]{get_nldi_sources} and the `featureID` is a known identifier
 #' from the specified `featureSource`.
 #' @param mode character chosen from ("UM", "UT", DM", "DD"). See examples.
 #' @param data_source character chosen from "source" column of the response
-#' of dataRetrieval::get_nldi_sources() or empty string for flowline geometry.
+#' of \link[dataRetrieval]{get_nldi_sources} or empty string for flowline geometry.
 #' @param distance_km numeric distance in km to stop navigating.
 #' @return sf data.frame with result
 #' @export
@@ -210,7 +210,7 @@ get_nldi_feature <- function(nldi_feature) {
 #' Metadata for these characteristics can be found using `discover_nldi_characteristics()`.
 #' @inheritParams navigate_nldi
 #' @inheritParams discover_nldi_characteristics
-#' @return data.frame contianing requested characteristics
+#' @return data.frame containing requested characteristics
 #' @export
 #' @examples
 #' \donttest{

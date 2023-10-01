@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_hydro.R
 \name{get_gagesII}
 \alias{get_gagesII}
-\title{Find GAGESII Features}
+\title{Find gagesII Features}
 \usage{
 get_gagesII(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5, basin = FALSE)
 }
@@ -35,7 +35,7 @@ The returned object(s) will have the same
 Spatial Reference System (SRS) as the input AOI. If a individual or set of
 IDs are used to query, then the default geoserver CRS of EPSG:4326 is
 preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
-which will override all previous SRS's (either input or default).
+which will override all previous SRS (either input or default).
 All buffer and distance operations are handled internally using in
 EPSG:5070 Albers Equal Area projection
 }

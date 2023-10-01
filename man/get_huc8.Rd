@@ -32,7 +32,7 @@ The returned object(s) will have the same
 Spatial Reference System (SRS) as the input AOI. If a individual or set of
 IDs are used to query, then the default geoserver CRS of EPSG:4326 is
 preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
-which will override all previous SRS's (either input or default).
+which will override all previous SRS (either input or default).
 All buffer and distance operations are handled internally using in
 EPSG:5070 Albers Equal Area projection
 }

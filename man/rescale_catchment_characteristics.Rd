@@ -20,8 +20,8 @@ Accepted values are "sum," "length_weighted_mean," "area_weighted_mean,"
 "min," and "max."}
 
 \item{lookup_table}{data.frame containing `id` numeric vector of identifiers
-at the desired scale; "comid" is a numeric vector of NHDPlusv2 identifiers;
-"member_comid" contains formatted NHDPlusv2 COMIDs indicating that the
+at the desired scale; "comid" is a numeric vector of NHDPlusV2 identifiers;
+"member_comid" contains formatted NHDPlusV2 COMIDs indicating that the
 catchments in question need to be split. If catchments have not been split,
 the columns "comid" and "member_comid" should be identical.}
 

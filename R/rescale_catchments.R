@@ -19,7 +19,7 @@ rescale_characteristics <- function(vars, lookup_table) {
     cols_area_wtd_mean <- c(cols_area_wtd_mean, vars_nodata)
   }
 
-  # rescale NHDPlusv2 attributes to desired catchments
+  # rescale NHDPlusV2 attributes to desired catchments
   # !note that there are currently no adjustments made for the length of split flowlines
   lookup_table |>
     group_by(.data$id) |>
@@ -37,10 +37,10 @@ rescale_characteristics <- function(vars, lookup_table) {
 }
 
 #' @description
-#' Get catchment area and flowline length for NHDPlusv2 COMID(s) of interest.
+#' Get catchment area and flowline length for NHDPlusV2 COMID(s) of interest.
 #' If any COMID represents a split catchment, the split catchment areas are
 #' returned, along with a column that represents the proportion of the original
-#' NHDPlusv2 catchment area that is covered by the split catchment.
+#' NHDPlusV2 catchment area that is covered by the split catchment.
 #'
 #' @param comids integer vector or character vector containing NHDPlusV2 identifiers
 #' @param refactored_areas data frame containing columns "featureid" and
@@ -118,8 +118,8 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
 #' "min," and "max."
 #'
 #' @param lookup_table data.frame containing `id` numeric vector of identifiers
-#' at the desired scale; "comid" is a numeric vector of NHDPlusv2 identifiers;
-#' "member_comid" contains formatted NHDPlusv2 COMIDs indicating that the
+#' at the desired scale; "comid" is a numeric vector of NHDPlusV2 identifiers;
+#' "member_comid" contains formatted NHDPlusV2 COMIDs indicating that the
 #' catchments in question need to be split. If catchments have not been split,
 #' the columns "comid" and "member_comid" should be identical.
 #'

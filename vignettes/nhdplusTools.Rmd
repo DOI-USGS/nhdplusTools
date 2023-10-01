@@ -105,7 +105,7 @@ nhdplus_path(file.path(work_dir, "natseamless.gpkg"))
 basename(nhdplus_path())
 ```
 
-If you don't need or want all the geometry for the flowlines, consider using `get_vaa()`. It allows you to retrieve specific NHDPlus attributes with very little overhead. It also supports access to an updated set of network attributes that incorporate numerous network updates from national hydrologic modelling projects.
+If you don't need or want all the geometry for the flowlines, consider using `get_vaa()`. It allows you to retrieve specific NHDPlus attributes with very little overhead. It also supports access to an updated set of network attributes that incorporate numerous network updates from national hydrologic modeling projects.
 
 ```{r get_vaa}
 vaa <- get_vaa()

@@ -242,7 +242,7 @@ download_rf1 <- function(outdir,
 
 }
 
-#' @title Function to download data from URL to out directory using httr.
+#' @title Function to download data from URL to out directory using `httr`.
 #' @description General downloader
 #' @param dir path to output directory
 #' @param url the location of the online resource

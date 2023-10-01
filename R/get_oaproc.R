@@ -1,6 +1,6 @@
 #' Get Raindrop Trace
 #' @description Uses a raindrop trace web service to trace the
-#' nhdplus digital elevation model to the nearest downslop flowline.
+#' nhdplus digital elevation model to the nearest downslope flowline.
 #' @param point sfc POINT including crs as created by:
 #' \code{sf::st_sfc(sf::st_point(.. ,..), crs)}
 #' @param direction character \code{"up"}, \code{"down"}, or \code{"none"}.
@@ -52,7 +52,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' @param upstream logical If TRUE, the entire drainage basin upstream
 #' of the point provided is returned in addition to the local catchment.
 #' @return sf data.frame containing the local catchment, the split portion
-#' and optionally the total dranage basin.
+#' and optionally the total drainage basin.
 #' @export
 #' @examples
 #' \donttest{

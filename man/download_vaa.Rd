@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_vaa.R
 \name{download_vaa}
 \alias{download_vaa}
-\title{Download nhdplusVAA data from HydroShare}
+\title{Download NHDPlusVAA data from HydroShare}
 \usage{
 download_vaa(
   path = get_vaa_path(updated_network),
@@ -25,7 +25,7 @@ from E2NHD and National Water Model retrieved from
 character path to cached data
 }
 \description{
-downloads and caches nhdplusVAA data on your computer
+downloads and caches NHDPlusVAA data on your computer
 }
 \details{
 The VAA data is a aggregate table of information from the NHDPlusV2

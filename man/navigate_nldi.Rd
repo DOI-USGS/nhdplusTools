@@ -14,13 +14,13 @@ navigate_nldi(
 \arguments{
 \item{nldi_feature}{list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-dataRetrieval::get_nldi_sources() and the `featureID` is a known identifier
+\link[dataRetrieval]{get_nldi_sources} and the `featureID` is a known identifier
 from the specified `featureSource`.}
 
 \item{mode}{character chosen from ("UM", "UT", DM", "DD"). See examples.}
 
 \item{data_source}{character chosen from "source" column of the response
-of dataRetrieval::get_nldi_sources() or empty string for flowline geometry.}
+of \link[dataRetrieval]{get_nldi_sources} or empty string for flowline geometry.}
 
 \item{distance_km}{numeric distance in km to stop navigating.}
 }

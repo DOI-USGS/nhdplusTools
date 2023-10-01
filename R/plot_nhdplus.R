@@ -693,7 +693,7 @@ off_network <- function(waterbody, flowline) {
 }
 
 #' Get Waterbody Outlet
-#' @param lake_id integer COMID (or character permenent identifier for hi res) of lake.
+#' @param lake_id integer COMID (or character permanent identifier for hi res) of lake.
 #' @param network data.frame of network features containing wbareacomi, and Hydroseq
 #' @export
 #' @return sf data.frame with single record of network COMID

@@ -29,7 +29,7 @@ BugReports: https://github.com/doi-usgs/nhdplusTools/issues/
 Depends:
     R (>= 4.0)
 Imports: hydroloom, dataRetrieval, dplyr, sf, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles, mapsf, fst, arrow, tools, zip, pbapply
-Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, lwgeom, gifski, leaflet, httptest, future
+Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, lwgeom, gifski, leaflet, httptest, future.apply
 License: CC0
 Encoding: UTF-8
 RoxygenNote: 7.2.3

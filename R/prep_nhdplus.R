@@ -183,7 +183,7 @@ filter_coastal <- function(flines) {
 #' This is done grouped by terminalpathID because duplicate node
 #' ids have been encountered across basins in some datasets. If
 #' `remove_coastal` is `TRUE` (the default) either ftype or fcode are
-#' required. Uses the \link[hydroloom]{add_toids} functin.
+#' required. Uses the \link[hydroloom]{add_toids} function.
 #' @param x data.frame with comid, tonode, fromnode, and (optionally)
 #' divergence and terminalpa attributes.
 #' @param return_dendritic logical if TRUE, a divergence attribute is required
@@ -193,7 +193,7 @@ filter_coastal <- function(flines) {
 #' @param missing integer value to use for terminal nodes.
 #' @param remove_coastal logical remove coastal features prior to generating
 #' tocomid values? ftype or fcode are required if `TRUE`. fcode == 56600 or
-#' fcode == "Coastline" will be fremoved.
+#' fcode == "Coastline" will be removed.
 #' @param add logical if TRUE, a tocomid column will be added, otherwise
 #' a data.frame with two columns will be returned.
 #' @return data.frame containing comid and tocomid attributes or all

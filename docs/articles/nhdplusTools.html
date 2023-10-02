@@ -258,7 +258,6 @@ download additional data (just change <code>download_files</code> to
 <span><span class="va">hr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, </span>
 <span>                         out_gpkg <span class="op">=</span> <span class="va">out_gpkg</span>, </span>
 <span>                         layers <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="op">(</span><span class="va">layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
@@ -478,30 +477,30 @@ we’ll use upstream with tributaries.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">UT_comids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">start_comid</span><span class="op">$</span><span class="va">comid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">UT_comids</span></span>
-<span><span class="co">#&gt;   [1]  13293750  13293504  13294134  13294128  13294394  13293454  13293430</span></span>
-<span><span class="co">#&gt;   [8]  13293424  13294110  13293398  13293392  13293388  13293384  13293380</span></span>
-<span><span class="co">#&gt;  [15]  13293576  13294288  13294284  13293506  13294280  13294290  13294298</span></span>
-<span><span class="co">#&gt;  [22]  13294304  13294310  13294312  13293696  13293694  13294264  13293676</span></span>
-<span><span class="co">#&gt;  [29]  13293620  13293612  13293584  13294166  13293554  13293540  13294282</span></span>
-<span><span class="co">#&gt;  [36]  13293520  13293480  13294132  13293588  13293550  13293574  13293508</span></span>
-<span><span class="co">#&gt;  [43]  13293530  13293526  13293524  13294138  13293496  13293488  13293484</span></span>
-<span><span class="co">#&gt;  [50]  13293474  13294118  13293440  13293426  13293458  13294382  13294274</span></span>
-<span><span class="co">#&gt;  [57]  13293422  13293416  13293390  13293382  13293386  13293376  13293396</span></span>
-<span><span class="co">#&gt;  [64]  13293394  13293406  13293404  13294268  13294366  13293400  13293432</span></span>
-<span><span class="co">#&gt;  [71]  13293452  13293456  13293492  13294158  13294286  13293634  13294368</span></span>
-<span><span class="co">#&gt;  [78]  13294124 937090090 937090091  13293464  13293444  13293446  13293434</span></span>
-<span><span class="co">#&gt;  [85]  13293542  13294154  13293536  13294292  13294294  13294300  13294308</span></span>
-<span><span class="co">#&gt;  [92]  13294314  13294272  13294276  13294384  13294278  13294386  13293494</span></span>
-<span><span class="co">#&gt;  [99]  13294130  13294306  13294184  13293690  13293692  13293586  13293614</span></span>
-<span><span class="co">#&gt; [106]  13293624  13293678  13293672  13293674  13294176  13294168  13293578</span></span>
-<span><span class="co">#&gt; [113]  13293564  13293548  13293478  13293476  13293450  13293442  13293518</span></span>
-<span><span class="co">#&gt; [120]  13293472  13293572  13293568  13293556  13293558  13293552  13293514</span></span>
-<span><span class="co">#&gt; [127]  13293522  13294144  13293532  13294150  13294148  13294140  13293516</span></span>
-<span><span class="co">#&gt; [134]  13293502  13293498  13293460  13294122  13293468  13294112  13293512</span></span>
-<span><span class="co">#&gt; [141]  13293486  13293378  13293462  13293428  13293420  13293412  13293438</span></span>
-<span><span class="co">#&gt; [148]  13293490  13293436  13294152  13294296  13294270  13302588  13302590</span></span>
-<span><span class="co">#&gt; [155]  13293688  13293646  13294174  13294178  13293562  13293600  13293448</span></span>
-<span><span class="co">#&gt; [162]  13294116  13294120  13293570  13294114  13293418  13293410  13293590</span></span></code></pre></div>
+<span><span class="co">#&gt;   [1]  13293380  13293384  13293388  13293392  13293398  13293424  13293430</span></span>
+<span><span class="co">#&gt;   [8]  13293454  13293504  13293506  13293576  13293750  13294110  13294128</span></span>
+<span><span class="co">#&gt;  [15]  13294134  13294280  13294284  13294288  13294290  13294298  13294304</span></span>
+<span><span class="co">#&gt;  [22]  13294310  13294312  13294394  13293376  13293382  13293386  13293390</span></span>
+<span><span class="co">#&gt;  [29]  13293394  13293396  13293400  13293404  13293406  13293416  13293422</span></span>
+<span><span class="co">#&gt;  [36]  13293426  13293432  13293434  13293440  13293444  13293446  13293452</span></span>
+<span><span class="co">#&gt;  [43]  13293456  13293458  13293464  13293474  13293480  13293484  13293488</span></span>
+<span><span class="co">#&gt;  [50]  13293492  13293494  13293496  13293508  13293520  13293524  13293526</span></span>
+<span><span class="co">#&gt;  [57]  13293530  13293536  13293540  13293542  13293550  13293554  13293574</span></span>
+<span><span class="co">#&gt;  [64]  13293584  13293588  13293612  13293620  13293634  13293676  13293694</span></span>
+<span><span class="co">#&gt;  [71]  13293696  13294118  13294124  13294130  13294132  13294138  13294154</span></span>
+<span><span class="co">#&gt;  [78]  13294158  13294166  13294264  13294268  13294272  13294274  13294276</span></span>
+<span><span class="co">#&gt;  [85]  13294278  13294282  13294286  13294292  13294294  13294300  13294308</span></span>
+<span><span class="co">#&gt;  [92]  13294314  13294366  13294368  13294382  13294384  13294386 937090090</span></span>
+<span><span class="co">#&gt;  [99] 937090091  13293378  13293412  13293420  13293428  13293436  13293438</span></span>
+<span><span class="co">#&gt; [106]  13293442  13293450  13293460  13293462  13293468  13293472  13293476</span></span>
+<span><span class="co">#&gt; [113]  13293478  13293486  13293490  13293498  13293502  13293512  13293514</span></span>
+<span><span class="co">#&gt; [120]  13293516  13293518  13293522  13293532  13293548  13293552  13293556</span></span>
+<span><span class="co">#&gt; [127]  13293558  13293564  13293568  13293572  13293578  13293586  13293614</span></span>
+<span><span class="co">#&gt; [134]  13293624  13293672  13293674  13293678  13293690  13293692  13294112</span></span>
+<span><span class="co">#&gt; [141]  13294122  13294140  13294144  13294148  13294150  13294152  13294168</span></span>
+<span><span class="co">#&gt; [148]  13294176  13294184  13294270  13294296  13294306  13302588  13302590</span></span>
+<span><span class="co">#&gt; [155]  13293410  13293418  13293448  13293562  13293570  13293600  13293646</span></span>
+<span><span class="co">#&gt; [162]  13293688  13294114  13294116  13294120  13294174  13294178  13293590</span></span></code></pre></div>
 <p>If you are familiar with the NHDPlus, you will recognize that now
 that we have this list of COMIDs, we could go off and do all sorts of
 things with the various flowline attributes. For now, let’s just use the
@@ -510,7 +509,7 @@ COMID list to filter our <code>fline</code> <code>sf</code>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">UT_comids</span><span class="op">)</span><span class="op">)</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">comid</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">UT_comids</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>     add<span class="op">=</span><span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/plot_fline_subset-1.png" width="576"></p>
 <p>Say you want to save the network subset for later use in R or in some
@@ -565,7 +564,7 @@ the demonstration, here are a couple more layers plotted up.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">UT_comids</span><span class="op">)</span><span class="op">)</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">comid</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">UT_comids</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>     add<span class="op">=</span><span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">catchment</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">waterbody</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -583,12 +582,8 @@ the function index for specifics</a>.</p>
 and measure of our starting point like this.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">start_point</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in match_crs(x, points, paste("crs of lines and points don't match.", :</span></span>
-<span><span class="co">#&gt; crs of lines and points don't match. attempting st_transform of lines</span></span>
-<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
 <span><span class="co">#&gt;   id    COMID      REACHCODE REACH_meas       offset</span></span>
-<span><span class="co">#&gt; 1  1 13293750 07090002007373    41.8003 0.0009621378</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  1 13293750 07090002007373       41.8 0.0009619865</span></span></code></pre></div>
 <p><code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> will work with a list of points
 too. For demonstration purposes, we can use the gages in our subset from
 above.</p>
@@ -596,39 +591,29 @@ above.</p>
 <code class="sourceCode R"><span><span class="va">gage</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"Gage"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gage</span><span class="op">)</span>, precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in match_crs(x, points, paste("crs of lines and points don't match.", :</span></span>
-<span><span class="co">#&gt; crs of lines and points don't match. attempting st_transform of lines</span></span>
-<span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
 <span><span class="co">#&gt;    id    COMID      REACHCODE REACH_meas         offset</span></span>
-<span><span class="co">#&gt; 1   1 13293744 07090002007743    29.3045 0.000016031339</span></span>
-<span><span class="co">#&gt; 2   2 13294276 07090002008387    14.8355 0.000012319388</span></span>
-<span><span class="co">#&gt; 3   3 13294264 07090002007650    56.4439 0.000020924187</span></span>
-<span><span class="co">#&gt; 4   4 13293750 07090002007373    42.5089 0.000025343524</span></span>
-<span><span class="co">#&gt; 5   5 13294312 07090002008383     1.2211 0.000002976034</span></span>
-<span><span class="co">#&gt; 6   6 13294264 07090002007650    41.0519 0.000033122595</span></span>
-<span><span class="co">#&gt; 7   7 13294264 07090002007650     2.0872 0.000002256005</span></span>
-<span><span class="co">#&gt; 8   9 13294300 07090002008379    85.4441 0.000016082151</span></span>
-<span><span class="co">#&gt; 9  10 13293690 07090002007648     0.7642 0.000014026098</span></span>
-<span><span class="co">#&gt; 10 11 13294264 07090002007650    71.4042 0.008204867456</span></span>
-<span><span class="co">#&gt; 11 13 13294176 07090002007664     6.1174 0.000031905454</span></span>
-<span><span class="co">#&gt; 12 15 13294290 07090002008374    88.0213 0.000027985042</span></span>
-<span><span class="co">#&gt; 13 16 13294138 07090002007709    73.3717 0.000010977009</span></span>
-<span><span class="co">#&gt; 14 18 13293486 07090002007724     8.8530 0.000012426106</span></span>
-<span><span class="co">#&gt; 15 19 13293512 07090002007723     5.9868 0.000010481501</span></span>
-<span><span class="co">#&gt; 16 20 13294176 07090002007664    16.9958 0.000012406860</span></span>
-<span><span class="co">#&gt; 17 22 13293474 07090002007713    72.0814 0.000006053102</span></span>
-<span><span class="co">#&gt; 18 23 13293520 07090002007676    18.1942 0.000030263717</span></span>
-<span><span class="co">#&gt; 19 24 13293876 07090002007627    60.1357 0.000025453648</span></span>
-<span><span class="co">#&gt; 20 25 13294374 07090002007633    46.8761 0.000002619625</span></span>
-<span><span class="co">#&gt; 21 26 13293512 07090002007723    68.1716 0.000025778329</span></span>
-<span><span class="co">#&gt; 22 27 13294264 07090002007650    97.1673 0.000013950790</span></span>
-<span><span class="co">#&gt; 23 28 13294344 07090002007629     6.5788 0.000007648685</span></span>
-<span><span class="co">#&gt; 24 29 13293456 07090002007738    90.8364 0.000036283275</span></span>
-<span><span class="co">#&gt; 25 30 13294344 07090002007629    27.7300 0.000012934585</span></span>
-<span><span class="co">#&gt; 26 31 13293512 07090002007723    67.6223 0.000022459225</span></span>
-<span><span class="co">#&gt; 27 32 13294344 07090002007629     6.5788 0.000007648685</span></span>
-<span><span class="co">#&gt; 28 33 13293576 07090002008236     2.7112 0.000009945223</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   2 13294276 07090002008387    14.8344 0.000012415352</span></span>
+<span><span class="co">#&gt; 2   3 13294264 07090002007650    56.4452 0.000020761363</span></span>
+<span><span class="co">#&gt; 3   4 13293750 07090002007373    42.5086 0.000025174363</span></span>
+<span><span class="co">#&gt; 4   5 13294312 07090002008383     1.2149 0.000002608798</span></span>
+<span><span class="co">#&gt; 5   6 13294264 07090002007650    41.0537 0.000032819820</span></span>
+<span><span class="co">#&gt; 6   7 13294264 07090002007650     2.0882 0.000002499335</span></span>
+<span><span class="co">#&gt; 7   9 13294300 07090002008379    85.4447 0.000016089689</span></span>
+<span><span class="co">#&gt; 8  10 13293690 07090002007648     0.7648 0.000014026465</span></span>
+<span><span class="co">#&gt; 9  11 13294264 07090002007650    71.4057 0.008205090544</span></span>
+<span><span class="co">#&gt; 10 13 13294176 07090002007664     6.1175 0.000032343949</span></span>
+<span><span class="co">#&gt; 11 15 13294290 07090002008374    88.0159 0.000028377490</span></span>
+<span><span class="co">#&gt; 12 16 13294138 07090002007709    73.3730 0.000011168868</span></span>
+<span><span class="co">#&gt; 13 18 13293486 07090002007724     8.8510 0.000012021333</span></span>
+<span><span class="co">#&gt; 14 19 13293512 07090002007723     5.9875 0.000010197748</span></span>
+<span><span class="co">#&gt; 15 20 13294176 07090002007664    16.9945 0.000012367772</span></span>
+<span><span class="co">#&gt; 16 22 13293474 07090002007713    72.0840 0.000005833049</span></span>
+<span><span class="co">#&gt; 17 23 13293520 07090002007676    18.1948 0.000030297908</span></span>
+<span><span class="co">#&gt; 18 26 13293512 07090002007723    68.1727 0.000026036784</span></span>
+<span><span class="co">#&gt; 19 27 13294264 07090002007650    97.1682 0.000014164679</span></span>
+<span><span class="co">#&gt; 20 29 13293456 07090002007738    90.8329 0.000036145292</span></span>
+<span><span class="co">#&gt; 21 31 13293512 07090002007723    67.6234 0.000022194820</span></span>
+<span><span class="co">#&gt; 22 33 13293576 07090002008236     2.7112 0.000009617344</span></span></code></pre></div>
 <p>For more info about <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> and other
 indexing functions, see the article <code><a href="../articles/indexing.html">vignette("indexing")</a></code>
 about it or the reference page that describes it.</p>

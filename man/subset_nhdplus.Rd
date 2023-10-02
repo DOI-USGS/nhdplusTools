@@ -68,7 +68,7 @@ It can be downloaded
 
 The "download" option of this function should be considered preliminary
 and subject to revision. It does not include as many layers and may not
-be available permenently.
+be available permanently.
 }
 \examples{
 \donttest{

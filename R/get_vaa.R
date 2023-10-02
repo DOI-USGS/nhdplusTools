@@ -46,7 +46,7 @@ get_vaa_names <- function(updated_network = FALSE) {
 }
 
 #' @title NHDPlusV2 Attribute Subset
-#' @description Return requested NHDPlusv2 Attributes.
+#' @description Return requested NHDPlusV2 Attributes.
 #' @inherit download_vaa details
 #' @param atts character The variable names you would like, always includes comid
 #' @param path character path where the file should be saved. Default is a
@@ -157,8 +157,8 @@ check_vaa_path <- function(path, download, updated_network = FALSE) {
   }
 }
 
-#' @title Download nhdplusVAA data from HydroShare
-#' @description downloads and caches nhdplusVAA data on your computer
+#' @title Download NHDPlusVAA data from HydroShare
+#' @description downloads and caches NHDPlusVAA data on your computer
 #' @details The VAA data is a aggregate table of information from the NHDPlusV2
 #' elevslope.dbf(s), PlusFlowlineVAA.dbf(s); and NHDFlowlines. All data
 #' originates from the EPA NHDPlus Homepage

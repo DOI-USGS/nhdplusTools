@@ -105,7 +105,7 @@ nhdplus_path(file.path(work_dir, "natseamless.gpkg"))
 basename(nhdplus_path())
 ```
 
-If you don't need or want all the geometry for the flowlines, consider using `get_vaa()`. It allows you to retrieve specific NHDPlus attributes with very little overhead. It also supports access to an updated set of network attributes that incorporate numerous network updates from national hydrologic modelling projects.
+If you don't need or want all the geometry for the flowlines, consider using `get_vaa()`. It allows you to retrieve specific NHDPlus attributes with very little overhead. It also supports access to an updated set of network attributes that incorporate numerous network updates from national hydrologic modeling projects.
 
 ```{r get_vaa}
 vaa <- get_vaa()
@@ -277,7 +277,7 @@ If you are familiar with the NHDPlus, you will recognize that now that we have t
 ```{r plot_fline_subset}
 plot(sf::st_geometry(flowline))
 plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
-plot(sf::st_geometry(dplyr::filter(flowline, COMID %in% UT_comids)),
+plot(sf::st_geometry(dplyr::filter(flowline, comid %in% UT_comids)),
      add=TRUE, col = "red", lwd = 2)
 ```
 
@@ -302,7 +302,7 @@ waterbody <- sf::read_sf(output_file, "NHDWaterbody")
 
 plot(sf::st_geometry(flowline))
 plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
-plot(sf::st_geometry(dplyr::filter(flowline, COMID %in% UT_comids)),
+plot(sf::st_geometry(dplyr::filter(flowline, comid %in% UT_comids)),
      add=TRUE, col = "red", lwd = 2)
 plot(sf::st_geometry(catchment), add = TRUE)
 plot(sf::st_geometry(waterbody), col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)

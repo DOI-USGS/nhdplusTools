@@ -40,7 +40,7 @@ get_huc8 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @title Find WBD HUC 12 unit subsets (DEPRECATED)
 #' @description Subsets the WBD level 12 features by location (POINT),
 #' area (POLYGON), or set of IDs. Derived from a static snapshot of
-#' HUC 12s from: https://doi.org/10.5066/P9BTKP3T
+#' HUC 12s from: <doi:10.5066/P9BTKP3T>
 #' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id WBD HUC12 ID(s)
@@ -84,7 +84,7 @@ get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 }
 
 
-#' @title Find GAGESII Features
+#' @title Find gagesII Features
 #' @description Subsets the gagesII dataset by location (POINT),
 #' area (POLYGON), or set of IDs.
 #' @inherit query_usgs_geoserver details return

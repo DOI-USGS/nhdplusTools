@@ -20,7 +20,7 @@ portion of flowline.
 }
 \description{
 Uses a raindrop trace web service to trace the
-nhdplus digital elevation model to the nearest downslop flowline.
+nhdplus digital elevation model to the nearest downslope flowline.
 }
 \examples{
 \donttest{

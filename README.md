@@ -9,20 +9,7 @@
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 
-## nhdplusTools: Tools for Accessing and Working with the NHDPlus
-
-`nhdplusTools` has been split into two packages. A new package
-[`hydroloom`](https://github.com/DOI-USGS/hydroloom) is now available.
-It contains all nhdplusTools functionality not related to specific
-dataset schemas. See [this
-issue](https://github.com/DOI-USGS/nhdplusTools/issues/307) for details.
-
-Please submit issues at:
-<https://github.com/DOI-USGS/nhdplusTools/issues>
-
-There is no specific funding or plan to continue development of this
-package long term but ongoing support is available due to use of the
-package in project work.
+## nhdplusTools: Tools for Accessing and Working with the NHDPlus and other US hydrographic data.
 
 ### Recommended Citation:
 
@@ -237,8 +224,8 @@ package a community created resource for us all to gain from and won’t
 be able to do that without your help!
 
 1)  Contributions should be thoroughly tested with
-    [testthat](https://testthat.r-lib.org/).  
-2)  Code style should attempt to follow the [tidyverse style
+    [`testthat`](https://testthat.r-lib.org/).  
+2)  Code style should attempt to follow the [`tidyverse` style
     guide.](https://style.tidyverse.org/)  
 3)  Please attempt to describe what you want to do prior to contributing
     by submitting an issue.  

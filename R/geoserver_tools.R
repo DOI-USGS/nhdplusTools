@@ -227,6 +227,12 @@ unify_types <- function(out) {
       }
     }
   }
+
+  rows <- sapply(out, nrow)
+
+  if(any(rows > 0))
+    out <- out[rows > 0]
+
   out
 }
 

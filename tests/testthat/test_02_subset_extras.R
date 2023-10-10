@@ -170,3 +170,14 @@ test_that("extras", {
   expect_equal(nhdplusTools:::get_empty("MULTIPOINT"), sf::st_multipoint())
   expect_error(nhdplusTools:::get_empty("BORKED"), "unexpected geometry type")
 })
+
+test_that("unify_types", {
+
+  check <- list(data.frame(), data.frame(one = 1, two = "2"), data.frame(one = "1", two = 2))
+
+  out <- nhdplusTools:::unify_types(check)
+
+  expect_equal(out,
+               list(structure(list(one = 1, two = 2), row.names = c(NA, -1L), class = "data.frame"),
+                    structure(list(one = 1, two = 2), row.names = c(NA, -1L), class = "data.frame")))
+})

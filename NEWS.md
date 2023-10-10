@@ -1,3 +1,8 @@
+nhdplusTools 1.0.1
+==========
+
+- fixed bug with large nhdplus downloads with empty tiles. #361
+
 nhdplusTools 1.0.0
 ==========
 

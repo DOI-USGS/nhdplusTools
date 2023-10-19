@@ -32,12 +32,7 @@
 query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                                  type = NULL, filter = NULL,
                                  t_srs = NULL,
-                                 buffer = 0.5){
-
-  # If t_src is not provided set to AOI CRS
-  if(is.null(t_srs)){ t_srs  <- sf::st_crs(AOI)}
-  # If AOI CRS is NA (e.g st_crs(NULL)) then set to 4326
-  if(is.na(t_srs))  { t_srs  <- 4326}
+                                 buffer = 0.5) {
 
   source <- data.frame(server = 'wmadata',
                        user_call  = c('huc02', 'huc04', 'huc06',
@@ -80,31 +75,9 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
   if(is.null(type)){ return(source) }
 
-  if(!is.null(AOI) & !is.null(ids)){
-    # Check if AOI and IDs are both given
-    stop("Either IDs or a spatial AOI can be passed.", .call = FALSE)
-  } else if(is.null(AOI) & is.null(ids)){
-    # Check if AOI and IDs are both NULL
-    stop("IDs or a spatial AOI must be passed.",.call = FALSE)
-  } else if(!(type %in% source$user_call)) {
-    # Check that "type" is valid
-    stop(paste("Type not available must be one of:",
-               paste(source$user_call, collapse = ", ")),
-         call. = FALSE)
-  }
-
-  if(!is.null(AOI)){
-
-    if(length(sf::st_geometry(AOI)) > 1) {
-      stop("AOI must be one an only one feature.")
-    }
-
-    if(sf::st_geometry_type(AOI) == "POINT"){
-      # If input is a POINT, buffer by 1/2 meter (in equal area projection)
-      AOI = sf::st_buffer(sf::st_transform(AOI, 5070), buffer) %>%
-        sf::st_bbox() %>% sf::st_as_sfc() %>% sf::st_make_valid()
-    }
-  }
+  AOI <- check_query_params(AOI, ids, type, source, t_srs, buffer)
+  t_srs <- AOI$t_srs
+  AOI <- AOI$AOI
 
   here     <- dplyr::filter(source, .data$user_call == !!type)
 
@@ -117,7 +90,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
   on.exit(sf::sf_use_s2(use_s2), add = TRUE)
 
-  out <- spatial_filter(AOI, type = here$geoserver, tile = here$page, geom_name = here$geom_name)
+  out <- spatial_filter(AOI, tile = here$page, geom_name = here$geom_name)
 
   for(i in 1:length(out)) {
 
@@ -250,32 +223,12 @@ assign("bb_break_size", value = 2, nhdplusTools_env)
 #' @noRd
 #' @importFrom sf st_geometry_type st_buffer st_transform st_bbox
 
-spatial_filter  <- function(AOI, type = 'catchmentsp',
+spatial_filter  <- function(AOI,
                             break_size = get("bb_break_size", nhdplusTools_env),
                             tile = TRUE,
-                            geom_name = "the_geom"){
+                            geom_name = "the_geom", format = 'ogc') {
 
   if(is.null(AOI)) return(list(list()))
-
-  # "The current GeoServer implementation will return all the streets whose
-  # ENVELOPE overlaps the BBOX provided. This may includes some nearby
-  # streets that do not strictly fall within the bounding box.
-  # This is a fast response - if a more accurate but slower response is required,
-  # use Intersects or Within."
-
-  # if (as.character(sf::st_geometry_type(AOI)) == "POINT") {
-  #
-  #   AOI <- sf::st_coordinates(AOI)
-  #
-  #   return(paste0("?service=WFS",
-  #                 "&version=1.0.0",
-  #                 "&request=GetFeature",
-  #                 "&typeName=wmadata:", type,
-  #                 "&outputFormat=application%2Fjson",
-  #                 "&srsName=EPSG:4326",
-  #                 "&CQL_FILTER=INTERSECTS%28the_geom,%20POINT%20%28",
-  #                 AOI[1], "%20", AOI[2], "%29%29"))
-  #   }
 
 
   bb <- sf::st_transform(AOI, 4326) %>%
@@ -293,15 +246,37 @@ spatial_filter  <- function(AOI, type = 'catchmentsp',
   } else {
     bb_list <- list(bb)
   }
-  lapply(bb_list, function(bb) {
-    paste0('<ogc:BBOX>',
-           '<ogc:PropertyName>', geom_name, '</ogc:PropertyName>',
-           '<gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:4326">',
-           '<gml:lowerCorner>', bb$ymin, " ", bb$xmin, '</gml:lowerCorner>',
-           '<gml:upperCorner>', bb$ymax, " ", bb$xmax, '</gml:upperCorner>',
-           '</gml:Envelope>',
-           '</ogc:BBOX>')
-  })
+
+  if(format == "ogc") {
+    lapply(bb_list, function(bb) {
+      paste0('<ogc:BBOX>',
+             '<ogc:PropertyName>', geom_name, '</ogc:PropertyName>',
+             '<gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:4326">',
+             '<gml:lowerCorner>', bb$ymin, " ", bb$xmin, '</gml:lowerCorner>',
+             '<gml:upperCorner>', bb$ymax, " ", bb$xmax, '</gml:upperCorner>',
+             '</gml:Envelope>',
+             '</ogc:BBOX>')
+    })
+  } else if(format == "esri") {
+
+    # {
+    #   "xmin": -109.55,
+    #   "ymin": 25.76,
+    #   "xmax": -86.39,
+    #   "ymax": 49.94,
+    #   "spatialReference": {
+    #     "wkid": 4326
+    #   }
+    # }
+
+    lapply(bb_list, function(bb) {
+      jsonlite::toJSON(
+        c(bb, list(spatilReference = list(wkid = 4326))),
+        auto_unbox = TRUE)
+    })
+  } else {
+    stop("format must be ogc or esri")
+  }
 }
 
 #' @title Construct an attribute filter for geoservers
@@ -390,4 +365,39 @@ extact_comid_nwis <- function(nwis){
   c        <-  rawToChar(httr::RETRY("GET", url)$content)
   f.comid  <-  jsonlite::fromJSON(c, simplifyVector = TRUE)
   f.comid$features$properties$comid
+}
+
+check_query_params <- function(AOI, ids, type, source, t_srs, buffer) {
+  # If t_src is not provided set to AOI CRS
+  if(is.null(t_srs)){ t_srs  <- sf::st_crs(AOI) }
+  # If AOI CRS is NA (e.g st_crs(NULL)) then set to 4326
+  if(is.na(t_srs))  { t_srs  <- 4326 }
+
+  if(!is.null(AOI) & !is.null(ids)) {
+    # Check if AOI and IDs are both given
+    stop("Either IDs or a spatial AOI can be passed.", .call = FALSE)
+  } else if(is.null(AOI) & is.null(ids)) {
+    # Check if AOI and IDs are both NULL
+    stop("IDs or a spatial AOI must be passed.", .call = FALSE)
+  } else if(!(type %in% source$user_call)) {
+    # Check that "type" is valid
+    stop(paste("Type not available must be one of:",
+               paste(source$user_call, collapse = ", ")),
+         call. = FALSE)
+  }
+
+  if(!is.null(AOI)){
+
+    if(length(sf::st_geometry(AOI)) > 1) {
+      stop("AOI must be one an only one feature.")
+    }
+
+    if(sf::st_geometry_type(AOI) == "POINT"){
+      # If input is a POINT, buffer by 1/2 meter (in equal area projection)
+      AOI = sf::st_buffer(sf::st_transform(AOI, 5070), buffer) %>%
+        sf::st_bbox() %>% sf::st_as_sfc() %>% sf::st_make_valid()
+    }
+  }
+
+  return(list(AOI = AOI, t_srs = t_srs))
 }

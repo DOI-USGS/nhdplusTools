@@ -25,9 +25,11 @@
 #' @return a simple features (sf) object
 #' @keywords internal
 #' @importFrom sf st_crs st_geometry_type st_buffer st_transform st_zm read_sf st_bbox st_as_sfc
+#' @importFrom sf sf_use_s2
 #' @importFrom httr POST RETRY
 #' @importFrom dplyr filter
 #' @importFrom methods as
+#' @importFrom xml2 read_xml
 
 query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                                  type = NULL, filter = NULL,
@@ -79,16 +81,16 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   t_srs <- AOI$t_srs
   AOI <- AOI$AOI
 
-  here     <- dplyr::filter(source, .data$user_call == !!type)
+  here <- filter(source, .data$user_call == !!type)
 
-  URL      <- paste0(get("geoserver_root", envir = nhdplusTools_env),
-                     here$server,
-                     "/ows")
+  URL <- paste0(get("geoserver_root", envir = nhdplusTools_env),
+                here$server,
+                "/ows")
 
-  use_s2 <- sf::sf_use_s2()
-  sf::sf_use_s2(FALSE)
+  use_s2 <- sf_use_s2()
+  sf_use_s2(FALSE)
 
-  on.exit(sf::sf_use_s2(use_s2), add = TRUE)
+  on.exit(sf_use_s2(use_s2), add = TRUE)
 
   out <- spatial_filter(AOI, tile = here$page, geom_name = here$geom_name)
 
@@ -129,19 +131,19 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
     tryCatch({
       if(nhdplus_debug()) {
         message(paste(URL, "\n"))
-        message(as.character(xml2::read_xml(filterXML)))
+        message(as.character(read_xml(filterXML)))
       }
 
-      out[[i]] <- rawToChar(httr::RETRY("POST",
-                                    URL,
-                                    body = filterXML)$content)
+      out[[i]] <- rawToChar(RETRY("POST",
+                                  URL,
+                                  body = filterXML)$content)
     }, error = function(e) {
       warning("Something went wrong trying to access a service.")
       return(NULL)
     })
 
     out[[i]] <- tryCatch({
-      sf::st_zm(sf::read_sf(out[[i]]))},
+      st_zm(read_sf(out[[i]]))},
       error = function(e) return(NULL))
   }
 
@@ -161,8 +163,8 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
   } else if(!is.null(AOI)){
 
-    out = sf::st_filter(sf::st_transform(out, t_srs),
-                        sf::st_transform(AOI, t_srs))
+    out = st_filter(st_transform(out, t_srs),
+                    st_transform(AOI, t_srs))
     if(nrow(out) == 0){
       out = NULL
     }
@@ -231,8 +233,8 @@ spatial_filter  <- function(AOI,
   if(is.null(AOI)) return(list(list()))
 
 
-  bb <- sf::st_transform(AOI, 4326) %>%
-    sf::st_bbox()
+  bb <- st_transform(AOI, 4326) %>%
+    st_bbox()
 
   if(tile) {
     x_breaks <- seq(bb$xmin, bb$xmax, length.out = (ceiling((bb$xmax - bb$xmin) / break_size) + 1))
@@ -271,7 +273,7 @@ spatial_filter  <- function(AOI,
 
     lapply(bb_list, function(bb) {
       jsonlite::toJSON(
-        c(bb, list(spatilReference = list(wkid = 4326))),
+        c(bb, list(spatialReference = list(wkid = 4326))),
         auto_unbox = TRUE)
     })
   } else {
@@ -369,7 +371,7 @@ extact_comid_nwis <- function(nwis){
 
 check_query_params <- function(AOI, ids, type, source, t_srs, buffer) {
   # If t_src is not provided set to AOI CRS
-  if(is.null(t_srs)){ t_srs  <- sf::st_crs(AOI) }
+  if(is.null(t_srs)){ t_srs  <- st_crs(AOI) }
   # If AOI CRS is NA (e.g st_crs(NULL)) then set to 4326
   if(is.na(t_srs))  { t_srs  <- 4326 }
 
@@ -388,14 +390,14 @@ check_query_params <- function(AOI, ids, type, source, t_srs, buffer) {
 
   if(!is.null(AOI)){
 
-    if(length(sf::st_geometry(AOI)) > 1) {
+    if(length(st_geometry(AOI)) > 1) {
       stop("AOI must be one an only one feature.")
     }
 
-    if(sf::st_geometry_type(AOI) == "POINT"){
+    if(st_geometry_type(AOI) == "POINT"){
       # If input is a POINT, buffer by 1/2 meter (in equal area projection)
-      AOI = sf::st_buffer(sf::st_transform(AOI, 5070), buffer) %>%
-        sf::st_bbox() %>% sf::st_as_sfc() %>% sf::st_make_valid()
+      AOI = st_buffer(st_transform(AOI, 5070), buffer) %>%
+        st_bbox() %>% st_as_sfc() %>% st_make_valid()
     }
   }
 

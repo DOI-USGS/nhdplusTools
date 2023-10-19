@@ -93,6 +93,9 @@ assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
        envir = nhdplusTools_env)
 
+assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
+       envir = nhdplusTools_env)
+
 assign("split_flowlines_attributes",
        c("COMID", "toCOMID", "LENGTHKM"),
        envir = nhdplusTools_env)

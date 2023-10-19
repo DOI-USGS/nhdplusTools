@@ -12,7 +12,7 @@ test_that("spatial_filter", {
     "<ogc:BBOX><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Envelope srsName=\"urn:x-ogc:def:crs:EPSG:4326\"><gml:lowerCorner>42.99816 -89.56684</gml:lowerCorner><gml:upperCorner>43.17192 -89.24681</gml:upperCorner></gml:Envelope></ogc:BBOX>")
 
   expect_equal(as.character(nhdplusTools:::spatial_filter(AOI, format = "esri")[[1]]),
-               '{"xmin":-89.5668,"ymin":42.9982,"xmax":-89.2468,"ymax":43.1719,"spatilReference":{"wkid":4326}}')
+               '{"xmin":-89.5668,"ymin":42.9982,"xmax":-89.2468,"ymax":43.1719,"spatialReference":{"wkid":4326}}')
 })
 
 test_that("check_query_params", {
@@ -51,4 +51,19 @@ test_that("check_query_params", {
                              dim = c(5L, 2L))),
               class = c("XY", "POLYGON", "sfg")))
 
+})
+
+test_that("basic 3dhp service requests", {
+  skip_on_cran()
+
+  AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.5, ymin = 43.0,
+                                     xmax = -89.4, ymax = 43.1),
+                                   crs = "+proj=longlat +datum=WGS84 +no_defs"))
+
+  expect_s3_class(nhdplusTools:::query_usgs_arcrest(AOI),
+                  "data.frame")
+
+  test_data <- nhdplusTools:::query_usgs_arcrest(AOI, type = "hydrolocation")
+
+  expect_s3_class(test_data, "sf")
 })

@@ -18,8 +18,7 @@ get_3dhp(
 be provided as either a location (sf POINT) or area (sf POLYGON)
 in any Spatial Reference System.}
 
-\item{ids}{character. A set of identifier(s) from the data
-type requested, for 3dhp, this is id3dhp.}
+\item{ids}{character vector of id3dhp ids or mainstem uris}
 
 \item{type}{character. Type of feature to return
 ("hydrolocation", "flowline", "waterbody", "drainage area", "catchment").
@@ -34,8 +33,6 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 
 \item{buffer}{numeric. The amount (in meters) to buffer a POINT AOI by for an
 extended search. Default = 0.5}
-
-\item{id}{character vector of id3dhp ids or mainstem uris}
 }
 \value{
 a simple features (sf) object or valid types if no type supplied
@@ -55,6 +52,7 @@ All buffer and distance operations are handled internally using in
 EPSG:5070 Albers Equal Area projection
 }
 \examples{
+\donttest{
 AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
                                    xmax = -89.24681, ymax = 43.17192),
                                  crs = "+proj=longlat +datum=WGS84 +no_defs"))
@@ -69,8 +67,6 @@ plot(sf::st_geometry(flowlines), col = "blue", add = TRUE)
 plot(sf::st_geometry(hydrolocation), col = "grey", pch = "+", add = TRUE)
 
 # given mainstem ids from any source, can query for them in ids.
-
-get_3dhp(ids = unique(flowlines$mainstemid), type = "flowline")
 
 CO <- get_3dhp(ids = "https://geoconnex.us/ref/mainstems/29559",
                type = "flowline")
@@ -88,5 +84,5 @@ plot(sf::st_geometry(CO_wb[grepl("Powell", CO_wb$gnisidlabel),]),
 
 get_3dhp(universalreferenceid = unique(hydrolocation$universalreferenceid),
          type = "hydrolocation")
-
+}
 }

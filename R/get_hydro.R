@@ -185,11 +185,12 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #' for source data documentation.
 #'
 #' @inherit query_usgs_arcrest details return params
-#' @param id character vector of id3dhp ids or mainstem uris
+#' @param ids character vector of id3dhp ids or mainstem uris
 #' @param universalreferenceid character vector of hydrolocation universal
 #' reference ids such as reachcodes
 #' @export
 #' @examples
+#' \donttest{
 #' AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
 #'                                    xmax = -89.24681, ymax = 43.17192),
 #'                                  crs = "+proj=longlat +datum=WGS84 +no_defs"))
@@ -204,8 +205,6 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #' plot(sf::st_geometry(hydrolocation), col = "grey", pch = "+", add = TRUE)
 #'
 #' # given mainstem ids from any source, can query for them in ids.
-#'
-#' get_3dhp(ids = unique(flowlines$mainstemid), type = "flowline")
 #'
 #' CO <- get_3dhp(ids = "https://geoconnex.us/ref/mainstems/29559",
 #'                type = "flowline")
@@ -223,7 +222,7 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #'
 #' get_3dhp(universalreferenceid = unique(hydrolocation$universalreferenceid),
 #'          type = "hydrolocation")
-#'
+#'}
 get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
                      universalreferenceid = NULL,
                      t_srs = NULL, buffer = 0.5) {

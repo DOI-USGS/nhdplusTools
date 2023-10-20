@@ -77,7 +77,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
   if(is.null(type)){ return(source) }
 
-  AOI <- check_query_params(AOI, ids, type, source, t_srs, buffer)
+  AOI <- check_query_params(AOI, ids, type, NULL, source, t_srs, buffer)
   t_srs <- AOI$t_srs
   AOI <- AOI$AOI
 
@@ -369,7 +369,8 @@ extact_comid_nwis <- function(nwis){
   f.comid$features$properties$comid
 }
 
-check_query_params <- function(AOI, ids, type, source, t_srs, buffer) {
+#' @importFrom sf st_make_valid st_as_sfc st_bbox st_buffer st_transform
+check_query_params <- function(AOI, ids, type, where, source, t_srs, buffer) {
   # If t_src is not provided set to AOI CRS
   if(is.null(t_srs)){ t_srs  <- st_crs(AOI) }
   # If AOI CRS is NA (e.g st_crs(NULL)) then set to 4326
@@ -378,7 +379,7 @@ check_query_params <- function(AOI, ids, type, source, t_srs, buffer) {
   if(!is.null(AOI) & !is.null(ids)) {
     # Check if AOI and IDs are both given
     stop("Either IDs or a spatial AOI can be passed.", .call = FALSE)
-  } else if(is.null(AOI) & is.null(ids)) {
+  } else if(is.null(AOI) & is.null(ids) & !(!is.null(where) && grepl("IN", where))) {
     # Check if AOI and IDs are both NULL
     stop("IDs or a spatial AOI must be passed.", .call = FALSE)
   } else if(!(type %in% source$user_call)) {

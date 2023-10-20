@@ -35,7 +35,7 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 extended search. Default = 0.5}
 }
 \value{
-a simple features (sf) object
+a simple features (sf) object or valid types if no type supplied
 }
 \description{
 Query the USGS Hydro ESRI Rest Server for spatial data by location,

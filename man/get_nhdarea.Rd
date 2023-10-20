@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_hydro.R
 \name{get_nhdarea}
 \alias{get_nhdarea}
-\title{Find NHD Areas}
+\title{Find NHDPlusV2 Areas}
 \usage{
 get_nhdarea(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5)
 }
@@ -24,8 +24,8 @@ extended search. Default = 0.5}
 a simple features (sf) object
 }
 \description{
-Subsets NHD Area features by location (POINT),
-area (POLYGON), or set of IDs.
+Subsets NHDPlusV2 Area features by location (POINT),
+area (POLYGON), or set of IDs. See \link{download_nhdplusv2} for source data documentation.
 }
 \details{
 The returned object(s) will have the same

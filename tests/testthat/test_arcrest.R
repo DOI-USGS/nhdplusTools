@@ -22,27 +22,28 @@ test_that("check_query_params", {
   source <- data.frame(user_call = c("test", "test2"))
   t_srs <- NULL
   buffer <- 0.5
+  where <- NULL
 
   expect_equal(
-    nhdplusTools:::check_query_params(AOI, ids, type, source, t_srs, buffer),
+    nhdplusTools:::check_query_params(AOI, ids, type, where, source, t_srs, buffer),
     list(AOI = AOI, t_srs = sf::st_crs(AOI)))
 
-  expect_error(nhdplusTools:::check_query_params(AOI, c(1,2), type, source, t_srs, buffer),
+  expect_error(nhdplusTools:::check_query_params(AOI, c(1,2), type, where, source, t_srs, buffer),
                "Either IDs or")
 
-  expect_error(nhdplusTools:::check_query_params(NULL, NULL, type, source, t_srs, buffer),
+  expect_error(nhdplusTools:::check_query_params(NULL, NULL, type, where, source, t_srs, buffer),
                "IDs or a spatial AOI must be passed.")
 
-  expect_error(nhdplusTools:::check_query_params(AOI, ids, "test3", source, t_srs, buffer),
+  expect_error(nhdplusTools:::check_query_params(AOI, ids, "test3", where, source, t_srs, buffer),
                "test, test2")
 
-  expect_error(nhdplusTools:::check_query_params(c(AOI, AOI), ids, type, source, t_srs, buffer),
+  expect_error(nhdplusTools:::check_query_params(c(AOI, AOI), ids, type, where, source, t_srs, buffer),
                "AOI must be one an only one feature.")
 
   AOI <- sf::st_sfc(sf::st_point(c(-89.56684, 42.99816)), crs = 4326)
 
   expect_equal(
-    nhdplusTools:::check_query_params(AOI, ids, type, source, t_srs, buffer)$AOI[[1]],
+    nhdplusTools:::check_query_params(AOI, ids, type, where, source, t_srs, buffer)$AOI[[1]],
     structure(list(structure(c(521279.507824339, 521279.507824339,
                                521280.507824339, 521280.507824339,
                                521279.507824339, 2240146.81449532,

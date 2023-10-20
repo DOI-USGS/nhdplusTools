@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_hydro.R
 \name{get_huc}
 \alias{get_huc}
-\title{Find WBD HUC 12 unit subsets}
+\title{Find WBD HUC unit subsets}
 \usage{
 get_huc(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5, type = "huc12")
 }
@@ -21,15 +21,24 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 extended search. Default = 0.5}
 
 \item{type}{character. Type of feature to return
-('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12').
-See /link{download_nhdplusv2} for documentation of that dataset.}
+('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12', 'huc12_nhdplusv2').
+
+Pulls `huc02`-`huc12` from a web service that hosts a snapshot of the
+Watershed Boundary Dataset from October, 2020.
+
+See <doi:10.5066/P92U7ZUT> for full source data.
+
+See https://labs.waterdata.usgs.gov/geoserver/web/ for the web service.
+
+`huc12_nhdplusv2` derives from a snapshot of the WBD available from the nhdplusv2.
+See \link{download_nhdplusv2} for source data documentation.}
 }
 \value{
 a simple features (sf) object
 }
 \description{
-Subsets the WBD level 12 features by location (POINT),
-area (POLYGON), or set of IDs.
+Subsets WBD features by location (POINT),
+area (POLYGON), or set of HUC IDs.
 }
 \details{
 The returned object(s) will have the same

@@ -28,7 +28,7 @@ a simple features (sf) object
 }
 \description{
 Subsets the gagesII dataset by location (POINT),
-area (POLYGON), or set of IDs.
+area (POLYGON), or set of IDs. See <doi:10.5066/P96CPHOT> for documentation of source data.
 }
 \details{
 The returned object(s) will have the same

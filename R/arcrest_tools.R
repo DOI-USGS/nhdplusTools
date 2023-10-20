@@ -1,3 +1,5 @@
+# this function is intended to be a very general internal utility. It's initial
+# implementation is quite specific but this should become more general over time.
 #' @title Query USGS Hydro ESRI Rest Server
 #' @description Query the USGS Hydro ESRI Rest Server for spatial data by location,
 #' area, or ID.
@@ -22,7 +24,7 @@
 #' Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.
 #' @param buffer numeric. The amount (in meters) to buffer a POINT AOI by for an
 #' extended search. Default = 0.5
-#' @return a simple features (sf) object
+#' @return a simple features (sf) object or valid types if no type supplied
 #' @keywords internal
 #' @importFrom sf st_crs st_geometry_type st_buffer st_transform st_zm read_sf st_bbox st_as_sfc
 #' @importFrom httr RETRY content
@@ -41,7 +43,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 
   if(is.null(type)) return(source)
 
-  AOI <- check_query_params(AOI, ids, type, source, t_srs)
+  AOI <- check_query_params(AOI, ids, type, where, source, t_srs)
   t_srs <- AOI$t_srs
   AOI <- AOI$AOI
 
@@ -57,15 +59,18 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 
     if(!is.null(where)) stop("can't specify ids and where")
 
-    # TODO: can generalize here to support other layers
-    where <- paste0("where=id3dhp IN ('",
+    where <- paste0("id3dhp IN ('",
                     paste(ids, collapse = "', '"), "')")
   }
 
-  post_body <- list(geometry = spat_filter[[1]],
-                    where = where,
+  post_body <- list(where = where,
                     f = "json",
                     returnIdsOnly = "true")
+
+  if(length(spat_filter[[1]]) > 0) {
+    post_body <- c(list(geometry = spat_filter[[1]]),
+                   post_body)
+  }
 
   tryCatch({
     if(nhdplus_debug()) {
@@ -84,11 +89,20 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
     return(NULL)
   })
 
-  ids <- split(ids, ceiling(seq_along(ids)/1000))
+  length_ids <- length(ids)
+
+  chunk_size <- 1000
+  ids <- split(ids, ceiling(seq_along(ids)/chunk_size))
 
   out <- rep(list(list()), length(ids))
 
   for(i in seq_along(ids)) {
+
+    if(length_ids > chunk_size) {
+      top <- i * chunk_size
+      if(top > length_ids) top <- length_ids
+      message("Getting features ", (i - 1) * chunk_size, " to ", top,  " of ", length_ids)
+    }
 
     post_body <- list(objectIds = paste(ids[[i]], collapse = ","),
                       outFields = "*",

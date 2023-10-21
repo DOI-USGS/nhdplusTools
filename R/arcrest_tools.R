@@ -91,7 +91,12 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 
   length_ids <- length(ids)
 
-  chunk_size <- 1000
+  if(is.null(ids) | length(ids) == 0) {
+    "nothing found for filter or web service failed"
+    return(NULL)
+  }
+
+  chunk_size <- 2000
   ids <- split(ids, ceiling(seq_along(ids)/chunk_size))
 
   out <- rep(list(list()), length(ids))

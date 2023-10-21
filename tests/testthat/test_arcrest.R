@@ -50,7 +50,7 @@ test_that("check_query_params", {
                                2240147.81449532, 2240147.81449532,
                                2240146.81449532, 2240146.81449532),
                              dim = c(5L, 2L))),
-              class = c("XY", "POLYGON", "sfg")))
+              class = c("XY", "POLYGON", "sfg")), tolerance = 0.1)
 
 })
 

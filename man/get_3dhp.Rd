@@ -62,22 +62,25 @@ flowlines <- get_3dhp(AOI = AOI, type = "flowline")
 hydrolocation <- get_3dhp(AOI = AOI, type = "hydrolocation")
 waterbody <- get_3dhp(AOI = AOI, type = "waterbody")
 
+if(!is.null(waterbody) & !is.null(flowlines) & !is.null(hydrolocation)) {
 plot(sf::st_geometry(waterbody), col = "lightblue", border = "lightgrey")
 plot(sf::st_geometry(flowlines), col = "blue", add = TRUE)
-plot(sf::st_geometry(hydrolocation), col = "grey", pch = "+", add = TRUE)
+plot(sf::st_geometry(hydrolocation), col = "grey", pch = "+", add = TRUE) }
 
 # given mainstem ids from any source, can query for them in ids.
 
 CO <- get_3dhp(ids = "https://geoconnex.us/ref/mainstems/29559",
                type = "flowline")
 
-plot(sf::st_geometry(CO), col = "blue")
+if(!is.null(CO))
+  plot(sf::st_geometry(CO), col = "blue")
 
 # get all the waterbodies along the CO river
 CO_wb <- get_3dhp(ids = unique(CO$waterbodyid3dhp), type = "waterbody")
 
+if(!is.null(CO_wb)) {
 plot(sf::st_geometry(CO_wb[grepl("Powell", CO_wb$gnisidlabel),]),
-     col = "blue", border = "NA")
+     col = "blue", border = "NA") }
 
 # given universamreferenceid (reachcodes), can query for them but only
 # for hydrolocations. This is useful for looking up mainstem ids.

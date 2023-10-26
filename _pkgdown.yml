@@ -37,8 +37,6 @@ reference:
       - '`get_nhdplus`'
       - '`get_gagesII`'
       - '`get_huc`'
-      - '`get_huc12`'
-      - '`get_huc8`'
       - '`get_nhdarea`'
       - '`get_waterbodies`'
       - '`get_nwis`'

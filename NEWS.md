@@ -1,7 +1,10 @@
-nhdplusTools 1.0.1
+nhdplusTools 1.1.0
 ==========
 
 - fixed bug with large nhdplus downloads with empty tiles. #361
+- Added 3DHP_all service client. #363
+- Removed deprecated function `get_huc12` and `get_huc8`
+- Updated documentation of `get_huc()` and other web service functions.
 
 nhdplusTools 1.0.0
 ==========

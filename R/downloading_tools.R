@@ -136,13 +136,13 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
 #'   download_nhdplusV2("./data/nhd/")
 #'
 #'   download_nhdplusv2(outdir = "./inst/",
-#'       url = paste0("https://edap-ow-data-commons.s3.amazonaws.com/NHDPlusV21/",
+#'       url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",
 #'                    "Data/NationalData/NHDPlusV21_NationalData_Seamless",
 #'                    "_Geodatabase_HI_PR_VI_PI_03.7z"))
 #' }
 
 download_nhdplusv2 <- function(outdir,
-                               url = paste0("https://edap-ow-data-commons.s3.amazonaws.com/NHDPlusV21/",
+                               url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",
                                             "Data/NationalData/NHDPlusV21_NationalData_Seamless",
                                             "_Geodatabase_Lower48_07.7z"),
                                progress = TRUE) {

@@ -1,3 +1,8 @@
+nhdplusTools 1.0.2
+==========
+
+- fixed nhd and nhdplushr urls #368
+
 nhdplusTools 1.0.1
 ==========
 

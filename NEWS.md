@@ -1,6 +1,8 @@
 nhdplusTools 1.0.1
 ==========
 
+- fixed nhd and nhdplushr urls #368
+- fix issue with nhdplusTools_data_dir() #365
 - fixed bug with large nhdplus downloads with empty tiles. #361
 
 nhdplusTools 1.0.0

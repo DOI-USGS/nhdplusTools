@@ -36,7 +36,6 @@ oldoption <- options(scipen = 9999,
 ```{r data_dir_setup, echo=FALSE, include=FALSE}
 work_dir <- file.path(nhdplusTools_data_dir(), "plot_v_cache")
 dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
-set_default_cachedir(work_dir)
 library(nhdplusTools)
 ```
 
@@ -205,7 +204,7 @@ text(label_pos[,1],label_pos[,2],
 
 Below is a very similar example using [`ggmap`](https://github.com/dkahle/ggmap) and [`ggplot2` `geom_sf`](https://ggplot2.tidyverse.org/reference/ggsf.html). Note that ggmap takes case of projections for us, which should either make you happy because it _just works_ or very nervous because it _just works_. 
 
-```{r ggmap, message=FALSE, warning=FALSE}
+```{r ggmap,  message=FALSE, warning=FALSE}
 library(ggmap)
 library(ggplot2)
 
@@ -216,16 +215,17 @@ upstream_nwis <- dplyr::bind_cols(upstream_nwis$UT_nwissite,
                            dplyr::rename(dplyr::as_tibble(sf::st_coordinates(upstream_nwis$UT_nwissite)), 
                                          lat = Y, lon = X))
 
-basemap_toner <- get_map(source = "stamen", maptype = "toner", 
-                         location = ggmap_bbox, zoom = 11, messaging = FALSE)
-basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", 
-                           location = ggmap_bbox, zoom = 11, messaging = FALSE)
-toner_map <- ggmap(basemap_toner)
-terrain_map <- ggmap(basemap_terrain)
+# ggmap now requires api keys
+# basemap_toner <- get_map(source = "stamen", maptype = "toner", 
+#                          location = ggmap_bbox, zoom = 11, messaging = FALSE)
+# basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", 
+#                            location = ggmap_bbox, zoom = 11, messaging = FALSE)
+# toner_map <- ggmap(basemap_toner)
+# terrain_map <- ggmap(basemap_terrain)
+# 
+# toner_map
 
-toner_map
-
-terrain_map + geom_sf(data = basin,
+ggplot() + geom_sf(data = basin,
                         inherit.aes = FALSE,
                         color = "black", fill = NA) + 
   geom_sf(data = flowline,

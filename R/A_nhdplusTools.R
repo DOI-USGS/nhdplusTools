@@ -250,15 +250,11 @@ default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
 assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
 nhd_bucket <- "https://prd-tnm.s3.amazonaws.com/"
-nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/"
+nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Current/GDB/"
 nhd_file_list <- "?prefix=StagedProducts/Hydrography/NHD/HU4/GDB/"
 
 assign("nhd_bucket", nhd_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
-
-assign("nhdpt_dat_dir",
-       tools::R_user_dir("nhdplusTools"),
-       envir = nhdplusTools_env)
 
 assign("nldi_tier", "prod",
        envir = nhdplusTools_env)
@@ -298,7 +294,18 @@ get_nldi_url <- function() {
 nhdplusTools_data_dir <- function(dir = NULL) {
 
   if(is.null(dir)) {
+
+    nhdpt_dat_dir <- try(get("nhdpt_dat_dir", envir = nhdplusTools_env), silent = TRUE)
+
+    if(inherits(nhdpt_dat_dir, "try-error")) {
+      assign("nhdpt_dat_dir",
+             tools::R_user_dir("nhdplusTools"),
+             envir = nhdplusTools_env)
+    }
+
     return(get("nhdpt_dat_dir", envir = nhdplusTools_env))
+
+
   } else {
     assign("nhdpt_dat_dir",
            dir,

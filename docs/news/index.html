@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
       </span>
     </div>
 
@@ -67,7 +67,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.0.0" id="nhdplustools-100">nhdplusTools 1.0.0<a class="anchor" aria-label="anchor" href="#nhdplustools-100"></a></h2>
+<h2 class="page-header" data-toc-text="1.0.2" id="nhdplustools-102">nhdplusTools 1.0.2<a class="anchor" aria-label="anchor" href="#nhdplustools-102"></a></h2>
+<ul><li>fixed nhd and nhdplushr urls <a href="https://github.com/doi-usgs/nhdplusTools/issues/368" class="external-link">#368</a></li>
+<li>fix issue with nhdplusTools_data_dir() <a href="https://github.com/doi-usgs/nhdplusTools/issues/365" class="external-link">#365</a></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.0.1" id="nhdplustools-101">nhdplusTools 1.0.1<a class="anchor" aria-label="anchor" href="#nhdplustools-101"></a></h2>
+<ul><li>fixed bug with large nhdplus downloads with empty tiles. <a href="https://github.com/doi-usgs/nhdplusTools/issues/361" class="external-link">#361</a></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.0.0" id="nhdplustools-100">nhdplusTools 1.0.0<small>2023-10-02</small><a class="anchor" aria-label="anchor" href="#nhdplustools-100"></a></h2>
+<p><code>nhdplusTools</code> has been split into two packages. A new package <a href="https://github.com/DOI-USGS/hydroloom" class="external-link"><code>hydroloom</code></a> is now available. It contains all nhdplusTools functionality not related to specific dataset schemas. See <a href="https://github.com/DOI-USGS/nhdplusTools/issues/307" class="external-link">this issue</a> for details.</p>
 <div class="section level3">
 <h3 id="hydroloom-1-0-0"><code>hydroloom</code><a class="anchor" aria-label="anchor" href="#hydroloom-1-0-0"></a></h3>
 <p>v1.0.0 should be backward compatible with v0.7 but deprecation warnings have been added and one previously deprecated function has been removed.</p>
@@ -97,7 +107,7 @@
 <li>sort_network</li>
 <li>st_compatibalize</li>
 </ul><p><a href="https://doi-usgs.github.io/hydroloom/reference/index.html" class="external-link">See the <code>hydroloom</code> reference list for details about these functions.</a></p>
-<p>With these functions migrated to hydroloom, a number of <code>nhdplusTools</code> functions are now deprecated in favor of the <code>hyroloom</code> implementation.</p>
+<p>With these functions migrated to <code>hydroloom</code>, a number of <code>nhdplusTools</code> functions are now deprecated in favor of the <code>hyroloom</code> implementation.</p>
 <ul><li><code><a href="../reference/make_node_topology.html">make_node_topology()</a></code></li>
 <li><code><a href="../reference/get_pfaf.html">get_pfaf()</a></code></li>
 <li><code><a href="../reference/get_path_members.html">get_path_members()</a></code></li>
@@ -106,7 +116,7 @@
 <li><code><a href="../reference/get_terminal.html">get_terminal()</a></code></li>
 <li><code><a href="../reference/make_node_topology.html">make_node_topology()</a></code></li>
 </ul><p>In v1.0.0, the <code><a href="../reference/download_nhd.html">download_nhd()</a></code> function was added.</p>
-<p>In v1.0.0, the stage_national_data (previously deprecated) function was removed.</p>
+<p>In v1.0.0, the <code>stage_national_data</code> (previously deprecated) function was removed.</p>
 </div>
 </div>
     <div class="section level2">
@@ -133,7 +143,7 @@
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.0" id="nhdplustools-060">nhdplusTools 0.6.0<small>2022-11-28</small><a class="anchor" aria-label="anchor" href="#nhdplustools-060"></a></h2>
-<ul><li>minor change to behavior of <code>navigate_nldi</code> the “origin” will always be named as such rather than the named 1-element list being dropped to a data.frame. <a href="https://github.com/DOI-USGS/dataRetrieval/issues/623" class="external-link uri">https://github.com/DOI-USGS/dataRetrieval/issues/623</a>
+<ul><li>minor change to behavior of <code>navigate_nldi</code> the “origin” will always be named as such rather than the named 1-element list being dropped to a data.frame. <code>https://github.com/DOI-USGS/dataRetrieval/issues/623</code>
 </li>
 <li>Address scalability issue with web service downloads. <a href="https://github.com/doi-usgs/nhdplusTools/issues/308" class="external-link">#308</a></li>
 <li>Add ability to add node topology back to a edge list topology. <a href="https://github.com/doi-usgs/nhdplusTools/issues/302" class="external-link">#302</a></li>
@@ -156,7 +166,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.3" id="nhdplustools-053">nhdplusTools 0.5.3<small>2022-05-27</small><a class="anchor" aria-label="anchor" href="#nhdplustools-053"></a></h2>
 <p>v0.5.3 is primarily bug fixes and enhancements.</p>
-<p>One notable addition is the addition of the <code>rpu_boundaries</code> and <code>vpu_boundaries</code> datasets which provide simplified polygons around the RPU and VPU subset domains of the nhdplusV2 dataset.</p>
+<p>One notable addition is the addition of the <code>rpu_boundaries</code> and <code>vpu_boundaries</code> datasets which provide simplified polygons around the RPU and VPU subset domains of the NHDPlusV2 dataset.</p>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.2" id="nhdplustools-052">nhdplusTools 0.5.2<small>2022-04-08</small><a class="anchor" aria-label="anchor" href="#nhdplustools-052"></a></h2>
@@ -181,7 +191,7 @@ To cite nhdplusTools in publications, please use:
 <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> and <code><a href="../reference/get_waterbody_index.html">get_waterbody_index()</a></code> units and projection handling was altered. Defaults for the <code>search_radius</code> input were changed. Coordinate reference system handling in geoprocessing now relies on the CRS of the provided points rather than the flowlines.</li>
 <li>
 <code><a href="../reference/get_nldi_basin.html">get_nldi_basin()</a></code> now supports precise basin delineation via a logical “split” parameter as well as the option to retrieve un-simplified basin geometry.</li>
-<li>All network-dependent functions in <code>nhdplusTools</code> now return a warning and NULL if the web servicee is unavailable or fails for other reasons. This is according to CRAN policy.</li>
+<li>All network-dependent functions in <code>nhdplusTools</code> now return a warning and NULL if the web service is unavailable or fails for other reasons. This is according to CRAN policy.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -199,7 +209,7 @@ To cite nhdplusTools in publications, please use:
 </ul></div>
 <div class="section level3">
 <h3 id="web-service-wrapper-functions-0-5-0">Web Service Wrapper Functions<a class="anchor" aria-label="anchor" href="#web-service-wrapper-functions-0-5-0"></a></h3>
-<ul><li>New functions <code><a href="../reference/get_raindrop_trace.html">get_raindrop_trace()</a></code>, <code><a href="../reference/get_split_catchment.html">get_split_catchment()</a></code> use a web service to access elevation data and retireve a raindrop trace path to the nearest flowline in nhdplus V2 and a split catchment or basin to a precise point location respectively.</li>
+<ul><li>New functions <code><a href="../reference/get_raindrop_trace.html">get_raindrop_trace()</a></code>, <code><a href="../reference/get_split_catchment.html">get_split_catchment()</a></code> use a web service to access elevation data and retrieve a raindrop trace path to the nearest flowline in nhdplus V2 and a split catchment or basin to a precise point location respectively.</li>
 <li>New functions <code><a href="../reference/get_xs_point.html">get_xs_point()</a></code>, <code><a href="../reference/get_xs_points.html">get_xs_points()</a></code>, and <code><a href="../reference/get_elev_along_path.html">get_elev_along_path()</a></code> access an elevation data service from the 3D Elevation Program and return cross section / path elevation data.</li>
 </ul></div>
 <div class="section level3">
@@ -209,7 +219,7 @@ To cite nhdplusTools in publications, please use:
 </ul></div>
 <div class="section level3">
 <h3 id="subsetting-and-data-utilities-0-5-0">Subsetting and data utilities<a class="anchor" aria-label="anchor" href="#subsetting-and-data-utilities-0-5-0"></a></h3>
-<ul><li>New function <code><a href="../reference/subset_vpu.html">subset_vpu()</a></code> wraps <code><a href="../reference/subset_rpu.html">subset_rpu()</a></code> and will subset a vector procesing unit.</li>
+<ul><li>New function <code><a href="../reference/subset_vpu.html">subset_vpu()</a></code> wraps <code><a href="../reference/subset_rpu.html">subset_rpu()</a></code> and will subset a vector processing unit.</li>
 <li>New function <code><a href="https://rdrr.io/pkg/hydroloom/man/fix_flowdir.html" class="external-link">fix_flowdir()</a></code> will re-order geometry nodes such that their order corresponds to the convention used in nhdplus data.</li>
 <li>
 <code><a href="../reference/get_vaa.html">get_vaa()</a></code> will now return an updated nhdplus network attribute set derived from multiple improved sources.</li>
@@ -225,7 +235,7 @@ To cite nhdplusTools in publications, please use:
 <h3 id="plotting-0-5-0">Plotting<a class="anchor" aria-label="anchor" href="#plotting-0-5-0"></a></h3>
 <ul><li>
 <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code> now includes on network and off network waterbodies.</li>
-<li>New function <code><a href="../reference/get_wb_outlet.html">get_wb_outlet()</a></code> finds the outlet flowline of an on-network waterbody. This function works for both nhdplusV2 and hires.</li>
+<li>New function <code><a href="../reference/get_wb_outlet.html">get_wb_outlet()</a></code> finds the outlet flowline of an on-network waterbody. This function works for both NHDPlusV2 and hires.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="package-internals-0-5-0">Package Internals<a class="anchor" aria-label="anchor" href="#package-internals-0-5-0"></a></h3>
@@ -241,7 +251,7 @@ To cite nhdplusTools in publications, please use:
 <h2 class="page-header" data-toc-text="0.4.3" id="nhdplustools-043">nhdplusTools 0.4.3<small>2021-08-18</small><a class="anchor" aria-label="anchor" href="#nhdplustools-043"></a></h2>
 <ul><li><p>New function added: <code><a href="../reference/get_streamlevel.html">get_streamlevel()</a></code> calculates stream level, a bottom up level path order used by nhdplus to categorize complete river levels.</p></li>
 <li><p>nhdplusTools internals have started to be refactored to use all lower case attribute names. No changes should be seen from outside the package, but please <a href="https://github.com/DOI-USGS/nhdplusTools/issues" class="external-link">report issues</a> with attribute naming.</p></li>
-<li><p>Package testing now runs in parallel and uses revision 3 of the testthat package.</p></li>
+<li><p>Package testing now runs in parallel and uses revision 3 of the <code>testthat</code> package.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.2" id="nhdplustools-042">nhdplusTools 0.4.2<small>2021-06-23</small><a class="anchor" aria-label="anchor" href="#nhdplustools-042"></a></h2>
@@ -253,12 +263,12 @@ To cite nhdplusTools in publications, please use:
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.1" id="nhdplustools-041">nhdplusTools 0.4.1<small>2021-05-16</small><a class="anchor" aria-label="anchor" href="#nhdplustools-041"></a></h2>
 <p>Version 0.4.1 is a minor release with bug fixes and updates for CRAN policy.</p>
-<p>A noteable addition is handling for strictly dendritic topology encoded using a “tocomid” attribute rather than “fromnode” and “tonode” attributes. This functionality was added in subsetting functions and is backward compatible with previous versions.</p>
+<p>A notable addition is handling for strictly dendritic topology encoded using a “tocomid” attribute rather than “fromnode” and “tonode” attributes. This functionality was added in subsetting functions and is backward compatible with previous versions.</p>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.0" id="nhdplustools-040">nhdplusTools 0.4.0<small>2021-04-02</small><a class="anchor" aria-label="anchor" href="#nhdplustools-040"></a></h2>
 <p>Version 0.4.0 adds new functionality for data access via web services and updates the usability and flexibility of data discovery and subsetting functions. This release includes significant rework of functions related to network navigation and web-service data subsetting.</p>
-<ul><li>Previsouly, <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> included internal functionality for downloading data via web service. This code for subsetting NHDPlus via web service was completely rewritten and a number of new web-service data access functions were added. The <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> function has been added and is for web-service data access only. <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code>, which will output a subset to a local <code>.gpkg</code> file, now uses <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> for download functionality.</li>
+<ul><li>Previously, <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> included internal functionality for downloading data via web service. This code for subsetting NHDPlus via web service was completely rewritten and a number of new web-service data access functions were added. The <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> function has been added and is for web-service data access only. <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code>, which will output a subset to a local <code>.gpkg</code> file, now uses <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> for download functionality.</li>
 <li>
 <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> and most other <a href="https://waterdata.usgs.gov/blog/nldi-intro/" class="external-link">NLDI</a> functions are now based on an NLDI client in the <a href="https://code.usgs.gov/water/dataRetrieval" class="external-link"><code>dataRetrieval</code></a> package. Functionality has been maintained backward compatible with <code>nhdplusTools</code> v0.3 as much as possible with some minor modifications to accommodate changes in dataRetrieval. The response format from <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> has been changed slightly in v0.4, it now includes both the origin feature and navigation type(s) as a list. Two un-needed nldi discovery functions were removed.</li>
 <li>Functions to download and cache all NHDPlus VAAs (in a 195mb <code>.fst</code> file) for use in network navigation and other applications have been added. These can be used with any nhdplusTools functions that do not require geometry.</li>
@@ -267,7 +277,7 @@ To cite nhdplusTools in publications, please use:
 </ul><p><em>Functions Added</em> * <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> * <code><a href="../reference/get_nhdarea.html">get_nhdarea()</a></code> * <code><a href="../reference/get_waterbodies.html">get_waterbodies()</a></code> * <code><a href="../reference/get_gagesII.html">get_gagesII()</a></code> * <code><a href="../reference/get_huc12.html">get_huc12()</a></code> * <code><a href="../reference/get_huc8.html">get_huc8()</a></code> * <code><a href="../reference/download_vaa.html">download_vaa()</a></code> * <code><a href="../reference/get_vaa.html">get_vaa()</a></code> * <code><a href="../reference/get_vaa_names.html">get_vaa_names()</a></code> * <code><a href="../reference/get_vaa_path.html">get_vaa_path()</a></code></p>
 <p><em>Functions Removed</em> * <code>discover_nldi_navigation()</code> * <code>discover_nldi_sources()</code></p>
 <p><em>Functions Deprecated</em> * <code>stage_national_data()</code></p>
-<p><em>Functions with Consolodated Internals</em> * <code><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id()</a></code> * <code><a href="../reference/get_nldi_basin.html">get_nldi_basin()</a></code> * <code><a href="../reference/get_nldi_feature.html">get_nldi_feature()</a></code> * <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> * <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code></p>
+<p><em>Functions with Consolidated Internals</em> * <code><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id()</a></code> * <code><a href="../reference/get_nldi_basin.html">get_nldi_basin()</a></code> * <code><a href="../reference/get_nldi_feature.html">get_nldi_feature()</a></code> * <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> * <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code></p>
 <p>Finally, the handling of data and caching in the package has been overhauled. These changes are non-functional, but aim to decrease data downloads by caching rather than using temp directories.</p>
 </div>
     <div class="section level2">
@@ -294,7 +304,7 @@ To cite nhdplusTools in publications, please use:
 <ul><li>Added <code><a href="https://rdrr.io/pkg/hydroloom/man/get_node.html" class="external-link">get_node()</a></code> to get top and bottom of a flowline.</li>
 <li>Switched geospatial data dependency to use labs.waterdata.usgs.gov</li>
 <li>Added <code><a href="../reference/subset_rpu.html">subset_rpu()</a></code> to enable subsetting the NHD by Raster Processing Unit</li>
-<li>Added <code><a href="../reference/get_waterbody_index.html">get_waterbody_index()</a></code> to find associations between point locations and waterbodys.</li>
+<li>Added <code><a href="../reference/get_waterbody_index.html">get_waterbody_index()</a></code> to find associations between point locations and waterbodies.</li>
 <li>Added ability to get multiple matches from <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> with <code>max_matches</code> parameter.</li>
 <li>Added ability to download flowlines in <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> rather than requiring data to be loaded locally.</li>
 </ul></div>

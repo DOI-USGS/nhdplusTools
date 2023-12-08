@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
       </span>
     </div>
 
@@ -115,6 +115,7 @@
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi-usgs.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is TRUE</span></span>
 <span></span>
 <span><span class="va">start_point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">89.362239</span>, <span class="fl">43.090266</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4269</span><span class="op">)</span></span>
 <span><span class="va">start_comid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span><span class="op">(</span><span class="va">start_point</span><span class="op">)</span></span>
@@ -201,7 +202,7 @@ function.</p>
 consider using <code><a href="../reference/get_vaa.html">get_vaa()</a></code>. It allows you to retrieve
 specific NHDPlus attributes with very little overhead. It also supports
 access to an updated set of network attributes that incorporate numerous
-network updates from national hydrologic modelling projects.</p>
+network updates from national hydrologic modeling projects.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vaa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_vaa.html">get_vaa</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">vaa</span><span class="op">)</span></span>
@@ -235,7 +236,7 @@ download additional data (just change <code>download_files</code> to
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span><span class="op">(</span>nhd_dir <span class="op">=</span> <span class="st">"download_dir"</span>, </span>
 <span>                   hu_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0101"</span><span class="op">)</span>, <span class="co"># can mix hu02 and hu04 codes.</span></span>
 <span>                   download_files <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># TRUE will download files.</span></span>
-<span><span class="co">#&gt; [1] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0101_HU4_GDB.zip"</span></span>
+<span><span class="co">#&gt; [1] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/VPU/Current/GDB/NHDPLUS_H_0101_HU4_20220901_GDB.zip"</span></span>
 <span></span>
 <span><span class="va">out_gpkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"nhd_hr.gpkg"</span><span class="op">)</span></span>
 <span><span class="va">hr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, </span>
@@ -246,11 +247,6 @@ download additional data (just change <code>download_files</code> to
 <span><span class="co">#&gt;         layer_name geometry_type features fields             crs_name</span></span>
 <span><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57 GRS 1980(IUGG, 1980)</span></span>
 <span><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7 GRS 1980(IUGG, 1980)</span></span>
-<span><span class="co">#&gt; 3     NHDWaterbody       Polygon     1044     15 GRS 1980(IUGG, 1980)</span></span>
-<span><span class="co">#&gt; 4          NHDArea       Polygon       10     14 GRS 1980(IUGG, 1980)</span></span>
-<span><span class="co">#&gt; 5          NHDLine   Line String      142     12 GRS 1980(IUGG, 1980)</span></span>
-<span><span class="co">#&gt; 6      NHDPlusSink         Point        1     10 GRS 1980(IUGG, 1980)</span></span>
-<span><span class="co">#&gt; 7         NHDPoint      3D Point        7     10 GRS 1980(IUGG, 1980)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span></span>
@@ -348,9 +344,10 @@ below.</p>
 <code class="sourceCode R"><span><span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">get_nldi_sources</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">source</span></span>
 <span><span class="co">#&gt;  [1] "ca_gages"          "census2020-nhdpv2" "epa_nrsa"         </span></span>
 <span><span class="co">#&gt;  [4] "geoconnex-demo"    "gfv11_pois"        "huc12pp"          </span></span>
-<span><span class="co">#&gt;  [7] "nmwdi-st"          "npdes"             "nwisgw"           </span></span>
-<span><span class="co">#&gt; [10] "nwissite"          "ref_gage"          "vigil"            </span></span>
-<span><span class="co">#&gt; [13] "wade"              "WQP"               "comid"</span></span>
+<span><span class="co">#&gt;  [7] "huc12pp_102020"    "nmwdi-st"          "npdes"            </span></span>
+<span><span class="co">#&gt; [10] "nwisgw"            "nwissite"          "ref_gage"         </span></span>
+<span><span class="co">#&gt; [13] "vigil"             "wade"              "WQP"              </span></span>
+<span><span class="co">#&gt; [16] "comid"</span></span>
 <span></span>
 <span><span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, </span>
 <span>                     featureID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">start_comid</span><span class="op">$</span><span class="va">comid</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>

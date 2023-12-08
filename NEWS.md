@@ -2,6 +2,7 @@ nhdplusTools 1.0.2
 ==========
 
 - fixed nhd and nhdplushr urls #368
+- fix issue with nhdplusTools_data_dir() #365
 
 nhdplusTools 1.0.1
 ==========

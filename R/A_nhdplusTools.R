@@ -295,9 +295,9 @@ nhdplusTools_data_dir <- function(dir = NULL) {
 
   if(is.null(dir)) {
 
-    try(get("nhdpt_dat_dir", envir = nhdplusTools_env), silent = TRUE)
+    nhdpt_dat_dir <- try(get("nhdpt_dat_dir", envir = nhdplusTools_env), silent = TRUE)
 
-    if(!exists("nhdpt_dat_dir")) {
+    if(inherits(nhdpt_dat_dir, "try-error")) {
       assign("nhdpt_dat_dir",
              tools::R_user_dir("nhdplusTools"),
              envir = nhdplusTools_env)

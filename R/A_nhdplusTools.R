@@ -393,6 +393,8 @@ nhdplusTools_memoise_cache <- function() {
     if(sys_memo_cache == "memory") {
       memoise::cache_memory()
     } else {
+      dir.create(nhdplusTools_data_dir(), showWarnings = FALSE, recursive = TRUE)
+
       memoise::cache_filesystem(nhdplusTools_data_dir())
     }
 

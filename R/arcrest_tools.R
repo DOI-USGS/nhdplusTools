@@ -35,13 +35,33 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
                                t_srs = NULL,
                                buffer = 0.5){
 
-  # TODO: can generalize this to support other layers
-  source <- data.frame(server = "3DHP_all",
-                       user_call  = c("hydrolocation", "flowline", "waterbody",
-                                      "drainage area", "catchment"),
-                       layer  = c(0, 1, 2, 3, 4))
+  # TODO: support more services?
+  server <- "3DHP_all"
 
-  if(is.null(type)) return(source)
+  url_base <- paste0(get("arcrest_root", envir = nhdplusTools_env),
+                     server,
+                     "/MapServer/")
+
+  all_layers <- jsonlite::read_json(paste0(url_base, "?f=json"))
+
+  all_layers$layers <- all_layers$layers[sapply(all_layers$layers,
+                                                \(x) grepl("Feature Layer", x$type))]
+
+  source <- data.frame(server = server,
+                       user_call  = sapply(all_layers$layers, \(x) tolower(x$name)),
+                       layer  = sapply(all_layers$layers, \(x) x$id))
+
+  if(is.null(type)) {
+    message("`type` input must be one of: \n\t\"",
+            paste(source$user_call, collapse = "\"\n\t\""), "\"")
+    return(source)
+  }
+
+  if(!type %in% source$user_call) {
+    warning("\"", type, "\" not in `type` input. Must be one of: \n\t\"",
+            paste(source$user_call, collapse = "\"\n\t\""), "\"")
+    return(NULL)
+  }
 
   AOI <- check_query_params(AOI, ids, type, where, source, t_srs)
   t_srs <- AOI$t_srs
@@ -49,9 +69,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 
   here <- filter(source, .data$user_call == !!type)
 
-  URL <- paste0(get("arcrest_root", envir = nhdplusTools_env),
-                here$server,
-                "/MapServer/", here$layer, "/query")
+  URL <- paste0(url_base, here$layer, "/query")
 
   spat_filter <- spatial_filter(AOI, tile = FALSE, format = "esri")
 
@@ -92,7 +110,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
   length_ids <- length(ids)
 
   if(is.null(ids) | length(ids) == 0) {
-    "nothing found for filter or web service failed"
+    warning("nothing found for filter or web service failed")
     return(NULL)
   }
 

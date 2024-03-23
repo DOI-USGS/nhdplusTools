@@ -61,10 +61,12 @@ test_that("basic 3dhp service requests", {
                                      xmax = -89.4, ymax = 43.1),
                                    crs = "+proj=longlat +datum=WGS84 +no_defs"))
 
-  expect_s3_class(nhdplusTools:::query_usgs_arcrest(AOI),
-                  "data.frame")
+  expect_message(expect_s3_class(nhdplusTools:::query_usgs_arcrest(AOI),
+                                 "data.frame"))
 
-  test_data <- nhdplusTools:::query_usgs_arcrest(AOI, type = "hydrolocation")
+  expect_warning(nhdplusTools:::query_usgs_arcrest(AOI, type = "hydrolocation"))
+
+  test_data <- nhdplusTools:::query_usgs_arcrest(AOI, type = "reach code, external connection")
 
   expect_s3_class(test_data, "sf")
 })

@@ -1,6 +1,8 @@
 nhdplusTools 1.1.0
 ==========
 
+- fixed nhd and nhdplushr urls #368
+- fix issue with nhdplusTools_data_dir() #365
 - fixed bug with large nhdplus downloads with empty tiles. #361
 - Added 3DHP_all service client. #363
 - Removed deprecated function `get_huc12` and `get_huc8`

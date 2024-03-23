@@ -5,7 +5,7 @@ library(archive)
 library(rmapshaper)
 library(nhdplusTools)
 
-epa_path <- "https://edap-ow-data-commons.s3.amazonaws.com/NHDPlusV21/Data/GlobalData/NHDPlusV21_NHDPlusGlobalData_03.7z"
+epa_path <- "https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/Data/GlobalData/NHDPlusV21_NHDPlusGlobalData_03.7z"
 zip <- file.path("data/nhdglobal.7z")
 
 GET(epa_path, write_disk(zip))

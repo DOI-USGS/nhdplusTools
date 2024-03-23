@@ -3,6 +3,8 @@ options("rgdal_show_exportToProj4_warnings"="none")
 library("sf")
 library("dplyr")
 
+nhdplusTools_cache_settings(mode = "memory", timeout = 1)
+
 sf::sf_use_s2(TRUE)
 
 unlink(file.path(tempdir(check = TRUE), "*"), recursive = TRUE)

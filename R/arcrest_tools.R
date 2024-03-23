@@ -138,7 +138,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 
     if(is.null(all_ids) | length(all_ids) == 0) {
       warning(paste("No", here$user_call, "features found in area of interest."), call. = FALSE)
-      all_out[[l]] <- NULL
+      out <- NULL
     } else {
 
       chunk_size <- 2000

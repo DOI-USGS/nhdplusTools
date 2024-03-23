@@ -353,6 +353,24 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
   }
 }
 
+nhdplusTools_memoise_cache <- function() {
+  memo_cache <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_CACHE")
+  if(memo_cache == "memory") {
+    memoise::cache_memory()
+  } else {
+    memoise::cache_filesystem(nhdplusTools_data_dir())
+  }
+}
+
+nhdplusTools_memoise_timeout <- function() {
+  timeout_env <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_TIMEOUT")
+  if(timeout_env != "") {
+    as.numeric(timeout_env)
+  } else {
+    # default to one day
+    oneday_seconds <- 60 * 60 * 24
+  }
+}
 
 #' @title Align NHD Dataset Names
 #' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.

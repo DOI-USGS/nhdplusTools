@@ -82,7 +82,7 @@ if(!is.null(CO_wb)) {
 plot(sf::st_geometry(CO_wb[grepl("Powell", CO_wb$gnisidlabel),]),
      col = "blue", border = "NA") }
 
-# given universamreferenceid (reachcodes), can query for them but only
+# given universalreferenceid (reachcodes), can query for them but only
 # for hydrolocations. This is useful for looking up mainstem ids.
 
 get_3dhp(universalreferenceid = unique(hydrolocation$universalreferenceid),

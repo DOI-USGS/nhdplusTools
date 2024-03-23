@@ -220,7 +220,7 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #' plot(sf::st_geometry(CO_wb[grepl("Powell", CO_wb$gnisidlabel),]),
 #'      col = "blue", border = "NA") }
 #'
-#' # given universamreferenceid (reachcodes), can query for them but only
+#' # given universalreferenceid (reachcodes), can query for them but only
 #' # for hydrolocations. This is useful for looking up mainstem ids.
 #'
 #' get_3dhp(universalreferenceid = unique(hydrolocation$universalreferenceid),
@@ -230,8 +230,8 @@ get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
                      universalreferenceid = NULL,
                      t_srs = NULL, buffer = 0.5) {
 
-  if(!is.null(universalreferenceid) & type != "hydrolocation") {
-    stop("universalereferenceid can only be specified for hydrolocations")
+  if(!is.null(universalreferenceid) & !grepl("outlet|reach|hydrolocation", type)) {
+    stop("universalereferenceid can only be specified for hydrolocation features")
   }
 
   where <- NULL

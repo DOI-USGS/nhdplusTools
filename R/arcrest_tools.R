@@ -1,3 +1,18 @@
+get_3dhp_service_info <- memoise::memoise(function() {
+
+  # TODO: support more services?
+  server <- "3DHP_all"
+
+  url_base <- paste0(get("arcrest_root", envir = nhdplusTools_env),
+                     server,
+                     "/MapServer/")
+
+  all_layers <- jsonlite::read_json(paste0(url_base, "?f=json"))
+
+  list(url_base = url_base, all_layers = all_layers)
+
+})
+
 # this function is intended to be a very general internal utility. It's initial
 # implementation is quite specific but this should become more general over time.
 #' @title Query USGS Hydro ESRI Rest Server
@@ -35,21 +50,13 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
                                t_srs = NULL,
                                buffer = 0.5){
 
-  # TODO: support more services?
-  server <- "3DHP_all"
+  si <- get_3dhp_service_info()
 
-  url_base <- paste0(get("arcrest_root", envir = nhdplusTools_env),
-                     server,
-                     "/MapServer/")
+  source <- data.frame(user_call = sapply(si$all_layers$layers, \(x) tolower(x$name)),
+                       layer = sapply(si$all_layers$layers, \(x) x$id))
 
-  all_layers <- jsonlite::read_json(paste0(url_base, "?f=json"))
-
-  all_layers$layers <- all_layers$layers[sapply(all_layers$layers,
-                                                \(x) grepl("Feature Layer", x$type))]
-
-  source <- data.frame(server = server,
-                       user_call  = sapply(all_layers$layers, \(x) tolower(x$name)),
-                       layer  = sapply(all_layers$layers, \(x) x$id))
+  group_layers <- si$all_layers$layers[sapply(si$all_layers$layers,
+                                              \(x) grepl("Group Layer", x$type))]
 
   if(is.null(type)) {
     message("`type` input must be one of: \n\t\"",
@@ -63,73 +70,52 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
     return(NULL)
   }
 
-  AOI <- check_query_params(AOI, ids, type, where, source, t_srs)
-  t_srs <- AOI$t_srs
-  AOI <- AOI$AOI
+  if(grepl(paste(sapply(group_layers, \(x) x$name),
+                 collapse = "|"),
+           type, ignore.case = TRUE)) {
+    layer_id <- filter(source, .data$user_call == !!type)$layer
 
-  here <- filter(source, .data$user_call == !!type)
+    group_layer <- group_layers[[sapply(group_layers, \(x) x$id == layer_id)]]
 
-  URL <- paste0(url_base, here$layer, "/query")
-
-  spat_filter <- spatial_filter(AOI, tile = FALSE, format = "esri")
-
-  if(!is.null(ids)) {
-
-    if(!is.null(where)) stop("can't specify ids and where")
-
-    where <- paste0("id3dhp IN ('",
-                    paste(ids, collapse = "', '"), "')")
+    need_layers <- as.integer(group_layer$subLayerIds)
+  } else {
+    need_layers <- as.integer(filter(source, .data$user_call == !!type)$layer)
   }
 
-  post_body <- list(where = where,
-                    f = "json",
-                    returnIdsOnly = "true")
+  all_out <- rep(list(list()), length(need_layers))
 
-  if(length(spat_filter[[1]]) > 0) {
-    post_body <- c(list(geometry = spat_filter[[1]]),
-                   post_body)
-  }
+  for(l in seq_len(length(all_out))) {
 
-  tryCatch({
-    if(nhdplus_debug()) {
-      message(paste(URL, "\n"))
-      message(post_body)
+    layer <- need_layers[l]
+
+    type <- filter(source, .data$layer == !!layer)$user_call
+
+    AOI <- check_query_params(AOI, ids, type, where, source, t_srs, buffer)
+    t_srs <- AOI$t_srs
+    AOI <- AOI$AOI
+
+    here <- filter(source, .data$user_call == !!type)
+
+    URL <- paste0(si$url_base, here$layer, "/query")
+
+    spat_filter <- spatial_filter(AOI, tile = FALSE, format = "esri")
+
+    if(!is.null(ids)) {
+
+      if(!is.null(where)) stop("can't specify ids and where")
+
+      where <- paste0("id3dhp IN ('",
+                      paste(ids, collapse = "', '"), "')")
     }
 
-    ids <- content(RETRY("POST",
-                         URL,
-                         body = post_body,
-                         encode = "form"))
-    ids <- unlist(ids$objectIds)
+    post_body <- list(where = where,
+                      f = "json",
+                      returnIdsOnly = "true")
 
-  }, error = function(e) {
-    warning("Something went wrong trying to access a service.")
-    return(NULL)
-  })
-
-  length_ids <- length(ids)
-
-  if(is.null(ids) | length(ids) == 0) {
-    warning("nothing found for filter or web service failed")
-    return(NULL)
-  }
-
-  chunk_size <- 2000
-  ids <- split(ids, ceiling(seq_along(ids)/chunk_size))
-
-  out <- rep(list(list()), length(ids))
-
-  for(i in seq_along(ids)) {
-
-    if(length_ids > chunk_size) {
-      top <- i * chunk_size
-      if(top > length_ids) top <- length_ids
-      message("Getting features ", (i - 1) * chunk_size, " to ", top,  " of ", length_ids)
+    if(length(spat_filter[[1]]) > 0) {
+      post_body <- c(list(geometry = spat_filter[[1]]),
+                     post_body)
     }
-
-    post_body <- list(objectIds = paste(ids[[i]], collapse = ","),
-                      outFields = "*",
-                      f = "geojson")
 
     tryCatch({
       if(nhdplus_debug()) {
@@ -137,53 +123,97 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
         message(post_body)
       }
 
-      out[[i]] <- rawToChar(httr::RETRY("POST",
-                                        URL,
-                                        body = post_body,
-                                        encode = "form")$content)
+      all_ids <- content(RETRY("POST",
+                               URL,
+                               body = post_body,
+                               encode = "form"))
+      all_ids <- unlist(all_ids$objectIds)
+
     }, error = function(e) {
       warning("Something went wrong trying to access a service.")
-      return(NULL)
+      out <- NULL
     })
 
-    out[[i]] <- tryCatch({
-      sf::st_zm(sf::read_sf(out[[i]]))},
-      error = function(e) return(NULL))
-  }
+    length_ids <- length(all_ids)
 
-  if(inherits(out[[1]], "data.frame")) {
-    out <- bind_rows(unify_types(out))
+    if(is.null(all_ids) | length(all_ids) == 0) {
+      warning(paste("No", here$user_call, "features found in area of interest."), call. = FALSE)
+      all_out[[l]] <- NULL
+    } else {
 
-    out <- check_valid(out[!duplicated(out[["id3dhp"]]), ],
-                       out_prj = t_srs)
+      chunk_size <- 2000
+      all_ids <- split(all_ids, ceiling(seq_along(all_ids)/chunk_size))
 
-  } else {
+      out <- rep(list(list()), length(all_ids))
 
-    out <- NULL
+      for(i in seq_along(all_ids)) {
 
-  }
+        if(length_ids > chunk_size) {
+          top <- i * chunk_size
+          if(top > length_ids) top <- length_ids
+          message("Getting features ", (i - 1) * chunk_size, " to ", top,  " of ", length_ids)
+        }
 
-  if(any(is.null(out), nrow(out) == 0)) {
+        post_body <- list(objectIds = paste(all_ids[[i]], collapse = ","),
+                          outFields = "*",
+                          f = "geojson")
 
-    out = NULL
+        tryCatch({
+          if(nhdplus_debug()) {
+            message(paste(URL, "\n"))
+            message(post_body)
+          }
 
-  } else if(!is.null(AOI)){
+          out[[i]] <- rawToChar(httr::RETRY("POST",
+                                            URL,
+                                            body = post_body,
+                                            encode = "form")$content)
+        }, error = function(e) {
+          warning("Something went wrong trying to access a service.")
+          out <- NULL
+        })
 
-    out = sf::st_filter(sf::st_transform(out, t_srs),
-                        sf::st_transform(AOI, t_srs))
+        out[[i]] <- tryCatch({
+          sf::st_zm(sf::read_sf(out[[i]]))},
+          error = function(e) NULL)
+      }
 
-    if(nrow(out) == 0){
+      if(inherits(out[[1]], "data.frame")) {
+        out <- bind_rows(unify_types(out))
 
-      out = NULL
+        out <- check_valid(out[!duplicated(out[["id3dhp"]]), ],
+                           out_prj = t_srs)
 
+      } else {
+
+        out <- NULL
+
+      }
+
+      if(any(is.null(out), nrow(out) == 0)) {
+
+        out = NULL
+
+      } else if(!is.null(AOI)){
+
+        out = sf::st_filter(sf::st_transform(out, t_srs),
+                            sf::st_transform(AOI, t_srs))
+
+        if(nrow(out) == 0){
+          warning(paste(here$user_call, "features found but were outside area of interest polygon."))
+          out = NULL
+
+        }
+      }
+
+      if(!is.null(out)) {
+        out <- select(out, -any_of("OBJECTID"))
+      } else {
+        warning(paste("No", here$user_call, "features found"), call. = FALSE)
+        out <- NULL
+      }
     }
+    all_out[[l]] <- out
   }
-
-  if(!is.null(out)) {
-    return(select(out, -any_of("OBJECTID")))
-  } else {
-    warning(paste("No", here$user_call, "features found"), call. = FALSE)
-    NULL
-  }
-
+  sf::st_sf(data.table::rbindlist(all_out))
 }

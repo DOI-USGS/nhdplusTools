@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^.*cache
+^.*cache$
 LICENSE
 .travis.yml
 .lintr

@@ -1,7 +1,7 @@
 nhdplusTools 1.1.0
 ==========
 
-This release has a significant consolodation of code to work with web services.
+This release has a significant consolidation of code to work with web services.
 It incorporates an ArcGIS REST service for the first time. It has very few 
 backward compatibility issues with previous versions and introduces new functions
 and behavior.

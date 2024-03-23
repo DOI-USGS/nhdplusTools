@@ -382,6 +382,8 @@ nhdplusTools_cache_settings <- function(mode = NULL, timeout = NULL) {
   return(invisible(list(mode = current_mode, timeout = current_timeout)))
 }
 
+#' @importFrom memoise memoise cache_memory cache_filesystem
+#' @importFrom digest digest
 nhdplusTools_memoise_cache <- function() {
   sys_memo_cache <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_CACHE")
   ses_memo_cache <- try(get("nhdpt_mem_cache", envir = nhdplusTools_env), silent = TRUE)

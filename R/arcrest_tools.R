@@ -215,5 +215,5 @@ query_usgs_arcrest <- memoise::memoise(function(AOI = NULL,  ids = NULL,
     }
     all_out[[l]] <- out
   }
-  sf::st_sf(data.table::rbindlist(all_out))
+  tryCatch(sf::st_sf(data.table::rbindlist(all_out)), error = function(e) NULL)
 }, ~memoise::timeout(nhdplusTools_memoise_timeout()), cache = nhdplusTools_memoise_cache())

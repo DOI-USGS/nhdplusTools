@@ -366,7 +366,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' @return list containing settings at time of calling. If inputs are
 #' NULL, current settings. If settings are altered, previous setting values.
 #' @export
-
+#'
 nhdplusTools_cache_settings <- function(mode = NULL, timeout = NULL) {
   current_mode <- get("nhdpt_mem_cache", envir = nhdplusTools_env)
   current_timeout <- get("nhdpt_cache_timeout", envir = nhdplusTools_env)

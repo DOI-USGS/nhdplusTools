@@ -1,12 +1,22 @@
 nhdplusTools 1.1.0
 ==========
 
+This release has a significant consolodation of code to work with web services.
+It incorporates an ArcGIS REST service for the first time. It has very few 
+backward compatibility issues with previous versions and introduces new functions
+and behavior.
+
+A key change in behavior is the introduction of caching with the `memoise` package.
+See #366, pull request #364, and documentation in `nhdplusTools_cache_settings()`
+for more.
+
 - fixed nhd and nhdplushr urls #368
 - fix issue with nhdplusTools_data_dir() #365
 - fixed bug with large nhdplus downloads with empty tiles. #361
 - Added 3DHP_all service client. #363
 - Removed deprecated function `get_huc12` and `get_huc8`
 - Updated documentation of `get_huc()` and other web service functions.
+- added `nhdplusTools_cache_settings()` to control use of a `memoise` cache. #366
 
 nhdplusTools 1.0.0
 ==========

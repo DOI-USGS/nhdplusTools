@@ -190,21 +190,21 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
       # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
       if(!is.null(pd$basin))
         graphics::plot(gt(pd$basin), lwd = st$basin$lwd, col = st$basin$col,
-                       border = st$basin$border, add = TRUE)
+                       border = st$basin$border, add = TRUE, reset = FALSE)
       if(!is.null(pd$network_wtbd))
         graphics::plot(gt(pd$network_wtbd),
                        lwd = st$network_wtbd$lwd,
                        col = st$network_wtbd$col,
-                       border = st$network_wtbd$border, add = TRUE)
+                       border = st$network_wtbd$border, add = TRUE, reset = FALSE)
       if(!is.null(pd$off_network_wtbd))
         graphics::plot(gt(pd$off_network_wtbd),
                        lwd = st$off_network_wtbd$lwd,
                        col = st$off_network_wtbd$col,
-                       border = st$off_network_wtbd$border, add = TRUE)
+                       border = st$off_network_wtbd$border, add = TRUE, reset = FALSE)
       graphics::plot(gt(pd$flowline),
                      lwd = st$flowline$lwd,
                      col = st$flowline$col,
-                     add = TRUE)
+                     add = TRUE, reset = FALSE)
       if(!is.null(pd$outlets)) {
         for(type in unique(pd$outlets$type)) {
           st_type <- "default"
@@ -213,7 +213,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          col = st$outlets[[st_type]]$col,
                          pch = st$outlets[[st_type]]$pch,
                          bg = st$outlets[[st_type]]$bg,
-                         cex = st$outlets[[st_type]]$cex, add = TRUE)
+                         cex = st$outlets[[st_type]]$cex, add = TRUE, reset = FALSE)
         }
       }
     })
@@ -349,7 +349,8 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   }
 
   if(!is.null(bbox)) {
-    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg, overwrite, streamorder = streamorder)
+    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg, overwrite,
+                                     streamorder = streamorder, flowline_only = flowline_only)
     catchment <- flowline$catchment
     basin <- flowline$basin
     nexus <- flowline$nexus

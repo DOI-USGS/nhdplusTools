@@ -10,6 +10,9 @@
     <loc>https://doi-usgs.github.io/nhdplusTools/articles/advanced_network.html</loc>
   </url>
   <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/get_3dhp_data.html</loc>
+  </url>
+  <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/articles/index.html</loc>
   </url>
   <url>
@@ -89,6 +92,9 @@
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/fix_flowdir.html</loc>
+  </url>
+  <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_3dhp.html</loc>
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_boundaries.html</loc>
@@ -244,6 +250,9 @@
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/navigate_nldi.html</loc>
   </url>
   <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/nhdplusTools_cache_settings.html</loc>
+  </url>
+  <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/nhdplusTools_data_dir.html</loc>
   </url>
   <url>
@@ -254,6 +263,9 @@
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/prepare_nhdplus.html</loc>
+  </url>
+  <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/query_usgs_arcrest.html</loc>
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/query_usgs_geoserver.html</loc>

@@ -6,6 +6,7 @@ reference:
       Functions that help get access data. (all U.S. context)
   - contents:
       - '`download_nhdplushr`'
+      - '`get_3dhp`'
       - '`get_nhdplus`'
       - '`get_nhdplushr`'
       - '`get_hr_data`'
@@ -79,6 +80,7 @@ reference:
     desc: >
       Functions that make the package easier to work with.
   - contents:
+      - '`nhdplusTools_cache_settings`'
       - '`st_compatibalize`'
       - '`rename_geometry`'
       - '`align_nhdplus_names`'

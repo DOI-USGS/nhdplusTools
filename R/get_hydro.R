@@ -1,17 +1,30 @@
-#' @title Find WBD HUC 12 unit subsets
-#' @description Subsets the WBD level 12 features by location (POINT),
-#' area (POLYGON), or set of IDs.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
+#' @title Find WBD HUC unit subsets
+#' @description Subsets WBD features by location (POINT),
+#' area (POLYGON), or set of HUC IDs.
+#'
+#' @inherit query_usgs_geoserver details return params
 #' @param id WBD HUC ID(s)
 #' @param type character. Type of feature to return
-#' ('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12').
-#' See /link{download_nhdplusv2} for documentation of that dataset.
+#' ('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12', 'huc12_nhdplusv2').
+#'
+#' Pulls `huc02`-`huc12` from a web service that hosts a snapshot of the
+#' Watershed Boundary Dataset from October, 2020.
+#'
+#' See <doi:10.5066/P92U7ZUT> for full source data.
+#'
+#' See https://labs.waterdata.usgs.gov/geoserver/web/ for the web service.
+#'
+#' `huc12_nhdplusv2` derives from a snapshot of the WBD available from the nhdplusv2.
+#' See \link{download_nhdplusv2} for source data documentation.
+#'
+#'
+#'
 #' @export
 #'
 get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "huc12") {
 
-  allow_types <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12')
+  allow_types <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12',
+                   'huc12_nhdplusv2')
 
   if(!type %in% allow_types) {
     stop("type must be one of ", paste(allow_types, collapse = " "))
@@ -22,42 +35,9 @@ get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "hu
 
 }
 
-#' @title Find WBD HUC 08 unit subsets (DEPRECATED)
-#' @description Subsets the WBD level 08 features by location (POINT),
-#' area (POLYGON), or set of IDs.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
-#' @param id WBD HUC08 ID(s)
-#' @export
-get_huc8 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
-
-  warning("this function is deprecated -- use get_huc(..., type = \"huc08\") instead")
-
-  query_usgs_geoserver(AOI = AOI, ids = id, type = "huc08_legacy",
-                       t_srs = t_srs, buffer = buffer)
-}
-
-#' @title Find WBD HUC 12 unit subsets (DEPRECATED)
-#' @description Subsets the WBD level 12 features by location (POINT),
-#' area (POLYGON), or set of IDs. Derived from a static snapshot of
-#' HUC 12s from: <doi:10.5066/P9BTKP3T>
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
-#' @param id WBD HUC12 ID(s)
-#' See /link{download_nhdplusv2} for documentation of that dataset.
-#' @export
-#'
-get_huc12 <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
-
-  warning("this function is deprecated -- use get_huc(..., type = \"huc12\") instead")
-
-  query_usgs_geoserver(AOI = AOI, ids = id, type = "huc12_nhdplusv2",
-                       t_srs = t_srs, buffer = buffer)
-}
-
-#' @title Find NHD Water Bodies
-#' @description Subsets NHD waterbody features by location (POINT),
-#' area (POLYGON), or set of IDs.
+#' @title Find NHDPlusV2 Water Bodies
+#' @description Subsets NHDPlusV2 waterbody features by location (POINT),
+#' area (POLYGON), or set of IDs. See \link{download_nhdplusv2} for source data documentation.
 #' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id NHD Waterbody COMID(s)
@@ -70,9 +50,9 @@ get_waterbodies <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
                        buffer = buffer)
 }
 
-#' @title Find NHD Areas
-#' @description Subsets NHD Area features by location (POINT),
-#' area (POLYGON), or set of IDs.
+#' @title Find NHDPlusV2 Areas
+#' @description Subsets NHDPlusV2 Area features by location (POINT),
+#' area (POLYGON), or set of IDs. See \link{download_nhdplusv2} for source data documentation.
 #' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id NHD Area COMID(s)
@@ -86,7 +66,7 @@ get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 
 #' @title Find gagesII Features
 #' @description Subsets the gagesII dataset by location (POINT),
-#' area (POLYGON), or set of IDs.
+#' area (POLYGON), or set of IDs. See <doi:10.5066/P96CPHOT> for documentation of source data.
 #' @inherit query_usgs_geoserver details return
 #' @inheritParams query_usgs_geoserver
 #' @param id character NWIS Gage ID(s)
@@ -197,3 +177,77 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
     return(st_transform(sites_sf, t_srs))
   }
 }
+
+#' Get 3DHP Data
+#' @description
+#' Calls the 3DHP_all web service and returns sf data.frames for the selected
+#' layers. See https://hydro.nationalmap.gov/arcgis/rest/services/3DHP_all/MapServer
+#' for source data documentation.
+#'
+#' @inherit query_usgs_arcrest details return params
+#' @param ids character vector of id3dhp ids or mainstem uris
+#' @param universalreferenceid character vector of hydrolocation universal
+#' reference ids such as reachcodes
+#' @export
+#' @examples
+#' \donttest{
+#' AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
+#'                                    xmax = -89.24681, ymax = 43.17192),
+#'                                  crs = "+proj=longlat +datum=WGS84 +no_defs"))
+#'
+#' # get flowlines and hydrolocations
+#' flowlines <- get_3dhp(AOI = AOI, type = "flowline")
+#' hydrolocation <- get_3dhp(AOI = AOI, type = "hydrolocation")
+#' waterbody <- get_3dhp(AOI = AOI, type = "waterbody")
+#'
+#' if(!is.null(waterbody) & !is.null(flowlines) & !is.null(hydrolocation)) {
+#' plot(sf::st_geometry(waterbody), col = "lightblue", border = "lightgrey")
+#' plot(sf::st_geometry(flowlines), col = "blue", add = TRUE)
+#' plot(sf::st_geometry(hydrolocation), col = "grey", pch = "+", add = TRUE) }
+#'
+#' # given mainstem ids from any source, can query for them in ids.
+#'
+#' CO <- get_3dhp(ids = "https://geoconnex.us/ref/mainstems/29559",
+#'                type = "flowline")
+#'
+#' if(!is.null(CO))
+#'   plot(sf::st_geometry(CO), col = "blue")
+#'
+#' # get all the waterbodies along the CO river
+#' CO_wb <- get_3dhp(ids = unique(CO$waterbodyid3dhp), type = "waterbody")
+#'
+#' if(!is.null(CO_wb)) {
+#' plot(sf::st_geometry(CO_wb[grepl("Powell", CO_wb$gnisidlabel),]),
+#'      col = "blue", border = "NA") }
+#'
+#' # given universalreferenceid (reachcodes), can query for them but only
+#' # for hydrolocations. This is useful for looking up mainstem ids.
+#'
+#' get_3dhp(universalreferenceid = unique(hydrolocation$universalreferenceid),
+#'          type = "hydrolocation")
+#'}
+get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
+                     universalreferenceid = NULL,
+                     t_srs = NULL, buffer = 0.5) {
+
+  if(!is.null(universalreferenceid) & !grepl("outlet|reach|hydrolocation", type)) {
+    stop("universalereferenceid can only be specified for hydrolocation features")
+  }
+
+  where <- NULL
+  if(!is.null(universalreferenceid)) {
+    where <- paste(paste0("universalreferenceid IN ('",
+                          paste(universalreferenceid, collapse = "', '"), "')"))
+    if(!is.null(ids)) stop("can not specify both universalreferenceid and other ids")
+  }
+
+  if(!is.null(ids) && grepl("^https://", ids[1])) {
+    where <- paste(paste0("mainstemid IN ('",
+                          paste(ids, collapse = "', '"), "')"))
+    ids <- NULL
+  }
+
+  query_usgs_arcrest(AOI, ids, type, where, t_srs, buffer)
+
+}
+

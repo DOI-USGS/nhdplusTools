@@ -272,7 +272,7 @@ get_nldi_index <- function(location) {
 #' @importFrom httr GET
 #' @importFrom jsonlite fromJSON
 #' @noRd
-query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE) {
+query_nldi <- memoise::memoise(function(query, base_path = "/linked-data", parse_json = TRUE) {
   nldi_base_url <- paste0(get_nldi_url(), base_path)
 
   url <- paste(nldi_base_url, query,
@@ -303,7 +303,7 @@ query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE) {
     warning("Something went wrong accessing the NLDI.\n", e)
     NULL
   })
-}
+}, ~memoise::timeout(nhdplusTools_memoise_timeout()), cache = nhdplusTools_memoise_cache())
 
 #' @noRd
 check_nldi_feature <- function(nldi_feature, convert = TRUE) {

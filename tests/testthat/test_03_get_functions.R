@@ -47,28 +47,20 @@ test_that("query water labs...",{
 test_that("huc8", {
   testthat::skip_on_cran()
   #Point
-  expect_warning({
-  ptHUC8 = get_huc8(AOI = pt)
-  })
+  ptHUC8 = get_huc(AOI = pt, type = "huc08")
   expect_equal(nrow(ptHUC8), 1)
   expect_equal(ptHUC8$huc8, "17010101")
   expect_equal(sf::st_crs(ptHUC8)$epsg, 4326)
 
-  expect_warning({
-  expect_error(get_huc8(AOI = rbind(pt,pt2)),
+  expect_error(get_huc(AOI = rbind(pt, pt2), type = "huc08"),
                "AOI must be one an only one feature.")
-  })
 
   #Area
-  expect_warning({
-  areaHUC8 = get_huc8(AOI = area, t_srs = 5070)
-  })
+  areaHUC8 = get_huc(AOI = area, t_srs = 5070, type = "huc08")
   expect_equal(sf::st_crs(areaHUC8)$epsg, 5070)
   expect_equal(nrow(areaHUC8), 1)
   #ID
-  expect_warning({
-  ptHUC8id = get_huc8(id = "17010101")
-  })
+  ptHUC8id = get_huc(id = "17010101", type = "huc08")
   expect_identical(ptHUC8$huc8, ptHUC8id$huc8)
   expect_true(sf::st_crs(ptHUC8) == sf::st_crs(ptHUC8id) )
 })
@@ -77,27 +69,22 @@ test_that("huc8", {
 
 test_that("huc", {
   testthat::skip_on_cran()
+
+  expect_error(get_huc(AOI = pt, type = "borked"),
+               "type must be one of huc02 huc04 huc06 huc08 huc10 huc12 huc12_nhdplusv2")
   #Point
-  expect_warning({
-  ptHUC12 = get_huc12(AOI = pt)
-  })
+  ptHUC12 = get_huc(AOI = pt, type = "huc12_nhdplusv2")
   expect_equal(nrow(ptHUC12), 1)
   expect_equal(ptHUC12$huc12, "170101010306")
   #Area
-  expect_warning({
-  areaHUC12 = get_huc12(AOI = area)
+  areaHUC12 = get_huc(AOI = area, type = "huc12_nhdplusv2")
   expect_equal(nrow(areaHUC12), 2)
-  })
   #ID
-  expect_warning({
-  HUC12id = get_huc12(id = "170101010306")
-  })
+  HUC12id = get_huc(id = "170101010306", type = "huc12_nhdplusv2")
   expect_identical(ptHUC12$huc12, HUC12id$huc12)
   # multi-id... only need to check once
-  expect_warning({
-  HUC12id2 = get_huc12(id = areaHUC12$huc12) %>%
+  HUC12id2 = get_huc(id = areaHUC12$huc12, type = "huc12_nhdplusv2") %>%
     sf::st_transform(sf::st_crs(area))
-  })
 
   expect_identical(HUC12id2$geometry, areaHUC12$geometry)
 

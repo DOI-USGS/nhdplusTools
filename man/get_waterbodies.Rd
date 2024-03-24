@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_hydro.R
 \name{get_waterbodies}
 \alias{get_waterbodies}
-\title{Find NHD Water Bodies}
+\title{Find NHDPlusV2 Water Bodies}
 \usage{
 get_waterbodies(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5)
 }
@@ -24,8 +24,8 @@ extended search. Default = 0.5}
 a simple features (sf) object
 }
 \description{
-Subsets NHD waterbody features by location (POINT),
-area (POLYGON), or set of IDs.
+Subsets NHDPlusV2 waterbody features by location (POINT),
+area (POLYGON), or set of IDs. See \link{download_nhdplusv2} for source data documentation.
 }
 \details{
 The returned object(s) will have the same

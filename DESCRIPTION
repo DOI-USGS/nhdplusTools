@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -28,7 +28,7 @@ URL: https://doi-usgs.github.io/nhdplusTools/ https://github.com/doi-usgs/nhdplu
 BugReports: https://github.com/doi-usgs/nhdplusTools/issues/
 Depends:
     R (>= 4.0)
-Imports: hydroloom, dataRetrieval, dplyr, sf, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles, mapsf, fst, arrow, tools, zip, pbapply
+Imports: hydroloom, dataRetrieval, dplyr, sf, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles, mapsf, fst, arrow, tools, zip, pbapply, memoise, digest
 Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, lwgeom, gifski, leaflet, httptest, future, future.apply
 License: CC0
 Encoding: UTF-8

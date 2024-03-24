@@ -93,6 +93,9 @@ assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
        envir = nhdplusTools_env)
 
+assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
+       envir = nhdplusTools_env)
+
 assign("split_flowlines_attributes",
        c("COMID", "toCOMID", "LENGTHKM"),
        envir = nhdplusTools_env)
@@ -350,6 +353,76 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
   }
 }
 
+#' @title nhdplusTools cache settings
+#' @description
+#' Provides an interface to adjust nhdplusTools `memoise` cache.
+#'
+#' Mode and timeout can also be set using environment variables.
+#' `NHDPLUSTOOLS_MEMOISE_CACHE` and `NHDPLUSTOOLS_MEMOISE_TIMEOUT` are
+#' used unless overriden with this function.
+#'
+#' @param mode character 'memory' or 'filesystem'
+#' @param timeout numeric number of seconds until caches invalidate
+#' @return list containing settings at time of calling. If inputs are
+#' NULL, current settings. If settings are altered, previous setting values.
+#' @export
+#'
+nhdplusTools_cache_settings <- function(mode = NULL, timeout = NULL) {
+  current_mode <- get("nhdpt_mem_cache", envir = nhdplusTools_env)
+  current_timeout <- get("nhdpt_cache_timeout", envir = nhdplusTools_env)
+
+  if(!is.null(mode) && mode %in% c("memory", "filesystem")) {
+    assign("nhdpt_mem_cache", mode, envir = nhdplusTools_env)
+  }
+
+  if(!is.null(timeout) && is.numeric(timeout)) {
+    assign("nhdpt_cache_timeout", timeout, envir = nhdplusTools_env)
+  }
+
+  return(invisible(list(mode = current_mode, timeout = current_timeout)))
+}
+
+#' @importFrom memoise memoise cache_memory cache_filesystem
+#' @importFrom digest digest
+nhdplusTools_memoise_cache <- function() {
+  sys_memo_cache <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_CACHE")
+  ses_memo_cache <- try(get("nhdpt_mem_cache", envir = nhdplusTools_env), silent = TRUE)
+
+  # if it hasn't been set up yet, try to use the system env
+  if(!inherits(ses_memo_cache, "try-error")) {
+    return(ses_memo_cache)
+  } else {
+    if(sys_memo_cache == "memory") {
+      memoise::cache_memory()
+    } else {
+      dir.create(nhdplusTools_data_dir(), showWarnings = FALSE, recursive = TRUE)
+
+      memoise::cache_filesystem(nhdplusTools_data_dir())
+    }
+
+  }
+
+}
+
+nhdplusTools_memoise_timeout <- function() {
+  sys_timeout <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_TIMEOUT")
+  ses_timeout <- try(get("nhdpt_cache_timeout", envir = nhdplusTools_env), silent = TRUE)
+
+  # if it hasn't been set up yet, try to use the system env
+  if(!inherits(ses_timeout, "try-error")) {
+    return(ses_timeout)
+  } else {
+    if(sys_timeout != "") {
+      as.numeric(sys_timeout)
+    } else {
+      # default to one day
+      oneday_seconds <- 60 * 60 * 24
+    }
+  }
+}
+
+assign("nhdpt_mem_cache", nhdplusTools_memoise_cache(), envir = nhdplusTools_env)
+assign("nhdpt_cache_timeout", nhdplusTools_memoise_timeout(), envir = nhdplusTools_env)
 
 #' @title Align NHD Dataset Names
 #' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.

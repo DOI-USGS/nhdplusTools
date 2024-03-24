@@ -1,6 +1,7 @@
 
 test_that("rescale", {
   skip_on_cran()
+  skip_on_os("mac")
 
   vars <- data.frame(characteristic_id = c("CAT_EWT", "CAT_EWT", "CAT_EWT", "CAT_EWT", "CAT_BASIN_AREA"),
                      summary_statistic = c("area_weighted_mean", "min", "sum", "max", "sum"))

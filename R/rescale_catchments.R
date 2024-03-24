@@ -198,6 +198,10 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
     catchment_characteristics <- get_catchment_characteristics(varname = vars$characteristic_id,
                                               ids = unique(lookup_table$comid))
 
+    if(is.null(catchment_characteristics)) {
+      return(NULL)
+    }
+
   }
 
   var_names <- unique(catchment_characteristics$characteristic_id)

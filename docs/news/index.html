@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -35,6 +35,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
+    </li>
+    <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
     </li>
     <li>
@@ -67,10 +70,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.0.1" id="nhdplustools-101">nhdplusTools 1.0.1<a class="anchor" aria-label="anchor" href="#nhdplustools-101"></a></h2>
+<h2 class="page-header" data-toc-text="1.1.0" id="nhdplustools-110">nhdplusTools 1.1.0<a class="anchor" aria-label="anchor" href="#nhdplustools-110"></a></h2>
+<p>This release has a significant consolidation of code to work with web services. It incorporates an ArcGIS REST service for the first time. It has very few backward compatibility issues with previous versions and introduces new functions and behavior.</p>
+<p>A key change in behavior is the introduction of caching with the <code>memoise</code> package. See <a href="https://github.com/doi-usgs/nhdplusTools/issues/366" class="external-link">#366</a>, pull request <a href="https://github.com/doi-usgs/nhdplusTools/issues/364" class="external-link">#364</a>, and documentation in <code><a href="../reference/nhdplusTools_cache_settings.html">nhdplusTools_cache_settings()</a></code> for more.</p>
 <ul><li>fixed nhd and nhdplushr urls <a href="https://github.com/doi-usgs/nhdplusTools/issues/368" class="external-link">#368</a></li>
 <li>fix issue with nhdplusTools_data_dir() <a href="https://github.com/doi-usgs/nhdplusTools/issues/365" class="external-link">#365</a></li>
 <li>fixed bug with large nhdplus downloads with empty tiles. <a href="https://github.com/doi-usgs/nhdplusTools/issues/361" class="external-link">#361</a></li>
+<li>Added 3DHP_all service client. <a href="https://github.com/doi-usgs/nhdplusTools/issues/363" class="external-link">#363</a></li>
+<li>Removed deprecated function <code>get_huc12</code> and <code>get_huc8</code>
+</li>
+<li>Updated documentation of <code><a href="../reference/get_huc.html">get_huc()</a></code> and other web service functions.</li>
+<li>added <code><a href="../reference/nhdplusTools_cache_settings.html">nhdplusTools_cache_settings()</a></code> to control use of a <code>memoise</code> cache. <a href="https://github.com/doi-usgs/nhdplusTools/issues/366" class="external-link">#366</a></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.0.0" id="nhdplustools-100">nhdplusTools 1.0.0<small>2023-10-02</small><a class="anchor" aria-label="anchor" href="#nhdplustools-100"></a></h2>
@@ -271,7 +281,7 @@ To cite nhdplusTools in publications, please use:
 <li>Functions to download and cache all NHDPlus VAAs (in a 195mb <code>.fst</code> file) for use in network navigation and other applications have been added. These can be used with any nhdplusTools functions that do not require geometry.</li>
 <li>
 <code><a href="../reference/get_levelpaths.html">get_levelpaths()</a></code> now has an <code>override_factor</code> parameter that will cause stream leveling to follow the weight rather than the name input if the weight is <code>override_factor</code> times larger than the name indication.</li>
-</ul><p><em>Functions Added</em> * <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> * <code><a href="../reference/get_nhdarea.html">get_nhdarea()</a></code> * <code><a href="../reference/get_waterbodies.html">get_waterbodies()</a></code> * <code><a href="../reference/get_gagesII.html">get_gagesII()</a></code> * <code><a href="../reference/get_huc12.html">get_huc12()</a></code> * <code><a href="../reference/get_huc8.html">get_huc8()</a></code> * <code><a href="../reference/download_vaa.html">download_vaa()</a></code> * <code><a href="../reference/get_vaa.html">get_vaa()</a></code> * <code><a href="../reference/get_vaa_names.html">get_vaa_names()</a></code> * <code><a href="../reference/get_vaa_path.html">get_vaa_path()</a></code></p>
+</ul><p><em>Functions Added</em> * <code><a href="../reference/get_nhdplus.html">get_nhdplus()</a></code> * <code><a href="../reference/get_nhdarea.html">get_nhdarea()</a></code> * <code><a href="../reference/get_waterbodies.html">get_waterbodies()</a></code> * <code><a href="../reference/get_gagesII.html">get_gagesII()</a></code> * <code>get_huc12()</code> * <code>get_huc8()</code> * <code><a href="../reference/download_vaa.html">download_vaa()</a></code> * <code><a href="../reference/get_vaa.html">get_vaa()</a></code> * <code><a href="../reference/get_vaa_names.html">get_vaa_names()</a></code> * <code><a href="../reference/get_vaa_path.html">get_vaa_path()</a></code></p>
 <p><em>Functions Removed</em> * <code>discover_nldi_navigation()</code> * <code>discover_nldi_sources()</code></p>
 <p><em>Functions Deprecated</em> * <code>stage_national_data()</code></p>
 <p><em>Functions with Consolidated Internals</em> * <code><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id()</a></code> * <code><a href="../reference/get_nldi_basin.html">get_nldi_basin()</a></code> * <code><a href="../reference/get_nldi_feature.html">get_nldi_feature()</a></code> * <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> * <code><a href="../reference/plot_nhdplus.html">plot_nhdplus()</a></code></p>

@@ -123,8 +123,11 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
                         simp = NULL, proj = NULL, rename = TRUE) {
   if(layer == "NHDFlowline") {
     hr_data <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
-    hr_data <- select(hr_data, -ReachCode, -VPUID)
-    hr_data <- left_join(st_zm(read_sf(gdb, layer)), hr_data, by = "NHDPlusID")
+    hr_data <- select(hr_data, -dplyr::matches(c("ReachCode", "VPUID"), ignore.case = TRUE))
+
+    join_col <- names(hr_data)[grepl("nhdplusid", names(hr_data), ignore.case = TRUE)]
+
+    hr_data <- left_join(st_zm(read_sf(gdb, layer)), hr_data, by = join_col)
 
     fix <- which( # In the case things come in as non-linestring geometries
       !sapply(st_geometry(hr_data),

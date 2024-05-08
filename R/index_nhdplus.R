@@ -71,16 +71,18 @@ get_flowline_index <- function(flines, points,
                                precision = NA,
                                max_matches = 1) {
 
-  search_radius <- hydroloom:::check_search_radius(search_radius, points)
-
-  point_buffer <- sf::st_buffer(points, search_radius)
-
   if(is.character(flines) && flines == "download_nhdplusv2") {
 
     if((!is.null(nrow(points)) && nrow(points)) == 1 | length(points) == 1) {
+
+      search_radius <- hydroloom:::check_search_radius(search_radius, points)
+
       req <- sf::st_buffer(points, search_radius)
+
     } else {
+
       req <- points
+
     }
 
     flines <- align_nhdplus_names(

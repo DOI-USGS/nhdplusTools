@@ -86,7 +86,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 
       layer_set <- lapply(gdbs, get_hr_data, layer = layer, ...)
 
-      out <- do.call(rbind, layer_set)
+      out <- dplyr::bind_rows(layer_set)
 
       try(out <- st_sf(out))
     }

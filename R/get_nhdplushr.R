@@ -91,8 +91,19 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
       try(out <- st_sf(out))
     }
 
-    if(grepl("flowline", layer, ignore.case = TRUE) & check_terminals)
-      out <- make_standalone(out)
+    if(grepl("flowline", layer, ignore.case = TRUE) & check_terminals) {
+      expect_names <- get(paste0("make_standalone_tonode_attributes"),
+                          envir = nhdplusTools_env)
+      if(!all(expect_names %in% names(out))) {
+        warning("check_terminals is true but attributes selected do not support the checks.")
+      } else {
+        tryCatch(out <- make_standalone(out),
+                 error = function(e) {
+                   warning("Failed to execute 'make_standalone' on output.\n",
+                           "Error was:\n", e)
+                 })
+      }
+    }
 
     if(!is.null(out_gpkg) && (!layer %in% layer_names | overwrite)) {
       write_sf(out, layer = layer, dsn = out_gpkg)

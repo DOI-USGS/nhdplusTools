@@ -2,8 +2,7 @@
 
 test_that("vaa examples", {
   skip_on_cran()
-  skip_on_os("linux")
-  skip_on_os("mac")
+  skip_on_ci()
 
   vaa_names <- get_vaa_names()
 

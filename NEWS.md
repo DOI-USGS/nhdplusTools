@@ -17,6 +17,8 @@ for more.
 - Removed deprecated function `get_huc12` and `get_huc8`
 - Updated documentation of `get_huc()` and other web service functions.
 - added `nhdplusTools_cache_settings()` to control use of a `memoise` cache. #366
+- fix minor bug related to binding nhdplushr data together. #380
+
 
 nhdplusTools 1.0.0
 ==========

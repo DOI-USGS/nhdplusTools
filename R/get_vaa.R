@@ -211,7 +211,9 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 #' @importFrom utils read.delim
 #' @export
 #' @examples
+#' \donttest{
 #' get_characteristics_metadata()
+#' }
 get_characteristics_metadata <- function(search, cache = TRUE) {
 
   out <- tryCatch({

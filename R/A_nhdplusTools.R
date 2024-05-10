@@ -10,6 +10,7 @@ nhdplusTools_env <- new.env()
 # NHDPlus Attributes
 COMID <- "COMID"
 FEATUREID <- "FEATUREID"
+Permanent_Identifier <- "Permanent_Identifier"
 Hydroseq <- "Hydroseq"
 UpHydroseq <- "UpHydroseq"
 DnHydroseq <- "DnHydroseq"
@@ -50,6 +51,7 @@ WBAREACOMI <- "WBAREACOMI"
 # List of input names that should be changed to replacement names
 nhdplus_attributes <- list(
   COMID = COMID, NHDPlusID = COMID,
+  Permanent_Identifier = Permanent_Identifier,
   RPUID = RPUID,
   VPUID = VPUID,
   FEATUREID = FEATUREID,

@@ -186,7 +186,7 @@ cull_cols <- function(x, keep_cols) {
 
   if(is.null(keep_cols)) return(x)
 
-  keep_cols <- keep_cols[keep_cols %in% names(x)]
+  keep_cols <- names(x)[sapply(names(x), \(x) any(grepl(x, keep_cols, ignore.case = TRUE)))]
 
   geom_name <- attr(x, "sf_column")
   if(!geom_name %in% keep_cols) keep_cols <- c(keep_cols, geom_name)

@@ -72,7 +72,7 @@ prepare_nhdplus <- function(flines,
 
   if ("sf" %in% class(flines)) {
     if (warn) warning("removing geometry")
-    flines <- drop_geometry(flines)
+    flines <- st_drop_geometry(flines)
   }
 
   orig_rows <- nrow(flines)
@@ -175,7 +175,6 @@ filter_coastal <- function(flines) {
   }
 }
 
-# TODO: document as calling hydroloom
 #' Get tocomid
 #' @description Given flowlines with fromnode and tonode attributes,
 #' will return a toid attribute that is the result of joining
@@ -184,7 +183,7 @@ filter_coastal <- function(flines) {
 #' This is done grouped by terminalpathID because duplicate node
 #' ids have been encountered across basins in some datasets. If
 #' `remove_coastal` is `TRUE` (the default) either ftype or fcode are
-#' required.
+#' required. Uses the \link[hydroloom]{add_toids} function.
 #' @param x data.frame with comid, tonode, fromnode, and (optionally)
 #' divergence and terminalpa attributes.
 #' @param return_dendritic logical if TRUE, a divergence attribute is required
@@ -194,11 +193,12 @@ filter_coastal <- function(flines) {
 #' @param missing integer value to use for terminal nodes.
 #' @param remove_coastal logical remove coastal features prior to generating
 #' tocomid values? ftype or fcode are required if `TRUE`. fcode == 56600 or
-#' fcode == "Coastline" will be fremoved.
+#' fcode == "Coastline" will be removed.
 #' @param add logical if TRUE, a tocomid column will be added, otherwise
 #' a data.frame with two columns will be returned.
 #' @return data.frame containing comid and tocomid attributes or all
 #' attributes provided with comid and tocomid in the first and second columns..
+#' @importFrom hydroloom add_toids
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
@@ -214,7 +214,7 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
   hy_g <- get_hyg(x, add, "comid")
 
-  x <- drop_geometry(x)
+  x <- st_drop_geometry(x)
 
   if(remove_coastal)
     x <- filter_coastal(x)

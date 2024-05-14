@@ -7,7 +7,7 @@
 get_wb_outlet(lake_id, network)
 }
 \arguments{
-\item{lake_id}{integer COMID (or character permenent identifier for hi res) of lake.}
+\item{lake_id}{integer COMID (or character permanent identifier for hi res) of lake.}
 
 \item{network}{data.frame of network features containing wbareacomi, and Hydroseq}
 }

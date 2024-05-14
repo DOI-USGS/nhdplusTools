@@ -23,13 +23,13 @@ found at path.}
 
 \item{updated_network}{logical default FALSE. If TRUE, updated network attributes
 from E2NHD and National Water Model retrieved from
-\doi{10.5066/P9W79I7Q}.}
+\doi{10.5066/P976XCVT}.}
 }
 \value{
 data.frame containing requested VAA data
 }
 \description{
-Return requested NHDPlusv2 Attributes.
+Return requested NHDPlusV2 Attributes.
 }
 \details{
 The VAA data is a aggregate table of information from the NHDPlusV2

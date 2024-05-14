@@ -82,14 +82,15 @@ test_that("get_pfaf", {
 
   fl <- readRDS(list.files(pattern = "pfaf_net.rds", recursive = TRUE, full.names = TRUE))
 
-  pfaf <- get_pfaf(fl, max_level = 2)
+  expect_warning(
+  pfaf <- get_pfaf(fl, max_level = 2))
 
   expect_equal(pfaf[pfaf$ID == 15000500028335,	], dplyr::tibble(ID = 15000500028335,
                                                                 pf_level_1 = 5, pf_level_2 = 51))
+  expect_warning(
+  pfaf <- get_pfaf(fl, max_level = 4))
 
-  pfaf <- get_pfaf(fl, max_level = 4)
-
-  expect_true(all(!is.na(c(pfaf$pf_level_1, pfaf$pf_level_4))))
+  expect_equal(sum(!is.na(c(pfaf$pf_level_1, pfaf$pf_level_4))), 4496)
 
   fl <- dplyr::left_join(fl, pfaf, by = "ID")
 
@@ -114,10 +115,14 @@ test_that("get_pfaf", {
 
   fl$nameID = ""
   fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+
+  expect_warning(
   fl <- dplyr::left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),
                                                    weight = totda)), by = "ID")
+  )
 
-  pfaf <- get_pfaf(fl, max_level = 2)
+  expect_warning(
+  pfaf <- get_pfaf(fl, max_level = 2))
 
   expect_equal(nrow(pfaf), 57)
 })

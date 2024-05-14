@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -35,7 +35,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
+      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
     </li>
     <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
@@ -45,9 +45,6 @@
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul></li>
 <li>
@@ -91,7 +88,7 @@
     <dl><dt>nldi_feature</dt>
 <dd><p>list with names `featureSource` and `featureID` where
 `featureSource` is derived from the "source" column of  the response of
-dataRetrieval::get_nldi_sources() and the `featureID` is a known identifier
+<a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">get_nldi_sources</a> and the `featureID` is a known identifier
 from the specified `featureSource`.</p></dd>
 
 
@@ -101,7 +98,7 @@ from the specified `featureSource`.</p></dd>
 
 <dt>data_source</dt>
 <dd><p>character chosen from "source" column of the response
-of dataRetrieval::get_nldi_sources() or empty string for flowline geometry.</p></dd>
+of <a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">get_nldi_sources</a> or empty string for flowline geometry.</p></dd>
 
 
 <dt>distance_km</dt>
@@ -150,14 +147,13 @@ of dataRetrieval::get_nldi_sources() or empty string for flowline geometry.</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -89.45556 ymin: 43.08944 xmax: -89.36083 ymax: 43.14083</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   sourceName               identifier    comid measure reach…¹ name      X     Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> NWIS Surface Water Sites USGS-05428000 1329…    1.37 070900… LAKE… -<span style="color: #BB0000;">89.4</span>  43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> NWIS Surface Water Sites USGS-05428500 1329…   42.9  070900… YAHA… -<span style="color: #BB0000;">89.4</span>  43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> NWIS Surface Water Sites USGS-05427905 1329…   86.8  070900… SIXM… -<span style="color: #BB0000;">89.4</span>  43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> NWIS Surface Water Sites USGS-4306000… 1329…   59.3  070900… LAKE… -<span style="color: #BB0000;">89.5</span>  43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: geometry &lt;POINT [°]&gt;, and abbreviated variable name</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​reachcode</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sourceName               identifier  comid measure reachcode name      X     Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> NWIS Surface Water Sites USGS-05428… 1329…    1.37 07090002… LAKE… -<span style="color: #BB0000;">89.4</span>  43.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> NWIS Surface Water Sites USGS-05428… 1329…   42.9  07090002… YAHA… -<span style="color: #BB0000;">89.4</span>  43.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> NWIS Surface Water Sites USGS-05427… 1329…   86.8  07090002… SIXM… -<span style="color: #BB0000;">89.4</span>  43.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> NWIS Surface Water Sites USGS-43060… 1329…   59.3  07090002… LAKE… -<span style="color: #BB0000;">89.5</span>  43.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;POINT [°]&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -174,7 +170,7 @@ of dataRetrieval::get_nldi_sources() or empty string for flowline geometry.</p><
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

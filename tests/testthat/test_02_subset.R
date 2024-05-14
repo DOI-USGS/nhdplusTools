@@ -56,11 +56,11 @@ test_that("subset runs as expected", {
 
   if (!dir.exists(temp_dir)) dir.create(temp_dir)
 
-  staged_nhdplus <- stage_national_data(output_path = temp_dir)
+  fline <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network")
 
-  all_comids <- readRDS(staged_nhdplus$flowline)$COMID
+  all_comids <- fline$COMID
 
-  comids <- get_UM(readRDS(staged_nhdplus$flowline), 13293392)
+  comids <- get_UM(fline, 13293392)
 
   out_file <- tempfile(fileext = ".gpkg")
 

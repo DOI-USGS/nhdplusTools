@@ -25,7 +25,7 @@ the comid and tocomid attributes.}
 
 \item{remove_coastal}{logical remove coastal features prior to generating
 tocomid values? ftype or fcode are required if `TRUE`. fcode == 56600 or
-fcode == "Coastline" will be fremoved.}
+fcode == "Coastline" will be removed.}
 
 \item{add}{logical if TRUE, a tocomid column will be added, otherwise
 a data.frame with two columns will be returned.}
@@ -42,7 +42,7 @@ attribute is included, the join is executed by terminalpa group.
 This is done grouped by terminalpathID because duplicate node
 ids have been encountered across basins in some datasets. If
 `remove_coastal` is `TRUE` (the default) either ftype or fcode are
-required.
+required. Uses the \link[hydroloom]{add_toids} function.
 }
 \examples{
 source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))

@@ -17,3 +17,6 @@ pkgdown
 cran-comments.md
 .Renviron
 CRAN-SUBMISSION
+temp.R
+revdep
+docs/*demo*

@@ -10,11 +10,10 @@ get_pathlength(x)
 \item{x}{data.frame with ID, toID, length columns.}
 }
 \value{
-data.frame containing levelpaths for each ID
+data.frame containing pathlength for each ID
 }
 \description{
-Generates the main path length to a basin's
-terminal path.
+Generates the main path length to a basin's terminal path.
 }
 \examples{
 source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))

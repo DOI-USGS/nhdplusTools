@@ -2,7 +2,7 @@
 % Please edit documentation in R/rebuild_topology.R
 \name{make_node_topology}
 \alias{make_node_topology}
-\title{get node topology from edge topology}
+\title{get node topology from edge topology (DEPRECATED)}
 \usage{
 make_node_topology(x, add_div = NULL, add = TRUE)
 }
@@ -19,7 +19,7 @@ a data.frame with two columns will be returned.}
 }
 \value{
 data.frame containing id, fromnode, and tonode attributes or all
-attributes provided with id, fromnode and tonodde in the first three columns.
+attributes provided with id, fromnode and tonode in the first three columns.
 }
 \description{
 creates a node topology table from an edge topology

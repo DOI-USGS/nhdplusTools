@@ -9,27 +9,7 @@
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 
-## nhdplusTools: Tools for Accessing and Working with the NHDPlus
-
-*New nhdplusTools is coming*
-
-`nhdplusTools` is being split into two packages. A new package
-[`hydroloom`](https://github.com/DOI-USGS/hydroloom) is now available
-for testing. It contains all nhdplusTools functionality not related to
-specific dataset schemas. See [this
-issue](https://github.com/DOI-USGS/nhdplusTools/issues/307) for details.
-The transition to `hydroloom` should occur in Fall 2023. In the mean
-time, you can install the `hydroloom` version of nhdplusTools with:
-
-`remotes::install_github("doi-usgs/nhdplusTools@hydroloom")`
-
-Please submit issues at:
-<https://github.com/DOI-USGS/nhdplusTools/issues>
-
-This package is a growing set of tools for manipulation of hydrographic
-data using the NHDPlus data model. There is no specific funding or plan
-to continue development of this package long term but ongoing support is
-available due to use of the package in project work.
+## nhdplusTools: Tools for Accessing and Working with the NHDPlus and other US hydrographic data.
 
 ### Recommended Citation:
 
@@ -52,59 +32,31 @@ remotes::install_github("DOI-USGS/nhdplusTools")
 
 ### Resources
 
-See the [“Get
-Started”](https://doi-usgs.github.io/nhdplusTools/articles/nhdplusTools.html)
-vignette showing the gneral workflow and functionality of
-nhdplusTools.  
-See a set of
-[slides](https://doi-usgs.github.io/nhdplusTools/awra_2019/)
-illustrating how to use nhdplusTools with other DOI-USGS packages.
+For data discovery and access in a U.S. context, start with the
+[**Getting Started
+page**](https://doi-usgs.github.io/nhdplusTools/articles/nhdplusTools.html).
 
-### Terminology:
-
-The following definitions have been used as much as possible throughout
-the package.  
-Terms for rivers:  
-**Flowline:** The NHD name for a hydrographic representation of a
-flowing body of water. Flowline is generally used when referring to
-geometry.  
-**Flowpath:** The HY_Features name for a hydrologic feature that is the
-primary path water follows through a catchment; either from headwater to
-outlet or inlet to outlet. Flowpath is used when describing aspects of
-the abstract flowpath featuretype, generally in relation to a flowpath’s
-relationship to a catchment.
-
-Terms used for hydrologic units:  
-**Catchment:** The most abstract unit of hydrology in HY_Features is the
-catchment. It is a physiographic unit with zero or one inlets and one
-outlet. It does not inherently have any conceptual realizations. Rather,
-a given catchment can be realized in a number of ways; flowpath, divide,
-and networks of flowpaths and divides are the primary realizations.  
-**Catchment divide:** NHD “catchment” polygons are more accurately
-described as “catchment divide” features. Because of the overlap with
-the HY_Features abstract “catchment” feature type, “catchment divide” is
-used for polygon representations of catchments.
+Detailed documentation of all the package functions can be found at the
+[**Reference
+page**](https://doi-usgs.github.io/nhdplusTools/reference/).
 
 ### Data:
 
-[A National Dataset of NHDPlusV2.1 is available
-here.](https://www.epa.gov/waterdata/nhdplus-national-data)
-
-For data subsetting, also see:
-[`get_nhdplus`](https://doi-usgs.github.io/nhdplusTools/reference/get_nhdplus.html),
-[`subset_nhdplus`](https://doi-usgs.github.io/nhdplusTools/reference/subset_nhdplus.html),
-[`navigate_network`](https://doi-usgs.github.io/nhdplusTools/reference/navigate_network.html),
-[`download_nhdplushr`](https://doi-usgs.github.io/nhdplusTools/reference/download_nhdplushr.html)
-and
-[`get_nhdplushr`](https://doi-usgs.github.io/nhdplusTools/reference/get_nhdplushr.html)
+`nhdplusTools`, is designed to provide easy access to data associated
+with the U.S. National Hydrography Dataset. Many functions provided in
+`nhdplusTools` are thin wrappers around functions that have been
+migrated to `hydroloom`.
 
 ## Package Vision
 
 The `nhdplusTools` package is intended to provide a reusable set of
 tools to subset, relate data to, and generate network attributes for
-NHDPlus data.
+U.S. NHDPlus data.
 
-It implements a data model consistent with both the
+General, globally applicable functionality has been moved to
+[`hydroloom`](https://github.com/DOI-USGS/hydroloom)
+
+`nhdplusTools` implements a data model consistent with both the
 [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
 dataset and the
 [HY_Features](http://opengeospatial.github.io/HY_Features/) data model.
@@ -162,19 +114,18 @@ attributes that describe characteristics of the catchment’s interior. In
 this way, the COMID identifier is actually an identifier for a
 collection of data that together fully describe an NHDPlus catchment.
 [See the NHDPlus mapping to HY_Features in the HY_Features
-specification.](http://docs.opengeospatial.org/is/14-111r6/14-111r6.html#annexD_1)
+specification.](https://docs.ogc.org/is/14-111r6/14-111r6.html#annexD_1)
 
-Below is a description of the expected scope of data to be used by the
-`nhdplusTools` package. While other data and attributes may come into
-scope, it should only be done as a naive pass-through, as in data
-subsetting, or with considerable deliberation.
+Below is a description of the scope of data used by the `nhdplusTools`
+package. While other data and attributes may come into scope, it should
+only be done as a naive pass-through, as in data subsetting, or with
+considerable deliberation.
 
 ##### Flowlines and Waterbodies
 
 Flowline geometry is a mix of 1-d streams and 1-d “artificial paths”. In
 order to complete the set of features meant to represent water, we need
-to include waterbody and potentially NHDArea polygons (double line
-stream overlays).
+to include waterbody polygons.
 
 ##### Catchment Polygons
 
@@ -197,10 +148,11 @@ important.
 
 ##### Web vs Local Data
 
-Web services will generally be avoided. However, applications that would
-require loading significant amounts of data to perform something that
-can be accomplished with a web service very quickly will be considered.
-Systems like the [Network Linked Data
+`nhdplusTools` offers a mix of web service and local data functionality.
+Web services have generally been avoided for large processes. However,
+applications that would require loading significant amounts of data to
+perform something that can be accomplished with a web service very
+quickly are supported. Systems like the [Network Linked Data
 Index](https://waterdata.usgs.gov/blog/nldi-intro/) are used for data
 discovery.
 
@@ -248,35 +200,21 @@ this repository. Once built, it can be run with the following command.
 ### Release procedure:
 
 - ensure all checks pass and code coverage is adequate.
-
 - ensure news has been updated
-
 - convert disclaimer to [released
   form](https://code.usgs.gov/water/sbtools/-/blob/v1.1.14/README.md#L113)
-
 - update version in inst/CITATION file
-
 - update version in code.json file
-
 - Build source package and upload to CRAN
-
 - Once a new version has been accepted by cran,
-
 - ensure pkgdown is up to date
-
 - commit, push, and PR/MR changes
-
 - create release page and tag
-
 - attach cran tar.gz to release page
-
 - update DOI to point to release page
-
 - switch README disclaimer back to [“dev”
   mode.](https://code.usgs.gov/water/sbtools#disclaimer)
-
 - Update version in Description.
-
 - push an PR/MR changes.
 
 ### Contributing:
@@ -286,8 +224,8 @@ package a community created resource for us all to gain from and won’t
 be able to do that without your help!
 
 1)  Contributions should be thoroughly tested with
-    [testthat](https://testthat.r-lib.org/).  
-2)  Code style should attempt to follow the [tidyverse style
+    [`testthat`](https://testthat.r-lib.org/).  
+2)  Code style should attempt to follow the [`tidyverse` style
     guide.](https://style.tidyverse.org/)  
 3)  Please attempt to describe what you want to do prior to contributing
     by submitting an issue.  

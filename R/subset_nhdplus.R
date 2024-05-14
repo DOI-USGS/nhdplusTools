@@ -33,7 +33,7 @@
 #'
 #' The "download" option of this function should be considered preliminary
 #' and subject to revision. It does not include as many layers and may not
-#' be available permenently.
+#' be available permanently.
 #'
 #' @return character path to the saved subset geopackage
 #' @export
@@ -44,13 +44,9 @@
 #'
 #' nhdplus_path(sample_data)
 #'
-#' staged_nhdplus <- stage_national_data(output_path = tempdir())
+#' sample_flines <- sf::st_zm(sf::read_sf(nhdplus_path(), "NHDFlowline_Network"))
 #'
-#' sample_flines <- readRDS(staged_nhdplus$flowline)
-#'
-#' geom_col <- attr(sample_flines, "sf_column")
-#'
-#' plot(sample_flines[[geom_col]],
+#' plot(sf::st_geometry(sample_flines),
 #'      lwd = 3)
 #'
 #' start_point <- sf::st_sfc(sf::st_point(c(-89.362239, 43.090266)),
@@ -62,7 +58,7 @@
 #'
 #' comids <- get_UT(sample_flines, start_comid)
 #'
-#' plot(dplyr::filter(sample_flines, COMID %in% comids)[[geom_col]],
+#' plot(sf::st_geometry(dplyr::filter(sample_flines, COMID %in% comids)),
 #'      add=TRUE, col = "red", lwd = 2)
 #'
 #' output_file <- tempfile(fileext = ".gpkg")
@@ -77,15 +73,14 @@
 #'
 #' catchment <- sf::read_sf(output_file, "CatchmentSP")
 #'
-#' plot(catchment[[attr(catchment, "sf_column")]], add = TRUE)
+#' plot(sf::st_geometry(catchment), add = TRUE)
 #'
 #' waterbody <- sf::read_sf(output_file, "NHDWaterbody")
 #'
-#' plot(waterbody[[attr(waterbody, "sf_column")]],
+#' plot(sf::st_geometry(waterbody),
 #'      col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 #'
 #' # Cleanup temp
-#' sapply(staged_nhdplus, unlink)
 #' unlink(output_file)
 #'
 #' # Download Option:
@@ -304,121 +299,6 @@ intersection_write <- function(layer_name, data_path, envelope,
   } else {
     if (status) message(paste("No features to write in", layer_name))
   }
-}
-
-#' @title Stage NHDPlus National Data (deprecated)
-#' @description Breaks down the national geo database into a collection
-#' of quick to access R binary files.
-#' @param include character vector containing one or more of:
-#' "attributes", "flowline", "catchment".
-#' @param output_path character path to save the output to defaults
-#' to the directory of the nhdplus_data.
-#' @param nhdplus_data character path to the .gpkg or .gdb
-#' containing the national seamless dataset. Not required if
-#' \code{\link{nhdplus_path}} has been set.
-#' @param simplified boolean if TRUE (the default) the CatchmentSP layer
-#' will be included.
-#' @details "attributes" will save `NHDFlowline_Network` attributes
-#' as a separate data.frame without the geometry. The others will save
-#' the `NHDFlowline_Network` and `Catchment` or `CatchmentSP`
-#' (per the `simplified` parameter) as sf data.frames with
-#' superfluous Z information dropped.
-#'
-#' The returned list of paths is also added to the nhdplusTools_env
-#' as "national_data".
-#'
-#' @return list containing paths to the .rds files.
-#' @export
-#' @examples
-#'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-#'
-#' stage_national_data(nhdplus_data = sample_data, output_path = tempdir())
-#'
-stage_national_data <- function(include = c("attribute",
-                                            "flowline",
-                                            "catchment"),
-                                output_path = NULL,
-                                nhdplus_data = NULL,
-                                simplified = TRUE) {
-
-  if (is.null(output_path)) {
-    output_path <- dirname(nhdplus_path())
-    warning(paste("No output path provided, using:", output_path))
-  }
-
-  if (is.null(nhdplus_data)) {
-    nhdplus_data <- nhdplus_path()
-
-    if (nhdplus_data == get("default_nhdplus_path",
-                            envir = nhdplusTools_env) &
-        !file.exists(nhdplus_data)) {
-      stop(paste("Didn't find NHDPlus national data in default location:",
-                 nhdplus_data))
-    } else if (!file.exists(nhdplus_data)) {
-      stop(paste("Didn't find NHDPlus national data",
-                 "in user specified location:",
-                 nhdplus_data))
-    }
-  }
-
-  allow_include <- c("attribute", "flowline", "catchment")
-
-  if (!all(include %in% allow_include)) {
-    stop(paste0("Got invalid include entries. Expect one or more of: ",
-                paste(allow_include, collapse = ", "), "."))
-  }
-
-  outlist <- list()
-
-  if (any(c("attribute", "flowline") %in% include)) {
-
-    out_path_attributes <- file.path(output_path,
-                                     "nhdplus_flowline_attributes.rds")
-    out_path_flines <- file.path(output_path, "nhdplus_flowline.rds")
-
-    if (!(file.exists(out_path_flines) | file.exists(out_path_attributes))) {
-      fline <- sf::st_zm(sf::read_sf(nhdplus_data,
-                                     get_flowline_layer_name(nhdplus_data)))
-    }
-
-    if ("attribute" %in% include) {
-      if (file.exists(out_path_attributes)) {
-        warning("attributes file exists")
-      } else {
-        saveRDS(sf::st_set_geometry(fline, NULL), out_path_attributes)
-      }
-      outlist["attributes"] <- out_path_attributes
-    }
-
-    if ("flowline" %in% include) {
-      if (file.exists(out_path_flines)) {
-        warning("flowline file exists")
-      } else {
-        saveRDS(fline, out_path_flines)
-      }
-      outlist["flowline"] <- out_path_flines
-    }
-  }
-
-  if (exists("fline")) rm(fline)
-
-  if ("catchment" %in% include) {
-    out_path_catchments <- file.path(output_path, "nhdplus_catchment.rds")
-    if (file.exists(out_path_catchments)) {
-      warning("catchment already exists.")
-    } else {
-
-      layer_name <- get_catchment_layer_name(simplified, nhdplus_data)
-
-      saveRDS(sf::st_zm(sf::read_sf(nhdplus_data, layer_name)),
-              out_path_catchments)
-    }
-    outlist["catchment"] <- out_path_catchments
-  }
-  assign("national_data", outlist, envir = nhdplusTools_env)
-
-  return(outlist)
 }
 
 #' @title Try to find staged NHDPlus data
@@ -768,7 +648,7 @@ subset_vpu <- function(fline, vpu,
 
   fline <- check_names(fline, "subset_vpu", tolower = TRUE)
 
-  all_rpuid <- unique(filter(drop_geometry(fline),
+  all_rpuid <- unique(filter(st_drop_geometry(fline),
                              .data$vpuid == vpu)[["rpuid"]])
 
   all_rpuid <- all_rpuid[(!is.na(all_rpuid) & !is.null(all_rpuid))]
@@ -846,7 +726,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 
   # For flowlines labeled as in the RPU, find the top and bottom of each
   # LevelPath. This was required for some unique network situations.
-  fline_sub_in <- filter(drop_geometry(fline), .data$rpuid %in% rpu)
+  fline_sub_in <- filter(st_drop_geometry(fline), .data$rpuid %in% rpu)
 
   fline_sub_in <- group_by(fline_sub_in, .data$levelpathi)
 
@@ -856,7 +736,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 
   if(!strict) {
     # find flowlines completely outside the RPU
-    fline_sub_out <- filter(drop_geometry(fline), !.data$rpuid %in% rpu)
+    fline_sub_out <- filter(st_drop_geometry(fline), !.data$rpuid %in% rpu)
 
     # Need all paths in the domain outside the RPU and their tributary relations
     # used just below. This filter avoids flowlines along the same levelpath.
@@ -932,7 +812,7 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
 get_all_navigable <- function(fline, rpu) {
 
   # Find all outlets of current rpu and sort by size
-  outlets <- filter(drop_geometry(fline), .data$rpuid %in% rpu)
+  outlets <- filter(st_drop_geometry(fline), .data$rpuid %in% rpu)
 
   outlets <- filter(outlets, .data$hydroseq == .data$terminalpa |
                       !.data$tocomid %in% .data$comid)

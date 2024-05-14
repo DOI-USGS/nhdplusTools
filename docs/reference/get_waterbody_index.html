@@ -18,7 +18,7 @@ COMID of dominant artificial path"><meta property="og:image" content="https://do
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ COMID of dominant artificial path"><meta property="og:image" content="https://do
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
+      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
     </li>
     <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
@@ -46,9 +46,6 @@ COMID of dominant artificial path"><meta property="og:image" content="https://do
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul></li>
 <li>
@@ -102,7 +99,7 @@ COMID, WBAREACOMI, and Hydroseq attributes</p></dd>
 <dt>search_radius</dt>
 <dd><p>units class with a numeric value indicating how far to
 search for a waterbody boundary in units of provided projection. Set units with
-<a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a>.</p></dd>
+<a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -126,7 +123,7 @@ near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projectio
 <span class="r-in"><span>             crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>, <span class="fl">5070</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_waterbody_index</span><span class="op">(</span><span class="va">waterbodies</span>, <span class="va">points</span>,</span></span>
-<span class="r-in"><span>                    search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">500</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                    search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">500</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   near_wb_COMID near_wb_dist in_wb_COMID</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     167120949     272.8278   167120949</span>
 <span class="r-in"><span></span></span>
@@ -144,7 +141,7 @@ near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projectio
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

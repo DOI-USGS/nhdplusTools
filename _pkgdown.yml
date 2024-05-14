@@ -6,10 +6,12 @@ reference:
       Functions that help get access data. (all U.S. context)
   - contents:
       - '`download_nhdplushr`'
+      - '`get_3dhp`'
       - '`get_nhdplus`'
       - '`get_nhdplushr`'
       - '`get_hr_data`'
       - '`download_nhdplusv2`'
+      - '`download_nhd`'
       - '`download_rf1`'
       - '`download_wbd`'
       - '`download_vaa`'
@@ -20,6 +22,9 @@ reference:
       - '`rpu_boundaries`'
       - '`vpu_boundaries`'
       - '`get_boundaries`'
+      - '`get_characteristics_metadata`'
+      - '`get_catchment_characteristics`'
+      - '`rescale_catchment_characteristics`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are
@@ -33,8 +38,6 @@ reference:
       - '`get_nhdplus`'
       - '`get_gagesII`'
       - '`get_huc`'
-      - '`get_huc12`'
-      - '`get_huc8`'
       - '`get_nhdarea`'
       - '`get_waterbodies`'
       - '`get_nwis`'
@@ -77,17 +80,18 @@ reference:
     desc: >
       Functions that make the package easier to work with.
   - contents:
+      - '`nhdplusTools_cache_settings`'
       - '`st_compatibalize`'
       - '`rename_geometry`'
       - '`align_nhdplus_names`'
       - '`nhdplus_path`'
       - '`nhdplusTools_data_dir`'
-      - '`stage_national_data`'
       - '`plot_nhdplus`'
       - '`map_nhdplus`'
       - '`prepare_nhdplus`'
       - '`get_vaa_names`'
       - '`get_vaa_path`'
+      - '`rescale_catchment_characteristics`'
   - title: Network Attributes
     desc: >
       Functions that generate common river network attributes. These can be

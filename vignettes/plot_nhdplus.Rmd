@@ -36,8 +36,6 @@ oldoption <- options(scipen = 9999,
 ```{r data_dir_setup, echo=FALSE, include=FALSE}
 work_dir <- file.path(nhdplusTools_data_dir(), "plot_v_cache")
 dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
-library(rosm)
-set_default_cachedir(work_dir)
 library(nhdplusTools)
 ```
 
@@ -92,8 +90,7 @@ plot_nhdplus(list(list("comid", "13293970"),
              nhdplus_data = sample_data,
              plot_config = list(basin = list(lwd = 2),
                                 outlets = list(huc12pp = list(cex = 1.5),
-                                               comid = list(col = "green"))),
-             stoponlargerequest = FALSE)
+                                               comid = list(col = "green"))))
 ```
 
 We can also plot NHDPlus data without an outlet at all. 
@@ -151,97 +148,84 @@ class(st_geometry(basin))
 
 Our file has four layers: network flowlines, simplified catchments, nhd area features, and nhd waterbody features. 
 
-The flowlines have a large set of attributes from the NHDPlus dataset. And the nwis sites have a few attributes that came from the NLDI. Attributes for NWIS sites can be found using the [dataRetrieval package.](https://owi.usgs.gov/R/dataRetrieval.html)
+The flowlines have a large set of attributes from the NHDPlus dataset. And the nwis sites have a few attributes that came from the NLDI. Attributes for NWIS sites can be found using the [`dataRetrieval` package.](https://doi-usgs.github.io/dataRetrieval/)
 
 See the NHDPlus user guide [linked here](https://www.epa.gov/waterdata/learn-more#Documentation) for more on what these layers are and what the flowline attributes entail.
 
-# Bounding Boxes
-
-First, a side note on bounding boxes. With the ongoing transition from the `sp` package to the `sf` package, there are a few stumbling blocks. Bounding boxes are one of them. As shown below, the `sf` bbox format is a named vector of class "bbox". The `sp` bbox format is a matrix with named dimensions. Many packages expect the sp format. the `ggmap` package expects yet another bbox format, much like `sf` but with different names. 
-
-```{r bbox, message=FALSE}
-library(sp)
-
-sf_bbox <- st_bbox(basin)
-sf_bbox
-class(sf_bbox)
-
-sp_bbox <- sp::bbox(sf::as_Spatial(basin))
-sp_bbox
-class(sp_bbox)
-
-# Or without the sp::bbox
-sp_bbox <- matrix(sf_bbox, 
-                  byrow = FALSE, 
-                  ncol = 2, 
-                  dimnames = list(c("x", "y"), 
-                                  c("min", "max")))
-sp_bbox
-
-ggmap_bbox <- setNames(sf_bbox, c("left", "bottom", "right", "top"))
-ggmap_bbox
-```
-
 ## Base R Plotting 
 
-In order to maximize flexibility and make sure we understand what's going on with coordinate reference systems, the demonstration below shows how to use base R plotting with the package `prettymappr` and `rosm`. 
+In order to maximize flexibility and make sure we understand what's going on with coordinate reference systems, the demonstration below shows how to use base R plotting with the package `mapsf` and `maptiles`. 
 
 In this example, we have to plot just the geometry, extracted with `st_geometry` and we need to project the geometry into the plotting coordinate reference system, [EPSG:3857 also known as "web mercator"](https://en.wikipedia.org/wiki/Web_Mercator). The reason we have to make this transformation is that practically all basemap tiles are in this projection and reprojection of pre-rendered tiles doesn't look good. We do this with a simple `prep_layer` function.
 
-The `prettymapr::prettymap()` function isn't strictly necessary, but it gives us nice margins, a scale bar, and a north arrow. The `rosm::osm.plot` and base `plot` commands put data onto the R plotting device so the first to be plotted is on the bottom. A couple hints here. `lwd` is line width. `pch` is point style. `cex` is an expansion factor. Colors shown below are [basic R colors.](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) the `rgb` function is handy for creating colors with transparency if that's of interest.
+The `mapsf`, `maptiles`, and base `plot` commands put data onto the R plotting device so the first to be plotted is on the bottom. A couple hints here. `lwd` is line width. `pch` is point style. `cex` is an expansion factor. Colors shown below are basic R colors. the `rgb` function is handy for creating colors with transparency if that's of interest.
 
 ```{r plot}
 prep_layer <- function(x) st_geometry(st_transform(x, 3857))
 
-prettymapr::prettymap({
-  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, 
-                 progress = "none", cachedir = work_dir)
-  
-  plot(prep_layer(basin), 
-       lwd = 2, add = TRUE)
-  
-  plot(prep_layer(flowline), 
-       lwd = 1.5, col = "deepskyblue", add = TRUE)
-  
-  plot(prep_layer(dplyr::filter(flowline, streamorde > 2)), 
-       lwd = 3, col = "darkblue", add = TRUE)
-  
-  us_nwis_layer <- prep_layer(upstream_nwis)
-  
-  plot(us_nwis_layer, 
-       pch = 17, cex = 1.5, col = "yellow", add = TRUE)
-  
-  label_pos <- st_coordinates(us_nwis_layer)
-  
-  text(label_pos[,1],label_pos[,2], 
-       upstream_nwis$identifier, 
-       adj = c(-0.2, 0.5), cex = 0.7)
-  
-}, drawarrow = TRUE)
+bb <- sf::st_as_sfc(sf::st_bbox(prep_layer(basin)))
+
+tiles <- maptiles::get_tiles(bb, 
+                             zoom = 11, crop = FALSE,
+                             verbose = FALSE, 
+                             provider = "Esri.NatGeoWorldMap")
+
+mapsf::mf_map(bb, type = "base", col = NA, border = NA)
+
+maptiles::plot_tiles(tiles, add = TRUE)
+
+mapsf::mf_map(bb, type = "base", add = TRUE, col = NA, border = NA)
+mapsf::mf_arrow(adjust = bb)
+mapsf::mf_scale()
+
+plot(prep_layer(basin), 
+     lwd = 2, add = TRUE)
+
+plot(prep_layer(flowline), 
+     lwd = 1.5, col = "deepskyblue", add = TRUE)
+
+plot(prep_layer(dplyr::filter(flowline, streamorde > 2)), 
+     lwd = 3, col = "darkblue", add = TRUE)
+
+us_nwis_layer <- prep_layer(upstream_nwis$UT_nwissite)
+
+plot(us_nwis_layer, 
+     pch = 17, cex = 1.5, col = "yellow", add = TRUE)
+
+label_pos <- st_coordinates(us_nwis_layer)
+
+text(label_pos[,1],label_pos[,2], 
+     upstream_nwis$identifier, 
+     adj = c(-0.2, 0.5), cex = 0.7)
+
 ``` 
 
 ## Plotting with ggplot2
 
 Below is a very similar example using [`ggmap`](https://github.com/dkahle/ggmap) and [`ggplot2` `geom_sf`](https://ggplot2.tidyverse.org/reference/ggsf.html). Note that ggmap takes case of projections for us, which should either make you happy because it _just works_ or very nervous because it _just works_. 
 
-```{r ggmap, message=FALSE, warning=FALSE}
+```{r ggmap,  message=FALSE, warning=FALSE}
 library(ggmap)
 library(ggplot2)
+
+ggmap_bbox <- setNames(sf::st_bbox(basin), c("left", "bottom", "right", "top"))
+ggmap_bbox
 
 upstream_nwis <- dplyr::bind_cols(upstream_nwis$UT_nwissite,
                            dplyr::rename(dplyr::as_tibble(sf::st_coordinates(upstream_nwis$UT_nwissite)), 
                                          lat = Y, lon = X))
 
-basemap_toner <- get_map(source = "stamen", maptype = "toner", 
-                         location = ggmap_bbox, zoom = 11, messaging = FALSE)
-basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", 
-                           location = ggmap_bbox, zoom = 11, messaging = FALSE)
-toner_map <- ggmap(basemap_toner)
-terrain_map <- ggmap(basemap_terrain)
+# ggmap now requires api keys
+# basemap_toner <- get_map(source = "stamen", maptype = "toner", 
+#                          location = ggmap_bbox, zoom = 11, messaging = FALSE)
+# basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", 
+#                            location = ggmap_bbox, zoom = 11, messaging = FALSE)
+# toner_map <- ggmap(basemap_toner)
+# terrain_map <- ggmap(basemap_terrain)
+# 
+# toner_map
 
-toner_map
-
-terrain_map + geom_sf(data = basin,
+ggplot() + geom_sf(data = basin,
                         inherit.aes = FALSE,
                         color = "black", fill = NA) + 
   geom_sf(data = flowline,

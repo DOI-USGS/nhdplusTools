@@ -3,13 +3,14 @@ vaa_hydroshare <-
   'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
 
 vaa_sciencebase <-
-  'https://www.sciencebase.gov/catalog/file/get/60c92503d34e86b9389df1c9?name=enhd_nhdplusatts.fst'
+  'https://www.sciencebase.gov/catalog/file/get/63cb311ed34e06fef14f40a3?name=enhd_nhdplusatts.fst'
 
 nhdplusTools_env <- new.env()
 
 # NHDPlus Attributes
 COMID <- "COMID"
 FEATUREID <- "FEATUREID"
+Permanent_Identifier <- "Permanent_Identifier"
 Hydroseq <- "Hydroseq"
 UpHydroseq <- "UpHydroseq"
 DnHydroseq <- "DnHydroseq"
@@ -50,6 +51,7 @@ WBAREACOMI <- "WBAREACOMI"
 # List of input names that should be changed to replacement names
 nhdplus_attributes <- list(
   COMID = COMID, NHDPlusID = COMID,
+  Permanent_Identifier = Permanent_Identifier,
   RPUID = RPUID,
   VPUID = VPUID,
   FEATUREID = FEATUREID,
@@ -91,6 +93,9 @@ nhdplus_attributes <- list(
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
 assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
+       envir = nhdplusTools_env)
+
+assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",
@@ -249,15 +254,12 @@ default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
 
 assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
-nhdhr_bucket <- "https://prd-tnm.s3.amazonaws.com/"
-nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/"
+nhd_bucket <- "https://prd-tnm.s3.amazonaws.com/"
+nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Current/GDB/"
+nhd_file_list <- "?prefix=StagedProducts/Hydrography/NHD/HU4/GDB/"
 
-assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
+assign("nhd_bucket", nhd_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
-
-assign("nhdpt_dat_dir",
-       tools::R_user_dir("nhdplusTools"),
-       envir = nhdplusTools_env)
 
 assign("nldi_tier", "prod",
        envir = nhdplusTools_env)
@@ -297,7 +299,18 @@ get_nldi_url <- function() {
 nhdplusTools_data_dir <- function(dir = NULL) {
 
   if(is.null(dir)) {
+
+    nhdpt_dat_dir <- try(get("nhdpt_dat_dir", envir = nhdplusTools_env), silent = TRUE)
+
+    if(inherits(nhdpt_dat_dir, "try-error")) {
+      assign("nhdpt_dat_dir",
+             tools::R_user_dir("nhdplusTools"),
+             envir = nhdplusTools_env)
+    }
+
     return(get("nhdpt_dat_dir", envir = nhdplusTools_env))
+
+
   } else {
     assign("nhdpt_dat_dir",
            dir,
@@ -342,6 +355,76 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
   }
 }
 
+#' @title nhdplusTools cache settings
+#' @description
+#' Provides an interface to adjust nhdplusTools `memoise` cache.
+#'
+#' Mode and timeout can also be set using environment variables.
+#' `NHDPLUSTOOLS_MEMOISE_CACHE` and `NHDPLUSTOOLS_MEMOISE_TIMEOUT` are
+#' used unless overriden with this function.
+#'
+#' @param mode character 'memory' or 'filesystem'
+#' @param timeout numeric number of seconds until caches invalidate
+#' @return list containing settings at time of calling. If inputs are
+#' NULL, current settings. If settings are altered, previous setting values.
+#' @export
+#'
+nhdplusTools_cache_settings <- function(mode = NULL, timeout = NULL) {
+  current_mode <- get("nhdpt_mem_cache", envir = nhdplusTools_env)
+  current_timeout <- get("nhdpt_cache_timeout", envir = nhdplusTools_env)
+
+  if(!is.null(mode) && mode %in% c("memory", "filesystem")) {
+    assign("nhdpt_mem_cache", mode, envir = nhdplusTools_env)
+  }
+
+  if(!is.null(timeout) && is.numeric(timeout)) {
+    assign("nhdpt_cache_timeout", timeout, envir = nhdplusTools_env)
+  }
+
+  return(invisible(list(mode = current_mode, timeout = current_timeout)))
+}
+
+#' @importFrom memoise memoise cache_memory cache_filesystem
+#' @importFrom digest digest
+nhdplusTools_memoise_cache <- function() {
+  sys_memo_cache <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_CACHE")
+  ses_memo_cache <- try(get("nhdpt_mem_cache", envir = nhdplusTools_env), silent = TRUE)
+
+  # if it hasn't been set up yet, try to use the system env
+  if(!inherits(ses_memo_cache, "try-error")) {
+    return(ses_memo_cache)
+  } else {
+    if(sys_memo_cache == "memory") {
+      memoise::cache_memory()
+    } else {
+      dir.create(nhdplusTools_data_dir(), showWarnings = FALSE, recursive = TRUE)
+
+      memoise::cache_filesystem(nhdplusTools_data_dir())
+    }
+
+  }
+
+}
+
+nhdplusTools_memoise_timeout <- function() {
+  sys_timeout <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_TIMEOUT")
+  ses_timeout <- try(get("nhdpt_cache_timeout", envir = nhdplusTools_env), silent = TRUE)
+
+  # if it hasn't been set up yet, try to use the system env
+  if(!inherits(ses_timeout, "try-error")) {
+    return(ses_timeout)
+  } else {
+    if(sys_timeout != "") {
+      as.numeric(sys_timeout)
+    } else {
+      # default to one day
+      oneday_seconds <- 60 * 60 * 24
+    }
+  }
+}
+
+assign("nhdpt_mem_cache", nhdplusTools_memoise_cache(), envir = nhdplusTools_env)
+assign("nhdpt_cache_timeout", nhdplusTools_memoise_timeout(), envir = nhdplusTools_env)
 
 #' @title Align NHD Dataset Names
 #' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.
@@ -391,77 +474,30 @@ align_nhdplus_names <- function(x){
 
 }
 
-# TODO: deprecate moved to hydroloom
-drop_geometry <- function(x) {
-  if("sf" %in% class(x)) {
-    sf::st_drop_geometry(x)
-  } else {
-    x
-  }
-}
-
-# TODO: deprecate moved to hydroloom
-#' make spatial inputs compatible
-#' @description makes sf1 compatible with sf2 by projecting into
-#' the projection of 2 and ensuring that the geometry columns are the
-#' same name.
-#' @param sf1 sf data.frame
-#' @param sf2 sf data.frame
+#' @importFrom hydroloom st_compatibalize
 #' @export
-#' @examples
-#'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#'
-#' (one <- dplyr::select(sample_flines))
-#' (two <- sf::st_transform(one, 5070))
-#'
-#' attr(one, "sf_column") <- "geotest"
-#' names(one)[names(one) == "geom"] <- "geotest"
-#'
-#' st_compatibalize(one, two)
-#'
-st_compatibalize <- function(sf1, sf2) {
+hydroloom::st_compatibalize
 
-  sf1 <- st_transform(sf1, st_crs(sf2))
-
-  rename_geometry(sf1, attr(sf2, "sf_column"))
-
-}
-
-# TODO: deprecate moved to hydroloom
-#' rename_geometry
-#' @description correctly renames the geometry column
-#' of a sf object.
-#' @param g sf data.table
-#' @param name character name to be used for geometry
+#' @importFrom hydroloom rename_geometry
 #' @export
-#' @examples
-#'
-#' (g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2))))
-#' rename_geometry(g, "geometry")
-#'
-rename_geometry <- function(g, name){
-  current = attr(g, "sf_column")
+hydroloom::rename_geometry
 
-  names(g)[names(g)==current] = name
+#' @importFrom hydroloom get_node
+#' @export
+hydroloom::get_node
 
-  attr(g, "sf_column") <- name
+#' @importFrom hydroloom fix_flowdir
+#' @export
+hydroloom::fix_flowdir
 
-  g
-}
+#' @importFrom hydroloom rescale_measures
+#' @export
+hydroloom::rescale_measures
 
-get_cl <- function(cl) {
-  if(!is.null(cl)) {
-    if(!requireNamespace("parallel", quietly = TRUE)) {
-      stop("parallel required if using cores input")
-    }
-    if(is.numeric(cl)) {
-      cl <- parallel::makeCluster(cl)
-    } else {
-      if(!"cluster" %in% class(cl)) {
-        stop("cores must be numeric or a cluster object")
-      }
-    }
-  }
-  return(cl)
-}
+#' @importFrom hydroloom get_hydro_location
+#' @export
+hydroloom::get_hydro_location
+
+#' @importFrom hydroloom get_partial_length
+#' @export
+hydroloom::get_partial_length

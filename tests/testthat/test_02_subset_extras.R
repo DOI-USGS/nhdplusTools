@@ -62,70 +62,12 @@ test_that("subset by bounding box", {
                "invalid bbox entry")
 })
 
-test_that("prep_nhdplus runs as expected", {
-
-  temp_dir <- tempdir()
-
-  if (!dir.exists(temp_dir)) dir.create(temp_dir)
-
-  expect_error(suppressWarnings(stage_national_data()),
-               paste("Didn't find NHDPlus national data in default",
-                     "location: ../NHDPlusV21_National_Seamless.gdb"))
-
-  sample_gpkg <- file.path(temp_dir, "sample_natseamless.gpkg")
-
-  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-
-  file.copy(sample_data, sample_gpkg)
-
-  nhdplus_path(sample_gpkg)
-
-  expect_warning(temp_data <- stage_national_data(),
-                 regexp = paste0("No output path provided, using:.*"))
-
-  temp_data <- lapply(temp_data, unlink)
-
-  temp_data <- stage_national_data(output_path = temp_dir)
-
-  expect_true(suppressWarnings(all(lapply(temp_data, file.exists))))
-
-  temp_data <- lapply(temp_data, unlink)
-
-  nhdplus_path("bogus")
-
-  expect_error(suppressWarnings(stage_national_data()),
-               paste("Didn't find NHDPlus national data in",
-                     "user specified location: bogus"))
-
-  nhdplus_path(sample_gpkg)
-
-  expect_error(stage_national_data(include = c("bogus"),
-                                   output_path = "data/temp"),
-               paste("Got invalid include entries. Expect one",
-                     "or more of: attribute, flowline, catchment."))
-
-  temp_data <- stage_national_data(output_path = temp_dir)
-
-  expect_equal(
-    capture_warnings(
-      temp_data <- stage_national_data(output_path = temp_dir)),
-    c("attributes file exists", "flowline file exists",
-      "catchment already exists."))
-
-  temp_data <- lapply(temp_data, unlink)
-
-  unlink(sample_gpkg)
-
-})
-
 test_that("by rpu", {
   source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
   nhdplus_path(sample_data)
 
-  staged_nhdplus <- stage_national_data(output_path = tempdir())
-
-  sample_flines <- readRDS(staged_nhdplus$flowline)
+  sample_flines <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network")
 
   out <- subset_rpu(sample_flines, rpu = "07b")
 
@@ -183,10 +125,14 @@ test_that("big rpu test", {
                                vaa[c("comid", "rpuid", "vpuid")],
                                by = "comid")
 
+  suppressWarnings(
   vaa_new$arbolatesu <- calculate_arbolate_sum(
     dplyr::select(vaa_new, ID = comid, toID = tocomid, length = lengthkm))
+  )
 
+  suppressWarnings(
   sub <- subset_rpu(vaa_new, "14a", strict = TRUE)
+  )
 
   expect_equal(names(sub), names(vaa_new))
 
@@ -223,4 +169,15 @@ test_that("extras", {
   expect_equal(nhdplusTools:::get_empty("POINT"), sf::st_point())
   expect_equal(nhdplusTools:::get_empty("MULTIPOINT"), sf::st_multipoint())
   expect_error(nhdplusTools:::get_empty("BORKED"), "unexpected geometry type")
+})
+
+test_that("unify_types", {
+
+  check <- list(data.frame(), data.frame(one = 1, two = "2"), data.frame(one = "1", two = 2))
+
+  out <- nhdplusTools:::unify_types(check)
+
+  expect_equal(out,
+               list(structure(list(one = 1, two = 2), row.names = c(NA, -1L), class = "data.frame"),
+                    structure(list(one = 1, two = 2), row.names = c(NA, -1L), class = "data.frame")))
 })

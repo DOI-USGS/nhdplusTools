@@ -47,11 +47,11 @@ type_check <- function(type) {
 #' @description Navigate the Network Linked Data Index network.
 #' @param nldi_feature list with names `featureSource` and `featureID` where
 #' `featureSource` is derived from the "source" column of  the response of
-#' dataRetrieval::get_nldi_sources() and the `featureID` is a known identifier
+#' \link[dataRetrieval]{get_nldi_sources} and the `featureID` is a known identifier
 #' from the specified `featureSource`.
 #' @param mode character chosen from ("UM", "UT", DM", "DD"). See examples.
 #' @param data_source character chosen from "source" column of the response
-#' of dataRetrieval::get_nldi_sources() or empty string for flowline geometry.
+#' of \link[dataRetrieval]{get_nldi_sources} or empty string for flowline geometry.
 #' @param distance_km numeric distance in km to stop navigating.
 #' @return sf data.frame with result
 #' @export
@@ -210,7 +210,7 @@ get_nldi_feature <- function(nldi_feature) {
 #' Metadata for these characteristics can be found using `discover_nldi_characteristics()`.
 #' @inheritParams navigate_nldi
 #' @inheritParams discover_nldi_characteristics
-#' @return data.frame contianing requested characteristics
+#' @return data.frame containing requested characteristics
 #' @export
 #' @examples
 #' \donttest{
@@ -272,7 +272,7 @@ get_nldi_index <- function(location) {
 #' @importFrom httr GET
 #' @importFrom jsonlite fromJSON
 #' @noRd
-query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE) {
+query_nldi <- memoise::memoise(function(query, base_path = "/linked-data", parse_json = TRUE) {
   nldi_base_url <- paste0(get_nldi_url(), base_path)
 
   url <- paste(nldi_base_url, query,
@@ -303,7 +303,7 @@ query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE) {
     warning("Something went wrong accessing the NLDI.\n", e)
     NULL
   })
-}
+}, ~memoise::timeout(nhdplusTools_memoise_timeout()), cache = nhdplusTools_memoise_cache())
 
 #' @noRd
 check_nldi_feature <- function(nldi_feature, convert = TRUE) {

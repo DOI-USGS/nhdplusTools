@@ -50,8 +50,7 @@ hr_gpkg <- file.path(work_dir, "hr_data.gpkg")
 
 # Make a plot and get some background NHDPlusV2 data.
 plot_data <- plot_nhdplus(list("nwissite", "USGS-05428500"), streamorder = 3,
-                          nhdplus_data = sample_data,
-                          stoponlargerequest = FALSE)
+                          nhdplus_data = sample_data)
 
 # Find the HU04 we are interested in.
 hu04 <- unique(substr(plot_data$flowline$reachcode, 1, 4))
@@ -78,8 +77,7 @@ Now that we have both a four digit hydrologic unit worth of NHDPlusHR data and a
 plot_nhdplus(list("nwissite", "USGS-05428500"), streamorder = 2, 
              nhdplus_data = sample_data, overwrite = TRUE,
              plot_config = list(flowline = list(lwd = 2.5),
-                                basin = list(lwd = 3)),
-             stoponlargerequest = FALSE)
+                                basin = list(lwd = 3)))
 
 plot(st_geometry(hr$NHDPlusCatchment), lwd = 0.25, add = TRUE)
 plot(st_geometry(hr$NHDFlowline), col = "blue", lwd = 0.5, add = TRUE)

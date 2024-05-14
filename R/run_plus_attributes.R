@@ -18,6 +18,7 @@
 #' rather than recreated.
 #' @param status logical should progress be printed?
 #' @return data.frame with added attributes
+#' @importFrom tidyr replace_na
 #' @export
 #' @examples
 #'
@@ -41,7 +42,7 @@ add_plus_network_attributes <- function(net, override = 5,
   if(inherits(net, "sf")) {
     add_sf <- TRUE
     geom <- dplyr::select(net)
-    net <- drop_geometry(net)
+    net <- st_drop_geometry(net)
   }
 
   check_names(net, "add_plus_network_attributes", align = FALSE)
@@ -58,7 +59,7 @@ add_plus_network_attributes <- function(net, override = 5,
     on.exit(pbapply::pboptions(type = old_opt$type))
   }
 
-  net[["tocomid"]] <- tidyr::replace_na(net[["tocomid"]], 0)
+  net[["tocomid"]] <- replace_na(net[["tocomid"]], 0)
 
   rename_arb <- FALSE
 
@@ -95,36 +96,34 @@ add_plus_network_attributes <- function(net, override = 5,
 
     message("running large networks")
 
+    if(inherits(cores, "cluster")) stop("passing a cluster object no longer supported")
+    message("the future plan is being modified and will be changed back on exit")
+    oplan <- future::plan(future::multisession, workers = cores)
+    on.exit(future::plan(oplan), add = TRUE)
+
   }
 
-  lp <- pbapply::pblapply(X = lp,
-                          FUN = function(x, override, cores) {
-                            nhdplusTools::get_levelpaths(x,
-                                                         override_factor = override,
-                                                         cores = cores)
-                          },
-                          override = override, cores = cores)
+  lp <- lapply(X = lp,
+               FUN = function(x, override) {
+                 get_levelpaths_internal(x, override_factor = override)
+               }, override = override)
 
   if(!is.null(cores)) {
 
-    run_small <- function(small_lp, override, cl) {
-
-      if(!is.null(cl)) {
-        cl <- parallel::makeCluster(cl)
-        on.exit(parallel::stopCluster(cl))
-      }
+    run_small <- function(small_lp, override) {
 
       message("running small networks")
 
-      small_lp <- pbapply::pblapply(cl = cl, X = small_lp,
-                                    FUN = function(x, override) {
-                                      nhdplusTools::get_levelpaths(x, override)
-                                    },
-                                    override = override)
+      small_lp <- pbapply::pblapply(X = small_lp,
+                                    FUN = function(x, override, get_levelpaths_internal) {
+                                      get_levelpaths_internal(x, override)
+                                    }, override = override,
+                                    get_levelpaths_internal = get_levelpaths_internal,
+                                    cl = "future")
 
     }
 
-    lp <- c(lp, run_small(small_lp, override, cores))
+    lp <- c(lp, run_small(small_lp, override))
 
   }
 

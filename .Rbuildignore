@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^.*cache
+^.*cache$
 LICENSE
 .travis.yml
 .lintr
@@ -8,14 +8,12 @@ inst/doc/*.html
 docs
 _pkgdown.yml
 data-raw
-vignettes/rosm.cache
 DISCLAIMER.md
 code.json
 ^doc$
 ^Meta$
 .Renviron
 tests/testthat/data/03
-rosm.cache
 pkgdown
 .gitlab-ci.yml
 .github
@@ -27,3 +25,4 @@ README.Rmd
 cran-comments.md
 ^CRAN-SUBMISSION$
 temp.R
+revdep

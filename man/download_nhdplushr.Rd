@@ -10,7 +10,7 @@ download_nhdplushr(nhd_dir, hu_list, download_files = TRUE)
 \item{nhd_dir}{character directory to save output into}
 
 \item{hu_list}{character vector of hydrologic region(s) to download.
-Use \link{get_huc8} to find HU codes of interest. Accepts two digit
+Use \link{get_huc} to find HU codes of interest. Accepts two digit
 and four digit codes.}
 
 \item{download_files}{boolean if FALSE, only URLs to files will be returned
@@ -24,7 +24,8 @@ Download NHDPlus HiRes
 }
 \examples{
 \donttest{
-hu <- nhdplusTools::get_huc8(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326))
+hu <- get_huc(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326),
+                            type = "huc08")
 
 (hu <- substr(hu$huc8, 1, 2))
 

@@ -68,7 +68,7 @@ It can be downloaded
 
 The "download" option of this function should be considered preliminary
 and subject to revision. It does not include as many layers and may not
-be available permenently.
+be available permanently.
 }
 \examples{
 \donttest{
@@ -77,13 +77,9 @@ source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 nhdplus_path(sample_data)
 
-staged_nhdplus <- stage_national_data(output_path = tempdir())
+sample_flines <- sf::st_zm(sf::read_sf(nhdplus_path(), "NHDFlowline_Network"))
 
-sample_flines <- readRDS(staged_nhdplus$flowline)
-
-geom_col <- attr(sample_flines, "sf_column")
-
-plot(sample_flines[[geom_col]],
+plot(sf::st_geometry(sample_flines),
      lwd = 3)
 
 start_point <- sf::st_sfc(sf::st_point(c(-89.362239, 43.090266)),
@@ -95,7 +91,7 @@ start_comid <- discover_nhdplus_id(start_point)
 
 comids <- get_UT(sample_flines, start_comid)
 
-plot(dplyr::filter(sample_flines, COMID \%in\% comids)[[geom_col]],
+plot(sf::st_geometry(dplyr::filter(sample_flines, COMID \%in\% comids)),
      add=TRUE, col = "red", lwd = 2)
 
 output_file <- tempfile(fileext = ".gpkg")
@@ -110,15 +106,14 @@ sf::st_layers(output_file)
 
 catchment <- sf::read_sf(output_file, "CatchmentSP")
 
-plot(catchment[[attr(catchment, "sf_column")]], add = TRUE)
+plot(sf::st_geometry(catchment), add = TRUE)
 
 waterbody <- sf::read_sf(output_file, "NHDWaterbody")
 
-plot(waterbody[[attr(waterbody, "sf_column")]],
+plot(sf::st_geometry(waterbody),
      col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 
 # Cleanup temp
-sapply(staged_nhdplus, unlink)
 unlink(output_file)
 
 # Download Option:

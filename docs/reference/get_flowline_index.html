@@ -18,7 +18,7 @@ and measure for each."><meta property="og:image" content="https://doi-usgs.githu
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ and measure for each."><meta property="og:image" content="https://doi-usgs.githu
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/advanced_network.html">Advanced Network Attributes</a>
+      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
     </li>
     <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
@@ -46,9 +46,6 @@ and measure for each."><meta property="og:image" content="https://doi-usgs.githu
     </li>
     <li>
       <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-    <li>
-      <a href="../articles/US_data.html">U.S. Data and Package Basics</a>
     </li>
   </ul></li>
 <li>
@@ -153,14 +150,16 @@ handling of precision parameter.</p>
 <span class="r-in"><span>                    crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">point</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>converting to LINESTRING, this may be slow, check results</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id    COMID      REACHCODE REACH_meas       offset</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 11689978 02060003001472     51.502 0.0003010502</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">point</span>, <span class="fl">5070</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">point</span>,</span></span>
-<span class="r-in"><span>                   search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">200</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                   search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">200</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>crs of lines and points don't match. attempting st_transform of lines</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>converting to LINESTRING, this may be slow, check results</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id    COMID      REACHCODE REACH_meas   offset</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 11689978 02060003001472    51.8751 25.88438</span>
 <span class="r-in"><span></span></span>
@@ -174,16 +173,18 @@ handling of precision parameter.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>, <span class="va">point</span>, precision <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>crs of lines and points don't match. attempting st_transform of lines</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>converting to LINESTRING, this may be slow, check results</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id    COMID      REACHCODE REACH_meas   offset</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 11689978 02060003001472    52.4083 4.302007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 11689978 02060003001472    52.7758 4.302007</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_flowline_index</span><span class="op">(</span><span class="va">sample_flines</span>,</span></span>
 <span class="r-in"><span>                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.86934</span>, <span class="fl">39.49328</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.91711</span>, <span class="fl">39.40884</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.88081</span>, <span class="fl">39.36354</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                              crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                   search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="st">"degrees"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                   search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="st">"degrees"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                   max_matches <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>converting to LINESTRING, this may be slow, check results</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id    COMID      REACHCODE REACH_meas       offset</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   1 11688298 02060003000579     0.0000 6.026811e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   2 11688808 02060003000519    53.5874 5.641410e-04</span>
@@ -217,6 +218,7 @@ handling of precision parameter.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 30  3 11689006 02060003000295     0.0000 1.876644e-02</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -231,7 +233,7 @@ handling of precision parameter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

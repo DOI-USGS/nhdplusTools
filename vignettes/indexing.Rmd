@@ -34,7 +34,7 @@ oldoption <- options(scipen = 9999,
 
 ## Introduction
 
-`nhdplusTools` offers a few indexing functions and some supporting functions that are worth being aware of.
+`nhdplusTools` offers a few indexing functions and some supporting functions that are worth being aware of. Most of these functions wrap similar but more general functions from [`hydroloom`](https://doi-usgs.github.io/hydroloom/reference/index.html#indexing-and-linear-referencing). 
 
 The core functions are: `get_flowline_index()` and `get_waterbody_index()` -- they do the heavy lifting of finding flowlines and waterbodies near point locations. 
 
@@ -68,7 +68,8 @@ library(nhdplusTools)
 
 nhdplus_path(file.path(work_dir, "natseamless.gpkg"))
 
-flowlines <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network")
+flowlines <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network") |>
+  sf::st_zm()
 gages <- sf::read_sf(nhdplus_path(), "Gage")
 ```
 

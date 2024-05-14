@@ -11,13 +11,13 @@ plot_nhdplus(
   nhdplus_data = NULL,
   gpkg = NULL,
   plot_config = NULL,
-  basemap = "cartolight",
+  basemap = "Esri.NatGeoWorldMap",
+  zoom = NULL,
   add = FALSE,
   actually_plot = TRUE,
   overwrite = TRUE,
   flowline_only = NULL,
-  cache_data = NULL,
-  ...
+  cache_data = NULL
 )
 }
 \arguments{
@@ -34,7 +34,10 @@ plot_nhdplus(
 \item{plot_config}{list containing plot configuration, see details.}
 
 \item{basemap}{character indicating which basemap type to use. Chose from:
-\link[rosm]{osm.types}.}
+\link[maptiles]{get_tiles}.}
+
+\item{zoom}{integer passed on to \link[maptiles]{get_tiles}. This value will
+override the default set by the package.}
 
 \item{add}{boolean should this plot be added to an already built map.}
 
@@ -47,8 +50,6 @@ plot_nhdplus(
 \item{cache_data}{character path to rds file where all plot data can be cached.
 If file doesn't exist, it will be created. If set to FALSE, all caching will
 be turned off -- this includes basemap tiles.}
-
-\item{...}{parameters passed on to rosm.}
 }
 \value{
 data.frame plot data is returned invisibly in NAD83 Lat/Lon.

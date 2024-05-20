@@ -98,6 +98,9 @@ assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
 assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
        envir = nhdplusTools_env)
 
+assign("gocnx_ref_base_url", "https://reference.geoconnex.us/",
+       envir = nhdplusTools_env)
+
 assign("split_flowlines_attributes",
        c("COMID", "toCOMID", "LENGTHKM"),
        envir = nhdplusTools_env)
@@ -370,8 +373,10 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' @export
 #'
 nhdplusTools_cache_settings <- function(mode = NULL, timeout = NULL) {
-  current_mode <- get("nhdpt_mem_cache", envir = nhdplusTools_env)
-  current_timeout <- get("nhdpt_cache_timeout", envir = nhdplusTools_env)
+  current_mode <- tryCatch(get("nhdpt_mem_cache", envir = nhdplusTools_env),
+                           error = \(e) "filesystem") # default to filesystem
+  current_timeout <- tryCatch(get("nhdpt_cache_timeout", envir = nhdplusTools_env),
+                              error = \(e) nhdplusTools_memoise_timeout())
 
   if(!is.null(mode) && mode %in% c("memory", "filesystem")) {
     assign("nhdpt_mem_cache", mode, envir = nhdplusTools_env)
@@ -422,9 +427,6 @@ nhdplusTools_memoise_timeout <- function() {
     }
   }
 }
-
-assign("nhdpt_mem_cache", nhdplusTools_memoise_cache(), envir = nhdplusTools_env)
-assign("nhdpt_cache_timeout", nhdplusTools_memoise_timeout(), envir = nhdplusTools_env)
 
 #' @title Align NHD Dataset Names
 #' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.

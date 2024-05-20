@@ -5,12 +5,14 @@ reference:
     desc: >
       Functions that help get access data. (all U.S. context)
   - contents:
-      - '`download_nhdplushr`'
       - '`get_3dhp`'
-      - '`get_nhdplus`'
+      - '`discover_geoconnex_reference`'
+      - '`get_geoconnex_reference`'
+      - '`download_nhdplushr`'
       - '`get_nhdplushr`'
       - '`get_hr_data`'
       - '`download_nhdplusv2`'
+      - '`get_nhdplus`'
       - '`download_nhd`'
       - '`download_rf1`'
       - '`download_wbd`'
@@ -35,7 +37,6 @@ reference:
       - '`subset_rpu`'
       - '`subset_vpu`'
       - '`discover_nhdplus_id`'
-      - '`get_nhdplus`'
       - '`get_gagesII`'
       - '`get_huc`'
       - '`get_nhdarea`'

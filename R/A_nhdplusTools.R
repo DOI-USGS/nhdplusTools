@@ -374,7 +374,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #'
 nhdplusTools_cache_settings <- function(mode = NULL, timeout = NULL) {
   current_mode <- tryCatch(get("nhdpt_mem_cache", envir = nhdplusTools_env),
-                           error = \(e) nhdplusTools_memoise_cache())
+                           error = \(e) "filesystem") # default to filesystem
   current_timeout <- tryCatch(get("nhdpt_cache_timeout", envir = nhdplusTools_env),
                               error = \(e) nhdplusTools_memoise_timeout())
 

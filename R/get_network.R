@@ -219,7 +219,7 @@ navigate_network <- function(start, mode = "UM", network = NULL,
       stop("If start is numeric it must be a comid integer")
     }
 
-    start <- as.integer(start)
+    start <- floor(start)
     start_comid <- start
 
   }

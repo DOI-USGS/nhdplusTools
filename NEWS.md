@@ -1,3 +1,12 @@
+nhdplusTools 1.2.0
+==========
+
+This release introduces a new data source: https://reference.geoconnex.us and a vignette providing a broad overview of data access with nhdplusTools.
+
+- Fixed bug with use of memoise cache #365
+- Added `vignette("get_data_overview")` for WaterSciCon24
+- Added `get_geoconnex_reference()` and `discover_geoconnex_reference()`
+
 nhdplusTools 1.1.0
 ==========
 

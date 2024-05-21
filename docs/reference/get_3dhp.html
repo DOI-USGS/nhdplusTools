@@ -19,7 +19,7 @@ for source data documentation."><meta property="og:image" content="https://doi-u
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -38,6 +38,9 @@ for source data documentation."><meta property="og:image" content="https://doi-u
   </a>
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
+    </li>
+    <li>
+      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
     </li>
     <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
@@ -150,8 +153,6 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-in"><span><span class="co"># get flowlines and hydrolocations</span></span></span>
 <span class="r-in"><span><span class="va">flowlines</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp</span><span class="op">(</span>AOI <span class="op">=</span> <span class="va">AOI</span>, type <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">hydrolocation</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp</span><span class="op">(</span>AOI <span class="op">=</span> <span class="va">AOI</span>, type <span class="op">=</span> <span class="st">"hydrolocation"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No sink, spring, waterbody outlet features found in area of interest.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No headwater, terminus, divergence, confluence, catchment outlet features found in area of interest.</span>
 <span class="r-in"><span><span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp</span><span class="op">(</span>AOI <span class="op">=</span> <span class="va">AOI</span>, type <span class="op">=</span> <span class="st">"waterbody"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">waterbody</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">flowlines</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">hydrolocation</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
@@ -164,9 +165,6 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">CO</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp</span><span class="op">(</span>ids <span class="op">=</span> <span class="st">"https://geoconnex.us/ref/mainstems/29559"</span>,</span></span>
 <span class="r-in"><span>               type <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 0 to 2000 of 4467</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 2000 to 4000 of 4467</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 4000 to 4467 of 4467</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">CO</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">CO</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span></span>
@@ -188,7 +186,7 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No sink, spring, waterbody outlet features found in area of interest.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No headwater, terminus, divergence, confluence, catchment outlet features found in area of interest.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Request failed [504]. Retrying in 1 seconds...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Request failed [504]. Retrying in 3.7 seconds...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Request failed [504]. Retrying in 3.3 seconds...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No encoding supplied: defaulting to UTF-8.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No reach code, external connection features found in area of interest.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>

@@ -9,14 +9,14 @@
 #' @noRd
 mem_get_json <- landing <- memoise::memoise(\(url) {
   tryCatch({
-  retn <- httr::RETRY("GET", url, httr::accept_json())
+    retn <- httr::RETRY("GET", url, httr::accept_json())
 
-  if(retn$status_code == 200 & grepl("json", retn$headers$`content-type`)) {
-    return(httr::content(retn, simplifyVector = FALSE, type = "application/json"))
-  } else {
-    warning("Can't access json from ", url)
-    return(NULL)
-  }
+    if(retn$status_code == 200 & grepl("json", retn$headers$`content-type`)) {
+      return(httr::content(retn, simplifyVector = FALSE, type = "application/json"))
+    } else {
+      warning("Can't access json from ", url)
+      return(NULL)
+    }
   }, error = function(e) {
     warning("Error accessing ", url, "\n\n", e)
     return(NULL)
@@ -94,7 +94,7 @@ get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
 
   keep_going <- TRUE
 
-  if(status) message("Starting download of first ", limit, " features.")
+  if(status) message("Starting download of first set of features.")
 
   out <- rep(list(list()), 1e6)
   i <- 1
@@ -129,6 +129,9 @@ get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
 #' @description
 #' Queries the geoconnex reference feature server for features of interest.
 #'
+#' @param AOI  bbox, sf polygon or point, or a URL that will return an sf object when passed to
+#' \link[sf]{read_sf}
+#' @param type character the feature type chosen from \link{discover_geoconnex_reference}
 #' @inheritParams query_usgs_geoserver
 #' @param status boolean print status or not
 #' @return sf data.frame containing requested reference features
@@ -144,7 +147,7 @@ get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
 #'
 #' get_geoconnex_reference(AOI, type = "hu04")
 #'
-#' get_geoconnex_reference(type = "hu04", ids = c("0707", "0709"))
+#' get_geoconnex_reference("https://geoconnex.us/ref/mainstems/315626", type = "hu04", )
 #'
 #' AOI <- sf::st_sfc(sf::st_point(c(-89.56684, 42.99816)),
 #'                   crs = "+proj=longlat +datum=WGS84 +no_defs")
@@ -152,8 +155,7 @@ get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
 #' get_geoconnex_reference(AOI, type = "hu04", buffer = 100000)
 #'
 #' }
-get_geoconnex_reference <- function(AOI = NULL,
-                                    ids = NULL,
+get_geoconnex_reference <- function(AOI,
                                     type = NULL,
                                     t_srs = NULL,
                                     buffer = 0.5,
@@ -173,40 +175,30 @@ get_geoconnex_reference <- function(AOI = NULL,
 
   base_call <- paste0(base, "collections/", type, "/items")
 
-  if(!is.null(AOI) & !is.null(ids)) stop("Specify only one of AOI and ids")
+  if(is.character(AOI)) {
 
-  if(!is.null(AOI)) {
+    AOI <- try(sf::read_sf(AOI))
 
-    if(grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
-      AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m"))
+    if(!inherits(AOI, "sf")) {
+      stop("AOI did not return an sf object when read")
     }
 
-    # pull features with paging if necessary
-
-    bbox <- paste(st_bbox(AOI), collapse = ",")
-
-    base_call <- paste0(base_call, "?bbox=", bbox)
-
-    out <- get_features_paging(base_call, status = status)
   }
 
-  if(!is.null(ids)) {
-    # iterate over features one by one
-    out <- lapply(ids, \(x) {
-      out <- NULL
-
-      url <- paste0(base_call, "/", x)
-
-      out <- try(read_sf(url))
-      if(!inherits(out, "sf")) {
-        warning("somewthing went wrong requesting data")
-      }
-      return(out)
-    })
-
-    out <- st_sf(bind_rows(unify_types(out)))
-
+  if(!inherits(AOI, "bbox")) {
+    AOI <- st_bbox(AOI)
+  } else if(!inherits(AOI, "bbox") &&
+            grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
+    AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m"))
   }
+
+  # pull features with paging if necessary
+
+  bbox <- paste(AOI, collapse = ",")
+
+  base_call <- paste0(base_call, "?bbox=", bbox)
+
+  out <- get_features_paging(base_call, status = status)
 
   if(!is.null(t_srs)) out <- st_transform(out, t_srs)
 

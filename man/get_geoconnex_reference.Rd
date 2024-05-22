@@ -5,8 +5,7 @@
 \title{get geoconnex reference feature layers}
 \usage{
 get_geoconnex_reference(
-  AOI = NULL,
-  ids = NULL,
+  AOI,
   type = NULL,
   t_srs = NULL,
   buffer = 0.5,
@@ -14,16 +13,10 @@ get_geoconnex_reference(
 )
 }
 \arguments{
-\item{AOI}{sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
-be provided as either a location (sf POINT) or area (sf POLYGON)
-in any Spatial Reference System.}
+\item{AOI}{bbox, sf polygon or point, or a URL that will return an sf object when passed to
+\link[sf]{read_sf}}
 
-\item{ids}{character or numeric. A set of identifier(s) from the data
-type requested, for example if NHD, then a set of COMID(s).}
-
-\item{type}{character. Type of feature to return
-('huc08','huc12', 'nhd', 'catchment', 'waterbodies', 'gagesII').
-If NULL (default) a data.frame of available resources is returned}
+\item{type}{character the feature type chosen from \link{discover_geoconnex_reference}}
 
 \item{t_srs}{character (PROJ string or EPSG code) or numeric (EPSG code).
 A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.
@@ -51,7 +44,7 @@ AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
 
 get_geoconnex_reference(AOI, type = "hu04")
 
-get_geoconnex_reference(type = "hu04", ids = c("0707", "0709"))
+get_geoconnex_reference("https://geoconnex.us/ref/mainstems/315626", type = "hu04", )
 
 AOI <- sf::st_sfc(sf::st_point(c(-89.56684, 42.99816)),
                   crs = "+proj=longlat +datum=WGS84 +no_defs")

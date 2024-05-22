@@ -332,7 +332,7 @@ navigate_network <- function(start, mode = "UM", network = NULL,
   # now trim start if requested
   if(trim_start) {
 
-    if(!is.integer(start)) {
+    if(!(is.numeric(start) && start %% 1 == 0)) {
       if(output == "flowlines") {
         # trim event flowline to measure of event
 

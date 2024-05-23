@@ -14,6 +14,8 @@ Queries the geoconnex.us reference feature server for available layers and
 attributes.
 }
 \examples{
-discover_geoconnex_reference()
+\donttest{
+  discover_geoconnex_reference()
+}
 
 }

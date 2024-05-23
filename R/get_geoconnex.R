@@ -48,7 +48,9 @@ extract <- `[[`
 #' @return data.frame containing layers available and fields that are available to query.
 #' @export
 #' @examples
-#' discover_geoconnex_reference()
+#' \donttest{
+#'   discover_geoconnex_reference()
+#' }
 #'
 discover_geoconnex_reference <- function() {
 

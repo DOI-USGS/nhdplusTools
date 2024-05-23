@@ -24,7 +24,7 @@ Geological Survey data release, doi:10.5066/F7765D7V
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -43,6 +43,9 @@ Geological Survey data release, doi:10.5066/F7765D7V
   </a>
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
+    </li>
+    <li>
+      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
     </li>
     <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
@@ -114,6 +117,7 @@ of alternate reference fabrics</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span>  <span class="fu">get_catchment_characteristics</span><span class="op">(</span><span class="st">"CAT_BFI"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5329343</span>, <span class="fl">5329427</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    characteristic_id   comid characteristic_value percent_nodata</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               &lt;char&gt;   &lt;int&gt;                &lt;num&gt;          &lt;num&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:           CAT_BFI 5329343                27.76              0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:           CAT_BFI 5329427                24.49              0</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>

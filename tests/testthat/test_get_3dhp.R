@@ -1,5 +1,7 @@
 test_that("get_3dhp", {
 
+  skip_on_cran()
+
   expect_error(get_3dhp(universalreferenceid = "01234", type = "test"),
                "only be specified for hydrolocation")
 

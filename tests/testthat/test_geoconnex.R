@@ -1,5 +1,7 @@
 test_that("discover", {
 
+  skip_on_cran()
+
   expect_s3_class(discover_geoconnex_reference(), "data.frame")
 
   expect_equal(names(discover_geoconnex_reference()),
@@ -8,6 +10,9 @@ test_that("discover", {
 })
 
 test_that("get", {
+
+  skip_on_cran()
+
   expect_warning(avail <- get_geoconnex_reference())
 
   expect_equal(avail, discover_geoconnex_reference())

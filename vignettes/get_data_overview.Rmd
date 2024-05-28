@@ -1,0 +1,343 @@
+---
+title: "NHDPlusTools Data Access Overview"
+author: "dblodgett@usgs.gov"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NHDPlusTools Data Access Overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include = FALSE}
+library(nhdplusTools)
+
+local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
+
+if(local) {
+  cache_path <- file.path(nhdplusTools_data_dir(), "data_v_cache")
+} else {
+  cache_path <- tempdir()
+}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=6, 
+  fig.height=4,
+  eval=local,
+  cache=local,
+  cache.path=(cache_path)
+)
+
+oldoption <- options(scipen = 9999)
+
+```
+
+Since it's original release in 2019, data access in nhdplusTools has evolved and grown considerably. This vignette, prepared for a workshop in Summer 2024 shows the diversity of data available with nhdplusTools in one holistic overview.
+
+The function naming in `nhdplusTools` related to data access uses three common terms:  
+1. "download" will generally download complete data sets for use locally.
+2. "get" will pull a data subset from a web service.
+3. "subset" will pull a subset from a local file and, when available, a web service.
+
+## Dataset function index.
+
+The following summarizes specific data access functions available for the datasets that `nhdplusTools` has supporting functionality for.
+
+- NHDPlusV2
+  - `download_nhdplusv2()` - downloads a National seamless geodatabase 
+  - `get_nhdplus()` - access NHDPlusV2 from a web service
+  - `subset_nhdplus()` - subsets the National geodatabase OR the web service
+  - `subset_rpu()` - subsets loaded NHDPlusV2 by raster processing unit
+  - `subset_vpu()` - subsets loaded NHDPlusV2 by vector processing unit
+  - `get_boundaries()` - retrieves NHDPlusV2 processing unit boundaries
+- NHDPlusHR
+  - `download_nhdplushr()` - downloads staged geodatabases
+  - `get_nhdplushr()` - assembles nhdplushr datasets from many staged databases
+  - `get_hr_data()` - helps pull data out of staged databases (used by `get_nhdplushr()`)
+- NHD
+  - `download_nhd()`- downloads staged geodatabases
+- 3DHP
+  - `get_3dhp` - access 3DHP from a web service
+- geoconnex
+  - `get_geoconnex_reference()` - access geoconnex reference features from a web service
+- WBD
+  - `download_wbd()` - download a National WBD geodatabase
+  - `get_huc()` - get a particular Hydrologic Unit Code from a service
+- RF1
+  - `download_rf1()` - download a National RF1 geodatabase
+  
+## Network Linked Data Index integration
+
+The Network Linked Data Index plays a key role in discovery `nhdplusTools`. It provides access to an easy network navigation and basin boundary delineation tool. Behind the scenes, the NLDI is based on the network of the NHDPlusV2 -- so has some special functionality related directly to that dataset. Functions that utilize the NLDI include:
+
+- `subset_nhdplus()`
+- `plot_nhdplus()`
+- `map_nhdplus()`
+- `discover_nhdplus_id()`
+- `get_nldi_basin()`
+- `get_nldi_feature()`
+- `get_nldi_index()`
+- `navigate_network()`
+- `navigate_nldi()`
+- `get_split_catchment()`
+- `get_raindrop_trace()`
+
+In the demo below, we'll choose a stream gage and show how to access data related to it from all the datasets that nhdplusTools works with as well as use some of the NLDI functionality in question.
+
+For the sake of demonstration, we'll look at the Wolf River at Langlade, WI -- site ID "04074950". 
+
+nhdplusTools allows us to start from a stream gage to build a subset of NHDPlusV2 data. Below, we'll do just that and plot the results on a default map.
+
+```{r}
+
+demo_dir <- nhdplusTools_data_dir()
+
+site_id <- "USGS-04074950"
+
+
+# use dataRetrieval::get_nldi_sources() to find other nldi sources
+
+site <- list(featureSource = "nwissite",
+             featureID = "USGS-04074950")
+
+site_feature <- get_nldi_feature(site)
+
+upstream_network <- navigate_nldi(site, 
+                                  mode = "UT", distance_km = 9999)
+
+demo_data <- file.path(demo_dir, "data_demo.gpkg")
+
+dataset <- subset_nhdplus(as.integer(upstream_network$UT_flowlines$nhdplus_comid), 
+                          nhdplus_data = "download", # download from a service
+                          output_file = demo_data, # write the data to disk
+                          return_data = TRUE, # return the data rather
+                          flowline_only = FALSE, overwrite = TRUE)
+
+names(dataset)
+
+sapply(dataset, nrow)
+
+old_par <- par(mar = c(0, 0, 0, 0))
+
+plot_nhdplus(outlets = list(featureSource = "nwissite",
+                            featureID = "USGS-04074950"), 
+             nhdplus_data = demo_data, flowline_only = TRUE)
+```
+
+The above is the original way NHDPlusTools supported access NHDPlusV2 data. A dedicated web service subset utility is available in `get_nhdplus` -- which is what `subset_nhdplus()` calls behind the scenes.
+
+Here we grab the basin for our site and request NHDPlus with its geometry as the Area of Interest.
+
+```{r}
+
+basin <- get_nldi_basin(site)
+
+subset <- get_nhdplus(AOI = basin, realization = "flowline")
+
+par(mar = c(0, 0, 0, 0))
+
+plot(sf::st_geometry(basin))
+plot(sf::st_geometry(subset), col = "blue", add = TRUE)
+
+```
+
+For NHDPlusHR data, which is much denser than NHDPlusV2, `nhdplusTools` supports downloading four-digit Hydrologic Unit Code staged geodatabases. The function `get_huc()` is useful to discover the code needed here.
+
+```{r}
+
+wolf_huc <- get_huc(basin, type = 'huc04')
+
+nrow(wolf_huc)
+
+# it straddles hucs? Not really.
+
+par(mar = c(0, 0, 0, 0))
+plot(sf::st_geometry(basin), col = "grey")
+plot(sf::st_geometry(wolf_huc), add = TRUE)
+
+wolf_huc <- get_huc(site_feature, type = "huc04")
+
+nrow(wolf_huc)
+
+# better!!
+par(mar = c(0, 0, 0, 0))
+plot(sf::st_geometry(wolf_huc))
+plot(sf::st_geometry(basin), col = "grey", add = TRUE)
+
+```
+```{r}
+
+outdir <- file.path(nhdplusTools_data_dir(), "hr_access_demo")
+
+dir.create(outdir)
+
+download_dir <- download_nhdplushr(outdir, wolf_huc$huc4)
+
+list.files(download_dir)
+
+```
+If we had asked for more HUC4 codes, additional gdb files would be in the directory we specified.
+
+With this, we can use one of the two functions for access NHDPlusHR data to load data from the directory. Here, we use the more complete `get_nhdplus()` and set `check_terminals=TRUE` which uses `make_standalone()` to ensure that the nhdplus attributes are complete and self-consistent within the subset of data returned.
+
+```{r}
+
+nhdplushr <- get_nhdplushr(
+  download_dir, 
+  layers = c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody", 
+             "NHDArea", "NHDLine", "NHDPlusSink", "NHDPlusWall", 
+             "NHDPoint", "NHDPlusBurnWaterbody", "NHDPlusBurnLineEvent",
+             "HYDRO_NET_Junctions", "WBDHU2", "WBDHU4","WBDHU6", 
+             "WBDHU8", "WBDHU10", "WBDHU12", "WBDLine"), 
+  check_terminals = TRUE)
+
+sapply(nhdplushr, nrow)
+
+```
+At a lower level, we can use `get_hr_data()` to access particular layers. Here, `rename=TRUE` causes the nhdplushr names to be normalized to `nhdplusTools` conventions using `align_nhdplus_names()`. 
+
+NOTE: "NHDPlusID" from nhdplushr is replaced with the name "COMID". This attribute is merely a unique integer identifier and should not be assumed to relate to anything outside the context of a given dataset.
+
+```{r}
+
+nhdplushr <- get_hr_data(list.files(download_dir, pattern = ".gdb", full.names = TRUE),
+                         layer = "NHDFlowline", rename = TRUE)
+
+names(nhdplushr)
+
+# Great Lakes coast are flowlines -- remove for visuals
+gl_coast <- c(get_DM(nhdplushr, 60002700000331),
+              get_DM(nhdplushr, 60002700049157))
+
+plot_data <- dplyr::filter(nhdplushr, FCODE != 56600 & StreamOrde > 2 & !COMID %in% gl_coast)
+
+par(mar = c(0, 0, 0, 0))
+plot(sf::st_geometry(wolf_huc))
+plot(sf::st_geometry(basin), col = "grey", add = TRUE)
+plot(sf::st_geometry(plot_data), lwd = plot_data$StreamOrde / 3, col = "blue", add = TRUE)
+
+par(mar = c(0, 0, 0, 0))
+plot(sf::st_geometry(basin), col = "grey")
+plot(sf::st_geometry(plot_data), lwd = plot_data$StreamOrde / 2, col = "blue", add = TRUE)
+```
+BONUS DEMO: Say we want to know where our stream gage is on the river in question...
+
+`get_flowline_index()` and `disambiguate_flowline_indexes()` are your friends. 
+
+```{r}
+
+potential_matches <- get_flowline_index(nhdplushr, 
+                                        points = site_feature, 
+                                        search_radius = units::as_units(500, "m"),
+                                        max_matches = 5)
+
+potential_matches
+
+site_meta <- dataRetrieval::readNWISsite(gsub("USGS-", "", site_feature$identifier))
+
+sqmi_to_sqkm <- 2.59
+
+da_df <- data.frame(id = 1, drainagearea = site_meta$drain_area_va * sqmi_to_sqkm)
+
+# uses nearest drainage area match
+disambiguate_flowline_indexes(potential_matches,
+                              flowpath = dplyr::select(nhdplushr, COMID, TotDASqKM),
+                              hydro_location = da_df)
+
+```
+
+If what you really need is the base NHD, which is now a static dataset, the pattern is just the same as with nhdplushr using `download_nhd()`.
+
+```{r}
+
+outdir <- file.path(nhdplusTools_data_dir(), "nhd_access_demo")
+
+dir.create(outdir)
+
+download_dir <- download_nhd(outdir, wolf_huc$huc4)
+
+list.files(download_dir)
+
+nhd_gdb <- list.files(download_dir, pattern = ".gdb", full.names = TRUE)
+
+sf::st_layers(nhd_gdb)
+
+nhd_fline <- sf::read_sf(nhd_gdb, "NHDFlowline")
+
+```
+
+We'll wait to plot this up until after we've done some work with 3DHP. As of writing, the 3DHP is more or less the same as the NHD but in a new database schema. The `get_3dhp()` uses a web service to pull data for subsets much the same as the other `get_*` functions. See `vignette("get_3dhp_data.Rmd")` for more on how to work with 3DHP data.
+
+```{r}
+
+sub_3dhp <- get_3dhp(basin, type = "flowline")
+
+plot(sub_3dhp)
+
+sub_3dhp <- st_compatibalize(sub_3dhp, nhd_fline)
+
+par(mar = c(0, 0, 0, 0))
+plot(sf::st_geometry(basin), col = "grey")
+plot(sf::st_geometry(sf::st_zm(sub_3dhp)), col = "skyblue", lwd = 2.5, add = TRUE)
+plot(sf::st_geometry(sf::st_zm(nhd_fline)), col = "blue", lwd = 0.1, add = TRUE)
+```
+
+A brand new, May 2024, feature in nhdplusTools is access to the geoconnex.us reference feature server. The reference feature server provides easy access to representations of datasets that people use to cross reference other data. `discover_geoconnex_reference()` provides access to a full table of what's available. 
+
+```{r}
+
+unique(discover_geoconnex_reference()[c("id", "title")])
+
+```
+Each of these sets of "reference features" includes a "uri" which is a persistent way to identify these features and will always lead you back to a representation of the feature when you look it up. 
+
+For example, let's get a subset of data for our Wolf River basin.
+
+```{r}
+
+wolf_gages <- get_geoconnex_reference(basin, type = "gages")
+
+geoconnex_gage <- dplyr::filter(wolf_gages, 
+                                provider_id == gsub("USGS-", "", site_feature$identifier))
+
+wolf_mainstems <- get_geoconnex_reference(basin, type = "mainstems")
+
+wolf_mainstem <- dplyr::filter(wolf_mainstems, uri == geoconnex_gage$mainstem_uri)
+
+par(mar = c(0, 0, 0, 0))
+plot(sf::st_geometry(basin), col = "grey")
+plot(sf::st_geometry(wolf_mainstems), lwd = 0.5, col = "blue", add = TRUE)
+plot(sf::st_geometry(wolf_mainstem), lwd = 3, col = "blue", add = TRUE)
+plot(sf::st_geometry(wolf_gages), pch = 2, cex = 0.75, add = TRUE)
+plot(sf::st_geometry(geoconnex_gage), pch = 17, cex = 1.5, add = TRUE)
+```
+The Watershed Boundary Dataset contains hydrologic units that are used as cataloging units for the country. It was developed and improved over the last twenty years and is nearing a complete static state. There are three prominent versions of it available -- a snapshot available as part of the NHDPlusV2, a snapshot available as part of \doi{10.5066/P92U7ZUT} and retrieved with `get_huc()`, and the latest (soon to be final) snapshot available using `download_wbd()`.
+
+```{r}
+
+wbd_dir <- file.path(nhdplusTools_data_dir(), "wbd_access_demo")
+  
+wbd_out <- download_wbd(wbd_dir)
+
+# zip::unzip doesn't always work
+if(length(wbd_out == 0)) {
+  f <- list.files(wbd_dir, pattern = ".zip", full.names = TRUE)  
+  
+  utils::unzip(f, exdir = wbd_dir)
+}
+
+wbd_gdb <- list.files(wbd_dir, pattern = ".gdb", full.names = TRUE)
+
+sf::st_layers(wbd_gdb)
+
+```
+
+```{r teardown, include=FALSE}
+options(oldoption)
+par(old_par)
+if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
+  unlink(work_dir, recursive = TRUE)
+}
+```

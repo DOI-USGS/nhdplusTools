@@ -2,7 +2,7 @@ variables:
   _R_CHECK_CRAN_INCOMING_: "false"
   _R_CHECK_FORCE_SUGGESTS_: "true"
   _R_CHECK_DONTTEST_EXAMPLES_: "false"
-  APT_PKGS: "libudunits2-dev libgdal-dev libgeos-dev libproj-dev libcurl4-openssl-dev libssh2-1-dev libssl-dev libxml2-dev zlib1g-dev git p7zip-full"
+  APT_PKGS: "p7zip-full"
 
 before_script:
   - wget --no-check-certificate -O /usr/local/share/ca-certificates/DOIRootCA2.crt https://raw.githubusercontent.com/dblodgett-usgs/hydrogeoenv/master/linux/DOIRootCA2.cer
@@ -19,7 +19,7 @@ test:
   stage: test
   tags:
     - chs-shared
-  image: code.chs.usgs.gov:5001/wma/hydrogeoenv:rocker-geospatial
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/rocker/geospatial:latest
   script:
     - r -e 'devtools::check(check_dir = ".")'
     - r -e 'capture.output(print(covr::coverage_to_list(covr::package_coverage(type = "all")), width = 20),  file = "covr.txt", split = TRUE)'

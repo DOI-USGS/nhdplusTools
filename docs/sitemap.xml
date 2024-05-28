@@ -13,6 +13,9 @@
     <loc>https://doi-usgs.github.io/nhdplusTools/articles/get_3dhp_data.html</loc>
   </url>
   <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/articles/get_data_overview.html</loc>
+  </url>
+  <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/articles/index.html</loc>
   </url>
   <url>
@@ -49,6 +52,9 @@
     <loc>https://doi-usgs.github.io/nhdplusTools/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/news/index.html</loc>
   </url>
   <url>
@@ -65,6 +71,9 @@
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/disambiguate_flowline_indexes.html</loc>
+  </url>
+  <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/discover_geoconnex_reference.html</loc>
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/discover_nhdplus_id.html</loc>
@@ -119,6 +128,9 @@
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_gagesII.html</loc>
+  </url>
+  <url>
+    <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_geoconnex_reference.html</loc>
   </url>
   <url>
     <loc>https://doi-usgs.github.io/nhdplusTools/reference/get_hr_data.html</loc>

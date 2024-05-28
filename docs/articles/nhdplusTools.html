@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -61,6 +61,9 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
+    </li>
+    <li>
+      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
     </li>
     <li>
       <a href="../articles/indexing.html">Indexing and Referencing</a>
@@ -118,7 +121,7 @@
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi-usgs.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is TRUE</span></span>
+<span><span class="co">#&gt; Linking to GEOS 3.11.2, GDAL 3.8.2, PROJ 9.3.1; sf_use_s2() is TRUE</span></span>
 <span></span>
 <span><span class="va">start_point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">89.362239</span>, <span class="fl">43.090266</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4269</span><span class="op">)</span></span>
 <span><span class="va">start_comid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span><span class="op">(</span><span class="va">start_point</span><span class="op">)</span></span>
@@ -143,18 +146,6 @@
 <span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
 <span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
 <span><span class="co">#&gt; Writing CatchmentSP</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
-<span><span class="co">#&gt; although coordinates are longitude/latitude, st_intersects assumes that they</span></span>
-<span><span class="co">#&gt; are planar</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
-<span><span class="co">#&gt; although coordinates are longitude/latitude, st_intersects assumes that they</span></span>
-<span><span class="co">#&gt; are planar</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
-<span><span class="co">#&gt; although coordinates are longitude/latitude, st_intersects assumes that they</span></span>
-<span><span class="co">#&gt; are planar</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
 <span></span>
 <span><span class="va">flowline</span> <span class="op">&lt;-</span> <span class="va">subset</span><span class="op">$</span><span class="va">NHDFlowline_Network</span></span>
 <span><span class="va">catchment</span> <span class="op">&lt;-</span> <span class="va">subset</span><span class="op">$</span><span class="va">CatchmentSP</span></span>
@@ -178,10 +169,6 @@ is returned and/or stored in a local file for later use.</p>
 <span><span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span></span>
 <span>  outlets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span>, </span>
 <span>  gpkg <span class="op">=</span> <span class="va">subset_file</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
-<span><span class="co">#&gt; although coordinates are longitude/latitude, st_intersects assumes that they</span></span>
-<span><span class="co">#&gt; are planar</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
 <span><span class="co">#&gt; Zoom set to: 11</span></span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/tldr2-1.png" width="576"></p>
 <p>This vignette covers a range of utilities the nhdplusTools package
@@ -348,9 +335,9 @@ below.</p>
 <span><span class="co">#&gt;  [1] "ca_gages"          "census2020-nhdpv2" "epa_nrsa"         </span></span>
 <span><span class="co">#&gt;  [4] "geoconnex-demo"    "gfv11_pois"        "huc12pp"          </span></span>
 <span><span class="co">#&gt;  [7] "huc12pp_102020"    "nmwdi-st"          "npdes"            </span></span>
-<span><span class="co">#&gt; [10] "nwisgw"            "nwissite"          "ref_gage"         </span></span>
-<span><span class="co">#&gt; [13] "vigil"             "wade"              "WQP"              </span></span>
-<span><span class="co">#&gt; [16] "comid"</span></span>
+<span><span class="co">#&gt; [10] "nwisgw"            "nwissite"          "ref_dams"         </span></span>
+<span><span class="co">#&gt; [13] "ref_gage"          "vigil"             "wade"             </span></span>
+<span><span class="co">#&gt; [16] "WQP"               "comid"</span></span>
 <span></span>
 <span><span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, </span>
 <span>                     featureID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">start_comid</span><span class="op">$</span><span class="va">comid</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
@@ -394,8 +381,6 @@ that will replace <code><a href="../reference/navigate_nldi.html">navigate_nldi(
 <span>                                      overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
 <span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
 <span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
 <span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span></span>
@@ -436,8 +421,6 @@ knows about upstream of the one we chose!</p>
 <span>                                  return_data <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
 <span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
-<span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
 <span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
 <span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span></span>
@@ -547,13 +530,13 @@ this section.</p>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
-<span><span class="co">#&gt;               layer_name geometry_type features fields crs_name</span></span>
-<span><span class="co">#&gt; 1    NHDFlowline_Network   Line String      168    136    NAD83</span></span>
-<span><span class="co">#&gt; 2            CatchmentSP Multi Polygon      167      6    NAD83</span></span>
-<span><span class="co">#&gt; 3                NHDArea       Polygon        1     14    NAD83</span></span>
-<span><span class="co">#&gt; 4           NHDWaterbody       Polygon       90     21    NAD83</span></span>
-<span><span class="co">#&gt; 5 NHDFlowline_NonNetwork   Line String       45     12    NAD83</span></span>
-<span><span class="co">#&gt; 6                   Gage         Point       33     19    NAD83</span></span></code></pre></div>
+<span><span class="co">#&gt;               layer_name geometry_type features fields             crs_name</span></span>
+<span><span class="co">#&gt; 1    NHDFlowline_Network   Line String      168    136 GRS 1980(IUGG, 1980)</span></span>
+<span><span class="co">#&gt; 2            CatchmentSP Multi Polygon      167      6 GRS 1980(IUGG, 1980)</span></span>
+<span><span class="co">#&gt; 3                NHDArea       Polygon        1     14 GRS 1980(IUGG, 1980)</span></span>
+<span><span class="co">#&gt; 4           NHDWaterbody       Polygon       90     21 GRS 1980(IUGG, 1980)</span></span>
+<span><span class="co">#&gt; 5 NHDFlowline_NonNetwork   Line String       45     12 GRS 1980(IUGG, 1980)</span></span>
+<span><span class="co">#&gt; 6                   Gage         Point       33     19 GRS 1980(IUGG, 1980)</span></span></code></pre></div>
 <p>Now we have an output geopackage that can be used later. It contains
 the network subset of catchments and flowlines as well as a spatial
 subset of other layers as shown in the status output above. To complete

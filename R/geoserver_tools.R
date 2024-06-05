@@ -31,7 +31,7 @@
 #' @importFrom methods as
 #' @importFrom xml2 read_xml
 
-query_usgs_geoserver <- memoise::memoise(function(AOI = NULL,  ids = NULL,
+query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                                  type = NULL, filter = NULL,
                                  t_srs = NULL,
                                  buffer = 0.5) {
@@ -177,7 +177,7 @@ query_usgs_geoserver <- memoise::memoise(function(AOI = NULL,  ids = NULL,
     NULL
   }
 
-}, ~memoise::timeout(nhdplusTools_memoise_timeout()), cache = nhdplusTools_memoise_cache())
+}
 
 unify_types <- function(out) {
   all_class <- bind_rows(lapply(out, function(x) {
@@ -367,7 +367,7 @@ extact_comid_nwis <- memoise::memoise(function(nwis){
   c        <-  rawToChar(httr::RETRY("GET", url)$content)
   f.comid  <-  jsonlite::fromJSON(c, simplifyVector = TRUE)
   f.comid$features$properties$comid
-}, ~memoise::timeout(nhdplusTools_memoise_timeout()), cache = nhdplusTools_memoise_cache())
+})
 
 #' @importFrom sf st_make_valid st_as_sfc st_bbox st_buffer st_transform
 check_query_params <- function(AOI, ids, type, where, source, t_srs, buffer) {

@@ -45,7 +45,7 @@ get_3dhp_service_info <- memoise::memoise(function() {
 #' @importFrom httr RETRY content
 #' @importFrom dplyr filter
 #' @importFrom methods as
-query_usgs_arcrest <- memoise::memoise(function(AOI = NULL,  ids = NULL,
+query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
                                type = NULL, where = NULL,
                                t_srs = NULL,
                                buffer = 0.5){
@@ -216,4 +216,4 @@ query_usgs_arcrest <- memoise::memoise(function(AOI = NULL,  ids = NULL,
     all_out[[l]] <- out
   }
   tryCatch(sf::st_sf(data.table::rbindlist(all_out)), error = function(e) NULL)
-}, ~memoise::timeout(nhdplusTools_memoise_timeout()), cache = nhdplusTools_memoise_cache())
+}

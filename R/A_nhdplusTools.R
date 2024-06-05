@@ -305,7 +305,7 @@ nhdplusTools_data_dir <- function(dir = NULL) {
 
     nhdpt_dat_dir <- try(get("nhdpt_dat_dir", envir = nhdplusTools_env), silent = TRUE)
 
-    if(inherits(nhdpt_dat_dir, "try-error")) {
+    if(inherits(nhdpt_dat_dir, "try-error") || grepl("CRAN", nhdpt_dat_dir)) {
       assign("nhdpt_dat_dir",
              tools::R_user_dir("nhdplusTools"),
              envir = nhdplusTools_env)
@@ -426,6 +426,18 @@ nhdplusTools_memoise_timeout <- function() {
       oneday_seconds <- 60 * 60 * 24
     }
   }
+}
+
+.onLoad <- function(libname, pkgname) {
+  query_usgs_arcrest <<- memoise::memoise(query_usgs_arcrest,
+                                          ~memoise::timeout(nhdplusTools_memoise_timeout()),
+                                          cache = nhdplusTools_memoise_cache())
+  query_usgs_geoserver <<- memoise::memoise(query_usgs_geoserver,
+                                            ~memoise::timeout(nhdplusTools_memoise_timeout()),
+                                            cache = nhdplusTools_memoise_cache())
+  query_nldi <<- memoise::memoise(query_nldi,
+                                  ~memoise::timeout(nhdplusTools_memoise_timeout()),
+                                  cache = nhdplusTools_memoise_cache())
 }
 
 #' @title Align NHD Dataset Names

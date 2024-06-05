@@ -7,7 +7,7 @@
 #' @param url character url to get
 #' @return list containing parsed json on success, NULL otherwise
 #' @noRd
-mem_get_json <- landing <- memoise::memoise(\(url) {
+mem_get_json <- memoise::memoise(\(url) {
   tryCatch({
     retn <- httr::RETRY("GET", url, httr::accept_json())
 

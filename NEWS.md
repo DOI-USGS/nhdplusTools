@@ -1,3 +1,7 @@
+nhdplusTools 1.2.1
+==========
+Bug fix for data cache directory #389
+
 nhdplusTools 1.2.0
 ==========
 

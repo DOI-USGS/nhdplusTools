@@ -83,6 +83,7 @@ test_that("navigation works", {
 test_that("basin works", {
 
   skip_on_cran()
+  skip_on_ci()
 
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 

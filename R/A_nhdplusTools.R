@@ -50,7 +50,7 @@ WBAREACOMI <- "WBAREACOMI"
 
 # List of input names that should be changed to replacement names
 nhdplus_attributes <- list(
-  COMID = COMID, NHDPlusID = COMID,
+  COMID = COMID, NHDPlusID = COMID, nhdplusid = COMID,
   Permanent_Identifier = Permanent_Identifier,
   RPUID = RPUID,
   VPUID = VPUID,

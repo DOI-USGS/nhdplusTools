@@ -221,6 +221,11 @@ test_that("split", {
 
   expect_true(area[2] > units::set_units(900000000, "m^2"))
 
+  point <- sf::st_sfc(sf::st_point(c(-20.213274, 42.956989)),
+                      crs = 4326)
+
+  expect_message(get_split_catchment(point, upstream = TRUE), "Ensure that the point")
+
   # Doesn't improve coverage
   # catchment2 <- get_split_catchment(snap_point, upstream = FALSE)
   #

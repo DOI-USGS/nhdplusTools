@@ -228,7 +228,8 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #'}
 get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
                      universalreferenceid = NULL,
-                     t_srs = NULL, buffer = 0.5) {
+                     t_srs = NULL, buffer = 0.5,
+                     page_size = 2000) {
 
   if(!is.null(universalreferenceid) & !grepl("outlet|reach|hydrolocation", type)) {
     stop("universalereferenceid can only be specified for hydrolocation features")
@@ -247,7 +248,7 @@ get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
     ids <- NULL
   }
 
-  query_usgs_arcrest(AOI, ids, type, where, t_srs, buffer)
+  query_usgs_arcrest(AOI, ids, type, where, t_srs, buffer, page_size)
 
 }
 

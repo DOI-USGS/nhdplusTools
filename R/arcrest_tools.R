@@ -39,6 +39,8 @@ get_3dhp_service_info <- memoise::memoise(function() {
 #' Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.
 #' @param buffer numeric. The amount (in meters) to buffer a POINT AOI by for an
 #' extended search. Default = 0.5
+#' @param page_size numeric default number of features to request at a time. Reducing
+#' may help if 500 errors are experienced.
 #' @return a simple features (sf) object or valid types if no type supplied
 #' @keywords internal
 #' @importFrom sf st_crs st_geometry_type st_buffer st_transform st_zm read_sf st_bbox st_as_sfc
@@ -48,7 +50,8 @@ get_3dhp_service_info <- memoise::memoise(function() {
 query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
                                type = NULL, where = NULL,
                                t_srs = NULL,
-                               buffer = 0.5){
+                               buffer = 0.5,
+                               page_size = 2000){
 
   si <- get_3dhp_service_info()
 
@@ -141,7 +144,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
       out <- NULL
     } else {
 
-      chunk_size <- 2000
+      chunk_size <- page_size
       all_ids <- split(all_ids, ceiling(seq_along(all_ids)/chunk_size))
 
       out <- rep(list(list()), length(all_ids))

@@ -115,7 +115,10 @@ get_split_catchment <- function(point, upstream = TRUE) {
 
   url <- paste0(url_base, "nldi-splitcatchment/execution")
 
-  return(sf_post(url, make_json_input_split(point, upstream)))
+  return(sf_post(url, make_json_input_split(point, upstream),
+                 err_mess = paste("Ensure that the point you submitted is within\n the",
+                 "coterminous US and consider trying get_raindrop_trace\ to ensure",
+                 "your point is not too close to a catchment boundary.")))
 }
 
 #' Get Cross Section From Point (experimental)
@@ -330,7 +333,7 @@ get_xs <- function(url, fun, ...) {
          elevation_m = "elevation")
 }
 
-sf_post <- function(url, json) {
+sf_post <- function(url, json, err_mess = "") {
   tryCatch({
 
     if(nhdplus_debug()) {
@@ -349,7 +352,8 @@ sf_post <- function(url, json) {
     }
 
   }, error = function(e) {
-    message("Error calling processing service. \n Original error: \n", e)
+    message("Error calling processing service. \n Original error: \n", e,
+            "\n", err_mess)
     NULL
   })
 }

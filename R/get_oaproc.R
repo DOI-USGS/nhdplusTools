@@ -45,14 +45,22 @@ get_raindrop_trace <- function(point, direction = "down") {
 }
 
 #' Get split catchment
-#' @description Uses catchment splitting web service to retrieve
+#' @description Uses a catchment splitting web service to retrieve
 #' the portion of a catchment upstream of the point provided.
 #' @param point scf POINT including crs as created by:
-#' \code{sf::st_sfc(sf::st_point(.. ,..), crs)}
+#' \code{sf::st_sfc(sf::st_point(.. ,..), crs)}.
 #' @param upstream logical If TRUE, the entire drainage basin upstream
 #' of the point provided is returned in addition to the local catchment.
 #' @return sf data.frame containing the local catchment, the split portion
 #' and optionally the total drainage basin.
+#' @details
+#' This service works within the coterminous US NHDPlusV2 domain. If the point
+#' provided falls on an NHDPlusV2 flowline as retrieved from \link{get_raindrop_trace}
+#' the catchment will be split across the flow line. IF the point is not
+#' along the flowline a small sub catchment will typically result. As a result,
+#' most users of this function will want to use \link{get_raindrop_trace} prior
+#' to calls to this function.
+#'
 #' @export
 #' @examples
 #' \donttest{
@@ -107,7 +115,10 @@ get_split_catchment <- function(point, upstream = TRUE) {
 
   url <- paste0(url_base, "nldi-splitcatchment/execution")
 
-  return(sf_post(url, make_json_input_split(point, upstream)))
+  return(sf_post(url, make_json_input_split(point, upstream),
+                 err_mess = paste("Ensure that the point you submitted is within\n the",
+                 "coterminous US and consider trying get_raindrop_trace\ to ensure",
+                 "your point is not too close to a catchment boundary.")))
 }
 
 #' Get Cross Section From Point (experimental)
@@ -322,7 +333,7 @@ get_xs <- function(url, fun, ...) {
          elevation_m = "elevation")
 }
 
-sf_post <- function(url, json) {
+sf_post <- function(url, json, err_mess = "") {
   tryCatch({
 
     if(nhdplus_debug()) {
@@ -341,7 +352,8 @@ sf_post <- function(url, json) {
     }
 
   }, error = function(e) {
-    message("Error calling processing service. \n Original error: \n", e)
+    message("Error calling processing service. \n Original error: \n", e,
+            "\n", err_mess)
     NULL
   })
 }

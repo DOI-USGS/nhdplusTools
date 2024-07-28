@@ -257,10 +257,12 @@ test_that("get_nwis", {
 
   pt2BuffNorm = get_nwis(AOI = pt2)
   pt2BuffDecrease = get_nwis(AOI = pt2, buffer = 10000)
+
+  Sys.sleep(5)
   pt2BuffIncrease = get_nwis(AOI = pt2, buffer = 40000)
 
-  expect_gt(nrow(pt2BuffIncrease), nrow(pt2BuffNorm))
-  expect_gt(nrow(pt2BuffNorm), nrow(pt2BuffDecrease))
+  expect_true(nrow(pt2BuffIncrease) > nrow(pt2BuffNorm))
+  expect_true(nrow(pt2BuffNorm) > nrow(pt2BuffDecrease))
   expect_equal(order(pt2BuffNorm$distance_m), 1:nrow(pt2BuffNorm))
 
   expect_error(get_nwis(AOI = pt2, buffer = 1000000))

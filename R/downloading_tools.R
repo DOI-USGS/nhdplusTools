@@ -5,6 +5,11 @@
 #' and four digit codes.
 #' @param download_files boolean if FALSE, only URLs to files will be returned
 #' can be hu02s and/or hu04s
+#' @param archive pull data from the "archive" folder rather than "current".
+#' The archive contains the original releases of NHDPlusHR data that were updated
+#' in subsequent processing. Not all subsets of NHDPlusHR were updated. See:
+#' https://www.usgs.gov/national-hydrography/access-national-hydrography-products
+#' for more details.
 #'
 #' @return character Paths to geodatabases created.
 #' @export
@@ -16,11 +21,17 @@
 #' (hu <- substr(hu$huc8, 1, 2))
 #'
 #' download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE)
+#'
+#' download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE, archive = TRUE)
 #' }
-download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
+download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE, archive = FALSE) {
+
+  list_source <- get("nhdhr_file_list", envir = nhdplusTools_env)
+
+  if(archive) list_source <- get("archive_nhdhr_file_list", envir = nhdplusTools_env)
 
   download_nhd_internal(get("nhd_bucket", envir = nhdplusTools_env),
-               get("nhdhr_file_list", envir = nhdplusTools_env),
+               list_source,
                "NHDPLUS_H_", nhd_dir, hu_list, download_files)
 }
 

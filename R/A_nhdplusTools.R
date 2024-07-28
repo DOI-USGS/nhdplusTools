@@ -259,10 +259,12 @@ assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
 nhd_bucket <- "https://prd-tnm.s3.amazonaws.com/"
 nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Current/GDB/"
+archive_nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Archive/GDB/"
 nhd_file_list <- "?prefix=StagedProducts/Hydrography/NHD/HU4/GDB/"
 
 assign("nhd_bucket", nhd_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
+assign("archive_nhdhr_file_list", archive_nhdhr_file_list, envir = nhdplusTools_env)
 
 assign("nldi_tier", "prod",
        envir = nhdplusTools_env)

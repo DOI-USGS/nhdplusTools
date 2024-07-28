@@ -10,9 +10,15 @@ test_that("we get urls for nhdplushr and base", {
 
   expect_equal(length(urls), 11)
 
+  urls <- download_nhdplushr(work_dir, c("01", "0203"), download_files = FALSE, archive = TRUE)
+
+  expect_true(all(grepl("Archive", urls)))
+
   urls <- download_nhd(work_dir, c("01", "0203"), download_files = FALSE)
 
   expect_equal(length(urls), 11)
+
+
 })
 
 test_that("get_nhdplushr layers and gpkg", {

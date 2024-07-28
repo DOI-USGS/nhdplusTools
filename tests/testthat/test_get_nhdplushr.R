@@ -18,7 +18,6 @@ test_that("we get urls for nhdplushr and base", {
 
   expect_equal(length(urls), 11)
 
-
 })
 
 test_that("get_nhdplushr layers and gpkg", {
@@ -45,6 +44,29 @@ test_that("get_nhdplushr layers and gpkg", {
   out <- get_nhdplushr(work_dir, layers = NULL)
 
   expect(length(names(out)), 7)
+})
+
+test_that("get_nhdplushr duplicate vpus", {
+  skip_on_cran()
+
+  get_test_file(work_dir)
+
+  f <- file.path(work_dir, "03_sub.gpkg")
+  ftemp <- file.path(work_dir, "03.gpkg")
+  f1 <- file.path(work_dir, "0303_sub.gpkg")
+  f2 <- file.path(work_dir, "0303_2sub.gpkg")
+
+  file.copy(f, f1)
+  file.copy(f, f2)
+
+  file.rename(f, ftemp)
+
+  expect_warning(out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg),
+               "Found duplicate HU04s")
+
+  file.rename(ftemp, f)
+  unlink(f1)
+  unlink(f2)
 })
 
 test_that("nhdplus hr waterbody", {

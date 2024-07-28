@@ -247,11 +247,11 @@ test_that("get_nwis", {
   testthat::skip_on_cran()
   areaSearch = get_nwis(AOI = area)
   expect(nrow(areaSearch), 1)
-  expect_equal(st_crs(areaSearch)$epsg, 4326)
+  expect_equal(sf::st_crs(areaSearch)$epsg, 4326)
 
   areaSearch5070 = get_nwis(AOI = area, t_srs = 5070)
   expect(nrow(areaSearch5070), 1)
-  expect_equal(st_crs(areaSearch5070)$epsg, 5070)
+  expect_equal(sf::st_crs(areaSearch5070)$epsg, 5070)
 
   expect_equal(areaSearch$site_no, areaSearch5070$site_no)
 
@@ -266,6 +266,6 @@ test_that("get_nwis", {
   expect_error(get_nwis(AOI = pt2, buffer = 1000000))
 
   expect_error(get_nwis(AOI = AOI, buffer = 1))
-  expect_warning(get_nwis(AOI = st_buffer(st_transform(pt2,5070), 1)))
+  expect_warning(get_nwis(AOI = sf::st_buffer(sf::st_transform(pt2,5070), 1)))
 
 })

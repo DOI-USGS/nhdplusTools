@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_nldi.R
 \name{get_nldi_characteristics}
 \alias{get_nldi_characteristics}
-\title{Get Catchment Characteristics}
+\title{(DEPRECATED) Get Catchment Characteristics}
 \usage{
 get_nldi_characteristics(nldi_feature, type = "local")
 }
@@ -18,13 +18,7 @@ from the specified `featureSource`.}
 data.frame containing requested characteristics
 }
 \description{
-Retrieves catchment characteristics from the Network Linked Data Index.
-Metadata for these characteristics can be found using `discover_nldi_characteristics()`.
-}
-\examples{
-\donttest{
-chars <- get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
-names(chars)
-head(chars$local, 10)
-}
+This functionality id deprecated and will be removed in the near future.
+
+Please use \link{get_catchment_characteristics} instead.
 }

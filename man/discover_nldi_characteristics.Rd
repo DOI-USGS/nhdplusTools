@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_nldi.R
 \name{discover_nldi_characteristics}
 \alias{discover_nldi_characteristics}
-\title{Discover Characteristics Metadata}
+\title{(DEPRECATED) Discover Characteristics Metadata}
 \usage{
 discover_nldi_characteristics(type = "all")
 }
@@ -13,10 +13,7 @@ discover_nldi_characteristics(type = "all")
 data.frame containing available characteristics
 }
 \description{
-Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.
-}
-\examples{
-chars <- discover_nldi_characteristics()
-names(chars)
-head(chars$local, 10)
+This functionality is deprecated and will be removed in the near future.
+
+Please use \link{get_characteristics_metadata} instead.
 }

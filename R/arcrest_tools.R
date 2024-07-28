@@ -170,7 +170,9 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
           out[[i]] <- rawToChar(httr::RETRY("POST",
                                             URL,
                                             body = post_body,
-                                            encode = "form")$content)
+                                            encode = "form",
+                                            pause_base = 2,
+                                            times = 3)$content)
         }, error = function(e) {
           warning("Something went wrong trying to access a service.")
           out <- NULL

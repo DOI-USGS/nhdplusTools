@@ -1,12 +1,14 @@
-#' @title Discover Characteristics Metadata
-#' @description Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.
+#' @title (DEPRECATED) Discover Characteristics Metadata
+#' @description
+#'
+#' This functionality is deprecated and will be removed in the near future.
+#'
+#' Please use \link{get_characteristics_metadata} instead.
+#'
 #' @param type character "all", "local", "total", or "divergence_routed".
 #' @export
 #' @return data.frame containing available characteristics
-#' @examples
-#' chars <- discover_nldi_characteristics()
-#' names(chars)
-#' head(chars$local, 10)
+#'
 discover_nldi_characteristics <- function(type="all") {
 
   tc <- type_check(type)
@@ -174,7 +176,8 @@ get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
            ifelse(simplify, "true", "false"), "&",
            "splitCatchment=",
            ifelse(split, "true", "false")),
-    parse_json = FALSE)
+    parse_json = FALSE,
+    err_mess = "Are you sure your featureID exists in the NLDI?")
 
   if(is.null(o)) return(NULL)
 
@@ -202,22 +205,26 @@ get_nldi_feature <- function(nldi_feature) {
   out <- tryCatch(dataRetrieval::findNLDI(origin = nldi_feature),
                   error = function(e) NULL)
 
+  if(is.null(out)) {
+    warning(paste("No feature found from NLDI, it is not in the featureSource",
+                  "you are looking in because it was not indexed or is outside",
+                  "the CONUS NLDI domain."))
+  }
+
   return(out$origin)
 }
 
-#' @title Get Catchment Characteristics
-#' @description Retrieves catchment characteristics from the Network Linked Data Index.
-#' Metadata for these characteristics can be found using `discover_nldi_characteristics()`.
+#' @title (DEPRECATED) Get Catchment Characteristics
+#' @description
+#'
+#' This functionality id deprecated and will be removed in the near future.
+#'
+#' Please use \link{get_catchment_characteristics} instead.
+#'
 #' @inheritParams navigate_nldi
 #' @inheritParams discover_nldi_characteristics
 #' @return data.frame containing requested characteristics
 #' @export
-#' @examples
-#' \donttest{
-#' chars <- get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
-#' names(chars)
-#' head(chars$local, 10)
-#' }
 get_nldi_characteristics <- function(nldi_feature, type="local") {
 
   tc <- type_check(type)
@@ -261,7 +268,8 @@ get_nldi_index <- function(location) {
   tryCatch({
   sf::read_sf(query_nldi(paste0("hydrolocation?coords=POINT(",
                                 location[1],"%20", location[2],")"),
-                         parse_json = FALSE))
+                         parse_json = FALSE,
+                         err_mess = "Make sure your POINT is lon,lat and in the NHDPlusV2 domain."))
   }, error = function(e) {
     warning(paste("Something went wrong querying the NLDI.\n", e))
     NULL
@@ -272,7 +280,7 @@ get_nldi_index <- function(location) {
 #' @importFrom httr GET
 #' @importFrom jsonlite fromJSON
 #' @noRd
-query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE) {
+query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE, err_mess = "") {
   nldi_base_url <- paste0(get_nldi_url(), base_path)
 
   url <- paste(nldi_base_url, query,
@@ -300,7 +308,8 @@ query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE) {
       }
     }
   }, error = function(e) {
-    warning("Something went wrong accessing the NLDI.\n", e)
+    warning("Something went wrong accessing the NLDI.\n", e,
+            "\n", err_mess)
     NULL
   })
 }

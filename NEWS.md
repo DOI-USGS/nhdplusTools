@@ -1,6 +1,10 @@
-nhdplusTools 1.2.1
+nhdplusTools 1.3.0
 ==========
-Bug fix for data cache directory #389
+
+- Deprecated `discover_nldi_characteristics()` and `get_nldi_characteristics()`
+- Bug fix for data cache directory #389
+- Improved warnings for web service requests. #400, #398
+- Improved documentation for `get_split_catchment()`. #399
 
 nhdplusTools 1.2.0
 ==========

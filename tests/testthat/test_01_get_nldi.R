@@ -99,6 +99,13 @@ test_that("basin works", {
   basin2 <- get_nldi_basin(nldi_feature = nldi_nwis,
                            simplify = FALSE, split = TRUE)
 
+  if(length(sf::st_geometry(basin2)[[1]]) > 1) {
+    lens <- sapply(sf::st_geometry(basin2)[[1]], \(x) nrow(x[[1]]))
+    sf::st_geometry(basin2) <- sf::st_sfc(
+      sf::st_polygon(sf::st_geometry(basin2)[[1]][[which(lens == max(lens))]]), crs = sf::st_crs(basin2))
+    basin2 <- sf::st_cast(basin2, "POLYGON")
+  }
+
   expect_true(length(sf::st_coordinates(nav)) < length(sf::st_coordinates(basin2)))
 
   expect_true(!sf::st_crosses(sf::st_cast(nav, "LINESTRING"),

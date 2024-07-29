@@ -39,3 +39,14 @@ check_layers <- function(out_file) {
   expect_true(sf::st_crs(sf::read_sf(out_file, "NHDFlowline_Network")) ==
                 sf::st_crs(4269))
 }
+
+setup_workdir <- function() {
+  work_dir <- file.path(tempdir(), "test_hr")
+  dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
+  out_gpkg <- file.path(work_dir, "temp.gpkg")
+  list(wd = work_dir, og = out_gpkg)
+}
+
+teardown_workdir <- function(work_dir) {
+  unlink(work_dir, recursive = TRUE, force = TRUE)
+}

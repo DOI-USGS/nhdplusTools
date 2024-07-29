@@ -4,7 +4,7 @@
 \alias{download_nhdplushr}
 \title{Download NHDPlus HiRes}
 \usage{
-download_nhdplushr(nhd_dir, hu_list, download_files = TRUE)
+download_nhdplushr(nhd_dir, hu_list, download_files = TRUE, archive = FALSE)
 }
 \arguments{
 \item{nhd_dir}{character directory to save output into}
@@ -15,6 +15,12 @@ and four digit codes.}
 
 \item{download_files}{boolean if FALSE, only URLs to files will be returned
 can be hu02s and/or hu04s}
+
+\item{archive}{pull data from the "archive" folder rather than "current".
+The archive contains the original releases of NHDPlusHR data that were updated
+in subsequent processing. Not all subsets of NHDPlusHR were updated. See:
+https://www.usgs.gov/national-hydrography/access-national-hydrography-products
+for more details.}
 }
 \value{
 character Paths to geodatabases created.
@@ -30,5 +36,7 @@ hu <- get_huc(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326),
 (hu <- substr(hu$huc8, 1, 2))
 
 download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE)
+
+download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE, archive = TRUE)
 }
 }

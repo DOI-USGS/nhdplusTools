@@ -67,7 +67,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
     gdbs <- list.files(hr_dir, pattern = "sub.gpkg", full.names = TRUE)
   }
 
-  dup_list_key <- regmatches(gdbs, regexpr("[0-9][0-9][0-9][0-9]", gdbs))
+  dup_list_key <- regmatches(basename(gdbs), regexpr("[0-9][0-9][0-9][0-9]", basename(gdbs)))
 
   if(any(duplicated(dup_list_key))) {
     remove <- gdbs[duplicated(dup_list_key)]

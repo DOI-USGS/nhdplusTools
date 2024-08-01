@@ -174,9 +174,8 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                                        cachedir = cache_tiles,
                                        verbose = FALSE, provider = basemap)
 
-          old_par <- par()
+          old_par <- par(mar = c(0, 0, 0, 0))
           on.exit(par(old_par))
-          par(mar = c(0, 0, 0, 0))
 
           mapsf::mf_map(bb, type = "base", col = NA, border = NA)
 

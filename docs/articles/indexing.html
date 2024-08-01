@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -124,14 +124,14 @@ finding flowlines and waterbodies near point locations.</p>
 <code><a href="../reference/disambiguate_flowline_indexes.html">disambiguate_flowline_indexes()</a></code> uses numeric or character
 attributes to attempt to determine the best flowline match when many
 near by matches exist. This is especially useful for mainstem /
-tributary disambiguation. - <code><a href="https://rdrr.io/pkg/hydroloom/man/get_hydro_location.html" class="external-link">get_hydro_location()</a></code> retrieves
+tributary disambiguation. - <code><a href="https://doi-usgs.github.io/hydroloom/reference/get_hydro_location.html" class="external-link">get_hydro_location()</a></code> retrieves
 the point location of an index along a flowline. -
-<code><a href="https://rdrr.io/pkg/hydroloom/man/rescale_measures.html" class="external-link">rescale_measures()</a></code> converts 0:100 reachcode measures to
-0:100 flowline measures. - <code><a href="https://rdrr.io/pkg/hydroloom/man/get_partial_length.html" class="external-link">get_partial_length()</a></code> retrieves a
+<code><a href="https://doi-usgs.github.io/hydroloom/reference/rescale_measures.html" class="external-link">rescale_measures()</a></code> converts 0:100 reachcode measures to
+0:100 flowline measures. - <code><a href="https://doi-usgs.github.io/hydroloom/reference/get_partial_length.html" class="external-link">get_partial_length()</a></code> retrieves a
 partial length (upstream and downstream) of an index location. -
 <code><a href="../reference/get_path_lengths.html">get_path_lengths()</a></code> retrieves the distance between the
 outlets of pairs of flowlines. Use with
-<code><a href="https://rdrr.io/pkg/hydroloom/man/get_partial_length.html" class="external-link">get_partial_length()</a></code> to determine network distance between
+<code><a href="https://doi-usgs.github.io/hydroloom/reference/get_partial_length.html" class="external-link">get_partial_length()</a></code> to determine network distance between
 indexes.</p>
 <p>For waterbody indexes, the <code><a href="../reference/get_wb_outlet.html">get_wb_outlet()</a></code> function is
 helpful too determine which flowline is the outlet of a waterbody.</p>
@@ -168,8 +168,9 @@ the bounding box of your input points.</p>
 <span>                              search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">200</span>, <span class="st">"meters"</span><span class="op">)</span>, </span>
 <span>                              max_matches <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
-<span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>                               geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>                     <span class="va">indexes</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
@@ -181,17 +182,19 @@ the bounding box of your input points.</p>
 <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> did. The below shows the percent of
 COMIDs and REACHCODEs that match and shows a histogram of the measure
 differences for the REACHCODEs that were matched.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_match</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">indexes</span><span class="op">$</span><span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">gages</span><span class="op">$</span><span class="va">FLComID</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">p_match</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, </span>
 <span>       <span class="st">"% were found to match the COMID in the NHDPlus gages layer"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "58.7% were found to match the COMID in the NHDPlus gages layer"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "58.7% were found to match the COMID in the NHDPlus gages layer"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">p_match</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">indexes</span><span class="op">$</span><span class="va">REACHCODE</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">gages</span><span class="op">$</span><span class="va">REACHCODE</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">p_match</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, </span>
 <span>       <span class="st">"% were found to match the REACHCODE in the NHDPlus gages layer"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "60.9% were found to match the REACHCODE in the NHDPlus gages layer"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "60.9% were found to match the REACHCODE in the NHDPlus gages layer"</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">matched</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">indexes</span>, </span>
 <span>                 <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>, </span>
 <span>                               REACHCODE_ref <span class="op">=</span> <span class="va">REACHCODE</span>, </span>
@@ -203,7 +206,7 @@ differences for the REACHCODEs that were matched.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">matched</span><span class="op">$</span><span class="va">REACH_meas_diff</span>, breaks <span class="op">=</span> <span class="fl">100</span>, </span>
 <span>     main <span class="op">=</span> <span class="st">"Difference in measure for gages matched to the same reach."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="indexing_files/figure-html/analyze_index-1.png" width="576"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">matched</span><span class="op">$</span><span class="va">REACH_meas_diff</span>, </span>
 <span>               probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, </span>
@@ -224,28 +227,30 @@ the distance conversion and segmentizes our lon/lat lines to 10m on the
 fly. Also note, we are working in units of degrees for this sample.
 (this is probably not a good way to do things, but is being shown here
 for the sake of demonstration)</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowlines</span>, </span>
 <span>                              <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>, </span>
 <span>                              search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="st">"degrees"</span><span class="op">)</span>, </span>
 <span>                              precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
-<span><span class="co">#&gt; Linking to GEOS 3.11.2, GDAL 3.8.2, PROJ 9.3.1; sf_use_s2() is TRUE</span></span>
-<span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">indexes</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span></code></pre></div>
 <p>Now lets look at out comparison again.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_match</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">indexes</span><span class="op">$</span><span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">gages</span><span class="op">$</span><span class="va">FLComID</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">p_match</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, </span>
 <span>       <span class="st">"% were found to match the COMID in the NHDPlus gages layer"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "76.1% were found to match the COMID in the NHDPlus gages layer"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "76.1% were found to match the COMID in the NHDPlus gages layer"</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">p_match</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">indexes</span><span class="op">$</span><span class="va">REACHCODE</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">gages</span><span class="op">$</span><span class="va">REACHCODE</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">p_match</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, </span>
 <span>       <span class="st">"% were found to match the REACHCODE in the NHDPlus gages layer"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "76.1% were found to match the REACHCODE in the NHDPlus gages layer"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "76.1% were found to match the REACHCODE in the NHDPlus gages layer"</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">matched</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">indexes</span>, </span>
 <span>                 <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_set_geometry</a></span><span class="op">(</span><span class="va">gages</span>, <span class="cn">NULL</span><span class="op">)</span>, </span>
 <span>                               REACHCODE_ref <span class="op">=</span> <span class="va">REACHCODE</span>, </span>
@@ -257,7 +262,7 @@ for the sake of demonstration)</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">matched</span><span class="op">$</span><span class="va">REACH_meas_diff</span>, breaks <span class="op">=</span> <span class="fl">100</span>, </span>
 <span>     main <span class="op">=</span> <span class="st">"Difference in measure for gages matched to the same reach."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="indexing_files/figure-html/analyze_inde_precise-1.png" width="576"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">matched</span><span class="op">$</span><span class="va">REACH_meas_diff</span>, </span>
 <span>               probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -274,14 +279,15 @@ flowlines and some further disambiguation is needed to determine exactly
 which flowline the point should be indexed to.</p>
 <p>For this example, we’ll just look at one point but keep all the sites
 for disambiguation down below.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowlines</span>,</span>
 <span>                                  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span>, </span>
 <span>                                  search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="st">"degrees"</span><span class="op">)</span>, </span>
 <span>                                  max_matches <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
-<span></span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">42</span>, </span>
 <span>                               geom <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">[</span><span class="fl">42</span><span class="op">]</span><span class="op">)</span>, </span>
 <span>                     <span class="va">all_indexes</span><span class="op">[</span><span class="va">all_indexes</span><span class="op">$</span><span class="va">id</span> <span class="op">==</span> <span class="fl">42</span>, <span class="op">]</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
@@ -290,7 +296,7 @@ for disambiguation down below.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">indexes</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_zm.html" class="external-link">st_zm</a></span><span class="op">(</span><span class="va">flowlines</span><span class="op">)</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="indexing_files/figure-html/multi-1.png" width="576"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">indexes</span></span>
 <span><span class="co">#&gt; Simple feature collection with 10 features and 5 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
@@ -328,7 +334,7 @@ point)</p>
 <p>Below, we run <code><a href="../reference/disambiguate_flowline_indexes.html">disambiguate_flowline_indexes()</a></code> on all the
 indexes we found then pull out the one we looked at just above as an
 example (gage 42 in our list).</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">unique_indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/disambiguate_flowline_indexes.html">disambiguate_flowline_indexes</a></span><span class="op">(</span></span>
 <span>  <span class="va">all_indexes</span>, </span>
 <span>  <span class="va">flowlines</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"COMID"</span>, <span class="st">"TotDASqKM"</span><span class="op">)</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">]</span>,</span>
@@ -346,7 +352,7 @@ example (gage 42 in our list).</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_zm.html" class="external-link">st_zm</a></span><span class="op">(</span><span class="va">flowlines</span><span class="op">[</span><span class="va">flowlines</span><span class="op">$</span><span class="va">COMID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">unique_index</span><span class="op">$</span><span class="va">COMID</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>     col <span class="op">=</span> <span class="st">"blue"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="indexing_files/figure-html/disamb-1.png" width="576"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">unique_index</span></span>
 <span><span class="co">#&gt; Simple feature collection with 1 feature and 5 fields</span></span>
@@ -380,7 +386,7 @@ an interactive map. Of interest on gages that are near the short of
 bodies of water but far away from flowlines. Note that we drop the
 NHDPlus geometry and use the source <code>LonSite</code> and
 <code>LatSite</code> attributes for geometry.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"NHDWaterbody"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">gages</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -394,7 +400,7 @@ NHDPlus geometry and use the source <code>LonSite</code> and
 <p>This next block shows how to call <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code>
 and <code><a href="../reference/get_waterbody_index.html">get_waterbody_index()</a></code> and what the output looks
 like.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">flowline_indexes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gages</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                              <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span></span>
@@ -402,8 +408,9 @@ like.</p>
 <span>                                <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">gages</span>, <span class="fl">5070</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>                                search_radius <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="fl">200</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
-<span>                              </span>
+<span><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>                              </span>
 <span><span class="va">indexed_gages</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">gages</span>, </span>
 <span>                                      orig_REACHCODE <span class="op">=</span> <span class="va">REACHCODE</span>, </span>
 <span>                                      orig_Measure <span class="op">=</span> <span class="va">Measure</span>, </span>
@@ -420,7 +427,7 @@ like.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">waterbody</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">indexed_gages</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="indexing_files/figure-html/index_waterbodies-1.png" width="576"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">indexed_gages</span><span class="op">)</span>, <span class="va">near_wb_COMID</span>, <span class="va">near_wb_dist</span>, <span class="va">in_wb_COMID</span>, <span class="va">outlet_fline_COMID</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    near_wb_COMID near_wb_dist in_wb_COMID outlet_fline_COMID</span></span>
@@ -489,7 +496,7 @@ like.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

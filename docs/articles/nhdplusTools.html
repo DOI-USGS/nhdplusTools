@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -121,7 +121,6 @@
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi-usgs.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Linking to GEOS 3.11.2, GDAL 3.8.2, PROJ 9.3.1; sf_use_s2() is TRUE</span></span>
 <span></span>
 <span><span class="va">start_point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">89.362239</span>, <span class="fl">43.090266</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4269</span><span class="op">)</span></span>
 <span><span class="va">start_comid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span><span class="op">(</span><span class="va">start_point</span><span class="op">)</span></span>
@@ -145,8 +144,9 @@
 <span><span class="co">#&gt; Reading CatchmentSP</span></span>
 <span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
 <span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
-<span><span class="co">#&gt; Writing CatchmentSP</span></span>
-<span></span>
+<span><span class="co">#&gt; Writing CatchmentSP</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">flowline</span> <span class="op">&lt;-</span> <span class="va">subset</span><span class="op">$</span><span class="va">NHDFlowline_Network</span></span>
 <span><span class="va">catchment</span> <span class="op">&lt;-</span> <span class="va">subset</span><span class="op">$</span><span class="va">CatchmentSP</span></span>
 <span><span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="va">subset</span><span class="op">$</span><span class="va">NHDWaterbody</span></span>
@@ -164,12 +164,18 @@
 <p><img src="nhdplusTools_files/figure-html/tldr-1.png" width="576"></p>
 <p>Or fetch NWIS an site as the starting point and generate a plot. Data
 is returned and/or stored in a local file for later use.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ?plot_nhdplus for more</span></span>
 <span><span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span></span>
 <span>  outlets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span>, </span>
 <span>  gpkg <span class="op">=</span> <span class="va">subset_file</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Zoom set to: 11</span></span></code></pre></div>
+<span><span class="co">#&gt; Zoom set to: 11</span></span>
+<span><span class="co">#&gt; Warning in par(old_par): graphical parameter "cin" cannot be set</span></span>
+<span><span class="co">#&gt; Warning in par(old_par): graphical parameter "cra" cannot be set</span></span>
+<span><span class="co">#&gt; Warning in par(old_par): graphical parameter "csi" cannot be set</span></span>
+<span><span class="co">#&gt; Warning in par(old_par): graphical parameter "cxy" cannot be set</span></span>
+<span><span class="co">#&gt; Warning in par(old_par): graphical parameter "din" cannot be set</span></span>
+<span><span class="co">#&gt; Warning in par(old_par): graphical parameter "page" cannot be set</span></span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/tldr2-1.png" width="576"></p>
 <p>This vignette covers a range of utilities the nhdplusTools package
 offers for working with data in a U.S. context.</p>
@@ -183,7 +189,7 @@ subsets, greater than a few thousand square kilometers, you can use
 aware of. Once you have it downloaded and extracted, you can tell the
 nhdplusTools package where it is with the <code><a href="../reference/nhdplus_path.html">nhdplus_path()</a></code>
 function.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"natseamless.gpkg"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -193,7 +199,7 @@ consider using <code><a href="../reference/get_vaa.html">get_vaa()</a></code>. I
 specific NHDPlus attributes with very little overhead. It also supports
 access to an updated set of network attributes that incorporate numerous
 network updates from national hydrologic modeling projects.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vaa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_vaa.html">get_vaa</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">vaa</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "comid"      "streamleve" "streamorde" "streamcalc" "fromnode"  </span></span>
@@ -204,8 +210,9 @@ network updates from national hydrologic modeling projects.</p>
 <span><span class="co">#&gt; [26] "lengthkm"   "fcode"      "vpuin"      "vpuout"     "areasqkm"  </span></span>
 <span><span class="co">#&gt; [31] "totdasqkm"  "divdasqkm"  "totma"      "wbareatype" "pathtimema"</span></span>
 <span><span class="co">#&gt; [36] "slope"      "slopelenkm" "ftype"      "gnis_name"  "gnis_id"   </span></span>
-<span><span class="co">#&gt; [41] "wbareacomi" "hwnodesqkm" "rpuid"      "vpuid"      "roughness"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vaa</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [41] "wbareacomi" "hwnodesqkm" "rpuid"      "vpuid"      "roughness"</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">vaa</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2691339</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="nhdplus-hires">NHDPlus HiRes<a class="anchor" aria-label="anchor" href="#nhdplus-hires"></a>
@@ -222,12 +229,13 @@ subject to scrutiny.</p>
 into <code>nhdplusTools</code> is used. The first line shows how you can
 download additional data (just change <code>download_files</code> to
 <code>TRUE</code>).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span><span class="op">(</span>nhd_dir <span class="op">=</span> <span class="st">"download_dir"</span>, </span>
 <span>                   hu_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0101"</span><span class="op">)</span>, <span class="co"># can mix hu02 and hu04 codes.</span></span>
 <span>                   download_files <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># TRUE will download files.</span></span>
-<span><span class="co">#&gt; [1] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/VPU/Current/GDB/NHDPLUS_H_0101_HU4_20220901_GDB.zip"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/VPU/Current/GDB/NHDPLUS_H_0101_HU4_20220901_GDB.zip"</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">out_gpkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"nhd_hr.gpkg"</span><span class="op">)</span></span>
 <span><span class="va">hr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, </span>
 <span>                         out_gpkg <span class="op">=</span> <span class="va">out_gpkg</span><span class="op">)</span></span>
@@ -237,9 +245,16 @@ download additional data (just change <code>download_files</code> to
 <span><span class="co">#&gt;         layer_name geometry_type features fields             crs_name</span></span>
 <span><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57 GRS 1980(IUGG, 1980)</span></span>
 <span><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7 GRS 1980(IUGG, 1980)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 3     NHDWaterbody       Polygon     1044     15 GRS 1980(IUGG, 1980)</span></span>
+<span><span class="co">#&gt; 4          NHDArea       Polygon       10     14 GRS 1980(IUGG, 1980)</span></span>
+<span><span class="co">#&gt; 5          NHDLine   Line String      142     12 GRS 1980(IUGG, 1980)</span></span>
+<span><span class="co">#&gt; 6      NHDPlusSink         Point        1     10 GRS 1980(IUGG, 1980)</span></span>
+<span><span class="co">#&gt; 7         NHDPoint      3D Point        7     10 GRS 1980(IUGG, 1980)</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment"</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">out_gpkg</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hr_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, </span>
 <span>                         out_gpkg <span class="op">=</span> <span class="va">out_gpkg</span>, </span>
@@ -254,8 +269,9 @@ download additional data (just change <code>download_files</code> to
 <span><span class="co">#&gt; 4          NHDArea       Polygon       10     14 GRS 1980(IUGG, 1980)</span></span>
 <span><span class="co">#&gt; 5          NHDLine   Line String      142     12 GRS 1980(IUGG, 1980)</span></span>
 <span><span class="co">#&gt; 6      NHDPlusSink         Point        1     10 GRS 1980(IUGG, 1980)</span></span>
-<span><span class="co">#&gt; 7         NHDPoint      3D Point        7     10 GRS 1980(IUGG, 1980)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 7         NHDPoint      3D Point        7     10 GRS 1980(IUGG, 1980)</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "NHDFlowline"      "NHDPlusCatchment" "NHDWaterbody"     "NHDArea"         </span></span>
 <span><span class="co">#&gt; [5] "NHDLine"          "NHDPlusSink"      "NHDPoint"</span></span></code></pre></div>
 </div>
@@ -275,7 +291,7 @@ and</li>
 location. We can start with <code><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id()</a></code> First,
 let’s look at a given point location. Then see where it is relative to
 our flowlines.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lon</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">89.36</span></span>
 <span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="fl">43.09</span></span>
 <span></span>
@@ -294,7 +310,7 @@ COMID.</p>
 derived downslope trace to the nearest flowline and some additional
 info. See <code><a href="../reference/get_raindrop_trace.html">get_raindrop_trace()</a></code> for more on this
 functionality.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">start_comid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/discover_nhdplus_id.html">discover_nhdplus_id</a></span><span class="op">(</span><span class="va">start_point</span>, raindrop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">start_comid</span></span>
 <span><span class="co">#&gt; Simple feature collection with 2 features and 7 fields</span></span>
@@ -307,8 +323,9 @@ functionality.</p>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> nhdF… Yahara R…  1.33<span style="color: #949494;">e</span>7 07090002…              124.    40.1 <span style="color: #949494;">&lt;dbl [2]&gt;</span>         </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> rain… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  <span style="color: #BB0000;">NA</span>                      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>   <span style="color: #949494;">&lt;dbl [0]&gt;</span>         </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;LINESTRING [°]&gt;</span></span></span>
-<span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;LINESTRING [°]&gt;</span></span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">start_comid</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -330,15 +347,16 @@ that it has in its index. We call these “featureSources”. We can query
 the NLDI for an identifier of a given feature from any of its
 “featureSources” and find out what our navigation options are as shown
 below.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">get_nldi_sources</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">source</span></span>
 <span><span class="co">#&gt;  [1] "ca_gages"          "census2020-nhdpv2" "epa_nrsa"         </span></span>
 <span><span class="co">#&gt;  [4] "geoconnex-demo"    "gfv11_pois"        "huc12pp"          </span></span>
 <span><span class="co">#&gt;  [7] "huc12pp_102020"    "nmwdi-st"          "npdes"            </span></span>
 <span><span class="co">#&gt; [10] "nwisgw"            "nwissite"          "ref_dams"         </span></span>
 <span><span class="co">#&gt; [13] "ref_gage"          "vigil"             "wade"             </span></span>
-<span><span class="co">#&gt; [16] "WQP"               "comid"</span></span>
-<span></span>
+<span><span class="co">#&gt; [16] "WQP"               "comid"</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"comid"</span>, </span>
 <span>                     featureID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">start_comid</span><span class="op">$</span><span class="va">comid</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
@@ -357,7 +375,7 @@ featureID is available for the chosen “featureSource”. Now that we know
 the NLDI has our comid, we can use the “upstreamTributaries” navigation
 option to get all the flowlines upstream or all the features from any of
 the “featureSources” as shown below.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flowline_nldi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/navigate_nldi.html">navigate_nldi</a></span><span class="op">(</span><span class="va">nldi_feature</span>, </span>
 <span>                               mode <span class="op">=</span> <span class="st">"upstreamTributaries"</span>, </span>
 <span>                               distance_km <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
@@ -372,7 +390,7 @@ option that allows us to download four layers and all attributes as
 shown below. There is also a <code><a href="../reference/navigate_network.html">navigate_network()</a></code> function
 that will replace <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> and
 <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> for many use cases.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output_file_download</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset_download.gpkg"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file_download</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span>comids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">flowline_nldi</span><span class="op">$</span><span class="va">UT</span><span class="op">$</span><span class="va">nhdplus_comid</span><span class="op">)</span>,</span>
@@ -381,14 +399,16 @@ that will replace <code><a href="../reference/navigate_nldi.html">navigate_nldi(
 <span>                                      overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
 <span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
-<span></span>
+<span><span class="co">#&gt; Writing NHDFlowline_Network</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
 <span><span class="co">#&gt;            layer_name geometry_type features fields crs_name</span></span>
-<span><span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    137    NAD83</span></span>
-<span></span>
+<span><span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    137    NAD83</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">flowline_download</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset_download.gpkg"</span><span class="op">)</span>, </span>
 <span>                                 <span class="st">"NHDFlowline_Network"</span><span class="op">)</span></span>
 <span></span>
@@ -405,7 +425,7 @@ the NLDI. Say we knew the USGS gage ID that we want NHDPlus data
 upstream of. We can use the NLDI to navigate from the gage the same as
 we did for our comid. We can also get back all the nwis sites the NLDI
 knows about upstream of the one we chose!</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nldi_feature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, </span>
 <span>                     featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span></span>
 <span></span>
@@ -421,14 +441,16 @@ knows about upstream of the one we chose!</p>
 <span>                                  return_data <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
 <span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
-<span></span>
+<span><span class="co">#&gt; Writing NHDFlowline_Network</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
 <span><span class="co">#&gt;            layer_name geometry_type features fields crs_name</span></span>
-<span><span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    137    NAD83</span></span>
-<span></span>
+<span><span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    137    NAD83</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">flowline_nwis</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file_nwis</span>, </span>
 <span>                                 <span class="st">"NHDFlowline_Network"</span><span class="op">)</span></span>
 <span></span>
@@ -457,7 +479,7 @@ navigation functions, <code><a href="../reference/get_UM.html">get_UM()</a></cod
 of comids along the upstream mainstem, upstream with tributaries,
 downstream mainstem, or downstream with diversions network paths. Here
 we’ll use upstream with tributaries.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">UT_comids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">start_comid</span><span class="op">$</span><span class="va">comid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">UT_comids</span></span>
 <span><span class="co">#&gt;   [1]  13293380  13293384  13293388  13293392  13293398  13293424  13293430</span></span>
@@ -489,7 +511,7 @@ that we have this list of COMIDs, we could go off and do all sorts of
 things with the various flowline attributes. For now, let’s just use the
 COMID list to filter our <code>fline</code> <code>sf</code>
 <code>data.frame</code> and plot it with our other layers.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">flowline</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">start_point</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">comid</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">UT_comids</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -502,7 +524,7 @@ out large subsets of it like shown below (this queries for data from the
 local geodatabase without loading the whole thing into memory). If you
 don’t have the whole national seamless, look at the second example in
 this section.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"subset.gpkg"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span>comids <span class="op">=</span> <span class="va">UT_comids</span>,</span>
@@ -525,8 +547,9 @@ this section.</p>
 <span><span class="co">#&gt; Reading Gage</span></span>
 <span><span class="co">#&gt; Writing Gage</span></span>
 <span><span class="co">#&gt; Reading Sink</span></span>
-<span><span class="co">#&gt; No features to write in Sink</span></span>
-<span></span>
+<span><span class="co">#&gt; No features to write in Sink</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
@@ -541,7 +564,7 @@ this section.</p>
 the network subset of catchments and flowlines as well as a spatial
 subset of other layers as shown in the status output above. To complete
 the demonstration, here are a couple more layers plotted up.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">catchment</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"CatchmentSP"</span><span class="op">)</span></span>
 <span><span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"NHDWaterbody"</span><span class="op">)</span></span>
 <span></span>
@@ -563,14 +586,14 @@ the function index for specifics</a>.</p>
 <p>Using the data above, we can use the
 <code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> function to get the comid, reachcode,
 and measure of our starting point like this.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">start_point</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id    COMID      REACHCODE REACH_meas       offset</span></span>
 <span><span class="co">#&gt; 1  1 13293750 07090002007373       41.8 0.0009619865</span></span></code></pre></div>
 <p><code><a href="../reference/get_flowline_index.html">get_flowline_index()</a></code> will work with a list of points
 too. For demonstration purposes, we can use the gages in our subset from
 above.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gage</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="st">"Gage"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">gage</span><span class="op">)</span>, precision <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -620,7 +643,7 @@ about it or the reference page that describes it.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

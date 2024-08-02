@@ -28,6 +28,10 @@ the catchment will be split across the flow line. IF the point is not
 along the flowline a small sub catchment will typically result. As a result,
 most users of this function will want to use \link{get_raindrop_trace} prior
 to calls to this function.
+
+An attempt is made to eliminate polygon shards if they exist in the output.
+However, there is a chance that this function will return a multipolygon
+data.frame.
 }
 \examples{
 \donttest{

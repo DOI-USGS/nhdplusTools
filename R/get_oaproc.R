@@ -61,6 +61,10 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' most users of this function will want to use \link{get_raindrop_trace} prior
 #' to calls to this function.
 #'
+#' An attempt is made to eliminate polygon shards if they exist in the output.
+#' However, there is a chance that this function will return a multipolygon
+#' data.frame.
+#'
 #' @export
 #' @examples
 #' \donttest{
@@ -115,10 +119,40 @@ get_split_catchment <- function(point, upstream = TRUE) {
 
   url <- paste0(url_base, "nldi-splitcatchment/execution")
 
-  return(sf_post(url, make_json_input_split(point, upstream),
+  out <- sf_post(url, make_json_input_split(point, upstream),
                  err_mess = paste("Ensure that the point you submitted is within\n the",
-                 "coterminous US and consider trying get_raindrop_trace\ to ensure",
-                 "your point is not too close to a catchment boundary.")))
+                                  "coterminous US and consider trying get_raindrop_trace\ to ensure",
+                                  "your point is not too close to a catchment boundary."))
+
+  try({
+    if(!is.null(out)) {
+      sf::st_geometry(out) <- sf::st_sfc(lapply(sf::st_geometry(out), remove_shards),
+                                         crs = sf::st_crs(out))
+
+      if(sf::st_geometry_type(out, by_geometry = FALSE) == "GEOMETRY") {
+        sf::st_geometry(out) <- sf::st_sfc(lapply(sf::st_geometry(out),
+                                                  sf::st_cast, to = "MULTIPOLYGON"),
+                                           crs = sf::st_crs(out))
+      }
+    }
+  }, silent = TRUE)
+
+  return(out)
+}
+
+remove_shards <- function(g, thresh = 0.01) {
+
+  if(length(g) == 1) return(sf::st_polygon(g[[1]]))
+
+  p <- sf::st_cast(sf::st_sfc(g), "POLYGON")
+
+  a <- sf::st_area(p)
+
+  p <- p[a > max(a) * thresh]
+
+  if(length(p) > 1) return(sf::st_multipolygon(p))
+
+  sf::st_polygon(p[[1]])
 }
 
 #' Get Cross Section From Point (experimental)

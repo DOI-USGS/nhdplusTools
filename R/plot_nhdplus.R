@@ -57,6 +57,7 @@
 #' `sf::st_transform(x, 3857)` prior to adding to the plot.
 #'
 #' @export
+#' @importFrom graphics par
 #' @examples
 #' \donttest{
 #' options("rgdal_show_exportToProj4_warnings"="none")

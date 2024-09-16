@@ -1,3 +1,8 @@
+nhdplusTools 1.3.1
+==========
+
+- no longer check ring direction in `get_nhdplushr()` to avoid very slow run time on some polygon layers.
+
 nhdplusTools 1.3.0
 ==========
 

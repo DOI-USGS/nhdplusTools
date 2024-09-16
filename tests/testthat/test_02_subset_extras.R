@@ -80,7 +80,8 @@ test_that("by rpu", {
 
   suppressWarnings(sample_flines <- dplyr::left_join(
     dplyr::select(sample_flines, COMID, RPUID, TerminalPa,
-                  ArbolateSu, DnHydroseq, Pathlength, FCODE, DnLevelPat),
+                  ArbolateSu, DnHydroseq, Pathlength, FCODE, DnLevelPat,
+                  DnMinorHyd),
     prepare_nhdplus(sample_flines,
                     0, 0, 0, FALSE), by = "COMID"))
 
@@ -95,7 +96,8 @@ test_that("big rpu test", {
   vaa <- get_vaa(atts = c("comid", "pathlength", "lengthkm",
                           "hydroseq", "dnhydroseq", "levelpathi",
                           "rpuid", "vpuid", "fcode", "arbolatesu",
-                          "terminalfl", "terminalpa", "dnlevelpat"))
+                          "terminalfl", "terminalpa", "dnlevelpat",
+                          "dnminorhyd"))
 
 
   vaa_sub <- dplyr::filter(vaa, vpuid == "17")

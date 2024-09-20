@@ -258,7 +258,7 @@ test_that("xs", {
 
   skip_on_cran()
 
-  skip("service down")
+  # skip("service down")
 
   point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)
 

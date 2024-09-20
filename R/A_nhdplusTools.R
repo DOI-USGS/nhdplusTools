@@ -279,7 +279,7 @@ get_nldi_url <- function() {
   tier <- get("nldi_tier", envir = nhdplusTools_env)
 
   if (tier == "prod") {
-    "https://labs.waterdata.usgs.gov/api/nldi"
+    "https://api.water.usgs.gov/nldi"
   } else if (tier == "test") {
     "https://labs-beta.waterdata.usgs.gov/api/nldi"
   } else {

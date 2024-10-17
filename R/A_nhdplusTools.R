@@ -92,7 +92,7 @@ nhdplus_attributes <- list(
 
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
-assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
+assign("geoserver_root", "https://api.water.usgs.gov/geoserver/",
        envir = nhdplusTools_env)
 
 assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
@@ -276,7 +276,13 @@ nhdplus_debug <- function() {
 #' @noRd
 get_nldi_url <- function() {
 
-  tier <- get("nldi_tier", envir = nhdplusTools_env)
+  tier_env <- Sys.getenv("NLDI_TIER")
+
+  tier <- if(tier_env != "") {
+    tier_env
+  } else {
+    get("nldi_tier", envir = nhdplusTools_env)
+  }
 
   if (tier == "prod") {
     "https://api.water.usgs.gov/nldi"

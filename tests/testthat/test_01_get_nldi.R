@@ -59,7 +59,7 @@ test_that("navigation works", {
                  "data source specified as flowline or '' is deprecated")
 
   nav <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
+                       mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
                        data_source = "dumb",
                        distance_km = 1)
 
@@ -68,7 +68,7 @@ test_that("navigation works", {
   expect_equal(class(nav$origin$comid), "character")
 
   nav <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
+                       mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
                        data_source = "nwissite",
                        distance_km = 1)
 
@@ -310,12 +310,18 @@ test_that("coverage", {
   expect_error(nhdplusTools:::get_nldi_url(),
                "only prod or test allowed.")
 
+  tier_env <- Sys.getenv("NLDI_TIER")
+
+  Sys.unsetenv("NLDI_TIER")
+
   assign("nldi_tier", "test",
          envir = nhdplusTools:::nhdplusTools_env)
 
   test <- nhdplusTools:::get_nldi_url()
 
   expect_equal(test, "https://labs-beta.waterdata.usgs.gov/api/nldi")
+
+  Sys.setenv("NLDI_TIER", tier_env)
 
   assign("nldi_tier", "prod",
          envir = nhdplusTools:::nhdplusTools_env)

@@ -45,7 +45,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
                     coords[1], " ", coords[2], "))",
                     "&propertyName=featureid")
 
-      d <- jsonlite::fromJSON(rawToChar(RETRY("GET", URLencode(URL))$content))
+      d <- jsonlite::fromJSON(rawToChar(RETRY("GET", utils::URLencode(URL))$content))
 
       as.integer(d$features$properties$featureid)
 

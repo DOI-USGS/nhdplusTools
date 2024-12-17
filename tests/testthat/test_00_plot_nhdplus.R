@@ -166,7 +166,7 @@ test_that("waterbodies", {
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline",
                            "basin", "catchment","network_wtbd",
                            "off_network_wtbd"))
-
+  Sys.sleep(2)
   d <-  nhdplusTools:::plot_nhdplus(site, flowline_only = FALSE,
                                     cache_data = FALSE)
 
@@ -197,6 +197,8 @@ test_that("get_waterbody_outlet", {
   site <- "USGS-05428500"
   tempd <- tempdir(check = TRUE)
   g_temp <- file.path(tempd, "foo.gpkg")
+
+  Sys.sleep(2)
 
   d <-  nhdplusTools:::get_plot_data(site, gpkg = g_temp, flowline_only = FALSE)
   out <-  nhdplusTools:::get_wb_outlet(lake_comid, d$flowline)

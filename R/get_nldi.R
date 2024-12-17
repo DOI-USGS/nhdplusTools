@@ -291,7 +291,7 @@ query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE, err
       message(url)
     }
 
-    req_data <- rawToChar(httr::RETRY("GET", url)$content)
+    req_data <- rawToChar(httr::RETRY("GET", utils::URLencode(url))$content)
 
     if (nchar(req_data) == 0) {
       NULL

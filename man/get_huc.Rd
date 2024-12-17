@@ -28,7 +28,7 @@ Watershed Boundary Dataset from October, 2020.
 
 See <doi:10.5066/P92U7ZUT> for full source data.
 
-See https://labs.waterdata.usgs.gov/geoserver/web/ for the web service.
+See https://api.water.usgs.gov/geoserver/web/ for the web service.
 
 `huc12_nhdplusv2` derives from a snapshot of the WBD available from the nhdplusv2.
 See \link{download_nhdplusv2} for source data documentation.}

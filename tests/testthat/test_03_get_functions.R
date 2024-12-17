@@ -17,7 +17,7 @@ pt2 = data.frame(loc = "ucsb", geometry = "POINT (-119.8458 34.4146)") %>%
 # ==============================================================================
 
 
-test_that("query water labs...",{
+test_that("query water geoserver...",{
   testthat::skip_on_cran()
   #available?
   df = nhdplusTools:::query_usgs_geoserver()

@@ -107,7 +107,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                         version="1.1.0" outputFormat="application/json"',
                        ' xsi:schemaLocation="http://www.opengis.net/wfs
                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">',
-                       '<wfs:Query xmlns:feature="https://cida.usgs.gov/',
+                       '<wfs:Query xmlns:feature="https://api.water.usgs.gov/',
                        here$server,
                        '" typeName="feature:',
                        here$geoserver,

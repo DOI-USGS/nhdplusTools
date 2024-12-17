@@ -35,8 +35,19 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
     coords = sf::st_coordinates(point)
 
     comid <- tryCatch({
-      as.integer(dataRetrieval::findNLDI(location = c(X = coords[1],
-                                           Y = coords[2]))$origin$identifier)
+
+      URL <- paste0(get("geoserver_root", envir = nhdplusTools_env),
+                    "wmadata",
+                    "/ows",
+                    "?service=WFS&request=GetFeature&version=1.0.0", # axis order switched in 1.1.0
+                    "&typeName=catchmentsp&outputFormat=application/json",
+                    "&CQL_FILTER=INTERSECTS(the_geom, POINT (",
+                    coords[1], " ", coords[2], "))",
+                    "&propertyName=featureid")
+
+      d <- jsonlite::fromJSON(rawToChar(RETRY("GET", utils::URLencode(URL))$content))
+
+      as.integer(d$features$properties$featureid)
 
     }, error = function(e) NULL)
 

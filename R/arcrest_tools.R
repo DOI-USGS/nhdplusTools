@@ -1,15 +1,17 @@
-get_3dhp_service_info <- memoise::memoise(function() {
+get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
 
-  # TODO: support more services?
-  server <- "3DHP_all"
+  stopifnot(service %in% c("3DHP_all", "NHDPlus_HR"))
 
   url_base <- paste0(get("arcrest_root", envir = nhdplusTools_env),
-                     server,
+                     service,
                      "/MapServer/")
 
   all_layers <- jsonlite::read_json(paste0(url_base, "?f=json"))
 
-  list(url_base = url_base, all_layers = all_layers)
+  id_name <- "id3dhp"
+  if(service == "NHDPlus_HR") id_name <- "nhdplusid"
+
+  list(url_base = url_base, all_layers = all_layers, id = id_name)
 
 })
 
@@ -31,9 +33,9 @@ get_3dhp_service_info <- memoise::memoise(function() {
 #' @param ids character. A set of identifier(s) from the data
 #' type requested, for 3dhp, this is id3dhp.
 #' @param type character. Type of feature to return
-#' ("hydrolocation", "flowline", "waterbody", "drainage area", "catchment").
-#' If NULL (default) a data.frame of available resources is returned
-#' @param where character. An where clause to pass to the server.
+#' If NULL (default) a data.frame of available types is returned
+#' @param service character chosen from "3DHP_all", "NHDPlus_HR"
+#' @param where character An where clause to pass to the server.
 #' @param t_srs  character (PROJ string or EPSG code) or numeric (EPSG code).
 #' A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.
 #' Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.
@@ -48,12 +50,13 @@ get_3dhp_service_info <- memoise::memoise(function() {
 #' @importFrom dplyr filter
 #' @importFrom methods as
 query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
-                               type = NULL, where = NULL,
+                               type = NULL, service = NULL,
+                               where = NULL,
                                t_srs = NULL,
                                buffer = 0.5,
-                               page_size = 2000){
+                               page_size = 2000) {
 
-  si <- get_3dhp_service_info()
+  si <- get_arcrest_service_info(service)
 
   source <- data.frame(user_call = sapply(si$all_layers$layers, \(x) tolower(x$name)),
                        layer = sapply(si$all_layers$layers, \(x) x$id))
@@ -73,7 +76,8 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
     return(NULL)
   }
 
-  if(grepl(paste(sapply(group_layers, \(x) x$name),
+  if(length(group_layers) > 0 &&
+     grepl(paste(sapply(group_layers, \(x) x$name),
                  collapse = "|"),
            type, ignore.case = TRUE)) {
     layer_id <- filter(source, .data$user_call == !!type)$layer
@@ -107,8 +111,14 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 
       if(!is.null(where)) stop("can't specify ids and where")
 
-      where <- paste0("id3dhp IN ('",
-                      paste(ids, collapse = "', '"), "')")
+      if(si$id == "nhdplusid") {
+        where <- paste0(si$id, " IN (",
+                        paste(ids, collapse = ", "), ")")
+      } else {
+        where <- paste0(si$id, " IN ('",
+                        paste(ids, collapse = "', '"), "')")
+      }
+
     }
 
     post_body <- list(where = where,
@@ -186,8 +196,12 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
       if(inherits(out[[1]], "data.frame")) {
         out <- bind_rows(unify_types(out))
 
-        out <- check_valid(out[!duplicated(out[["id3dhp"]]), ],
-                           out_prj = t_srs)
+        if("id3dhp" %in% names(out)) {
+          out <- check_valid(out[!duplicated(out[["id3dhp"]]), ],
+                             out_prj = t_srs)
+        } else {
+          out <- check_valid(out, out_prj = t_srs)
+        }
 
       } else {
 

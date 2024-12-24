@@ -185,6 +185,9 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #' for source data documentation.
 #'
 #' @inherit query_usgs_arcrest details return params
+#' @param type character. Type of feature to return. e.g.
+#' ("hydrolocation", "flowline", "waterbody", "drainage area", "catchment").
+#' If NULL (default) a data.frame of available types is returned
 #' @param ids character vector of id3dhp ids or mainstem uris
 #' @param universalreferenceid character vector of hydrolocation universal
 #' reference ids such as reachcodes
@@ -248,7 +251,67 @@ get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
     ids <- NULL
   }
 
-  query_usgs_arcrest(AOI, ids, type, where, t_srs, buffer, page_size)
+  query_usgs_arcrest(AOI, ids, type, "3DHP_all", where, t_srs, buffer, page_size)
 
 }
 
+#' Get NHDPlusHR Data
+#' @description
+#' Calls the NHDPlus_HR web service and returns sf data.frames for the selected
+#' layers. See https://hydro.nationalmap.gov/arcgis/rest/services/NHDPlus_HR/MapServer
+#' for source data documentation.
+#'
+#' @inherit query_usgs_arcrest details return params
+#'
+#' @param type character. Type of feature to return e.g.
+#' c("networknhdflowline", nonnetworknhdflowline", nhdwaterbody", "nhdpluscatchment").
+#' If NULL (default) a data.frame of available types is returned
+#'
+#' @param ids character vector of nhdplusid ids
+#'
+#' @param reachcode character vector of reachcodes
+#' NOTE: performance of this query is currently very poor,
+#' spatial queries are the primary use of this function.
+#'
+#' @export
+#' @examples
+#' \donttest{
+#' AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
+#'                                    xmax = -89.24681, ymax = 43.17192),
+#'                                  crs = "+proj=longlat +datum=WGS84 +no_defs"))
+#'
+#' # get flowlines and hydrolocations
+#' flowlines <- get_nhdphr(AOI = AOI, type = "networknhdflowline")
+#' point <- get_nhdphr(AOI = AOI, type = "nhdpoint")
+#' waterbody <- get_nhdphr(AOI = AOI, type = "nhdwaterbody")
+#'
+#' if(!is.null(waterbody) & !is.null(flowlines) & !is.null(point)) {
+#' plot(sf::st_geometry(waterbody), col = "lightblue", border = "lightgrey")
+#' plot(sf::st_geometry(flowlines), col = "blue", add = TRUE)
+#' plot(sf::st_geometry(point), col = "grey", pch = "+", add = TRUE) }
+#'
+#' # given universalreferenceid (reachcodes), can query for them but only
+#' # for hydrolocations. This is useful for looking up mainstem ids.
+#'
+#' get_nhdphr(reachcode = "13020101021927", type = "networknhdflowline")
+#'}
+get_nhdphr <- function(AOI = NULL, ids = NULL, type = NULL,
+                       reachcode = NULL,
+                       t_srs = NULL, buffer = 0.5,
+                       page_size = 2000) {
+
+  if(!is.null(reachcode) && !isTRUE(grepl("nhdplusgage|nhdpoint|networknhdflowline|nonnetworknhdflowline|flowdirection|nhdwaterbody",
+                                          type))) {
+    stop("reachcode not defined for ", type)
+  }
+
+  where <- NULL
+  if(!is.null(reachcode)) {
+    where <- paste(paste0("reachcode IN ('",
+                          paste(reachcode, collapse = "', '"), "')"))
+    if(!is.null(ids)) stop("can not specify both reachcode and other ids")
+  }
+
+  query_usgs_arcrest(AOI, ids, type, "NHDPlus_HR", where, t_srs, buffer, page_size)
+
+}

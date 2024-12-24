@@ -6,6 +6,7 @@ reference:
       Functions that help get access data. (all U.S. context)
   - contents:
       - '`get_3dhp`'
+      - '`get_nhdphr`'
       - '`discover_geoconnex_reference`'
       - '`get_geoconnex_reference`'
       - '`download_nhdplushr`'

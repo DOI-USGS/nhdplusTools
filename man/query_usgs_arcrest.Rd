@@ -8,6 +8,7 @@ query_usgs_arcrest(
   AOI = NULL,
   ids = NULL,
   type = NULL,
+  service = NULL,
   where = NULL,
   t_srs = NULL,
   buffer = 0.5,
@@ -23,10 +24,11 @@ in any Spatial Reference System.}
 type requested, for 3dhp, this is id3dhp.}
 
 \item{type}{character. Type of feature to return
-("hydrolocation", "flowline", "waterbody", "drainage area", "catchment").
-If NULL (default) a data.frame of available resources is returned}
+If NULL (default) a data.frame of available types is returned}
 
-\item{where}{character. An where clause to pass to the server.}
+\item{service}{character chosen from "3DHP_all", "NHDPlus_HR"}
+
+\item{where}{character An where clause to pass to the server.}
 
 \item{t_srs}{character (PROJ string or EPSG code) or numeric (EPSG code).
 A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.

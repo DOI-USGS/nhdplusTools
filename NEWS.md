@@ -1,3 +1,8 @@
+nhdplusTools 1.3.1
+==========
+
+- added a web service client for the NHDPlusHR argis server `get_nhdphr()`. #415
+
 nhdplusTools 1.3.0
 ==========
 

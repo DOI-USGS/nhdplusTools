@@ -1,50 +1,3 @@
-#' @title (DEPRECATED) Discover Characteristics Metadata
-#' @description
-#'
-#' This functionality is deprecated and will be removed in the near future.
-#'
-#' Please use \link{get_characteristics_metadata} instead.
-#'
-#' @param type character "all", "local", "total", or "divergence_routed".
-#' @export
-#' @return data.frame containing available characteristics
-#'
-discover_nldi_characteristics <- function(type="all") {
-
-  tc <- type_check(type)
-
-  out <- lapply(tc$type_options[[type]], function(x) {
-    o <- query_nldi(paste0(x, "/characteristics"),
-                    base_path = "/lookups")
-
-    if(is.null(o)) {
-      return(NULL)
-    }
-
-    o$characteristicMetadata$characteristic
-
-  })
-
-  names(out) <- tc$char_names
-
-  out
-}
-
-type_check <- function(type) {
-  type_options <- list("all" = c("local", "tot", "div"),
-                       "local" = "local",
-                       "total" = "tot",
-                       "divergence_routed" = "div")
-
-  if(!type %in% names(type_options)) stop(paste("Type must be one of", paste(names(type_options), collapse = ", ")))
-
-  char_names <- type
-
-  if(type == "all") char_names <- names(type_options)[2:4]
-
-  return(list(type_options = type_options, char_names = char_names))
-}
-
 #' @title Navigate NLDI
 #' @description Navigate the Network Linked Data Index network.
 #' @param nldi_feature list with names `featureSource` and `featureID` where
@@ -212,37 +165,6 @@ get_nldi_feature <- function(nldi_feature) {
   }
 
   return(out$origin)
-}
-
-#' @title (DEPRECATED) Get Catchment Characteristics
-#' @description
-#'
-#' This functionality id deprecated and will be removed in the near future.
-#'
-#' Please use \link{get_catchment_characteristics} instead.
-#'
-#' @inheritParams navigate_nldi
-#' @inheritParams discover_nldi_characteristics
-#' @return data.frame containing requested characteristics
-#' @export
-get_nldi_characteristics <- function(nldi_feature, type="local") {
-
-  tc <- type_check(type)
-
-  nldi_feature <- check_nldi_feature(nldi_feature, convert = FALSE)
-
-  out <- lapply(tc$type_options[[type]], function(x) {
-    o <- query_nldi(paste(nldi_feature[["featureSource"]],
-                          nldi_feature[["featureID"]],
-                          x,
-                          sep = "/"))
-    o$characteristics
-  })
-
-  names(out) <- tc$char_names
-
-  out
-
 }
 
 #' Get NLDI Index

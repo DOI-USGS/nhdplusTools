@@ -2,6 +2,7 @@ nhdplusTools 1.3.1
 ==========
 
 - added a web service client for the NHDPlusHR argis server `get_nhdphr()`. #415
+- removed deprecated discover_nldi_characteristics() and get_nldi_characteristics()
 
 nhdplusTools 1.3.0
 ==========

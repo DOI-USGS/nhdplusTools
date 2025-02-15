@@ -19,7 +19,7 @@ context."><meta property="og:image" content="https://doi-usgs.github.io/nhdplusT
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.1</span>
       </span>
     </div>
 
@@ -146,6 +146,48 @@ to trim is less than this tolerance, no trim will be applied.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> All intersections performed in latitude/longitude.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Reading NHDFlowline_Network</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> https://api.water.usgs.gov/geoserver/wmadata/ows </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;wfs:Query xmlns:feature="https://api.water.usgs.gov/wmadata" typeName="feature:nhdflowline_network" srsName="EPSG:4269"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;12781181&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;12781087&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;12781093&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;12781103&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;12781107&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;12781111&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;12781115&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;12781119&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;/ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;/ogc:Filter&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;/wfs:Query&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;/wfs:GetFeature&gt;</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing NHDFlowline_Network</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 8 features and 137 fields</span>

@@ -13,6 +13,10 @@ test_that("get", {
 
   skip_on_cran()
 
+  will_work <- try(sf::read_sf("https://reference.geoconnex.us/collections/gages/items?limit=100"))
+
+  skip_if(inherits(will_work, "try-error"))
+
   expect_warning(avail <- get_geoconnex_reference())
 
   expect_equal(avail, discover_geoconnex_reference())

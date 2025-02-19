@@ -19,7 +19,7 @@ for flowlines, catchments, or outlets."><meta property="og:image" content="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.1</span>
       </span>
     </div>
 
@@ -151,6 +151,20 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-in"><span> <span class="va">point</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">119.845</span>, <span class="fl">34.4146</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="fu">get_nhdplus</span><span class="op">(</span><span class="va">point</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> https://api.water.usgs.gov/geoserver/wmadata/ows </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;wfs:Query xmlns:feature="https://api.water.usgs.gov/wmadata" typeName="feature:nhdflowline_network" srsName="EPSG:4269"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;948060316&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;/ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;/ogc:Filter&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;/wfs:Query&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;/wfs:GetFeature&gt;</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1 feature and 137 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: LINESTRING</span>
@@ -170,6 +184,20 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dndraincou &lt;int&gt;, dnhydroseq &lt;dbl&gt;, frommeas &lt;int&gt;, tomeas &lt;dbl&gt;, …</span></span>
 <span class="r-in"><span> <span class="fu">get_nhdplus</span><span class="op">(</span><span class="va">point</span>, realization <span class="op">=</span> <span class="st">"catchment"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> https://api.water.usgs.gov/geoserver/wmadata/ows </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;wfs:Query xmlns:feature="https://api.water.usgs.gov/wmadata" typeName="feature:catchmentsp" srsName="EPSG:4269"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;featureid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;948060316&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;/ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;/ogc:Filter&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;/wfs:Query&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;/wfs:GetFeature&gt;</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1 feature and 6 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
@@ -183,8 +211,20 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;POLYGON [°]&gt;</span></span>
 <span class="r-in"><span> <span class="fu">get_nhdplus</span><span class="op">(</span><span class="va">point</span>, realization <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> https://api.water.usgs.gov/geoserver/wmadata/ows </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;wfs:Query xmlns:feature="https://api.water.usgs.gov/wmadata" typeName="feature:nhdflowline_network" srsName="EPSG:4269"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;948060316&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;/ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;/ogc:Filter&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;/wfs:Query&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;/wfs:GetFeature&gt;</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $catchment</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1 feature and 6 fields</span>
@@ -236,6 +276,20 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span> <span class="fu">get_nhdplus</span><span class="op">(</span>comid <span class="op">=</span> <span class="fl">101</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> https://api.water.usgs.gov/geoserver/wmadata/ows </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;wfs:Query xmlns:feature="https://api.water.usgs.gov/wmadata" typeName="feature:nhdflowline_network" srsName="EPSG:4269"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;101&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;/ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;/ogc:Filter&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;/wfs:Query&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;/wfs:GetFeature&gt;</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 1 feature and 137 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: LINESTRING</span>
@@ -255,6 +309,24 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dndraincou &lt;int&gt;, dnhydroseq &lt;dbl&gt;, frommeas &lt;int&gt;, tomeas &lt;dbl&gt;, …</span></span>
 <span class="r-in"><span> <span class="fu">get_nhdplus</span><span class="op">(</span>nwis  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11120000</span>, <span class="fl">11120500</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> https://api.water.usgs.gov/geoserver/wmadata/ows </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;wfs:Query xmlns:feature="https://api.water.usgs.gov/wmadata" typeName="feature:nhdflowline_network" srsName="EPSG:4269"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;17595429&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;comid&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;17596109&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsEqualTo&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;/ogc:Or&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;/ogc:Filter&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;/wfs:Query&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;/wfs:GetFeature&gt;</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 2 features and 137 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: LINESTRING</span>
@@ -277,6 +349,23 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-in"><span> ymax <span class="op">=</span> <span class="fl">34.42439</span>, ymin <span class="op">=</span> <span class="fl">34.40473</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="fu">get_nhdplus</span><span class="op">(</span><span class="va">area</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> https://api.water.usgs.gov/geoserver/wmadata/ows </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;wfs:Query xmlns:feature="https://api.water.usgs.gov/wmadata" typeName="feature:nhdflowline_network" srsName="EPSG:4269"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;ogc:And&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:BBOX&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;the_geom&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:4326"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>             &lt;gml:lowerCorner&gt;34.40473 -119.8851&lt;/gml:lowerCorner&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>             &lt;gml:upperCorner&gt;34.42439 -119.8361&lt;/gml:upperCorner&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;/gml:Envelope&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:BBOX&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;/ogc:And&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;/ogc:Filter&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;/wfs:Query&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;/wfs:GetFeature&gt;</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> are planar</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>
@@ -316,6 +405,27 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dndraincou &lt;int&gt;, dnhydroseq &lt;dbl&gt;, frommeas &lt;dbl&gt;, tomeas &lt;dbl&gt;, …</span></span>
 <span class="r-in"><span> <span class="fu">get_nhdplus</span><span class="op">(</span><span class="va">area</span>, realization <span class="op">=</span> <span class="st">"flowline"</span>, streamorder <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> https://api.water.usgs.gov/geoserver/wmadata/ows </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" service="WFS" version="1.1.0" outputFormat="application/json" xsi:schemaLocation="http://www.opengis.net/wfs                         http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;wfs:Query xmlns:feature="https://api.water.usgs.gov/wmadata" typeName="feature:nhdflowline_network" srsName="EPSG:4269"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;ogc:And&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:PropertyIsGreaterThan&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;streamorde&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:Literal&gt;2&lt;/ogc:Literal&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:PropertyIsGreaterThan&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;ogc:BBOX&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;ogc:PropertyName&gt;the_geom&lt;/ogc:PropertyName&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:4326"&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>             &lt;gml:lowerCorner&gt;34.40473 -119.8851&lt;/gml:lowerCorner&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>             &lt;gml:upperCorner&gt;34.42439 -119.8361&lt;/gml:upperCorner&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           &lt;/gml:Envelope&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>         &lt;/ogc:BBOX&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>       &lt;/ogc:And&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     &lt;/ogc:Filter&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   &lt;/wfs:Query&gt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;/wfs:GetFeature&gt;</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> although coordinates are longitude/latitude, st_intersects assumes that they</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> are planar</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Spherical geometry (s2) switched on</span>

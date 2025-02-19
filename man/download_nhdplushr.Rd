@@ -32,11 +32,12 @@ Download NHDPlus HiRes
 \donttest{
 hu <- get_huc(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326),
                             type = "huc08")
-
+if(inherits(hu, "sf")) {
 (hu <- substr(hu$huc8, 1, 2))
 
 download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE)
 
 download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE, archive = TRUE)
+}
 }
 }

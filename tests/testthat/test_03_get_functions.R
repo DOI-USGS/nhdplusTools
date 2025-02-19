@@ -123,37 +123,37 @@ test_that("get_nhdplus...", {
   #POINT, Flowlines
   fl = get_nhdplus(AOI = pt, realization = 'flowline')
   expect_equal(nrow(fl), 1)
-  expect_equal(st_crs(fl)$epsg, 4326)
-  expect_equal(as.character(st_geometry_type(fl)), 'LINESTRING')
+  expect_equal(sf::st_crs(fl)$epsg, 4326)
+  expect_equal(as.character(sf::st_geometry_type(fl)), 'LINESTRING')
 
   # test t_srs to override CRS
   fl5070 = get_nhdplus(AOI = pt, realization = 'flowline', t_srs = 5070)
-  expect_equal(st_crs(fl5070)$epsg, 5070)
+  expect_equal(sf::st_crs(fl5070)$epsg, 5070)
 
   # POINT, Catchments
   cat = get_nhdplus(AOI = pt, realization = 'catchment')
   expect_equal(nrow(cat), 1)
-  expect_equal(st_crs(cat)$epsg, 4326)
-  expect_true(grepl('POLYGON', as.character(st_geometry_type(cat))))
+  expect_equal(sf::st_crs(cat)$epsg, 4326)
+  expect_true(grepl('POLYGON', as.character(sf::st_geometry_type(cat))))
 
   # test t_srs to override CRS
   catch5070 = get_nhdplus(AOI = pt, realization = 'catchment', t_srs = 5070)
-  expect_equal(st_crs(catch5070)$epsg, 5070)
+  expect_equal(sf::st_crs(catch5070)$epsg, 5070)
 
   # POINT, outlet
   out = get_nhdplus(AOI = pt, realization = 'outlet')
   expect_equal(nrow(out), 1)
-  expect_equal(st_crs(out)$epsg, 4326)
-  expect_equal(as.character(st_geometry_type(out)), 'POINT')
+  expect_equal(sf::st_crs(out)$epsg, 4326)
+  expect_equal(as.character(sf::st_geometry_type(out)), 'POINT')
 
   #POLYGON, all
   areaNHD  = get_nhdplus(AOI = area, realization = "all")
   expect_equal(length(areaNHD), 3)
   expect_equal(nrow(areaNHD$flowline), nrow(areaNHD$catchment))
   expect_equal(nrow(areaNHD$outlet), nrow(areaNHD$catchment))
-  expect_equal(as.character(st_geometry_type(areaNHD$outlet))[1], 'POINT')
-  expect_equal(as.character(st_geometry_type(areaNHD$flowline))[1], 'LINESTRING')
-  expect_true(grepl('POLYGON', as.character(st_geometry_type(areaNHD$catchment))[1]))
+  expect_equal(as.character(sf::st_geometry_type(areaNHD$outlet))[1], 'POINT')
+  expect_equal(as.character(sf::st_geometry_type(areaNHD$flowline))[1], 'LINESTRING')
+  expect_true(grepl('POLYGON', as.character(sf::st_geometry_type(areaNHD$catchment))[1]))
 
   # ID
   # forcing "no attributes found" for bad COMID
@@ -165,9 +165,9 @@ test_that("get_nhdplus...", {
   expect_equal(length(idCheck), 3)
   expect_equal(nrow(idCheck$flowline), nrow(idCheck$catchment))
   expect_equal(nrow(idCheck$catchment), nrow(idCheck$outlet))
-  expect_equal(as.character(st_geometry_type(idCheck$outlet))[1], 'POINT')
-  expect_equal(as.character(st_geometry_type(idCheck$flowline))[1], 'LINESTRING')
-  expect_equal(as.character(st_geometry_type(idCheck$catchment))[1], 'POLYGON')
+  expect_equal(as.character(sf::st_geometry_type(idCheck$outlet))[1], 'POINT')
+  expect_equal(as.character(sf::st_geometry_type(idCheck$flowline))[1], 'LINESTRING')
+  expect_equal(as.character(sf::st_geometry_type(idCheck$catchment))[1], 'POLYGON')
 
   #streamorder filter
   streamOrderSubset = get_nhdplus(AOI = area, streamorder = 3)
@@ -198,9 +198,9 @@ test_that("nhdarea", {
   # Buffer it out ...
   nhdarea = get_nhdarea(AOI  = pt, buffer = 1e4)
   expect_equal(nhdarea$ftype, "Submerged Stream")
-  expect_equal(st_crs(nhdarea)$epsg, 4326)
+  expect_equal(sf::st_crs(nhdarea)$epsg, 4326)
   nhdarea5070 = get_nhdarea(AOI  = pt, buffer = 1e4, t_srs = 5070)
-  expect_equal(st_crs(nhdarea5070)$epsg, 5070)
+  expect_equal(sf::st_crs(nhdarea5070)$epsg, 5070)
 })
 
 # ==============================================================================
@@ -209,10 +209,10 @@ test_that("nhdwaterbody", {
   testthat::skip_on_cran()
   wb = get_waterbodies(AOI  = pt, buffer = 2e3)
   expect_equal(nrow(wb), 3)
-  expect_equal(st_crs(wb)$epsg, 4326)
+  expect_equal(sf::st_crs(wb)$epsg, 4326)
 
   wb5070 = get_waterbodies(id = 22887007, t_srs = 5070)
-  expect_equal(st_crs(wb5070)$epsg, 5070)
+  expect_equal(sf::st_crs(wb5070)$epsg, 5070)
   expect_equal(wb5070$comid, 22887007)
 })
 

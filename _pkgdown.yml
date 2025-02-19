@@ -43,8 +43,6 @@ reference:
       - '`get_nhdarea`'
       - '`get_waterbodies`'
       - '`get_nwis`'
-      - '`discover_nldi_characteristics`'
-      - '`get_nldi_characteristics`'
       - '`get_nldi_basin`'
       - '`get_nldi_feature`'
       - '`get_split_catchment`'

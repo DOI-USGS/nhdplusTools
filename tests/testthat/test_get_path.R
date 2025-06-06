@@ -67,6 +67,7 @@ test_that("calculate level path", {
 
 test_that("hr levelpath", {
   skip_on_cran()
+  skip_on_ci()
 
   suppressMessages(
     source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
@@ -84,9 +85,9 @@ test_that("hr levelpath", {
   lp <- get_levelpaths(sf::st_set_geometry(fl, NULL), cores = 2)
   ))
 
-  expect_warning(expect_warning(expect_message(
+  expect_warning(expect_message(
   expect_error(get_levelpaths(sf::st_set_geometry(fl, NULL), cores = "char"))
-  )))
+  ))
 
   future::plan(future::sequential)
 

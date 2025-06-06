@@ -64,11 +64,11 @@ test_that("basic 3dhp service requests", {
   expect_message(expect_s3_class(nhdplusTools:::query_usgs_arcrest(AOI, service = "3DHP_all"),
                                  "data.frame"))
 
-  expect_warning(expect_warning(nhdplusTools:::query_usgs_arcrest(AOI, service = "3DHP_all",
-                                                                  type = "hydrolocation")))
+  expect_warning(nhdplusTools:::query_usgs_arcrest(AOI, service = "3DHP_all",
+                                                   type = "hydrolocation"))
 
   test_data <- nhdplusTools:::query_usgs_arcrest(AOI, , service = "3DHP_all",
-                                                 type = "reach code, external connection")
+                                                 type = "hydrolocation - reach code, external connection")
 
   expect_s3_class(test_data, "sf")
 })

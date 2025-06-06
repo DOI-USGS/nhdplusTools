@@ -274,7 +274,7 @@ nhdplus_debug <- function() {
 }
 
 #' @noRd
-get_nldi_url <- function() {
+get_nldi_url <- function(pygeo = FALSE) {
 
   tier_env <- Sys.getenv("NLDI_TIER")
 
@@ -284,12 +284,22 @@ get_nldi_url <- function() {
     get("nldi_tier", envir = nhdplusTools_env)
   }
 
-  if (tier == "prod") {
-    "https://api.water.usgs.gov/nldi"
-  } else if (tier == "test") {
-    "https://labs-beta.waterdata.usgs.gov/api/nldi"
+  if(pygeo) {
+    if (tier == "prod") {
+      "https://api.water.usgs.gov/nldi/pygeoapi/processes/"
+    } else if (tier == "test") {
+      "https://labs-beta.waterdata.usgs.gov/api/nldi/pygeoapi/processes/"
+    } else {
+      stop("only prod or test allowed.")
+    }
   } else {
-    stop("only prod or test allowed.")
+    if (tier == "prod") {
+      "https://api.water.usgs.gov/nldi"
+    } else if (tier == "test") {
+      "https://labs-beta.waterdata.usgs.gov/api/nldi"
+    } else {
+      stop("only prod or test allowed.")
+    }
   }
 }
 

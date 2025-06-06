@@ -3,6 +3,7 @@ nhdplusTools 1.3.1
 
 - added a web service client for the NHDPlusHR arcgis server `get_nhdphr()`. #415
 - removed deprecated discover_nldi_characteristics() and get_nldi_characteristics()
+- adjusted nldi client to work with python version of the NLDI.
 
 nhdplusTools 1.3.0
 ==========

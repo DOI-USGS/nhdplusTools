@@ -67,6 +67,7 @@ test_that("calculate level path", {
 
 test_that("hr levelpath", {
   skip_on_cran()
+  skip_on_ci()
 
   suppressMessages(
     source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))

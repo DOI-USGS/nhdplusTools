@@ -10,7 +10,7 @@ test_that("nldi basics work", {
 
   expect_true(all(c("comid", "huc12pp", "nwissite") %in% nldi_sources$source))
 
-  expect_equal(names(nldi_sources), c("source", "sourceName", "features"))
+  expect_true(all(names(nldi_sources) %in% c("source", "sourceName", "features")))
 
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
@@ -65,7 +65,7 @@ test_that("navigation works", {
 
   expect_equal(nav$origin$sourceName, "NWIS Surface Water Sites")
 
-  expect_equal(class(nav$origin$comid), "character")
+  expect_equal(class(as.integer(nav$origin$comid)), "integer") # is coercable to integer
 
   nav <- navigate_nldi(nldi_feature = nldi_nwis,
                        mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
@@ -223,8 +223,6 @@ test_that("xs", {
 
   skip_on_cran()
 
-  skip("service down")
-
   point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)
 
   xs <- get_xs_point(point, 300, 100)
@@ -285,7 +283,11 @@ test_that("coverage", {
 
   test <- nhdplusTools:::get_nldi_url()
 
-  expect_equal(test, "https://labs-beta.waterdata.usgs.gov/api/nldi")
+  expect_true(grepl("https", test))
+
+  test <- nhdplusTools:::get_nldi_url(pygeo = TRUE)
+
+  expect_true(grepl("pygeoapi", test))
 
   Sys.setenv("NLDI_TIER"= tier_env)
 

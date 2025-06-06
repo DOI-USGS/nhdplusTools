@@ -84,9 +84,9 @@ test_that("hr levelpath", {
   lp <- get_levelpaths(sf::st_set_geometry(fl, NULL), cores = 2)
   ))
 
-  expect_warning(expect_warning(expect_message(
+  expect_warning(expect_message(
   expect_error(get_levelpaths(sf::st_set_geometry(fl, NULL), cores = "char"))
-  )))
+  ))
 
   future::plan(future::sequential)
 

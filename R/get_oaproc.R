@@ -30,7 +30,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 
   point <- check_point(point)[[1]]
 
-  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
+  url_base <- get_nldi_url(pygeo = TRUE)
 
   url <- paste0(url_base, "nldi-flowtrace/execution")
 
@@ -115,7 +115,7 @@ get_split_catchment <- function(point, upstream = TRUE) {
 
   point <- check_point(point)[[1]]
 
-  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
+  url_base <- get_nldi_url(pygeo = TRUE)
 
   url <- paste0(url_base, "nldi-splitcatchment/execution")
 
@@ -189,7 +189,7 @@ get_xs_point <- function(point, width, num_pts) {
 
   point <- check_point(point)[[1]]
 
-  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
+  url_base <- get_nldi_url(pygeo = TRUE)
 
   url <- paste0(url_base, "nldi-xsatpoint/execution")
 
@@ -234,7 +234,7 @@ get_xs_points <- function(point1, point2, num_pts, res = 1) {
   point1 <- check_point(point1)[[1]]
   point2 <- check_point(point2)[[1]]
 
-  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
+  url_base <- get_nldi_url(pygeo = TRUE)
 
   url <- paste0(url_base, "nldi-xsatendpts/execution")
 
@@ -292,7 +292,7 @@ check_res <- function(res) {
 #'
 get_elev_along_path <- function(points, num_pts, res = 1, status = TRUE) {
 
-  url_base <- paste0(get_nldi_url(), "/pygeoapi/processes/")
+  url_base <- get_nldi_url(pygeo = TRUE)
 
   url <- paste0(url_base, "nldi-xsatendpts/execution")
 

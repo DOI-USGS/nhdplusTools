@@ -32,7 +32,7 @@ are available.
 }
 \examples{
 \dontrun{
-  download_nhdplusV2("./data/nhd/")
+  download_nhdplusv2("./data/nhd/")
 
   download_nhdplusv2(outdir = "./inst/",
       url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",

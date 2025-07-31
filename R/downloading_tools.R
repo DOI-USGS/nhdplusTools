@@ -160,7 +160,7 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
 #' @export
 #' @examples
 #' \dontrun{
-#'   download_nhdplusV2("./data/nhd/")
+#'   download_nhdplusv2("./data/nhd/")
 #'
 #'   download_nhdplusv2(outdir = "./inst/",
 #'       url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",
@@ -177,18 +177,24 @@ download_nhdplusv2 <- function(outdir,
   tryCatch({
   file <- downloader(outdir, url, "nhdplusV2", progress)
 
-  check7z()
+  if(!any(grepl("gdb", list.dirs(outdir)))) {
 
-  message("Extracting data ...")
+    if(inherits("try-error", try(check7z()))) {
+      message("couldn't find 7zip, won't try to extract data")
+      message("check for data in: ", outdir)
+      return(outdir)
+    }
 
-  ifelse(any(grepl("gdb", list.dirs(outdir))),
-         1,
-         system(paste0("7z -o", path.expand(outdir), " x ", file), intern = TRUE))
+    message("Extracting data ...")
+
+    system(paste0("7z -o", path.expand(outdir), " x ", file), intern = TRUE)
+
+  }
 
   path <- list.dirs(outdir)[grepl("gdb", list.dirs(outdir))]
   path <- path[grepl("NHDPlus", path)]
 
-  message(paste("NHDPlusV2 data extracted to:", path))
+  message(paste("NHDPlusV2 data available at:", path))
 
   return(invisible(path))
   }, error = function(e) {

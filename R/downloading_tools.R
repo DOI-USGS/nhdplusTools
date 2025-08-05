@@ -179,7 +179,8 @@ download_nhdplusv2 <- function(outdir,
 
   if(!any(grepl("gdb", list.dirs(outdir)))) {
 
-    if(inherits("try-error", try(check7z()))) {
+    try_7z <- try(check7z())
+    if(inherits(try_7z, "try-error")) {
       message("couldn't find 7zip, won't try to extract data")
       message("check for data in: ", outdir)
       return(outdir)

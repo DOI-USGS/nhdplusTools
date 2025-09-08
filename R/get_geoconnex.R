@@ -52,47 +52,9 @@ get_geoconnex_reference <- function(AOI,
                                     buffer = 0.5,
                                     status = TRUE) {
 
-  avail <- discover_geoconnex_reference()
-
-  if(is.null(type)) {
-    warning("type is required, returning choices.")
-    return(avail)
-  }
-
   base <- get("gocnx_ref_base_url", envir = nhdplusTools_env)
 
-  if(!type %in% avail$id) stop("Type must be in available ids. ",
-                               "Check discover_geoconnex_reference()")
+  get_oafeat(base, AOI, type, t_srs, buffer, status)
 
-  base_call <- paste0(base, "collections/", type, "/items")
-
-  if(is.character(AOI)) {
-
-    AOI <- try(sf::read_sf(AOI))
-
-    if(!inherits(AOI, "sf")) {
-      stop("AOI did not return an sf object when read")
-    }
-
-  }
-
-  if(!inherits(AOI, "bbox")) {
-    AOI <- st_bbox(AOI)
-  } else if(!inherits(AOI, "bbox") &&
-            grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
-    AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m"))
-  }
-
-  # pull features with paging if necessary
-
-  bbox <- paste(AOI, collapse = ",")
-
-  base_call <- paste0(base_call, "?bbox=", bbox)
-
-  out <- get_features_paging(base_call, status = status)
-
-  if(!is.null(t_srs)) out <- st_transform(out, t_srs)
-
-  out
 }
 

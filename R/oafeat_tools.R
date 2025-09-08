@@ -39,6 +39,65 @@ discover_oafeat <- function(landing_url) {
   dplyr::left_join(collections_meta, q_ables, by = "id")
 }
 
+#' get geoconnex reference feature layers
+#' @description
+#' Queries the geoconnex reference feature server for features of interest.
+#'
+#' @param AOI  bbox, sf polygon or point, or a URL that will return an sf object when passed to
+#' \link[sf]{read_sf}
+#' @param type character the feature type desired
+#' @inheritParams query_usgs_geoserver
+#' @param status boolean print status or not
+#' @return sf data.frame containing requested features
+#' @noRd
+get_oafeat <- function(base,
+                       AOI,
+                       type = NULL,
+                       t_srs = NULL,
+                       buffer = 0.5,
+                       status = TRUE) {
+
+  avail <- discover_oafeat(base)
+
+  if(is.null(type)) {
+    warning("type is required, returning choices.")
+    return(avail)
+  }
+
+  if(!type %in% avail$id) stop("Type must be in available ids: ", paste(avail$id, collapse = ", "), ".")
+
+  base_call <- paste0(base, "collections/", type, "/items")
+
+  if(is.character(AOI)) {
+
+    AOI <- try(sf::read_sf(AOI))
+
+    if(!inherits(AOI, "sf")) {
+      stop("AOI did not return an sf object when read")
+    }
+
+  }
+
+  if(!inherits(AOI, "bbox")) {
+    AOI <- st_bbox(AOI)
+  } else if(!inherits(AOI, "bbox") &&
+            grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
+    AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m"))
+  }
+
+  # pull features with paging if necessary
+
+  bbox <- paste(AOI, collapse = ",")
+
+  base_call <- paste0(base_call, "?bbox=", bbox)
+
+  out <- get_features_paging(base_call, status = status)
+
+  if(!is.null(t_srs)) out <- st_transform(out, t_srs)
+
+  out
+}
+
 get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
 
   if(!grepl("\\?", base_call)) {

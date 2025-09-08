@@ -1,45 +1,3 @@
-#' memoise get json
-#' @description
-#' attempts to get a url as JSON and return the content.
-#'
-#' Will return NULL if anything fails
-#'
-#' @param url character url to get
-#' @return list containing parsed json on success, NULL otherwise
-#' @noRd
-mem_get_json <- memoise::memoise(\(url) {
-  tryCatch({
-    retn <- httr::RETRY("GET", url, httr::accept_json())
-
-    if(retn$status_code == 200 & grepl("json", retn$headers$`content-type`)) {
-      return(httr::content(retn, simplifyVector = FALSE, type = "application/json"))
-    } else {
-      warning("Can't access json from ", url)
-      return(NULL)
-    }
-  }, error = function(e) {
-    warning("Error accessing ", url, "\n\n", e)
-    return(NULL)
-  })
-})
-
-filter_list_kvp <- \(l, key, val, type = NULL, n = NULL) {
-  ret <- l[vapply(l, \(x) x[[key]] == val, TRUE)]
-
-
-  if(!is.null(type)) {
-    ret <- ret[vapply(ret, \(x) x[["type"]] == type, TRUE)]
-  }
-
-  if(!is.null(n)) {
-    ret <- ret[[n]]
-  }
-
-  ret
-}
-
-extract <- `[[`
-
 #' discover geoconnex reference feature layers
 #' @description
 #' Queries the geoconnex.us reference feature server for available layers and
@@ -82,49 +40,6 @@ discover_geoconnex_reference <- function() {
   }))
 
   dplyr::left_join(collections_meta, q_ables, by = "id")
-}
-
-get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
-
-  if(!grepl("\\?", base_call)) {
-    base_call <- paste0(base_call, "?")
-  } else {
-    base_call <- paste0(base_call, "&")
-  }
-
-  offset <- 0
-
-  keep_going <- TRUE
-
-  if(status) message("Starting download of first set of features.")
-
-  out <- rep(list(list()), 1e6)
-  i <- 1
-
-  while(keep_going) {
-    req <- paste0(base_call, "limit=", limit, "&offset=", offset)
-
-    out[[i]] <- try(read_sf(req))
-
-    if(inherits(out[[i]], "sf") & nrow(out[[i]]) == limit) {
-      offset <- offset + limit
-    }
-
-    if(nrow(out[[i]]) < limit) keep_going <- FALSE
-
-    if(!inherits(out[[i]], "sf")) {
-      warning("Something went wrong requesting data.")
-      keep_going <- FALSE
-    }
-
-    if(status & keep_going) message("Starting next download from ", offset, ".")
-
-    i <- i + 1
-  }
-
-  out <- out[1:(i - 1)]
-
-  sf::st_sf(dplyr::bind_rows(unify_types(out)))
 }
 
 #' get geoconnex reference feature layers

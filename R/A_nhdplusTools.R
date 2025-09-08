@@ -506,6 +506,34 @@ align_nhdplus_names <- function(x){
 
 }
 
+filter_list_kvp <- \(l, key, val, type = NULL, n = NULL) {
+  ret <- l[vapply(l, \(x) x[[key]] == val, TRUE)]
+
+
+  if(!is.null(type)) {
+    ret <- ret[vapply(ret, \(x) x[["type"]] == type, TRUE)]
+  }
+
+  if(!is.null(n)) {
+    ret <- ret[[n]]
+  }
+
+  ret
+}
+
+extract <- `[[`
+
+#' @title Trim and Cull NULLs
+#' @description Remove NULL arguments from a list
+#' @param x a list
+#' @keywords internal
+#' @return a list
+#' @noRd
+
+tc <- function(x) {
+  Filter(Negate(is.null), x)
+}
+
 #' @importFrom hydroloom st_compatibalize
 #' @export
 hydroloom::st_compatibalize

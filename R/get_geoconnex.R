@@ -12,34 +12,8 @@
 #'
 discover_geoconnex_reference <- function() {
 
-  landing <- mem_get_json(get("gocnx_ref_base_url", envir = nhdplusTools_env))
+  discover_oafeat(get("gocnx_ref_base_url", envir = nhdplusTools_env))
 
-  collections <- landing$links |>
-    filter_list_kvp("rel", "data", n = 1) |>
-    extract("href") |>
-    mem_get_json()
-
-  collections_meta <- dplyr::bind_rows(
-    lapply(collections$collections,
-           \(x) c(x[c("id", "title", "description")],
-                  list(url = filter_list_kvp(x$links,
-                                             "rel", "self", n = 1)$href))))
-
-
-  q_ables <- dplyr::bind_rows(lapply(collections$collections, \(x) {
-    q <- filter_list_kvp(x$links, "rel", "http://www.opengis.net/def/rel/ogc/1.0/queryables",
-                         type = "application/schema+json", n = 1)$href |>
-      mem_get_json() |>
-      (\(y) list(id = x$id, qs = y$properties))()
-
-    q$qs <- q$qs[vapply(q$qs, \(x) all(c("title", "type") %in% names(x)), TRUE)]
-
-    data.frame(id = rep(q$id, length(q$qs)),
-               attribute = vapply(q$qs, \(x) x$title, ""),
-               type = vapply(q$qs, \(x) x$type, ""), row.names = NULL)
-  }))
-
-  dplyr::left_join(collections_meta, q_ables, by = "id")
 }
 
 #' get geoconnex reference feature layers

@@ -1,3 +1,44 @@
+#' discover OGC API feature layers
+#' @description
+#' Queries an OGC API feature server for available layers and
+#' attributes.
+#'
+#' @return data.frame containing layers available and fields that are available to query.
+#' @param landing_url url of landing page of OGC API
+#' @noRd
+#'
+discover_oafeat <- function(landing_url) {
+
+  landing <- mem_get_json(landing_url)
+
+  collections <- landing$links |>
+    filter_list_kvp("rel", "data", n = 1) |>
+    extract("href") |>
+    mem_get_json()
+
+  collections_meta <- dplyr::bind_rows(
+    lapply(collections$collections,
+           \(x) c(x[c("id", "title", "description")],
+                  list(url = filter_list_kvp(x$links,
+                                             "rel", "self", n = 1)$href))))
+
+
+  q_ables <- dplyr::bind_rows(lapply(collections$collections, \(x) {
+    q <- filter_list_kvp(x$links, "rel", "http://www.opengis.net/def/rel/ogc/1.0/queryables",
+                         type = "application/schema+json", n = 1)$href |>
+      mem_get_json() |>
+      (\(y) list(id = x$id, qs = y$properties))()
+
+    q$qs <- q$qs[vapply(q$qs, \(x) all(c("title", "type") %in% names(x)), TRUE)]
+
+    data.frame(id = rep(q$id, length(q$qs)),
+               attribute = vapply(q$qs, \(x) x$title, ""),
+               type = vapply(q$qs, \(x) x$type, ""), row.names = NULL)
+  }))
+
+  dplyr::left_join(collections_meta, q_ables, by = "id")
+}
+
 get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
 
   if(!grepl("\\?", base_call)) {

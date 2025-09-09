@@ -1,3 +1,76 @@
+#' @title Query USGS Water OGC API Features
+#' @description Query the USGS Water OGC API for spatial data by location,
+#' area, or ID.
+#' @details The returned object(s) will have the same
+#' Spatial Reference System (SRS) as the input AOI. If a individual or set of
+#' IDs are used to query, then the default server CRS of EPSG:4326 is
+#' preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
+#' which will override all previous SRS (either input or default).
+#' All buffer and distance operations are handled internally using an
+#' EPSG:5070 Albers Equal Area projection
+#' @param AOI sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
+#' be provided as either a location (sf POINT) or area (sf POLYGON)
+#' in any Spatial Reference System.
+#' @param ids character or numeric. A set of identifier(s) from the data
+#' type requested, for example if NHDPlusV2, then a set of COMID(s).
+#' @param type character. Type of feature to return
+#' ('huc08','huc12', 'nhd', 'catchment', 'waterbodies', 'gagesII').
+#' If NULL (default) a data.frame of available resources is returned
+#' @param filter character. An filter to pass to the query
+#' @param t_srs  character (PROJ string or EPSG code) or numeric (EPSG code).
+#' A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.
+#' Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.
+#' @param buffer numeric. The amount (in meters) to buffer a POINT AOI by for an
+#' extended search. Default = 0.5
+#' @return a simple features (sf) object
+#' @keywords internal
+query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
+                              type = NULL, filter = NULL,
+                              t_srs = NULL,
+                              buffer = 0.5) {
+
+  base <- get("usgs_water_root", envir = nhdplusTools_env)
+
+  source <- data.frame(server = 'usgs_oafeat',
+                       user_call  = c('huc08_legacy', "huc12_nhdplusv2",
+                                      'nhd','catchment', 'nhdarea',
+                                      'nonnetwork',
+                                      'waterbodies',
+                                      'gagesII', "gagesII-basin"),
+                       layer_name  = c("nhdplusv2-huc08", "nhdplusv2-huc12",
+                                       "nhdflowline_network", "catchmentsp", 'nhdarea',
+                                       "nhdflowline_nonnetwork",
+                                       "nhdwaterbody",
+                                       "gagesii", "gagesii-basins"),
+                       geom_name = c("the_geom", "the_geom",
+                                     "the_geom", "the_geom", "the_geom",
+                                     "the_geom",
+                                     "the_geom",
+                                     "the_geom", "the_geom"),
+                       ids        = c("huc8", "huc12",
+                                      "comid", "featureid", "comid",
+                                      "comid",
+                                      "comid",
+                                      "staid", "gage_id"),
+                       page       = c(FALSE, FALSE,
+                                      TRUE, TRUE, TRUE,
+                                      TRUE,
+                                      TRUE,
+                                      FALSE, TRUE))
+
+  if(is.null(type)) {
+    warning("type is required, returning choices.")
+    return(source)
+  }
+
+  AOI <- check_query_params(AOI, ids, type, NULL, source, t_srs, buffer)
+  t_srs <- AOI$t_srs
+  AOI <- AOI$AOI
+
+  get_oafeat(base, AOI = AOI, type = type, ids = ids, t_srs = t_srs, buffer = buffer, status = FALSE)
+
+}
+
 #' discover OGC API feature layers
 #' @description
 #' Queries an OGC API feature server for available layers and
@@ -18,16 +91,20 @@ discover_oafeat <- function(landing_url) {
 
   collections_meta <- dplyr::bind_rows(
     lapply(collections$collections,
-           \(x) c(x[c("id", "title", "description")],
+           \(x) c(x[c("id", "title", "description", "itemType")],
                   list(url = filter_list_kvp(x$links,
-                                             "rel", "self", n = 1)$href))))
+                                             "rel", "self", n = 1)$href)))) |>
+    dplyr::filter(.data$itemType == "feature") |>
+    dplyr::select(-"itemType")
 
 
   q_ables <- dplyr::bind_rows(lapply(collections$collections, \(x) {
+    if(x$itemType != "feature") return(NULL)
+
     q <- filter_list_kvp(x$links, "rel", "http://www.opengis.net/def/rel/ogc/1.0/queryables",
                          type = "application/schema+json", n = 1)$href |>
       mem_get_json() |>
-      (\(y) list(id = x$id, qs = y$properties))()
+      (\(y) if(is.null(y)) y else list(id = x$id, qs = y$properties))()
 
     q$qs <- q$qs[vapply(q$qs, \(x) all(c("title", "type") %in% names(x)), TRUE)]
 
@@ -37,6 +114,7 @@ discover_oafeat <- function(landing_url) {
   }))
 
   dplyr::left_join(collections_meta, q_ables, by = "id")
+
 }
 
 #' get geoconnex reference feature layers
@@ -51,7 +129,7 @@ discover_oafeat <- function(landing_url) {
 #' @return sf data.frame containing requested features
 #' @noRd
 get_oafeat <- function(base,
-                       AOI,
+                       AOI, ids = NULL,
                        type = NULL,
                        t_srs = NULL,
                        buffer = 0.5,
@@ -64,7 +142,7 @@ get_oafeat <- function(base,
     return(avail)
   }
 
-  if(!type %in% avail$id) stop("Type must be in available ids: ", paste(avail$id, collapse = ", "), ".")
+  if(!type %in% avail$id) stop("Type must be in available ids: ", paste(unique(avail$id), collapse = ", "), ".")
 
   base_call <- paste0(base, "collections/", type, "/items")
 

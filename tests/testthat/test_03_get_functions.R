@@ -32,6 +32,24 @@ test_that("query water geoserver...",{
   expect_error(query_usgs_geoserver(AOI = pt, id = 17010101,  type = 'huc8_legacy'))
 })
 
+test_that("query water oafeat...",{
+  testthat::skip_on_cran()
+  #available?
+  expect_warning(df <- nhdplusTools:::query_usgs_oafeat(), "required")
+  expect_equal(ncol(df), 6)
+
+  # errors
+  # Bad type request
+  expect_error(nhdplusTools:::query_usgs_oafeat(AOI = pt, type = 'wrong'),
+               "Type")
+  # Missing AOI and ID(s)
+  expect_error(nhdplusTools:::query_usgs_oafeat(AOI = NULL, id = NULL,  type = 'catchmentsp'),
+               "IDs or a spatial AOI")
+  # Providing both an AOI and ID(s)
+  expect_error(nhdplusTools:::query_usgs_oafeat(AOI = pt, id = 17010101,  type = 'huc8_legacy'),
+               "Either")
+})
+
 # Walk our way through the 7 different offerings...
 #   server   user_call           geoserver       ids
 # 1 wmadata       huc08               huc08      huc8

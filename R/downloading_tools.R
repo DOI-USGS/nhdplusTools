@@ -357,7 +357,7 @@ check7z <- function() {
 #' @noRd
 mem_get_json <- memoise::memoise(\(url) {
   tryCatch({
-    retn <- httr::RETRY("GET", url, httr::accept_json())
+    retn <- httr::GET(url, httr::accept_json())
 
     if(retn$status_code == 200 & grepl("json", retn$headers$`content-type`)) {
       return(httr::content(retn, simplifyVector = FALSE, type = "application/json"))

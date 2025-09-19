@@ -35,7 +35,7 @@ test_that("query water geoserver...",{
 test_that("query water oafeat...",{
   testthat::skip_on_cran()
   #available?
-  expect_warning(df <- nhdplusTools:::query_usgs_oafeat(), "required")
+  df <- nhdplusTools:::query_usgs_oafeat()
   expect_equal(ncol(df), 6)
 
   # errors

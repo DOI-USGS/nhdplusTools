@@ -32,7 +32,7 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
   base <- get("usgs_water_root", envir = nhdplusTools_env)
 
   source <- data.frame(server = 'usgs_oafeat',
-                       user_call  = c('huc08_legacy', "huc12_nhdplusv2",
+                       user_call  = c('huc08', "huc12_nhdplusv2",
                                       'nhd','catchment', 'nhdarea',
                                       'nonnetwork',
                                       'waterbodies',
@@ -59,13 +59,20 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
                                       FALSE, TRUE))
 
   if(is.null(type)) {
-    warning("type is required, returning choices.")
     return(source)
   }
 
   AOI <- check_query_params(AOI, ids, type, NULL, source, t_srs, buffer)
   t_srs <- AOI$t_srs
   AOI <- AOI$AOI
+
+  here <- filter(source, .data$user_call == !!type)
+
+  type <- here$layer_name
+
+  if(!is.null(ids)) {
+    ids <- stats::setNames(list(ids), here$ids)
+  }
 
   get_oafeat(base, AOI = AOI, type = type, ids = ids, t_srs = t_srs, buffer = buffer, status = FALSE)
 
@@ -144,30 +151,42 @@ get_oafeat <- function(base,
 
   if(!type %in% avail$id) stop("Type must be in available ids: ", paste(unique(avail$id), collapse = ", "), ".")
 
+  avail <- filter(avail, id == !!type)
+
   base_call <- paste0(base, "collections/", type, "/items")
 
-  if(is.character(AOI)) {
+  if(!is.null(AOI)) {
+    if(is.character(AOI)) {
 
-    AOI <- try(sf::read_sf(AOI))
+      AOI <- try(sf::read_sf(AOI))
 
-    if(!inherits(AOI, "sf")) {
-      stop("AOI did not return an sf object when read")
+      if(!inherits(AOI, "sf")) {
+        stop("AOI did not return an sf object when read")
+      }
+
     }
 
+    if(!inherits(AOI, "bbox")) {
+      AOI <- st_bbox(AOI)
+    } else if(!inherits(AOI, "bbox") &&
+              grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
+      AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m"))
+    }
+
+    # pull features with paging if necessary
+
+    bbox <- paste(AOI, collapse = ",")
+
+    base_call <- paste0(base_call, "?bbox=", bbox)
+  } else {
+
+    id_attribute <- names(ids)
+
+    ids <- ids[[1]]
+
+    base_call <- paste0(base_call, "?", id_attribute, "=", paste(ids, collapse = ","))
+
   }
-
-  if(!inherits(AOI, "bbox")) {
-    AOI <- st_bbox(AOI)
-  } else if(!inherits(AOI, "bbox") &&
-            grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
-    AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m"))
-  }
-
-  # pull features with paging if necessary
-
-  bbox <- paste(AOI, collapse = ",")
-
-  base_call <- paste0(base_call, "?bbox=", bbox)
 
   out <- get_features_paging(base_call, status = status)
 

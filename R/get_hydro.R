@@ -30,8 +30,8 @@ get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "hu
     stop("type must be one of ", paste(allow_types, collapse = " "))
   }
 
-  query_usgs_geoserver(AOI = AOI, ids = id, type = type,
-                       t_srs = t_srs, buffer = buffer)
+  query_usgs_oafeat(AOI = AOI, ids = id, type = type,
+                    t_srs = t_srs, buffer = buffer)
 
 }
 

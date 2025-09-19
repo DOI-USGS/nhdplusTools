@@ -371,7 +371,7 @@ mem_get_json <- memoise::memoise(\(url) {
   })
 })
 
-#' @importFrom sf st_make_valid st_as_sfc st_bbox st_buffer st_transform
+#' @importFrom sf st_make_valid st_as_sfc st_bbox st_buffer st_transform st_crs
 check_query_params <- function(AOI, ids, type, where, source, t_srs, buffer) {
   # If t_src is not provided set to AOI CRS
   if(is.null(t_srs)){ t_srs  <- st_crs(AOI) }
@@ -399,8 +399,12 @@ check_query_params <- function(AOI, ids, type, where, source, t_srs, buffer) {
 
     if(st_geometry_type(AOI) == "POINT"){
       # If input is a POINT, buffer by 1/2 meter (in equal area projection)
-      AOI = st_buffer(st_transform(AOI, 5070), buffer) %>%
-        st_bbox() %>% st_as_sfc() %>% st_make_valid()
+      AOI = st_transform(AOI, 5070) |>
+        st_buffer(buffer) |>
+        st_bbox() |>
+        st_as_sfc() |>
+        st_make_valid() |>
+        st_transform(st_crs(AOI))
     }
   }
 

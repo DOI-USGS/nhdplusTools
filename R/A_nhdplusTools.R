@@ -101,7 +101,7 @@ assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
 assign("gocnx_ref_base_url", "https://reference.geoconnex.us/",
        envir = nhdplusTools_env)
 
-assign("usgs_water_root", "https://nhgf.dev-wma.chs.usgs.gov/api/fabric/pygeoapi/",
+assign("usgs_water_root", "https://labs-beta.waterdata.usgs.gov/api/fabric/pygeoapi/",
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",

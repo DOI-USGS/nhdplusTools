@@ -48,6 +48,8 @@ test_that("query water oafeat...",{
   # Providing both an AOI and ID(s)
   expect_error(nhdplusTools:::query_usgs_oafeat(AOI = pt, id = 17010101,  type = 'huc8_legacy'),
                "Either")
+
+  # nhdplusTools:::query_usgs_oafeat(AOI = pt2, type = "huc08_legacy")
 })
 
 # Walk our way through the 7 different offerings...

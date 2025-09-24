@@ -252,7 +252,7 @@ spatial_filter  <- function(AOI,
 #' @title Construct an attribute filter for geoservers
 #' @description From a user provided vector of IDs and an attribute name,
 #' generate a WMS filter to pass to a geoserver.
-#' @inheritParams query_usgs_geoserver
+#' @inheritParams query_usgs_oafeat
 #' @param name character. The name of the id attribute field in the desired dataset
 #' @return a character string
 #' @keywords internal
@@ -304,4 +304,10 @@ streamorder_filter <- function(streamorder){
          '<ogc:PropertyName>streamorde</ogc:PropertyName>',
          '<ogc:Literal>', streamorder - 1, '</ogc:Literal>',
          '</ogc:PropertyIsGreaterThan>')
+}
+
+streamorder_filter_cql <- function(streamorder) {
+  if(is.null(streamorder)){ return(NULL)}
+
+  paste0("streamorde%20>%20", streamorder - 1)
 }

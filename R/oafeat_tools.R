@@ -74,7 +74,29 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
     ids <- stats::setNames(list(ids), here$ids)
   }
 
-  get_oafeat(base, AOI = AOI, type = type, ids = ids, t_srs = t_srs, buffer = buffer, status = FALSE)
+  out <- get_oafeat(base, AOI = AOI, type = type, ids = ids, filter = filter, t_srs = t_srs, buffer = buffer, status = FALSE)
+
+  out <- check_valid(out)
+
+  if(any(is.null(out), nrow(out) == 0)) {
+
+    out = NULL
+
+  } else if(!is.null(AOI)){
+
+    out = st_filter(st_transform(out, t_srs),
+                    st_transform(AOI, t_srs))
+    if(nrow(out) == 0){
+      out = NULL
+    }
+  }
+
+  if(!is.null(out)) {
+    return(out)
+  } else {
+    warning(paste("No", here$user_call, "features found"), call. = FALSE)
+    NULL
+  }
 
 }
 
@@ -131,13 +153,16 @@ discover_oafeat <- function(landing_url) {
 #' @param AOI  bbox, sf polygon or point, or a URL that will return an sf object when passed to
 #' \link[sf]{read_sf}
 #' @param type character the feature type desired
-#' @inheritParams query_usgs_geoserver
+#' @param filter character CQL filter string
+#' @inheritParams query_usgs_oafeat
 #' @param status boolean print status or not
 #' @return sf data.frame containing requested features
 #' @noRd
 get_oafeat <- function(base,
-                       AOI, ids = NULL,
+                       AOI,
+                       ids = NULL,
                        type = NULL,
+                       filter = NULL,
                        t_srs = NULL,
                        buffer = 0.5,
                        status = TRUE) {
@@ -178,14 +203,30 @@ get_oafeat <- function(base,
     bbox <- paste(AOI, collapse = ",")
 
     base_call <- paste0(base_call, "?bbox=", bbox)
-  } else {
+
+  } else if(!is.null(ids)) {
+
+    if(!is.null(filter)) stop("filter not supported with ids")
 
     id_attribute <- names(ids)
 
     ids <- ids[[1]]
 
-    base_call <- paste0(base_call, "?", id_attribute, "=", paste(ids, collapse = ","))
+    # filter=comid+IN+(101,13293454)
+    if(length(ids) == 1) {
+      filt = paste0("?", id_attribute, "=", ids)
+    } else if(is.character(ids)) {
+      filt <- paste0("?filter=", id_attribute, '+IN+("', paste(ids, collapse = '","'),'")')
+    } else {
+      filt <- paste0("?filter=", id_attribute, '+IN+(', paste(ids, collapse = ','),')')
+    }
 
+    base_call <- paste0(base_call, filt)
+
+  }
+
+  if(!is.null(filter)) {
+    base_call <- paste0(add_sep(base_call), "filter=", filter)
   }
 
   out <- get_features_paging(base_call, status = status)
@@ -195,13 +236,18 @@ get_oafeat <- function(base,
   out
 }
 
+add_sep <- function(bc) {
+  if(!grepl("\\?", bc)) {
+    bc <- paste0(bc, "?")
+  } else {
+    bc <- paste0(bc, "&")
+  }
+  bc
+}
+
 get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
 
-  if(!grepl("\\?", base_call)) {
-    base_call <- paste0(base_call, "?")
-  } else {
-    base_call <- paste0(base_call, "&")
-  }
+  base_call <- add_sep(base_call)
 
   offset <- 0
 

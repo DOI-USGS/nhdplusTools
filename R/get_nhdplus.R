@@ -2,8 +2,8 @@
 #' @description Subsets NHDPlusV2 features by location (POINT), area (POLYGON),
 #' or set of COMIDs. Multi realizations are supported allowing you to query
 #' for flowlines, catchments, or outlets.
-#' @inherit query_usgs_geoserver details
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details
+#' @inheritParams query_usgs_oafeat
 #' @param comid numeric or character. Search for NHD features by COMID(s)
 #' @param nwis  numeric or character. Search for NHD features by
 #' collocated NWIS identifiers
@@ -85,15 +85,15 @@ get_nhdplus <- function(AOI = NULL,
   }
 
   if("catchment" %in% realization){
-    geoms$catchment   <- query_usgs_geoserver(AOI = AOI, ids = comid,
+    geoms$catchment   <- query_usgs_oafeat(AOI = AOI, ids = comid,
                                               type = "catchment",
                                               t_srs = t_srs)
   }
 
   if(any(c("flowline", "outlet") %in% realization)){
-    geoms$flowline    <- query_usgs_geoserver(AOI = AOI, ids = comid, type = 'nhd',
-                                                filter = streamorder_filter(streamorder),
-                                              t_srs = t_srs)
+    geoms$flowline    <- query_usgs_oafeat(AOI = AOI, ids = comid, type = 'nhd',
+                                           filter = streamorder_filter_cql(streamorder),
+                                           t_srs = t_srs)
 
     if("outlet" %in% realization){
       geoms$outlet          <- geoms$flowline

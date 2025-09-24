@@ -23,7 +23,7 @@ discover_geoconnex_reference <- function() {
 #' @param AOI  bbox, sf polygon or point, or a URL that will return an sf object when passed to
 #' \link[sf]{read_sf}
 #' @param type character the feature type chosen from \link{discover_geoconnex_reference}
-#' @inheritParams query_usgs_geoserver
+#' @inheritParams query_usgs_oafeat
 #' @param status boolean print status or not
 #' @return sf data.frame containing requested reference features
 #' @export
@@ -54,7 +54,7 @@ get_geoconnex_reference <- function(AOI,
 
   base <- get("gocnx_ref_base_url", envir = nhdplusTools_env)
 
-  get_oafeat(base, AOI, type, t_srs, buffer, status)
+  get_oafeat(base, AOI, type = type, t_srs = t_srs, buffer = buffer, status = status)
 
 }
 

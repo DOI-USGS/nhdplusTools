@@ -24,10 +24,16 @@
 get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "huc12") {
 
   allow_types <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12',
-                   'huc12_nhdplusv2')
+                   'huc02_2020', 'huc04_2020', 'huc06_2020', 'huc08_2020', 'huc10_2020', 'huc12_2020',
+                   'huc08_nhdplusv2', 'huc12_nhdplusv2')
 
   if(!type %in% allow_types) {
     stop("type must be one of ", paste(allow_types, collapse = " "))
+  }
+
+  if(type %in% c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12')) {
+    type <- paste0(type, "_2020")
+    message("defaulting to 2020 version of WBD")
   }
 
   query_usgs_oafeat(AOI = AOI, ids = id, type = type,

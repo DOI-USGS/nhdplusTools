@@ -67,20 +67,20 @@ test_that("query water oafeat...",{
 test_that("huc8", {
   testthat::skip_on_cran()
   #Point
-  ptHUC8 = get_huc(AOI = pt, type = "huc08")
+  ptHUC8 = get_huc(AOI = pt, type = "huc08_2020")
   expect_equal(nrow(ptHUC8), 1)
   expect_equal(ptHUC8$huc8, "17010101")
   expect_equal(sf::st_crs(ptHUC8)$epsg, 4326)
 
-  expect_error(get_huc(AOI = rbind(pt, pt2), type = "huc08"),
+  expect_error(get_huc(AOI = rbind(pt, pt2), type = "huc08_2020"),
                "AOI must be one an only one feature.")
 
   #Area
-  areaHUC8 = get_huc(AOI = area, t_srs = 5070, type = "huc08")
+  areaHUC8 = get_huc(AOI = area, t_srs = 5070, type = "huc08_2020")
   expect_equal(sf::st_crs(areaHUC8)$epsg, 5070)
   expect_equal(nrow(areaHUC8), 1)
   #ID
-  ptHUC8id = get_huc(id = "17010101", type = "huc08")
+  ptHUC8id = get_huc(id = "17010101", type = "huc08_2020")
   expect_identical(ptHUC8$huc8, ptHUC8id$huc8)
   expect_true(sf::st_crs(ptHUC8) == sf::st_crs(ptHUC8id) )
 })
@@ -91,7 +91,7 @@ test_that("huc", {
   testthat::skip_on_cran()
 
   expect_error(get_huc(AOI = pt, type = "borked"),
-               "type must be one of huc02 huc04 huc06 huc08 huc10 huc12 huc12_nhdplusv2")
+               "type must be one of")
   #Point
   ptHUC12 = get_huc(AOI = pt, type = "huc12_nhdplusv2")
   expect_equal(nrow(ptHUC12), 1)
@@ -108,27 +108,30 @@ test_that("huc", {
 
   expect_identical(HUC12id2$geometry, areaHUC12$geometry)
 
-  hu12 <- get_huc(AOI = pt, type = "huc12")
+  hu12 <- get_huc(AOI = pt, type = "huc12_2020")
 
   expect_equal(hu12$huc12, "170101010806")
 
-  hu10 <- get_huc(AOI = pt, type = "huc10")
+  expect_message(get_huc(AOI = pt, type = "huc12"),
+                 "defaulting to 2020 version of WBD") # TODO default to final WBD
+
+  hu10 <- get_huc(AOI = pt, type = "huc10_2020")
 
   expect_equal(hu10$huc10, "1701010108")
 
-  hu08 <- get_huc(AOI = pt, type = "huc08")
+  hu08 <- get_huc(AOI = pt, type = "huc08_2020")
 
   expect_equal(hu08$huc8, "17010101")
 
-  hu06 <- get_huc(AOI = pt, type = "huc06")
+  hu06 <- get_huc(AOI = pt, type = "huc06_2020")
 
   expect_equal(hu06$huc6, "170101")
 
-  hu04 <- get_huc(AOI = pt, type = "huc04")
+  hu04 <- get_huc(AOI = pt, type = "huc04_2020")
 
   expect_equal(hu04$huc4, "1701")
 
-  hu02 <- get_huc(AOI = pt, type = "huc02")
+  hu02 <- get_huc(AOI = pt, type = "huc02_2020")
 
   expect_equal(hu02$huc2, "17")
 

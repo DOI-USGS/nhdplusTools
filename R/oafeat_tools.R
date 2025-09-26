@@ -189,6 +189,7 @@ get_oafeat <- function(base,
   avail <- filter(avail, id == !!type)
 
   base_call <- paste0(base, "collections/", type, "/items")
+  post_body <- ""
 
   if(!is.null(AOI)) {
     if(is.character(AOI)) {
@@ -222,16 +223,11 @@ get_oafeat <- function(base,
 
     ids <- ids[[1]]
 
-    # filter=comid+IN+(101,13293454)
     if(length(ids) == 1) {
-      filt = paste0("?", id_attribute, "=", ids)
-    } else if(is.character(ids)) {
-      filt <- paste0("?filter=", id_attribute, '+IN+("', paste(ids, collapse = '","'),'")')
+      base_call <- paste0(base_call, paste0("?", id_attribute, "=", ids))
     } else {
-      filt <- paste0("?filter=", id_attribute, '+IN+(', paste(ids, collapse = ','),')')
+      post_body <- id_filter_cql(ids, id_attribute)
     }
-
-    base_call <- paste0(base_call, filt)
 
   }
 
@@ -239,7 +235,7 @@ get_oafeat <- function(base,
     base_call <- paste0(add_sep(base_call), "filter=", filter)
   }
 
-  out <- get_features_paging(base_call, status = status)
+  out <- get_features_paging(base_call, post_body, status = status)
 
   if(!is.null(t_srs)) out <- st_transform(out, t_srs)
 
@@ -255,7 +251,38 @@ add_sep <- function(bc) {
   bc
 }
 
-get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
+make_request <- function(req, body = "") {
+  tryCatch({
+    if(nhdplus_debug()) {
+      message(paste(req, "\n"))
+      message(body)
+    }
+
+    if(body != "") {
+      out <- rawToChar(RETRY("POST",
+                             req,
+                             body = body,
+                             httr::content_type("application/query-cql-json"))$content)
+    } else {
+
+      out <- rawToChar(RETRY("GET", req)$content)
+
+    }
+
+
+  }, error = function(e) {
+    warning("Something went wrong trying to access a service.")
+    return(NULL)
+  })
+
+  out <- tryCatch({
+    st_zm(read_sf(out))},
+    error = function(e) return(NULL))
+
+  out
+}
+
+get_features_paging <- function(base_call, post_body = "", limit = 1000, status = TRUE) {
 
   base_call <- add_sep(base_call)
 
@@ -271,9 +298,9 @@ get_features_paging <- function(base_call, limit = 1000, status = TRUE) {
   while(keep_going) {
     req <- paste0(base_call, "limit=", limit, "&offset=", offset)
 
-    out[[i]] <- try(read_sf(req))
+    out[[i]] <- make_request(req, post_body)
 
-    if(inherits(out[[i]], "sf") & nrow(out[[i]]) == limit) {
+    if(!is.null(out[[i]]) && inherits(out[[i]], "sf") & nrow(out[[i]]) == limit) {
       offset <- offset + limit
     }
 

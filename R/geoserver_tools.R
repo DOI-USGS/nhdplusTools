@@ -286,6 +286,13 @@ id_filter  <- function(ids, name = "comid"){
 
 }
 
+id_filter_cql  <- function(ids, name = "comid"){
+
+  jsonlite::toJSON(list(op = "in", args = list(list(property = name), c(ids))),
+                   auto_unbox = TRUE)
+
+}
+
 #' @title Stream Order Filter
 #' @description Generate a WMS filter to pass to a geoserver. That constrains
 #' the returned flowlines to only those with a stream order

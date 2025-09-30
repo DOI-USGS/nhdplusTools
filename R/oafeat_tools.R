@@ -189,7 +189,9 @@ get_oafeat <- function(base,
   avail <- filter(avail, id == !!type)
 
   base_call <- paste0(base, "collections/", type, "/items")
-  post_body <- ""
+  post_body <- list()
+
+  limit <- 1000
 
   if(!is.null(AOI)) {
     if(is.character(AOI)) {
@@ -226,7 +228,8 @@ get_oafeat <- function(base,
     if(length(ids) == 1) {
       base_call <- paste0(base_call, paste0("?", id_attribute, "=", ids))
     } else {
-      post_body <- id_filter_cql(ids, id_attribute)
+      post_body <- list(ids = ids, id_attribute = id_attribute)
+      limit <- 500
     }
 
   }
@@ -235,7 +238,7 @@ get_oafeat <- function(base,
     base_call <- paste0(add_sep(base_call), "filter=", filter)
   }
 
-  out <- get_features_paging(base_call, post_body, status = status)
+  out <- get_features_paging(base_call, post_body, limit = limit, status = status)
 
   if(!is.null(t_srs)) out <- st_transform(out, t_srs)
 
@@ -282,9 +285,17 @@ make_request <- function(req, body = "") {
   out
 }
 
-get_features_paging <- function(base_call, post_body = "", limit = 1000, status = TRUE) {
+get_features_paging <- function(base_call, ids_list = list(), limit = 1000, status = TRUE) {
+
+  if(!identical(ids_list, list())) {
+    # we will page through ids
+    ids <- split_equal_size(ids_list$ids, limit)
+  }
 
   base_call <- add_sep(base_call)
+
+
+  post_body <- ""
 
   offset <- 0
 
@@ -296,7 +307,18 @@ get_features_paging <- function(base_call, post_body = "", limit = 1000, status 
   i <- 1
 
   while(keep_going) {
-    req <- paste0(base_call, "limit=", limit, "&offset=", offset)
+
+    if(!identical(ids_list, list())) {
+
+      req <- base_call
+      post_body <- id_filter_cql(ids[[i]], ids_list$id_attribute)
+      req <- paste0(base_call, "limit=", limit)
+
+    } else {
+
+      req <- paste0(base_call, "limit=", limit, "&offset=", offset)
+
+    }
 
     out[[i]] <- make_request(req, post_body)
 
@@ -311,7 +333,13 @@ get_features_paging <- function(base_call, post_body = "", limit = 1000, status 
       keep_going <- FALSE
     }
 
-    if(status & keep_going) message("Starting next download from ", offset, ".")
+    if(status & keep_going) {
+      if(identical(ids_list, list())) {
+        message("Starting next download from ", offset, ".")
+      } else {
+        message("starting next download from ", i * limit, ".")
+      }
+    }
 
     i <- i + 1
   }

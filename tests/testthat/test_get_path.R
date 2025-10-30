@@ -44,7 +44,7 @@ test_that("calculate level path", {
     nhdp <- filter(walker_flowline, LevelPathI == nhdp_lp[lp])
     outlet_comid <- filter(nhdp, Hydroseq == min(Hydroseq))$COMID
     nhdt <- filter(test_flowline_out, outletID == outlet_comid)
-    expect(all(nhdp$COMID %in% nhdt$ID), paste("Mismatch in", nhdp_lp[lp],
+    expect_true(all(nhdp$COMID %in% nhdt$ID), info = paste("Mismatch in", nhdp_lp[lp],
                                                "level path from NHDPlus."))
   }
 

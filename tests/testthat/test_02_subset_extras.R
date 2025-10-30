@@ -72,8 +72,8 @@ test_that("by rpu", {
   out <- subset_rpu(sample_flines, rpu = "07b")
 
   expect_equal(names(out), names(sample_flines))
-  expect(nrow(out), 267)
-  expect(nrow(subset_rpu(sample_flines, rpu = "07b",
+  expect_equal(nrow(out), 267)
+  expect_equal(nrow(subset_rpu(sample_flines, rpu = "07b",
                          run_make_standalone = TRUE)), 267)
 
   expect_equal(nrow(subset_vpu(sample_flines, vpu = "07")), 267)
@@ -85,8 +85,8 @@ test_that("by rpu", {
     prepare_nhdplus(sample_flines,
                     0, 0, 0, FALSE), by = "COMID"))
 
-  expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
-  expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = FALSE)), 267)
+  expect_equal(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
+  expect_equal(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = FALSE)), 267)
 
 })
 

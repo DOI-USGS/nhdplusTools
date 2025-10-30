@@ -44,7 +44,7 @@ test_that("get_nhdplushr layers and gpkg", {
 
   out <- get_nhdplushr(sw$wd, layers = NULL)
 
-  expect(length(names(out)), 7)
+  expect_equal(length(names(out)), 7)
 
   teardown_workdir(sw$wd)
 })

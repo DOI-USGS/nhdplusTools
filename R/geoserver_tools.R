@@ -179,38 +179,6 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
 
 }
 
-unify_types <- function(out) {
-  all_class <- bind_rows(lapply(out, function(x) {
-    vapply(x, function(x) class(x)[1], character(1))
-  }))
-
-  set_type <- function(out, n, type) {
-    lapply(out, function(x) {
-      x[[n]] <- as(x[[n]], type)
-      x
-    })
-  }
-
-  for(n in names(all_class)) {
-    if(length(unique(all_class[[n]])) > 1) {
-      if("numeric" %in% all_class[[n]]) { # prefer numeric
-        out <- set_type(out, n, "numeric")
-      } else if("integer" %in% all_class[[n]]) { # then integer
-        out <- set_type(out, n, "integer")
-      } else if("cheracter" %in% all_class[[n]]) {
-        out <- set_type(out, n, "character")
-      }
-    }
-  }
-
-  rows <- sapply(out, nrow)
-
-  if(any(rows > 0))
-    out <- out[rows > 0]
-
-  out
-}
-
 assign("bb_break_size", value = 2, nhdplusTools_env)
 
 #' @title Construct a BBOX spatial filter for geoservers
@@ -284,7 +252,7 @@ spatial_filter  <- function(AOI,
 #' @title Construct an attribute filter for geoservers
 #' @description From a user provided vector of IDs and an attribute name,
 #' generate a WMS filter to pass to a geoserver.
-#' @inheritParams query_usgs_geoserver
+#' @inheritParams query_usgs_oafeat
 #' @param name character. The name of the id attribute field in the desired dataset
 #' @return a character string
 #' @keywords internal
@@ -318,6 +286,13 @@ id_filter  <- function(ids, name = "comid"){
 
 }
 
+id_filter_cql  <- function(ids, name = "comid"){
+
+  jsonlite::toJSON(list(op = "in", args = list(list(property = name), c(ids))),
+                   auto_unbox = TRUE)
+
+}
+
 #' @title Stream Order Filter
 #' @description Generate a WMS filter to pass to a geoserver. That constrains
 #' the returned flowlines to only those with a stream order
@@ -338,69 +313,8 @@ streamorder_filter <- function(streamorder){
          '</ogc:PropertyIsGreaterThan>')
 }
 
-#' @title Trim and Cull NULLs
-#' @description Remove NULL arguments from a list
-#' @param x a list
-#' @keywords internal
-#' @return a list
-#' @noRd
+streamorder_filter_cql <- function(streamorder) {
+  if(is.null(streamorder)){ return(NULL)}
 
-tc <- function(x) {
-  Filter(Negate(is.null), x)
-}
-
-#' @title Identify NHD features by collocated NWIS ID(s)
-#' @description Use the NLDI to identify the COMIDs associated
-#' with a given NWIS ID.
-#' @param nwis character or numeric. A vector of USGS NWIS id(s)
-#' @keywords internal
-#' @return a vector of COMIDs
-#' @noRd
-#' @importFrom httr RETRY GET
-#' @importFrom jsonlite fromJSON
-
-extact_comid_nwis <- memoise::memoise(function(nwis){
-  # We could export this from dataRetrieval dataRetrieval:::pkg.env$nldi_base
-  #but currently its not...
-  baseURL  <- paste0(get_nldi_url(), "/linked-data/")
-  url      <-  paste0(baseURL, "nwissite/USGS-", nwis)
-  c        <-  rawToChar(httr::RETRY("GET", url)$content)
-  f.comid  <-  jsonlite::fromJSON(c, simplifyVector = TRUE)
-  f.comid$features$properties$comid
-})
-
-#' @importFrom sf st_make_valid st_as_sfc st_bbox st_buffer st_transform
-check_query_params <- function(AOI, ids, type, where, source, t_srs, buffer) {
-  # If t_src is not provided set to AOI CRS
-  if(is.null(t_srs)){ t_srs  <- st_crs(AOI) }
-  # If AOI CRS is NA (e.g st_crs(NULL)) then set to 4326
-  if(is.na(t_srs))  { t_srs  <- 4326 }
-
-  if(!is.null(AOI) & !is.null(ids)) {
-    # Check if AOI and IDs are both given
-    stop("Either IDs or a spatial AOI can be passed.", .call = FALSE)
-  } else if(is.null(AOI) & is.null(ids) & !(!is.null(where) && grepl("IN", where))) {
-    # Check if AOI and IDs are both NULL
-    stop("IDs or a spatial AOI must be passed.", .call = FALSE)
-  } else if(!(type %in% source$user_call)) {
-    # Check that "type" is valid
-    stop(paste("Type not available must be one of:",
-               paste(source$user_call, collapse = ", ")),
-         call. = FALSE)
-  }
-
-  if(!is.null(AOI)){
-
-    if(length(st_geometry(AOI)) > 1) {
-      stop("AOI must be one an only one feature.")
-    }
-
-    if(st_geometry_type(AOI) == "POINT"){
-      # If input is a POINT, buffer by 1/2 meter (in equal area projection)
-      AOI = st_buffer(st_transform(AOI, 5070), buffer) %>%
-        st_bbox() %>% st_as_sfc() %>% st_make_valid()
-    }
-  }
-
-  return(list(AOI = AOI, t_srs = t_srs))
+  paste0("streamorde%20>%20", streamorder - 1)
 }

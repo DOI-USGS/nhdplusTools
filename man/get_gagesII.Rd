@@ -33,9 +33,9 @@ area (POLYGON), or set of IDs. See <doi:10.5066/P96CPHOT> for documentation of s
 \details{
 The returned object(s) will have the same
 Spatial Reference System (SRS) as the input AOI. If a individual or set of
-IDs are used to query, then the default geoserver CRS of EPSG:4326 is
+IDs are used to query, then the default server CRS of EPSG:4326 is
 preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
 which will override all previous SRS (either input or default).
-All buffer and distance operations are handled internally using in
+All buffer and distance operations are handled internally using an
 EPSG:5070 Albers Equal Area projection
 }

@@ -1,3 +1,12 @@
+nhdplusTools 1.4.0
+==========
+
+This release migrates to a new web service provider for the key function `subset_nhdplus()`. 
+The change is mostly backward compatible but some minor differences in performance and response
+data may be noticed.
+
+- `subset_nhdplus()` and `get_huc()` migrated to pygeoapi-based web services.
+
 nhdplusTools 1.3.2
 ==========
 

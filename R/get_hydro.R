@@ -2,7 +2,7 @@
 #' @description Subsets WBD features by location (POINT),
 #' area (POLYGON), or set of HUC IDs.
 #'
-#' @inherit query_usgs_geoserver details return params
+#' @inherit query_usgs_oafeat details return params
 #' @param id WBD HUC ID(s)
 #' @param type character. Type of feature to return
 #' ('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12', 'huc12_nhdplusv2').
@@ -24,27 +24,33 @@
 get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "huc12") {
 
   allow_types <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12',
-                   'huc12_nhdplusv2')
+                   'huc02_2020', 'huc04_2020', 'huc06_2020', 'huc08_2020', 'huc10_2020', 'huc12_2020',
+                   'huc08_nhdplusv2', 'huc12_nhdplusv2')
 
   if(!type %in% allow_types) {
     stop("type must be one of ", paste(allow_types, collapse = " "))
   }
 
-  query_usgs_geoserver(AOI = AOI, ids = id, type = type,
-                       t_srs = t_srs, buffer = buffer)
+  if(type %in% c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12')) {
+    type <- paste0(type, "_2020")
+    message("defaulting to 2020 version of WBD")
+  }
+
+  query_usgs_oafeat(AOI = AOI, ids = id, type = type,
+                    t_srs = t_srs, buffer = buffer)
 
 }
 
 #' @title Find NHDPlusV2 Water Bodies
 #' @description Subsets NHDPlusV2 waterbody features by location (POINT),
 #' area (POLYGON), or set of IDs. See \link{download_nhdplusv2} for source data documentation.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details return
+#' @inheritParams query_usgs_oafeat
 #' @param id NHD Waterbody COMID(s)
 #' @export
 
 get_waterbodies <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
-  query_usgs_geoserver(AOI = AOI, ids = id,
+  query_usgs_oafeat(AOI = AOI, ids = id,
                        type = "waterbodies",
                        t_srs = t_srs,
                        buffer = buffer)
@@ -53,13 +59,13 @@ get_waterbodies <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @title Find NHDPlusV2 Areas
 #' @description Subsets NHDPlusV2 Area features by location (POINT),
 #' area (POLYGON), or set of IDs. See \link{download_nhdplusv2} for source data documentation.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details return
+#' @inheritParams query_usgs_oafeat
 #' @param id NHD Area COMID(s)
 #' @export
 
 get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
-  query_usgs_geoserver(AOI = AOI, ids = id, type = "nhdarea",
+  query_usgs_oafeat(AOI = AOI, ids = id, type = "nhdarea",
                        t_srs = t_srs, buffer = buffer)
 }
 
@@ -67,8 +73,8 @@ get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @title Find gagesII Features
 #' @description Subsets the gagesII dataset by location (POINT),
 #' area (POLYGON), or set of IDs. See <doi:10.5066/P96CPHOT> for documentation of source data.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details return
+#' @inheritParams query_usgs_oafeat
 #' @param id character NWIS Gage ID(s)
 #' @param basin logical should the gagesII basin also be returned? If True,
 #' return value will be a list with "site" and "basin" elements.
@@ -77,12 +83,12 @@ get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5,
                         basin = FALSE){
 
-  out <- query_usgs_geoserver(AOI = AOI, ids = id, type = "gagesII",
+  out <- query_usgs_oafeat(AOI = AOI, ids = id, type = "gagesII",
                               t_srs = t_srs, buffer = buffer)
 
   if(basin) {
     return(list(site = out,
-                basin = query_usgs_geoserver(
+                basin = query_usgs_oafeat(
                   ids = out[["staid"]], type = "gagesII-basin",
                   t_srs = t_srs, buffer = buffer)))
   }
@@ -94,8 +100,8 @@ get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5,
 #' @description Returns a POINT feature class of active, stream network,
 #' NWIS gages for an Area of Interest. If a POINT feature is used as an AOI,
 #' then the returned sites within the requested buffer, are sorted by distance (in meters) from that POINT.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details return
+#' @inheritParams query_usgs_oafeat
 #' @param buffer numeric. The amount (in meters) to buffer a POINT AOI by
 #' for an extended search. Default = 20,000. Returned results are arrange
 #' by distance from POINT AOI

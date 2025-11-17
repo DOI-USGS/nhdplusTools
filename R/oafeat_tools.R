@@ -186,7 +186,7 @@ get_oafeat <- function(base,
 
   if(!type %in% avail$id) stop("Type must be in available ids: ", paste(unique(avail$id), collapse = ", "), ".")
 
-  avail <- filter(avail, id == !!type)
+  avail <- filter(avail, .data$id == !!type)
 
   base_call <- paste0(base, "collections/", type, "/items")
   post_body <- list()

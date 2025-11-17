@@ -10,13 +10,13 @@ test_that("get_nhdplus_byid", {
 
   catchmentsp <- nhdplusTools:::get_nhdplus_byid(comid_set, "catchmentsp")
 
-  expect("sf" %in% class(catchmentsp), "expected class sf")
+  expect_true("sf" %in% class(catchmentsp))
 
   expect_equal(nrow(catchmentsp), 5)
 
   nhdflowline_network <- nhdplusTools:::get_nhdplus_byid(comid_set, "nhdflowline_network")
 
-  expect("sf" %in% class(nhdflowline_network), "expected class sf")
+  expect_true("sf" %in% class(nhdflowline_network))
 
   expect_equal(nrow(nhdflowline_network), 5)
 
@@ -36,7 +36,7 @@ test_that("get_nhdplus_bybox", {
 
   for (layer in layers) {
     l <- nhdplusTools:::get_nhdplus_bybox(bbox, layer)
-    expect(nrow(l) > 1, "expected to get data")
+    expect_true(nrow(l) > 1)
     expect_true("sf" %in% class(l))
   }
 
@@ -70,5 +70,3 @@ test_that("downloaders run", {
   unlink(dir, recursive = T)
   expect_true(grepl("WBD_test.gdb", out))
 })
-
-

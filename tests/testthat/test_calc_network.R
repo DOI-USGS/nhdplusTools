@@ -30,8 +30,8 @@ test_that("total drainage area works", {
   catchment_area$totda <- new_da
   catchment_area$nhdptotda <- walker_flowline$TotDASqKM
 
-  expect(mean(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-3, "drainage area not close enough")
-  expect(max(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-2, "drainage area not close enough")
+  expect_true(mean(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-3)
+  expect_true(max(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-2)
 
   catchment_area$area[1] <- NA
 
@@ -52,8 +52,8 @@ test_that("arbolate sum works", {
   catchment_length$arb_sum <- arb_sum
   catchment_length$nhd_arb_sum <- walker_flowline$ArbolateSu
 
-  expect(mean(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-3, "arbolate sum not close enough")
-  expect(max(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-2, "arbolate sum not close enough")
+  expect_true(mean(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-3)
+  expect_true(max(abs(catchment_length$arb_sum - catchment_length$nhd_arb_sum)) < 1e-2)
 })
 
 test_that("get_terminal", {

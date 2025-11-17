@@ -31,7 +31,7 @@ test_that("navigation works", {
                        data_source = "nwissite",
                        distance_km = 1)
 
-  expect("sf" %in% class(nav$UM_nwissite), "expected an sf data.frame")
+  expect_true("sf" %in% class(nav$UM_nwissite))
 
   expect_true("sfc_POINT" %in% class(sf::st_geometry(nav$UM_nwissite)),
          "expected point response")
@@ -72,7 +72,7 @@ test_that("navigation works", {
                        data_source = "nwissite",
                        distance_km = 1)
 
-  expect("sf" %in% sapply(nav, class), "expected an sf data.frame")
+  expect_true("sf" %in% sapply(nav, class))
 
   # expect_equal(navigate_nldi(list(featureSource = "wqp",
   #                                 featureID = "TCEQMAIN-16638"),
@@ -92,7 +92,7 @@ test_that("basin works", {
 
   nav <- get_nldi_basin(nldi_feature = nldi_nwis)
 
-  expect("sf" %in% class(nav), "expected an sf data.frame")
+  expect_true("sf" %in% class(nav))
 
   expect_true("sfc_POLYGON" %in% class(sf::st_geometry(nav)),
          "expected polygon response")

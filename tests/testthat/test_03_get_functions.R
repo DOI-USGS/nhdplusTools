@@ -269,11 +269,11 @@ test_that("discover_nhdplus_id", {
 test_that("get_nwis", {
   testthat::skip_on_cran()
   areaSearch = get_nwis(AOI = area)
-  expect(nrow(areaSearch), 1)
+  expect_equal(nrow(areaSearch), 1)
   expect_equal(sf::st_crs(areaSearch)$epsg, 4326)
 
   areaSearch5070 = get_nwis(AOI = area, t_srs = 5070)
-  expect(nrow(areaSearch5070), 1)
+  expect_equal(nrow(areaSearch5070), 1)
   expect_equal(sf::st_crs(areaSearch5070)$epsg, 5070)
 
   expect_equal(areaSearch$site_no, areaSearch5070$site_no)

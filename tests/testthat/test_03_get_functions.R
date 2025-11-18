@@ -16,22 +16,6 @@ pt2 = data.frame(loc = "ucsb", geometry = "POINT (-119.8458 34.4146)") %>%
 
 # ==============================================================================
 
-
-test_that("query water geoserver...",{
-  testthat::skip_on_cran()
-  #available?
-  df = nhdplusTools:::query_usgs_geoserver()
-  expect_equal(ncol(df), 6)
-
-  # errors
-  # Bad type request
-  expect_error(query_usgs_geoserver(AOI = pt, type = 'wrong'))
-  # Missing AOI and ID(s)
-  expect_error(query_usgs_geoserver(AOI = NULL, id = NULL,  type = 'huc8_legacy'))
-  # Providing both an AOI and ID(s)
-  expect_error(query_usgs_geoserver(AOI = pt, id = 17010101,  type = 'huc8_legacy'))
-})
-
 test_that("query water oafeat...",{
   testthat::skip_on_cran()
   #available?
@@ -53,7 +37,7 @@ test_that("query water oafeat...",{
 })
 
 # Walk our way through the 7 different offerings...
-#   server   user_call           geoserver       ids
+#   server   user_call           pygeoapi       ids
 # 1 wmadata       huc08               huc08      huc8
 # 2 wmadata       huc12               huc12     huc12
 # 3 wmadata         nhd nhdflowline_network     comid

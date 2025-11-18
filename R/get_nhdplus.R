@@ -51,7 +51,7 @@ get_nhdplus <- function(AOI = NULL,
     if(st_geometry_type(AOI) == "POINT"){
       # This is here is here so that if a POINT location is requested,
       # a COMID is used to extract the NHD data/realization
-      # This overrides the default behavior of query_usgs_geoserver
+      # This overrides the default behavior of query_usgs_oafeat
       # which buffers a POINT by 1/2 meter
       comid  <- discover_nhdplus_id(AOI)
 

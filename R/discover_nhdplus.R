@@ -36,14 +36,10 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
 
     comid <- tryCatch({
 
-      URL <- paste0(get("geoserver_root", envir = nhdplusTools_env),
-                    "wmadata",
-                    "/ows",
-                    "?service=WFS&request=GetFeature&version=1.0.0", # axis order switched in 1.1.0
-                    "&typeName=catchmentsp&outputFormat=application/json",
-                    "&CQL_FILTER=INTERSECTS(the_geom, POINT (",
-                    coords[1], " ", coords[2], "))",
-                    "&propertyName=featureid")
+      URL <- paste0(get("usgs_water_root", envir = nhdplusTools_env),
+                    "collections/catchmentsp/items",
+                    "?bbox=", coords[1], ",", coords[2], ",", coords[1], ",", coords[2],
+                    "&properties=featureid&skipGeometry=true")
 
       d <- jsonlite::fromJSON(rawToChar(RETRY("GET", utils::URLencode(URL))$content))
 

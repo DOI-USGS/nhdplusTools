@@ -349,6 +349,13 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
   sf::st_sf(dplyr::bind_rows(unify_types(out)))
 }
 
+id_filter_cql  <- function(ids, name = "comid"){
+
+  jsonlite::toJSON(list(op = "in", args = list(list(property = name), c(ids))),
+                   auto_unbox = TRUE)
+
+}
+
 unify_types <- function(out) {
   all_class <- bind_rows(lapply(out, function(x) {
     vapply(x, function(x) class(x)[1], character(1))

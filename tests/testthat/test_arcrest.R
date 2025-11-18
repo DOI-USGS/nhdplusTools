@@ -4,14 +4,7 @@ AOI_esri <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
 
 test_that("spatial_filter", {
 
-  expect_error(nhdplusTools:::spatial_filter(AOI_esri, format = "test"),
-               "ogc or esri")
-
-  expect_equal(
-    nhdplusTools:::spatial_filter(AOI_esri, format = "ogc")[[1]],
-    "<ogc:BBOX><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Envelope srsName=\"urn:x-ogc:def:crs:EPSG:4326\"><gml:lowerCorner>42.99816 -89.56684</gml:lowerCorner><gml:upperCorner>43.17192 -89.24681</gml:upperCorner></gml:Envelope></ogc:BBOX>")
-
-  expect_equal(as.character(nhdplusTools:::spatial_filter(AOI_esri, format = "esri")[[1]]),
+  expect_equal(as.character(nhdplusTools:::spatial_filter_esri(AOI_esri)[[1]]),
                '{"xmin":-89.5668,"ymin":42.9982,"xmax":-89.2468,"ymax":43.1719,"spatialReference":{"wkid":4326}}')
 })
 

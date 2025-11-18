@@ -870,3 +870,10 @@ get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
                          type = type)
   }
 }
+
+#' @noRd
+streamorder_filter_cql <- function(streamorder) {
+  if(is.null(streamorder)){ return(NULL)}
+
+  paste0("streamorde%20>%20", streamorder - 1)
+}

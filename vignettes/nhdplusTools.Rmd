@@ -180,7 +180,7 @@ plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
 
 ### Web Service Data Subsetting
 
-`nhdplusTools` supports discovery and data subsetting using web services made available through the [Network Linked Data Index](https://waterdata.usgs.gov/blog/nldi-intro/) (NLDI) and the [Water Mission Area Geoserver.](https://api.water.usgs.gov/geoserver) The code below shows how to use the NLDI functions to build a dataset upstream of our `start_comid` that we found above.
+`nhdplusTools` supports discovery and data subsetting using web services made available through the [Network Linked Data Index](https://waterdata.usgs.gov/blog/nldi-intro/) (NLDI) and the [Water Mission Area pygeoapir.](https://api.water.usgs.gov/fabric/pygeoapi) The code below shows how to use the NLDI functions to build a dataset upstream of our `start_comid` that we found above.
 
 The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these "featureSources". We can query the NLDI for an identifier of a given feature from any of its "featureSources" and find out what our navigation options are as shown below.
 ```{r discover_nldi}

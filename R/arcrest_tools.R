@@ -105,7 +105,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 
     URL <- paste0(si$url_base, here$layer, "/query")
 
-    spat_filter <- spatial_filter(AOI, tile = FALSE, format = "esri")
+    spat_filter <- spatial_filter_esri(AOI)
 
     if(!is.null(ids)) {
 
@@ -235,4 +235,46 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
     all_out[[l]] <- out
   }
   tryCatch(sf::st_sf(data.table::rbindlist(all_out)), error = function(e) NULL)
+}
+
+
+assign("bb_break_size", value = 2, nhdplusTools_env)
+
+#' @title Construct a BBOX spatial filter for geoservers
+#' @description From an 'area of intferest' object (sf POINT or POLYGON),
+#' generate a WMS BBOX filter to pass to a geoserver.
+#' @inheritParams get_nhdplus
+#' @param type needed if we want to use CQL, not for BBOX. Left for posterity
+#' @param break_size desired size of bbox tiles
+#' @param tile should the response be a tiled list or not?
+#' @return a character string XML filter
+#' @keywords internal
+#' @noRd
+#' @importFrom sf st_geometry_type st_buffer st_transform st_bbox
+
+spatial_filter_esri  <- function(AOI) {
+
+  if(is.null(AOI)) return(list(list()))
+
+
+  bb_list <- st_transform(AOI, 4326) |>
+    st_bbox() |>
+    list()
+
+  # {
+  #   "xmin": -109.55,
+  #   "ymin": 25.76,
+  #   "xmax": -86.39,
+  #   "ymax": 49.94,
+  #   "spatialReference": {
+  #     "wkid": 4326
+  #   }
+  # }
+
+  lapply(bb_list, function(bb) {
+    jsonlite::toJSON(
+      c(bb, list(spatialReference = list(wkid = 4326))),
+      auto_unbox = TRUE)
+  })
+
 }

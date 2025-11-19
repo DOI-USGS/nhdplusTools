@@ -57,6 +57,7 @@
 #' `sf::st_transform(x, 3857)` prior to adding to the plot.
 #'
 #' @export
+#' @importFrom graphics par
 #' @examples
 #' \donttest{
 #' options("rgdal_show_exportToProj4_warnings"="none")
@@ -173,6 +174,9 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
           tiles <- maptiles::get_tiles(bb, zoom = zoom, crop = FALSE,
                                        cachedir = cache_tiles,
                                        verbose = FALSE, provider = basemap)
+
+          old_par <- par(mar = c(0, 0, 0, 0))
+          on.exit(par(old_par))
 
           mapsf::mf_map(bb, type = "base", col = NA, border = NA)
 

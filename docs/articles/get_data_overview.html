@@ -12,21 +12,19 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="NHDPlusTools Data Access Overview">
-<meta property="og:description" content="nhdplusTools">
-<meta property="og:image" content="https://doi-usgs.github.io/nhdplusTools/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -40,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
       </span>
     </div>
 
@@ -55,7 +53,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -84,7 +82,7 @@
 <li>
   <a href="https://github.com/doi-usgs/nhdplusTools/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -95,7 +93,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -259,6 +257,7 @@ default map.</p>
 <span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
 <span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
 <span><span class="co">#&gt; Reading CatchmentSP</span></span>
+<span><span class="co">#&gt; Found invalid geometry, attempting to fix.</span></span>
 <span><span class="co">#&gt; Writing CatchmentSP</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">)</span></span>
@@ -302,6 +301,7 @@ useful to discover the code needed here.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">wolf_huc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_huc.html">get_huc</a></span><span class="op">(</span><span class="va">basin</span>, type <span class="op">=</span> <span class="st">'huc04'</span><span class="op">)</span></span>
+<span><span class="co">#&gt; defaulting to 2020 version of WBD</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">wolf_huc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
@@ -315,6 +315,7 @@ useful to discover the code needed here.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">wolf_huc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_huc.html">get_huc</a></span><span class="op">(</span><span class="va">site_feature</span>, type <span class="op">=</span> <span class="st">"huc04"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; defaulting to 2020 version of WBD</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">wolf_huc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
@@ -464,6 +465,10 @@ question…</p>
 <span><span class="co">#&gt; 5  1 60002700034888 04030104000136   100.0000 0.0247855142</span></span>
 <span></span>
 <span><span class="va">site_meta</span> <span class="op">&lt;-</span> <span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISsite.html" class="external-link">readNWISsite</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"USGS-"</span>, <span class="st">""</span>, <span class="va">site_feature</span><span class="op">$</span><span class="va">identifier</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in dataRetrieval::readNWISsite(gsub("USGS-", "",</span></span>
+<span><span class="co">#&gt; site_feature$identifier)): NWIS servers are slated for decommission. Please</span></span>
+<span><span class="co">#&gt; begin to migrate to read_waterdata_monitoring_location</span></span>
+<span><span class="co">#&gt; GET: https://waterservices.usgs.gov/nwis/site/?siteOutput=Expanded&amp;format=rdb&amp;site=04074950</span></span>
 <span></span>
 <span><span class="va">sqmi_to_sqkm</span> <span class="op">&lt;-</span> <span class="fl">2.59</span></span>
 <span></span>
@@ -596,14 +601,16 @@ how to work with 3DHP data.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">sub_3dhp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_3dhp.html">get_3dhp</a></span><span class="op">(</span><span class="va">basin</span>, type <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Getting features 0 to 2000 of 2199</span></span>
+<span><span class="co">#&gt; Getting features 2000 to 2199 of 2199</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sub_3dhp</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: plotting the first 10 out of 35 attributes; use max.plot = 35 to plot</span></span>
+<span><span class="co">#&gt; Warning: plotting the first 10 out of 34 attributes; use max.plot = 34 to plot</span></span>
 <span><span class="co">#&gt; all</span></span></code></pre></div>
 <p><img src="get_data_overview_files/figure-html/unnamed-chunk-9-1.png" width="576"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">sub_3dhp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hydroloom/man/st_compatibalize.html" class="external-link">st_compatibalize</a></span><span class="op">(</span><span class="va">sub_3dhp</span>, <span class="va">nhd_fline</span><span class="op">)</span></span>
+<span><span class="va">sub_3dhp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://doi-usgs.github.io/hydroloom/reference/st_compatibalize.html" class="external-link">st_compatibalize</a></span><span class="op">(</span><span class="va">sub_3dhp</span>, <span class="va">nhd_fline</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">basin</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span>
@@ -619,25 +626,25 @@ provides access to a full table of what’s available.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="../reference/discover_geoconnex_reference.html">discover_geoconnex_reference</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 18 × 2</span></span></span>
-<span><span class="co">#&gt;    id            title                                                          </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> hu02          HU02                                                           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> hu04          HU04                                                           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> hu06          HU06                                                           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> hu08          HU08                                                           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> hu10          HU10                                                           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> nat_aq        USGS National Aquifers                                         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> principal_aq  USGS Principal Aquifers                                        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> sec_hydrg_reg USGS Secondary Hydrogeologic Regions                           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> gages         Reference Gages                                                </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> mainstems     Reference Mainstems                                            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> dams          Reference Dams                                                 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> pws           Public Water Systems                                           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> states        States                                                         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> counties      Counties                                                       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> aiannh        American Indian/Alaska Native Areas/Hawaiian Home Lands (AIANN…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> cbsa          Core-based statistical areas (CBSA)                            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> ua10          Urban Areas                                                    </span></span>
+<span><span class="co">#&gt;    id            title                                                  </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> hu02          HU02                                                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> hu04          HU04                                                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> hu06          HU06                                                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> hu08          HU08                                                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> hu10          HU10                                                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> nat_aq        USGS National Aquifers                                 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> principal_aq  USGS Principal Aquifers                                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> sec_hydrg_reg USGS Secondary Hydrogeologic Regions                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> gages         Reference Gages                                        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> mainstems     Reference Mainstems                                    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> dams          Reference Dams                                         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> pws           Public Water Systems                                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> states        States                                                 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> counties      Counties                                               </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> aiannh        American Indian/Alaska Native Areas/Hawaiian Home Lands</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> cbsa          Core-based statistical areas                           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> ua10          Urban Areas                                            </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> places        Places</span></span></code></pre></div>
 <p>Each of these sets of “reference features” includes a “uri” which is
 a persistent way to identify these features and will always lead you
@@ -646,13 +653,13 @@ back to a representation of the feature when you look it up.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">wolf_gages</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_geoconnex_reference.html">get_geoconnex_reference</a></span><span class="op">(</span><span class="va">basin</span>, type <span class="op">=</span> <span class="st">"gages"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Starting download of first 1000 features.</span></span>
+<span><span class="co">#&gt; Starting download of first set of features.</span></span>
 <span></span>
 <span><span class="va">geoconnex_gage</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">wolf_gages</span>, </span>
 <span>                                <span class="va">provider_id</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"USGS-"</span>, <span class="st">""</span>, <span class="va">site_feature</span><span class="op">$</span><span class="va">identifier</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">wolf_mainstems</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_geoconnex_reference.html">get_geoconnex_reference</a></span><span class="op">(</span><span class="va">basin</span>, type <span class="op">=</span> <span class="st">"mainstems"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Starting download of first 1000 features.</span></span>
+<span><span class="co">#&gt; Starting download of first set of features.</span></span>
 <span></span>
 <span><span class="va">wolf_mainstem</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">wolf_mainstems</span>, <span class="va">uri</span> <span class="op">==</span> <span class="va">geoconnex_gage</span><span class="op">$</span><span class="va">mainstem_uri</span><span class="op">)</span></span>
 <span></span>
@@ -678,7 +685,7 @@ available using <code><a href="../reference/download_wbd.html">download_wbd()</a
 <span><span class="co">#&gt; Compressed WBD file already exists ...</span></span>
 <span><span class="co">#&gt; Extracting data ...</span></span>
 <span><span class="co">#&gt; Error in zip::unzip(file, exdir = outdir, overwrite = FALSE) : </span></span>
-<span><span class="co">#&gt;   zip error: Cannot open zip file `C:\Users\dblodgett\AppData\Roaming\R\data\R\nhdplusTools\wbd_access_demo\WBD_National_GDB.zip` for reading in file zip.c:141</span></span>
+<span><span class="co">#&gt;   zip error: Cannot open zip file `C:\Users\dblodgett\AppData\Roaming\R\data\R\nhdplusTools\wbd_access_demo\WBD_National_GDB.zip` for reading in file zip.c:144</span></span>
 <span><span class="co">#&gt; WBD data extracted to: C:\Users\dblodgett\AppData\Roaming/R/data/R/nhdplusTools/wbd_access_demo/WBD_National_GDB.gdb</span></span>
 <span></span>
 <span><span class="co"># zip::unzip doesn't always work</span></span>
@@ -705,13 +712,13 @@ available using <code><a href="../reference/download_wbd.html">download_wbd()</a
 <span><span class="co">#&gt; 9                       WBDHU6     Multi Polygon      405     15</span></span>
 <span><span class="co">#&gt; 10                      WBDHU2     Multi Polygon       22     15</span></span>
 <span><span class="co">#&gt; 11                     WBDHU14     Multi Polygon     8138     20</span></span>
-<span><span class="co">#&gt; 12                     WBDLine Multi Line String   395030      8</span></span>
+<span><span class="co">#&gt; 12                     WBDLine Multi Line String   394965      8</span></span>
 <span><span class="co">#&gt; 13                     WBDHU10     Multi Polygon    18867     17</span></span>
-<span><span class="co">#&gt; 14           FeatureToMetadata                NA   441934      3</span></span>
+<span><span class="co">#&gt; 14           FeatureToMetadata                NA   564839      3</span></span>
 <span><span class="co">#&gt; 15           ExternalCrosswalk                NA        0      7</span></span>
 <span><span class="co">#&gt; 16                       HUMod                NA       23      5</span></span>
-<span><span class="co">#&gt; 17           MetaProcessDetail                NA     1805     16</span></span>
-<span><span class="co">#&gt; 18            MetaSourceDetail                NA     1808     27</span></span>
+<span><span class="co">#&gt; 17           MetaProcessDetail                NA     1850     16</span></span>
+<span><span class="co">#&gt; 18            MetaSourceDetail                NA     1854     27</span></span>
 <span><span class="co">#&gt; 19        ProcessingParameters                NA        2      2</span></span>
 <span><span class="co">#&gt; 20                UpdateStatus                NA        0      2</span></span>
 <span><span class="co">#&gt;                 crs_name</span></span>
@@ -740,9 +747,7 @@ available using <code><a href="../reference/download_wbd.html">download_wbd()</a
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -755,16 +760,16 @@ available using <code><a href="../reference/download_wbd.html">download_wbd()</a
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

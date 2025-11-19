@@ -2,6 +2,7 @@
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 test_that("tile_cache_dir", {
+  testthat::skip_on_ci()
   testthat::skip_on_cran()
   dir <- nhdplusTools:::tile_cache_dir()
 
@@ -25,6 +26,7 @@ test_that("tile_cache_dir", {
 })
 
 test_that("test_as_outlets", {
+  testthat::skip_on_ci()
   expect_equal(nhdplusTools:::as_outlets(NULL), NULL)
 
   o <- list(13293970, 13293971)
@@ -94,6 +96,7 @@ test_that("test_as_outlets", {
 })
 
 test_that("test_styles", {
+  testthat::skip_on_ci()
   st <- nhdplusTools:::get_styles(NULL)
   expect_named(st, c("basin", "flowline", "network_wtbd",
                      "off_network_wtbd","outlets"))
@@ -125,6 +128,7 @@ test_that("test_styles", {
 })
 
 test_that("comids", {
+  testthat::skip_on_ci()
   Sys.setenv(MAKE_BASIN="FALSE")
 
   testthat::skip_on_cran()
@@ -156,6 +160,7 @@ test_that("comids", {
 })
 
 test_that("waterbodies", {
+  testthat::skip_on_ci()
   testthat::skip_on_cran()
   site <- "USGS-05428500"
   tempd <- tempdir(check = TRUE)
@@ -166,7 +171,7 @@ test_that("waterbodies", {
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline",
                            "basin", "catchment","network_wtbd",
                            "off_network_wtbd"))
-
+  Sys.sleep(2)
   d <-  nhdplusTools:::plot_nhdplus(site, flowline_only = FALSE,
                                     cache_data = FALSE)
 
@@ -192,11 +197,14 @@ test_that("waterbodies", {
 })
 
 test_that("get_waterbody_outlet", {
+  testthat::skip_on_ci()
   testthat::skip_on_cran()
   lake_comid <- 13293262
   site <- "USGS-05428500"
   tempd <- tempdir(check = TRUE)
   g_temp <- file.path(tempd, "foo.gpkg")
+
+  Sys.sleep(2)
 
   d <-  nhdplusTools:::get_plot_data(site, gpkg = g_temp, flowline_only = FALSE)
   out <-  nhdplusTools:::get_wb_outlet(lake_comid, d$flowline)

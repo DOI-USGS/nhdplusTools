@@ -8,7 +8,7 @@ get_split_catchment(point, upstream = TRUE)
 }
 \arguments{
 \item{point}{scf POINT including crs as created by:
-\code{sf::st_sfc(sf::st_point(.. ,..), crs)}}
+\code{sf::st_sfc(sf::st_point(.. ,..), crs)}.}
 
 \item{upstream}{logical If TRUE, the entire drainage basin upstream
 of the point provided is returned in addition to the local catchment.}
@@ -18,8 +18,20 @@ sf data.frame containing the local catchment, the split portion
 and optionally the total drainage basin.
 }
 \description{
-Uses catchment splitting web service to retrieve
+Uses a catchment splitting web service to retrieve
 the portion of a catchment upstream of the point provided.
+}
+\details{
+This service works within the coterminous US NHDPlusV2 domain. If the point
+provided falls on an NHDPlusV2 flowline as retrieved from \link{get_raindrop_trace}
+the catchment will be split across the flow line. IF the point is not
+along the flowline a small sub catchment will typically result. As a result,
+most users of this function will want to use \link{get_raindrop_trace} prior
+to calls to this function.
+
+An attempt is made to eliminate polygon shards if they exist in the output.
+However, there is a chance that this function will return a multipolygon
+data.frame.
 }
 \examples{
 \donttest{

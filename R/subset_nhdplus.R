@@ -556,6 +556,18 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
       }))
   }
 
+  if(as.character(sf::st_geometry_type(x, by_geometry = FALSE)) == "MULTIPOLYGON") {
+    if(all(sapply(sf::st_geometry(x), length) == 1)) {
+      try(suppressWarnings(x <- sf::st_cast(x, "POLYGON")))
+    }
+  }
+
+  if(as.character(sf::st_geometry_type(x, by_geometry = FALSE)) == "MULTILINESTRING") {
+    if(all(sapply(sf::st_geometry(x), length) == 1)) {
+      try(suppressWarnings(x <- sf::st_cast(x, "LINESTRING")))
+    }
+  }
+
   if (sf::st_crs(x) != sf::st_crs(out_prj)) {
     x <- sf::st_transform(x, out_prj)
   }
@@ -829,9 +841,9 @@ get_all_navigable <- function(fline, rpu) {
 get_nhdplus_byid <- function(comids, layer, streamorder = NULL) {
 
   if(layer == "nhdflowline_network"){
-    query_usgs_geoserver(ids = comids, type = "nhd", filter = streamorder_filter(streamorder))
+    query_usgs_oafeat(ids = comids, type = "nhd", filter = streamorder_filter_cql(streamorder))
   } else if(layer == "catchmentsp"){
-    query_usgs_geoserver(ids = comids, type = "catchment")
+    query_usgs_oafeat(ids = comids, type = "catchment")
   } else {
     stop("Layer must be one of catchmentsp, nhdflowline_network")
   }
@@ -845,16 +857,23 @@ get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
     stop("Layer must be one of nhdarea, nhdwaterbody, nhdflowline_network, nhdflowline_nonnetwork, catchmentsp.")
   }
 
-  type <- dplyr::filter(query_usgs_geoserver(),
-                        .data$geoserver == layer)$user_call
+  type <- dplyr::filter(query_usgs_oafeat(),
+                        .data$layer_name == layer)$user_call
 
 
   if(layer == "nhdflowline_network") {
-    query_usgs_geoserver(AOI = box,
+    query_usgs_oafeat(AOI = box,
                          type = type,
-                         filter = streamorder_filter(streamorder))
+                         filter = streamorder_filter_cql(streamorder))
   } else {
-    query_usgs_geoserver(AOI = box,
+    query_usgs_oafeat(AOI = box,
                          type = type)
   }
+}
+
+#' @noRd
+streamorder_filter_cql <- function(streamorder) {
+  if(is.null(streamorder)){ return(NULL)}
+
+  paste0("streamorde%20>%20", streamorder - 1)
 }

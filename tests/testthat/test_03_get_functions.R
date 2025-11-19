@@ -16,24 +16,28 @@ pt2 = data.frame(loc = "ucsb", geometry = "POINT (-119.8458 34.4146)") %>%
 
 # ==============================================================================
 
-
-test_that("query water labs...",{
+test_that("query water oafeat...",{
   testthat::skip_on_cran()
   #available?
-  df = nhdplusTools:::query_usgs_geoserver()
+  df <- nhdplusTools:::query_usgs_oafeat()
   expect_equal(ncol(df), 6)
 
   # errors
   # Bad type request
-  expect_error(query_usgs_geoserver(AOI = pt, type = 'wrong'))
+  expect_error(nhdplusTools:::query_usgs_oafeat(AOI = pt, type = 'wrong'),
+               "Type")
   # Missing AOI and ID(s)
-  expect_error(query_usgs_geoserver(AOI = NULL, id = NULL,  type = 'huc8_legacy'))
+  expect_error(nhdplusTools:::query_usgs_oafeat(AOI = NULL, id = NULL,  type = 'catchmentsp'),
+               "IDs or a spatial AOI")
   # Providing both an AOI and ID(s)
-  expect_error(query_usgs_geoserver(AOI = pt, id = 17010101,  type = 'huc8_legacy'))
+  expect_error(nhdplusTools:::query_usgs_oafeat(AOI = pt, id = 17010101,  type = 'huc8_legacy'),
+               "Either")
+
+  # nhdplusTools:::query_usgs_oafeat(AOI = pt2, type = "huc08_legacy")
 })
 
 # Walk our way through the 7 different offerings...
-#   server   user_call           geoserver       ids
+#   server   user_call           pygeoapi       ids
 # 1 wmadata       huc08               huc08      huc8
 # 2 wmadata       huc12               huc12     huc12
 # 3 wmadata         nhd nhdflowline_network     comid
@@ -47,20 +51,20 @@ test_that("query water labs...",{
 test_that("huc8", {
   testthat::skip_on_cran()
   #Point
-  ptHUC8 = get_huc(AOI = pt, type = "huc08")
+  ptHUC8 = get_huc(AOI = pt, type = "huc08_2020")
   expect_equal(nrow(ptHUC8), 1)
   expect_equal(ptHUC8$huc8, "17010101")
   expect_equal(sf::st_crs(ptHUC8)$epsg, 4326)
 
-  expect_error(get_huc(AOI = rbind(pt, pt2), type = "huc08"),
+  expect_error(get_huc(AOI = rbind(pt, pt2), type = "huc08_2020"),
                "AOI must be one an only one feature.")
 
   #Area
-  areaHUC8 = get_huc(AOI = area, t_srs = 5070, type = "huc08")
+  areaHUC8 = get_huc(AOI = area, t_srs = 5070, type = "huc08_2020")
   expect_equal(sf::st_crs(areaHUC8)$epsg, 5070)
   expect_equal(nrow(areaHUC8), 1)
   #ID
-  ptHUC8id = get_huc(id = "17010101", type = "huc08")
+  ptHUC8id = get_huc(id = "17010101", type = "huc08_2020")
   expect_identical(ptHUC8$huc8, ptHUC8id$huc8)
   expect_true(sf::st_crs(ptHUC8) == sf::st_crs(ptHUC8id) )
 })
@@ -71,7 +75,7 @@ test_that("huc", {
   testthat::skip_on_cran()
 
   expect_error(get_huc(AOI = pt, type = "borked"),
-               "type must be one of huc02 huc04 huc06 huc08 huc10 huc12 huc12_nhdplusv2")
+               "type must be one of")
   #Point
   ptHUC12 = get_huc(AOI = pt, type = "huc12_nhdplusv2")
   expect_equal(nrow(ptHUC12), 1)
@@ -88,27 +92,30 @@ test_that("huc", {
 
   expect_identical(HUC12id2$geometry, areaHUC12$geometry)
 
-  hu12 <- get_huc(AOI = pt, type = "huc12")
+  hu12 <- get_huc(AOI = pt, type = "huc12_2020")
 
   expect_equal(hu12$huc12, "170101010806")
 
-  hu10 <- get_huc(AOI = pt, type = "huc10")
+  expect_message(get_huc(AOI = pt, type = "huc12"),
+                 "defaulting to 2020 version of WBD") # TODO default to final WBD
+
+  hu10 <- get_huc(AOI = pt, type = "huc10_2020")
 
   expect_equal(hu10$huc10, "1701010108")
 
-  hu08 <- get_huc(AOI = pt, type = "huc08")
+  hu08 <- get_huc(AOI = pt, type = "huc08_2020")
 
   expect_equal(hu08$huc8, "17010101")
 
-  hu06 <- get_huc(AOI = pt, type = "huc06")
+  hu06 <- get_huc(AOI = pt, type = "huc06_2020")
 
   expect_equal(hu06$huc6, "170101")
 
-  hu04 <- get_huc(AOI = pt, type = "huc04")
+  hu04 <- get_huc(AOI = pt, type = "huc04_2020")
 
   expect_equal(hu04$huc4, "1701")
 
-  hu02 <- get_huc(AOI = pt, type = "huc02")
+  hu02 <- get_huc(AOI = pt, type = "huc02_2020")
 
   expect_equal(hu02$huc2, "17")
 
@@ -123,37 +130,37 @@ test_that("get_nhdplus...", {
   #POINT, Flowlines
   fl = get_nhdplus(AOI = pt, realization = 'flowline')
   expect_equal(nrow(fl), 1)
-  expect_equal(st_crs(fl)$epsg, 4326)
-  expect_equal(as.character(st_geometry_type(fl)), 'LINESTRING')
+  expect_equal(sf::st_crs(fl)$epsg, 4326)
+  expect_equal(as.character(sf::st_geometry_type(fl)), 'LINESTRING')
 
   # test t_srs to override CRS
   fl5070 = get_nhdplus(AOI = pt, realization = 'flowline', t_srs = 5070)
-  expect_equal(st_crs(fl5070)$epsg, 5070)
+  expect_equal(sf::st_crs(fl5070)$epsg, 5070)
 
   # POINT, Catchments
   cat = get_nhdplus(AOI = pt, realization = 'catchment')
   expect_equal(nrow(cat), 1)
-  expect_equal(st_crs(cat)$epsg, 4326)
-  expect_true(grepl('POLYGON', as.character(st_geometry_type(cat))))
+  expect_equal(sf::st_crs(cat)$epsg, 4326)
+  expect_true(grepl('POLYGON', as.character(sf::st_geometry_type(cat))))
 
   # test t_srs to override CRS
   catch5070 = get_nhdplus(AOI = pt, realization = 'catchment', t_srs = 5070)
-  expect_equal(st_crs(catch5070)$epsg, 5070)
+  expect_equal(sf::st_crs(catch5070)$epsg, 5070)
 
   # POINT, outlet
   out = get_nhdplus(AOI = pt, realization = 'outlet')
   expect_equal(nrow(out), 1)
-  expect_equal(st_crs(out)$epsg, 4326)
-  expect_equal(as.character(st_geometry_type(out)), 'POINT')
+  expect_equal(sf::st_crs(out)$epsg, 4326)
+  expect_equal(as.character(sf::st_geometry_type(out)), 'POINT')
 
   #POLYGON, all
   areaNHD  = get_nhdplus(AOI = area, realization = "all")
   expect_equal(length(areaNHD), 3)
   expect_equal(nrow(areaNHD$flowline), nrow(areaNHD$catchment))
   expect_equal(nrow(areaNHD$outlet), nrow(areaNHD$catchment))
-  expect_equal(as.character(st_geometry_type(areaNHD$outlet))[1], 'POINT')
-  expect_equal(as.character(st_geometry_type(areaNHD$flowline))[1], 'LINESTRING')
-  expect_true(grepl('POLYGON', as.character(st_geometry_type(areaNHD$catchment))[1]))
+  expect_equal(as.character(sf::st_geometry_type(areaNHD$outlet))[1], 'POINT')
+  expect_equal(as.character(sf::st_geometry_type(areaNHD$flowline))[1], 'LINESTRING')
+  expect_true(grepl('POLYGON', as.character(sf::st_geometry_type(areaNHD$catchment))[1]))
 
   # ID
   # forcing "no attributes found" for bad COMID
@@ -165,9 +172,9 @@ test_that("get_nhdplus...", {
   expect_equal(length(idCheck), 3)
   expect_equal(nrow(idCheck$flowline), nrow(idCheck$catchment))
   expect_equal(nrow(idCheck$catchment), nrow(idCheck$outlet))
-  expect_equal(as.character(st_geometry_type(idCheck$outlet))[1], 'POINT')
-  expect_equal(as.character(st_geometry_type(idCheck$flowline))[1], 'LINESTRING')
-  expect_equal(as.character(st_geometry_type(idCheck$catchment))[1], 'POLYGON')
+  expect_equal(as.character(sf::st_geometry_type(idCheck$outlet))[1], 'POINT')
+  expect_equal(as.character(sf::st_geometry_type(idCheck$flowline))[1], 'LINESTRING')
+  expect_equal(as.character(sf::st_geometry_type(idCheck$catchment))[1], 'POLYGON')
 
   #streamorder filter
   streamOrderSubset = get_nhdplus(AOI = area, streamorder = 3)
@@ -198,9 +205,9 @@ test_that("nhdarea", {
   # Buffer it out ...
   nhdarea = get_nhdarea(AOI  = pt, buffer = 1e4)
   expect_equal(nhdarea$ftype, "Submerged Stream")
-  expect_equal(st_crs(nhdarea)$epsg, 4326)
+  expect_equal(sf::st_crs(nhdarea)$epsg, 4326)
   nhdarea5070 = get_nhdarea(AOI  = pt, buffer = 1e4, t_srs = 5070)
-  expect_equal(st_crs(nhdarea5070)$epsg, 5070)
+  expect_equal(sf::st_crs(nhdarea5070)$epsg, 5070)
 })
 
 # ==============================================================================
@@ -209,10 +216,10 @@ test_that("nhdwaterbody", {
   testthat::skip_on_cran()
   wb = get_waterbodies(AOI  = pt, buffer = 2e3)
   expect_equal(nrow(wb), 3)
-  expect_equal(st_crs(wb)$epsg, 4326)
+  expect_equal(sf::st_crs(wb)$epsg, 4326)
 
   wb5070 = get_waterbodies(id = 22887007, t_srs = 5070)
-  expect_equal(st_crs(wb5070)$epsg, 5070)
+  expect_equal(sf::st_crs(wb5070)$epsg, 5070)
   expect_equal(wb5070$comid, 22887007)
 })
 
@@ -246,26 +253,28 @@ test_that("discover_nhdplus_id", {
 test_that("get_nwis", {
   testthat::skip_on_cran()
   areaSearch = get_nwis(AOI = area)
-  expect(nrow(areaSearch), 1)
-  expect_equal(st_crs(areaSearch)$epsg, 4326)
+  expect_equal(nrow(areaSearch), 1)
+  expect_equal(sf::st_crs(areaSearch)$epsg, 4326)
 
   areaSearch5070 = get_nwis(AOI = area, t_srs = 5070)
-  expect(nrow(areaSearch5070), 1)
-  expect_equal(st_crs(areaSearch5070)$epsg, 5070)
+  expect_equal(nrow(areaSearch5070), 1)
+  expect_equal(sf::st_crs(areaSearch5070)$epsg, 5070)
 
   expect_equal(areaSearch$site_no, areaSearch5070$site_no)
 
   pt2BuffNorm = get_nwis(AOI = pt2)
   pt2BuffDecrease = get_nwis(AOI = pt2, buffer = 10000)
+
+  Sys.sleep(5)
   pt2BuffIncrease = get_nwis(AOI = pt2, buffer = 40000)
 
-  expect_gt(nrow(pt2BuffIncrease), nrow(pt2BuffNorm))
-  expect_gt(nrow(pt2BuffNorm), nrow(pt2BuffDecrease))
+  expect_true(nrow(pt2BuffIncrease) > nrow(pt2BuffNorm))
+  expect_true(nrow(pt2BuffNorm) > nrow(pt2BuffDecrease))
   expect_equal(order(pt2BuffNorm$distance_m), 1:nrow(pt2BuffNorm))
 
   expect_error(get_nwis(AOI = pt2, buffer = 1000000))
 
   expect_error(get_nwis(AOI = AOI, buffer = 1))
-  expect_warning(get_nwis(AOI = st_buffer(st_transform(pt2,5070), 1)))
+  expect_warning(get_nwis(AOI = sf::st_buffer(sf::st_transform(pt2,5070), 1)))
 
 })

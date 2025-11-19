@@ -39,6 +39,8 @@ test_that("catchment chars", {
   skip_on_os("linux")
   skip_on_os("mac")
 
+  old_opts <- options(arrow.unsafe_metadata = TRUE)
+
   httptest::without_internet({
     suppressMessages(expect_warning(w <- get_characteristics_metadata(cache = FALSE)))
     expect_null(w)
@@ -63,7 +65,9 @@ test_that("catchment chars", {
 
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 
-  dat <- get_catchment_characteristics(c("CAT_BFI", "ACC_BFI", "TOT_BFI"), walker_catchment$FEATUREID)
+  suppressWarnings(
+    dat <- get_catchment_characteristics(c("CAT_BFI", "ACC_BFI", "TOT_BFI"), walker_catchment$FEATUREID)
+  )
 
   expect_equal(names(dat), c("characteristic_id", "comid",
                              "characteristic_value", "percent_nodata"))
@@ -77,4 +81,5 @@ test_that("catchment chars", {
                  "Variable CAT_CFI not found in metadata.")
   expect_null(w)
 
+  options(old_opts)
 })

@@ -1,48 +1,3 @@
-#' @title Discover Characteristics Metadata
-#' @description Provides access to metadata for characteristics that are returned by `get_nldi_characteristics()`.
-#' @param type character "all", "local", "total", or "divergence_routed".
-#' @export
-#' @return data.frame containing available characteristics
-#' @examples
-#' chars <- discover_nldi_characteristics()
-#' names(chars)
-#' head(chars$local, 10)
-discover_nldi_characteristics <- function(type="all") {
-
-  tc <- type_check(type)
-
-  out <- lapply(tc$type_options[[type]], function(x) {
-    o <- query_nldi(paste0(x, "/characteristics"),
-                    base_path = "/lookups")
-
-    if(is.null(o)) {
-      return(NULL)
-    }
-
-    o$characteristicMetadata$characteristic
-
-  })
-
-  names(out) <- tc$char_names
-
-  out
-}
-
-type_check <- function(type) {
-  type_options <- list("all" = c("local", "tot", "div"),
-                       "local" = "local",
-                       "total" = "tot",
-                       "divergence_routed" = "div")
-
-  if(!type %in% names(type_options)) stop(paste("Type must be one of", paste(names(type_options), collapse = ", ")))
-
-  char_names <- type
-
-  if(type == "all") char_names <- names(type_options)[2:4]
-
-  return(list(type_options = type_options, char_names = char_names))
-}
-
 #' @title Navigate NLDI
 #' @description Navigate the Network Linked Data Index network.
 #' @param nldi_feature list with names `featureSource` and `featureID` where
@@ -174,7 +129,8 @@ get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
            ifelse(simplify, "true", "false"), "&",
            "splitCatchment=",
            ifelse(split, "true", "false")),
-    parse_json = FALSE)
+    parse_json = FALSE,
+    err_mess = "Are you sure your featureID exists in the NLDI?")
 
   if(is.null(o)) return(NULL)
 
@@ -202,40 +158,13 @@ get_nldi_feature <- function(nldi_feature) {
   out <- tryCatch(dataRetrieval::findNLDI(origin = nldi_feature),
                   error = function(e) NULL)
 
+  if(is.null(out)) {
+    warning(paste("No feature found from NLDI, it is not in the featureSource",
+                  "you are looking in because it was not indexed or is outside",
+                  "the CONUS NLDI domain."))
+  }
+
   return(out$origin)
-}
-
-#' @title Get Catchment Characteristics
-#' @description Retrieves catchment characteristics from the Network Linked Data Index.
-#' Metadata for these characteristics can be found using `discover_nldi_characteristics()`.
-#' @inheritParams navigate_nldi
-#' @inheritParams discover_nldi_characteristics
-#' @return data.frame containing requested characteristics
-#' @export
-#' @examples
-#' \donttest{
-#' chars <- get_nldi_characteristics(list(featureSource = "nwissite", featureID = "USGS-05429700"))
-#' names(chars)
-#' head(chars$local, 10)
-#' }
-get_nldi_characteristics <- function(nldi_feature, type="local") {
-
-  tc <- type_check(type)
-
-  nldi_feature <- check_nldi_feature(nldi_feature, convert = FALSE)
-
-  out <- lapply(tc$type_options[[type]], function(x) {
-    o <- query_nldi(paste(nldi_feature[["featureSource"]],
-                          nldi_feature[["featureID"]],
-                          x,
-                          sep = "/"))
-    o$characteristics
-  })
-
-  names(out) <- tc$char_names
-
-  out
-
 }
 
 #' Get NLDI Index
@@ -261,7 +190,8 @@ get_nldi_index <- function(location) {
   tryCatch({
   sf::read_sf(query_nldi(paste0("hydrolocation?coords=POINT(",
                                 location[1],"%20", location[2],")"),
-                         parse_json = FALSE))
+                         parse_json = FALSE,
+                         err_mess = "Make sure your POINT is lon,lat and in the NHDPlusV2 domain."))
   }, error = function(e) {
     warning(paste("Something went wrong querying the NLDI.\n", e))
     NULL
@@ -272,7 +202,7 @@ get_nldi_index <- function(location) {
 #' @importFrom httr GET
 #' @importFrom jsonlite fromJSON
 #' @noRd
-query_nldi <- memoise::memoise(function(query, base_path = "/linked-data", parse_json = TRUE) {
+query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE, err_mess = "") {
   nldi_base_url <- paste0(get_nldi_url(), base_path)
 
   url <- paste(nldi_base_url, query,
@@ -283,7 +213,7 @@ query_nldi <- memoise::memoise(function(query, base_path = "/linked-data", parse
       message(url)
     }
 
-    req_data <- rawToChar(httr::RETRY("GET", url)$content)
+    req_data <- rawToChar(httr::RETRY("GET", utils::URLencode(url))$content)
 
     if (nchar(req_data) == 0) {
       NULL
@@ -300,10 +230,11 @@ query_nldi <- memoise::memoise(function(query, base_path = "/linked-data", parse
       }
     }
   }, error = function(e) {
-    warning("Something went wrong accessing the NLDI.\n", e)
+    warning("Something went wrong accessing the NLDI.\n", e,
+            "\n", err_mess)
     NULL
   })
-}, ~memoise::timeout(nhdplusTools_memoise_timeout()), cache = nhdplusTools_memoise_cache())
+}
 
 #' @noRd
 check_nldi_feature <- function(nldi_feature, convert = TRUE) {

@@ -72,20 +72,21 @@ test_that("by rpu", {
   out <- subset_rpu(sample_flines, rpu = "07b")
 
   expect_equal(names(out), names(sample_flines))
-  expect(nrow(out), 267)
-  expect(nrow(subset_rpu(sample_flines, rpu = "07b",
+  expect_equal(nrow(out), 267)
+  expect_equal(nrow(subset_rpu(sample_flines, rpu = "07b",
                          run_make_standalone = TRUE)), 267)
 
   expect_equal(nrow(subset_vpu(sample_flines, vpu = "07")), 267)
 
   suppressWarnings(sample_flines <- dplyr::left_join(
     dplyr::select(sample_flines, COMID, RPUID, TerminalPa,
-                  ArbolateSu, DnHydroseq, Pathlength, FCODE, DnLevelPat),
+                  ArbolateSu, DnHydroseq, Pathlength, FCODE, DnLevelPat,
+                  DnMinorHyd),
     prepare_nhdplus(sample_flines,
                     0, 0, 0, FALSE), by = "COMID"))
 
-  expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
-  expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = FALSE)), 267)
+  expect_equal(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
+  expect_equal(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = FALSE)), 267)
 
 })
 
@@ -95,7 +96,8 @@ test_that("big rpu test", {
   vaa <- get_vaa(atts = c("comid", "pathlength", "lengthkm",
                           "hydroseq", "dnhydroseq", "levelpathi",
                           "rpuid", "vpuid", "fcode", "arbolatesu",
-                          "terminalfl", "terminalpa", "dnlevelpat"))
+                          "terminalfl", "terminalpa", "dnlevelpat",
+                          "dnminorhyd"))
 
 
   vaa_sub <- dplyr::filter(vaa, vpuid == "17")

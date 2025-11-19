@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 1.2.0
+Version: 1.4.0
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -27,12 +27,12 @@ Description: Tools for traversing and working with National Hydrography Dataset 
 URL: https://doi-usgs.github.io/nhdplusTools/ https://github.com/doi-usgs/nhdplusTools/
 BugReports: https://github.com/doi-usgs/nhdplusTools/issues/
 Depends:
-    R (>= 4.0)
+    R (>= 4.1)
 Imports: hydroloom, dataRetrieval, dplyr, sf, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles, mapsf, fst, arrow, tools, zip, pbapply, memoise, digest
 Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, lwgeom, gifski, leaflet, httptest, future, future.apply
 License: CC0
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Config/testthat/parallel: true
 Config/testthat/edition: 3

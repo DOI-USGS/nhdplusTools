@@ -20,7 +20,7 @@ test_that("get_3dhp", {
 
   suppressWarnings({
     hl <- get_3dhp(ids = "https://geoconnex.us/ref/mainstems/377002",
-                   type = "hydrolocation")
+                   type = "hydrolocation - reach code, external connection")
   })
   expect_equal(unique(hl$mainstemid), "https://geoconnex.us/ref/mainstems/377002")
 })

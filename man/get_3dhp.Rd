@@ -10,7 +10,8 @@ get_3dhp(
   type = NULL,
   universalreferenceid = NULL,
   t_srs = NULL,
-  buffer = 0.5
+  buffer = 0.5,
+  page_size = 2000
 )
 }
 \arguments{
@@ -20,9 +21,9 @@ in any Spatial Reference System.}
 
 \item{ids}{character vector of id3dhp ids or mainstem uris}
 
-\item{type}{character. Type of feature to return
+\item{type}{character. Type of feature to return. e.g.
 ("hydrolocation", "flowline", "waterbody", "drainage area", "catchment").
-If NULL (default) a data.frame of available resources is returned}
+If NULL (default) a data.frame of available types is returned}
 
 \item{universalreferenceid}{character vector of hydrolocation universal
 reference ids such as reachcodes}
@@ -33,6 +34,9 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 
 \item{buffer}{numeric. The amount (in meters) to buffer a POINT AOI by for an
 extended search. Default = 0.5}
+
+\item{page_size}{numeric default number of features to request at a time. Reducing
+may help if 500 errors are experienced.}
 }
 \value{
 a simple features (sf) object or valid types if no type supplied

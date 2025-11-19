@@ -67,6 +67,15 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
     gdbs <- list.files(hr_dir, pattern = "sub.gpkg", full.names = TRUE)
   }
 
+  dup_list_key <- regmatches(basename(gdbs), regexpr("[0-9][0-9][0-9][0-9]", basename(gdbs)))
+
+  if(any(duplicated(dup_list_key))) {
+    remove <- gdbs[duplicated(dup_list_key)]
+    warning("Found duplicate HU04s in nhdplushr directory? Will not use: \n",
+            paste(remove, collapse = "\n"))
+    gdbs <- gdbs[!duplicated(dup_list_key)]
+  }
+
   if(is.null(layers)) {
     layers <- st_layers(gdbs[1])
 
@@ -81,7 +90,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 
   for(layer in layers) {
     if(!is.null(out_gpkg) && layer %in% layer_names & !overwrite) {
-      out <- read_sf(out_gpkg, layer)
+      out <- read_sf(out_gpkg, layer, check_ring_dir = FALSE)
     } else {
 
       layer_set <- lapply(gdbs, get_hr_data, layer = layer, ...)

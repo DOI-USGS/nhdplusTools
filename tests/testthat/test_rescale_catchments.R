@@ -3,6 +3,8 @@ test_that("rescale", {
   skip_on_cran()
   skip_on_os("mac")
 
+  old_opts <- options(arrow.unsafe_metadata = TRUE)
+
   vars <- data.frame(characteristic_id = c("CAT_EWT", "CAT_EWT", "CAT_EWT", "CAT_EWT", "CAT_BASIN_AREA"),
                      summary_statistic = c("area_weighted_mean", "min", "sum", "max", "sum"))
 
@@ -37,10 +39,12 @@ test_that("rescale", {
 
   d <- readRDS(list.files(pattern = "rescale_data.rds", recursive = TRUE, full.names = TRUE))
 
-  rescale <- rescale_catchment_characteristics(vars, d$lookup_table, d$split_divides)
+  suppressWarnings(
+    rescale <- rescale_catchment_characteristics(vars, d$lookup_table, d$split_divides))
 
-  rescale_2 <- rescale_catchment_characteristics(vars, d$lookup_table, d$split_divides,
-                                                 d$catchment_characteristic, d$catchment_areas)
+  suppressWarnings(
+    rescale_2 <- rescale_catchment_characteristics(vars, d$lookup_table, d$split_divides,
+                                                   d$catchment_characteristic, d$catchment_areas))
   expect_true(is.data.frame(rescale))
 
   expect_equal(length(unique(d$lookup_table$id)), nrow(rescale))
@@ -109,5 +113,7 @@ test_that("rescale", {
                                                d$catchment_characteristic)
 
   expect_equal(nrow(rescale), 1)
+
+  options(old_opts)
 
 })

@@ -1,3 +1,7 @@
+#####################################################################
+# File contains general downloading tools and API utility functions #
+#####################################################################
+
 #' Download NHDPlus HiRes
 #' @param nhd_dir character directory to save output into
 #' @param hu_list character vector of hydrologic region(s) to download.
@@ -5,6 +9,11 @@
 #' and four digit codes.
 #' @param download_files boolean if FALSE, only URLs to files will be returned
 #' can be hu02s and/or hu04s
+#' @param archive pull data from the "archive" folder rather than "current".
+#' The archive contains the original releases of NHDPlusHR data that were updated
+#' in subsequent processing. Not all subsets of NHDPlusHR were updated. See:
+#' https://www.usgs.gov/national-hydrography/access-national-hydrography-products
+#' for more details.
 #'
 #' @return character Paths to geodatabases created.
 #' @export
@@ -12,15 +21,22 @@
 #' \donttest{
 #' hu <- get_huc(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326),
 #'                             type = "huc08")
-#'
+#' if(inherits(hu, "sf")) {
 #' (hu <- substr(hu$huc8, 1, 2))
 #'
 #' download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE)
+#'
+#' download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE, archive = TRUE)
 #' }
-download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
+#' }
+download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE, archive = FALSE) {
+
+  list_source <- get("nhdhr_file_list", envir = nhdplusTools_env)
+
+  if(archive) list_source <- get("archive_nhdhr_file_list", envir = nhdplusTools_env)
 
   download_nhd_internal(get("nhd_bucket", envir = nhdplusTools_env),
-               get("nhdhr_file_list", envir = nhdplusTools_env),
+               list_source,
                "NHDPLUS_H_", nhd_dir, hu_list, download_files)
 }
 
@@ -148,7 +164,7 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
 #' @export
 #' @examples
 #' \dontrun{
-#'   download_nhdplusV2("./data/nhd/")
+#'   download_nhdplusv2("./data/nhd/")
 #'
 #'   download_nhdplusv2(outdir = "./inst/",
 #'       url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",
@@ -165,18 +181,25 @@ download_nhdplusv2 <- function(outdir,
   tryCatch({
   file <- downloader(outdir, url, "nhdplusV2", progress)
 
-  check7z()
+  if(!any(grepl("gdb", list.dirs(outdir)))) {
 
-  message("Extracting data ...")
+    try_7z <- try(check7z())
+    if(inherits(try_7z, "try-error")) {
+      message("couldn't find 7zip, won't try to extract data")
+      message("check for data in: ", outdir)
+      return(outdir)
+    }
 
-  ifelse(any(grepl("gdb", list.dirs(outdir))),
-         1,
-         system(paste0("7z -o", path.expand(outdir), " x ", file), intern = TRUE))
+    message("Extracting data ...")
+
+    system(paste0("7z -o", path.expand(outdir), " x ", file), intern = TRUE)
+
+  }
 
   path <- list.dirs(outdir)[grepl("gdb", list.dirs(outdir))]
   path <- path[grepl("NHDPlus", path)]
 
-  message(paste("NHDPlusV2 data extracted to:", path))
+  message(paste("NHDPlusV2 data available at:", path))
 
   return(invisible(path))
   }, error = function(e) {
@@ -323,3 +346,67 @@ check7z <- function() {
 
 }
 
+#' memoise get json
+#' @description
+#' attempts to get a url as JSON and return the content.
+#'
+#' Will return NULL if anything fails
+#'
+#' @param url character url to get
+#' @return list containing parsed json on success, NULL otherwise
+#' @noRd
+mem_get_json <- memoise::memoise(\(url) {
+  tryCatch({
+    retn <- httr::GET(url, httr::accept_json())
+
+    if(retn$status_code == 200 & grepl("json", retn$headers$`content-type`)) {
+      return(httr::content(retn, simplifyVector = FALSE, type = "application/json"))
+    } else {
+      warning("Can't access json from ", url)
+      return(NULL)
+    }
+  }, error = function(e) {
+    warning("Error accessing ", url, "\n\n", e)
+    return(NULL)
+  })
+})
+
+#' @importFrom sf st_make_valid st_as_sfc st_bbox st_buffer st_transform st_crs
+check_query_params <- function(AOI, ids, type, where, source, t_srs, buffer) {
+  # If t_src is not provided set to AOI CRS
+  if(is.null(t_srs)){ t_srs  <- st_crs(AOI) }
+  # If AOI CRS is NA (e.g st_crs(NULL)) then set to 4326
+  if(is.na(t_srs))  { t_srs  <- 4326 }
+
+  if(!is.null(AOI) & !is.null(ids)) {
+    # Check if AOI and IDs are both given
+    stop("Either IDs or a spatial AOI can be passed.", .call = FALSE)
+  } else if(is.null(AOI) & is.null(ids) & !(!is.null(where) && grepl("IN", where))) {
+    # Check if AOI and IDs are both NULL
+    stop("IDs or a spatial AOI must be passed.", .call = FALSE)
+  } else if(!(type %in% source$user_call)) {
+    # Check that "type" is valid
+    stop(paste("Type not available must be one of:",
+               paste(source$user_call, collapse = ", ")),
+         call. = FALSE)
+  }
+
+  if(!is.null(AOI)){
+
+    if(length(st_geometry(AOI)) > 1) {
+      stop("AOI must be one an only one feature.")
+    }
+
+    if(st_geometry_type(AOI) == "POINT"){
+      # If input is a POINT, buffer by 1/2 meter (in equal area projection)
+      AOI = st_transform(AOI, 5070) |>
+        st_buffer(buffer) |>
+        st_bbox() |>
+        st_as_sfc() |>
+        st_make_valid() |>
+        st_transform(st_crs(AOI))
+    }
+  }
+
+  return(list(AOI = AOI, t_srs = t_srs))
+}

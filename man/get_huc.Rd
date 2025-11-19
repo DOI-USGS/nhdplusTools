@@ -28,7 +28,7 @@ Watershed Boundary Dataset from October, 2020.
 
 See <doi:10.5066/P92U7ZUT> for full source data.
 
-See https://labs.waterdata.usgs.gov/geoserver/web/ for the web service.
+See https://api.water.usgs.gov/fabric/pygeoapi for the web service.
 
 `huc12_nhdplusv2` derives from a snapshot of the WBD available from the nhdplusv2.
 See \link{download_nhdplusv2} for source data documentation.}
@@ -43,9 +43,9 @@ area (POLYGON), or set of HUC IDs.
 \details{
 The returned object(s) will have the same
 Spatial Reference System (SRS) as the input AOI. If a individual or set of
-IDs are used to query, then the default geoserver CRS of EPSG:4326 is
+IDs are used to query, then the default server CRS of EPSG:4326 is
 preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
 which will override all previous SRS (either input or default).
-All buffer and distance operations are handled internally using in
+All buffer and distance operations are handled internally using an
 EPSG:5070 Albers Equal Area projection
 }

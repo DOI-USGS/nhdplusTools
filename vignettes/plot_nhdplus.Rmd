@@ -176,7 +176,7 @@ mapsf::mf_map(bb, type = "base", col = NA, border = NA)
 maptiles::plot_tiles(tiles, add = TRUE)
 
 mapsf::mf_map(bb, type = "base", add = TRUE, col = NA, border = NA)
-mapsf::mf_arrow(adjust = bb)
+mapsf::mf_arrow(align = bb)
 mapsf::mf_scale()
 
 plot(prep_layer(basin), 

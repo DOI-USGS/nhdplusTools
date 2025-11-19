@@ -35,8 +35,15 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
     coords = sf::st_coordinates(point)
 
     comid <- tryCatch({
-      as.integer(dataRetrieval::findNLDI(location = c(X = coords[1],
-                                           Y = coords[2]))$origin$identifier)
+
+      URL <- paste0(get("usgs_water_root", envir = nhdplusTools_env),
+                    "collections/catchmentsp/items",
+                    "?bbox=", coords[1], ",", coords[2], ",", coords[1], ",", coords[2],
+                    "&properties=featureid&skipGeometry=true")
+
+      d <- jsonlite::fromJSON(rawToChar(RETRY("GET", utils::URLencode(URL))$content))
+
+      as.integer(d$features$properties$featureid)
 
     }, error = function(e) NULL)
 

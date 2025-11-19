@@ -2,7 +2,7 @@
 #' @description Subsets WBD features by location (POINT),
 #' area (POLYGON), or set of HUC IDs.
 #'
-#' @inherit query_usgs_geoserver details return params
+#' @inherit query_usgs_oafeat details return params
 #' @param id WBD HUC ID(s)
 #' @param type character. Type of feature to return
 #' ('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12', 'huc12_nhdplusv2').
@@ -12,7 +12,7 @@
 #'
 #' See <doi:10.5066/P92U7ZUT> for full source data.
 #'
-#' See https://labs.waterdata.usgs.gov/geoserver/web/ for the web service.
+#' See https://api.water.usgs.gov/fabric/pygeoapi for the web service.
 #'
 #' `huc12_nhdplusv2` derives from a snapshot of the WBD available from the nhdplusv2.
 #' See \link{download_nhdplusv2} for source data documentation.
@@ -24,27 +24,33 @@
 get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "huc12") {
 
   allow_types <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12',
-                   'huc12_nhdplusv2')
+                   'huc02_2020', 'huc04_2020', 'huc06_2020', 'huc08_2020', 'huc10_2020', 'huc12_2020',
+                   'huc08_nhdplusv2', 'huc12_nhdplusv2')
 
   if(!type %in% allow_types) {
     stop("type must be one of ", paste(allow_types, collapse = " "))
   }
 
-  query_usgs_geoserver(AOI = AOI, ids = id, type = type,
-                       t_srs = t_srs, buffer = buffer)
+  if(type %in% c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12')) {
+    type <- paste0(type, "_2020")
+    message("defaulting to 2020 version of WBD")
+  }
+
+  query_usgs_oafeat(AOI = AOI, ids = id, type = type,
+                    t_srs = t_srs, buffer = buffer)
 
 }
 
 #' @title Find NHDPlusV2 Water Bodies
 #' @description Subsets NHDPlusV2 waterbody features by location (POINT),
 #' area (POLYGON), or set of IDs. See \link{download_nhdplusv2} for source data documentation.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details return
+#' @inheritParams query_usgs_oafeat
 #' @param id NHD Waterbody COMID(s)
 #' @export
 
 get_waterbodies <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
-  query_usgs_geoserver(AOI = AOI, ids = id,
+  query_usgs_oafeat(AOI = AOI, ids = id,
                        type = "waterbodies",
                        t_srs = t_srs,
                        buffer = buffer)
@@ -53,13 +59,13 @@ get_waterbodies <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @title Find NHDPlusV2 Areas
 #' @description Subsets NHDPlusV2 Area features by location (POINT),
 #' area (POLYGON), or set of IDs. See \link{download_nhdplusv2} for source data documentation.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details return
+#' @inheritParams query_usgs_oafeat
 #' @param id NHD Area COMID(s)
 #' @export
 
 get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
-  query_usgs_geoserver(AOI = AOI, ids = id, type = "nhdarea",
+  query_usgs_oafeat(AOI = AOI, ids = id, type = "nhdarea",
                        t_srs = t_srs, buffer = buffer)
 }
 
@@ -67,8 +73,8 @@ get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 #' @title Find gagesII Features
 #' @description Subsets the gagesII dataset by location (POINT),
 #' area (POLYGON), or set of IDs. See <doi:10.5066/P96CPHOT> for documentation of source data.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details return
+#' @inheritParams query_usgs_oafeat
 #' @param id character NWIS Gage ID(s)
 #' @param basin logical should the gagesII basin also be returned? If True,
 #' return value will be a list with "site" and "basin" elements.
@@ -77,12 +83,12 @@ get_nhdarea <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5){
 get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5,
                         basin = FALSE){
 
-  out <- query_usgs_geoserver(AOI = AOI, ids = id, type = "gagesII",
+  out <- query_usgs_oafeat(AOI = AOI, ids = id, type = "gagesII",
                               t_srs = t_srs, buffer = buffer)
 
   if(basin) {
     return(list(site = out,
-                basin = query_usgs_geoserver(
+                basin = query_usgs_oafeat(
                   ids = out[["staid"]], type = "gagesII-basin",
                   t_srs = t_srs, buffer = buffer)))
   }
@@ -94,8 +100,8 @@ get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5,
 #' @description Returns a POINT feature class of active, stream network,
 #' NWIS gages for an Area of Interest. If a POINT feature is used as an AOI,
 #' then the returned sites within the requested buffer, are sorted by distance (in meters) from that POINT.
-#' @inherit query_usgs_geoserver details return
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details return
+#' @inheritParams query_usgs_oafeat
 #' @param buffer numeric. The amount (in meters) to buffer a POINT AOI by
 #' for an extended search. Default = 20,000. Returned results are arrange
 #' by distance from POINT AOI
@@ -185,6 +191,9 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #' for source data documentation.
 #'
 #' @inherit query_usgs_arcrest details return params
+#' @param type character. Type of feature to return. e.g.
+#' ("hydrolocation", "flowline", "waterbody", "drainage area", "catchment").
+#' If NULL (default) a data.frame of available types is returned
 #' @param ids character vector of id3dhp ids or mainstem uris
 #' @param universalreferenceid character vector of hydrolocation universal
 #' reference ids such as reachcodes
@@ -228,7 +237,8 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #'}
 get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
                      universalreferenceid = NULL,
-                     t_srs = NULL, buffer = 0.5) {
+                     t_srs = NULL, buffer = 0.5,
+                     page_size = 2000) {
 
   if(!is.null(universalreferenceid) & !grepl("outlet|reach|hydrolocation", type)) {
     stop("universalereferenceid can only be specified for hydrolocation features")
@@ -247,7 +257,67 @@ get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
     ids <- NULL
   }
 
-  query_usgs_arcrest(AOI, ids, type, where, t_srs, buffer)
+  query_usgs_arcrest(AOI, ids, type, "3DHP_all", where, t_srs, buffer, page_size)
 
 }
 
+#' Get NHDPlusHR Data
+#' @description
+#' Calls the NHDPlus_HR web service and returns sf data.frames for the selected
+#' layers. See https://hydro.nationalmap.gov/arcgis/rest/services/NHDPlus_HR/MapServer
+#' for source data documentation.
+#'
+#' @inherit query_usgs_arcrest details return params
+#'
+#' @param type character. Type of feature to return e.g.
+#' c("networknhdflowline", nonnetworknhdflowline", nhdwaterbody", "nhdpluscatchment").
+#' If NULL (default) a data.frame of available types is returned
+#'
+#' @param ids character vector of nhdplusid ids
+#'
+#' @param reachcode character vector of reachcodes
+#' NOTE: performance of this query is currently very poor,
+#' spatial queries are the primary use of this function.
+#'
+#' @export
+#' @examples
+#' \donttest{
+#' AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
+#'                                    xmax = -89.24681, ymax = 43.17192),
+#'                                  crs = "+proj=longlat +datum=WGS84 +no_defs"))
+#'
+#' # get flowlines and hydrolocations
+#' flowlines <- get_nhdphr(AOI = AOI, type = "networknhdflowline")
+#' point <- get_nhdphr(AOI = AOI, type = "nhdpoint")
+#' waterbody <- get_nhdphr(AOI = AOI, type = "nhdwaterbody")
+#'
+#' if(!is.null(waterbody) & !is.null(flowlines) & !is.null(point)) {
+#' plot(sf::st_geometry(waterbody), col = "lightblue", border = "lightgrey")
+#' plot(sf::st_geometry(flowlines), col = "blue", add = TRUE)
+#' plot(sf::st_geometry(point), col = "grey", pch = "+", add = TRUE) }
+#'
+#' # given universalreferenceid (reachcodes), can query for them but only
+#' # for hydrolocations. This is useful for looking up mainstem ids.
+#'
+#' get_nhdphr(reachcode = "13020101021927", type = "networknhdflowline")
+#'}
+get_nhdphr <- function(AOI = NULL, ids = NULL, type = NULL,
+                       reachcode = NULL,
+                       t_srs = NULL, buffer = 0.5,
+                       page_size = 2000) {
+
+  if(!is.null(reachcode) && !isTRUE(grepl("nhdplusgage|nhdpoint|networknhdflowline|nonnetworknhdflowline|flowdirection|nhdwaterbody",
+                                          type))) {
+    stop("reachcode not defined for ", type)
+  }
+
+  where <- NULL
+  if(!is.null(reachcode)) {
+    where <- paste(paste0("reachcode IN ('",
+                          paste(reachcode, collapse = "', '"), "')"))
+    if(!is.null(ids)) stop("can not specify both reachcode and other ids")
+  }
+
+  query_usgs_arcrest(AOI, ids, type, "NHDPlus_HR", where, t_srs, buffer, page_size)
+
+}

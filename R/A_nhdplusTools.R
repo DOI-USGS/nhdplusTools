@@ -50,7 +50,7 @@ WBAREACOMI <- "WBAREACOMI"
 
 # List of input names that should be changed to replacement names
 nhdplus_attributes <- list(
-  COMID = COMID, NHDPlusID = COMID,
+  COMID = COMID, NHDPlusID = COMID, nhdplusid = COMID,
   Permanent_Identifier = Permanent_Identifier,
   RPUID = RPUID,
   VPUID = VPUID,
@@ -92,13 +92,13 @@ nhdplus_attributes <- list(
 
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
-assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
-       envir = nhdplusTools_env)
-
 assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
        envir = nhdplusTools_env)
 
 assign("gocnx_ref_base_url", "https://reference.geoconnex.us/",
+       envir = nhdplusTools_env)
+
+assign("usgs_water_root", "https://api.water.usgs.gov/fabric/pygeoapi/",
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",
@@ -259,10 +259,12 @@ assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
 nhd_bucket <- "https://prd-tnm.s3.amazonaws.com/"
 nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Current/GDB/"
+archive_nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Archive/GDB/"
 nhd_file_list <- "?prefix=StagedProducts/Hydrography/NHD/HU4/GDB/"
 
 assign("nhd_bucket", nhd_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
+assign("archive_nhdhr_file_list", archive_nhdhr_file_list, envir = nhdplusTools_env)
 
 assign("nldi_tier", "prod",
        envir = nhdplusTools_env)
@@ -272,16 +274,32 @@ nhdplus_debug <- function() {
 }
 
 #' @noRd
-get_nldi_url <- function() {
+get_nldi_url <- function(pygeo = FALSE) {
 
-  tier <- get("nldi_tier", envir = nhdplusTools_env)
+  tier_env <- Sys.getenv("NLDI_TIER")
 
-  if (tier == "prod") {
-    "https://labs.waterdata.usgs.gov/api/nldi"
-  } else if (tier == "test") {
-    "https://labs-beta.waterdata.usgs.gov/api/nldi"
+  tier <- if(tier_env != "") {
+    tier_env
   } else {
-    stop("only prod or test allowed.")
+    get("nldi_tier", envir = nhdplusTools_env)
+  }
+
+  if(pygeo) {
+    if (tier == "prod") {
+      "https://api.water.usgs.gov/nldi/pygeoapi/processes/"
+    } else if (tier == "test") {
+      "https://labs-beta.waterdata.usgs.gov/api/nldi/pygeoapi/processes/"
+    } else {
+      stop("only prod or test allowed.")
+    }
+  } else {
+    if (tier == "prod") {
+      "https://api.water.usgs.gov/nldi"
+    } else if (tier == "test") {
+      "https://labs-beta.waterdata.usgs.gov/api/nldi"
+    } else {
+      stop("only prod or test allowed.")
+    }
   }
 }
 
@@ -305,7 +323,7 @@ nhdplusTools_data_dir <- function(dir = NULL) {
 
     nhdpt_dat_dir <- try(get("nhdpt_dat_dir", envir = nhdplusTools_env), silent = TRUE)
 
-    if(inherits(nhdpt_dat_dir, "try-error")) {
+    if(inherits(nhdpt_dat_dir, "try-error") || grepl("CRAN", nhdpt_dat_dir)) {
       assign("nhdpt_dat_dir",
              tools::R_user_dir("nhdplusTools"),
              envir = nhdplusTools_env)
@@ -428,6 +446,18 @@ nhdplusTools_memoise_timeout <- function() {
   }
 }
 
+.onLoad <- function(libname, pkgname) {
+  query_usgs_arcrest <<- memoise::memoise(query_usgs_arcrest,
+                                          ~memoise::timeout(nhdplusTools_memoise_timeout()),
+                                          cache = nhdplusTools_memoise_cache())
+  query_usgs_oafeat <<- memoise::memoise(query_usgs_oafeat,
+                                            ~memoise::timeout(nhdplusTools_memoise_timeout()),
+                                            cache = nhdplusTools_memoise_cache())
+  query_nldi <<- memoise::memoise(query_nldi,
+                                  ~memoise::timeout(nhdplusTools_memoise_timeout()),
+                                  cache = nhdplusTools_memoise_cache())
+}
+
 #' @title Align NHD Dataset Names
 #' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.
 #' @param x a \code{sf} object of nhdplus flowlines
@@ -474,6 +504,44 @@ align_nhdplus_names <- function(x){
 
   return(x)
 
+}
+
+filter_list_kvp <- \(l, key, val, type = NULL, n = NULL) {
+  ret <- l[vapply(l, \(x) x[[key]] == val, TRUE)]
+
+
+  if(!is.null(type)) {
+    ret <- ret[vapply(ret, \(x) x[["type"]] == type, TRUE)]
+  }
+
+  if(!is.null(n)) {
+    ret <- ret[[n]]
+  }
+
+  ret
+}
+
+extract <- `[[`
+
+split_equal_size <- function (x, n)
+{
+  nr <- try(nrow(x), silent = TRUE)
+  if (inherits(nr, "try-error") | is.null(nr))
+    nr <- try(length(x), silent = TRUE)
+  if (!inherits(nr, "numeric") & length(nr) != 1)
+    stop("x can't be interpreted as a data.frame or list")
+  split(x, rep(1:ceiling(nr/n), each = n, length.out = nr))
+}
+
+#' @title Trim and Cull NULLs
+#' @description Remove NULL arguments from a list
+#' @param x a list
+#' @keywords internal
+#' @return a list
+#' @noRd
+
+tc <- function(x) {
+  Filter(Negate(is.null), x)
 }
 
 #' @importFrom hydroloom st_compatibalize

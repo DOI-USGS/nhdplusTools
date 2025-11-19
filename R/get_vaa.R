@@ -222,7 +222,10 @@ get_characteristics_metadata <- function(search, cache = TRUE) {
     f <- file.path(nhdplusTools_data_dir(), "metadata_table.tsv")
     r <- file.path(nhdplusTools_data_dir(), "metadata_table.rds")
 
-    if(!cache) unlink(r, force = TRUE)
+    if(!cache) {
+      unlink(r, force = TRUE)
+      unlink(f, force = TRUE)
+    }
 
     if(file.exists(r)) {
       out <- readRDS(r)

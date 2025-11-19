@@ -2,8 +2,8 @@
 #' @description Subsets NHDPlusV2 features by location (POINT), area (POLYGON),
 #' or set of COMIDs. Multi realizations are supported allowing you to query
 #' for flowlines, catchments, or outlets.
-#' @inherit query_usgs_geoserver details
-#' @inheritParams query_usgs_geoserver
+#' @inherit query_usgs_oafeat details
+#' @inheritParams query_usgs_oafeat
 #' @param comid numeric or character. Search for NHD features by COMID(s)
 #' @param nwis  numeric or character. Search for NHD features by
 #' collocated NWIS identifiers
@@ -51,7 +51,7 @@ get_nhdplus <- function(AOI = NULL,
     if(st_geometry_type(AOI) == "POINT"){
       # This is here is here so that if a POINT location is requested,
       # a COMID is used to extract the NHD data/realization
-      # This overrides the default behavior of query_usgs_geoserver
+      # This overrides the default behavior of query_usgs_oafeat
       # which buffers a POINT by 1/2 meter
       comid  <- discover_nhdplus_id(AOI)
 
@@ -85,15 +85,15 @@ get_nhdplus <- function(AOI = NULL,
   }
 
   if("catchment" %in% realization){
-    geoms$catchment   <- query_usgs_geoserver(AOI = AOI, ids = comid,
+    geoms$catchment   <- query_usgs_oafeat(AOI = AOI, ids = comid,
                                               type = "catchment",
                                               t_srs = t_srs)
   }
 
   if(any(c("flowline", "outlet") %in% realization)){
-    geoms$flowline    <- query_usgs_geoserver(AOI = AOI, ids = comid, type = 'nhd',
-                                                filter = streamorder_filter(streamorder),
-                                              t_srs = t_srs)
+    geoms$flowline    <- query_usgs_oafeat(AOI = AOI, ids = comid, type = 'nhd',
+                                           filter = streamorder_filter_cql(streamorder),
+                                           t_srs = t_srs)
 
     if("outlet" %in% realization){
       geoms$outlet          <- geoms$flowline
@@ -117,3 +117,22 @@ get_nhdplus <- function(AOI = NULL,
   return(geoms)
 }
 
+#' @title Identify NHD features by collocated NWIS ID(s)
+#' @description Use the NLDI to identify the COMIDs associated
+#' with a given NWIS ID.
+#' @param nwis character or numeric. A vector of USGS NWIS id(s)
+#' @keywords internal
+#' @return a vector of COMIDs
+#' @noRd
+#' @importFrom httr RETRY GET
+#' @importFrom jsonlite fromJSON
+
+extact_comid_nwis <- memoise::memoise(function(nwis){
+  # We could export this from dataRetrieval dataRetrieval:::pkg.env$nldi_base
+  #but currently its not...
+  baseURL  <- paste0(get_nldi_url(), "/linked-data/")
+  url      <-  paste0(baseURL, "nwissite/USGS-", nwis)
+  c        <-  rawToChar(httr::RETRY("GET", url)$content)
+  f.comid  <-  jsonlite::fromJSON(c, simplifyVector = TRUE)
+  f.comid$features$properties$comid
+})

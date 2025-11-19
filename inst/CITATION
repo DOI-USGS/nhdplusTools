@@ -5,9 +5,9 @@ bibentry(bibtype = "Manual",
          title = "nhdplusTools: Tools for Accessing and Working with the NHDPlus",
          publisher = "U.S. Geological Survey",
          address="Reston, VA",
-         version = "0.6.2",
+         version = "1.4.0",
          institution = "U.S. Geological Survey",
-         year = 2023,
+         year = 2025,
          url = "https://doi.org/10.5066/P97AS8JD",
          textVersion = "Blodgett, D., Johnson, J.M., 2022, nhdplusTools: Tools for Accessing and Working with the NHDPlus, https://doi.org/10.5066/P97AS8JD"
 )

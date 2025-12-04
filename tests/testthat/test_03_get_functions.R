@@ -79,15 +79,15 @@ test_that("huc", {
   #Point
   ptHUC12 = get_huc(AOI = pt, type = "huc12_nhdplusv2")
   expect_equal(nrow(ptHUC12), 1)
-  expect_equal(ptHUC12$huc12, "170101010306")
+  expect_equal(ptHUC12$huc_12, "170101010306")
   #Area
   areaHUC12 = get_huc(AOI = area, type = "huc12_nhdplusv2")
   expect_equal(nrow(areaHUC12), 2)
   #ID
   HUC12id = get_huc(id = "170101010306", type = "huc12_nhdplusv2")
-  expect_identical(ptHUC12$huc12, HUC12id$huc12)
+  expect_identical(ptHUC12$huc_12, HUC12id$huc_12)
   # multi-id... only need to check once
-  HUC12id2 = get_huc(id = areaHUC12$huc12, type = "huc12_nhdplusv2") %>%
+  HUC12id2 = get_huc(id = areaHUC12$huc_12, type = "huc12_nhdplusv2") %>%
     sf::st_transform(sf::st_crs(area))
 
   expect_identical(HUC12id2$geometry, areaHUC12$geometry)

@@ -1,3 +1,8 @@
+nhdplusTools 1.4.1
+==========
+
+This minor release fixes a bug in get_huc() and adds several additional layers.
+
 nhdplusTools 1.4.0
 ==========
 

@@ -102,7 +102,7 @@ test_that("big rpu test", {
 
   vaa_sub <- dplyr::filter(vaa, vpuid == "17")
 
-  sub <- subset_rpu(vaa_sub, "17b", strict = FALSE)
+  sub <- suppressWarnings(subset_rpu(vaa_sub, "17b", strict = FALSE))
 
   expect_false(24192564 %in% sub$comid)
 

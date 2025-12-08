@@ -274,7 +274,7 @@ make_standalone <- function(flowlines) {
     flowlines <- check_names(flowlines, "make_standalone_tonode")
 
     # Remove non-terminal coastal flowlines
-    flowlines <- flowlines[!(flowlines$FCODE == 566 & flowlines$TerminalFl != 1), ]
+    flowlines <- filter(flowlines,!(FCODE == 566 & TerminalFl != 1))
 
     outlets <- select(st_drop_geometry(flowlines),
                       "COMID", "ToNode",
@@ -286,7 +286,7 @@ make_standalone <- function(flowlines) {
                          select(outlets,
                                 toCOMID = "COMID", "FromNode"),
                          by = c("ToNode" = "FromNode"),
-                         relationship = "many-to-many")
+                         relationship = "many-to-many", na_matches = "never")
 
     outlets <- filter(outlets,
                       is.na(.data$toCOMID) & .data$TerminalFl == 0)
@@ -300,7 +300,7 @@ make_standalone <- function(flowlines) {
   return(flowlines)
 }
 
-
+#' @importFrom hydroloom navigate_network_dfs
 fix_term <- function(term, flowlines) {
   term_hydroseq <- term$Hydroseq
   term_comid <- term$COMID
@@ -318,8 +318,8 @@ fix_term <- function(term, flowlines) {
     flowlines$TerminalFl[flowlines$Hydroseq == term_hydroseq] <- 1
   }
   # Change all terminal path IDs to match the new Termal ID of the basin.
-  ut <- get_UT(select(flowlines, -any_of(c("Permanent_Identifier"))), term_comid)
-  flowlines$TerminalPa[flowlines$COMID %in% ut] <- term_hydroseq
+  ut <- navigate_network_dfs(select(flowlines, -any_of(c("Permanent_Identifier"))), term_comid, direction = "up")
+  flowlines$TerminalPa[flowlines$COMID %in% unlist(ut)] <- term_hydroseq
 
   # Change the mainstem levelpath ID to match the new Terminal ID of the basin.
   flowlines$LevelPathI[flowlines$LevelPathI == old_term_levelpath] <- term_hydroseq

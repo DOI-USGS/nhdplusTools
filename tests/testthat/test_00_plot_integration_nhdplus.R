@@ -4,6 +4,7 @@ test_that("basics work", {
   options("rgdal_show_exportToProj4_warnings"="none")
 
   skip_on_cran()
+  skip_on_os("mac")
   tempd <- tempdir(check = TRUE)
 
   site <- "USGS-05428500"

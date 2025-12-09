@@ -22,7 +22,6 @@ in any Spatial Reference System.}
 type requested, for example if NHDPlusV2, then a set of COMID(s).}
 
 \item{type}{character. Type of feature to return
-('huc08','huc12', 'nhd', 'catchment', 'waterbodies', 'gagesII').
 If NULL (default) a data.frame of available resources is returned}
 
 \item{filter}{character. An filter to pass to the query}

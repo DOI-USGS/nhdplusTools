@@ -8,13 +8,13 @@
 #' which will override all previous SRS (either input or default).
 #' All buffer and distance operations are handled internally using an
 #' EPSG:5070 Albers Equal Area projection
+#'
 #' @param AOI sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
 #' be provided as either a location (sf POINT) or area (sf POLYGON)
 #' in any Spatial Reference System.
 #' @param ids character or numeric. A set of identifier(s) from the data
 #' type requested, for example if NHDPlusV2, then a set of COMID(s).
 #' @param type character. Type of feature to return
-#' ('huc08','huc12', 'nhd', 'catchment', 'waterbodies', 'gagesII').
 #' If NULL (default) a data.frame of available resources is returned
 #' @param filter character. An filter to pass to the query
 #' @param t_srs  character (PROJ string or EPSG code) or numeric (EPSG code).

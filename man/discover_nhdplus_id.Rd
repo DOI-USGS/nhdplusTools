@@ -23,6 +23,22 @@ integer COMID or list containing COMID and raindrop trace.
 }
 \description{
 Multipurpose function to find a COMID of interest.
+
+Note that NHDPlusV2 uses "featureid" for catchment polygons and "comid" for
+flowline linestrings. These two identifiers are the same where a
+flowline/catchment pair exists. In some cases, a catchment will not have a
+flowline and in others, a flowline will not have a catchment.
+
+If a point is provided, and raindrop is false, the comid/featureid integer
+of the catchment the point is in is returned. This options uses a web
+service here:
+https://api.water.usgs.gov/fabric/pygeoapi/collections/catchmentsp
+
+If a point is provided, and raindrop is true, the response is the result of
+a call to \link{get_raindrop_trace}.
+
+If no point is provided, the raindrop argument is ignored and the result
+is a comid integer derived from a call to \link{get_nldi_feature}.
 }
 \examples{
 \donttest{

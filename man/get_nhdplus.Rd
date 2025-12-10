@@ -43,6 +43,10 @@ sfc a single, or list, of simple feature objects
 Subsets NHDPlusV2 features by location (POINT), area (POLYGON),
 or set of COMIDs. Multi realizations are supported allowing you to query
 for flowlines, catchments, or outlets.
+
+NOTE: not all flowlines have catchments and not all catchment have flowlines.
+Flowlines without catchments will have a 0 areasqkm attribute. Catchments
+without flowlines terminate in a sink and will have a negative valued comid.
 }
 \details{
 The returned object(s) will have the same

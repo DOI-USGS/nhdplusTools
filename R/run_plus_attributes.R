@@ -1,4 +1,4 @@
-#' Add NHDPlus Network Attributes to a provided network.
+#' DEPRECATED: Add NHDPlus Network Attributes to a provided network.
 #' @description Given a river network with required base attributes, adds the
 #' NHDPlus network attributes: hydrosequence, levelpath, terminalpath, pathlength,
 #' down levelpath, down hydroseq, total drainage area, and terminalflag.
@@ -38,6 +38,9 @@
 add_plus_network_attributes <- function(net, override = 5,
                                         cores = NULL, split_temp = NULL,
                                         status = TRUE) {
+
+  warning("add_plus_network_attributes() is deprecated. Please migrate to hydroloom equivalent(s).")
+
   add_sf <- FALSE
   if(inherits(net, "sf")) {
     add_sf <- TRUE

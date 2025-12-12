@@ -224,7 +224,8 @@ get_oafeat <- function(base,
   if(!is.null(AOI)) {
     if(is.character(AOI)) {
 
-      AOI <- try(sf::read_sf(AOI))
+      AOI <- try(sf::read_sf(AOI)) |>
+        st_transform(4326)
 
       if(!inherits(AOI, "sf")) {
         stop("AOI did not return an sf object when read")
@@ -232,11 +233,13 @@ get_oafeat <- function(base,
 
     }
 
-    if(!inherits(AOI, "bbox")) {
-      AOI <- st_bbox(AOI)
-    } else if(!inherits(AOI, "bbox") &&
-              grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
-      AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m"))
+    if(!inherits(AOI, "bbox") &&
+       grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
+      AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m")) |>
+        st_transform(4326) |>
+        st_bbox()
+    } else if(!inherits(AOI, "bbox")) {
+      AOI <- st_bbox(st_transform(AOI, 4326))
     }
 
     # pull features with paging if necessary

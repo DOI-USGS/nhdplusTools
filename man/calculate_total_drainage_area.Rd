@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_network.R
 \name{calculate_total_drainage_area}
 \alias{calculate_total_drainage_area}
-\title{Total Drainage Area}
+\title{DEPRECATED: Total Drainage Area}
 \usage{
 calculate_total_drainage_area(x)
 }

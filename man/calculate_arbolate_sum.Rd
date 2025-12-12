@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_network.R
 \name{calculate_arbolate_sum}
 \alias{calculate_arbolate_sum}
-\title{Calculate Arbolate Sum}
+\title{DEPRECATED: Calculate Arbolate Sum}
 \usage{
 calculate_arbolate_sum(x)
 }

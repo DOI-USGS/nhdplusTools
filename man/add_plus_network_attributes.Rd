@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_plus_attributes.R
 \name{add_plus_network_attributes}
 \alias{add_plus_network_attributes}
-\title{Add NHDPlus Network Attributes to a provided network.}
+\title{DEPRECATED: Add NHDPlus Network Attributes to a provided network.}
 \usage{
 add_plus_network_attributes(
   net,

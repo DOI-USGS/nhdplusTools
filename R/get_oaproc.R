@@ -79,6 +79,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #'
 #' (catchment <- get_split_catchment(snap_point))
 #'
+#' if(inherits(catchment, "sf")) {
 #' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
 #'
 #' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
@@ -86,9 +87,12 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE, col = "white")
+#' }
 #'
 #' (catchment <- get_split_catchment(snap_point, upstream = FALSE))
 #'
+#'
+#' if(inherits(catchment, "sf")) {
 #' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
 #'
 #' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
@@ -96,11 +100,13 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE, col = "white")
+#' }
 #'
 #' pour_point <- sf::st_sfc(sf::st_point(x = c(-89.25619, 42.98646)), crs = 4326)
 #'
 #' (catchment <- get_split_catchment(pour_point, upstream = FALSE))
 #'
+#' if(inherits(catchment, "sf")) {
 #' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
 #'
 #' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
@@ -108,6 +114,8 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
 #' plot(sf::st_transform(sf::st_sfc(pour_point, crs = 4326), 3857), add = TRUE, col = "white")
+#' }
+#'
 #' }
 #'}
 #'

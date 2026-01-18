@@ -30,6 +30,7 @@ Depends:
     R (>= 4.1)
 Imports: hydroloom, dataRetrieval, dplyr, sf, units, magrittr, jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles, mapsf, fst, arrow, tools, zip, pbapply, memoise, digest
 Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, lwgeom, gifski, leaflet, httptest, future, future.apply
+Remotes: dblodgett-usgs/dataRetrieval
 License: CC0
 Encoding: UTF-8
 RoxygenNote: 7.3.3

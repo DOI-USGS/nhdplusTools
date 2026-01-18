@@ -339,7 +339,7 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
 
   keep_going <- TRUE
 
-  if(status) message("Starting download of first set of features.")
+  if(status & interactive()) message("Starting download of first set of features.")
 
   out <- rep(list(list()), 1e6)
   i <- 1
@@ -361,7 +361,7 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
     out[[i]] <- make_request(req, post_body)
 
     if(!is.null(out[[i]]) & inherits(out[[i]], "response")) {
-      warning("Can't continue, got unexpected response: ", out[[i]])
+      warning("Can't continue, got unexpected response: ", print(out[[i]]))
       out[[i]] <- NULL
     }
 
@@ -383,6 +383,8 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
         message("starting next download from ", i * limit, ".")
       }
     }
+
+    if(exists("ids") > 0 && i == length(ids)) keep_going <- FALSE
 
     i <- i + 1
   }
@@ -417,7 +419,7 @@ unify_types <- function(out) {
         out <- set_type(out, n, "numeric")
       } else if("integer" %in% all_class[[n]]) { # then integer
         out <- set_type(out, n, "integer")
-      } else if("cheracter" %in% all_class[[n]]) {
+      } else if("character" %in% all_class[[n]] | "datetime" %in% all_class[[n]]) {
         out <- set_type(out, n, "character")
       }
     }

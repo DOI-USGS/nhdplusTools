@@ -28,7 +28,7 @@ test_that("get", {
   AOI_b <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
                          xmax = -89.24681, ymax = 43.17192))
 
-  expect_message(out <- get_geoconnex_reference(AOI, type = "hu04"), "Starting download")
+  out <- get_geoconnex_reference(AOI, type = "hu04")
 
   expect_silent(out2 <- get_geoconnex_reference(AOI_b, type = "hu04", status = FALSE))
 

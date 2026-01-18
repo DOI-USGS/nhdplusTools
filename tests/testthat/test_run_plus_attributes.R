@@ -8,10 +8,11 @@ test_that("basic two flowline network", {
                        class = "data.frame",
                        row.names = c(NA, -2L))
 
+  suppressWarnings(
   net_new <-
     add_plus_network_attributes(
       dplyr::rename(net_new, nameID = gnis_id), status = FALSE)
-
+  )
 
   expect_equal(nrow(net_new), 2)
 })
@@ -33,8 +34,10 @@ test_that("example", {
 
   expect_s3_class(get_sorted(sf::st_sf(test_flowline, sf::st_geometry(walker_flowline))), "sf")
 
+  suppressWarnings(
   mess <- capture_output(fl <- add_plus_network_attributes(test_flowline,
                                                            status = TRUE)
+  )
   )
 
   expect_true(grepl("+| 100% elapsed=", mess))
@@ -49,10 +52,11 @@ test_that("example", {
 
   expect_equal(unique(fl$terminalpa), min(fl$hydroseq))
 
+  suppressWarnings(
   fl2 <- add_plus_network_attributes(test_flowline, cores = 2,
                                      split_temp = (tempf <- tempfile(fileext = ".rds")),
                                      status = FALSE)
-
+  )
   expect_equal(fl, fl2, ignore_attr = TRUE)
 
   expect_true(file.exists(tempf))

@@ -169,7 +169,8 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
             zoom <- set_zoom(bb)
           }
 
-          message(paste("Zoom set to:", zoom))
+          if(interactive())
+            message(paste("Zoom set to:", zoom))
 
           tiles <- maptiles::get_tiles(bb, zoom = zoom, crop = FALSE,
                                        cachedir = cache_tiles,

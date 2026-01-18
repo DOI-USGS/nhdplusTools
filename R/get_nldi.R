@@ -253,7 +253,6 @@ check_nldi_feature <- function(nldi_feature, convert = TRUE) {
 
   if(nldi_feature$featureSource == "nwissite" && convert) {
     if(grepl("^USGS-", nldi_feature$featureID)) {
-      nldi_feature$featureID <- gsub("USGS-", "", nldi_feature$featureID)
       nldi_feature$featureSource <- "nwis"
     }
   }

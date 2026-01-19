@@ -396,7 +396,11 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
 
 id_filter_cql  <- function(ids, name = "comid"){
 
-  jsonlite::toJSON(list(op = "in", args = list(list(property = name), c(ids))),
+  operator <- "in"
+
+  if(length(ids) == 1) operator <- "="
+
+  jsonlite::toJSON(list(op = operator, args = list(list(property = name), c(ids))),
                    auto_unbox = TRUE)
 
 }

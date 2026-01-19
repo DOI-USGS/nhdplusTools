@@ -122,8 +122,10 @@ test_that("from vignette works", {
     select(-tonode, -fromnode, -divergence, -ftype) %>%
     get_sorted(split = TRUE))
 
+  suppressWarnings(
   fpath[["arbolatesum"]] <- calculate_arbolate_sum(
     dplyr::select(fpath, ID = comid, toID = tocomid, length = lengthkm))
+  )
 
   expect_warning(
   lp <- get_levelpaths(
@@ -145,10 +147,11 @@ test_that("from vignette works", {
   expect_equal(length(unique(fpath$levelpath)),
                length(unique(fpath$outletID)))
 
+  suppressWarnings(
   plus <- add_plus_network_attributes(dplyr::select(fpath, comid, tocomid,
                                                     lengthkm, areasqkm,
                                                     nameID = gnis_id),
                                       status = FALSE)
-
+  )
   expect_s3_class(plus, "sf")
 })

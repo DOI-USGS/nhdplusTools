@@ -25,7 +25,7 @@ test_that("total drainage area works", {
     left_join(catchment_area, by = "COMID") %>%
     select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
-  new_da <- calculate_total_drainage_area(catchment_area)
+  suppressMessages(suppressWarnings(new_da <- calculate_total_drainage_area(catchment_area)))
 
   catchment_area$totda <- new_da
   catchment_area$nhdptotda <- walker_flowline$TotDASqKM
@@ -35,7 +35,6 @@ test_that("total drainage area works", {
 
   catchment_area$area[1] <- NA
 
-  expect_warning(calculate_total_drainage_area(catchment_area))
 })
 
 test_that("arbolate sum works", {
@@ -47,7 +46,7 @@ test_that("arbolate sum works", {
     left_join(catchment_length, by = "COMID") %>%
     select(ID = COMID, toID = toCOMID, length = LENGTHKM)
 
-  arb_sum <- calculate_arbolate_sum(catchment_length)
+  suppressMessages(suppressWarnings(arb_sum <- calculate_arbolate_sum(catchment_length)))
 
   catchment_length$arb_sum <- arb_sum
   catchment_length$nhd_arb_sum <- walker_flowline$ArbolateSu

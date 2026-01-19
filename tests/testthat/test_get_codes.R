@@ -114,7 +114,9 @@ test_that("get_pfaf", {
     dplyr::select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
   fl$nameID = ""
+  suppressMessages(suppressWarnings(
   fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
+  ))
 
   expect_warning(
   fl <- dplyr::left_join(fl, get_levelpaths(dplyr::rename(sf::st_set_geometry(fl, NULL),

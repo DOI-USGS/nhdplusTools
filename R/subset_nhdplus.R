@@ -125,6 +125,8 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     }
   }
 
+  if(!interactive()) status <- FALSE
+
   if(!is.null(comids) && length(comids) == 0) stop("comids must be NULL or non-empty")
 
   if (status) message("All intersections performed in latitude/longitude.")
@@ -505,7 +507,8 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
 
   if (!all(sf::st_is_valid(x))) {
 
-    message("Found invalid geometry, attempting to fix.")
+    if(interactive())
+      message("Found invalid geometry, attempting to fix.")
 
     orig_type <- unique(as.character(sf::st_geometry_type(x)))
 

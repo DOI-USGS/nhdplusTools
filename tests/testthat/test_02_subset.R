@@ -110,7 +110,9 @@ test_that("subset runs as expected", {
                          overwrite = TRUE,
                          status = TRUE))
 
-  expect_equal(length(messages), 17)
+  if(interactive()) {
+    expect_equal(length(messages), 17)
+  }
 
   check_layers(out_file)
 

@@ -1,3 +1,8 @@
+nhdplusTools 1.4.2
+==========
+
+This minor release fixes scalability issues in web service clients.
+
 nhdplusTools 1.4.1
 ==========
 

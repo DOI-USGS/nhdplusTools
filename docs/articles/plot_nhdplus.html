@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
       </span>
     </div>
 
@@ -203,9 +203,6 @@ other options are possible with <code>discover_nhdplus_id</code> and
 <span>                          output_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"nhdplus.gpkg"</span><span class="op">)</span>,</span>
 <span>                          nhdplus_data <span class="op">=</span> <span class="st">"download"</span>,</span>
 <span>                          overwrite <span class="op">=</span> <span class="cn">TRUE</span>, return_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
-<span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
 <span></span>
 <span><span class="va">flowline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">nhdplus</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span></span>
 <span></span>
@@ -303,13 +300,13 @@ transparency if that’s of interest.</p>
 <span>                             verbose <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                             provider <span class="op">=</span> <span class="st">"Esri.NatGeoWorldMap"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mapsf</span><span class="fu">::</span><span class="fu"><a href="https:/riatelab.github.io/mapsf/man/mf_map.html">mf_map</a></span><span class="op">(</span><span class="va">bb</span>, type <span class="op">=</span> <span class="st">"base"</span>, col <span class="op">=</span> <span class="cn">NA</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="fu">mapsf</span><span class="fu">::</span><span class="fu"><a href="https://riatelab.github.io/mapsf/reference/mf_map.html" class="external-link">mf_map</a></span><span class="op">(</span><span class="va">bb</span>, type <span class="op">=</span> <span class="st">"base"</span>, col <span class="op">=</span> <span class="cn">NA</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">maptiles</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/maptiles/man/plot_tiles.html" class="external-link">plot_tiles</a></span><span class="op">(</span><span class="va">tiles</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mapsf</span><span class="fu">::</span><span class="fu"><a href="https:/riatelab.github.io/mapsf/man/mf_map.html">mf_map</a></span><span class="op">(</span><span class="va">bb</span>, type <span class="op">=</span> <span class="st">"base"</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="cn">NA</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
-<span><span class="fu">mapsf</span><span class="fu">::</span><span class="fu"><a href="https:/riatelab.github.io/mapsf/man/mf_arrow.html">mf_arrow</a></span><span class="op">(</span>align <span class="op">=</span> <span class="va">bb</span><span class="op">)</span></span>
-<span><span class="fu">mapsf</span><span class="fu">::</span><span class="fu"><a href="https:/riatelab.github.io/mapsf/man/mf_scale.html">mf_scale</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">mapsf</span><span class="fu">::</span><span class="fu"><a href="https://riatelab.github.io/mapsf/reference/mf_map.html" class="external-link">mf_map</a></span><span class="op">(</span><span class="va">bb</span>, type <span class="op">=</span> <span class="st">"base"</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="cn">NA</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="fu">mapsf</span><span class="fu">::</span><span class="fu"><a href="https://riatelab.github.io/mapsf/reference/mf_arrow.html" class="external-link">mf_arrow</a></span><span class="op">(</span>align <span class="op">=</span> <span class="va">bb</span><span class="op">)</span></span>
+<span><span class="fu">mapsf</span><span class="fu">::</span><span class="fu"><a href="https://riatelab.github.io/mapsf/reference/mf_scale.html" class="external-link">mf_scale</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">prep_layer</span><span class="op">(</span><span class="va">basin</span><span class="op">)</span>, </span>
 <span>     lwd <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

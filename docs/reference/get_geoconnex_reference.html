@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
       </span>
     </div>
 
@@ -152,7 +152,6 @@ extended search. Default = 0.5</p></dd>
 <span class="r-in"><span>                                 crs <span class="op">=</span> <span class="st">"+proj=longlat +datum=WGS84 +no_defs"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_geoconnex_reference</span><span class="op">(</span><span class="va">AOI</span>, type <span class="op">=</span> <span class="st">"hu04"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting download of first set of features.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 2 features and 8 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTIPOLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
@@ -166,7 +165,6 @@ extended search. Default = 0.5</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_geoconnex_reference</span><span class="op">(</span><span class="st">"https://geoconnex.us/ref/mainstems/315626"</span>, type <span class="op">=</span> <span class="st">"hu04"</span>, <span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting download of first set of features.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 14 features and 8 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTIPOLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
@@ -195,12 +193,22 @@ extended search. Default = 0.5</p></dd>
 <span class="r-in"><span>                  crs <span class="op">=</span> <span class="st">"+proj=longlat +datum=WGS84 +no_defs"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_geoconnex_reference</span><span class="op">(</span><span class="va">AOI</span>, type <span class="op">=</span> <span class="st">"hu04"</span>, buffer <span class="op">=</span> <span class="fl">100000</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting download of first set of features.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 0 features and 0 fields</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: NA ymin: NA xmax: NA ymax: NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 7 features and 8 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTIPOLYGON</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -93.84873 ymin: 40.3987 xmax: -84.7235 ymax: 46.73351</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 variable: geometry &lt;GEOMETRY [°]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id      fid uri               name  gnis_url gnis_id huc4  loaddate           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 0403    187 https://geoconne… Nort… <span style="color: #949494;">""</span>       <span style="color: #BB0000;">NA</span>      0403  2019-04-02 <span style="color: #949494;">12:17:54</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 0404     66 https://geoconne… Sout… <span style="color: #949494;">""</span>       <span style="color: #BB0000;">NA</span>      0404  2019-03-15 <span style="color: #949494;">10:49:16</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 0704     96 https://geoconne… Uppe… <span style="color: #949494;">""</span>       <span style="color: #BB0000;">NA</span>      0704  2017-04-18 <span style="color: #949494;">15:32:25</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 0706     57 https://geoconne… Uppe… <span style="color: #949494;">""</span>       <span style="color: #BB0000;">NA</span>      0706  2017-02-01 <span style="color: #949494;">00:53:13</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> 0707    189 https://geoconne… Wisc… <span style="color: #949494;">""</span>       <span style="color: #BB0000;">NA</span>      0707  2017-02-01 <span style="color: #949494;">00:53:08</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> 0709     65 https://geoconne… Rock  <span style="color: #949494;">""</span>       <span style="color: #BB0000;">NA</span>      0709  2012-06-11 <span style="color: #949494;">07:54:59</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> 0712     62 https://geoconne… Uppe… <span style="color: #949494;">""</span>       <span style="color: #BB0000;">NA</span>      0712  2019-03-15 <span style="color: #949494;">10:49:32</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>

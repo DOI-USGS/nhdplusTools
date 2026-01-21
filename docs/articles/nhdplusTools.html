@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
       </span>
     </div>
 
@@ -133,11 +133,6 @@
 <span>                         nhdplus_data <span class="op">=</span> <span class="st">"download"</span>, </span>
 <span>                         flowline_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                         return_data <span class="op">=</span> <span class="cn">TRUE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
-<span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Reading CatchmentSP</span></span>
-<span><span class="co">#&gt; Writing CatchmentSP</span></span>
 <span></span>
 <span><span class="va">flowline</span> <span class="op">&lt;-</span> <span class="va">subset</span><span class="op">$</span><span class="va">NHDFlowline_Network</span></span>
 <span><span class="va">catchment</span> <span class="op">&lt;-</span> <span class="va">subset</span><span class="op">$</span><span class="va">CatchmentSP</span></span>
@@ -160,8 +155,7 @@ is returned and/or stored in a local file for later use.</p>
 <code class="sourceCode R"><span><span class="co"># ?plot_nhdplus for more</span></span>
 <span><span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span></span>
 <span>  outlets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span>, </span>
-<span>  gpkg <span class="op">=</span> <span class="va">subset_file</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Zoom set to: 11</span></span></code></pre></div>
+<span>  gpkg <span class="op">=</span> <span class="va">subset_file</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="nhdplusTools_files/figure-html/tldr2-1.png" class="r-plt" width="576"></p>
 <p>This vignette covers a range of utilities the nhdplusTools package
 offers for working with data in a U.S. context.</p>
@@ -377,9 +371,6 @@ that will replace <code><a href="../reference/navigate_nldi.html">navigate_nldi(
 <span>                                      output_file <span class="op">=</span> <span class="va">output_file_download</span>,</span>
 <span>                                      nhdplus_data <span class="op">=</span> <span class="st">"download"</span>, return_data <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                      overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
-<span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
 <span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
@@ -417,9 +408,6 @@ knows about upstream of the one we chose!</p>
 <span>                                  output_file <span class="op">=</span> <span class="va">output_file_nwis</span>,</span>
 <span>                                  nhdplus_data <span class="op">=</span> <span class="st">"download"</span>,</span>
 <span>                                  return_data <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
-<span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
 <span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file_download</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
@@ -458,30 +446,30 @@ we’ll use upstream with tributaries.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">UT_comids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span><span class="op">(</span><span class="va">flowline</span>, <span class="va">start_comid</span><span class="op">$</span><span class="va">comid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">UT_comids</span></span>
-<span><span class="co">#&gt;   [1]  13293380  13293384  13293388  13293392  13293398  13293424  13293430</span></span>
-<span><span class="co">#&gt;   [8]  13293454  13293504  13293506  13293576  13293750  13294110  13294128</span></span>
-<span><span class="co">#&gt;  [15]  13294134  13294280  13294284  13294288  13294290  13294298  13294304</span></span>
-<span><span class="co">#&gt;  [22]  13294310  13294312  13294394  13293376  13293382  13293386  13293390</span></span>
-<span><span class="co">#&gt;  [29]  13293394  13293396  13293400  13293404  13293406  13293416  13293422</span></span>
-<span><span class="co">#&gt;  [36]  13293426  13293432  13293434  13293440  13293444  13293446  13293452</span></span>
-<span><span class="co">#&gt;  [43]  13293456  13293458  13293464  13293474  13293480  13293484  13293488</span></span>
-<span><span class="co">#&gt;  [50]  13293492  13293494  13293496  13293508  13293520  13293524  13293526</span></span>
-<span><span class="co">#&gt;  [57]  13293530  13293536  13293540  13293542  13293550  13293554  13293574</span></span>
-<span><span class="co">#&gt;  [64]  13293584  13293588  13293612  13293620  13293634  13293676  13293694</span></span>
-<span><span class="co">#&gt;  [71]  13293696  13294118  13294124  13294130  13294132  13294138  13294154</span></span>
-<span><span class="co">#&gt;  [78]  13294158  13294166  13294264  13294268  13294272  13294274  13294276</span></span>
-<span><span class="co">#&gt;  [85]  13294278  13294282  13294286  13294292  13294294  13294300  13294308</span></span>
-<span><span class="co">#&gt;  [92]  13294314  13294366  13294368  13294382  13294384  13294386 937090090</span></span>
-<span><span class="co">#&gt;  [99] 937090091  13293378  13293412  13293420  13293428  13293436  13293438</span></span>
-<span><span class="co">#&gt; [106]  13293442  13293450  13293460  13293462  13293468  13293472  13293476</span></span>
-<span><span class="co">#&gt; [113]  13293478  13293486  13293490  13293498  13293502  13293512  13293514</span></span>
-<span><span class="co">#&gt; [120]  13293516  13293518  13293522  13293532  13293548  13293552  13293556</span></span>
-<span><span class="co">#&gt; [127]  13293558  13293564  13293568  13293572  13293578  13293586  13293614</span></span>
-<span><span class="co">#&gt; [134]  13293624  13293672  13293674  13293678  13293690  13293692  13294112</span></span>
-<span><span class="co">#&gt; [141]  13294122  13294140  13294144  13294148  13294150  13294152  13294168</span></span>
-<span><span class="co">#&gt; [148]  13294176  13294184  13294270  13294296  13294306  13302588  13302590</span></span>
-<span><span class="co">#&gt; [155]  13293410  13293418  13293448  13293562  13293570  13293600  13293646</span></span>
-<span><span class="co">#&gt; [162]  13293688  13294114  13294116  13294120  13294174  13294178  13293590</span></span></code></pre></div>
+<span><span class="co">#&gt;   [1]  13293576  13293750  13294280  13294284  13294288  13294290  13294298</span></span>
+<span><span class="co">#&gt;   [8]  13294304  13294310  13294312  13293504  13293506  13294128  13294134</span></span>
+<span><span class="co">#&gt;  [15]  13294394  13293392  13293398  13293424  13293430  13293454  13294110</span></span>
+<span><span class="co">#&gt;  [22]  13293380  13293384  13293388  13293550  13293554  13293574  13293588</span></span>
+<span><span class="co">#&gt;  [29]  13293620  13293634  13293676  13293694  13293696  13294166  13294264</span></span>
+<span><span class="co">#&gt;  [36]  13294282  13294286  13294292  13294294  13294300  13294308  13294314</span></span>
+<span><span class="co">#&gt;  [43]  13294368  13293480  13293488  13293492  13293494  13293496  13293508</span></span>
+<span><span class="co">#&gt;  [50]  13293520  13293524  13293530  13293536  13293540  13293542  13293584</span></span>
+<span><span class="co">#&gt;  [57]  13293612  13294130  13294132  13294138  13294154  13294158  13294382</span></span>
+<span><span class="co">#&gt;  [64] 937090091  13293394  13293400  13293404  13293416  13293422  13293432</span></span>
+<span><span class="co">#&gt;  [71]  13293444  13293446  13293452  13293456  13293458  13293464  13293474</span></span>
+<span><span class="co">#&gt;  [78]  13293484  13293526  13294118  13294124  13294272  13294274  13294276</span></span>
+<span><span class="co">#&gt;  [85]  13294278  13294384  13294386 937090090  13293376  13293382  13293386</span></span>
+<span><span class="co">#&gt;  [92]  13293390  13293396  13293406  13293426  13293434  13293440  13294268</span></span>
+<span><span class="co">#&gt;  [99]  13294366  13293548  13293552  13293568  13293572  13293578  13293624</span></span>
+<span><span class="co">#&gt; [106]  13293672  13293678  13293690  13293692  13294168  13294176  13294184</span></span>
+<span><span class="co">#&gt; [113]  13294296  13294306  13293472  13293476  13293478  13293486  13293502</span></span>
+<span><span class="co">#&gt; [120]  13293514  13293516  13293518  13293522  13293532  13293556  13293558</span></span>
+<span><span class="co">#&gt; [127]  13293564  13293586  13293614  13293674  13294140  13294144  13294148</span></span>
+<span><span class="co">#&gt; [134]  13294150  13294152  13293412  13293420  13293428  13293438  13293442</span></span>
+<span><span class="co">#&gt; [141]  13293450  13293460  13293462  13293490  13293498  13293512  13294122</span></span>
+<span><span class="co">#&gt; [148]  13294270  13302588  13302590  13293378  13293436  13293468  13294112</span></span>
+<span><span class="co">#&gt; [155]  13293570  13293600  13293688  13294174  13294178  13293562  13293646</span></span>
+<span><span class="co">#&gt; [162]  13294120  13293410  13293418  13293448  13294114  13294116  13293590</span></span></code></pre></div>
 <p>If you are familiar with the NHDPlus, you will recognize that now
 that we have this list of COMIDs, we could go off and do all sorts of
 things with the various flowline attributes. For now, let’s just use the
@@ -507,23 +495,6 @@ this section.</p>
 <span>                             output_file <span class="op">=</span> <span class="va">output_file</span>,</span>
 <span>                             nhdplus_data <span class="op">=</span> <span class="fu"><a href="../reference/nhdplus_path.html">nhdplus_path</a></span><span class="op">(</span><span class="op">)</span>, </span>
 <span>                             return_data <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
-<span><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; 168 comids of 168</span></span>
-<span><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
-<span><span class="co">#&gt; Reading CatchmentSP</span></span>
-<span><span class="co">#&gt; 168 comids of 168</span></span>
-<span><span class="co">#&gt; Writing CatchmentSP</span></span>
-<span><span class="co">#&gt; Reading NHDArea</span></span>
-<span><span class="co">#&gt; Writing NHDArea</span></span>
-<span><span class="co">#&gt; Reading NHDWaterbody</span></span>
-<span><span class="co">#&gt; Writing NHDWaterbody</span></span>
-<span><span class="co">#&gt; Reading NHDFlowline_NonNetwork</span></span>
-<span><span class="co">#&gt; Writing NHDFlowline_NonNetwork</span></span>
-<span><span class="co">#&gt; Reading Gage</span></span>
-<span><span class="co">#&gt; Writing Gage</span></span>
-<span><span class="co">#&gt; Reading Sink</span></span>
-<span><span class="co">#&gt; No features to write in Sink</span></span>
 <span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">output_file</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>

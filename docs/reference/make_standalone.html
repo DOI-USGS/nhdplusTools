@@ -20,7 +20,7 @@ the domain is independently complete."><meta property="og:image" content="https:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
       </span>
     </div>
 
@@ -157,24 +157,6 @@ the domain is independently complete.</p>
 <span class="r-in"><span>                          <span class="va">StreamOrde</span> <span class="op">==</span> <span class="va">StreamCalc</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span><span class="va">subset</span><span class="op">$</span><span class="va">COMID</span>, nhdplus_data <span class="op">=</span> <span class="va">hr_gpkg</span><span class="op">)</span><span class="op">$</span><span class="va">NHDFlowline</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> All intersections performed in latitude/longitude.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading NHDFlowline</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 1000 comids of 2182</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2000 comids of 2182</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2182 comids of 2182</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing NHDFlowline</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading NHDPlusCatchment</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 1000 comids of 2182</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2000 comids of 2182</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2182 comids of 2182</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Found invalid geometry, attempting to fix.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing NHDPlusCatchment</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading NHDArea</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing NHDArea</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading NHDWaterbody</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing NHDWaterbody</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading NHDPlusSink</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing NHDPlusSink</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr_data</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

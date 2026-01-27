@@ -365,11 +365,11 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
       out[[i]] <- NULL
     }
 
-    if(!is.null(out[[i]]) && inherits(out[[i]], "sf") & nrow(out[[i]]) == limit) {
+    if(!is.null(out[[i]]) && inherits(out[[i]], "sf") & nrow(out[[i]]) != 0) {
       offset <- offset + limit
     }
 
-    if(nrow(out[[i]]) < limit) keep_going <- FALSE
+    if(nrow(out[[i]]) == 0 & !exists("ids")) keep_going <- FALSE
 
     if(!inherits(out[[i]], "sf")) {
       warning("Something went wrong requesting data.")

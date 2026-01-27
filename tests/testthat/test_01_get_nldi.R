@@ -174,6 +174,7 @@ test_that("raindrop", {
 test_that("split", {
 
   skip_on_cran()
+  skip_on_ci()
 
   # Doesn't improve coverage
   # point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)

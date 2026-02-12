@@ -1,0 +1,192 @@
+---
+title: "3DHP California Demo"
+format: 
+  html:
+    self-contained: false
+    embed-resources: false
+execute:
+  cache: true
+---
+
+```{r}
+#| echo: false
+library(widgetframe)
+```
+
+## 3DHP is at the heart of water data on the Web
+
+Start from a mainstem river: [https://explorer.geoconnex.us/mainstems/1805986](https://explorer.geoconnex.us/mainstems/1805986) or [https://geoconnex.us/ref/mainstems/1805986 
+](https://geoconnex.us/ref/mainstems/1805986) 
+
+First just grab the mainstem from 3DHP.
+
+```{r}
+
+mainstem <- "https://geoconnex.us/ref/mainstems/1805986"
+
+stan <- nhdplusTools::get_3dhp(ids = mainstem, type = "flowline")
+
+names(stan)
+
+frameWidget(mapview::mapview(stan)@map)
+
+```
+
+Mainstems let us do some other neat stuff!
+
+Note that we can get IDs from other datasets that are associated with 3DHP features with reference mainstems.
+
+```{r}
+
+ms <- sf::read_sf(mainstem)
+
+ms
+
+# this gives us a feature with geometry and a comid attribute!
+outlet <- sf::read_sf(ms$outlet_nhdpv2_comid)
+
+frameWidget(mapview::mapview(outlet)@map)
+
+```
+
+Now we'll get a basin boundary... from NHDPlusV2 but it's a useful tool here.
+
+```{r}
+basin <- nhdplusTools::get_nldi_basin(nldi_feature = list(featureSource = "comid", featureId = outlet$comid))
+
+frameWidget(mapview::mapview(basin)@map)
+
+```
+
+Now let's get all the 3DHP data for the basin.
+
+```{r}
+
+full_stan <- nhdplusTools::get_3dhp(sf::st_buffer(basin, units::set_units(1, "km")), type = "flowline")
+
+nrow(full_stan)
+
+frameWidget(mapview::mapview(full_stan)@map)
+
+```
+
+## 3DHP data are available "services first"!
+
+Now let's move to a basin where there is 3DHP data available.
+
+```{r}
+
+mainstem <- "https://geoconnex.us/ref/mainstems/328091"
+
+hols <- nhdplusTools::get_3dhp(ids = mainstem, type = "flowline")
+
+names(hols)
+
+sum(is.na(hols$catchmentid3dhp))
+sum(!is.na(hols$catchmentid3dhp))
+
+frameWidget(mapview::mapview(hols)@map)
+
+```
+
+We can get catchments for some of these features!
+
+```{r}
+
+cats <- hols$catchmentid3dhp[!is.na(hols$catchmentid3dhp)]
+
+hols_cats <- nhdplusTools::get_3dhp(ids = cats, type = "catchment")
+
+frameWidget(mapview::mapview(hols_cats)@map)
+
+```
+
+Or use an area of interest to get a bunch of catchments.
+
+```{r}
+
+aoi <- hols_cats[20,] |>
+    sf::st_bbox() |>
+    sf::st_as_sfc() |>
+    nhdplusTools::get_huc(type = "huc10")
+
+frameWidget(mapview::mapview(aoi)@map)
+
+```
+
+```{r}
+
+all_holston <- nhdplusTools::get_3dhp(sf::st_buffer(aoi, units::set_units(1, "km")), type = "flowline")
+
+all_holston <- all_holston[is.na(all_holston$workunitid) | all_holston$workunitid != "NHD", ]
+
+frameWidget(mapview::mapview(all_holston)@map)
+
+par(mar = c(0,0,0,0))
+plot(sf::st_geometry(all_holston), lwd = all_holston$streamorder / 2)
+
+```
+
+## 3DHP data allow advanced analyses out of the box! 
+
+```{r}
+
+boundary <- nhdplusTools::get_huc(id = "02050302", type = "huc08")
+
+juni <- nhdplusTools::get_3dhp(sf::st_buffer(boundary, units::set_units(1, "km")), type = "flowline")
+
+main_unit <- names(which.max(table(juni$workunitid)))
+
+juni <- juni[!is.na(juni$workunitid) & juni$workunitid == main_unit,]
+
+nrow(juni)
+
+frameWidget(mapview::mapview(list(boundary, juni))@map)
+
+```
+
+Now we'll select out some of the basic network attributes and do a navigation:
+
+NOTE: A non-dendritic network is available in annual static snapshots and plans exist to incorporate that network information into web services in a future release.
+
+```{r}
+
+names(juni)
+
+juni_sub <- dplyr::select(juni, id = hydrosequence, toid = dnhydrosequence, orig_id3dhp = id3dhp, mainstemid, lengthkm, catchmentid3dhp, arbolatesum)
+
+hydroloom::check_hy_graph(juni_sub)
+
+main_outlet <- juni_sub[!is.na(juni_sub$arbolatesum) & juni_sub$arbolatesum == max(juni_sub$arbolatesum, na.rm = TRUE),]
+
+nrow(main_outlet)
+
+reachable <- hydroloom::navigate_network_dfs(juni_sub, main_outlet$id, direction = "up")
+
+length(unlist(reachable))
+
+juni_reachable <- juni_sub[juni_sub$id %in% unlist(reachable),]
+
+plot(sf::st_geometry(juni_reachable), lwd = (20 * juni_reachable$arbolatesum / (max(juni_reachable$arbolatesum))))
+
+```
+
+Now let's circle back to why 3DHP being core to the IoW is useful with an example of stream gages.
+
+```{r}
+
+outlet_mainstem <- juni_reachable[juni_reachable$mainstemid == main_outlet$mainstemid,]
+
+gages <- nhdplusTools::get_geoconnex_reference(boundary, type = "gage")
+
+# only gages on the mainstem we have
+gages <- gages[!is.na(gages$mainstem_uri) & gages$mainstem_uri == outlet_mainstem$mainstemid[1],]
+
+# get the actual flowline each gage is on in this version of 3DHP
+indexes <- hydroloom::index_points_to_lines(dplyr::select(outlet_mainstem, id3dhp = orig_id3dhp), gages)
+gages$point_id <- seq_len(nrow(gages))
+gages <- dplyr::left_join(gages, indexes, by = "point_id")
+
+frameWidget(mapview::mapview(list(outlet_mainstem, gages))@map)
+
+```

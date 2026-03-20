@@ -201,12 +201,18 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 #' Get catchment characteristics metadata table
 #' @description Download and cache table of catchment characteristics.
 #'
+#' When \code{source = "usgs"} (the default), returns metadata from:
 #' Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes
 #' for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
 #' Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
 #' Geological Survey data release, \doi{10.5066/F7765D7V}.
+#'
+#' When \code{source = "streamcat"}, returns metric metadata from the EPA
+#' StreamCat dataset accessed via the \code{StreamCatTools} package (must be
+#' installed separately).
 #' @param search character string of length 1 to free search the metadata table.
 #' If no search term is provided the entire table is returned.
+#' @param source character \code{"usgs"} (default) or \code{"streamcat"}.
 #' @param cache logical should cached metadata be used?
 #' @importFrom utils read.delim
 #' @export
@@ -214,8 +220,45 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 #' \donttest{
 #' get_characteristics_metadata()
 #' }
-get_characteristics_metadata <- function(search, cache = TRUE) {
+get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) {
 
+  source <- match.arg(source, c("usgs", "streamcat"))
+
+  # StreamCat metadata via EPA StreamCat API (StreamCatTools package)
+  if(source == "streamcat") {
+    check_pkg("StreamCatTools")
+
+    r <- file.path(nhdplusTools_data_dir(), "streamcat_metadata.rds")
+
+    if(!cache) unlink(r, force = TRUE)
+
+    out <- tryCatch({
+      if(file.exists(r) && cache) {
+        readRDS(r)
+      } else {
+        params <- StreamCatTools::sc_get_params(param = "variable_info")
+
+        if(!dir.exists(nhdplusTools_data_dir()))
+          dir.create(nhdplusTools_data_dir(), recursive = TRUE)
+
+        saveRDS(params, r)
+        params
+      }
+    }, error = function(e) {
+      NULL
+    })
+
+    if(is.null(out)) warning("Problem getting StreamCat metadata. Is the API available?")
+
+    if(!missing(search) && !is.null(out)) {
+      return(out[unique(unlist(
+        mapply(grep, search, out, ignore.case = TRUE)
+      )), ])
+    }
+    return(out)
+  }
+
+  # USGS ScienceBase metadata (default)
   out <- tryCatch({
     u <- "https://prod-is-usgs-sb-prod-publish.s3.amazonaws.com/5669a79ee4b08895842a1d47/metadata_table.tsv"
 
@@ -261,17 +304,26 @@ get_characteristics_metadata <- function(search, cache = TRUE) {
 #' @description Downloads (subsets of) catchment characteristics from a cloud data
 #' store. See \link{get_characteristics_metadata} for available characteristics.
 #'
-#' Source:
+#' When \code{source = "usgs"} (the default), data is retrieved from:
 #' Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes
 #' for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
 #' Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
 #' Geological Survey data release, \doi{10.5066/F7765D7V}.
 #'
+#' When \code{source = "streamcat"}, data is retrieved from the EPA StreamCat
+#' dataset via the \code{StreamCatTools} package (must be installed separately).
+#' Only local catchment-level data (\code{aoi = "catchment"}) is returned. For
+#' watershed or riparian area-of-interest options, use
+#' \code{StreamCatTools::sc_get_data()} directly.
+#'
 #' @param varname character vector of desired variables. If repeated varnames
 #' are provided, they will be downloaded once but duplicated in the output.
+#' For \code{source = "streamcat"}, use StreamCat metric names (see
+#' \code{get_characteristics_metadata(source = "streamcat")}).
 #' @param ids numeric vector of identifiers (comids) from the specified fabric
 #' @param reference_fabric (not used) will be used to allow future specification
 #' of alternate reference fabrics
+#' @param source character \code{"usgs"} (default) or \code{"streamcat"}.
 #' @importFrom dplyr bind_rows filter select everything collect
 #' @importFrom arrow s3_bucket open_dataset
 #' @export
@@ -279,41 +331,81 @@ get_characteristics_metadata <- function(search, cache = TRUE) {
 #' \donttest{
 #'   get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
 #' }
-get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdplusv2"){
+get_catchment_characteristics <- function(varname, ids,
+                                          reference_fabric = "nhdplusv2",
+                                          source = "usgs"){
 
+  source <- match.arg(source, c("usgs", "streamcat"))
+
+  # dispatch to StreamCat API via StreamCatTools package
+  if(source == "streamcat") {
+    return(get_catchment_characteristics_streamcat(varname, ids))
+  }
+
+  # USGS ScienceBase S3 parquet data (default path)
   metadata <- get_characteristics_metadata()
 
+  uvar <- unique(varname)
+
+  # validate all variables upfront
+  missing_vars <- setdiff(uvar, metadata$ID)
+  if(length(missing_vars) > 0) {
+    warning(paste("Variable(s)", paste(missing_vars, collapse = ", "),
+                  "not found in metadata."))
+    return(NULL)
+  }
+
+  # get metadata for requested variables (first match per ID)
+  var_meta <- metadata[metadata$ID %in% uvar, ]
+  var_meta <- var_meta[!duplicated(var_meta$ID), ]
+
+  # Batch variables by shared s3_url to avoid redundant S3 round-trips.
+  # Multiple variables often share the same parquet dataset (e.g. CAT_BFI,
+  # ACC_BFI, TOT_BFI). Opening each dataset once and selecting all needed
+  # columns in a single collect() call is much faster than per-variable access.
+  # See: https://github.com/DOI-USGS/nhdplusTools/issues/449
+  url_groups <- split(var_meta$ID, var_meta$s3_url)
+
   out <- tryCatch({
-    lapply(unique(varname), function(x) {
-      if(!x %in% metadata$ID) stop(paste("Variable", x, "not found in metadata."))
+    unlist(lapply(names(url_groups), function(url) {
+      vars_in_group <- url_groups[[url]]
 
-      i <- metadata[metadata$ID == x,]
+      # open the shared S3 parquet dataset once for all variables in this group
+      ds <- open_dataset(url)
 
-      if(nrow(i) > 1) warning(paste("multiple attributes found for variable,", x, "using the first one."))
+      cols_to_select <- c("COMID", vars_in_group, "percent_nodata")
 
-      i <- i[1,]
-
-      ds <- open_dataset(i$s3_url)
-
-      sub <- filter(select(ds, any_of(c("COMID", x, "percent_nodata"))),
-                           .data$COMID %in% ids)
+      sub <- filter(select(ds, any_of(cols_to_select)),
+                    .data$COMID %in% ids)
 
       att <- collect(sub)
 
-      att$characteristic_id <- x
-
       att <- dplyr::mutate_all(att, ~ifelse(. == -9999, NA, .))
 
-      if(!"percent_nodata" %in% names(att)) {
-        att$percent_nodata <- 0
-      }
+      has_pct_nodata <- "percent_nodata" %in% names(att)
 
-      att <- mutate(att, percent_nodata = ifelse(is.na(.data[[i$ID]]), 100, .data$percent_nodata))
+      # pivot each variable into the standard 4-column long format
+      lapply(vars_in_group, function(x) {
+        cols <- c("COMID", x)
+        if(has_pct_nodata) cols <- c(cols, "percent_nodata")
+        out_df <- att[, cols, drop = FALSE]
 
-      distinct(
-      select(att, all_of(c(characteristic_id = "characteristic_id", comid = "COMID",
-                           characteristic_value = x, percent_nodata = "percent_nodata"))))
-    })
+        out_df$characteristic_id <- x
+
+        if(!has_pct_nodata) {
+          out_df$percent_nodata <- 0
+        }
+
+        out_df <- mutate(out_df, percent_nodata =
+                           ifelse(is.na(.data[[x]]), 100, .data$percent_nodata))
+
+        distinct(
+          select(out_df, all_of(c(characteristic_id = "characteristic_id",
+                                  comid = "COMID",
+                                  characteristic_value = x,
+                                  percent_nodata = "percent_nodata"))))
+      })
+    }), recursive = FALSE)
   }, error = function(e) {
     e
   })
@@ -326,7 +418,8 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
     return(NULL)
   }
 
-  names(out) <- unique(varname)
+  # name list elements by their characteristic_id
+  names(out) <- sapply(out, function(x) x$characteristic_id[1])
 
   varname <- stats::setNames(make.unique(varname, sep = "||"), varname)
 
@@ -339,4 +432,69 @@ get_catchment_characteristics <- function(varname, ids, reference_fabric = "nhdp
   })
 
   bind_rows(out)
+}
+
+# Retrieve catchment characteristics from EPA StreamCat API.
+# Uses StreamCatTools::sc_get_data() with aoi="catchment" (local catchment level).
+# Returns the same 4-column format as the USGS path. For watershed or riparian
+# area-of-interest options, users should call StreamCatTools::sc_get_data() directly.
+#' @noRd
+get_catchment_characteristics_streamcat <- function(varname, ids) {
+
+  check_pkg("StreamCatTools")
+
+  out <- tryCatch({
+    metrics <- paste(unique(varname), collapse = ",")
+    comids <- paste(ids, collapse = ",")
+
+    # sc_get_data returns a wide data.frame with metric columns like FertCat,
+    # optional PctFull columns like FertCatPctFull, and area columns
+    result <- StreamCatTools::sc_get_data(
+      metric = metrics,
+      aoi = "catchment",
+      comid = comids,
+      showPctFull = "true"
+    )
+
+    if(is.null(result) || nrow(result) == 0) {
+      warning("No data returned from StreamCat API.")
+      return(NULL)
+    }
+
+    # separate metric value columns from area and completeness columns
+    area_cols <- grep("AreaSqKm$", names(result), value = TRUE)
+    pctfull_cols <- grep("PctFull$", names(result), value = TRUE)
+    id_col <- intersect(c("COMID", "comid"), names(result))
+
+    value_cols <- setdiff(names(result), c(id_col, area_cols, pctfull_cols))
+
+    comid_vals <- result[[id_col[1]]]
+
+    # pivot each metric column into the standard long format
+    rows <- lapply(value_cols, function(col) {
+      # StreamCat PctFull = percent with data; convert to percent_nodata
+      pctfull_col <- paste0(col, "PctFull")
+      pct_nodata <- if(pctfull_col %in% names(result)) {
+        100 - result[[pctfull_col]]
+      } else {
+        ifelse(is.na(result[[col]]), 100, 0)
+      }
+
+      data.frame(
+        characteristic_id = col,
+        comid = comid_vals,
+        characteristic_value = result[[col]],
+        percent_nodata = pct_nodata,
+        stringsAsFactors = FALSE
+      )
+    })
+
+    bind_rows(rows)
+  }, error = function(e) {
+    warning(paste0("Issue getting StreamCat characteristics. Error was: \n",
+                   e$message))
+    NULL
+  })
+
+  out
 }

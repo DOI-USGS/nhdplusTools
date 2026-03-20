@@ -164,6 +164,9 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
 #'
 #'  }
 #'
+#' @param source character \code{"usgs"} (default) or \code{"streamcat"}. Passed
+#' through to \link{get_catchment_characteristics} when \code{catchment_characteristics}
+#' is not provided.
 #' @importFrom dplyr left_join rename_with mutate across group_by summarize ungroup distinct starts_with any_of
 #' @importFrom tidyr pivot_wider contains
 #' @export
@@ -171,7 +174,8 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
 rescale_catchment_characteristics <- function(vars, lookup_table,
                                               refactored_areas = NULL,
                                               catchment_characteristics = NULL,
-                                              catchment_areas = NULL){
+                                              catchment_areas = NULL,
+                                              source = "usgs"){
 
   # check that the inputs match what we are expecting
   if(!all(c("characteristic_id", "summary_statistic") %in% names(vars))){
@@ -196,7 +200,8 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
   if(is.null(catchment_characteristics)) {
     # download characteristics for the requested comids
     catchment_characteristics <- get_catchment_characteristics(varname = vars$characteristic_id,
-                                              ids = unique(lookup_table$comid))
+                                              ids = unique(lookup_table$comid),
+                                              source = source)
 
     if(is.null(catchment_characteristics)) {
       return(NULL)

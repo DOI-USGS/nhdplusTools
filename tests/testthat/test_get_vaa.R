@@ -78,8 +78,31 @@ test_that("catchment chars", {
 
   expect_warning(w <- get_catchment_characteristics("CAT_CFI",
                                                     walker_catchment$FEATUREID),
-                 "Variable CAT_CFI not found in metadata.")
+                 "CAT_CFI not found in metadata")
   expect_null(w)
 
   options(old_opts)
+})
+
+test_that("streamcat catchment chars", {
+
+  skip_on_cran()
+  skip_if_not_installed("StreamCatTools")
+
+  meta <- get_characteristics_metadata(source = "streamcat")
+  expect_true(inherits(meta, "data.frame"))
+  expect_true(nrow(meta) > 100)
+
+  meta_search <- get_characteristics_metadata("fert", source = "streamcat")
+  expect_true(nrow(meta_search) > 0)
+
+  dat <- get_catchment_characteristics(
+    varname = "fert",
+    ids = c(179, 1337),
+    source = "streamcat")
+
+  expect_equal(names(dat), c("characteristic_id", "comid",
+                             "characteristic_value", "percent_nodata"))
+  expect_true(nrow(dat) > 0)
+  expect_true(all(c(179, 1337) %in% dat$comid))
 })

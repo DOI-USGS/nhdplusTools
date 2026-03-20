@@ -9,7 +9,8 @@ rescale_catchment_characteristics(
   lookup_table,
   refactored_areas = NULL,
   catchment_characteristics = NULL,
-  catchment_areas = NULL
+  catchment_areas = NULL,
+  source = "usgs"
 )
 }
 \arguments{
@@ -38,6 +39,10 @@ using the characteristic ids from `vars` and the comids from `lookup_table`.}
 \item{catchment_areas}{data.frame containing columns "comid", "areasqkm",
 "split_catchment_areasqkm", and "split_area_prop". If not provided, it will
 be retrieved from `refactored_areas` and/or \link{get_vaa}.}
+
+\item{source}{character \code{"usgs"} (default) or \code{"streamcat"}. Passed
+through to \link{get_catchment_characteristics} when \code{catchment_characteristics}
+is not provided.}
 }
 \description{
 Given catchment characteristics to retrieve or process will

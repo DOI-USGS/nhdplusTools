@@ -4,26 +4,41 @@
 \alias{get_catchment_characteristics}
 \title{Get Catchment Characteristics}
 \usage{
-get_catchment_characteristics(varname, ids, reference_fabric = "nhdplusv2")
+get_catchment_characteristics(
+  varname,
+  ids,
+  reference_fabric = "nhdplusv2",
+  source = "usgs"
+)
 }
 \arguments{
 \item{varname}{character vector of desired variables. If repeated varnames
-are provided, they will be downloaded once but duplicated in the output.}
+are provided, they will be downloaded once but duplicated in the output.
+For \code{source = "streamcat"}, use StreamCat metric names (see
+\code{get_characteristics_metadata(source = "streamcat")}).}
 
 \item{ids}{numeric vector of identifiers (comids) from the specified fabric}
 
 \item{reference_fabric}{(not used) will be used to allow future specification
 of alternate reference fabrics}
+
+\item{source}{character \code{"usgs"} (default) or \code{"streamcat"}.}
 }
 \description{
 Downloads (subsets of) catchment characteristics from a cloud data
 store. See \link{get_characteristics_metadata} for available characteristics.
 
-Source:
+When \code{source = "usgs"} (the default), data is retrieved from:
 Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes
 for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream
 Watersheds for the Conterminous United States (ver. 3.0, January 2021): U.S.
 Geological Survey data release, \doi{10.5066/F7765D7V}.
+
+When \code{source = "streamcat"}, data is retrieved from the EPA StreamCat
+dataset via the \code{StreamCatTools} package (must be installed separately).
+Only local catchment-level data (\code{aoi = "catchment"}) is returned. For
+watershed or riparian area-of-interest options, use
+\code{StreamCatTools::sc_get_data()} directly.
 }
 \examples{
 \donttest{

@@ -92,6 +92,7 @@ test_that("by rpu", {
 
 test_that("big rpu test", {
   skip_on_cran()
+  testthat::skip_if_offline("sciencebase.gov")
 
   vaa <- get_vaa(atts = c("comid", "pathlength", "lengthkm",
                           "hydroseq", "dnhydroseq", "levelpathi",

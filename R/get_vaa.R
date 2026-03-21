@@ -312,9 +312,7 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
 #'
 #' When \code{source = "streamcat"}, data is retrieved from the EPA StreamCat
 #' dataset via the \code{StreamCatTools} package (must be installed separately).
-#' Only local catchment-level data (\code{aoi = "catchment"}) is returned. For
-#' watershed or riparian area-of-interest options, use
-#' \code{StreamCatTools::sc_get_data()} directly.
+#' The \code{aoi} parameter controls the area of interest for StreamCat queries.
 #'
 #' @param varname character vector of desired variables. If repeated varnames
 #' are provided, they will be downloaded once but duplicated in the output.
@@ -324,6 +322,13 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
 #' @param reference_fabric (not used) will be used to allow future specification
 #' of alternate reference fabrics
 #' @param source character \code{"usgs"} (default) or \code{"streamcat"}.
+#' @param aoi character area of interest for StreamCat queries. One of
+#' \code{"cat"} (local catchment, default), \code{"ws"} (total upstream
+#' watershed), \code{"catrp100"} (catchment riparian 100m buffer),
+#' \code{"wsrp100"} (watershed riparian 100m buffer), or \code{"other"}
+#' (for metrics like BankfullDepth, IWI, etc.). Ignored when
+#' \code{source = "usgs"} where the area of interest is encoded in the
+#' variable name prefix (e.g. CAT_, TOT_, ACC_).
 #' @importFrom dplyr bind_rows filter select everything collect
 #' @importFrom arrow s3_bucket open_dataset
 #' @export
@@ -333,13 +338,15 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
 #' }
 get_catchment_characteristics <- function(varname, ids,
                                           reference_fabric = "nhdplusv2",
-                                          source = "usgs"){
+                                          source = "usgs",
+                                          aoi = "cat"){
 
   source <- match.arg(source, c("usgs", "streamcat"))
 
   # dispatch to StreamCat API via StreamCatTools package
   if(source == "streamcat") {
-    return(get_catchment_characteristics_streamcat(varname, ids))
+    aoi <- match.arg(aoi, c("cat", "ws", "catrp100", "wsrp100", "other"))
+    return(get_catchment_characteristics_streamcat(varname, ids, aoi))
   }
 
   # USGS ScienceBase S3 parquet data (default path)
@@ -435,11 +442,9 @@ get_catchment_characteristics <- function(varname, ids,
 }
 
 # Retrieve catchment characteristics from EPA StreamCat API.
-# Uses StreamCatTools::sc_get_data() with aoi="catchment" (local catchment level).
-# Returns the same 4-column format as the USGS path. For watershed or riparian
-# area-of-interest options, users should call StreamCatTools::sc_get_data() directly.
+# Returns the same 4-column format as the USGS path.
 #' @noRd
-get_catchment_characteristics_streamcat <- function(varname, ids) {
+get_catchment_characteristics_streamcat <- function(varname, ids, aoi = "cat") {
 
   check_pkg("StreamCatTools")
 
@@ -447,11 +452,11 @@ get_catchment_characteristics_streamcat <- function(varname, ids) {
     metrics <- paste(unique(varname), collapse = ",")
     comids <- paste(ids, collapse = ",")
 
-    # sc_get_data returns a wide data.frame with metric columns like FertCat,
-    # optional PctFull columns like FertCatPctFull, and area columns
+    # sc_get_data returns a wide data.frame with metric columns (e.g. FertCat,
+    # FertWs), optional PctFull columns, and area columns
     result <- StreamCatTools::sc_get_data(
       metric = metrics,
-      aoi = "catchment",
+      aoi = aoi,
       comid = comids,
       showPctFull = "true"
     )

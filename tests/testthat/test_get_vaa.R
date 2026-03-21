@@ -105,4 +105,16 @@ test_that("streamcat catchment chars", {
                              "characteristic_value", "percent_nodata"))
   expect_true(nrow(dat) > 0)
   expect_true(all(c(179, 1337) %in% dat$comid))
+
+  # test watershed AOI
+  dat_ws <- get_catchment_characteristics(
+    varname = "fert",
+    ids = c(179, 1337),
+    source = "streamcat",
+    aoi = "ws")
+
+  expect_equal(names(dat_ws), c("characteristic_id", "comid",
+                                "characteristic_value", "percent_nodata"))
+  expect_true(nrow(dat_ws) > 0)
+  expect_true(all(c(179, 1337) %in% dat_ws$comid))
 })

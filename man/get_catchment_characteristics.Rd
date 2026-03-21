@@ -8,7 +8,8 @@ get_catchment_characteristics(
   varname,
   ids,
   reference_fabric = "nhdplusv2",
-  source = "usgs"
+  source = "usgs",
+  aoi = "cat"
 )
 }
 \arguments{
@@ -23,6 +24,14 @@ For \code{source = "streamcat"}, use StreamCat metric names (see
 of alternate reference fabrics}
 
 \item{source}{character \code{"usgs"} (default) or \code{"streamcat"}.}
+
+\item{aoi}{character area of interest for StreamCat queries. One of
+\code{"cat"} (local catchment, default), \code{"ws"} (total upstream
+watershed), \code{"catrp100"} (catchment riparian 100m buffer),
+\code{"wsrp100"} (watershed riparian 100m buffer), or \code{"other"}
+(for metrics like BankfullDepth, IWI, etc.). Ignored when
+\code{source = "usgs"} where the area of interest is encoded in the
+variable name prefix (e.g. CAT_, TOT_, ACC_).}
 }
 \description{
 Downloads (subsets of) catchment characteristics from a cloud data
@@ -36,9 +45,7 @@ Geological Survey data release, \doi{10.5066/F7765D7V}.
 
 When \code{source = "streamcat"}, data is retrieved from the EPA StreamCat
 dataset via the \code{StreamCatTools} package (must be installed separately).
-Only local catchment-level data (\code{aoi = "catchment"}) is returned. For
-watershed or riparian area-of-interest options, use
-\code{StreamCatTools::sc_get_data()} directly.
+The \code{aoi} parameter controls the area of interest for StreamCat queries.
 }
 \examples{
 \donttest{

@@ -10,7 +10,8 @@ rescale_catchment_characteristics(
   refactored_areas = NULL,
   catchment_characteristics = NULL,
   catchment_areas = NULL,
-  source = "usgs"
+  source = "usgs",
+  aoi = "cat"
 )
 }
 \arguments{
@@ -43,6 +44,10 @@ be retrieved from `refactored_areas` and/or \link{get_vaa}.}
 \item{source}{character \code{"usgs"} (default) or \code{"streamcat"}. Passed
 through to \link{get_catchment_characteristics} when \code{catchment_characteristics}
 is not provided.}
+
+\item{aoi}{character area of interest, passed through to
+\link{get_catchment_characteristics} when \code{catchment_characteristics}
+is not provided. See \link{get_catchment_characteristics} for details.}
 }
 \description{
 Given catchment characteristics to retrieve or process will

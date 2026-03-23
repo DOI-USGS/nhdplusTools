@@ -452,13 +452,12 @@ get_catchment_characteristics_streamcat <- function(varname, ids, aoi = "cat") {
     metrics <- paste(unique(varname), collapse = ",")
     comids <- paste(ids, collapse = ",")
 
-    # sc_get_data returns a wide data.frame with metric columns (e.g. FertCat,
-    # FertWs), optional PctFull columns, and area columns
+    # sc_get_data returns a wide data.frame with metric columns (e.g. fertcat,
+    # superfunddensws) and area columns
     result <- StreamCatTools::sc_get_data(
       metric = metrics,
       aoi = aoi,
-      comid = comids,
-      showPctFull = "true"
+      comid = comids
     )
 
     if(is.null(result) || nrow(result) == 0) {
@@ -467,8 +466,8 @@ get_catchment_characteristics_streamcat <- function(varname, ids, aoi = "cat") {
     }
 
     # separate metric value columns from area and completeness columns
-    area_cols <- grep("AreaSqKm$", names(result), value = TRUE)
-    pctfull_cols <- grep("PctFull$", names(result), value = TRUE)
+    area_cols <- grep("AreaSqKm$", names(result), value = TRUE, ignore.case = TRUE)
+    pctfull_cols <- grep("pctfull$", names(result), value = TRUE, ignore.case = TRUE)
     id_col <- intersect(c("COMID", "comid"), names(result))
 
     value_cols <- setdiff(names(result), c(id_col, area_cols, pctfull_cols))
@@ -478,12 +477,10 @@ get_catchment_characteristics_streamcat <- function(varname, ids, aoi = "cat") {
     # pivot each metric column into the standard long format
     rows <- lapply(value_cols, function(col) {
       # StreamCat PctFull = percent with data; convert to percent_nodata
-      pctfull_col <- paste0(col, "PctFull")
-      pct_nodata <- if(pctfull_col %in% names(result)) {
-        100 - result[[pctfull_col]]
-      } else {
-        ifelse(is.na(result[[col]]), 100, 0)
-      }
+      # PctFull column names don't follow a predictable pattern relative
+      # to metric names (e.g. fertcat -> agriculturalnitrogen_catpctfull),
+      # so we use NA-based fallback for percent_nodata
+      pct_nodata <- ifelse(is.na(result[[col]]), 100, 0)
 
       data.frame(
         characteristic_id = col,

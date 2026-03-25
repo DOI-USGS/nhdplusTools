@@ -78,8 +78,78 @@ test_that("catchment chars", {
 
   expect_warning(w <- get_catchment_characteristics("CAT_CFI",
                                                     walker_catchment$FEATUREID),
-                 "Variable CAT_CFI not found in metadata.")
+                 "CAT_CFI not found in metadata")
   expect_null(w)
 
   options(old_opts)
+})
+
+test_that("streamcat catchment chars", {
+
+  skip_on_cran()
+  skip_if_not_installed("StreamCatTools")
+
+  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  test_comids <- walker_catchment$FEATUREID[1:2]
+
+  meta <- get_characteristics_metadata(source = "streamcat")
+  expect_true(inherits(meta, "data.frame"))
+  expect_true(nrow(meta) > 100)
+
+  meta_search <- get_characteristics_metadata("fert", source = "streamcat")
+  expect_true(nrow(meta_search) > 0)
+
+  expected_names <- c("characteristic_id", "comid",
+                      "characteristic_value", "percent_nodata")
+
+  check_streamcat_result <- function(dat, ids) {
+    if(is.null(dat)) skip("StreamCat API unavailable (rate limited)")
+    expect_equal(names(dat), expected_names)
+    expect_true(nrow(dat) > 0)
+    expect_true(all(ids %in% dat$comid))
+  }
+
+  # test default (cat) AOI
+  dat <- suppressWarnings(get_catchment_characteristics(
+    varname = "fert",
+    ids = test_comids,
+    source = "streamcat"))
+
+  check_streamcat_result(dat, test_comids)
+
+  # test watershed AOI
+  dat_ws <- suppressWarnings(get_catchment_characteristics(
+    varname = "fert",
+    ids = test_comids,
+    source = "streamcat",
+    aoi = "ws"))
+
+  check_streamcat_result(dat_ws, test_comids)
+
+  # test catchment riparian 100m buffer AOI (rddens has riparian data)
+  dat_catrp <- suppressWarnings(get_catchment_characteristics(
+    varname = "superfunddens",
+    ids = test_comids,
+    source = "streamcat",
+    aoi = "catrp100"))
+
+  check_streamcat_result(dat_catrp, test_comids)
+
+  # test watershed riparian 100m buffer AOI
+  dat_wsrp <- suppressWarnings(get_catchment_characteristics(
+    varname = "rddens",
+    ids = test_comids,
+    source = "streamcat",
+    aoi = "wsrp100"))
+
+  check_streamcat_result(dat_wsrp, test_comids)
+
+  # test "other" AOI (metrics not tied to cat/ws like IWI)
+  dat_other <- suppressWarnings(get_catchment_characteristics(
+    varname = "iwi",
+    ids = test_comids,
+    source = "streamcat",
+    aoi = "other"))
+
+  check_streamcat_result(dat_other, test_comids)
 })

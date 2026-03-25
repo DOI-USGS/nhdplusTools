@@ -1,3 +1,10 @@
+nhdplusTools 1.4.3
+==========
+
+- `get_catchment_characteristics()` now batches variables by shared S3 source, greatly improving performance when requesting multiple variables. Fixes #449.
+- `get_catchment_characteristics()` and `get_characteristics_metadata()` gain a `source` parameter supporting `"usgs"` (default) and `"streamcat"` for EPA StreamCat data via the `StreamCatTools` package.
+- `rescale_catchment_characteristics()` gains a `source` parameter passed through to `get_catchment_characteristics()`.
+
 nhdplusTools 1.4.2
 ==========
 

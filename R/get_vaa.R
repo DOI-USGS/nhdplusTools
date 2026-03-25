@@ -452,12 +452,15 @@ get_catchment_characteristics_streamcat <- function(varname, ids, aoi = "cat") {
     metrics <- paste(unique(varname), collapse = ",")
     comids <- paste(ids, collapse = ",")
 
+    # TODO: fix up showPctFull when this is fixed
+    # https://github.com/USEPA/StreamCatTools/issues/88
     # sc_get_data returns a wide data.frame with metric columns (e.g. fertcat,
     # superfunddensws) and area columns
     result <- StreamCatTools::sc_get_data(
       metric = metrics,
       aoi = aoi,
-      comid = comids
+      comid = comids, 
+      showPctFull = NULL
     )
 
     if(is.null(result) || nrow(result) == 0) {

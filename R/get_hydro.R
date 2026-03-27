@@ -4,36 +4,30 @@
 #'
 #' @inherit query_usgs_oafeat details return params
 #' @param id WBD HUC ID(s)
-#' @param type character. Type of feature to return
-#' ('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12', 'huc12_nhdplusv2').
-#'
-#' Pulls `huc02`-`huc12` from a web service that hosts a snapshot of the
-#' Watershed Boundary Dataset from October, 2020.
-#'
-#' See <doi:10.5066/P92U7ZUT> for full source data.
+#' @param type character. Type of feature to return. Bare types
+#' (`huc02`-`huc12`) default to the 2025 WBD version. Versioned types are
+#' also available with suffixes `_2025`, `_2020`, `_nhdplusv2`, and
+#' `_nhdplushr` (e.g. `huc12_nhdplusv2`).
 #'
 #' See https://api.water.usgs.gov/fabric/pygeoapi for the web service.
-#'
-#' `huc12_nhdplusv2` derives from a snapshot of the WBD available from the nhdplusv2.
-#' See \link{download_nhdplusv2} for source data documentation.
-#'
-#'
 #'
 #' @export
 #'
 get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "huc12") {
 
-  allow_types <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12',
-                   'huc02_2020', 'huc04_2020', 'huc06_2020', 'huc08_2020', 'huc10_2020', 'huc12_2020',
-                   'huc08_nhdplusv2', 'huc12_nhdplusv2')
+  huc_levels <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12')
+  versions <- c('_2025', '_2020', '_nhdplusv2', '_nhdplushr')
+
+  allow_types <- c(huc_levels,
+                   as.vector(outer(huc_levels, versions, paste0)))
 
   if(!type %in% allow_types) {
     stop("type must be one of ", paste(allow_types, collapse = " "))
   }
 
-  if(type %in% c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12')) {
-    type <- paste0(type, "_2020")
-    message("defaulting to 2020 version of WBD")
+  if(type %in% huc_levels) {
+    type <- paste0(type, "_2025")
+    message("defaulting to 2025 version of WBD")
   }
 
   query_usgs_oafeat(AOI = AOI, ids = id, type = type,
@@ -240,7 +234,7 @@ get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
                      t_srs = NULL, buffer = 0.5,
                      page_size = 2000) {
 
-  if(!is.null(universalreferenceid) & !grepl("outlet|reach|hydrolocation", type)) {
+  if(!is.null(universalreferenceid) & (!is.null(type) && !grepl("outlet|reach|hydrolocation", type))) {
     stop("universalereferenceid can only be specified for hydrolocation features")
   }
 

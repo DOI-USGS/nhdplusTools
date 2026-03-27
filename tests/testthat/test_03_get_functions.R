@@ -125,6 +125,52 @@ test_that("huc", {
 
 # ==============================================================================
 
+test_that("huc type autodetection from id length", {
+
+  # autodetect huc level from id length (no type given)
+  expect_message(
+    out <- get_huc(id = "07", type = NULL),
+    "Inferred type 'huc02' from ID length"
+  )
+
+  expect_message(
+    out <- get_huc(id = "0709", type = NULL),
+    "Inferred type 'huc04' from ID length"
+  )
+
+  expect_message(
+    out <- get_huc(id = "070900020604"),
+    "Inferred type 'huc12' from ID length"
+  )
+
+  # version suffix combined with autodetected huc level
+  expect_message(
+    out <- get_huc(id = "07090002", type = "_2020"),
+    "Inferred type 'huc08_2020' from ID length and version suffix"
+  )
+
+  expect_message(
+    out <- get_huc(id = "070900020604", type = "_nhdplusv2"),
+    "Inferred type 'huc12_nhdplusv2' from ID length and version suffix"
+  )
+
+  # error on mixed-length ids
+
+  expect_error(
+    get_huc(id = c("07", "0709")),
+    "All IDs must be the same length"
+  )
+
+  # error on invalid id length
+  expect_error(
+    get_huc(id = "123"),
+    "does not correspond to a valid HUC type"
+  )
+
+})
+
+# ==============================================================================
+
 test_that("huc all versions and levels", {
   testthat::skip_on_cran()
 

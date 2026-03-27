@@ -4,7 +4,8 @@ test_that("get_3dhp", {
 
   # 3dhp types get returned
   expect_type(get_3dhp(), "list")
-  expect_message(get_3dhp(), "type")
+  mess <- capture_message(get_3dhp())
+  expect_true(grepl("type", mess[[1]]))
 
   expect_error(get_3dhp(universalreferenceid = "01234", type = "test"),
                "only be specified for hydrolocation")
@@ -12,6 +13,9 @@ test_that("get_3dhp", {
   expect_error(get_3dhp(universalreferenceid = "01234", type = "hydrolocation",
                         ids = "1"),
                "can not specify both")
+
+  expect_error(get_3dhp(ids = "workunitid:NHD", type = "flowline"),
+               "not a useful filter")
 
   skip_on_cran()
 
@@ -27,4 +31,9 @@ test_that("get_3dhp", {
                    type = "hydrolocation - reach code, external connection")
   })
   expect_equal(unique(hl$mainstemid), "https://geoconnex.us/ref/mainstems/377002")
+
+  wufl <- get_3dhp(ids = "workunitid:300585", type = "flowline")
+
+  expect_s3_class(wufl, "sf")
+  expect_true(all(wufl$workunitid == "300585"))
 })

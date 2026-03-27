@@ -19,7 +19,8 @@ get_3dhp(
 be provided as either a location (sf POINT) or area (sf POLYGON)
 in any Spatial Reference System.}
 
-\item{ids}{character vector of id3dhp ids or mainstem uris}
+\item{ids}{character vector of id3dhp ids, mainstem uris, or
+workunitid prefixed ids (e.g. "workunitid:300585")}
 
 \item{type}{character. Type of feature to return. e.g.
 ("hydrolocation", "flowline", "waterbody", "drainage area", "catchment").
@@ -85,6 +86,9 @@ CO_wb <- get_3dhp(ids = unique(CO$waterbodyid3dhp), type = "waterbody")
 if(!is.null(CO_wb)) {
 plot(sf::st_geometry(CO_wb[grepl("Powell", CO_wb$gnisidlabel),]),
      col = "blue", border = "NA") }
+
+# given a workunitid, can query for features in that work unit
+wufl <- get_3dhp(ids = "workunitid:300585", type = "flowline")
 
 # given universalreferenceid (reachcodes), can query for them but only
 # for hydrolocations. This is useful for looking up mainstem ids.

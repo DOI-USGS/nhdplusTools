@@ -97,7 +97,7 @@ test_that("huc", {
   expect_equal(hu12$huc12, "170101010806")
 
   expect_message(get_huc(AOI = pt, type = "huc12"),
-                 "defaulting to 2020 version of WBD") # TODO default to final WBD
+                 "defaulting to 2025 version of WBD")
 
   hu10 <- get_huc(AOI = pt, type = "huc10_2020")
 
@@ -121,6 +121,72 @@ test_that("huc", {
 
   expect_error(get_huc(AOI = pt, type = "test"))
 
+})
+
+# ==============================================================================
+
+test_that("huc type autodetection from id length", {
+
+  # autodetect huc level from id length (no type given)
+  expect_message(
+    out <- get_huc(id = "07", type = NULL),
+    "Inferred type 'huc02' from ID length"
+  )
+
+  expect_message(
+    out <- get_huc(id = "0709", type = NULL),
+    "Inferred type 'huc04' from ID length"
+  )
+
+  expect_message(
+    out <- get_huc(id = "070900020604"),
+    "Inferred type 'huc12' from ID length"
+  )
+
+  # version suffix combined with autodetected huc level
+  expect_message(
+    out <- get_huc(id = "07090002", type = "_2020"),
+    "Inferred type 'huc08_2020' from ID length and version suffix"
+  )
+
+  expect_message(
+    out <- get_huc(id = "070900020604", type = "_nhdplusv2"),
+    "Inferred type 'huc12_nhdplusv2' from ID length and version suffix"
+  )
+
+  # error on mixed-length ids
+
+  expect_error(
+    get_huc(id = c("07", "0709")),
+    "All IDs must be the same length"
+  )
+
+  # error on invalid id length
+  expect_error(
+    get_huc(id = "123"),
+    "does not correspond to a valid HUC type"
+  )
+
+})
+
+# ==============================================================================
+
+test_that("huc all versions and levels", {
+  testthat::skip_on_cran()
+
+  huc_ids <- c(huc02 = "07", huc04 = "0709", huc06 = "070900",
+               huc08 = "07090002", huc10 = "0709000206", huc12 = "070900020604")
+
+  versions <- c("_2025", "_2020", "_nhdplusv2", "_nhdplushr")
+
+  for (v in versions) {
+    for (i in seq_along(huc_ids)) {
+      type <- paste0(names(huc_ids)[i], v)
+      result <- get_huc(id = huc_ids[i], type = type)
+      expect_true(nrow(result) >= 1,
+                  info = paste("Failed for", type, "with id", huc_ids[i]))
+    }
+  }
 })
 
 # ==============================================================================

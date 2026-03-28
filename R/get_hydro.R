@@ -4,36 +4,59 @@
 #'
 #' @inherit query_usgs_oafeat details return params
 #' @param id WBD HUC ID(s)
-#' @param type character. Type of feature to return
-#' ('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12', 'huc12_nhdplusv2').
-#'
-#' Pulls `huc02`-`huc12` from a web service that hosts a snapshot of the
-#' Watershed Boundary Dataset from October, 2020.
-#'
-#' See <doi:10.5066/P92U7ZUT> for full source data.
+#' @param type character. Type of feature to return. If `NULL` (default) and
+#' `id` is provided, the HUC level is autodetected from the character length
+#' of the IDs (e.g. 2-character IDs → `huc02`, 12-character → `huc12`).
+#' A version suffix alone (e.g. `"_2020"`, `"_nhdplusv2"`) can also be
+#' provided to combine autodetected HUC level with a specific version.
+#' If `NULL` and no `id` is provided, defaults to `huc12`.
+#' Bare types (`huc02`-`huc12`) default to the 2025 WBD version. Versioned
+#' types are also available with suffixes `_2025`, `_2020`, `_nhdplusv2`, and
+#' `_nhdplushr` (e.g. `huc12_nhdplusv2`).
 #'
 #' See https://api.water.usgs.gov/fabric/pygeoapi for the web service.
 #'
-#' `huc12_nhdplusv2` derives from a snapshot of the WBD available from the nhdplusv2.
-#' See \link{download_nhdplusv2} for source data documentation.
-#'
-#'
-#'
 #' @export
 #'
-get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = "huc12") {
+get_huc <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5, type = NULL) {
 
-  allow_types <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12',
-                   'huc02_2020', 'huc04_2020', 'huc06_2020', 'huc08_2020', 'huc10_2020', 'huc12_2020',
-                   'huc08_nhdplusv2', 'huc12_nhdplusv2')
+  huc_levels <- c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12')
+  versions <- c('_2025', '_2020', '_nhdplusv2', '_nhdplushr')
+
+  allow_types <- c(huc_levels,
+                   as.vector(outer(huc_levels, versions, paste0)))
+
+  if(!is.null(id)) {
+    nchar_id <- unique(nchar(id))
+    if(length(nchar_id) != 1) {
+      stop("All IDs must be the same length to autodetect type. ",
+           "Provide type explicitly for mixed-length IDs.")
+    }
+    valid_lengths <- c(2, 4, 6, 8, 10, 12)
+    if(!nchar_id %in% valid_lengths) {
+      stop("ID length ", nchar_id, " does not correspond to a valid HUC type. ",
+           "Expected lengths: ", paste(valid_lengths, collapse = ", "))
+    }
+    huc_level <- paste0("huc", sprintf("%02d", nchar_id))
+
+    if(is.null(type)) {
+      type <- huc_level
+      message("Inferred type '", type, "' from ID length")
+    } else if(type %in% versions) {
+      type <- paste0(huc_level, type)
+      message("Inferred type '", type, "' from ID length and version suffix")
+    }
+  } else if(is.null(type)) {
+    type <- "huc12"
+  }
 
   if(!type %in% allow_types) {
     stop("type must be one of ", paste(allow_types, collapse = " "))
   }
 
-  if(type %in% c('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12')) {
-    type <- paste0(type, "_2020")
-    message("defaulting to 2020 version of WBD")
+  if(type %in% huc_levels) {
+    type <- paste0(type, "_2025")
+    message("defaulting to 2025 version of WBD")
   }
 
   query_usgs_oafeat(AOI = AOI, ids = id, type = type,
@@ -194,7 +217,8 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #' @param type character. Type of feature to return. e.g.
 #' ("hydrolocation", "flowline", "waterbody", "drainage area", "catchment").
 #' If NULL (default) a data.frame of available types is returned
-#' @param ids character vector of id3dhp ids or mainstem uris
+#' @param ids character vector of id3dhp ids, mainstem uris, or
+#' workunitid prefixed ids (e.g. "workunitid:300585")
 #' @param universalreferenceid character vector of hydrolocation universal
 #' reference ids such as reachcodes
 #' @export
@@ -229,6 +253,9 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #' plot(sf::st_geometry(CO_wb[grepl("Powell", CO_wb$gnisidlabel),]),
 #'      col = "blue", border = "NA") }
 #'
+#' # given a workunitid, can query for features in that work unit
+#' wufl <- get_3dhp(ids = "workunitid:300585", type = "flowline")
+#'
 #' # given universalreferenceid (reachcodes), can query for them but only
 #' # for hydrolocations. This is useful for looking up mainstem ids.
 #'
@@ -240,7 +267,7 @@ get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
                      t_srs = NULL, buffer = 0.5,
                      page_size = 2000) {
 
-  if(!is.null(universalreferenceid) & !grepl("outlet|reach|hydrolocation", type)) {
+  if(!is.null(universalreferenceid) & (!is.null(type) && !grepl("outlet|reach|hydrolocation", type))) {
     stop("universalereferenceid can only be specified for hydrolocation features")
   }
 
@@ -254,6 +281,13 @@ get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
   if(!is.null(ids) && grepl("^https://", ids[1])) {
     where <- paste(paste0("mainstemid IN ('",
                           paste(ids, collapse = "', '"), "')"))
+    ids <- NULL
+  } else if(!is.null(ids) && grepl("^workunitid:", ids[1])) {
+    wuids <- sub("^workunitid:", "", ids)
+    if(any(wuids == "NHD"))
+      stop("\"NHD\" is the default workunitid and is not a useful filter")
+    where <- paste0("workunitid IN ('",
+                    paste(wuids, collapse = "', '"), "')")
     ids <- NULL
   }
 

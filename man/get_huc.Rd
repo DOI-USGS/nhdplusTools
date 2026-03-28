@@ -4,7 +4,7 @@
 \alias{get_huc}
 \title{Find WBD HUC unit subsets}
 \usage{
-get_huc(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5, type = "huc12")
+get_huc(AOI = NULL, id = NULL, t_srs = NULL, buffer = 0.5, type = NULL)
 }
 \arguments{
 \item{AOI}{sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
@@ -20,18 +20,17 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 \item{buffer}{numeric. The amount (in meters) to buffer a POINT AOI by for an
 extended search. Default = 0.5}
 
-\item{type}{character. Type of feature to return
-('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12', 'huc12_nhdplusv2').
+\item{type}{character. Type of feature to return. If `NULL` (default) and
+`id` is provided, the HUC level is autodetected from the character length
+of the IDs (e.g. 2-character IDs → `huc02`, 12-character → `huc12`).
+A version suffix alone (e.g. `"_2020"`, `"_nhdplusv2"`) can also be
+provided to combine autodetected HUC level with a specific version.
+If `NULL` and no `id` is provided, defaults to `huc12`.
+Bare types (`huc02`-`huc12`) default to the 2025 WBD version. Versioned
+types are also available with suffixes `_2025`, `_2020`, `_nhdplusv2`, and
+`_nhdplushr` (e.g. `huc12_nhdplusv2`).
 
-Pulls `huc02`-`huc12` from a web service that hosts a snapshot of the
-Watershed Boundary Dataset from October, 2020.
-
-See <doi:10.5066/P92U7ZUT> for full source data.
-
-See https://api.water.usgs.gov/fabric/pygeoapi for the web service.
-
-`huc12_nhdplusv2` derives from a snapshot of the WBD available from the nhdplusv2.
-See \link{download_nhdplusv2} for source data documentation.}
+See https://api.water.usgs.gov/fabric/pygeoapi for the web service.}
 }
 \value{
 a simple features (sf) object

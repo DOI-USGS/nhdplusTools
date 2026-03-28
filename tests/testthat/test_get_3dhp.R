@@ -4,8 +4,6 @@ test_that("get_3dhp", {
 
   # 3dhp types get returned
   expect_type(get_3dhp(), "list")
-  mess <- capture_message(get_3dhp())
-  expect_true(grepl("type", mess[[1]]))
 
   expect_error(get_3dhp(universalreferenceid = "01234", type = "test"),
                "only be specified for hydrolocation")

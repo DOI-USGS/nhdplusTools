@@ -209,7 +209,10 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 #'
 #' When \code{source = "streamcat"}, returns metric metadata from the EPA
 #' StreamCat dataset accessed via the \code{StreamCatTools} package (must be
-#' installed separately).
+#' installed separately):
+#' Weber, Marc H, Hill, Ryan A., Brookes, Allen F. 2024, StreamCatTools: Tools to 
+#' work with the StreamCat API within R and access the full suite of StreamCat and 
+#' LakeCat metrics, https://usepa.github.io/StreamCatTools
 #' @param search character string of length 1 to free search the metadata table.
 #' If no search term is provided the entire table is returned.
 #' @param source character \code{"usgs"} (default) or \code{"streamcat"}.

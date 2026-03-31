@@ -436,3 +436,36 @@ unify_types <- function(out) {
 
   out
 }
+
+#' Get HUC12 features filtered by HUC parent IDs
+#'
+#' Queries the nhdplusv2-huc12 OGC API collection for all HUC12 polygons
+#' belonging to the specified HUC08 or HUC10 units.
+#'
+#' @param huc_ids character vector of 8-digit HUC08 or 10-digit HUC10 IDs.
+#'   All IDs must be the same length (all 8-digit or all 10-digit).
+#' @param t_srs target spatial reference system (optional)
+#' @return sf data.frame of HUC12 features
+#' @noRd
+get_huc12_by_huc <- function(huc_ids, t_srs = NULL) {
+  if(length(huc_ids) == 0) {
+    return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
+  }
+
+  base <- get("usgs_water_root", envir = nhdplusTools_env)
+
+  n <- unique(nchar(huc_ids))
+  if(length(n) != 1 || !n %in% c(8, 10))
+    stop("huc_ids must be all 8-digit (HUC08) or all 10-digit (HUC10)")
+
+  id_name <- if(n == 8) "huc_8" else "huc_10"
+
+  out <- lapply(seq_along(huc_ids), function(i) {
+    message("  [", i, "/", length(huc_ids), "] Fetching ", huc_ids[i], "...")
+    ids_list <- setNames(list(huc_ids[i]), id_name)
+    get_oafeat(base, AOI = NULL, type = "nhdplusv2-huc12",
+               ids = ids_list, t_srs = t_srs, status = FALSE)
+  })
+
+  sf::st_sf(dplyr::bind_rows(out))
+}

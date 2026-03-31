@@ -99,7 +99,7 @@ get_drainage_area_estimates <- function(start, vaa) {
     outlet_comids, \(x) {
       findNLDI(
         comid = x, nav = "UT",
-        distance_km = 999, find = "huc12pp"
+        distance_km = 9999, find = "huc12pp"
       )$UT_huc12pp
     }
   ) |> bind_rows()
@@ -309,11 +309,45 @@ plan_upstream_huc12_fetches <- function(all_huc12_ids, outlet_huc12_ids) {
   list(huc12_est = huc12_est, huc10_est = huc10_est, huc08_est = huc08_est)
 }
 
+#' Filter outlet backfill HUC12s by sort order
+#'
+#' Filters HUC12 features in the outlet HUC10(s) to those upstream of the
+#' outlet HUC12(s) using lexicographic sort order.
+#'
+#' @param outlet_hu12s sf data.frame. All HUC12s in the outlet HUC10(s).
+#' @param outlet_huc12_ids character. The outlet HUC12 identifier(s).
+#' @param bulk sf data.frame or NULL. Bulk HUC12s to dedup against.
+#' @param label character. Label for progress message.
+#' @return sf data.frame of filtered backfill HUC12s (may have 0 rows).
+#' @noRd
+filter_outlet_backfill <- function(outlet_hu12s, outlet_huc12_ids,
+  bulk = NULL, label = "backfill") {
+
+  if(nrow(outlet_hu12s) == 0) return(outlet_hu12s)
+
+  max_per_h10 <- tapply(
+    outlet_huc12_ids, substr(outlet_huc12_ids, 1, 10), max
+  )
+  keep <- vapply(outlet_hu12s$huc_12, function(h12) {
+    h10 <- substr(h12, 1, 10)
+    h10 %in% names(max_per_h10) && h12 < max_per_h10[[h10]]
+  }, logical(1))
+  local <- outlet_hu12s[keep, ]
+
+  if(!is.null(bulk) && nrow(local) > 0)
+    local <- local[!local$huc_12 %in% bulk$huc_12, ]
+
+  message("  Backfill (", label, "): ", sum(keep), " HUC12s in outlet HUC10")
+  local
+}
+
 #' Fetch upstream HUC12 polygons according to a fetch plan
 #'
 #' Executes the web service calls described by a plan from
 #' \code{plan_upstream_huc12_fetches} and returns three sf data.frames
-#' of HUC12 polygons with area columns.
+#' of HUC12 polygons with area columns. When both HUC10 and HUC08
+#' estimates are active, the HUC08 bulk query is fetched first and
+#' the HUC10 subset is derived from it to avoid redundant requests.
 #'
 #' @param plan list. Output of \code{plan_upstream_huc12_fetches}.
 #' @return list with \code{hu12_by_huc12}, \code{hu12_by_huc10}, and
@@ -326,79 +360,114 @@ fetch_upstream_huc12s <- function(plan) {
 
   # Estimate 1: HUC12-only
   hu12_by_huc12 <- if(length(plan$huc12_est$fetch_ids) > 0) {
-    get_huc(id = plan$huc12_est$fetch_ids, type = "_nhdplusv2") |> st_transform(5070)
+    get_huc(id = plan$huc12_est$fetch_ids, type = "_nhdplusv2") |>
+      st_transform(5070)
   } else {
     empty_sf
   }
 
-  # Estimate 2: HUC10-level (NA when basin is within a single HUC10)
-  if(plan$huc10_est$same_as_huc12) {
-    hu12_by_huc10 <- NULL
-  } else {
-    parts <- list()
-    if(length(plan$huc10_est$bulk_huc10s) > 0)
-      parts$bulk <- get_huc12_by_huc(plan$huc10_est$bulk_huc10s)
-    # Backfill: fetch ALL HUC12s in outlet HUC10(s) and filter by sort
-    # order. This replaces individual local_huc12_ids fetches and also
-    # captures HUC12s with no huc12pp pour point.
-    bf <- plan$huc10_est$outlet_backfill
-    if(length(bf$outlet_huc10s) > 0) {
-      outlet_hu12s <- get_huc12_by_huc(bf$outlet_huc10s)
-      if(nrow(outlet_hu12s) > 0) {
-        max_per_h10 <- tapply(
-          bf$outlet_huc12_ids, substr(bf$outlet_huc12_ids, 1, 10), max
-        )
-        keep <- vapply(outlet_hu12s$huc_12, function(h12) {
-          h10 <- substr(h12, 1, 10)
-          h10 %in% names(max_per_h10) && h12 < max_per_h10[[h10]]
-        }, logical(1))
-        local <- outlet_hu12s[keep, ]
-        # dedup against bulk
-        if(!is.null(parts$bulk) && nrow(local) > 0)
-          local <- local[!local$huc_12 %in% parts$bulk$huc_12, ]
-        if(nrow(local) > 0) parts$local <- local
-        message("  Backfill (HUC10): ", sum(keep), " HUC12s in outlet HUC10")
-      }
-    }
-    hu12_by_huc10 <- if(length(parts) > 0) {
-      sf::st_sf(dplyr::bind_rows(parts)) |> st_transform(5070)
-    } else {
-      empty_sf
-    }
-  }
+  huc10_active <- !plan$huc10_est$same_as_huc12
+  huc08_active <- huc10_active && !plan$huc08_est$same_as_huc10
 
-  # Estimate 3: HUC08-level (NA when basin is within a single HUC08)
-  if(plan$huc08_est$same_as_huc10) {
+  if(!huc10_active) {
+    hu12_by_huc10 <- NULL
     hu12_by_huc08 <- NULL
   } else {
-    parts <- list()
-    if(length(plan$huc08_est$bulk_huc08s) > 0)
-      parts$huc08 <- get_huc12_by_huc(plan$huc08_est$bulk_huc08s)
-    # Backfill: same as HUC10 estimate — fetch ALL HUC12s in outlet
-    # HUC10(s) to capture those missing from huc12pp.
-    bf <- plan$huc08_est$outlet_backfill
-    if(length(bf$outlet_huc10s) > 0) {
-      outlet_hu12s <- get_huc12_by_huc(bf$outlet_huc10s)
-      if(nrow(outlet_hu12s) > 0) {
-        max_per_h10 <- tapply(
-          bf$outlet_huc12_ids, substr(bf$outlet_huc12_ids, 1, 10), max
-        )
-        keep <- vapply(outlet_hu12s$huc_12, function(h12) {
-          h10 <- substr(h12, 1, 10)
-          h10 %in% names(max_per_h10) && h12 < max_per_h10[[h10]]
-        }, logical(1))
-        local <- outlet_hu12s[keep, ]
-        # dedup against bulk
-        if(!is.null(parts$huc08) && nrow(local) > 0)
-          local <- local[!local$huc_12 %in% parts$huc08$huc_12, ]
-        if(nrow(local) > 0) parts$local <- local
-        message("  Backfill (HUC08): ", sum(keep), " HUC12s in outlet HUC10")
-      }
-    }
-    hu12_by_huc08 <- if(length(parts) > 0) {
-      sf::st_sf(dplyr::bind_rows(parts)) |> st_transform(5070)
+    # Outlet backfill: fetch once, shared by both estimates
+    bf <- plan$huc10_est$outlet_backfill
+    backfill_raw <- if(length(bf$outlet_huc10s) > 0) {
+      get_huc12_by_huc(bf$outlet_huc10s)
     } else {
       empty_sf
+    }
+
+    if(huc08_active) {
+      # Fetch the broadest query first: all HUC12s in upstream HUC08s
+      huc08_bulk <- if(length(plan$huc08_est$bulk_huc08s) > 0) {
+        get_huc12_by_huc(plan$huc08_est$bulk_huc08s)
+      } else {
+        empty_sf
+      }
+
+      # HUC10s covered by the HUC08 bulk vs those needing separate fetch
+      covered_huc10s <- plan$huc10_est$bulk_huc10s[
+        substr(plan$huc10_est$bulk_huc10s, 1, 8) %in%
+          plan$huc08_est$bulk_huc08s
+      ]
+      extra_huc10s <- setdiff(plan$huc10_est$bulk_huc10s, covered_huc10s)
+
+      # Derive HUC10 subset from HUC08 results
+      huc10_from_huc08 <- if(nrow(huc08_bulk) > 0 &&
+          length(covered_huc10s) > 0) {
+        huc08_bulk[
+          substr(huc08_bulk$huc_12, 1, 10) %in% covered_huc10s, ]
+      } else {
+        empty_sf
+      }
+
+      # Fetch remaining HUC10s not covered by HUC08 query
+      huc10_extra <- if(length(extra_huc10s) > 0) {
+        get_huc12_by_huc(extra_huc10s)
+      } else {
+        empty_sf
+      }
+
+      message("  HUC10 from HUC08: ", nrow(huc10_from_huc08),
+        " HUC12s reused, ", nrow(huc10_extra), " fetched separately")
+
+      # Assemble HUC08 estimate
+      huc08_parts <- list()
+      if(nrow(huc08_bulk) > 0) huc08_parts$bulk <- huc08_bulk
+      backfill_huc08 <- filter_outlet_backfill(
+        backfill_raw, bf$outlet_huc12_ids,
+        bulk = huc08_parts$bulk, label = "HUC08")
+      if(nrow(backfill_huc08) > 0) huc08_parts$backfill <- backfill_huc08
+
+      hu12_by_huc08 <- if(length(huc08_parts) > 0) {
+        sf::st_sf(dplyr::bind_rows(huc08_parts)) |> st_transform(5070)
+      } else {
+        empty_sf
+      }
+
+      # Assemble HUC10 estimate
+      huc10_parts <- list()
+      if(nrow(huc10_from_huc08) > 0)
+        huc10_parts$from_huc08 <- huc10_from_huc08
+      if(nrow(huc10_extra) > 0) huc10_parts$extra <- huc10_extra
+      all_huc10_bulk <- if(length(huc10_parts) > 0) {
+        dplyr::bind_rows(huc10_parts)
+      } else {
+        NULL
+      }
+      backfill_huc10 <- filter_outlet_backfill(
+        backfill_raw, bf$outlet_huc12_ids,
+        bulk = all_huc10_bulk, label = "HUC10")
+      if(nrow(backfill_huc10) > 0)
+        huc10_parts$backfill <- backfill_huc10
+
+      hu12_by_huc10 <- if(length(huc10_parts) > 0) {
+        sf::st_sf(dplyr::bind_rows(huc10_parts)) |> st_transform(5070)
+      } else {
+        empty_sf
+      }
+
+    } else {
+      # Only HUC10 active, no HUC08
+      hu12_by_huc08 <- NULL
+      huc10_parts <- list()
+      if(length(plan$huc10_est$bulk_huc10s) > 0)
+        huc10_parts$bulk <- get_huc12_by_huc(plan$huc10_est$bulk_huc10s)
+      backfill_huc10 <- filter_outlet_backfill(
+        backfill_raw, bf$outlet_huc12_ids,
+        bulk = huc10_parts$bulk, label = "HUC10")
+      if(nrow(backfill_huc10) > 0)
+        huc10_parts$backfill <- backfill_huc10
+
+      hu12_by_huc10 <- if(length(huc10_parts) > 0) {
+        sf::st_sf(dplyr::bind_rows(huc10_parts)) |> st_transform(5070)
+      } else {
+        empty_sf
+      }
     }
   }
 

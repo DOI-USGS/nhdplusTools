@@ -63,22 +63,55 @@
 get_drainage_area_estimates <- function(start, vaa) {
 
   # resolve start feature via NLDI
+  if(inherits(start, "sfc")) {
+    message("Fetching waterbody...")
 
-  message("Resolving start feature via NLDI...")
-  start_nldi <- get_nldi_feature(start)
+    # get nhdplusv2 waterbody
+    wb <- get_waterbodies(start)
 
-    # HUC12 pour points upstream via NLDI
+    start_feature <- wb
+    
+    if(!nrow(wb) == 1 | !inherits(wb, "sf")) {
+      stop("point needs to fall in a waterbody!")
+    }
+
+    all_wb <- vaa[vaa$wbareacomi == wb$comid,]
+
+    outlet_comids <- all_wb$comid[!all_wb$tonode %in% all_wb$fromnode]
+
+    message("Found ", length(outlet_comids), " outlets for waterbody")
+
+  } else {
+
+    message("Resolving start feature via NLDI...")
+    start_nldi <- get_nldi_feature(start)
+    start_feature <- start_nldi
+    outlet_comids <- start_nldi$comid
+  }
+
+  if(length(outlet_comids) == 0 || all(is.na(outlet_comids)))
+    stop("No outlet COMIDs found for the provided start location. ",
+      "Check that the input resolves to a valid NHDPlus feature.")
+
+  # HUC12 pour points upstream via NLDI
   message("Finding HUC12 pour points upstream via NLDI...")
-  huc12_outlets <- findNLDI(
-    comid = start_nldi$comid, nav = "UT",
-    distance_km = 999, find = "huc12pp"
-  )
-
+  huc12_outlets <- lapply(
+    outlet_comids, \(x) {
+      findNLDI(
+        comid = x, nav = "UT",
+        distance_km = 999, find = "huc12pp"
+      )$UT_huc12pp
+    }
+  ) |> bind_rows()
+  
   # full upstream network from VAA
   message("Subsetting upstream network from VAA for COMID ",
-    start_nldi$comid, "...")
-  all_net <- filter(vaa, .data$comid %in% 
-    hydroloom::navigate_hydro_network(vaa, start_nldi$comid, mode = "UT"))
+    outlet_comids, "...")
+  all_net <- lapply(outlet_comids, \(x) {
+    hydroloom::navigate_hydro_network(vaa, x, mode = "UT")
+  })
+  
+  all_net <- filter(vaa, .data$comid %in% do.call(c, all_net))
 
   all_net <- add_toids(all_net, return_dendritic = TRUE)
 
@@ -86,22 +119,21 @@ get_drainage_area_estimates <- function(start, vaa) {
   message("  ", nrow(all_net), " flowlines, totdasqkm = ",
     round(network_da, 2))
 
+  message("  Found ", nrow(huc12_outlets), " HUC12 outlets")
 
-  message("  Found ", nrow(huc12_outlets$UT_huc12pp), " HUC12 outlets")
-
-  huc12_comids <- huc12_outlets$UT_huc12pp$comid
+  huc12_comids <- huc12_outlets$comid
 
   # find the immediately-upstream HUC12 outlets
   immediate_hu12_comids <- find_immediate_huc12_outlets(
-    all_net, start_nldi$comid, huc12_comids
+    all_net, outlet_comids, huc12_comids
   )
 
   message("  ", length(immediate_hu12_comids),
     " immediately-upstream HUC12 outlets ",
     "(of ", length(huc12_comids), " total)")
 
-  outlet_huc <- huc12_outlets$UT_huc12pp[
-    huc12_outlets$UT_huc12pp$comid %in% immediate_hu12_comids,
+  outlet_huc <- huc12_outlets[
+    huc12_outlets$comid %in% immediate_hu12_comids,
   ]
 
   # fetch and compute areas for upstream HUC12s
@@ -154,14 +186,14 @@ get_drainage_area_estimates <- function(start, vaa) {
     contrib_da_huc10_sqkm = contrib_da_huc10_sqkm,
     contrib_da_huc08_sqkm = contrib_da_huc08_sqkm,
     network_da_sqkm = network_da,
-    start_feature = start_nldi,
+    start_feature = start_feature,
     hu12_by_huc12 = hu12_result$hu12_by_huc12,
     hu12_by_huc10 = hu12_result$hu12_by_huc10,
     hu12_by_huc08 = hu12_result$hu12_by_huc08,
     extra_catchments = gap$extra_catchments,
     split_catchment = gap$split_catchment,
     all_network = all_net,
-    hu12_outlet = huc12_outlets$UT_huc12pp
+    hu12_outlet = huc12_outlets
   )
 }
 
@@ -192,7 +224,8 @@ find_immediate_huc12_outlets <- function(all_net, start_comid, huc12_comids) {
   # reachable set (or is the start comid itself)
   huc12_comids[huc12_comids %in%
     all_net$comid[all_net$toid %in% reachable |
-      all_net$toid == start_comid]]
+      all_net$toid %in% start_comid]] |>
+    unique()
 }
 
 #' Plan upstream HUC12 fetch operations
@@ -227,9 +260,18 @@ plan_upstream_huc12_fetches <- function(all_huc12_ids, outlet_huc12_ids) {
       substr(all_huc12_ids, 1, 10) %in% outlet_huc10s &
         !all_huc12_ids %in% outlet_huc12_ids
     ]
+    # Outlet HUC10 backfill: some HUC12s within the outlet HUC10 have no
+    # huc12pp pour point (no flowline exits the HUC12 on the NHD network).
+    # These are missed by NLDI navigation. The fix: query ALL HUC12s in
+    # the outlet HUC10(s), then filter to those upstream of the outlet by
+    # sort order (huc_12 < outlet huc_12).
     huc10_est <- list(
       bulk_huc10s = upstream_huc10s,
       local_huc12_ids = local_huc12_ids,
+      outlet_backfill = list(
+        outlet_huc10s = outlet_huc10s,
+        outlet_huc12_ids = outlet_huc12_ids
+      ),
       same_as_huc12 = FALSE
     )
   } else {
@@ -250,6 +292,10 @@ plan_upstream_huc12_fetches <- function(all_huc12_ids, outlet_huc12_ids) {
     huc08_est <- list(
       bulk_huc08s = upstream_huc08s,
       local_huc12_ids = local_huc12_ids_huc08,
+      outlet_backfill = list(
+        outlet_huc10s = outlet_huc10s,
+        outlet_huc12_ids = outlet_huc12_ids
+      ),
       same_as_huc10 = FALSE
     )
   } else {
@@ -292,8 +338,28 @@ fetch_upstream_huc12s <- function(plan) {
     parts <- list()
     if(length(plan$huc10_est$bulk_huc10s) > 0)
       parts$bulk <- get_huc12_by_huc(plan$huc10_est$bulk_huc10s)
-    if(length(plan$huc10_est$local_huc12_ids) > 0)
-      parts$local <- get_huc(id = plan$huc10_est$local_huc12_ids, type = "_nhdplusv2")
+    # Backfill: fetch ALL HUC12s in outlet HUC10(s) and filter by sort
+    # order. This replaces individual local_huc12_ids fetches and also
+    # captures HUC12s with no huc12pp pour point.
+    bf <- plan$huc10_est$outlet_backfill
+    if(length(bf$outlet_huc10s) > 0) {
+      outlet_hu12s <- get_huc12_by_huc(bf$outlet_huc10s)
+      if(nrow(outlet_hu12s) > 0) {
+        max_per_h10 <- tapply(
+          bf$outlet_huc12_ids, substr(bf$outlet_huc12_ids, 1, 10), max
+        )
+        keep <- vapply(outlet_hu12s$huc_12, function(h12) {
+          h10 <- substr(h12, 1, 10)
+          h10 %in% names(max_per_h10) && h12 < max_per_h10[[h10]]
+        }, logical(1))
+        local <- outlet_hu12s[keep, ]
+        # dedup against bulk
+        if(!is.null(parts$bulk) && nrow(local) > 0)
+          local <- local[!local$huc_12 %in% parts$bulk$huc_12, ]
+        if(nrow(local) > 0) parts$local <- local
+        message("  Backfill (HUC10): ", sum(keep), " HUC12s in outlet HUC10")
+      }
+    }
     hu12_by_huc10 <- if(length(parts) > 0) {
       sf::st_sf(dplyr::bind_rows(parts)) |> st_transform(5070)
     } else {
@@ -308,8 +374,27 @@ fetch_upstream_huc12s <- function(plan) {
     parts <- list()
     if(length(plan$huc08_est$bulk_huc08s) > 0)
       parts$huc08 <- get_huc12_by_huc(plan$huc08_est$bulk_huc08s)
-    if(length(plan$huc08_est$local_huc12_ids) > 0)
-      parts$local <- get_huc(id = plan$huc08_est$local_huc12_ids, type = "_nhdplusv2")
+    # Backfill: same as HUC10 estimate — fetch ALL HUC12s in outlet
+    # HUC10(s) to capture those missing from huc12pp.
+    bf <- plan$huc08_est$outlet_backfill
+    if(length(bf$outlet_huc10s) > 0) {
+      outlet_hu12s <- get_huc12_by_huc(bf$outlet_huc10s)
+      if(nrow(outlet_hu12s) > 0) {
+        max_per_h10 <- tapply(
+          bf$outlet_huc12_ids, substr(bf$outlet_huc12_ids, 1, 10), max
+        )
+        keep <- vapply(outlet_hu12s$huc_12, function(h12) {
+          h10 <- substr(h12, 1, 10)
+          h10 %in% names(max_per_h10) && h12 < max_per_h10[[h10]]
+        }, logical(1))
+        local <- outlet_hu12s[keep, ]
+        # dedup against bulk
+        if(!is.null(parts$huc08) && nrow(local) > 0)
+          local <- local[!local$huc_12 %in% parts$huc08$huc_12, ]
+        if(nrow(local) > 0) parts$local <- local
+        message("  Backfill (HUC08): ", sum(keep), " HUC12s in outlet HUC10")
+      }
+    }
     hu12_by_huc08 <- if(length(parts) > 0) {
       sf::st_sf(dplyr::bind_rows(parts)) |> st_transform(5070)
     } else {
@@ -360,7 +445,7 @@ fetch_upstream_huc12s <- function(plan) {
 #' @noRd
 get_upstream_huc12s <- function(huc12_outlets, outlet_huc) {
 
-  all_huc12_ids <- huc12_outlets$UT_huc12pp$identifier
+  all_huc12_ids <- huc12_outlets$identifier
   outlet_huc12_ids <- outlet_huc$identifier
 
   plan <- plan_upstream_huc12_fetches(all_huc12_ids, outlet_huc12_ids)

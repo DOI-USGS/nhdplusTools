@@ -80,8 +80,10 @@ test_that("plan_upstream_huc12_fetches single HUC10", {
   expect_equal(plan$huc12_est$fetch_ids, ids)
   expect_true(plan$huc10_est$same_as_huc12)
   expect_equal(plan$huc10_est$bulk_huc10s, character(0))
+  expect_null(plan$huc10_est$outlet_backfill)
   expect_true(plan$huc08_est$same_as_huc10)
   expect_equal(plan$huc08_est$bulk_huc08s, character(0))
+  expect_null(plan$huc08_est$outlet_backfill)
 })
 
 test_that("plan_upstream_huc12_fetches multi-HUC10 single-HUC08", {
@@ -95,6 +97,10 @@ test_that("plan_upstream_huc12_fetches multi-HUC10 single-HUC08", {
   expect_false(plan$huc10_est$same_as_huc12)
   expect_equal(plan$huc10_est$bulk_huc10s, "0707020105")
   expect_equal(plan$huc10_est$local_huc12_ids, "070702010102")
+
+  # outlet_backfill present for multi-HUC10
+  expect_equal(plan$huc10_est$outlet_backfill$outlet_huc10s, "0707020101")
+  expect_equal(plan$huc10_est$outlet_backfill$outlet_huc12_ids, "070702010101")
 
   # HUC08 estimate: single HUC08 -> same as HUC10
   expect_true(plan$huc08_est$same_as_huc10)
@@ -116,12 +122,20 @@ test_that("plan_upstream_huc12_fetches multi-HUC08", {
     sort(c("0707030203", "0708010101")))
   expect_equal(plan$huc10_est$local_huc12_ids, "070702010102")
 
+  # outlet_backfill for HUC10 estimate
+  expect_equal(plan$huc10_est$outlet_backfill$outlet_huc10s, "0707020101")
+  expect_equal(plan$huc10_est$outlet_backfill$outlet_huc12_ids, "070702010101")
+
   # HUC08 estimate: two upstream HUC08s
   expect_false(plan$huc08_est$same_as_huc10)
   expect_equal(sort(plan$huc08_est$bulk_huc08s),
     sort(c("07070302", "07080101")))
   # local HUC12s = huc12pp in outlet HUC08 (excluding outlet HUC12)
   expect_equal(plan$huc08_est$local_huc12_ids, "070702010102")
+
+  # outlet_backfill for HUC08 estimate
+  expect_equal(plan$huc08_est$outlet_backfill$outlet_huc10s, "0707020101")
+  expect_equal(plan$huc08_est$outlet_backfill$outlet_huc12_ids, "070702010101")
 })
 
 test_that("plan_upstream_huc12_fetches single ID equals outlet", {
@@ -131,7 +145,9 @@ test_that("plan_upstream_huc12_fetches single ID equals outlet", {
 
   expect_equal(plan$huc12_est$fetch_ids, "070702010101")
   expect_true(plan$huc10_est$same_as_huc12)
+  expect_null(plan$huc10_est$outlet_backfill)
   expect_true(plan$huc08_est$same_as_huc10)
+  expect_null(plan$huc08_est$outlet_backfill)
 })
 
 test_that("plan_upstream_huc12_fetches multiple outlets same HUC10", {
@@ -145,6 +161,11 @@ test_that("plan_upstream_huc12_fetches multiple outlets same HUC10", {
   expect_false(plan$huc10_est$same_as_huc12)
   expect_equal(plan$huc10_est$bulk_huc10s, "0707020105")
   expect_equal(plan$huc10_est$local_huc12_ids, "070702010103")
+
+  # outlet_backfill has both outlets
+  expect_equal(plan$huc10_est$outlet_backfill$outlet_huc10s, "0707020101")
+  expect_equal(sort(plan$huc10_est$outlet_backfill$outlet_huc12_ids),
+    sort(c("070702010101", "070702010102")))
 })
 
 test_that("plan_upstream_huc12_fetches multiple outlets different HUC10s", {
@@ -158,6 +179,12 @@ test_that("plan_upstream_huc12_fetches multiple outlets different HUC10s", {
   expect_false(plan$huc10_est$same_as_huc12)
   expect_equal(plan$huc10_est$bulk_huc10s, "0707030203")
   expect_equal(plan$huc10_est$local_huc12_ids, "070702010502")
+
+  # outlet_backfill has both outlet HUC10s
+  expect_equal(sort(plan$huc10_est$outlet_backfill$outlet_huc10s),
+    sort(c("0707020101", "0707020105")))
+  expect_equal(sort(plan$huc10_est$outlet_backfill$outlet_huc12_ids),
+    sort(c("070702010101", "070702010501")))
 })
 
 test_that("plan_upstream_huc12_fetches multiple outlets different HUC08s", {
@@ -171,6 +198,12 @@ test_that("plan_upstream_huc12_fetches multiple outlets different HUC08s", {
   expect_false(plan$huc08_est$same_as_huc10)
   expect_equal(plan$huc08_est$bulk_huc08s, "07080101")
   expect_equal(plan$huc08_est$local_huc12_ids, "070703020302")
+
+  # outlet_backfill for HUC08 estimate
+  expect_equal(sort(plan$huc08_est$outlet_backfill$outlet_huc10s),
+    sort(c("0707020101", "0707030203")))
+  expect_equal(sort(plan$huc08_est$outlet_backfill$outlet_huc12_ids),
+    sort(c("070702010101", "070703020301")))
 })
 
 test_that("plan_upstream_huc12_fetches multiple outlets all same HUC10", {
@@ -180,7 +213,31 @@ test_that("plan_upstream_huc12_fetches multiple outlets all same HUC10", {
   plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlets)
 
   expect_true(plan$huc10_est$same_as_huc12)
+  expect_null(plan$huc10_est$outlet_backfill)
   expect_true(plan$huc08_est$same_as_huc10)
+  expect_null(plan$huc08_est$outlet_backfill)
+})
+
+test_that("plan_upstream_huc12_fetches backfill for missing huc12pp", {
+  # Scenario matching the real edge case: outlet HUC12 171200010710.
+  # HUC12 171200010707 is in the same HUC10 (1712000107) and upstream
+  # by sort order, but has no huc12pp pour point.
+  # The plan should carry outlet_backfill info so fetch_upstream_huc12s
+
+  # can query all HUC12s in HUC10 1712000107 and filter by sort order.
+  ids <- c("171200010701", "171200010703", "171200010710",
+    "171200010501")
+  outlet <- "171200010710"
+
+  plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlet)
+
+  # multi-HUC10: HUC10s 1712000107 (outlet) and 1712000105
+  expect_false(plan$huc10_est$same_as_huc12)
+  expect_equal(plan$huc10_est$bulk_huc10s, "1712000105")
+
+  # outlet_backfill present with correct values
+  expect_equal(plan$huc10_est$outlet_backfill$outlet_huc10s, "1712000107")
+  expect_equal(plan$huc10_est$outlet_backfill$outlet_huc12_ids, "171200010710")
 })
 
 test_that("get_drainage_area_estimates Black Earth Creek smoke test", {

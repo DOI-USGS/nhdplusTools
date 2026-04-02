@@ -33,7 +33,8 @@ types are also available with suffixes `_2025`, `_2020`, `_nhdplusv2`, and
 See https://api.water.usgs.gov/fabric/pygeoapi for the web service.}
 }
 \value{
-a simple features (sf) object
+a simple features (sf) object, or a data.frame when
+  \code{skip_geometry = TRUE}
 }
 \description{
 Subsets WBD features by location (POINT),

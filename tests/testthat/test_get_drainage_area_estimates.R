@@ -243,10 +243,9 @@ test_that("plan_upstream_huc12_fetches backfill for missing huc12pp", {
 test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
   skip_on_cran()
 
-  vaa <- get_vaa()
   start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
 
-  result <- get_drainage_area_estimates(start, vaa)
+  result <- get_drainage_area_estimates(start)
 
   # check return structure
   expect_type(result, "list")
@@ -257,9 +256,12 @@ test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
     "network_da_sqkm", "start_feature",
     "hu12_by_huc12", "hu12_by_huc10", "hu12_by_huc08",
     "extra_catchments", "split_catchment",
-    "all_network", "hu12_outlet"
+    "all_network", "all_catchments", "hu12_outlet"
   )
   expect_true(all(expected_names %in% names(result)))
+
+  # catchments should be NULL when not requested
+  expect_null(result$all_catchments)
 
   # HUC12-level DA should be positive and close to network DA
   expect_true(result$da_huc12_sqkm > 0)
@@ -284,10 +286,9 @@ test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
 test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
   skip_on_cran()
 
-  vaa <- get_vaa()
   start <- list(featureSource = "nwissite", featureID = "USGS-05428000")
 
-  result <- get_drainage_area_estimates(start, vaa)
+  result <- get_drainage_area_estimates(start)
 
   # check return structure
   expect_type(result, "list")
@@ -298,7 +299,7 @@ test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
     "network_da_sqkm", "start_feature",
     "hu12_by_huc12", "hu12_by_huc10", "hu12_by_huc08",
     "extra_catchments", "split_catchment",
-    "all_network", "hu12_outlet"
+    "all_network", "all_catchments", "hu12_outlet"
   )
   expect_true(all(expected_names %in% names(result)))
 

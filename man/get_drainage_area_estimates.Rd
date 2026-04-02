@@ -4,14 +4,14 @@
 \alias{get_drainage_area_estimates}
 \title{Estimate drainage area from HUC and catchment data}
 \usage{
-get_drainage_area_estimates(start, vaa)
+get_drainage_area_estimates(start, catchments = FALSE)
 }
 \arguments{
 \item{start}{list with \code{featureSource} and \code{featureID} compatible
 with \code{\link{get_nldi_feature}}.}
 
-\item{vaa}{data.frame of NHDPlusV2 Value Added Attributes as returned by
-\code{\link{get_vaa}}. Must include columns: comid, areasqkm, totdasqkm.}
+\item{catchments}{logical. If TRUE, fetch and return NHDPlusV2 catchment
+polygons for the full upstream network. Default FALSE.}
 }
 \value{
 list with elements:
@@ -25,6 +25,9 @@ list with elements:
     \item{contrib_da_huc10_sqkm}{numeric or NA. Contributing DA (HUC10-level).}
     \item{contrib_da_huc08_sqkm}{numeric or NA. Contributing DA (HUC08-level).}
     \item{network_da_sqkm}{numeric. Network-derived total DA for comparison.}
+    \item{nhdplushr_network_dasqkm}{numeric or NA. Drainage area from
+      NHDPlusHR catchments upstream of the matched HR flowline. NA with a
+      warning when the HR web service is unavailable or fails.}
     \item{start_feature}{sf data.frame. The resolved NLDI start feature.}
     \item{hu12_by_huc12}{sf data.frame. NLDI-identified upstream HUC12 polygons (EPSG:5070).}
     \item{hu12_by_huc10}{sf data.frame or NULL. Upstream HUC12 polygons (HUC10 query).
@@ -33,7 +36,9 @@ list with elements:
       NULL when basin is within a single HUC08.}
     \item{extra_catchments}{sf data.frame. Catchments between outlet and HUC12 outlets.}
     \item{split_catchment}{sf data.frame. Split catchment at HUC12 outlet(s).}
-    \item{all_network}{data.frame. Full upstream network from VAA.}
+    \item{all_network}{data.frame. Full upstream flowline attributes.}
+    \item{all_catchments}{sf data.frame or NULL. NHDPlusV2 catchment polygons
+      for the full upstream network. NULL when \code{catchments = FALSE}.}
     \item{hu12_outlet}{sf data.frame. HUC12 pour points upstream of outlet.}
   }
 }
@@ -45,7 +50,11 @@ Combines HUC12 areas upstream of HUC outlets with NHDPlusV2
   than purely network-derived totals.
 }
 \details{
-HUC drainage area is used upstream of the nearest HUC12 outlet. Between
+Network navigation is performed via the NLDI web service. Flowline
+  attributes are retrieved from the NHDPlusV2 OGC API. No local data
+  download is required.
+
+  HUC drainage area is used upstream of the nearest HUC12 outlet. Between
   the outlet (e.g. gage) and the HUC outlet(s), catchment areas are used.
   For large upstream areas the largest HUC level is used to define
   connectedness, but drainage estimates are derived from HUC12 because
@@ -61,8 +70,7 @@ HUC drainage area is used upstream of the nearest HUC12 outlet. Between
 \donttest{
 # Black Earth Creek
 start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
-vaa <- get_vaa()
-result <- get_drainage_area_estimates(start, vaa)
+result <- get_drainage_area_estimates(start)
 result$da_huc10_sqkm
 result$network_da_sqkm
 }

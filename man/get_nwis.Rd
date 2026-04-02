@@ -20,7 +20,8 @@ for an extended search. Default = 20,000. Returned results are arrange
 by distance from POINT AOI}
 }
 \value{
-a simple features (sf) object
+a simple features (sf) object, or a data.frame when
+  \code{skip_geometry = TRUE}
 }
 \description{
 Returns a POINT feature class of active, stream network,

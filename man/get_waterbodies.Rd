@@ -21,7 +21,8 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 extended search. Default = 0.5}
 }
 \value{
-a simple features (sf) object
+a simple features (sf) object, or a data.frame when
+  \code{skip_geometry = TRUE}
 }
 \description{
 Subsets NHDPlusV2 waterbody features by location (POINT),

@@ -22,12 +22,19 @@
 #' Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.
 #' @param buffer numeric. The amount (in meters) to buffer a POINT AOI by for an
 #' extended search. Default = 0.5
-#' @return a simple features (sf) object
+#' @param properties character vector. Column names to return. When NULL (default),
+#'   all columns are returned.
+#' @param skip_geometry logical. If TRUE, omit geometry from the response and
+#'   return a plain data.frame. Default FALSE.
+#' @return a simple features (sf) object, or a data.frame when
+#'   \code{skip_geometry = TRUE}
 #' @keywords internal
 query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
                               type = NULL, filter = NULL,
                               t_srs = NULL,
-                              buffer = 0.5) {
+                              buffer = 0.5,
+                              properties = NULL,
+                              skip_geometry = FALSE) {
 
   base <- get("usgs_water_root", envir = nhdplusTools_env)
 
@@ -109,7 +116,17 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
     ids <- stats::setNames(list(ids), here$ids)
   }
 
-  out <- get_oafeat(base, AOI = AOI, type = type, ids = ids, filter = filter, t_srs = t_srs, buffer = buffer, status = FALSE)
+  out <- get_oafeat(base, AOI = AOI, type = type, ids = ids, filter = filter,
+                     t_srs = t_srs, buffer = buffer, status = FALSE,
+                     properties = properties, skip_geometry = skip_geometry)
+
+  if(skip_geometry) {
+    if(any(is.null(out), nrow(out) == 0)) {
+      warning(paste("No", here$user_call, "features found"), call. = FALSE)
+      return(NULL)
+    }
+    return(out)
+  }
 
   out <- check_valid(out)
 
@@ -200,7 +217,9 @@ get_oafeat <- function(base,
                        filter = NULL,
                        t_srs = NULL,
                        buffer = 0.5,
-                       status = TRUE) {
+                       status = TRUE,
+                       properties = NULL,
+                       skip_geometry = FALSE) {
 
   avail <- discover_oafeat(base)
 
@@ -269,7 +288,20 @@ get_oafeat <- function(base,
     base_call <- paste0(add_sep(base_call), "filter=", filter)
   }
 
+  if(skip_geometry)
+    base_call <- paste0(add_sep(base_call), "skipGeometry=true")
+
+  if(!is.null(properties))
+    base_call <- paste0(add_sep(base_call), "properties=",
+                        paste(properties, collapse = ","))
+
   out <- get_features_paging(base_call, post_body, limit = limit, status = status)
+
+  if(skip_geometry) {
+    if(inherits(out, "sf"))
+      out <- sf::st_drop_geometry(out)
+    return(out)
+  }
 
   if(!is.null(t_srs)) out <- st_transform(out, t_srs)
 

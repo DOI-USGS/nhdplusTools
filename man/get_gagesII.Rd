@@ -24,7 +24,8 @@ extended search. Default = 0.5}
 return value will be a list with "site" and "basin" elements.}
 }
 \value{
-a simple features (sf) object
+a simple features (sf) object, or a data.frame when
+  \code{skip_geometry = TRUE}
 }
 \description{
 Subsets the gagesII dataset by location (POINT),

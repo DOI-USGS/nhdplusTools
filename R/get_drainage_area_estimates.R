@@ -32,6 +32,9 @@
 #'     \item{contrib_da_huc10_sqkm}{numeric or NA. Contributing DA (HUC10-level).}
 #'     \item{contrib_da_huc08_sqkm}{numeric or NA. Contributing DA (HUC08-level).}
 #'     \item{network_da_sqkm}{numeric. Network-derived total DA for comparison.}
+#'     \item{nhdplushr_network_dasqkm}{numeric or NA. Drainage area from
+#'       NHDPlusHR catchments upstream of the matched HR flowline. NA with a
+#'       warning when the HR web service is unavailable or fails.}
 #'     \item{start_feature}{sf data.frame. The resolved NLDI start feature.}
 #'     \item{hu12_by_huc12}{sf data.frame. NLDI-identified upstream HUC12 polygons (EPSG:5070).}
 #'     \item{hu12_by_huc10}{sf data.frame or NULL. Upstream HUC12 polygons (HUC10 query).
@@ -178,6 +181,24 @@ get_drainage_area_estimates <- function(start, vaa) {
       ", contributing = ", round(contrib_da_huc08_sqkm, 2))
   message("  Network DA = ", round(network_da, 2))
 
+  # NHDPlusHR estimate -- standalone, warns on failure
+  hu12_polys <- if(!is.null(hu12_result$hu12_by_huc08)) {
+    hu12_result$hu12_by_huc08
+  } else if(!is.null(hu12_result$hu12_by_huc10)) {
+    hu12_result$hu12_by_huc10
+  } else {
+    hu12_result$hu12_by_huc12
+  }
+
+  message("Computing NHDPlusHR drainage area estimate...")
+  hr_result <- get_nhdplushr_da_estimate(
+    start_feature, network_da, hu12_polys
+  )
+
+  if(!is.na(hr_result$nhdplushr_network_dasqkm))
+    message("  NHDPlusHR DA = ",
+      round(hr_result$nhdplushr_network_dasqkm, 2))
+
   list(
     da_huc12_sqkm = da_huc12_sqkm,
     da_huc10_sqkm = da_huc10_sqkm,
@@ -186,6 +207,7 @@ get_drainage_area_estimates <- function(start, vaa) {
     contrib_da_huc10_sqkm = contrib_da_huc10_sqkm,
     contrib_da_huc08_sqkm = contrib_da_huc08_sqkm,
     network_da_sqkm = network_da,
+    nhdplushr_network_dasqkm = hr_result$nhdplushr_network_dasqkm,
     start_feature = start_feature,
     hu12_by_huc12 = hu12_result$hu12_by_huc12,
     hu12_by_huc10 = hu12_result$hu12_by_huc10,
@@ -607,4 +629,109 @@ compute_gap_area <- function(outlet_huc, all_net, vaa) {
     split_catchment = split_catch,
     extra_and_local = extra_and_local
   )
+}
+
+#' Estimate drainage area from NHDPlusHR catchments
+#'
+#' Fetches NHDPlusHR flowlines, indexes the start point to the HR network
+#' using drainage area to disambiguate, navigates upstream, and sums
+#' catchment areas. Returns NA with a warning on any failure.
+#'
+#' @param start_feature sf data.frame. Resolved start feature with geometry.
+#' @param network_da numeric. NHDPlusV2 network total drainage area (sq km)
+#'   used to match the best HR flowline.
+#' @param hu12_polys sf data.frame. Largest available HUC12 polygon set used
+#'   to define the bounding box for fetching the full HR network.
+#' @return list with \code{nhdplushr_network_dasqkm} (numeric or NA).
+#' @noRd
+get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys) {
+
+  fail <- list(nhdplushr_network_dasqkm = NA_real_)
+
+  tryCatch({
+
+    # 1. extract start point
+    start_point <- sf::st_geometry(start_feature)
+    if(!inherits(start_point, "sfc_POINT"))
+      start_point <- sf::st_centroid(start_point)
+
+    # 2. bounding box from HUC polygons + start point buffer for full HR network
+    start_buf <- sf::st_buffer(sf::st_transform(start_point, 5070), 500)
+    aoi <- sf::st_union(
+      sf::st_transform(sf::st_as_sfc(sf::st_bbox(hu12_polys)), 5070),
+      start_buf
+    )
+    aoi <- sf::st_as_sfc(sf::st_bbox(sf::st_transform(aoi, 4326)))
+
+    message("  Fetching NHDPlusHR network for full AOI...")
+    hr_network <- get_nhdphr(AOI = aoi, type = "networknhdflowline")
+
+    if(is.null(hr_network) || nrow(hr_network) == 0)
+      stop("no HR flowlines in AOI")
+
+    message("  Fetched ", nrow(hr_network), " HR flowlines")
+
+    # 3. filter to flowlines within 500m of start for indexing
+    start_5070 <- sf::st_transform(start_point, 5070)
+    hr_5070 <- sf::st_transform(hr_network, 5070)
+    dists <- as.numeric(sf::st_distance(hr_5070, start_5070))
+    hr_local <- hr_network[dists <= 500, ]
+
+    if(nrow(hr_local) == 0)
+      stop("no HR flowlines within 500m of start point")
+
+    # 4. index start to HR network, disambiguate by DA
+    indexes <- hydroloom::index_points_to_lines(
+      hr_local, start_5070,
+      search_radius = units::set_units(500, "m"),
+      max_matches = 10
+    )
+
+    if(is.null(indexes) || nrow(indexes) == 0)
+      stop("no HR index matches found")
+
+    best <- hydroloom::disambiguate_indexes(
+      indexes,
+      sf::st_drop_geometry(hr_local[, c("nhdplusid", "totdasqkm")]),
+      data.frame(point_id = 1, totdasqkm = network_da)
+    )
+
+    hr_start_id <- best$nhdplusid
+    message("  Matched HR NHDPlusID = ",
+      format(hr_start_id, scientific = FALSE),
+      " (TotDASqKM = ",
+      hr_local$totdasqkm[hr_local$nhdplusid == hr_start_id], ")")
+
+    # 5. navigate upstream on HR network
+    message("  Navigating upstream on HR network...")
+    ut_ids <- hydroloom::navigate_hydro_network(
+      hr_network, hr_start_id, mode = "UT"
+    )
+
+    message("  Found ", length(ut_ids), " HR flowlines upstream")
+
+    # 6. fetch HR catchments
+    message("  Fetching NHDPlusHR catchments...")
+    hr_catchments <- get_nhdphr(
+      ids = as.character(ut_ids), type = "nhdpluscatchment"
+    )
+
+    if(is.null(hr_catchments) || nrow(hr_catchments) == 0)
+      stop("no HR catchments returned")
+
+    # 7. sum catchment areas
+    if("areasqkm" %in% names(hr_catchments)) {
+      da <- sum(hr_catchments$areasqkm, na.rm = TRUE)
+    } else {
+      hr_catch_5070 <- sf::st_transform(hr_catchments, 5070)
+      da <- sum(as.numeric(sf::st_area(hr_catch_5070))) / 1e6
+    }
+
+    list(nhdplushr_network_dasqkm = da)
+
+  }, error = function(e) {
+    warning("NHDPlusHR estimate failed: ", conditionMessage(e),
+      call. = FALSE)
+    fail
+  })
 }

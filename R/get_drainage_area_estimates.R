@@ -5,9 +5,11 @@
 #'   captured in HUC12 boundaries are included, making this more representative
 #'   than purely network-derived totals.
 #' @details
-#'   Network navigation is performed via the NLDI web service. Flowline
-#'   attributes are retrieved from the NHDPlusV2 OGC API. No local data
-#'   download is required.
+#'   By default, network navigation is performed via the NLDI web service and
+#'   flowline attributes are retrieved from the NHDPlusV2 OGC API. When
+#'   \code{local_navigation = TRUE}, the NHDPlusV2 Value Added Attributes
+#'   (\code{\link{get_vaa}}) are used for network navigation instead, and
+#'   only HUC12 pour points are fetched from the NLDI.
 #'
 #'   HUC drainage area is used upstream of the nearest HUC12 outlet. Between
 #'   the outlet (e.g. gage) and the HUC outlet(s), catchment areas are used.
@@ -25,6 +27,9 @@
 #'   with \code{\link{get_nldi_feature}}.
 #' @param catchments logical. If TRUE, fetch and return NHDPlusV2 catchment
 #'   polygons for the full upstream network. Default FALSE.
+#' @param local_navigation logical. If TRUE, use \code{\link{get_vaa}} for
+#'   network navigation and flowline attributes instead of NLDI/OGC API web
+#'   services. Only HUC12 pour points are fetched from the NLDI. Default FALSE.
 #' @return list with elements:
 #'   \describe{
 #'     \item{da_huc12_sqkm}{numeric. Total DA using NLDI-identified HUC12s only.}
@@ -68,7 +73,13 @@
 #' result$da_huc10_sqkm
 #' result$network_da_sqkm
 #' }
-get_drainage_area_estimates <- function(start, catchments = FALSE) {
+get_drainage_area_estimates <- function(start, catchments = FALSE,
+  local_navigation = FALSE) {
+
+  if(local_navigation) {
+    message("Loading NHDPlusV2 VAA for local navigation...")
+    vaa <- get_vaa()
+  }
 
   # resolve start feature via NLDI
   if(inherits(start, "sfc")) {
@@ -83,22 +94,27 @@ get_drainage_area_estimates <- function(start, catchments = FALSE) {
       stop("point needs to fall in a waterbody!")
     }
 
-    # fetch flowlines associated with this waterbody (attributes only)
-    message("Finding flowlines for waterbody COMID ", wb$comid, "...")
-    wb_flowlines <- query_usgs_oafeat(
-      AOI = wb,
-      type = "nhd",
-      filter = paste0("wbareacomi%20=%20", wb$comid),
-      properties = c("comid", "tonode", "fromnode"),
-      skip_geometry = TRUE
-    )
+    if(local_navigation) {
+      all_wb <- vaa[vaa$wbareacomi == wb$comid, ]
+      outlet_comids <- all_wb$comid[!all_wb$tonode %in% all_wb$fromnode]
+    } else {
+      # fetch flowlines associated with this waterbody (attributes only)
+      message("Finding flowlines for waterbody COMID ", wb$comid, "...")
+      wb_flowlines <- query_usgs_oafeat(
+        AOI = wb,
+        type = "nhd",
+        filter = paste0("wbareacomi%20=%20", wb$comid),
+        properties = c("comid", "tonode", "fromnode"),
+        skip_geometry = TRUE
+      )
 
-    if(is.null(wb_flowlines) || nrow(wb_flowlines) == 0)
-      stop("No flowlines found for waterbody COMID ", wb$comid)
+      if(is.null(wb_flowlines) || nrow(wb_flowlines) == 0)
+        stop("No flowlines found for waterbody COMID ", wb$comid)
 
-    outlet_comids <- wb_flowlines$comid[
-      !wb_flowlines$tonode %in% wb_flowlines$fromnode
-    ]
+      outlet_comids <- wb_flowlines$comid[
+        !wb_flowlines$tonode %in% wb_flowlines$fromnode
+      ]
+    }
 
     message("Found ", length(outlet_comids), " outlets for waterbody")
 
@@ -114,27 +130,43 @@ get_drainage_area_estimates <- function(start, catchments = FALSE) {
     stop("No outlet COMIDs found for the provided start location. ",
       "Check that the input resolves to a valid NHDPlus feature.")
 
-  # HUC12 pour points and upstream flowlines via NLDI
-  message("Finding HUC12 pour points and upstream network via NLDI...")
-  nldi_results <- lapply(outlet_comids, \(x) {
-    findNLDI(
-      comid = x, nav = "UT",
-      distance_km = 9999, find = c("huc12pp", "flowline")
-    )
-  })
+  # HUC12 pour points via NLDI
+  message("Finding HUC12 pour points upstream via NLDI...")
+  if(local_navigation) {
+    huc12_outlets <- lapply(outlet_comids, \(x) {
+      findNLDI(
+        comid = x, nav = "UT",
+        distance_km = 9999, find = "huc12pp"
+      )$UT_huc12pp
+    }) |> bind_rows()
 
-  huc12_outlets <- lapply(nldi_results, \(x) x$UT_huc12pp) |>
-    bind_rows()
+    # full upstream network from VAA
+    message("Subsetting upstream network from VAA...")
+    ut_comids <- lapply(outlet_comids, \(x) {
+      hydroloom::navigate_hydro_network(vaa, x, mode = "UT")
+    })
+    all_net <- filter(vaa, .data$comid %in% do.call(c, ut_comids))
+  } else {
+    nldi_results <- lapply(outlet_comids, \(x) {
+      findNLDI(
+        comid = x, nav = "UT",
+        distance_km = 9999, find = c("huc12pp", "flowline")
+      )
+    })
 
-  upstream_comids <- unique(as.integer(unlist(
-    lapply(nldi_results, \(x) x$UT_flowlines$nhdplus_comid)
-  )))
+    huc12_outlets <- lapply(nldi_results, \(x) x$UT_huc12pp) |>
+      bind_rows()
 
-  # fetch full flowline attributes (no geometry needed)
-  message("Fetching flowline attributes for ",
-    length(upstream_comids), " upstream COMIDs...")
-  all_net <- get_nhdplus(comid = upstream_comids, realization = "flowline",
-    skip_geometry = TRUE)
+    upstream_comids <- unique(as.integer(unlist(
+      lapply(nldi_results, \(x) x$UT_flowlines$nhdplus_comid)
+    )))
+
+    # fetch full flowline attributes (no geometry needed)
+    message("Fetching flowline attributes for ",
+      length(upstream_comids), " upstream COMIDs...")
+    all_net <- get_nhdplus(comid = upstream_comids, realization = "flowline",
+      skip_geometry = TRUE)
+  }
 
   all_net <- add_toids(all_net, return_dendritic = TRUE)
 
@@ -163,7 +195,8 @@ get_drainage_area_estimates <- function(start, catchments = FALSE) {
   hu12_result <- get_upstream_huc12s(huc12_outlets, outlet_huc)
 
   # compute gap area between outlet and HUC12 outlets
-  gap <- compute_gap_area(outlet_huc, all_net)
+  nav_net <- if(local_navigation) vaa else all_net
+  gap <- compute_gap_area(outlet_huc, all_net, nav_net)
 
   # assemble DA estimates (NA when fewer than a whole HUC10/08 upstream)
   da_huc12_sqkm <- sum(hu12_result$hu12_by_huc12$dasqkm) +
@@ -469,11 +502,19 @@ fetch_upstream_huc12s <- function(plan) {
         " HUC12s reused, ", nrow(huc10_extra), " fetched separately")
 
       # Assemble HUC08 estimate
+      # Include: bulk HUC08s + non-outlet HUC10s in the outlet HUC08
+      # (extra_huc10s) + backfill for the outlet HUC10
       huc08_parts <- list()
       if(nrow(huc08_bulk) > 0) huc08_parts$bulk <- huc08_bulk
+      if(nrow(huc10_extra) > 0) huc08_parts$outlet_huc08_huc10s <- huc10_extra
+      huc08_bulk_all <- if(length(huc08_parts) > 0) {
+        dplyr::bind_rows(huc08_parts)
+      } else {
+        NULL
+      }
       backfill_huc08 <- filter_outlet_backfill(
         backfill_raw, bf$outlet_huc12_ids,
-        bulk = huc08_parts$bulk, label = "HUC08")
+        bulk = huc08_bulk_all, label = "HUC08")
       if(nrow(backfill_huc08) > 0) huc08_parts$backfill <- backfill_huc08
 
       hu12_by_huc08 <- if(length(huc08_parts) > 0) {
@@ -600,11 +641,13 @@ add_huc12_area_columns <- function(hu12) {
 #' @param outlet_huc sf data.frame. The immediately-upstream HUC12 outlet(s).
 #'   May have multiple rows when the network branches.
 #' @param all_net data.frame. Full upstream network with comid, toid, areasqkm.
+#' @param nav_net data.frame. Network used for upstream navigation. Defaults
+#'   to \code{all_net}; pass the full VAA when using local navigation.
 #' @return list with \code{extra_net} (data.frame), \code{extra_catchments}
 #'   (sf data.frame), \code{split_catchment} (sf data.frame),
 #'   \code{extra_and_local} (numeric area in sq km).
 #' @noRd
-compute_gap_area <- function(outlet_huc, all_net) {
+compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net) {
 
   n_outlets <- nrow(outlet_huc)
   message("Splitting catchments at ", n_outlets, " HUC12 outlet(s)...")
@@ -629,7 +672,7 @@ compute_gap_area <- function(outlet_huc, all_net) {
       split_catch$dasqkm[split_catch$id == "splitCatchment"]
     total_local_dasqkm <- total_local_dasqkm + local_dasqkm
 
-    ut_comids <- navigate_hydro_network(all_net, oh$comid, mode = "UT")
+    ut_comids <- navigate_hydro_network(nav_net, oh$comid, mode = "UT")
     all_hu12_outlet_ut <- union(all_hu12_outlet_ut, ut_comids)
   }
 

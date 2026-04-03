@@ -283,6 +283,42 @@ test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
   expect_s3_class(result$split_catchment, "sf")
 })
 
+test_that("get_drainage_area_estimates local_navigation smoke test", {
+  skip_on_cran()
+
+  start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
+
+  result <- get_drainage_area_estimates(start, local_navigation = TRUE)
+
+  # check return structure
+  expect_type(result, "list")
+  expected_names <- c(
+    "da_huc12_sqkm", "da_huc10_sqkm", "da_huc08_sqkm",
+    "contrib_da_huc12_sqkm", "contrib_da_huc10_sqkm",
+    "contrib_da_huc08_sqkm",
+    "network_da_sqkm", "start_feature",
+    "hu12_by_huc12", "hu12_by_huc10", "hu12_by_huc08",
+    "extra_catchments", "split_catchment",
+    "all_network", "all_catchments", "hu12_outlet"
+  )
+  expect_true(all(expected_names %in% names(result)))
+
+  # HUC12-level DA should be positive and close to network DA
+  expect_true(result$da_huc12_sqkm > 0)
+  expect_true(result$network_da_sqkm > 0)
+  expect_true(result$contrib_da_huc12_sqkm > 0)
+  expect_true(result$contrib_da_huc12_sqkm <= result$da_huc12_sqkm)
+
+  # single HUC10 basin so huc10 and huc08 estimates should be NA
+  expect_true(is.na(result$da_huc10_sqkm))
+  expect_true(is.na(result$da_huc08_sqkm))
+
+  # spatial outputs should be sf
+  expect_s3_class(result$hu12_by_huc12, "sf")
+  expect_s3_class(result$extra_catchments, "sf")
+  expect_s3_class(result$split_catchment, "sf")
+})
+
 test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
   skip_on_cran()
 

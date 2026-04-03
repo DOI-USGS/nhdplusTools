@@ -4,7 +4,11 @@
 \alias{get_drainage_area_estimates}
 \title{Estimate drainage area from HUC and catchment data}
 \usage{
-get_drainage_area_estimates(start, catchments = FALSE)
+get_drainage_area_estimates(
+  start,
+  catchments = FALSE,
+  local_navigation = FALSE
+)
 }
 \arguments{
 \item{start}{list with \code{featureSource} and \code{featureID} compatible
@@ -12,6 +16,10 @@ with \code{\link{get_nldi_feature}}.}
 
 \item{catchments}{logical. If TRUE, fetch and return NHDPlusV2 catchment
 polygons for the full upstream network. Default FALSE.}
+
+\item{local_navigation}{logical. If TRUE, use \code{\link{get_vaa}} for
+network navigation and flowline attributes instead of NLDI/OGC API web
+services. Only HUC12 pour points are fetched from the NLDI. Default FALSE.}
 }
 \value{
 list with elements:
@@ -50,9 +58,11 @@ Combines HUC12 areas upstream of HUC outlets with NHDPlusV2
   than purely network-derived totals.
 }
 \details{
-Network navigation is performed via the NLDI web service. Flowline
-  attributes are retrieved from the NHDPlusV2 OGC API. No local data
-  download is required.
+By default, network navigation is performed via the NLDI web service and
+  flowline attributes are retrieved from the NHDPlusV2 OGC API. When
+  \code{local_navigation = TRUE}, the NHDPlusV2 Value Added Attributes
+  (\code{\link{get_vaa}}) are used for network navigation instead, and
+  only HUC12 pour points are fetched from the NLDI.
 
   HUC drainage area is used upstream of the nearest HUC12 outlet. Between
   the outlet (e.g. gage) and the HUC outlet(s), catchment areas are used.

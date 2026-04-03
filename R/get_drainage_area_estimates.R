@@ -86,6 +86,7 @@ get_drainage_area_estimates <- function(start, catchments = FALSE) {
     # fetch flowlines associated with this waterbody (attributes only)
     message("Finding flowlines for waterbody COMID ", wb$comid, "...")
     wb_flowlines <- query_usgs_oafeat(
+      AOI = wb,
       type = "nhd",
       filter = paste0("wbareacomi%20=%20", wb$comid),
       properties = c("comid", "tonode", "fromnode"),
@@ -679,13 +680,14 @@ get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys) {
 
   tryCatch({
 
-    # 1. extract start point
-    start_point <- sf::st_geometry(start_feature)
-    if(!inherits(start_point, "sfc_POINT"))
-      start_point <- sf::st_centroid(start_point)
+    # 1. extract start point (and full geometry for proximity filtering)
+    start_geom <- sf::st_geometry(start_feature)
+    is_point <- inherits(start_geom, "sfc_POINT")
+    start_point <- if(is_point) start_geom else sf::st_centroid(start_geom)
 
-    # 2. bounding box from HUC polygons + start point buffer for full HR network
-    start_buf <- sf::st_buffer(sf::st_transform(start_point, 5070), 500)
+    # 2. bounding box from HUC polygons + start geometry buffer for full HR network
+    start_geom_5070 <- sf::st_transform(start_geom, 5070)
+    start_buf <- sf::st_buffer(start_geom_5070, 500)
     aoi <- sf::st_union(
       sf::st_transform(sf::st_as_sfc(sf::st_bbox(hu12_polys)), 5070),
       start_buf
@@ -700,42 +702,71 @@ get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys) {
 
     message("  Fetched ", nrow(hr_network), " HR flowlines")
 
-    # 3. filter to flowlines within 500m of start for indexing
-    start_5070 <- sf::st_transform(start_point, 5070)
-    hr_5070 <- sf::st_transform(hr_network, 5070)
-    dists <- as.numeric(sf::st_distance(hr_5070, start_5070))
-    hr_local <- hr_network[dists <= 500, ]
+    # 3. find HR outlet flowline(s) to start navigation from
+    if(!is_point) {
+      # waterbody: find HR flowlines within 500m of the lake polygon,
+      # then identify outlets where tonode is not in fromnode
+      wb_5070 <- sf::st_transform(start_geom, 5070)
+      wb_buf <- sf::st_buffer(wb_5070, 500)
+      hr_5070 <- sf::st_transform(hr_network, 5070)
+      dists <- as.numeric(sf::st_distance(hr_5070, wb_buf))
+      hr_wb <- hr_network[dists <= 0, ]
 
-    if(nrow(hr_local) == 0)
-      stop("no HR flowlines within 500m of start point")
+      if(nrow(hr_wb) == 0)
+        stop("no HR flowlines within 500m of waterbody")
 
-    # 4. index start to HR network, disambiguate by DA
-    indexes <- hydroloom::index_points_to_lines(
-      hr_local, start_5070,
-      search_radius = units::set_units(500, "m"),
-      max_matches = 10
-    )
+      message("  ", nrow(hr_wb),
+        " HR flowlines within 500m of waterbody polygon")
 
-    if(is.null(indexes) || nrow(indexes) == 0)
-      stop("no HR index matches found")
+      hr_wb_outlets <- hr_wb[
+        !hr_wb$tonode %in% hr_wb$fromnode, ]
 
-    best <- hydroloom::disambiguate_indexes(
-      indexes,
-      sf::st_drop_geometry(hr_local[, c("nhdplusid", "totdasqkm")]),
-      data.frame(point_id = 1, totdasqkm = network_da)
-    )
+      if(nrow(hr_wb_outlets) == 0) hr_wb_outlets <- hr_wb
 
-    hr_start_id <- best$nhdplusid
-    message("  Matched HR NHDPlusID = ",
-      format(hr_start_id, scientific = FALSE),
-      " (TotDASqKM = ",
-      hr_local$totdasqkm[hr_local$nhdplusid == hr_start_id], ")")
+      hr_start_ids <- hr_wb_outlets$nhdplusid
 
-    # 5. navigate upstream on HR network
+      message("  Found ", length(hr_start_ids), " HR outlet flowline(s)")
+
+    } else {
+      # point: index to nearby HR flowlines, disambiguate by DA
+      start_5070 <- sf::st_transform(start_point, 5070)
+      hr_5070 <- sf::st_transform(hr_network, 5070)
+      start_buf <- sf::st_buffer(start_5070, 500)
+      dists <- as.numeric(sf::st_distance(hr_5070, start_buf))
+      hr_local <- hr_network[dists <= 0, ]
+
+      if(nrow(hr_local) == 0)
+        stop("no HR flowlines within 500m of start feature")
+
+      indexes <- hydroloom::index_points_to_lines(
+        hr_local, start_5070,
+        search_radius = units::set_units(500, "m"),
+        max_matches = 10
+      )
+
+      if(is.null(indexes) || nrow(indexes) == 0)
+        stop("no HR index matches found")
+
+      best <- hydroloom::disambiguate_indexes(
+        indexes,
+        sf::st_drop_geometry(hr_local[, c("nhdplusid", "totdasqkm")]),
+        data.frame(point_id = 1, totdasqkm = network_da)
+      )
+      hr_start_ids <- best$nhdplusid
+    }
+
+    for(sid in hr_start_ids) {
+      message("  HR outlet NHDPlusID = ",
+        format(sid, scientific = FALSE),
+        " (TotDASqKM = ",
+        hr_network$totdasqkm[hr_network$nhdplusid == sid], ")")
+    }
+
+    # 4. navigate upstream from each outlet on HR network
     message("  Navigating upstream on HR network...")
-    ut_ids <- hydroloom::navigate_hydro_network(
-      hr_network, hr_start_id, mode = "UT"
-    )
+    ut_ids <- unique(unlist(lapply(hr_start_ids, \(sid) {
+      hydroloom::navigate_hydro_network(hr_network, sid, mode = "UT")
+    })))
 
     message("  Found ", length(ut_ids), " HR flowlines upstream")
 

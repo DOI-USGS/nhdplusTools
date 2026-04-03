@@ -427,6 +427,29 @@ filter_outlet_backfill <- function(outlet_hu12s, outlet_huc12_ids,
   local
 }
 
+#' Union two HUC12 sf sets by huc_12 identifier
+#'
+#' Combines two sf data.frames of HUC12 features, deduplicating by
+#' \code{huc_12}. Features in \code{target} take precedence when the same
+#' HUC12 appears in both sets. Used to guarantee the superset property:
+#' HUC10 estimate >= HUC12 estimate, HUC08 estimate >= HUC10 estimate.
+#'
+#' @param target sf data.frame. The estimate being extended.
+#' @param base sf data.frame. The lower-level estimate to include.
+#' @return sf data.frame containing all features from both sets, deduplicated.
+#' @noRd
+union_huc12_sets <- function(target, base) {
+  if(is.null(base) || nrow(base) == 0) return(target)
+  if(is.null(target) || nrow(target) == 0) return(base)
+
+  missing <- base[!base$huc_12 %in% target$huc_12, ]
+  if(nrow(missing) == 0) return(target)
+
+  message("  Superset union: adding ", nrow(missing),
+    " HUC12s from base estimate")
+  dplyr::bind_rows(target, missing)
+}
+
 #' Fetch upstream HUC12 polygons according to a fetch plan
 #'
 #' Executes the web service calls described by a plan from
@@ -545,6 +568,10 @@ fetch_upstream_huc12s <- function(plan) {
         empty_sf
       }
 
+      # Enforce superset property: HUC10 >= HUC12, HUC08 >= HUC10
+      hu12_by_huc10 <- union_huc12_sets(hu12_by_huc10, hu12_by_huc12)
+      hu12_by_huc08 <- union_huc12_sets(hu12_by_huc08, hu12_by_huc10)
+
     } else {
       # Only HUC10 active, no HUC08
       hu12_by_huc08 <- NULL
@@ -562,6 +589,9 @@ fetch_upstream_huc12s <- function(plan) {
       } else {
         empty_sf
       }
+
+      # Enforce superset property: HUC10 >= HUC12
+      hu12_by_huc10 <- union_huc12_sets(hu12_by_huc10, hu12_by_huc12)
     }
   }
 

@@ -240,6 +240,37 @@ test_that("plan_upstream_huc12_fetches backfill for missing huc12pp", {
   expect_equal(plan$huc10_est$outlet_backfill$outlet_huc12_ids, "171200010710")
 })
 
+test_that("union_huc12_sets deduplicates and adds missing", {
+  poly1 <- sf::st_sfc(
+    sf::st_polygon(list(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1), c(0, 0)))),
+    crs = 5070
+  )
+  poly2 <- sf::st_sfc(
+    sf::st_polygon(list(rbind(c(1, 0), c(2, 0), c(2, 1), c(1, 1), c(1, 0)))),
+    crs = 5070
+  )
+  poly3 <- sf::st_sfc(
+    sf::st_polygon(list(rbind(c(2, 0), c(3, 0), c(3, 1), c(2, 1), c(2, 0)))),
+    crs = 5070
+  )
+
+  target <- sf::st_sf(huc_12 = c("A", "B"), geometry = c(poly1, poly2))
+  base <- sf::st_sf(huc_12 = c("B", "C"), geometry = c(poly2, poly3))
+
+  result <- nhdplusTools:::union_huc12_sets(target, base)
+  expect_equal(nrow(result), 3)
+  expect_equal(sort(result$huc_12), c("A", "B", "C"))
+
+  # NULL/empty base returns target unchanged
+  expect_equal(nrow(nhdplusTools:::union_huc12_sets(target, NULL)), 2)
+  empty <- sf::st_sf(geometry = sf::st_sfc(crs = 5070))
+  expect_equal(nrow(nhdplusTools:::union_huc12_sets(target, empty)), 2)
+
+  # NULL/empty target returns base
+  expect_equal(nrow(nhdplusTools:::union_huc12_sets(NULL, base)), 2)
+  expect_equal(nrow(nhdplusTools:::union_huc12_sets(empty, base)), 2)
+})
+
 test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
   skip_on_cran()
 
@@ -347,6 +378,12 @@ test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
 
   # split_catchment should have rows for multiple outlets (2 rows each)
   expect_true(nrow(result$split_catchment) >= 4)
+
+  # superset property: HUC08 >= HUC10 >= HUC12
+  if(!is.na(result$da_huc10_sqkm))
+    expect_true(result$da_huc10_sqkm >= result$da_huc12_sqkm)
+  if(!is.na(result$da_huc08_sqkm))
+    expect_true(result$da_huc08_sqkm >= result$da_huc10_sqkm)
 
   # spatial outputs should be sf
   expect_s3_class(result$hu12_by_huc12, "sf")

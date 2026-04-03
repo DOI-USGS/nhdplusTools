@@ -1,0 +1,207 @@
+---
+title: "Drainage Area Estimation"
+author: "dblodgett@usgs.gov"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Drainage Area Estimation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(nhdplusTools)
+
+local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
+if(local) {
+  cache_path <- file.path(nhdplusTools_data_dir(), "da_v_cache")
+} else {
+  cache_path <- tempdir()
+}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4,
+  eval = local,
+  cache = local,
+  cache.path = (cache_path)
+)
+
+oldoption <- options(scipen = 9999)
+```
+
+`get_drainage_area_estimates()` combines HUC12 areas upstream of HUC
+outlets with NHDPlusV2 catchment areas for the gap between the outlet
+and the nearest HUC12 boundaries. Non-contributing areas captured in
+HUC12 boundaries are included, making these estimates more
+representative than purely network-derived totals.
+
+This vignette runs the function on five basins that span a range of
+hydrologic settings — from a well-determined humid basin to arid
+systems, glacial prairie, and an endorheic (closed) basin.
+
+## Fetch and Cache Results
+
+Each basin result is stored in a separate RDS file in the nhdplusTools
+data directory so that subsequent runs skip the web service calls.
+
+```{r fetch_data, message = TRUE}
+library(sf)
+
+data_dir <- nhdplusTools_data_dir()
+dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
+
+# Define the five study sites
+sites <- list(
+  black_earth = list(featureSource = "nwissite",
+    featureID = "USGS-05406500"),
+  french_broad = list(featureSource = "nwissite",
+    featureID = "USGS-03451500"),
+  brazos = list(featureSource = "nwissite",
+    featureID = "USGS-08116650"),
+  james = list(featureSource = "nwissite",
+    featureID = "USGS-06468000"),
+  malheur = st_sfc(st_point(c(-118.8, 43.3)), crs = 4326)
+)
+
+fetch_or_load <- function(name, start) {
+  rds_path <- file.path(data_dir,
+    paste0("da_est_", name, ".rds"))
+  if(file.exists(rds_path)) {
+    message("Loading cached: ", name)
+    return(readRDS(rds_path))
+  }
+  message("Fetching: ", name)
+  result <- tryCatch(
+    get_drainage_area_estimates(start, catchments = TRUE),
+    error = function(e) {
+      warning("Failed for ", name, ": ", conditionMessage(e),
+        call. = FALSE)
+      NULL
+    })
+  if(!is.null(result)) saveRDS(result, rds_path)
+  result
+}
+
+da_results <- Map(fetch_or_load, names(sites), sites)
+da_results <- Filter(Negate(is.null), da_results)
+```
+
+## Return Structure
+
+Each result is a list with scalar drainage area estimates and spatial
+data frames. Here are the elements for Black Earth Creek:
+
+```{r structure}
+names(da_results$black_earth)
+```
+
+The scalar estimates (square kilometers) across all five basins:
+
+```{r summary_table}
+basin_labels <- c(
+  black_earth = "Black Earth Creek",
+  french_broad = "French Broad",
+  brazos = "Brazos at Rosharon",
+  james = "James River",
+  malheur = "Malheur Lake"
+)
+
+summary_df <- data.frame(
+  basin = basin_labels[names(da_results)],
+  network_da = vapply(da_results, \(x) x$network_da_sqkm, numeric(1)),
+  da_huc12 = vapply(da_results, \(x) x$da_huc12_sqkm, numeric(1)),
+  contrib_huc12 = vapply(da_results,
+    \(x) x$contrib_da_huc12_sqkm, numeric(1)),
+  da_huc10 = vapply(da_results,
+    \(x) ifelse(is.na(x$da_huc10_sqkm), NA_real_, x$da_huc10_sqkm),
+    numeric(1)),
+  da_huc08 = vapply(da_results,
+    \(x) ifelse(is.na(x$da_huc08_sqkm), NA_real_, x$da_huc08_sqkm),
+    numeric(1)),
+  nhdplushr = vapply(da_results,
+    \(x) ifelse(is.na(x$nhdplushr_network_dasqkm), NA_real_,
+      x$nhdplushr_network_dasqkm),
+    numeric(1))
+)
+
+knitr::kable(summary_df, digits = 1,
+  col.names = c("Basin", "Network DA", "HUC12 DA",
+    "Contributing DA", "HUC10 DA", "HUC08 DA", "NHDPlusHR DA"),
+  caption = "Drainage area estimates (sq km) by basin and method")
+```
+
+Spatial elements in each result:
+
+```{r spatial_elements}
+be <- da_results$black_earth
+
+cat("start_feature:", class(be$start_feature)[1], "-",
+  nrow(be$start_feature), "rows\n")
+cat("hu12_by_huc12:", class(be$hu12_by_huc12)[1], "-",
+  nrow(be$hu12_by_huc12), "rows\n")
+cat("hu12_by_huc10:",
+  if(is.null(be$hu12_by_huc10)) "NULL"
+  else paste(class(be$hu12_by_huc10)[1], "-",
+    nrow(be$hu12_by_huc10), "rows"), "\n")
+cat("hu12_by_huc08:",
+  if(is.null(be$hu12_by_huc08)) "NULL"
+  else paste(class(be$hu12_by_huc08)[1], "-",
+    nrow(be$hu12_by_huc08), "rows"), "\n")
+cat("extra_catchments:", class(be$extra_catchments)[1], "-",
+  nrow(be$extra_catchments), "rows\n")
+cat("split_catchment:", class(be$split_catchment)[1], "-",
+  nrow(be$split_catchment), "rows\n")
+cat("all_network:", class(be$all_network)[1], "-",
+  nrow(be$all_network), "rows\n")
+cat("all_catchments:", class(be$all_catchments)[1], "-",
+  nrow(be$all_catchments), "rows\n")
+cat("hu12_outlet:", class(be$hu12_outlet)[1], "-",
+  nrow(be$hu12_outlet), "rows\n")
+```
+
+## Black Earth Creek — HUC12 Non-Contributing Area
+
+```{r plot_black_earth, fig.width = 7, fig.height = 6}
+library(ggplot2)
+
+be <- da_results$black_earth
+
+hu12 <- be$hu12_by_huc12
+hu12$pct_noncontrib <- hu12$ncontrb_sqkm / hu12$dasqkm * 100
+
+start_pt <- st_geometry(be$start_feature)
+if(!inherits(start_pt, "sfc_POINT"))
+  start_pt <- st_centroid(start_pt)
+start_pt <- st_transform(st_sf(geometry = start_pt), st_crs(hu12))
+
+ggplot() +
+  geom_sf(data = hu12, aes(fill = pct_noncontrib),
+    color = "gray40", linewidth = 0.3) +
+  scale_fill_gradient(low = "#FFFDD0", high = "#8B4513",
+    name = "Non-contributing\narea (%)") +
+  geom_sf(data = be$extra_catchments, fill = "lightblue",
+    color = "steelblue", alpha = 0.5, linewidth = 0.3) +
+  geom_sf(data = be$split_catchment, fill = NA,
+    color = "red", linewidth = 0.5, linetype = "dashed") +
+  geom_sf(data = start_pt, shape = 17, size = 3, color = "black") +
+  geom_sf(data = be$hu12_outlet, shape = 4, size = 2,
+    color = "darkred") +
+  labs(
+    title = "Black Earth Creek - Drainage Area Estimation",
+    subtitle = paste0(
+      "Network DA: ", round(be$network_da_sqkm, 1), " sq km | ",
+      "HUC12 DA: ", round(be$da_huc12_sqkm, 1), " sq km")
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+```{r teardown, include = FALSE}
+options(oldoption)
+
+if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
+  unlink(cache_path, recursive = TRUE)
+}
+```

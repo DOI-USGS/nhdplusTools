@@ -366,3 +366,18 @@ test_that("get_huc12_by_huc", {
   expect_true(nrow(h08) > nrow(h10))
   expect_true(all(substr(h08$huc_12, 1, 8) == "17010101"))
 })
+
+test_that("get_huc12_by_huc pages within batch", {
+  skip_on_cran()
+
+  # two HUC10s together, exercising POST paging
+  h10_multi <- nhdplusTools:::get_huc12_by_huc(c("1701010103", "1701010104"))
+  expect_s3_class(h10_multi, "sf")
+
+  h10_a <- nhdplusTools:::get_huc12_by_huc("1701010103")
+  h10_b <- nhdplusTools:::get_huc12_by_huc("1701010104")
+
+  expect_equal(nrow(h10_multi), nrow(h10_a) + nrow(h10_b))
+  expect_true(all(h10_a$huc_12 %in% h10_multi$huc_12))
+  expect_true(all(h10_b$huc_12 %in% h10_multi$huc_12))
+})

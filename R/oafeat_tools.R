@@ -279,7 +279,6 @@ get_oafeat <- function(base,
       base_call <- paste0(base_call, paste0("?", id_attribute, "=", ids))
     } else {
       post_body <- list(ids = ids, id_attribute = id_attribute)
-      limit <- 50
     }
 
   }
@@ -357,71 +356,69 @@ make_request <- function(req, body = "") {
 
 get_features_paging <- function(base_call, ids_list = list(), limit = 1000, status = TRUE) {
 
-  if(!identical(ids_list, list())) {
+  use_ids <- !identical(ids_list, list())
+
+  if(use_ids) {
     # we will page through ids
     ids <- split_equal_size(ids_list$ids, limit)
   }
 
   base_call <- add_sep(base_call)
 
+  if(status & interactive()) message("Starting download of first set of features.")
 
-  post_body <- ""
-
+  out <- list()
+  id_batch <- 1
   offset <- 0
 
   keep_going <- TRUE
 
-  if(status & interactive()) message("Starting download of first set of features.")
-
-  out <- rep(list(list()), 1e6)
-  i <- 1
-
   while(keep_going) {
 
-    if(!identical(ids_list, list())) {
+    if(use_ids) {
 
-      req <- base_call
-      post_body <- id_filter_cql(ids[[i]], ids_list$id_attribute)
-      req <- paste0(base_call, "limit=", limit)
+      post_body <- id_filter_cql(ids[[id_batch]], ids_list$id_attribute)
+      req <- paste0(base_call, "limit=", limit, "&offset=", offset)
 
     } else {
 
+      post_body <- ""
       req <- paste0(base_call, "limit=", limit, "&offset=", offset)
 
     }
 
-    out[[i]] <- make_request(req, post_body)
+    page <- make_request(req, post_body)
 
-    if(!is.null(out[[i]]) & inherits(out[[i]], "response")) {
-      warning("Can't continue, got unexpected response: ", print(out[[i]]))
-      out[[i]] <- NULL
+    if(!is.null(page) & inherits(page, "response")) {
+      warning("Can't continue, got unexpected response: ", print(page))
+      page <- NULL
     }
 
-    if(!is.null(out[[i]]) && inherits(out[[i]], "sf") & nrow(out[[i]]) != 0) {
-      offset <- offset + limit
-    }
-
-    if(nrow(out[[i]]) == 0 & !exists("ids")) keep_going <- FALSE
-
-    if(!inherits(out[[i]], "sf")) {
+    if(!inherits(page, "sf")) {
       warning("Something went wrong requesting data.")
       keep_going <- FALSE
+      next
     }
 
-    if(status & keep_going) {
-      if(identical(ids_list, list())) {
-        message("Starting next download from ", offset, ".")
+    if(nrow(page) > 0) out <- c(out, list(page))
+
+    if(nrow(page) < limit) {
+      # this batch is exhausted
+      if(use_ids && id_batch < length(ids)) {
+        id_batch <- id_batch + 1
+        offset <- 0
+        if(status) message("starting next download from batch ", id_batch,
+          " of ", length(ids), ".")
       } else {
-        message("starting next download from ", i * limit, ".")
+        keep_going <- FALSE
       }
+    } else {
+      offset <- offset + limit
+      if(status) message("Starting next download from offset ", offset, ".")
     }
-
-    if(exists("ids") > 0 && i == length(ids)) keep_going <- FALSE
-
-    i <- i + 1
   }
 
-  out <- out[1:(i - 1)]
+  if(length(out) == 0) return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
 
   sf::st_sf(dplyr::bind_rows(unify_types(out)))
 }

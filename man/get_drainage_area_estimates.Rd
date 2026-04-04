@@ -7,6 +7,7 @@
 get_drainage_area_estimates(
   start,
   catchments = FALSE,
+  nhdplushr = TRUE,
   local_navigation = FALSE
 )
 }
@@ -16,6 +17,10 @@ with \code{\link{get_nldi_feature}}.}
 
 \item{catchments}{logical. If TRUE, fetch and return NHDPlusV2 catchment
 polygons for the full upstream network. Default FALSE.}
+
+\item{nhdplushr}{logical. If TRUE (the default), compute a drainage area
+estimate from NHDPlusHR catchments. Set to FALSE to skip this step, which
+avoids the HR web service calls and speeds up computation.}
 
 \item{local_navigation}{logical. If TRUE, use \code{\link{get_vaa}} for
 network navigation and flowline attributes instead of NLDI/OGC API web

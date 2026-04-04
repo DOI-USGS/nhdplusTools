@@ -27,6 +27,9 @@
 #'   with \code{\link{get_nldi_feature}}.
 #' @param catchments logical. If TRUE, fetch and return NHDPlusV2 catchment
 #'   polygons for the full upstream network. Default FALSE.
+#' @param nhdplushr logical. If TRUE (the default), compute a drainage area
+#'   estimate from NHDPlusHR catchments. Set to FALSE to skip this step, which
+#'   avoids the HR web service calls and speeds up computation.
 #' @param local_navigation logical. If TRUE, use \code{\link{get_vaa}} for
 #'   network navigation and flowline attributes instead of NLDI/OGC API web
 #'   services. Only HUC12 pour points are fetched from the NLDI. Default FALSE.
@@ -74,7 +77,7 @@
 #' result$network_da_sqkm
 #' }
 get_drainage_area_estimates <- function(start, catchments = FALSE,
-  local_navigation = FALSE) {
+  nhdplushr = TRUE, local_navigation = FALSE) {
 
   if(local_navigation) {
     message("Loading NHDPlusV2 VAA for local navigation...")
@@ -235,22 +238,26 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
   message("  Network DA = ", round(network_da, 2))
 
   # NHDPlusHR estimate -- standalone, warns on failure
-  hu12_polys <- if(!is.null(hu12_result$hu12_by_huc08)) {
-    hu12_result$hu12_by_huc08
-  } else if(!is.null(hu12_result$hu12_by_huc10)) {
-    hu12_result$hu12_by_huc10
+  if(nhdplushr) {
+    hu12_polys <- if(!is.null(hu12_result$hu12_by_huc08)) {
+      hu12_result$hu12_by_huc08
+    } else if(!is.null(hu12_result$hu12_by_huc10)) {
+      hu12_result$hu12_by_huc10
+    } else {
+      hu12_result$hu12_by_huc12
+    }
+
+    message("Computing NHDPlusHR drainage area estimate...")
+    hr_result <- get_nhdplushr_da_estimate(
+      start_feature, network_da, hu12_polys
+    )
+
+    if(!is.na(hr_result$nhdplushr_network_dasqkm))
+      message("  NHDPlusHR DA = ",
+        round(hr_result$nhdplushr_network_dasqkm, 2))
   } else {
-    hu12_result$hu12_by_huc12
+    hr_result <- list(nhdplushr_network_dasqkm = NA_real_)
   }
-
-  message("Computing NHDPlusHR drainage area estimate...")
-  hr_result <- get_nhdplushr_da_estimate(
-    start_feature, network_da, hu12_polys
-  )
-
-  if(!is.na(hr_result$nhdplushr_network_dasqkm))
-    message("  NHDPlusHR DA = ",
-      round(hr_result$nhdplushr_network_dasqkm, 2))
 
   # optional catchment retrieval
   if(catchments) {

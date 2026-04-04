@@ -37,6 +37,11 @@
 #'   internally; must include at minimum \code{huc_12} and \code{ncontrb_a}
 #'   (case-insensitive). When provided, all HUC12 polygon queries are resolved
 #'   by subsetting this table. Default NULL (use web services).
+#' @param HU_inclusion_override character vector or NULL. Eight- or ten-digit
+#'   HUC codes whose HUC12s should be kept even when the parent HUC outlet is
+#'   not in the on-network set. Useful for regions like the Prairie Potholes
+#'   where landscape-connected HUCs lack a network outlet (e.g.
+#'   \code{"10130106"} in South Dakota). Default NULL (no overrides).
 #' @return list with elements:
 #'   \describe{
 #'     \item{da_huc12_sqkm}{numeric. Total DA using NLDI-identified HUC12s only.}
@@ -84,7 +89,8 @@
 #' result$network_da_sqkm
 #' }
 get_drainage_area_estimates <- function(start, catchments = FALSE,
-  nhdplushr = TRUE, local_navigation = FALSE, huc12_data = NULL) {
+  nhdplushr = TRUE, local_navigation = FALSE, huc12_data = NULL,
+  HU_inclusion_override = NULL) {
 
   if(!is.null(huc12_data))
     huc12_data <- prepare_huc12_data(huc12_data)
@@ -126,7 +132,8 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
 
   # 4. fetch + assemble HUC12 areas
   hu12_result <- get_upstream_huc12s(huc12_outlets, outlet_huc,
-    huc12_data = huc12_data)
+    huc12_data = huc12_data,
+    HU_inclusion_override = HU_inclusion_override)
 
   # 5. compute gap area between outlet and HUC12 outlets
   nav_net <- if(local_navigation) vaa else all_net
@@ -489,6 +496,7 @@ union_huc12_sets <- function(target, base) {
 #' @return sf data.frame with lowercase names and EPSG:5070 CRS.
 #' @noRd
 prepare_huc12_data <- function(huc12_data) {
+  huc12_data <- rename_geometry(huc12_data, "geom")
   names(huc12_data) <- tolower(names(huc12_data))
   required <- c("huc_12", "ncontrb_a")
   missing <- setdiff(required, names(huc12_data))
@@ -664,7 +672,8 @@ fetch_hu12_polygons <- function(plan) {
 #'   \code{hu12_by_huc08} sf objects, each with columns \code{dasqkm},
 #'   \code{ncontrb_sqkm}, \code{contrib_sqkm}.
 #' @noRd
-assemble_hu12_sets <- function(plan, polygons) {
+assemble_hu12_sets <- function(plan, polygons,
+  HU_inclusion_override = NULL) {
 
   empty_sf <- st_sf(geometry = st_sfc(crs = 5070))
 
@@ -759,11 +768,13 @@ assemble_hu12_sets <- function(plan, polygons) {
       # filter disconnected HUC12s before superset union
       network_ids <- hu12_by_huc12$huc_12
       keep_10 <- filter_disconnected_huc12s(
-        hu12_by_huc10$huc_12, network_ids
+        hu12_by_huc10$huc_12, network_ids,
+        override_parents = HU_inclusion_override
       )
       hu12_by_huc10 <- hu12_by_huc10[hu12_by_huc10$huc_12 %in% keep_10, ]
       keep_08 <- filter_disconnected_huc12s(
-        hu12_by_huc08$huc_12, network_ids, parent_nchar = 8L
+        hu12_by_huc08$huc_12, network_ids, parent_nchar = 8L,
+        override_parents = HU_inclusion_override
       )
       hu12_by_huc08 <- hu12_by_huc08[hu12_by_huc08$huc_12 %in% keep_08, ]
 
@@ -793,7 +804,8 @@ assemble_hu12_sets <- function(plan, polygons) {
       # filter disconnected HUC12s before superset union
       network_ids <- hu12_by_huc12$huc_12
       keep_10 <- filter_disconnected_huc12s(
-        hu12_by_huc10$huc_12, network_ids
+        hu12_by_huc10$huc_12, network_ids,
+        override_parents = HU_inclusion_override
       )
       hu12_by_huc10 <- hu12_by_huc10[hu12_by_huc10$huc_12 %in% keep_10, ]
 
@@ -848,7 +860,7 @@ assemble_hu12_sets <- function(plan, polygons) {
 #'   \code{ncontrb_sqkm}, \code{contrib_sqkm}.
 #' @noRd
 fetch_upstream_huc12s <- function(plan, polygons = NULL,
-  huc12_data = NULL) {
+  huc12_data = NULL, HU_inclusion_override = NULL) {
   if(is.null(polygons)) {
     if(!is.null(huc12_data)) {
       polygons <- subset_hu12_polygons(plan, huc12_data)
@@ -856,7 +868,8 @@ fetch_upstream_huc12s <- function(plan, polygons = NULL,
       polygons <- fetch_hu12_polygons(plan)
     }
   }
-  assemble_hu12_sets(plan, polygons)
+  assemble_hu12_sets(plan, polygons,
+    HU_inclusion_override = HU_inclusion_override)
 }
 
 #' Fetch upstream HUC12s and compute area columns
@@ -876,13 +889,14 @@ fetch_upstream_huc12s <- function(plan, polygons = NULL,
 #'   \code{ncontrb_sqkm}, \code{contrib_sqkm}.
 #' @noRd
 get_upstream_huc12s <- function(huc12_outlets, outlet_huc,
-  huc12_data = NULL) {
+  huc12_data = NULL, HU_inclusion_override = NULL) {
 
   all_huc12_ids <- huc12_outlets$identifier
   outlet_huc12_ids <- outlet_huc$identifier
 
   plan <- plan_upstream_huc12_fetches(all_huc12_ids, outlet_huc12_ids)
-  fetch_upstream_huc12s(plan, huc12_data = huc12_data)
+  fetch_upstream_huc12s(plan, huc12_data = huc12_data,
+    HU_inclusion_override = HU_inclusion_override)
 }
 
 #' Filter disconnected HUC12s from broader HUC queries
@@ -907,18 +921,31 @@ get_upstream_huc12s <- function(huc12_outlets, outlet_huc,
 #' HUC08 query). The grouping level should match the query level so that
 #' entire HUC groups are kept or dropped as a unit.
 #'
+#' Parent HUC codes listed in \code{override_parents} bypass this check:
+#' all HUC12s in the matching group are kept regardless of whether the
+#' outlet is on-network. This handles regions like the Prairie Potholes
+#' (e.g. HUC08 10130106 in South Dakota) where the HUC drains into the
+#' network but lacks a network-connected outlet flowline.
+#'
 #' @param broader_huc12s character. HUC12 IDs from a broader HUC query
 #'   (e.g. hu12_by_huc10 or hu12_by_huc08).
 #' @param network_huc12s character. HUC12 IDs from the on-network (NLDI)
 #'   hu12_by_huc12 set.
 #' @param parent_nchar integer. Number of characters defining the parent
 #'   group: 10 for HUC10, 8 for HUC08.
+#' @param override_parents character or NULL. Eight- or ten-digit HUC codes
+#'   whose HUC12s are always kept.
 #' @return character vector of HUC12 IDs to keep.
 #' @noRd
 filter_disconnected_huc12s <- function(broader_huc12s, network_huc12s,
-  parent_nchar = 10L) {
+  parent_nchar = 10L, override_parents = NULL) {
 
   if(length(broader_huc12s) == 0) return(broader_huc12s)
+
+  # match override_parents at the current grouping level
+  overrides <- if(!is.null(override_parents)) {
+    substr(override_parents, 1, parent_nchar)
+  }
 
   parents <- substr(broader_huc12s, 1, parent_nchar)
   unique_parents <- unique(parents)
@@ -930,7 +957,9 @@ filter_disconnected_huc12s <- function(broader_huc12s, network_huc12s,
     h12s_in_p <- broader_huc12s[in_p]
     outlet_h12 <- max(h12s_in_p)
 
-    if(outlet_h12 %in% network_huc12s) {
+    if(p %in% overrides) {
+      keep[in_p] <- TRUE
+    } else if(outlet_h12 %in% network_huc12s) {
       keep[in_p] <- TRUE
     } else {
       keep[in_p] <- h12s_in_p %in% network_huc12s

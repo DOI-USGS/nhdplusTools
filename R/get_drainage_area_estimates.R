@@ -216,6 +216,7 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
     da_huc10_sqkm <- NA_real_
     contrib_da_huc10_sqkm <- NA_real_
   }
+
   if(!is.null(hu12_result$hu12_by_huc08)) {
     da_huc08_sqkm <- sum(hu12_result$hu12_by_huc08$dasqkm) +
       gap$extra_and_local
@@ -267,7 +268,7 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
   } else {
     all_catchments <- NULL
   }
-  
+
   list(
     da_huc12_sqkm = da_huc12_sqkm,
     da_huc10_sqkm = da_huc10_sqkm,
@@ -574,15 +575,6 @@ fetch_upstream_huc12s <- function(plan) {
         empty_sf
       }
 
-      # Filter disconnected HUC10s before superset union
-      network_ids <- hu12_by_huc12$huc_12
-      keep_10 <- filter_disconnected_huc12s(hu12_by_huc10$huc_12, network_ids)
-      hu12_by_huc10 <- hu12_by_huc10[hu12_by_huc10$huc_12 %in% keep_10, ]
-      keep_08 <- filter_disconnected_huc12s(
-        hu12_by_huc08$huc_12, network_ids, parent_nchar = 8L
-      )
-      hu12_by_huc08 <- hu12_by_huc08[hu12_by_huc08$huc_12 %in% keep_08, ]
-
       # Enforce superset property: HUC10 >= HUC12, HUC08 >= HUC10
       hu12_by_huc10 <- union_huc12_sets(hu12_by_huc10, hu12_by_huc12)
       hu12_by_huc08 <- union_huc12_sets(hu12_by_huc08, hu12_by_huc10)
@@ -604,11 +596,6 @@ fetch_upstream_huc12s <- function(plan) {
       } else {
         empty_sf
       }
-
-      # Filter disconnected HUC10s before superset union
-      network_ids <- hu12_by_huc12$huc_12
-      keep_10 <- filter_disconnected_huc12s(hu12_by_huc10$huc_12, network_ids)
-      hu12_by_huc10 <- hu12_by_huc10[hu12_by_huc10$huc_12 %in% keep_10, ]
 
       # Enforce superset property: HUC10 >= HUC12
       hu12_by_huc10 <- union_huc12_sets(hu12_by_huc10, hu12_by_huc12)
@@ -663,55 +650,6 @@ get_upstream_huc12s <- function(huc12_outlets, outlet_huc) {
 
   plan <- plan_upstream_huc12_fetches(all_huc12_ids, outlet_huc12_ids)
   fetch_upstream_huc12s(plan)
-}
-
-#' Filter disconnected HUC12s from broader HUC queries
-#'
-#' When fetching HUC12s by a broader HUC level (HUC10 or HUC08), we may get
-#' HUC12s whose parent HUC is not actually connected to the network. A parent
-#' HUC is considered disconnected if its outlet (minimum HUC12 by sort order)
-#' is not present in the on-network HUC12 set from the NLDI. Disconnected
-#' parents' HUC12s are dropped unless they appear individually in the
-#' on-network set.
-#'
-#' @param broader_huc12s character. HUC12 IDs from a broader HUC query
-#'   (e.g. hu12_by_huc10 or hu12_by_huc08).
-#' @param network_huc12s character. HUC12 IDs from the on-network (NLDI)
-#'   hu12_by_huc12 set.
-#' @param parent_nchar integer. Number of characters defining the parent HUC
-#'   level: 10 for HUC10, 8 for HUC08.
-#' @return character vector of HUC12 IDs to keep.
-#' @noRd
-filter_disconnected_huc12s <- function(broader_huc12s, network_huc12s,
-  parent_nchar = 10L) {
-
-  if(length(broader_huc12s) == 0) return(broader_huc12s)
-
-  parents <- substr(broader_huc12s, 1, parent_nchar)
-  unique_parents <- unique(parents)
-
-  keep <- logical(length(broader_huc12s))
-
-  for(p in unique_parents) {
-    in_p <- parents == p
-    h12s_in_p <- broader_huc12s[in_p]
-    outlet_h12 <- min(h12s_in_p)
-
-    if(outlet_h12 %in% network_huc12s) {
-      # connected parent: keep all its HUC12s
-      keep[in_p] <- TRUE
-    } else {
-      # disconnected parent: only keep HUC12s individually on-network
-      keep[in_p] <- h12s_in_p %in% network_huc12s
-    }
-  }
-
-  n_dropped <- sum(!keep)
-  if(n_dropped > 0)
-    message("  Filtered ", n_dropped,
-      " disconnected HUC12s from broader query")
-
-  broader_huc12s[keep]
 }
 
 #' Add area columns to HUC12 sf object

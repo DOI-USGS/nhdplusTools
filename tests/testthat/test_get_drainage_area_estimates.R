@@ -389,38 +389,3 @@ test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
   expect_s3_class(result$hu12_by_huc12, "sf")
   expect_s3_class(result$split_catchment, "sf")
 })
-
-test_that("filter_disconnected_huc12s", {
-  # empty input
-  expect_equal(
-    nhdplusTools:::filter_disconnected_huc12s(character(0), "A"),
-    character(0)
-  )
-
-  # HUC10-level (default): 12040205 has 4 HUC12s across 4 HUC10s.
-  # Only 1204020501 outlet on-network -> other 3 HUC10s dropped.
-  result <- nhdplusTools:::filter_disconnected_huc12s(
-    c("120402050100", "120402050200", "120402050300", "120402050400"),
-    "120402050100"
-  )
-  expect_equal(result, "120402050100")
-
-  # HUC10-level: disconnected HUC10, but some HUC12s individually on-network.
-  net <- c("120500010803", "120500010804", "120500010805")
-  result <- nhdplusTools:::filter_disconnected_huc12s(
-    c("120500010801", "120500010802", net),
-    net
-  )
-  expect_equal(sort(result), sort(net))
-
-  # HUC08-level: HUC08 12050001 outlet is 120500010101 (min), NOT on-network.
-  # Only individually on-network HUC12s kept.
-  broader_08 <- c("120500010101", "120500010102", "120500010803",
-    "120500010804", "120500011305")
-  result <- nhdplusTools:::filter_disconnected_huc12s(
-    broader_08, c("120500010803", "120500010804", "120500011305"),
-    parent_nchar = 8L
-  )
-  expect_equal(sort(result),
-    sort(c("120500010803", "120500010804", "120500011305")))
-})

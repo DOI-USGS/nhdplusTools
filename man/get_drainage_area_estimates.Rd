@@ -8,7 +8,8 @@ get_drainage_area_estimates(
   start,
   catchments = FALSE,
   nhdplushr = TRUE,
-  local_navigation = FALSE
+  local_navigation = FALSE,
+  huc12_data = NULL
 )
 }
 \arguments{
@@ -25,6 +26,12 @@ avoids the HR web service calls and speeds up computation.}
 \item{local_navigation}{logical. If TRUE, use \code{\link{get_vaa}} for
 network navigation and flowline attributes instead of NLDI/OGC API web
 services. Only HUC12 pour points are fetched from the NLDI. Default FALSE.}
+
+\item{huc12_data}{sf data.frame or NULL. In-memory HUC12 polygon table to
+use instead of fetching from web services. Column names are lowercased
+internally; must include at minimum \code{huc_12} and \code{ncontrb_a}
+(case-insensitive). When provided, all HUC12 polygon queries are resolved
+by subsetting this table. Default NULL (use web services).}
 }
 \value{
 list with elements:
@@ -59,8 +66,7 @@ list with elements:
 Combines HUC12 areas upstream of HUC outlets with NHDPlusV2
   catchment areas for the portion of the basin between the outlet and HUC12
   outlets to produce a drainage area estimate. Non-contributing areas
-  captured in HUC12 boundaries are included, making this more representative
-  than purely network-derived totals.
+  captured in HUC12 boundaries are included.
 }
 \details{
 By default, network navigation is performed via the NLDI web service and

@@ -32,6 +32,11 @@
 #' @param local_navigation logical. If TRUE, use \code{\link{get_vaa}} for
 #'   network navigation and flowline attributes instead of NLDI/OGC API web
 #'   services. Only HUC12 pour points are fetched from the NLDI. Default FALSE.
+#' @param huc12_data sf data.frame or NULL. In-memory HUC12 polygon table to
+#'   use instead of fetching from web services. Column names are lowercased
+#'   internally; must include at minimum \code{huc_12} and \code{ncontrb_a}
+#'   (case-insensitive). When provided, all HUC12 polygon queries are resolved
+#'   by subsetting this table. Default NULL (use web services).
 #' @return list with elements:
 #'   \describe{
 #'     \item{da_huc12_sqkm}{numeric. Total DA using NLDI-identified HUC12s only.}
@@ -79,7 +84,10 @@
 #' result$network_da_sqkm
 #' }
 get_drainage_area_estimates <- function(start, catchments = FALSE,
-  nhdplushr = TRUE, local_navigation = FALSE) {
+  nhdplushr = TRUE, local_navigation = FALSE, huc12_data = NULL) {
+
+  if(!is.null(huc12_data))
+    huc12_data <- prepare_huc12_data(huc12_data)
 
   vaa <- if(local_navigation) {
     message("Loading NHDPlusV2 VAA for local navigation...")
@@ -117,7 +125,8 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
   ]
 
   # 4. fetch + assemble HUC12 areas
-  hu12_result <- get_upstream_huc12s(huc12_outlets, outlet_huc)
+  hu12_result <- get_upstream_huc12s(huc12_outlets, outlet_huc,
+    huc12_data = huc12_data)
 
   # 5. compute gap area between outlet and HUC12 outlets
   nav_net <- if(local_navigation) vaa else all_net
@@ -471,6 +480,96 @@ union_huc12_sets <- function(target, base) {
   bind_rows(target, missing)
 }
 
+#' Prepare in-memory HUC12 data for local subsetting
+#'
+#' Lowercases column names, validates required columns, and transforms to
+#' EPSG:5070.
+#'
+#' @param huc12_data sf data.frame. HUC12 polygon table with mixed-case names.
+#' @return sf data.frame with lowercase names and EPSG:5070 CRS.
+#' @noRd
+prepare_huc12_data <- function(huc12_data) {
+  names(huc12_data) <- tolower(names(huc12_data))
+  required <- c("huc_12", "ncontrb_a")
+  missing <- setdiff(required, names(huc12_data))
+  if(length(missing) > 0)
+    stop("huc12_data is missing required columns: ",
+      paste(missing, collapse = ", "))
+  st_transform(huc12_data, 5070)
+}
+
+#' Subset in-memory HUC12 data to match a fetch plan
+#'
+#' Local equivalent of \code{fetch_hu12_polygons} that subsets a pre-loaded
+#' HUC12 table instead of calling web services. Returns the same list
+#' structure so \code{assemble_hu12_sets} works identically.
+#'
+#' @param plan list. Output of \code{plan_upstream_huc12_fetches}.
+#' @param huc12_data sf data.frame. Pre-prepared HUC12 table (lowercase names,
+#'   EPSG:5070).
+#' @return list matching \code{fetch_hu12_polygons} output.
+#' @noRd
+subset_hu12_polygons <- function(plan, huc12_data) {
+
+  empty_sf <- st_sf(geometry = st_sfc(crs = 5070))
+
+  by_id <- if(length(plan$huc12_est$fetch_ids) > 0) {
+    huc12_data[huc12_data$huc_12 %in% plan$huc12_est$fetch_ids, ]
+  } else {
+    empty_sf
+  }
+
+  huc10_active <- !plan$huc10_est$same_as_huc12
+  huc08_active <- huc10_active && !plan$huc08_est$same_as_huc10
+
+  backfill_raw <- if(huc10_active) {
+    bf <- plan$huc10_est$outlet_backfill
+    if(length(bf$outlet_huc10s) > 0) {
+      huc12_data[substr(huc12_data$huc_12, 1, 10) %in% bf$outlet_huc10s, ]
+    } else {
+      empty_sf
+    }
+  } else {
+    empty_sf
+  }
+
+  huc08_bulk <- NULL
+  huc10_extra <- NULL
+  huc10_bulk <- NULL
+
+  if(huc10_active && huc08_active) {
+    if(length(plan$huc08_est$bulk_huc08s) > 0) {
+      huc08_bulk <- huc12_data[
+        substr(huc12_data$huc_12, 1, 8) %in% plan$huc08_est$bulk_huc08s, ]
+    }
+
+    covered_huc10s <- plan$huc10_est$bulk_huc10s[
+      substr(plan$huc10_est$bulk_huc10s, 1, 8) %in%
+        plan$huc08_est$bulk_huc08s
+    ]
+    extra_huc10s <- setdiff(plan$huc10_est$bulk_huc10s, covered_huc10s)
+
+    if(length(extra_huc10s) > 0) {
+      huc10_extra <- huc12_data[
+        substr(huc12_data$huc_12, 1, 10) %in% extra_huc10s, ]
+    }
+
+  } else if(huc10_active) {
+    if(length(plan$huc10_est$bulk_huc10s) > 0) {
+      huc10_bulk <- huc12_data[
+        substr(huc12_data$huc_12, 1, 10) %in% plan$huc10_est$bulk_huc10s, ]
+    }
+  }
+
+  list(
+    by_id = by_id,
+    backfill_raw = backfill_raw,
+    huc08_bulk = huc08_bulk,
+    huc10_extra = huc10_extra,
+    huc10_bulk = huc10_bulk
+  )
+}
+
 #' Fetch raw HUC12 polygons for a fetch plan
 #'
 #' Executes all web service calls for HUC12 polygons described by a plan from
@@ -741,12 +840,22 @@ assemble_hu12_sets <- function(plan, polygons) {
 #' @param polygons list or NULL. Pre-fetched polygon data matching the
 #'   structure returned by \code{fetch_hu12_polygons}. When NULL, polygons
 #'   are fetched from web services.
+#' @param huc12_data sf data.frame or NULL. Pre-prepared in-memory HUC12 table
+#'   (lowercase names, EPSG:5070). When non-NULL, used to subset polygons
+#'   locally instead of fetching from web services.
 #' @return list with \code{hu12_by_huc12}, \code{hu12_by_huc10}, and
 #'   \code{hu12_by_huc08} sf objects, each with columns \code{dasqkm},
 #'   \code{ncontrb_sqkm}, \code{contrib_sqkm}.
 #' @noRd
-fetch_upstream_huc12s <- function(plan, polygons = NULL) {
-  if(is.null(polygons)) polygons <- fetch_hu12_polygons(plan)
+fetch_upstream_huc12s <- function(plan, polygons = NULL,
+  huc12_data = NULL) {
+  if(is.null(polygons)) {
+    if(!is.null(huc12_data)) {
+      polygons <- subset_hu12_polygons(plan, huc12_data)
+    } else {
+      polygons <- fetch_hu12_polygons(plan)
+    }
+  }
   assemble_hu12_sets(plan, polygons)
 }
 
@@ -759,17 +868,21 @@ fetch_upstream_huc12s <- function(plan, polygons = NULL) {
 #' @param huc12_outlets sf data.frame. HUC12 pour points with \code{comid}
 #'   and \code{identifier} columns.
 #' @param outlet_huc sf data.frame. The immediately-upstream HUC12 outlet row.
+#' @param huc12_data sf data.frame or NULL. Pre-prepared in-memory HUC12 table
+#'   (lowercase names, EPSG:5070). When non-NULL, passed to
+#'   \code{fetch_upstream_huc12s} to avoid web service calls.
 #' @return list with \code{hu12_by_huc12}, \code{hu12_by_huc10}, and
 #'   \code{hu12_by_huc08} sf objects, each with columns \code{dasqkm},
 #'   \code{ncontrb_sqkm}, \code{contrib_sqkm}.
 #' @noRd
-get_upstream_huc12s <- function(huc12_outlets, outlet_huc) {
+get_upstream_huc12s <- function(huc12_outlets, outlet_huc,
+  huc12_data = NULL) {
 
   all_huc12_ids <- huc12_outlets$identifier
   outlet_huc12_ids <- outlet_huc$identifier
 
   plan <- plan_upstream_huc12_fetches(all_huc12_ids, outlet_huc12_ids)
-  fetch_upstream_huc12s(plan)
+  fetch_upstream_huc12s(plan, huc12_data = huc12_data)
 }
 
 #' Filter disconnected HUC12s from broader HUC queries

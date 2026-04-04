@@ -390,6 +390,139 @@ test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
   expect_s3_class(result$split_catchment, "sf")
 })
 
+test_that("assemble_hu12_sets with synthetic polygons (HUC08 active)", {
+  # Build a minimal plan and polygon set to exercise the assembly logic
+  # without any web calls.
+  make_poly <- function(id, x0 = 0) {
+    sf::st_sf(
+      huc_12 = id,
+      ncontrb_a = 0,
+      geometry = sf::st_sfc(
+        sf::st_polygon(list(rbind(
+          c(x0, 0), c(x0 + 1000, 0),
+          c(x0 + 1000, 1000), c(x0, 1000), c(x0, 0)
+        ))),
+        crs = 5070
+      )
+    )
+  }
+
+  # Simulate 3 HUC12s: h12_outlet in outlet HUC10 0707020101 (HUC08 07070201),
+  # h12_up1 in upstream HUC10 0707020105 (HUC08 07070201),
+  # h12_up2 in upstream HUC10 0707030203 (HUC08 07070302)
+  h12_outlet <- make_poly("070702010101", 0)
+  h12_up1 <- make_poly("070702010501", 1000)
+  h12_up2 <- make_poly("070703020301", 2000)
+
+  plan <- nhdplusTools:::plan_upstream_huc12_fetches(
+    all_huc12_ids = c("070702010101", "070702010501", "070703020301"),
+    outlet_huc12_ids = "070702010101"
+  )
+
+  polygons <- list(
+    by_id = dplyr::bind_rows(h12_outlet, h12_up1, h12_up2),
+    backfill_raw = sf::st_sf(geometry = sf::st_sfc(crs = 5070)),
+    huc08_bulk = h12_up2,
+    huc10_extra = h12_up1,
+    huc10_bulk = NULL
+  )
+
+  result <- nhdplusTools:::assemble_hu12_sets(plan, polygons)
+
+  expect_type(result, "list")
+  expect_s3_class(result$hu12_by_huc12, "sf")
+  expect_true(nrow(result$hu12_by_huc12) == 3)
+  expect_true("dasqkm" %in% names(result$hu12_by_huc12))
+  expect_true("contrib_sqkm" %in% names(result$hu12_by_huc12))
+  expect_true(all(result$hu12_by_huc12$dasqkm > 0))
+
+  # HUC10 and HUC08 active
+  expect_s3_class(result$hu12_by_huc10, "sf")
+  expect_s3_class(result$hu12_by_huc08, "sf")
+
+  # superset property: HUC08 >= HUC10 >= HUC12
+  expect_true(
+    nrow(result$hu12_by_huc10) >= nrow(result$hu12_by_huc12)
+  )
+  expect_true(
+    nrow(result$hu12_by_huc08) >= nrow(result$hu12_by_huc10)
+  )
+})
+
+test_that("assemble_hu12_sets single HUC10 returns NULL for broader", {
+  make_poly <- function(id, x0 = 0) {
+    sf::st_sf(
+      huc_12 = id,
+      ncontrb_a = 0,
+      geometry = sf::st_sfc(
+        sf::st_polygon(list(rbind(
+          c(x0, 0), c(x0 + 1000, 0),
+          c(x0 + 1000, 1000), c(x0, 1000), c(x0, 0)
+        ))),
+        crs = 5070
+      )
+    )
+  }
+
+  plan <- nhdplusTools:::plan_upstream_huc12_fetches(
+    all_huc12_ids = c("070702010101", "070702010102"),
+    outlet_huc12_ids = "070702010101"
+  )
+
+  polygons <- list(
+    by_id = dplyr::bind_rows(
+      make_poly("070702010101", 0),
+      make_poly("070702010102", 1000)
+    ),
+    backfill_raw = sf::st_sf(geometry = sf::st_sfc(crs = 5070)),
+    huc08_bulk = NULL,
+    huc10_extra = NULL,
+    huc10_bulk = NULL
+  )
+
+  result <- nhdplusTools:::assemble_hu12_sets(plan, polygons)
+
+  expect_true(nrow(result$hu12_by_huc12) == 2)
+  expect_null(result$hu12_by_huc10)
+  expect_null(result$hu12_by_huc08)
+})
+
+test_that("assemble_da_estimates", {
+  # Build a minimal hu12_result
+  make_poly <- function(id, x0 = 0) {
+    sf::st_sf(
+      huc_12 = id,
+      ncontrb_a = 0,
+      geometry = sf::st_sfc(
+        sf::st_polygon(list(rbind(
+          c(x0, 0), c(x0 + 1000, 0),
+          c(x0 + 1000, 1000), c(x0, 1000), c(x0, 0)
+        ))),
+        crs = 5070
+      )
+    )
+  }
+  hu12 <- dplyr::bind_rows(
+    make_poly("A", 0), make_poly("B", 1000)
+  )
+  hu12 <- nhdplusTools:::add_huc12_area_columns(hu12)
+
+  hu12_result <- list(
+    hu12_by_huc12 = hu12,
+    hu12_by_huc10 = NULL,
+    hu12_by_huc08 = NULL
+  )
+
+  est <- nhdplusTools:::assemble_da_estimates(hu12_result, 5.0)
+
+  expect_true(est$da_huc12_sqkm > 0)
+  expect_equal(est$da_huc12_sqkm, sum(hu12$dasqkm) + 5.0)
+  expect_true(is.na(est$da_huc10_sqkm))
+  expect_true(is.na(est$da_huc08_sqkm))
+  expect_true(is.na(est$contrib_da_huc10_sqkm))
+  expect_true(is.na(est$contrib_da_huc08_sqkm))
+})
+
 test_that("filter_disconnected_huc12s", {
   # HUC08 12050001: outlet HUC12 (120500011305) is 
   # on-network -> keep HUC12s including disconnected headwaters.

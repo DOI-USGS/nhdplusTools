@@ -2,8 +2,7 @@
 #' @description Combines HUC12 areas upstream of HUC outlets with NHDPlusV2
 #'   catchment areas for the portion of the basin between the outlet and HUC12
 #'   outlets to produce a drainage area estimate. Non-contributing areas
-#'   captured in HUC12 boundaries are included, making this more representative
-#'   than purely network-derived totals.
+#'   captured in HUC12 boundaries are included.
 #' @details
 #'   By default, network navigation is performed via the NLDI web service and
 #'   flowline attributes are retrieved from the NHDPlusV2 OGC API. When
@@ -61,11 +60,14 @@
 #'     \item{hu12_outlet}{sf data.frame. HUC12 pour points upstream of outlet.}
 #'   }
 #'
-#' @importFrom sf st_transform st_geometry st_area
+#' @importFrom sf st_transform st_geometry st_area st_buffer st_union
+#'   st_as_sfc st_bbox st_centroid st_distance st_sf st_sfc st_crs
+#'   st_drop_geometry
 #' @importFrom units set_units
 #' @importFrom dplyr select filter bind_rows
 #' @importFrom hydroloom navigate_hydro_network
-#'   navigate_network_dfs add_toids
+#'   navigate_network_dfs add_toids index_points_to_lines
+#'   disambiguate_indexes
 #' @importFrom dataRetrieval findNLDI
 #' @export
 #' @examples
@@ -79,109 +81,29 @@
 get_drainage_area_estimates <- function(start, catchments = FALSE,
   nhdplushr = TRUE, local_navigation = FALSE) {
 
-  if(local_navigation) {
+  vaa <- if(local_navigation) {
     message("Loading NHDPlusV2 VAA for local navigation...")
-    vaa <- get_vaa()
+    get_vaa()
   }
 
-  # resolve start feature via NLDI
-  if(inherits(start, "sfc")) {
-    message("Fetching waterbody...")
+  # 1. resolve start feature
+  start_info <- resolve_start_feature(start, vaa)
+  start_feature <- start_info$start_feature
+  outlet_comids <- start_info$outlet_comids
 
-    # get nhdplusv2 waterbody
-    wb <- get_waterbodies(start)
-
-    start_feature <- wb
-
-    if(!nrow(wb) == 1 | !inherits(wb, "sf")) {
-      stop("point needs to fall in a waterbody!")
-    }
-
-    if(local_navigation) {
-      all_wb <- vaa[vaa$wbareacomi == wb$comid, ]
-      outlet_comids <- all_wb$comid[!all_wb$tonode %in% all_wb$fromnode]
-    } else {
-      # fetch flowlines associated with this waterbody (attributes only)
-      message("Finding flowlines for waterbody COMID ", wb$comid, "...")
-      wb_flowlines <- query_usgs_oafeat(
-        AOI = wb,
-        type = "nhd",
-        filter = paste0("wbareacomi%20=%20", wb$comid),
-        properties = c("comid", "tonode", "fromnode"),
-        skip_geometry = TRUE
-      )
-
-      if(is.null(wb_flowlines) || nrow(wb_flowlines) == 0)
-        stop("No flowlines found for waterbody COMID ", wb$comid)
-
-      outlet_comids <- wb_flowlines$comid[
-        !wb_flowlines$tonode %in% wb_flowlines$fromnode
-      ]
-    }
-
-    message("Found ", length(outlet_comids), " outlets for waterbody")
-
-  } else {
-
-    message("Resolving start feature via NLDI...")
-    start_nldi <- get_nldi_feature(start)
-    start_feature <- start_nldi
-    outlet_comids <- start_nldi$comid
-  }
-
-  if(length(outlet_comids) == 0 || all(is.na(outlet_comids)))
-    stop("No outlet COMIDs found for the provided start location. ",
-      "Check that the input resolves to a valid NHDPlus feature.")
-
-  # HUC12 pour points via NLDI
-  message("Finding HUC12 pour points upstream via NLDI...")
-  if(local_navigation) {
-    huc12_outlets <- lapply(outlet_comids, \(x) {
-      findNLDI(
-        comid = x, nav = "UT",
-        distance_km = 9999, find = "huc12pp"
-      )$UT_huc12pp
-    }) |> bind_rows()
-
-    # full upstream network from VAA
-    message("Subsetting upstream network from VAA...")
-    ut_comids <- lapply(outlet_comids, \(x) {
-      hydroloom::navigate_hydro_network(vaa, x, mode = "UT")
-    })
-    all_net <- filter(vaa, .data$comid %in% do.call(c, ut_comids))
-  } else {
-    nldi_results <- lapply(outlet_comids, \(x) {
-      findNLDI(
-        comid = x, nav = "UT",
-        distance_km = 9999, find = c("huc12pp", "flowline")
-      )
-    })
-
-    huc12_outlets <- lapply(nldi_results, \(x) x$UT_huc12pp) |>
-      bind_rows()
-
-    upstream_comids <- unique(as.integer(unlist(
-      lapply(nldi_results, \(x) x$UT_flowlines$nhdplus_comid)
-    )))
-
-    # fetch full flowline attributes (no geometry needed)
-    message("Fetching flowline attributes for ",
-      length(upstream_comids), " upstream COMIDs...")
-    all_net <- get_nhdplus(comid = upstream_comids, realization = "flowline",
-      skip_geometry = TRUE)
-  }
-
-  all_net <- add_toids(all_net, return_dendritic = TRUE)
+  # 2. fetch upstream network + HUC12 outlets
+  net_info <- fetch_upstream_network(outlet_comids, vaa)
+  all_net <- net_info$all_net
+  huc12_outlets <- net_info$huc12_outlets
 
   network_da <- max(all_net$totdasqkm)
   message("  ", nrow(all_net), " flowlines, totdasqkm = ",
     round(network_da, 2))
-
   message("  Found ", nrow(huc12_outlets), " HUC12 outlets")
 
   huc12_comids <- huc12_outlets$comid
 
-  # find the immediately-upstream HUC12 outlets
+  # 3. find immediately-upstream HUC12 outlets (pure logic)
   immediate_hu12_comids <- find_immediate_huc12_outlets(
     all_net, outlet_comids, huc12_comids
   )
@@ -194,50 +116,27 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
     huc12_outlets$comid %in% immediate_hu12_comids,
   ]
 
-  # fetch and compute areas for upstream HUC12s
+  # 4. fetch + assemble HUC12 areas
   hu12_result <- get_upstream_huc12s(huc12_outlets, outlet_huc)
 
-  # compute gap area between outlet and HUC12 outlets
+  # 5. compute gap area between outlet and HUC12 outlets
   nav_net <- if(local_navigation) vaa else all_net
   gap <- compute_gap_area(outlet_huc, all_net, nav_net)
 
-  # assemble DA estimates (NA when fewer than a whole HUC10/08 upstream)
-  da_huc12_sqkm <- sum(hu12_result$hu12_by_huc12$dasqkm) +
-    gap$extra_and_local
-  contrib_da_huc12_sqkm <- sum(hu12_result$hu12_by_huc12$contrib_sqkm) +
-    gap$extra_and_local
+  # 6. assemble DA estimates
+  da_estimates <- assemble_da_estimates(hu12_result, gap$extra_and_local)
 
-  if(!is.null(hu12_result$hu12_by_huc10)) {
-    da_huc10_sqkm <- sum(hu12_result$hu12_by_huc10$dasqkm) +
-      gap$extra_and_local
-    contrib_da_huc10_sqkm <- sum(hu12_result$hu12_by_huc10$contrib_sqkm) +
-      gap$extra_and_local
-  } else {
-    da_huc10_sqkm <- NA_real_
-    contrib_da_huc10_sqkm <- NA_real_
-  }
-
-  if(!is.null(hu12_result$hu12_by_huc08)) {
-    da_huc08_sqkm <- sum(hu12_result$hu12_by_huc08$dasqkm) +
-      gap$extra_and_local
-    contrib_da_huc08_sqkm <- sum(hu12_result$hu12_by_huc08$contrib_sqkm) +
-      gap$extra_and_local
-  } else {
-    da_huc08_sqkm <- NA_real_
-    contrib_da_huc08_sqkm <- NA_real_
-  }
-
-  message("  HUC12 DA = ", round(da_huc12_sqkm, 2),
-    ", contributing = ", round(contrib_da_huc12_sqkm, 2))
-  if(!is.na(da_huc10_sqkm))
-    message("  HUC10 DA = ", round(da_huc10_sqkm, 2),
-      ", contributing = ", round(contrib_da_huc10_sqkm, 2))
-  if(!is.na(da_huc08_sqkm))
-    message("  HUC08 DA = ", round(da_huc08_sqkm, 2),
-      ", contributing = ", round(contrib_da_huc08_sqkm, 2))
+  message("  HUC12 DA = ", round(da_estimates$da_huc12_sqkm, 2),
+    ", contributing = ", round(da_estimates$contrib_da_huc12_sqkm, 2))
+  if(!is.na(da_estimates$da_huc10_sqkm))
+    message("  HUC10 DA = ", round(da_estimates$da_huc10_sqkm, 2),
+      ", contributing = ", round(da_estimates$contrib_da_huc10_sqkm, 2))
+  if(!is.na(da_estimates$da_huc08_sqkm))
+    message("  HUC08 DA = ", round(da_estimates$da_huc08_sqkm, 2),
+      ", contributing = ", round(da_estimates$contrib_da_huc08_sqkm, 2))
   message("  Network DA = ", round(network_da, 2))
 
-  # NHDPlusHR estimate -- standalone, warns on failure
+  # 7. NHDPlusHR estimate
   if(nhdplushr) {
     hu12_polys <- if(!is.null(hu12_result$hu12_by_huc08)) {
       hu12_result$hu12_by_huc08
@@ -259,7 +158,7 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
     hr_result <- list(nhdplushr_network_dasqkm = NA_real_)
   }
 
-  # optional catchment retrieval
+  # 8. optional full catchment retrieval
   if(catchments) {
     message("Fetching network catchment geometries...")
     all_catchments <- get_nhdplus(
@@ -269,25 +168,140 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
     all_catchments <- NULL
   }
 
-  list(
-    da_huc12_sqkm = da_huc12_sqkm,
-    da_huc10_sqkm = da_huc10_sqkm,
-    da_huc08_sqkm = da_huc08_sqkm,
-    contrib_da_huc12_sqkm = contrib_da_huc12_sqkm,
-    contrib_da_huc10_sqkm = contrib_da_huc10_sqkm,
-    contrib_da_huc08_sqkm = contrib_da_huc08_sqkm,
-    network_da_sqkm = network_da,
-    nhdplushr_network_dasqkm = hr_result$nhdplushr_network_dasqkm,
-    start_feature = start_feature,
-    hu12_by_huc12 = hu12_result$hu12_by_huc12,
-    hu12_by_huc10 = hu12_result$hu12_by_huc10,
-    hu12_by_huc08 = hu12_result$hu12_by_huc08,
-    extra_catchments = gap$extra_catchments,
-    split_catchment = gap$split_catchment,
-    all_network = all_net,
-    all_catchments = all_catchments,
-    hu12_outlet = huc12_outlets
+  c(
+    da_estimates,
+    list(
+      network_da_sqkm = network_da,
+      nhdplushr_network_dasqkm = hr_result$nhdplushr_network_dasqkm,
+      start_feature = start_feature,
+      hu12_by_huc12 = hu12_result$hu12_by_huc12,
+      hu12_by_huc10 = hu12_result$hu12_by_huc10,
+      hu12_by_huc08 = hu12_result$hu12_by_huc08,
+      extra_catchments = gap$extra_catchments,
+      split_catchment = gap$split_catchment,
+      all_network = all_net,
+      all_catchments = all_catchments,
+      hu12_outlet = huc12_outlets
+    )
   )
+}
+
+#' Resolve start feature to COMID(s)
+#'
+#' Given a start specification (NLDI feature list or sfc geometry for a
+#' waterbody), resolves it to an sf start feature and one or more outlet
+#' COMIDs. All web service calls for start resolution live here.
+#'
+#' @param start list or sfc. NLDI feature list with \code{featureSource} and
+#'   \code{featureID}, or an \code{sfc_POINT} for waterbody lookup.
+#' @param vaa data.frame or NULL. NHDPlusV2 VAA table for local waterbody
+#'   outlet finding. When NULL, uses the OGC API instead.
+#' @return list with \code{start_feature} (sf data.frame) and
+#'   \code{outlet_comids} (integer vector).
+#' @noRd
+resolve_start_feature <- function(start, vaa = NULL) {
+
+  if(inherits(start, "sfc")) {
+    message("Fetching waterbody...")
+    wb <- get_waterbodies(start)
+
+    if(!nrow(wb) == 1 | !inherits(wb, "sf"))
+      stop("point needs to fall in a waterbody!")
+
+    if(!is.null(vaa)) {
+      all_wb <- vaa[vaa$wbareacomi == wb$comid, ]
+      outlet_comids <- all_wb$comid[!all_wb$tonode %in% all_wb$fromnode]
+    } else {
+      message("Finding flowlines for waterbody COMID ", wb$comid, "...")
+      wb_flowlines <- query_usgs_oafeat(
+        AOI = wb,
+        type = "nhd",
+        filter = paste0("wbareacomi%20=%20", wb$comid),
+        properties = c("comid", "tonode", "fromnode"),
+        skip_geometry = TRUE
+      )
+
+      if(is.null(wb_flowlines) || nrow(wb_flowlines) == 0)
+        stop("No flowlines found for waterbody COMID ", wb$comid)
+
+      outlet_comids <- wb_flowlines$comid[
+        !wb_flowlines$tonode %in% wb_flowlines$fromnode
+      ]
+    }
+
+    message("Found ", length(outlet_comids), " outlets for waterbody")
+    start_feature <- wb
+
+  } else {
+    message("Resolving start feature via NLDI...")
+    start_feature <- get_nldi_feature(start)
+    outlet_comids <- start_feature$comid
+  }
+
+  if(length(outlet_comids) == 0 || all(is.na(outlet_comids)))
+    stop("No outlet COMIDs found for the provided start location. ",
+      "Check that the input resolves to a valid NHDPlus feature.")
+
+  list(start_feature = start_feature, outlet_comids = outlet_comids)
+}
+
+#' Fetch upstream network and HUC12 pour points
+#'
+#' Retrieves the full upstream flowline network and HUC12 pour points for
+#' the given outlet COMIDs. Two code paths: when \code{vaa} is provided,
+#' uses local VAA for the network and NLDI only for HUC12 pour points;
+#' otherwise fetches both from NLDI and the OGC API.
+#'
+#' @param outlet_comids integer. One or more outlet COMIDs.
+#' @param vaa data.frame or NULL. NHDPlusV2 VAA table for local navigation.
+#'   When NULL, uses the NLDI + OGC API path.
+#' @return list with \code{all_net} (data.frame with toid column) and
+#'   \code{huc12_outlets} (sf data.frame with comid and identifier columns).
+#' @noRd
+fetch_upstream_network <- function(outlet_comids, vaa = NULL) {
+
+  message("Finding HUC12 pour points upstream via NLDI...")
+
+  if(!is.null(vaa)) {
+    huc12_outlets <- lapply(outlet_comids, \(x) {
+      findNLDI(
+        comid = x, nav = "UT",
+        distance_km = 9999, find = "huc12pp"
+      )$UT_huc12pp
+    }) |> bind_rows()
+
+    message("Subsetting upstream network from VAA...")
+    ut_comids <- lapply(outlet_comids, \(x) {
+      navigate_hydro_network(vaa, x, mode = "UT")
+    })
+    all_net <- filter(vaa, .data$comid %in% do.call(c, ut_comids))
+
+  } else {
+    nldi_results <- lapply(outlet_comids, \(x) {
+      findNLDI(
+        comid = x, nav = "UT",
+        distance_km = 9999, find = c("huc12pp", "flowline")
+      )
+    })
+
+    huc12_outlets <- lapply(nldi_results, \(x) x$UT_huc12pp) |>
+      bind_rows()
+
+    upstream_comids <- unique(as.integer(unlist(
+      lapply(nldi_results, \(x) x$UT_flowlines$nhdplus_comid)
+    )))
+
+    message("Fetching flowline attributes for ",
+      length(upstream_comids), " upstream COMIDs...")
+    all_net <- get_nhdplus(
+      comid = upstream_comids, realization = "flowline",
+      skip_geometry = TRUE
+    )
+  }
+
+  all_net <- add_toids(all_net, return_dendritic = TRUE)
+
+  list(all_net = all_net, huc12_outlets = huc12_outlets)
 }
 
 #' Find immediately-upstream HUC12 outlets
@@ -454,30 +468,109 @@ union_huc12_sets <- function(target, base) {
 
   message("  Superset union: adding ", nrow(missing),
     " HUC12s from base estimate")
-  dplyr::bind_rows(target, missing)
+  bind_rows(target, missing)
 }
 
-#' Fetch upstream HUC12 polygons according to a fetch plan
+#' Fetch raw HUC12 polygons for a fetch plan
 #'
-#' Executes the web service calls described by a plan from
-#' \code{plan_upstream_huc12_fetches} and returns three sf data.frames
-#' of HUC12 polygons with area columns. When both HUC10 and HUC08
-#' estimates are active, the HUC08 bulk query is fetched first and
-#' the HUC10 subset is derived from it to avoid redundant requests.
+#' Executes all web service calls for HUC12 polygons described by a plan from
+#' \code{plan_upstream_huc12_fetches}. Returns raw results without filtering,
+#' backfill, or area computation -- that assembly happens in
+#' \code{fetch_upstream_huc12s}.
 #'
 #' @param plan list. Output of \code{plan_upstream_huc12_fetches}.
+#' @return list with:
+#'   \describe{
+#'     \item{by_id}{sf data.frame. HUC12 polygons fetched by NLDI IDs.}
+#'     \item{backfill_raw}{sf data.frame. All HUC12s in outlet HUC10(s).}
+#'     \item{huc08_bulk}{sf data.frame or NULL. All HUC12s in upstream HUC08s.}
+#'     \item{huc10_extra}{sf data.frame or NULL. HUC12s in HUC10s not covered
+#'       by the HUC08 query.}
+#'     \item{huc10_bulk}{sf data.frame or NULL. All HUC12s in bulk HUC10s
+#'       (when HUC08 estimate is inactive).}
+#'   }
+#' @noRd
+fetch_hu12_polygons <- function(plan) {
+
+  empty_sf <- st_sf(geometry = st_sfc(crs = 5070))
+
+  # HUC12s by NLDI-identified IDs
+  by_id <- if(length(plan$huc12_est$fetch_ids) > 0) {
+    get_huc(id = plan$huc12_est$fetch_ids, type = "_nhdplusv2") |>
+      st_transform(5070)
+  } else {
+    empty_sf
+  }
+
+  huc10_active <- !plan$huc10_est$same_as_huc12
+  huc08_active <- huc10_active && !plan$huc08_est$same_as_huc10
+
+  # backfill: all HUC12s in outlet HUC10(s)
+  backfill_raw <- if(huc10_active) {
+    bf <- plan$huc10_est$outlet_backfill
+    if(length(bf$outlet_huc10s) > 0) {
+      get_huc12_by_huc(bf$outlet_huc10s)
+    } else {
+      empty_sf
+    }
+  } else {
+    empty_sf
+  }
+
+  huc08_bulk <- NULL
+  huc10_extra <- NULL
+  huc10_bulk <- NULL
+
+  if(huc10_active && huc08_active) {
+    # broadest query first: all HUC12s in upstream HUC08s
+    if(length(plan$huc08_est$bulk_huc08s) > 0) {
+      huc08_bulk <- get_huc12_by_huc(plan$huc08_est$bulk_huc08s)
+    }
+
+    # HUC10s not covered by the HUC08 bulk query
+    covered_huc10s <- plan$huc10_est$bulk_huc10s[
+      substr(plan$huc10_est$bulk_huc10s, 1, 8) %in%
+        plan$huc08_est$bulk_huc08s
+    ]
+    extra_huc10s <- setdiff(plan$huc10_est$bulk_huc10s, covered_huc10s)
+
+    if(length(extra_huc10s) > 0)
+      huc10_extra <- get_huc12_by_huc(extra_huc10s)
+
+  } else if(huc10_active) {
+    # only HUC10 active, no HUC08
+    if(length(plan$huc10_est$bulk_huc10s) > 0)
+      huc10_bulk <- get_huc12_by_huc(plan$huc10_est$bulk_huc10s)
+  }
+
+  list(
+    by_id = by_id,
+    backfill_raw = backfill_raw,
+    huc08_bulk = huc08_bulk,
+    huc10_extra = huc10_extra,
+    huc10_bulk = huc10_bulk
+  )
+}
+
+#' Assemble upstream HUC12 polygon sets from raw fetched data
+#'
+#' Takes the raw polygon results from \code{fetch_hu12_polygons} and the
+#' fetch plan, then applies backfill filtering, disconnect filtering, superset
+#' enforcement, and area computation to produce three HUC12 polygon sets.
+#' No web service calls.
+#'
+#' @param plan list. Output of \code{plan_upstream_huc12_fetches}.
+#' @param polygons list. Output of \code{fetch_hu12_polygons}.
 #' @return list with \code{hu12_by_huc12}, \code{hu12_by_huc10}, and
 #'   \code{hu12_by_huc08} sf objects, each with columns \code{dasqkm},
 #'   \code{ncontrb_sqkm}, \code{contrib_sqkm}.
 #' @noRd
-fetch_upstream_huc12s <- function(plan) {
+assemble_hu12_sets <- function(plan, polygons) {
 
-  empty_sf <- sf::st_sf(geometry = sf::st_sfc(crs = 5070))
+  empty_sf <- st_sf(geometry = st_sfc(crs = 5070))
 
-  # Estimate 1: HUC12-only
-  hu12_by_huc12 <- if(length(plan$huc12_est$fetch_ids) > 0) {
-    get_huc(id = plan$huc12_est$fetch_ids, type = "_nhdplusv2") |>
-      st_transform(5070)
+  hu12_by_huc12 <- if(nrow(polygons$by_id) > 0) {
+    polygons$by_id
   } else {
     empty_sf
   }
@@ -489,30 +582,26 @@ fetch_upstream_huc12s <- function(plan) {
     hu12_by_huc10 <- NULL
     hu12_by_huc08 <- NULL
   } else {
-    # Outlet backfill: fetch once, shared by both estimates
     bf <- plan$huc10_est$outlet_backfill
-    backfill_raw <- if(length(bf$outlet_huc10s) > 0) {
-      get_huc12_by_huc(bf$outlet_huc10s)
-    } else {
-      empty_sf
-    }
+    backfill_raw <- polygons$backfill_raw
 
     if(huc08_active) {
-      # Fetch the broadest query first: all HUC12s in upstream HUC08s
-      huc08_bulk <- if(length(plan$huc08_est$bulk_huc08s) > 0) {
-        get_huc12_by_huc(plan$huc08_est$bulk_huc08s)
+      huc08_bulk <- if(!is.null(polygons$huc08_bulk)) {
+        polygons$huc08_bulk
+      } else {
+        empty_sf
+      }
+      huc10_extra <- if(!is.null(polygons$huc10_extra)) {
+        polygons$huc10_extra
       } else {
         empty_sf
       }
 
-      # HUC10s covered by the HUC08 bulk vs those needing separate fetch
+      # derive HUC10 subset from HUC08 results
       covered_huc10s <- plan$huc10_est$bulk_huc10s[
         substr(plan$huc10_est$bulk_huc10s, 1, 8) %in%
           plan$huc08_est$bulk_huc08s
       ]
-      extra_huc10s <- setdiff(plan$huc10_est$bulk_huc10s, covered_huc10s)
-
-      # Derive HUC10 subset from HUC08 results
       huc10_from_huc08 <- if(nrow(huc08_bulk) > 0 &&
           length(covered_huc10s) > 0) {
         huc08_bulk[
@@ -521,97 +610,95 @@ fetch_upstream_huc12s <- function(plan) {
         empty_sf
       }
 
-      # Fetch remaining HUC10s not covered by HUC08 query
-      huc10_extra <- if(length(extra_huc10s) > 0) {
-        get_huc12_by_huc(extra_huc10s)
-      } else {
-        empty_sf
-      }
-
       message("  HUC10 from HUC08: ", nrow(huc10_from_huc08),
         " HUC12s reused, ", nrow(huc10_extra), " fetched separately")
 
-      # Assemble HUC08 estimate
-      # Include: bulk HUC08s + non-outlet HUC10s in the outlet HUC08
-      # (extra_huc10s) + backfill for the outlet HUC10
+      # assemble HUC08 estimate
       huc08_parts <- list()
       if(nrow(huc08_bulk) > 0) huc08_parts$bulk <- huc08_bulk
       if(nrow(huc10_extra) > 0) huc08_parts$outlet_huc08_huc10s <- huc10_extra
       huc08_bulk_all <- if(length(huc08_parts) > 0) {
-        dplyr::bind_rows(huc08_parts)
+        bind_rows(huc08_parts)
       } else {
         NULL
       }
       backfill_huc08 <- filter_outlet_backfill(
         backfill_raw, bf$outlet_huc12_ids,
-        bulk = huc08_bulk_all, label = "HUC08")
+        bulk = huc08_bulk_all, label = "HUC08"
+      )
       if(nrow(backfill_huc08) > 0) huc08_parts$backfill <- backfill_huc08
 
       hu12_by_huc08 <- if(length(huc08_parts) > 0) {
-        sf::st_sf(dplyr::bind_rows(huc08_parts)) |> st_transform(5070)
+        st_sf(bind_rows(huc08_parts)) |> st_transform(5070)
       } else {
         empty_sf
       }
 
-      # Assemble HUC10 estimate
+      # assemble HUC10 estimate
       huc10_parts <- list()
       if(nrow(huc10_from_huc08) > 0)
         huc10_parts$from_huc08 <- huc10_from_huc08
       if(nrow(huc10_extra) > 0) huc10_parts$extra <- huc10_extra
       all_huc10_bulk <- if(length(huc10_parts) > 0) {
-        dplyr::bind_rows(huc10_parts)
+        bind_rows(huc10_parts)
       } else {
         NULL
       }
       backfill_huc10 <- filter_outlet_backfill(
         backfill_raw, bf$outlet_huc12_ids,
-        bulk = all_huc10_bulk, label = "HUC10")
+        bulk = all_huc10_bulk, label = "HUC10"
+      )
       if(nrow(backfill_huc10) > 0)
         huc10_parts$backfill <- backfill_huc10
 
       hu12_by_huc10 <- if(length(huc10_parts) > 0) {
-        sf::st_sf(dplyr::bind_rows(huc10_parts)) |> st_transform(5070)
+        st_sf(bind_rows(huc10_parts)) |> st_transform(5070)
       } else {
         empty_sf
       }
 
-      # Filter disconnected HUC10s before superset union
+      # filter disconnected HUC12s before superset union
       network_ids <- hu12_by_huc12$huc_12
-      keep_10 <- filter_disconnected_huc12s(hu12_by_huc10$huc_12, network_ids)
+      keep_10 <- filter_disconnected_huc12s(
+        hu12_by_huc10$huc_12, network_ids
+      )
       hu12_by_huc10 <- hu12_by_huc10[hu12_by_huc10$huc_12 %in% keep_10, ]
       keep_08 <- filter_disconnected_huc12s(
         hu12_by_huc08$huc_12, network_ids, parent_nchar = 8L
       )
       hu12_by_huc08 <- hu12_by_huc08[hu12_by_huc08$huc_12 %in% keep_08, ]
 
-      # Enforce superset property: HUC10 >= HUC12, HUC08 >= HUC10
+      # enforce superset property: HUC10 >= HUC12, HUC08 >= HUC10
       hu12_by_huc10 <- union_huc12_sets(hu12_by_huc10, hu12_by_huc12)
       hu12_by_huc08 <- union_huc12_sets(hu12_by_huc08, hu12_by_huc10)
 
     } else {
-      # Only HUC10 active, no HUC08
+      # only HUC10 active, no HUC08
       hu12_by_huc08 <- NULL
       huc10_parts <- list()
-      if(length(plan$huc10_est$bulk_huc10s) > 0)
-        huc10_parts$bulk <- get_huc12_by_huc(plan$huc10_est$bulk_huc10s)
+      if(!is.null(polygons$huc10_bulk))
+        huc10_parts$bulk <- polygons$huc10_bulk
       backfill_huc10 <- filter_outlet_backfill(
         backfill_raw, bf$outlet_huc12_ids,
-        bulk = huc10_parts$bulk, label = "HUC10")
+        bulk = huc10_parts$bulk, label = "HUC10"
+      )
       if(nrow(backfill_huc10) > 0)
         huc10_parts$backfill <- backfill_huc10
 
       hu12_by_huc10 <- if(length(huc10_parts) > 0) {
-        sf::st_sf(dplyr::bind_rows(huc10_parts)) |> st_transform(5070)
+        st_sf(bind_rows(huc10_parts)) |> st_transform(5070)
       } else {
         empty_sf
       }
 
-      # Filter disconnected HUC10s before superset union
+      # filter disconnected HUC12s before superset union
       network_ids <- hu12_by_huc12$huc_12
-      keep_10 <- filter_disconnected_huc12s(hu12_by_huc10$huc_12, network_ids)
+      keep_10 <- filter_disconnected_huc12s(
+        hu12_by_huc10$huc_12, network_ids
+      )
       hu12_by_huc10 <- hu12_by_huc10[hu12_by_huc10$huc_12 %in% keep_10, ]
 
-      # Enforce superset property: HUC10 >= HUC12
+      # enforce superset property: HUC10 >= HUC12
       hu12_by_huc10 <- union_huc12_sets(hu12_by_huc10, hu12_by_huc12)
     }
   }
@@ -644,14 +731,33 @@ fetch_upstream_huc12s <- function(plan) {
   )
 }
 
+#' Fetch upstream HUC12 polygons according to a fetch plan
+#'
+#' Fetches raw HUC12 polygons via \code{fetch_hu12_polygons}, then assembles
+#' and filters them via \code{assemble_hu12_sets}. When \code{polygons} is
+#' provided, skips the web service calls and uses the pre-fetched data.
+#'
+#' @param plan list. Output of \code{plan_upstream_huc12_fetches}.
+#' @param polygons list or NULL. Pre-fetched polygon data matching the
+#'   structure returned by \code{fetch_hu12_polygons}. When NULL, polygons
+#'   are fetched from web services.
+#' @return list with \code{hu12_by_huc12}, \code{hu12_by_huc10}, and
+#'   \code{hu12_by_huc08} sf objects, each with columns \code{dasqkm},
+#'   \code{ncontrb_sqkm}, \code{contrib_sqkm}.
+#' @noRd
+fetch_upstream_huc12s <- function(plan, polygons = NULL) {
+  if(is.null(polygons)) polygons <- fetch_hu12_polygons(plan)
+  assemble_hu12_sets(plan, polygons)
+}
+
 #' Fetch upstream HUC12s and compute area columns
 #'
 #' Derives HUC08/HUC10 groupings from HUC12 identifiers and fetches
 #' HUC12 polygons via the OGC API. Computes total, non-contributing,
 #' and contributing area columns on the result.
 #'
-#' @param huc12_outlets list. NLDI result from findNLDI containing
-#'   \code{UT_huc12pp} element.
+#' @param huc12_outlets sf data.frame. HUC12 pour points with \code{comid}
+#'   and \code{identifier} columns.
 #' @param outlet_huc sf data.frame. The immediately-upstream HUC12 outlet row.
 #' @return list with \code{hu12_by_huc12}, \code{hu12_by_huc10}, and
 #'   \code{hu12_by_huc08} sf objects, each with columns \code{dasqkm},
@@ -743,6 +849,56 @@ add_huc12_area_columns <- function(hu12) {
   hu12
 }
 
+#' Assemble drainage area estimates from HUC12 results
+#'
+#' Pure logic -- computes the six DA estimate values from assembled HUC12
+#' polygon sets and the gap area. No web service calls.
+#'
+#' @param hu12_result list. Output of \code{fetch_upstream_huc12s} with
+#'   \code{hu12_by_huc12}, \code{hu12_by_huc10}, \code{hu12_by_huc08}.
+#' @param extra_and_local numeric. Gap area in sq km from
+#'   \code{compute_gap_area}.
+#' @return list with \code{da_huc12_sqkm}, \code{da_huc10_sqkm},
+#'   \code{da_huc08_sqkm}, \code{contrib_da_huc12_sqkm},
+#'   \code{contrib_da_huc10_sqkm}, \code{contrib_da_huc08_sqkm}.
+#' @noRd
+assemble_da_estimates <- function(hu12_result, extra_and_local) {
+
+  da_huc12_sqkm <- sum(hu12_result$hu12_by_huc12$dasqkm) +
+    extra_and_local
+  contrib_da_huc12_sqkm <- sum(hu12_result$hu12_by_huc12$contrib_sqkm) +
+    extra_and_local
+
+  if(!is.null(hu12_result$hu12_by_huc10)) {
+    da_huc10_sqkm <- sum(hu12_result$hu12_by_huc10$dasqkm) +
+      extra_and_local
+    contrib_da_huc10_sqkm <- sum(hu12_result$hu12_by_huc10$contrib_sqkm) +
+      extra_and_local
+  } else {
+    da_huc10_sqkm <- NA_real_
+    contrib_da_huc10_sqkm <- NA_real_
+  }
+
+  if(!is.null(hu12_result$hu12_by_huc08)) {
+    da_huc08_sqkm <- sum(hu12_result$hu12_by_huc08$dasqkm) +
+      extra_and_local
+    contrib_da_huc08_sqkm <- sum(hu12_result$hu12_by_huc08$contrib_sqkm) +
+      extra_and_local
+  } else {
+    da_huc08_sqkm <- NA_real_
+    contrib_da_huc08_sqkm <- NA_real_
+  }
+
+  list(
+    da_huc12_sqkm = da_huc12_sqkm,
+    da_huc10_sqkm = da_huc10_sqkm,
+    da_huc08_sqkm = da_huc08_sqkm,
+    contrib_da_huc12_sqkm = contrib_da_huc12_sqkm,
+    contrib_da_huc10_sqkm = contrib_da_huc10_sqkm,
+    contrib_da_huc08_sqkm = contrib_da_huc08_sqkm
+  )
+}
+
 #' Compute gap area between outlet and HUC12 outlets
 #'
 #' Splits the catchment at each HUC12 outlet, navigates upstream from each
@@ -754,11 +910,19 @@ add_huc12_area_columns <- function(hu12) {
 #' @param all_net data.frame. Full upstream network with comid, toid, areasqkm.
 #' @param nav_net data.frame. Network used for upstream navigation. Defaults
 #'   to \code{all_net}; pass the full VAA when using local navigation.
+#' @param split_catchments list or NULL. Pre-computed split catchments keyed by
+#'   COMID. Each element is an sf data.frame as returned by
+#'   \code{get_split_catchment} (projected to EPSG:5070). When NULL, split
+#'   catchments are fetched from the web service.
+#' @param gap_catchments sf data.frame or NULL. Pre-fetched NHDPlusV2 catchment
+#'   geometries for the gap flowlines. When NULL, fetched via
+#'   \code{get_nhdplus}.
 #' @return list with \code{extra_net} (data.frame), \code{extra_catchments}
 #'   (sf data.frame), \code{split_catchment} (sf data.frame),
 #'   \code{extra_and_local} (numeric area in sq km).
 #' @noRd
-compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net) {
+compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net,
+  split_catchments = NULL, gap_catchments = NULL) {
 
   n_outlets <- nrow(outlet_huc)
   message("Splitting catchments at ", n_outlets, " HUC12 outlet(s)...")
@@ -770,10 +934,14 @@ compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net) {
   for(i in seq_len(n_outlets)) {
     oh <- outlet_huc[i, ]
 
-    split_catch <- get_split_catchment(
-      st_geometry(oh),
-      upstream = FALSE
-    ) |> st_transform(5070)
+    if(is.null(split_catchments)) {
+      split_catch <- get_split_catchment(
+        st_geometry(oh),
+        upstream = FALSE
+      ) |> st_transform(5070)
+    } else {
+      split_catch <- split_catchments[[as.character(oh$comid)]]
+    }
 
     split_catch$dasqkm <- as.numeric(set_units(st_area(split_catch), "km^2"))
     split_catches[[i]] <- split_catch
@@ -799,12 +967,17 @@ compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net) {
 
   # fetch catchment geometries for the extra portion
   if(nrow(extra_net) > 0) {
-    message("Fetching extra catchment geometries...")
-    extra_cat <- get_nhdplus(
-      comid = extra_net$comid, realization = "catchment"
-    )
+    if(is.null(gap_catchments)) {
+      message("Fetching extra catchment geometries...")
+      extra_cat <- get_nhdplus(
+        comid = extra_net$comid, realization = "catchment"
+      )
+    } else {
+      extra_cat <- gap_catchments[
+        gap_catchments$comid %in% extra_net$comid, ]
+    }
   } else {
-    extra_cat <- sf::st_sf(geometry = sf::st_sfc(crs = 5070))
+    extra_cat <- st_sf(geometry = st_sfc(crs = 5070))
   }
 
   list(
@@ -826,30 +999,39 @@ compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net) {
 #'   used to match the best HR flowline.
 #' @param hu12_polys sf data.frame. Largest available HUC12 polygon set used
 #'   to define the bounding box for fetching the full HR network.
+#' @param hr_network sf data.frame or NULL. Pre-fetched NHDPlusHR flowlines
+#'   (type \code{"networknhdflowline"}). When NULL, fetched via
+#'   \code{get_nhdphr}.
+#' @param hr_catchments sf data.frame or NULL. Pre-fetched NHDPlusHR
+#'   catchments with \code{nhdplusid} and optionally \code{areasqkm} columns.
+#'   When NULL, fetched via \code{get_nhdphr}.
 #' @return list with \code{nhdplushr_network_dasqkm} (numeric or NA).
 #' @noRd
-get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys) {
+get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys,
+  hr_network = NULL, hr_catchments = NULL) {
 
   fail <- list(nhdplushr_network_dasqkm = NA_real_)
 
   tryCatch({
 
     # 1. extract start point (and full geometry for proximity filtering)
-    start_geom <- sf::st_geometry(start_feature)
+    start_geom <- st_geometry(start_feature)
     is_point <- inherits(start_geom, "sfc_POINT")
-    start_point <- if(is_point) start_geom else sf::st_centroid(start_geom)
+    start_point <- if(is_point) start_geom else st_centroid(start_geom)
 
-    # 2. bounding box from HUC polygons + start geometry buffer for full HR network
-    start_geom_5070 <- sf::st_transform(start_geom, 5070)
-    start_buf <- sf::st_buffer(start_geom_5070, 500)
-    aoi <- sf::st_union(
-      sf::st_transform(sf::st_as_sfc(sf::st_bbox(hu12_polys)), 5070),
-      start_buf
-    )
-    aoi <- sf::st_as_sfc(sf::st_bbox(sf::st_transform(aoi, 4326)))
+    # 2. fetch HR network if not provided
+    if(is.null(hr_network)) {
+      start_geom_5070 <- st_transform(start_geom, 5070)
+      start_buf <- st_buffer(start_geom_5070, 500)
+      aoi <- st_union(
+        st_transform(st_as_sfc(st_bbox(hu12_polys)), 5070),
+        start_buf
+      )
+      aoi <- st_as_sfc(st_bbox(st_transform(aoi, 4326)))
 
-    message("  Fetching NHDPlusHR network for full AOI...")
-    hr_network <- get_nhdphr(AOI = aoi, type = "networknhdflowline")
+      message("  Fetching NHDPlusHR network for full AOI...")
+      hr_network <- get_nhdphr(AOI = aoi, type = "networknhdflowline")
+    }
 
     if(is.null(hr_network) || nrow(hr_network) == 0)
       stop("no HR flowlines in AOI")
@@ -860,10 +1042,10 @@ get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys) {
     if(!is_point) {
       # waterbody: find HR flowlines within 500m of the lake polygon,
       # then identify outlets where tonode is not in fromnode
-      wb_5070 <- sf::st_transform(start_geom, 5070)
-      wb_buf <- sf::st_buffer(wb_5070, 500)
-      hr_5070 <- sf::st_transform(hr_network, 5070)
-      dists <- as.numeric(sf::st_distance(hr_5070, wb_buf))
+      wb_5070 <- st_transform(start_geom, 5070)
+      wb_buf <- st_buffer(wb_5070, 500)
+      hr_5070 <- st_transform(hr_network, 5070)
+      dists <- as.numeric(st_distance(hr_5070, wb_buf))
       hr_wb <- hr_network[dists <= 0, ]
 
       if(nrow(hr_wb) == 0)
@@ -883,27 +1065,27 @@ get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys) {
 
     } else {
       # point: index to nearby HR flowlines, disambiguate by DA
-      start_5070 <- sf::st_transform(start_point, 5070)
-      hr_5070 <- sf::st_transform(hr_network, 5070)
-      start_buf <- sf::st_buffer(start_5070, 500)
-      dists <- as.numeric(sf::st_distance(hr_5070, start_buf))
+      start_5070 <- st_transform(start_point, 5070)
+      hr_5070 <- st_transform(hr_network, 5070)
+      start_buf <- st_buffer(start_5070, 500)
+      dists <- as.numeric(st_distance(hr_5070, start_buf))
       hr_local <- hr_network[dists <= 0, ]
 
       if(nrow(hr_local) == 0)
         stop("no HR flowlines within 500m of start feature")
 
-      indexes <- hydroloom::index_points_to_lines(
+      indexes <- index_points_to_lines(
         hr_local, start_5070,
-        search_radius = units::set_units(500, "m"),
+        search_radius = set_units(500, "m"),
         max_matches = 10
       )
 
       if(is.null(indexes) || nrow(indexes) == 0)
         stop("no HR index matches found")
 
-      best <- hydroloom::disambiguate_indexes(
+      best <- disambiguate_indexes(
         indexes,
-        sf::st_drop_geometry(hr_local[, c("nhdplusid", "totdasqkm")]),
+        st_drop_geometry(hr_local[, c("nhdplusid", "totdasqkm")]),
         data.frame(point_id = 1, totdasqkm = network_da)
       )
       hr_start_ids <- best$nhdplusid
@@ -919,26 +1101,31 @@ get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys) {
     # 4. navigate upstream from each outlet on HR network
     message("  Navigating upstream on HR network...")
     ut_ids <- unique(unlist(lapply(hr_start_ids, \(sid) {
-      hydroloom::navigate_hydro_network(hr_network, sid, mode = "UT")
+      navigate_hydro_network(hr_network, sid, mode = "UT")
     })))
 
     message("  Found ", length(ut_ids), " HR flowlines upstream")
 
-    # 6. fetch HR catchments
-    message("  Fetching NHDPlusHR catchments...")
-    hr_catchments <- get_nhdphr(
-      ids = as.character(ut_ids), type = "nhdpluscatchment"
-    )
+    # 5. fetch HR catchments if not provided
+    if(is.null(hr_catchments)) {
+      message("  Fetching NHDPlusHR catchments...")
+      hr_catchments <- get_nhdphr(
+        ids = as.character(ut_ids), type = "nhdpluscatchment"
+      )
+    } else {
+      hr_catchments <- hr_catchments[
+        hr_catchments$nhdplusid %in% ut_ids, ]
+    }
 
     if(is.null(hr_catchments) || nrow(hr_catchments) == 0)
       stop("no HR catchments returned")
 
-    # 7. sum catchment areas
+    # 6. sum catchment areas
     if("areasqkm" %in% names(hr_catchments)) {
       da <- sum(hr_catchments$areasqkm, na.rm = TRUE)
     } else {
-      hr_catch_5070 <- sf::st_transform(hr_catchments, 5070)
-      da <- sum(as.numeric(sf::st_area(hr_catch_5070))) / 1e6
+      hr_catch_5070 <- st_transform(hr_catchments, 5070)
+      da <- sum(as.numeric(st_area(hr_catch_5070))) / 1e6
     }
 
     list(nhdplushr_network_dasqkm = da)

@@ -389,3 +389,30 @@ test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
   expect_s3_class(result$hu12_by_huc12, "sf")
   expect_s3_class(result$split_catchment, "sf")
 })
+
+test_that("filter_disconnected_huc12s", {
+  # HUC08 12050001: outlet HUC12 (120500011305) is 
+  # on-network -> keep HUC12s including disconnected headwaters.
+  broader_12050001 <- c(
+    "120500010101", "120500010102", "120500010103", "120500010104",
+    "120500011305"
+  )
+  net_12050001 <- c(
+    "120500011304", "120500011305"
+  )
+  # HUC08 grouping: outlet 120500011305 (max in HUC08) is on-network
+  # -> keep all HUC12s.
+  result <- nhdplusTools:::filter_disconnected_huc12s(
+    broader_12050001, net_12050001, parent_nchar = 8L
+  )
+  expect_equal(sort(result), sort(broader_12050001))
+
+  # HUC08 12040205: outlet 120402050400 (max in HUC08) is NOT on-network
+  # -> only keep 120402050100 which is individually on-network.
+  result <- nhdplusTools:::filter_disconnected_huc12s(
+    c("120402050100", "120402050200", "120402050300", "120402050400"),
+    "120402050100",
+    parent_nchar = 8L
+  )
+  expect_equal(result, "120402050100")
+})

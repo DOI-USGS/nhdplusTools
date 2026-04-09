@@ -9,7 +9,8 @@ get_drainage_area_estimates(
   catchments = FALSE,
   nhdplushr = TRUE,
   local_navigation = FALSE,
-  huc12_data = NULL
+  huc12_data = NULL,
+  HU_inclusion_override = NULL
 )
 }
 \arguments{
@@ -32,6 +33,12 @@ use instead of fetching from web services. Column names are lowercased
 internally; must include at minimum \code{huc_12} and \code{ncontrb_a}
 (case-insensitive). When provided, all HUC12 polygon queries are resolved
 by subsetting this table. Default NULL (use web services).}
+
+\item{HU_inclusion_override}{character vector or NULL. Eight- or ten-digit
+HUC codes whose HUC12s should be kept even when the parent HUC outlet is
+not in the on-network set. Useful for regions like the Prairie Potholes
+where landscape-connected HUCs lack a network outlet (e.g.
+\code{"10130106"} in South Dakota). Default NULL (no overrides).}
 }
 \value{
 list with elements:

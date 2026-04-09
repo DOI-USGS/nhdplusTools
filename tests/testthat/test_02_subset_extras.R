@@ -165,13 +165,8 @@ test_that("projection check", {
 })
 
 test_that("extras", {
-  expect_equal(nhdplusTools:::get_empty("POLYGON"), sf::st_polygon())
-  expect_equal(nhdplusTools:::get_empty("LINESTRING"), sf::st_linestring())
-  expect_equal(nhdplusTools:::get_empty("MULTIPOLYGON"), sf::st_multipolygon())
-  expect_equal(nhdplusTools:::get_empty("MULTILINESTRING"), sf::st_multilinestring())
-  expect_equal(nhdplusTools:::get_empty("POINT"), sf::st_point())
-  expect_equal(nhdplusTools:::get_empty("MULTIPOINT"), sf::st_multipoint())
-  expect_error(nhdplusTools:::get_empty("BORKED"), "unexpected geometry type")
+  # get_empty and check_valid moved to hydroloom
+  expect_null(hydroloom::check_valid(NULL))
 })
 
 test_that("unify_types", {

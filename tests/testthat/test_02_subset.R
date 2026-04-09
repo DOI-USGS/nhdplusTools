@@ -37,11 +37,11 @@ test_that("subset runs as expected", {
   fl <- sf::st_zm(fl)
   fl$geom[2] <- sf::st_cast(fl$geom[2], "LINESTRING")
 
-  fl <- nhdplusTools:::check_valid(fl)
+  fl <- hydroloom::check_valid(fl)
 
   expect_s3_class(sf::st_geometry(fl), "sfc_LINESTRING")
 
-  expect_null(nhdplusTools:::check_valid(NULL))
+  expect_null(hydroloom::check_valid(NULL))
 
   expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, sample_data), "CatchmentSP")
   expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, "download"), "CatchmentSP")

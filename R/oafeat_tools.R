@@ -128,7 +128,7 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
     return(out)
   }
 
-  out <- check_valid(out)
+  out <- hydroloom::check_valid(out)
 
   if(any(is.null(out), nrow(out) == 0)) {
 

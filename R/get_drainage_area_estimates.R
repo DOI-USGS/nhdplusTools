@@ -42,6 +42,10 @@
 #'   not in the on-network set. Useful for regions like the Prairie Potholes
 #'   where landscape-connected HUCs lack a network outlet (e.g.
 #'   \code{"10130106"} in South Dakota). Default NULL (no overrides).
+#' @param outlet_split_threshold_m numeric. Minimum distance in meters from
+#'   the gage to the outlet of its catchment before the catchment is split.
+#'   When the gage is at least this far upstream, the outlet catchment is split
+#'   at the gage point and only the upstream portion is included. Default 100.
 #' @return list with elements:
 #'   \describe{
 #'     \item{da_huc12_sqkm}{numeric. Total DA using NLDI-identified HUC12s only.}
@@ -67,6 +71,11 @@
 #'     \item{all_network}{data.frame. Full upstream flowline attributes.}
 #'     \item{all_catchments}{sf data.frame or NULL. NHDPlusV2 catchment polygons
 #'       for the full upstream network. NULL when \code{catchments = FALSE}.}
+#'     \item{outlet_flowline_measure}{numeric or NULL. Flowline measure (0--100)
+#'       for the gage on its outlet flowline. NULL for non-gage starts.}
+#'     \item{outlet_split_catchment}{sf data.frame or NULL. Split catchment at
+#'       the gage point. Contains "catchment" and "splitCatchment" rows with
+#'       areas. NULL when no split is needed (gage at outlet or below threshold).}
 #'     \item{hu12_outlet}{sf data.frame. HUC12 pour points upstream of outlet.}
 #'   }
 #'
@@ -90,7 +99,7 @@
 #' }
 get_drainage_area_estimates <- function(start, catchments = FALSE,
   nhdplushr = TRUE, local_navigation = FALSE, huc12_data = NULL,
-  HU_inclusion_override = NULL) {
+  HU_inclusion_override = NULL, outlet_split_threshold_m = 100) {
 
   if(!is.null(huc12_data))
     huc12_data <- prepare_huc12_data(huc12_data)
@@ -104,6 +113,10 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
   start_info <- resolve_start_feature(start, vaa)
   start_feature <- start_info$start_feature
   outlet_comids <- start_info$outlet_comids
+
+  # 1.5 compute outlet flowline measure for gage splitting
+  outlet_info <- negotiate_outlet_catchment(start_info, vaa,
+    outlet_split_threshold_m)
 
   # 2. fetch upstream network + HUC12 outlets
   net_info <- fetch_upstream_network(outlet_comids, vaa)
@@ -137,7 +150,8 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
 
   # 5. compute gap area between outlet and HUC12 outlets
   nav_net <- if(local_navigation) vaa else all_net
-  gap <- compute_gap_area(outlet_huc, all_net, nav_net)
+  gap <- compute_gap_area(outlet_huc, all_net, nav_net,
+    outlet_info = outlet_info)
 
   # 6. assemble DA estimates
   da_estimates <- assemble_da_estimates(hu12_result, gap$extra_and_local)
@@ -197,6 +211,8 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
       split_catchment = gap$split_catchment,
       all_network = all_net,
       all_catchments = all_catchments,
+      outlet_flowline_measure = if(!is.null(outlet_info)) outlet_info$flowline_measure else NULL,
+      outlet_split_catchment = gap$outlet_split_catchment,
       hu12_outlet = huc12_outlets
     )
   )
@@ -259,6 +275,111 @@ resolve_start_feature <- function(start, vaa = NULL) {
       "Check that the input resolves to a valid NHDPlus feature.")
 
   list(start_feature = start_feature, outlet_comids = outlet_comids)
+}
+
+#' Compute the flowline measure for a gage in its outlet catchment
+#'
+#' Given a resolved start feature, computes the position of the gage along its
+#' outlet flowline as a 0--100 flowline measure. This measure is needed to
+#' decide whether the outlet catchment should be split so that only the portion
+#' upstream of the gage contributes to the drainage area estimate.
+#'
+#' When the start feature lacks \code{measure} or \code{reachcode} fields (e.g.
+#' waterbody starts), returns NULL to signal that no outlet split is needed.
+#'
+#' @param start_info list. Output of \code{resolve_start_feature} with
+#'   \code{start_feature} (sf data.frame) and \code{outlet_comids} (integer).
+#' @param vaa data.frame or NULL. NHDPlusV2 VAA table (must include
+#'   \code{comid}, \code{frommeas}, \code{tomeas}, \code{lengthkm} columns).
+#'   When NULL, flowline attributes are fetched from the OGC API.
+#' @param outlet_split_threshold_m numeric. Minimum distance (meters) from
+#'   gage to flowline outlet to trigger a catchment split. Default 100.
+#' @return list with \code{flowline_measure} (numeric 0--100),
+#'   \code{gage_point} (\code{sfc_POINT} on the flowline), and
+#'   \code{threshold_exceeded} (logical). Returns NULL when the start feature
+#'   lacks measure/reachcode or the gage is at the outlet.
+#' @noRd
+negotiate_outlet_catchment <- function(start_info, vaa = NULL,
+  outlet_split_threshold_m = 100) {
+
+  sf <- start_info$start_feature
+
+  if(!all(c("measure", "reachcode") %in% names(sf)))
+    return(NULL)
+
+  measure <- as.numeric(sf$measure)
+  reachcode <- sf$reachcode
+  comid <- as.integer(sf$comid)
+
+  if(is.na(measure) || is.na(reachcode))
+    return(NULL)
+
+  # get frommeas/tomeas/lengthkm from VAA or OGC API
+  if(!is.null(vaa)) {
+    row <- vaa[vaa$comid == comid, ]
+    if(nrow(row) == 0)
+      stop("COMID ", comid, " not found in VAA")
+    frommeas <- row$frommeas
+    tomeas <- row$tomeas
+    lengthkm <- row$lengthkm
+  } else {
+    fl_attrs <- get_nhdplus(comid = comid, realization = "flowline",
+      skip_geometry = TRUE)
+    if(is.null(fl_attrs) || nrow(fl_attrs) == 0)
+      stop("Could not fetch flowline attributes for COMID ", comid)
+    frommeas <- fl_attrs$frommeas
+    tomeas <- fl_attrs$tomeas
+    lengthkm <- fl_attrs$lengthkm
+  }
+
+  if(!dplyr::between(measure, frommeas, tomeas)) {
+    diffs <- abs(c(frommeas, tomeas) - measure)
+    flowline_measure <- c(0, 100)[which.min(diffs)]
+    message("  Gage measure (", round(measure, 2),
+      ") outside flowline bounds [", round(frommeas, 2), ", ",
+      round(tomeas, 2), "]; snapped to ", flowline_measure)
+  } else {
+    flowline_measure <- rescale_measures(measure, frommeas, tomeas)
+  }
+
+  if(flowline_measure < 1) {
+    message("  Gage is at the outlet of the flowline (measure ",
+      round(flowline_measure, 2), "); no outlet split needed")
+    return(NULL)
+  }
+
+  message("  Outlet catchment flowline measure: ",
+    round(flowline_measure, 2))
+
+  # check threshold: distance from gage to outlet = flowline_measure% of length
+  dist_to_outlet_m <- (flowline_measure / 100) * lengthkm * 1000
+  threshold_exceeded <- dist_to_outlet_m >= outlet_split_threshold_m
+
+  message("  Distance to outlet: ", round(dist_to_outlet_m, 0),
+    " m (threshold ", outlet_split_threshold_m, " m",
+    if(threshold_exceeded) " => split needed)" else " => no split needed)")
+
+  # compute gage point on the flowline (needs geometry)
+  gage_point <- NULL
+  if(threshold_exceeded) {
+    fl <- get_nhdplus(comid = comid, realization = "flowline")
+    if(!is.null(fl) && nrow(fl) > 0) {
+      indexes <- data.frame(
+        COMID = comid,
+        REACHCODE = reachcode,
+        REACHCODE_measure = measure,
+        offset = 0
+      )
+      fl <- dplyr::rename(fl, id = "comid")
+      gage_point <- get_hydro_location(indexes, fl)
+    }
+  }
+
+  list(
+    flowline_measure = flowline_measure,
+    gage_point = gage_point,
+    threshold_exceeded = threshold_exceeded
+  )
 }
 
 #' Fetch upstream network and HUC12 pour points
@@ -1059,12 +1180,18 @@ assemble_da_estimates <- function(hu12_result, extra_and_local) {
 #' @param gap_catchments sf data.frame or NULL. Pre-fetched NHDPlusV2 catchment
 #'   geometries for the gap flowlines. When NULL, fetched via
 #'   \code{get_nhdplus}.
+#' @param outlet_info list or NULL. Output of \code{negotiate_outlet_catchment}
+#'   with \code{gage_point}, \code{threshold_exceeded}, and
+#'   \code{flowline_measure}. When non-NULL and \code{threshold_exceeded} is
+#'   TRUE, the outlet catchment is split at the gage point and only the
+#'   upstream portion contributes to gap area.
 #' @return list with \code{extra_net} (data.frame), \code{extra_catchments}
 #'   (sf data.frame), \code{split_catchment} (sf data.frame),
-#'   \code{extra_and_local} (numeric area in sq km).
+#'   \code{extra_and_local} (numeric area in sq km),
+#'   \code{outlet_split_catchment} (sf data.frame or NULL).
 #' @noRd
 compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net,
-  split_catchments = NULL, gap_catchments = NULL) {
+  split_catchments = NULL, gap_catchments = NULL, outlet_info = NULL) {
 
   n_outlets <- nrow(outlet_huc)
   message("Splitting catchments at ", n_outlets, " HUC12 outlet(s)...")
@@ -1107,6 +1234,35 @@ compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net,
 
   extra_and_local <- sum(c(extra_net$areasqkm, total_local_dasqkm))
 
+  # split outlet catchment at the gage point if threshold exceeded
+  outlet_split_catchment <- NULL
+  if(!is.null(outlet_info) && isTRUE(outlet_info$threshold_exceeded)) {
+    message("Splitting outlet catchment at gage point...")
+    outlet_split_catchment <- tryCatch({
+      sc <- get_split_catchment(
+        outlet_info$gage_point, upstream = FALSE
+      ) |> st_transform(5070)
+      sc$dasqkm <- as.numeric(set_units(st_area(sc), "km^2"))
+      sc
+    }, error = function(e) {
+      warning("Failed to split outlet catchment at gage: ", e$message,
+        call. = FALSE)
+      NULL
+    })
+
+    if(!is.null(outlet_split_catchment)) {
+      full_area <- outlet_split_catchment$dasqkm[
+        outlet_split_catchment$id == "catchment"]
+      split_area <- outlet_split_catchment$dasqkm[
+        outlet_split_catchment$id == "splitCatchment"]
+      downstream_area <- full_area - split_area
+      extra_and_local <- extra_and_local - downstream_area
+      message("  Outlet split: full=", round(full_area, 2),
+        " km2, upstream=", round(split_area, 2),
+        " km2, removed=", round(downstream_area, 2), " km2")
+    }
+  }
+
   # fetch catchment geometries for the extra portion
   if(nrow(extra_net) > 0) {
     if(is.null(gap_catchments)) {
@@ -1126,7 +1282,8 @@ compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net,
     extra_net = extra_net,
     extra_catchments = extra_cat,
     split_catchment = split_catch,
-    extra_and_local = extra_and_local
+    extra_and_local = extra_and_local,
+    outlet_split_catchment = outlet_split_catchment
   )
 }
 

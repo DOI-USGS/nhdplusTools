@@ -1,7 +1,9 @@
 ---
 title: "Drainage Area Estimation"
 author: "dblodgett@usgs.gov"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    tabset: true
 vignette: >
   %\VignetteIndexEntry{Drainage Area Estimation}
   %\VignetteEngine{knitr::rmarkdown}
@@ -71,7 +73,7 @@ library(sf)
 data_dir <- nhdplusTools_data_dir()
 dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
 
-# Define the five study sites
+# Define the six study sites
 sites <- list(
   black_earth = list(featureSource = "nwissite",
     featureID = "USGS-05406500"),
@@ -81,7 +83,9 @@ sites <- list(
     featureID = "USGS-08116650"),
   james = list(featureSource = "nwissite",
     featureID = "USGS-06468000"),
-  malheur = st_sfc(st_point(c(-118.8, 43.3)), crs = 4326)
+  malheur = st_sfc(st_point(c(-118.8, 43.3)), crs = 4326),
+  davidson = list(featureSource = "nwissite",
+    featureID = "USGS-08110075")
 )
 
 fetch_or_load <- function(name, start) {
@@ -149,7 +153,8 @@ basin_labels <- c(
   french_broad = "French Broad",
   brazos = "Brazos at Rosharon",
   james = "James River",
-  malheur = "Malheur Lake"
+  malheur = "Malheur Lake",
+  davidson = "Davidson Creek"
 )
 
 summary_df <- data.frame(
@@ -838,6 +843,252 @@ plot_choropleth(da_results$malheur, flowlines$malheur, "Malheur Lake")
   effectively noncontributing to any downstream system.
 - The choropleth distinguishes HUC-level noncontributing designations
   from the basin-scale closed-basin classification.
+:::
+
+## Outlet Catchment Splitting
+
+When a gage sits partway along a flowline rather than at its outlet,
+the gage's outlet catchment is only partly upstream of the gage. The
+downstream portion does not contribute to the gage and should be
+excluded. A similar situation arises at HUC12 outlets: the HUC
+boundary cuts through a catchment and the portion upstream of the
+pour point overlaps with the HUC area that is already counted.
+
+`get_drainage_area_estimates()` handles both splits automatically.
+The `outlet_split_threshold_m` parameter (default 100 m) controls the
+minimum gage-to-outlet distance before the split is performed.
+
+This example uses a small Texas gage (USGS-08110075, Davidson Creek)
+where the gage falls roughly two thirds of the way up its flowline.
+
+```{r outlet_split_prep, include = FALSE}
+da_dav <- da_results$davidson
+fl_dav <- flowlines$davidson
+has_davidson <- !is.null(da_dav) && !is.null(fl_dav) &&
+  !is.null(da_dav$outlet_split_catchment)
+
+if(has_davidson) {
+  target_crs <- st_crs(3857)
+
+  gage_pt <- get_gage_pt(da_dav, target_crs)
+  gage_comid <- as.integer(da_dav$start_feature$comid)
+
+  # all catchments in the gap between the gage and HUC12 outlets
+  extra_cat <- st_transform(da_dav$extra_catchments, target_crs)
+  all_cat <- st_transform(da_dav$all_catchments, target_crs)
+  fl_sf <- st_transform(fl_dav, target_crs)
+  hu12_pts <- st_transform(da_dav$hu12_outlet, target_crs)
+
+  # HUC12 split catchment (split at the HUC12 pour point)
+  hu12_sc <- st_transform(da_dav$split_catchment, target_crs)
+  hu12_catch_full <- hu12_sc[hu12_sc$id == "catchment", ]
+  hu12_catch_split <- hu12_sc[hu12_sc$id == "splitCatchment", ]
+  hu12_comid <- as.integer(na.omit(hu12_sc$catchmentID))
+
+  # gage outlet split catchment (split at the gage point)
+  osc <- st_transform(da_dav$outlet_split_catchment, target_crs)
+  osc_full <- osc[osc$id == "catchment", ]
+  osc_split <- osc[osc$id == "splitCatchment", ]
+
+  # flowlines in the gap area
+  gap_comids <- c(gage_comid, extra_cat$featureid, hu12_comid)
+  gap_fl <- fl_sf[fl_sf$comid %in% gap_comids, ]
+
+  # focus bbox: union of gap catchments + split catchments + gage
+  focus_geom <- st_union(c(
+    st_geometry(extra_cat),
+    st_geometry(hu12_catch_full),
+    st_geometry(osc_full),
+    st_geometry(gage_pt)
+  ))
+  focus_bb <- st_bbox(focus_geom)
+  pad_x <- (focus_bb["xmax"] - focus_bb["xmin"]) * 0.05
+  pad_y <- (focus_bb["ymax"] - focus_bb["ymin"]) * 0.05
+  focus_xlim <- c(focus_bb["xmin"] - pad_x, focus_bb["xmax"] + pad_x)
+  focus_ylim <- c(focus_bb["ymin"] - pad_y, focus_bb["ymax"] + pad_y)
+}
+```
+
+#### Overview: Gage and HUC Outlet Positions
+
+The gage (triangle) and the nearest HUC12 outlet (x) sit on
+different catchments with a gap between them. The gap catchments
+(light blue) and split catchment boundaries define the area between
+the gage and the HUC12 boundary.
+
+```{r outlet_split_overview, fig.height = 10, eval = has_davidson}
+p_overview <- ggplot() |>
+  add_topo(focus_geom) +
+  # all catchments as light underlay
+  geom_sf(data = all_cat, fill = "gray30", color = NA, alpha = 0.12,
+    inherit.aes = FALSE) +
+  # gap catchments
+  geom_sf(data = extra_cat, fill = "lightblue", color = "steelblue",
+    linewidth = 0.3, alpha = 0.5, inherit.aes = FALSE) +
+  # HUC12 split catchment — full outline
+  geom_sf(data = hu12_catch_full, fill = NA, color = "gray10",
+    linewidth = 0.6, linetype = "dashed", inherit.aes = FALSE) +
+  # gage outlet catchment — full outline
+  geom_sf(data = osc_full, fill = NA, color = "gray10",
+    linewidth = 0.6, inherit.aes = FALSE) +
+  # flowlines in the gap
+  geom_sf(data = gap_fl, color = "steelblue", linewidth = 0.5,
+    inherit.aes = FALSE) +
+  # HUC12 outlet
+  geom_sf(data = hu12_pts[hu12_pts$comid == hu12_comid, ],
+    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    inherit.aes = FALSE) +
+  # gage point
+  geom_sf(data = gage_pt, shape = 17, color = "black",
+    fill = "white", size = 5, stroke = 1.4,
+    inherit.aes = FALSE) +
+  coord_sf(crs = target_crs, xlim = focus_xlim, ylim = focus_ylim,
+    expand = FALSE) +
+  labs(title = paste0("Davidson Creek (USGS-08110075)",
+    " -- Gage and HUC12 Outlet Positions")) +
+  map_theme()
+print(p_overview)
+```
+
+::: {.vignette-note}
+- The gage (triangle) and the HUC12 pour point (x) sit on different
+  catchments with several gap catchments (light blue) between them.
+- The dashed outline marks the catchment where the HUC12 pour point
+  falls; the solid outline marks the gage's catchment.
+- Both the gage and the HUC12 outlet sit partway along their
+  respective flowlines, so splitting is needed at both locations.
+:::
+
+#### HUC Outlet Detail
+
+The HUC12 split catchment is small enough that it is not visible in the
+overview. This view zooms to a 500 m square centered on the HUC12 outlet.
+
+```{r outlet_split_huc_zoom, fig.height = 10, eval = has_davidson}
+hu12_outlet_pt <- hu12_pts[hu12_pts$comid == hu12_comid, ]
+hu12_coords <- st_coordinates(hu12_outlet_pt)
+half_side <- 250 # meters in EPSG:3857
+zoom_xlim <- c(hu12_coords[1, "X"] - half_side,
+  hu12_coords[1, "X"] + half_side)
+zoom_ylim <- c(hu12_coords[1, "Y"] - half_side,
+  hu12_coords[1, "Y"] + half_side)
+
+p_huc_zoom <- ggplot() |>
+  add_topo(hu12_outlet_pt) +
+  # gap catchments
+  geom_sf(data = extra_cat, fill = "lightblue", color = "steelblue",
+    linewidth = 0.3, alpha = 0.5, inherit.aes = FALSE) +
+  # HUC12 split catchment — full outline
+  geom_sf(data = hu12_catch_full, fill = NA, color = "gray10",
+    linewidth = 0.6, linetype = "dashed", inherit.aes = FALSE) +
+  # HUC12 split portion
+  geom_sf(data = hu12_catch_split, fill = "orange", color = "gray10",
+    linewidth = 0.4, alpha = 0.5, inherit.aes = FALSE) +
+  # flowlines in the gap
+  geom_sf(data = gap_fl, color = "steelblue", linewidth = 0.5,
+    inherit.aes = FALSE) +
+  # HUC12 outlet
+  geom_sf(data = hu12_outlet_pt,
+    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    inherit.aes = FALSE) +
+  coord_sf(crs = target_crs, xlim = zoom_xlim, ylim = zoom_ylim,
+    expand = FALSE) +
+  labs(title = paste0("Davidson Creek -- HUC12 Outlet Detail",
+    " (500 m view)")) +
+  map_theme()
+print(p_huc_zoom)
+```
+
+::: {.vignette-note}
+- The HUC12 outlet (x) and its split catchment (orange fill, dashed
+  outline) are visible at this scale.
+- The split catchment upstream of the HUC outlet is excluded from the
+  gap area because it overlaps with the HUC12 drainage area.
+:::
+
+#### Split Catchments: Upstream and Downstream Portions
+
+Two catchments are split. At the gage, the downstream portion is
+removed because it does not contribute flow to the gage. At the
+HUC12 outlet, the upstream portion is removed because it overlaps
+with the HUC12 area already counted in the drainage area estimate.
+
+```{r outlet_split_detail, fig.height = 10, eval = has_davidson}
+# Build an sf with labeled polygons for a single legend
+split_layers <- rbind(
+  st_sf(
+    role = "Upstream of gage (included)",
+    geometry = st_geometry(osc_split)),
+  st_sf(
+    role = "Downstream of gage (excluded)",
+    geometry = st_difference(
+      st_geometry(osc_full), st_geometry(osc_split))),
+  st_sf(
+    role = "Upstream of HUC outlet (excluded, overlaps HUC)",
+    geometry = st_geometry(hu12_catch_split)),
+  st_sf(
+    role = "Downstream of HUC outlet (included as local area)",
+    geometry = st_difference(
+      st_geometry(hu12_catch_full), st_geometry(hu12_catch_split)))
+)
+
+split_colors <- c(
+  "Upstream of gage (included)" = "#4DAF4A",
+  "Downstream of gage (excluded)" = "#E41A1C",
+  "Upstream of HUC outlet (excluded, overlaps HUC)" = "#FF7F00",
+  "Downstream of HUC outlet (included as local area)" = "#377EB8"
+)
+
+split_layers$role <- factor(split_layers$role,
+  levels = names(split_colors))
+
+p_split <- ggplot() |>
+  add_topo(focus_geom) +
+  # gap catchments as underlay
+  geom_sf(data = extra_cat, fill = "gray80", color = "gray60",
+    linewidth = 0.2, alpha = 0.3, inherit.aes = FALSE) +
+  # split polygons with role-based fill
+  geom_sf(data = split_layers,
+    aes(fill = role), color = "gray20", linewidth = 0.4,
+    alpha = 0.6, inherit.aes = FALSE) +
+  scale_fill_manual(values = split_colors, name = NULL) +
+  # flowlines
+  geom_sf(data = gap_fl, color = "steelblue", linewidth = 0.5,
+    inherit.aes = FALSE) +
+  # HUC12 outlet
+  geom_sf(data = hu12_pts[hu12_pts$comid == hu12_comid, ],
+    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    inherit.aes = FALSE) +
+  # gage
+  geom_sf(data = gage_pt, shape = 17, color = "black",
+    fill = "white", size = 5, stroke = 1.4,
+    inherit.aes = FALSE) +
+  coord_sf(crs = target_crs, xlim = focus_xlim, ylim = focus_ylim,
+    expand = FALSE) +
+  labs(title = paste0("Davidson Creek -- Split Catchment Roles"),
+    subtitle = paste0(
+      "Flowline measure at gage: ",
+      round(da_dav$outlet_flowline_measure, 1),
+      "; downstream removed: ",
+      round(osc_full$dasqkm - osc_split$dasqkm, 2), " km\u00B2")) +
+  map_theme() +
+  guides(fill = guide_legend(ncol = 1))
+print(p_split)
+```
+
+::: {.vignette-note}
+- **Green**: the portion of the gage's catchment upstream of the gage —
+  this area is included in the drainage area estimate.
+- **Red**: the portion downstream of the gage — excluded because it
+  does not contribute flow to the gage.
+- **Orange**: the portion of the HUC12 outlet catchment upstream of the
+  pour point — excluded because this area is already counted as part
+  of the HUC12 drainage area.
+- **Blue**: the portion downstream of the HUC12 outlet — included as
+  local area in the gap between the HUC boundary and the gage.
+- The `outlet_split_threshold_m` parameter (default 100 m) controls
+  whether the gage split is performed. If the gage is within the
+  threshold distance of the catchment outlet, no split occurs.
 :::
 
 ```{r teardown, include = FALSE}

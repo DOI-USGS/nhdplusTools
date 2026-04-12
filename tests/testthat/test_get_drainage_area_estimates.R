@@ -549,3 +549,172 @@ test_that("filter_disconnected_huc12s", {
   )
   expect_equal(result, "120402050100")
 })
+
+# -- negotiate_outlet_catchment ------------------------------------------------
+
+test_that("negotiate_outlet_catchment with single-flowline reachcode", {
+  # USGS-08110075: frommeas=0, tomeas=100, lengthkm=4.92
+  fix <- readRDS(list.files(pattern = "negotiate_outlet_fixture.rds",
+    recursive = TRUE, full.names = TRUE))
+  d <- fix[["USGS-08110075"]]
+
+  # threshold high enough that no split is triggered (no web call for geometry)
+  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info, d$vaa_row,
+    outlet_split_threshold_m = 99999)
+
+  expect_true(is.list(result))
+  # frommeas=0, tomeas=100 => rescale_measures(64.8248, 0, 100) = 64.8248
+  expect_equal(result$flowline_measure, 64.8248, tolerance = 0.01)
+  expect_false(result$threshold_exceeded)
+  expect_null(result$gage_point)
+})
+
+test_that("negotiate_outlet_catchment with multi-flowline reachcode", {
+  # USGS-08109000: frommeas=13.53, tomeas=91.14, measure=71.41, lengthkm=12.062
+  fix <- readRDS(list.files(pattern = "negotiate_outlet_fixture.rds",
+    recursive = TRUE, full.names = TRUE))
+  d <- fix[["USGS-08109000"]]
+
+  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info, d$vaa_row,
+    outlet_split_threshold_m = 99999)
+
+  expect_true(is.list(result))
+  # rescale_measures(71.4071, 13.53087, 91.14478)
+  expected <- (71.4071 - 13.53087) / (91.14478 - 13.53087) * 100
+  expect_equal(result$flowline_measure, expected, tolerance = 0.1)
+  expect_false(result$threshold_exceeded)
+})
+
+test_that("negotiate_outlet_catchment returns NULL for waterbody start", {
+  start_feature <- sf::st_sf(
+    comid = "99999",
+    geometry = sf::st_sfc(sf::st_point(c(-89.0, 43.0)), crs = 4326)
+  )
+  start_info <- list(
+    start_feature = start_feature,
+    outlet_comids = 99999L
+  )
+
+  expect_null(nhdplusTools:::negotiate_outlet_catchment(start_info, NULL))
+})
+
+test_that("negotiate_outlet_catchment returns NULL when measure is NA", {
+  start_feature <- sf::st_sf(
+    comid = "5567571",
+    measure = NA_real_,
+    reachcode = "12070102000024",
+    geometry = sf::st_sfc(sf::st_point(c(-96.69, 30.54)), crs = 4326)
+  )
+  start_info <- list(
+    start_feature = start_feature,
+    outlet_comids = 5567571L
+  )
+
+  expect_null(nhdplusTools:::negotiate_outlet_catchment(start_info, NULL))
+})
+
+test_that("negotiate_outlet_catchment returns NULL at outlet", {
+  start_feature <- sf::st_sf(
+    comid = "5567571",
+    measure = 0.5,
+    reachcode = "12070102000024",
+    geometry = sf::st_sfc(sf::st_point(c(-96.69, 30.54)), crs = 4326)
+  )
+  start_info <- list(
+    start_feature = start_feature,
+    outlet_comids = 5567571L
+  )
+  vaa <- data.frame(
+    comid = 5567571L,
+    frommeas = 0,
+    tomeas = 100,
+    reachcode = "12070102000024"
+  )
+
+  # rescale_measures(0.5, 0, 100) = 0.5 which is < 1 => NULL
+  expect_null(
+    nhdplusTools:::negotiate_outlet_catchment(start_info, vaa)
+  )
+})
+
+test_that("negotiate_outlet_catchment handles out-of-bounds measure", {
+  start_feature <- sf::st_sf(
+    comid = "12345",
+    measure = 10,
+    reachcode = "99990001000001",
+    geometry = sf::st_sfc(sf::st_point(c(-90.0, 40.0)), crs = 4326)
+  )
+  start_info <- list(
+    start_feature = start_feature,
+    outlet_comids = 12345L
+  )
+  vaa <- data.frame(
+    comid = 12345L,
+    frommeas = 50,
+    tomeas = 100,
+    reachcode = "99990001000001"
+  )
+
+  # measure 10 is closer to frommeas=50 => flowline_measure=0 => < 1 => NULL
+  expect_message(
+    result <- nhdplusTools:::negotiate_outlet_catchment(start_info, vaa),
+    "outside flowline bounds"
+  )
+  expect_null(result)
+})
+
+test_that("negotiate_outlet_catchment threshold not exceeded", {
+  # USGS-08110075: flowline_measure=64.8248, lengthkm=4.92
+  # distance to outlet = 64.8248/100 * 4920 = ~3190 m
+  fix <- readRDS(list.files(pattern = "negotiate_outlet_fixture.rds",
+    recursive = TRUE, full.names = TRUE))
+  d <- fix[["USGS-08110075"]]
+
+  # threshold above distance => not exceeded, no geometry fetch
+  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info,
+    d$vaa_row, outlet_split_threshold_m = 99999)
+  expect_true(is.list(result))
+  expect_false(result$threshold_exceeded)
+  expect_null(result$gage_point)
+  expect_equal(result$flowline_measure, 64.8248, tolerance = 0.01)
+})
+
+test_that("negotiate_outlet_catchment threshold exceeded fetches gage_point", {
+  skip_on_cran()
+  # USGS-08110075: flowline_measure=64.8248, lengthkm=4.92
+  # distance to outlet = 64.8248/100 * 4920 = ~3190 m
+  fix <- readRDS(list.files(pattern = "negotiate_outlet_fixture.rds",
+    recursive = TRUE, full.names = TRUE))
+  d <- fix[["USGS-08110075"]]
+
+  # threshold well below distance => exceeded, fetches geometry
+  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info,
+    d$vaa_row, outlet_split_threshold_m = 100)
+  expect_true(result$threshold_exceeded)
+  expect_true(inherits(result$gage_point, "sfc"))
+  expect_equal(result$flowline_measure, 64.8248, tolerance = 0.01)
+})
+
+test_that("negotiate_outlet_catchment returns correct structure", {
+  fix <- readRDS(list.files(pattern = "negotiate_outlet_fixture.rds",
+    recursive = TRUE, full.names = TRUE))
+  d <- fix[["USGS-08110075"]]
+
+  # threshold not exceeded — list with NULL gage_point
+  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info,
+    d$vaa_row, outlet_split_threshold_m = 99999)
+
+  expect_true(is.list(result))
+  expect_named(result, c("flowline_measure", "gage_point", "threshold_exceeded"))
+  expect_true(is.numeric(result$flowline_measure))
+  expect_false(result$threshold_exceeded)
+  expect_null(result$gage_point)
+
+  # NULL return for waterbody start
+  wb <- list(
+    start_feature = sf::st_sf(
+      comid = "99999",
+      geometry = sf::st_sfc(sf::st_point(c(-89, 43)), crs = 4326)),
+    outlet_comids = 99999L)
+  expect_null(nhdplusTools:::negotiate_outlet_catchment(wb, NULL))
+})

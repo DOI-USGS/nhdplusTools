@@ -60,6 +60,8 @@
 #'     \item{nhdplushr_network_dasqkm}{numeric or NA. Drainage area from
 #'       NHDPlusHR catchments upstream of the matched HR flowline. NA with a
 #'       warning when the HR web service is unavailable or fails.}
+#'     \item{nhdplushr_boundary}{sfc_GEOMETRY or NULL. Dissolved boundary of
+#'       upstream NHDPlusHR catchments. NULL when the HR estimate is unavailable.}
 #'     \item{start_feature}{sf data.frame. The resolved NLDI start feature.}
 #'     \item{hu12_by_huc12}{sf data.frame. NLDI-identified upstream HUC12 polygons (EPSG:5070).}
 #'     \item{hu12_by_huc10}{sf data.frame or NULL. Upstream HUC12 polygons (HUC10 query).
@@ -185,7 +187,8 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
       message("  NHDPlusHR DA = ",
         round(hr_result$nhdplushr_network_dasqkm, 2))
   } else {
-    hr_result <- list(nhdplushr_network_dasqkm = NA_real_)
+    hr_result <- list(nhdplushr_network_dasqkm = NA_real_,
+      nhdplushr_boundary = NULL)
   }
 
   # 8. optional full catchment retrieval
@@ -203,6 +206,7 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
     list(
       network_da_sqkm = network_da,
       nhdplushr_network_dasqkm = hr_result$nhdplushr_network_dasqkm,
+      nhdplushr_boundary = hr_result$nhdplushr_boundary,
       start_feature = start_feature,
       hu12_by_huc12 = hu12_result$hu12_by_huc12,
       hu12_by_huc10 = hu12_result$hu12_by_huc10,
@@ -458,6 +462,7 @@ find_immediate_huc12_outlets <- function(all_net, start_comid, huc12_comids) {
   trim_comids <- setdiff(huc12_comids, start_comid)
   trimmed_net <- all_net[!all_net$comid %in% trim_comids, ] |>
     select("comid", "toid")
+  trimmed_net$toid[!trimmed_net$toid %in% c(trimmed_net$comid, 0)] <- 0
 
   reachable <- unlist(
     navigate_network_dfs(trimmed_net, start_comid, direction = "up")
@@ -1304,12 +1309,14 @@ compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net,
 #' @param hr_catchments sf data.frame or NULL. Pre-fetched NHDPlusHR
 #'   catchments with \code{nhdplusid} and optionally \code{areasqkm} columns.
 #'   When NULL, fetched via \code{get_nhdphr}.
-#' @return list with \code{nhdplushr_network_dasqkm} (numeric or NA).
+#' @return list with \code{nhdplushr_network_dasqkm} (numeric or NA) and
+#'   \code{nhdplushr_boundary} (sfc_GEOMETRY or NULL).
 #' @noRd
 get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys,
   hr_network = NULL, hr_catchments = NULL) {
 
-  fail <- list(nhdplushr_network_dasqkm = NA_real_)
+  fail <- list(nhdplushr_network_dasqkm = NA_real_,
+    nhdplushr_boundary = NULL)
 
   tryCatch({
 
@@ -1374,7 +1381,7 @@ get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys,
         stop("no HR flowlines within 500m of start feature")
 
       indexes <- index_points_to_lines(
-        hr_local, start_5070,
+        st_transform(hr_local, 5070), start_5070,
         search_radius = set_units(500, "m"),
         max_matches = 10
       )
@@ -1427,7 +1434,8 @@ get_nhdplushr_da_estimate <- function(start_feature, network_da, hu12_polys,
       da <- sum(as.numeric(st_area(hr_catch_5070))) / 1e6
     }
 
-    list(nhdplushr_network_dasqkm = da)
+    list(nhdplushr_network_dasqkm = da,
+      nhdplushr_boundary = st_union(st_geometry(hr_catchments)))
 
   }, error = function(e) {
     warning("NHDPlusHR estimate failed: ", conditionMessage(e),

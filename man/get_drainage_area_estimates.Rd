@@ -61,6 +61,8 @@ list with elements:
     \item{nhdplushr_network_dasqkm}{numeric or NA. Drainage area from
       NHDPlusHR catchments upstream of the matched HR flowline. NA with a
       warning when the HR web service is unavailable or fails.}
+    \item{nhdplushr_boundary}{sfc_GEOMETRY or NULL. Dissolved boundary of
+      upstream NHDPlusHR catchments. NULL when the HR estimate is unavailable.}
     \item{start_feature}{sf data.frame. The resolved NLDI start feature.}
     \item{hu12_by_huc12}{sf data.frame. NLDI-identified upstream HUC12 polygons (EPSG:5070).}
     \item{hu12_by_huc10}{sf data.frame or NULL. Upstream HUC12 polygons (HUC10 query).

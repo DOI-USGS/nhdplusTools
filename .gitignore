@@ -22,3 +22,5 @@ revdep
 docs/*demo*
 CLAUDE.md
 dev
+vignettes/*.html
+vignettes/*_figures/

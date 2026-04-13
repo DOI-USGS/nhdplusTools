@@ -13,9 +13,9 @@ test_that("find_immediate_huc12_outlets with synthetic network", {
     totdasqkm = c(50, 40, 30, 20, 10)
   )
 
-  result <- nhdplusTools:::find_immediate_huc12_outlets(
+  result <- suppressWarnings(nhdplusTools:::find_immediate_huc12_outlets(
     net, 5, c(2, 4)
-  )
+  ))
   expect_equal(result, 4)
 
   # Branching: 1, 2, 3 all flow to 4, 4 flows to 5 (outlet)
@@ -29,9 +29,9 @@ test_that("find_immediate_huc12_outlets with synthetic network", {
     toid = c(4, 4, 4, 5, 0)
   )
 
-  result2 <- nhdplusTools:::find_immediate_huc12_outlets(
+  result2 <- suppressWarnings(nhdplusTools:::find_immediate_huc12_outlets(
     net2, 5, c(1, 2)
-  )
+  ))
   expect_equal(sort(result2), c(1, 2))
 
   # Linear: 1 -> 2 -> 3 -> 4 (outlet)
@@ -45,9 +45,9 @@ test_that("find_immediate_huc12_outlets with synthetic network", {
     toid = c(2, 3, 4, 0)
   )
 
-  result3 <- nhdplusTools:::find_immediate_huc12_outlets(
+  result3 <- suppressWarnings(nhdplusTools:::find_immediate_huc12_outlets(
     net3, 4, c(1, 3)
-  )
+  ))
   expect_equal(result3, 3)
 })
 
@@ -276,7 +276,9 @@ test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
 
   start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
 
-  result <- get_drainage_area_estimates(start)
+  result <- suppressWarnings(suppressMessages(
+    get_drainage_area_estimates(start)
+  ))
 
   # check return structure
   expect_type(result, "list")
@@ -319,7 +321,9 @@ test_that("get_drainage_area_estimates local_navigation smoke test", {
 
   start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
 
-  result <- get_drainage_area_estimates(start, local_navigation = TRUE)
+  result <- suppressWarnings(suppressMessages(
+    get_drainage_area_estimates(start, local_navigation = TRUE)
+  ))
 
   # check return structure
   expect_type(result, "list")
@@ -355,7 +359,9 @@ test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
 
   start <- list(featureSource = "nwissite", featureID = "USGS-05428000")
 
-  result <- get_drainage_area_estimates(start)
+  result <- suppressWarnings(suppressMessages(
+    get_drainage_area_estimates(start)
+  ))
 
   # check return structure
   expect_type(result, "list")
@@ -559,8 +565,9 @@ test_that("negotiate_outlet_catchment with single-flowline reachcode", {
   d <- fix[["USGS-08110075"]]
 
   # threshold high enough that no split is triggered (no web call for geometry)
-  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info, d$vaa_row,
-    outlet_split_threshold_m = 99999)
+  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+    d$start_info, d$vaa_row, outlet_split_threshold_m = 99999
+  ))
 
   expect_true(is.list(result))
   # frommeas=0, tomeas=100 => rescale_measures(64.8248, 0, 100) = 64.8248
@@ -575,8 +582,9 @@ test_that("negotiate_outlet_catchment with multi-flowline reachcode", {
     recursive = TRUE, full.names = TRUE))
   d <- fix[["USGS-08109000"]]
 
-  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info, d$vaa_row,
-    outlet_split_threshold_m = 99999)
+  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+    d$start_info, d$vaa_row, outlet_split_threshold_m = 99999
+  ))
 
   expect_true(is.list(result))
   # rescale_measures(71.4071, 13.53087, 91.14478)
@@ -595,7 +603,9 @@ test_that("negotiate_outlet_catchment returns NULL for waterbody start", {
     outlet_comids = 99999L
   )
 
-  expect_null(nhdplusTools:::negotiate_outlet_catchment(start_info, NULL))
+  expect_null(suppressMessages(
+    nhdplusTools:::negotiate_outlet_catchment(start_info, NULL)
+  ))
 })
 
 test_that("negotiate_outlet_catchment returns NULL when measure is NA", {
@@ -610,7 +620,9 @@ test_that("negotiate_outlet_catchment returns NULL when measure is NA", {
     outlet_comids = 5567571L
   )
 
-  expect_null(nhdplusTools:::negotiate_outlet_catchment(start_info, NULL))
+  expect_null(suppressMessages(
+    nhdplusTools:::negotiate_outlet_catchment(start_info, NULL)
+  ))
 })
 
 test_that("negotiate_outlet_catchment returns NULL at outlet", {
@@ -632,9 +644,9 @@ test_that("negotiate_outlet_catchment returns NULL at outlet", {
   )
 
   # rescale_measures(0.5, 0, 100) = 0.5 which is < 1 => NULL
-  expect_null(
+  expect_null(suppressMessages(
     nhdplusTools:::negotiate_outlet_catchment(start_info, vaa)
-  )
+  ))
 })
 
 test_that("negotiate_outlet_catchment handles out-of-bounds measure", {
@@ -671,8 +683,9 @@ test_that("negotiate_outlet_catchment threshold not exceeded", {
   d <- fix[["USGS-08110075"]]
 
   # threshold above distance => not exceeded, no geometry fetch
-  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info,
-    d$vaa_row, outlet_split_threshold_m = 99999)
+  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+    d$start_info, d$vaa_row, outlet_split_threshold_m = 99999
+  ))
   expect_true(is.list(result))
   expect_false(result$threshold_exceeded)
   expect_null(result$gage_point)
@@ -688,8 +701,9 @@ test_that("negotiate_outlet_catchment threshold exceeded fetches gage_point", {
   d <- fix[["USGS-08110075"]]
 
   # threshold well below distance => exceeded, fetches geometry
-  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info,
-    d$vaa_row, outlet_split_threshold_m = 100)
+  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+    d$start_info, d$vaa_row, outlet_split_threshold_m = 100
+  ))
   expect_true(result$threshold_exceeded)
   expect_true(inherits(result$gage_point, "sfc"))
   expect_equal(result$flowline_measure, 64.8248, tolerance = 0.01)
@@ -701,8 +715,9 @@ test_that("negotiate_outlet_catchment returns correct structure", {
   d <- fix[["USGS-08110075"]]
 
   # threshold not exceeded — list with NULL gage_point
-  result <- nhdplusTools:::negotiate_outlet_catchment(d$start_info,
-    d$vaa_row, outlet_split_threshold_m = 99999)
+  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+    d$start_info, d$vaa_row, outlet_split_threshold_m = 99999
+  ))
 
   expect_true(is.list(result))
   expect_named(result, c("flowline_measure", "gage_point", "threshold_exceeded"))
@@ -716,5 +731,7 @@ test_that("negotiate_outlet_catchment returns correct structure", {
       comid = "99999",
       geometry = sf::st_sfc(sf::st_point(c(-89, 43)), crs = 4326)),
     outlet_comids = 99999L)
-  expect_null(nhdplusTools:::negotiate_outlet_catchment(wb, NULL))
+  expect_null(suppressMessages(
+    nhdplusTools:::negotiate_outlet_catchment(wb, NULL)
+  ))
 })

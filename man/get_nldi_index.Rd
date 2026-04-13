@@ -21,7 +21,13 @@ index <- get_nldi_index(c(-89.276, 42.988))
 
 if(inherits(index, "sf")) {
 
-plot_nhdplus(bbox = sf::st_bbox(sf::st_buffer(sf::st_transform(index[1,], 5070), units::set_units(1000, "m"))))
+plot_nhdplus(
+  bbox = sf::st_bbox(
+    sf::st_buffer(
+      sf::st_transform(index[1,], 5070), units::set_units(1000, "m")
+      )
+    )
+)
 plot(sf::st_geometry(sf::st_transform(index, 3857)), add = TRUE)
 
 }

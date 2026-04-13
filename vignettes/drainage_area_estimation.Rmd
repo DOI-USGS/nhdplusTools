@@ -37,11 +37,12 @@ build_local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 16,
-  fig.height = 9,
-  dpi = 110,
+  fig.width = 12,
+  fig.height = 7,
+  dpi = 150,
   out.width = "100%",
-  eval = build_local
+  eval = build_local,
+  fig.path = "drainage_area_figures/"
 )
 
 huc12 <- NULL
@@ -212,9 +213,14 @@ sites <- list(
   james = list(featureSource = "nwissite",
     featureID = "USGS-06468000"),
   malheur = st_sfc(st_point(c(-118.8, 43.3)), crs = 4326),
+  purgatoire = list(featureSource = "nwissite",
+    featureID = "USGS-07128500"),
   davidson = list(featureSource = "nwissite",
     featureID = "USGS-08110075")
 )
+
+# Skip NHDPlusHR for large basins to keep fetch times reasonable
+hr_basins <- c("black_earth", "french_broad", "davidson", "purgatoire")
 
 fetch_or_load <- function(name, start) {
   rds_path <- file.path(data_dir,
@@ -226,7 +232,8 @@ fetch_or_load <- function(name, start) {
   message("Fetching: ", name)
   result <- tryCatch(
     get_drainage_area_estimates(start, catchments = TRUE,
-      huc12_data = huc12),
+      huc12_data = huc12,
+      nhdplushr = name %in% hr_basins),
     error = function(e) {
       warning("Failed for ", name, ": ", conditionMessage(e),
         call. = FALSE)
@@ -282,7 +289,8 @@ basin_labels <- c(
   brazos = "Brazos at Rosharon",
   james = "James River",
   malheur = "Malheur Lake",
-  davidson = "Davidson Creek"
+  davidson = "Davidson Creek",
+  purgatoire = "Purgatoire River"
 )
 
 summary_df <- data.frame(
@@ -456,8 +464,8 @@ map_theme <- function() {
     theme(
       legend.position = "bottom",
       legend.box = "horizontal",
-      plot.title = element_text(hjust = 0, size = 13,
-        margin = margin(b = 6))
+      plot.title = element_blank(),
+      plot.margin = margin(2, 2, 2, 2)
     )
 }
 
@@ -494,8 +502,11 @@ plot_boundaries <- function(da, basin_label) {
   if(!is.null(da$all_catchments))
     boundaries[["Network catchments"]] <- st_union(
       st_transform(da$all_catchments, target_crs))
+  if(!is.null(da$nhdplushr_boundary))
+    boundaries[["NHDPlusHR"]] <- st_transform(
+      da$nhdplushr_boundary, target_crs)
 
-  ltypes <- c("solid", "dashed", "dotted", "twodash")
+  ltypes <- c("solid", "dashed", "dotted", "twodash", "4313")
 
   bnd_sf <- do.call(rbind, lapply(seq_along(boundaries), function(i) {
     st_sf(source = names(boundaries)[i],
@@ -721,7 +732,7 @@ essentially equals total drainage area across all sources.
 
 #### Drainage Area Boundaries
 
-```{r fb_boundaries}
+```{r french_broad_boundaries}
 plot_boundaries(da_results$french_broad, "French Broad")
 ```
 
@@ -739,7 +750,7 @@ basin_summary_table(da_results$french_broad)
 
 #### Stream Network
 
-```{r fb_network}
+```{r french_broad_network}
 plot_network(da_results$french_broad, flowlines$french_broad,
   "French Broad")
 ```
@@ -754,7 +765,7 @@ plot_network(da_results$french_broad, flowlines$french_broad,
 
 #### HUC12 Non-Contributing Area
 
-```{r fb_choropleth, fig.height = 10}
+```{r french_broad_choropleth, fig.height = 8}
 plot_choropleth(da_results$french_broad, flowlines$french_broad,
   "French Broad")
 ```
@@ -774,7 +785,7 @@ and contributing drainage area.
 
 #### Drainage Area Boundaries
 
-```{r bz_boundaries}
+```{r brazos_boundaries}
 plot_boundaries(da_results$brazos, "Brazos at Rosharon")
 ```
 
@@ -792,7 +803,7 @@ basin_summary_table(da_results$brazos)
 
 #### Stream Network
 
-```{r bz_network}
+```{r brazos_network}
 plot_network(da_results$brazos, flowlines$brazos,
   "Brazos at Rosharon")
 ```
@@ -808,7 +819,7 @@ plot_network(da_results$brazos, flowlines$brazos,
 
 #### HUC12 Non-Contributing Area
 
-```{r bz_choropleth, fig.height = 10}
+```{r brazos_choropleth, fig.height = 8}
 plot_choropleth(da_results$brazos, flowlines$brazos,
   "Brazos at Rosharon")
 ```
@@ -829,7 +840,7 @@ large noncontributing fraction that varies by sub-basin.
 
 #### Drainage Area Boundaries
 
-```{r jm_boundaries}
+```{r james_boundaries}
 plot_boundaries(da_results$james, "James River")
 ```
 
@@ -846,7 +857,7 @@ basin_summary_table(da_results$james)
 
 #### Stream Network
 
-```{r jm_network}
+```{r james_network}
 plot_network(da_results$james, flowlines$james, "James River")
 ```
 
@@ -859,7 +870,7 @@ plot_network(da_results$james, flowlines$james, "James River")
 
 #### HUC12 Non-Contributing Area
 
-```{r jm_choropleth, fig.height = 10}
+```{r james_choropleth, fig.height = 8}
 plot_choropleth(da_results$james, flowlines$james, "James River")
 ```
 
@@ -878,7 +889,7 @@ Well-determined drainage area with minimal noncontributing fraction.
 
 #### Drainage Area Boundaries
 
-```{r be_boundaries}
+```{r black_earth_boundaries}
 plot_boundaries(da_results$black_earth, "Black Earth Creek")
 ```
 
@@ -894,7 +905,7 @@ basin_summary_table(da_results$black_earth)
 
 #### Stream Network
 
-```{r be_network}
+```{r black_earth_network}
 plot_network(da_results$black_earth, flowlines$black_earth,
   "Black Earth Creek")
 ```
@@ -907,7 +918,7 @@ plot_network(da_results$black_earth, flowlines$black_earth,
 
 #### HUC12 Non-Contributing Area
 
-```{r be_choropleth, fig.height = 10}
+```{r black_earth_choropleth, fig.height = 8}
 plot_choropleth(da_results$black_earth, flowlines$black_earth,
   "Black Earth Creek")
 ```
@@ -926,7 +937,7 @@ gage.
 
 #### Drainage Area Boundaries
 
-```{r ml_boundaries}
+```{r malheur_boundaries}
 plot_boundaries(da_results$malheur, "Malheur Lake")
 ```
 
@@ -946,7 +957,7 @@ basin_summary_table(da_results$malheur)
 
 #### Stream Network
 
-```{r ml_network}
+```{r malheur_network}
 plot_network(da_results$malheur, flowlines$malheur, "Malheur Lake")
 ```
 
@@ -960,7 +971,7 @@ plot_network(da_results$malheur, flowlines$malheur, "Malheur Lake")
 
 #### HUC12 Non-Contributing Area
 
-```{r ml_choropleth, fig.height = 10}
+```{r malheur_choropleth, fig.height = 8}
 plot_choropleth(da_results$malheur, flowlines$malheur, "Malheur Lake")
 ```
 
@@ -971,6 +982,68 @@ plot_choropleth(da_results$malheur, flowlines$malheur, "Malheur Lake")
   effectively noncontributing to any downstream system.
 - The choropleth distinguishes HUC-level noncontributing designations
   from the basin-scale closed-basin classification.
+:::
+
+### Purgatoire River near Las Animas
+
+Boundary sensitivity basin in southeastern Colorado (USGS 07128500).
+Flat terrain adjacent to the basin produces a drainage divide that
+different delineation methods place in different locations, resulting
+in divergent drainage area estimates for the gage and all downstream
+stations. Documented in
+[Dupree and Crowfoot (2012, TM 11-C6)](https://pubs.usgs.gov/tm/11c6/).
+
+#### Drainage Area Boundaries
+
+```{r purgatoire_boundaries}
+plot_boundaries(da_results$purgatoire, "Purgatoire River")
+```
+
+```{r purgatoire_table}
+basin_summary_table(da_results$purgatoire)
+```
+
+::: {.vignette-note}
+- Boundary sources diverge in the flat terrain along the western and
+  southern margins of the basin where the drainage divide is poorly
+  defined.
+- Traditional delineation methods assigned a noncontributing area
+  adjacent to the basin as part of the Purgatoire drainage; the WBD
+  placed that area in the neighboring hydrologic unit to the west.
+- The resulting differences propagate to all downstream gages on the
+  Purgatoire and Arkansas Rivers.
+:::
+
+#### Stream Network
+
+```{r purgatoire_network}
+plot_network(da_results$purgatoire, flowlines$purgatoire,
+  "Purgatoire River")
+```
+
+::: {.vignette-note}
+- The upper basin drains steep terrain along the Sangre de Cristo
+  Range with predominantly perennial flow.
+- The lower basin crosses the high plains where intermittent and
+  ephemeral channels are more common and terrain gradients weaken.
+- The transition from montane headwaters to plains illustrates why
+  the divide becomes sensitive in the lower-gradient portions of the
+  basin.
+:::
+
+#### HUC12 Non-Contributing Area
+
+```{r purgatoire_choropleth, fig.height = 8}
+plot_choropleth(da_results$purgatoire, flowlines$purgatoire,
+  "Purgatoire River")
+```
+
+::: {.vignette-note}
+- HUC12 units in the flat southern and western margins of the basin
+  carry noncontributing area designations.
+- The choropleth shows the spatial pattern of boundary sensitivity:
+  where terrain gradients are weak, the WBD's placement of the divide
+  determines which land is included or excluded.
 :::
 
 ## Outlet Catchment Splitting

@@ -254,7 +254,8 @@ get_oafeat <- function(base,
 
     if(!inherits(AOI, "bbox") &&
        grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
-      AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m")) |>
+      AOI <- st_transform(AOI, 5070) |>
+        sf::st_buffer(units::as_units(buffer, "m")) |>
         st_transform(4326) |>
         st_bbox()
     } else if(!inherits(AOI, "bbox")) {

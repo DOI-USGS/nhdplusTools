@@ -491,7 +491,7 @@ get_huc12_by_huc <- function(huc_ids, t_srs = NULL) {
 
   message("  Fetching HUC12s for ", length(huc_ids), " ",
     id_name, " IDs...")
-  ids_list <- setNames(list(huc_ids), id_name)
+  ids_list <- stats::setNames(list(huc_ids), id_name)
   get_oafeat(base, AOI = NULL, type = "nhdplusv2-huc12",
     ids = ids_list, t_srs = t_srs, status = FALSE)
 }

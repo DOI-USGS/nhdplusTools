@@ -457,7 +457,7 @@ find_immediate_huc12_outlets <- function(all_net, start_comid, huc12_comids) {
 
   trim_comids <- setdiff(huc12_comids, start_comid)
   trimmed_net <- all_net[!all_net$comid %in% trim_comids, ] |>
-    select(comid, toid)
+    select("comid", "toid")
 
   reachable <- unlist(
     navigate_network_dfs(trimmed_net, start_comid, direction = "up")

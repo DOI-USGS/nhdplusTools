@@ -10,7 +10,8 @@ get_drainage_area_estimates(
   nhdplushr = TRUE,
   local_navigation = FALSE,
   huc12_data = NULL,
-  HU_inclusion_override = NULL
+  HU_inclusion_override = NULL,
+  outlet_split_threshold_m = 100
 )
 }
 \arguments{
@@ -39,6 +40,11 @@ HUC codes whose HUC12s should be kept even when the parent HUC outlet is
 not in the on-network set. Useful for regions like the Prairie Potholes
 where landscape-connected HUCs lack a network outlet (e.g.
 \code{"10130106"} in South Dakota). Default NULL (no overrides).}
+
+\item{outlet_split_threshold_m}{numeric. Minimum distance in meters from
+the gage to the outlet of its catchment before the catchment is split.
+When the gage is at least this far upstream, the outlet catchment is split
+at the gage point and only the upstream portion is included. Default 100.}
 }
 \value{
 list with elements:
@@ -66,6 +72,11 @@ list with elements:
     \item{all_network}{data.frame. Full upstream flowline attributes.}
     \item{all_catchments}{sf data.frame or NULL. NHDPlusV2 catchment polygons
       for the full upstream network. NULL when \code{catchments = FALSE}.}
+    \item{outlet_flowline_measure}{numeric or NULL. Flowline measure (0--100)
+      for the gage on its outlet flowline. NULL for non-gage starts.}
+    \item{outlet_split_catchment}{sf data.frame or NULL. Split catchment at
+      the gage point. Contains "catchment" and "splitCatchment" rows with
+      areas. NULL when no split is needed (gage at outlet or below threshold).}
     \item{hu12_outlet}{sf data.frame. HUC12 pour points upstream of outlet.}
   }
 }

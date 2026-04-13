@@ -49,6 +49,7 @@ f <- "../../Data/nhdp/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flattened
 if(file.exists(f))
   huc12 <- sf::read_sf(f, "HUC12")
 
+has_davidson <- FALSE
 oldoption <- options(scipen = 9999)
 ```
 

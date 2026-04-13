@@ -52,15 +52,142 @@ if(file.exists(f))
 oldoption <- options(scipen = 9999)
 ```
 
-`get_drainage_area_estimates()` combines HUC12 areas upstream of HUC
-outlets with NHDPlusV2 catchment areas for the gap between the outlet
-and the nearest HUC12 boundaries. Non-contributing areas captured in
-HUC12 boundaries are included, making these estimates more
-representative than purely network-derived totals.
+`get_drainage_area_estimates()` combines WBD delineations and non-surface-contributing area estimates with NHDPlusV2 catchment areas for the gap between a basin outlet
+and the nearest upstream HUC12. Non-contributing areas captured in
+HUC12 boundaries are included.
 
-This vignette runs the function on five basins that span a range of
+This vignette shows output of the function on five basins that span a range of
 hydrologic settings -- from a well-determined humid basin to arid
 systems, glacial prairie, and an endorheic (closed) basin.
+
+## How `get_drainage_area_estimates()` Works
+
+The function produces drainage area estimates by stitching together
+two kinds of spatial data: HUC12 polygon areas for the bulk of the
+upstream basin and NHDPlusV2 catchment areas for the gap between the
+gage (or other outlet) and the nearest upstream HUC12 boundaries.
+Because HUC12 polygons carry a non-contributing area attribute
+(`ncontrb_a`) and non-surface-contributing HUC12s can be retrieved from HUC10 or HUC08 groupings, the estimates separate total drainage area from surface network contributing drainage area.
+
+### Algorithm Steps
+
+1. **Resolve the start feature.** An NLDI feature list (e.g.
+   `featureSource = "nwissite", featureID = "USGS-05406500"`) is
+   resolved to an NHDPlusV2 COMID via the NLDI. An `sfc_POINT` inside
+   a waterbody triggers a waterbody lookup to find all outlet flowlines.
+
+2. **Negotiate the outlet catchment.** For gage-based starts, the
+   function computes where the gage sits along its outlet flowline as a
+   0--100 measure. This measure determines whether the outlet catchment
+   needs to be split (see *Catchment splitting* below).
+
+3. **Fetch the upstream network and HUC12 pour points.** The full
+   upstream flowline network is retrieved along with all HUC12 pour
+   points on that network. These pour points mark the downstream outlet
+   of each HUC12 watershed unit that drains to the gage.
+
+4. **Identify immediate HUC12 outlets.** A network navigation
+   finds which HUC12 outlets are directly upstream of the gage with no
+   intervening HUC12 outlet. These define the boundary between the
+   "HUC zone" (covered by HUC12 polygon areas) and the "gap zone"
+   (covered by individual catchment areas).
+
+5. **Fetch and assemble HUC12 polygons.** HUC12 polygons are retrieved
+   at three query levels: the specific NLDI-identified HUC12 IDs, all
+   HUC12s within upstream HUC10 boundaries, and all HUC12s within
+   upstream HUC08 boundaries. The broader queries can capture
+   HUC12s that share a parent HUC but lack an on-network pour point --
+   common in prairie-pothole and playa-dominated landscapes. A
+   disconnect filter removes HUC12s pulled incidentally by the broader
+   queries that are not hydrologically connected. Each level is a
+   superset of the narrower level, and each produces both a total and a
+   contributing-only area estimate.
+
+6. **Compute gap area.** Catchment areas between the gage and the
+   immediate HUC12 outlets are summed. Split-catchment logic is applied
+   at both the HUC12 outlets and (optionally) the gage point.
+
+7. **Assemble scalar estimates.** Six drainage area estimates are
+   computed: total and contributing at the HUC12, HUC10, and HUC08
+   query levels. Each equals the HUC12 polygon area sum plus the gap
+   area. A seventh scalar, `network_da_sqkm`, is the NHDPlusV2
+   cumulative drainage area at the outlet -- a comparison baseline.
+
+8. **NHDPlusHR estimate (optional).** When `nhdplushr = TRUE`, the
+   function fetches NHDPlusHR flowlines and catchments for the basin
+   bounding box, indexes the start point to the HR network
+   (disambiguating by drainage area), navigates upstream, and sums
+   catchment areas.
+
+### Catchment Splitting
+
+When a gage sits partway along a flowline rather than at its outlet,
+the downstream portion of the catchment does not contribute to the
+gage. The function calls the NLDI split-catchment service to divide
+the catchment at the gage point and counts only the upstream portion.
+The `outlet_split_threshold_m` parameter (default 100 m) sets the
+minimum gage-to-outlet distance before splitting is performed; if the
+gage is closer than this threshold, the full catchment is used.
+
+A parallel split occurs at HUC12 outlets: the HUC boundary cuts
+through a catchment, and the portion upstream of the pour point
+overlaps with HUC12 area already counted. The split-catchment service
+divides this catchment and the upstream overlap is excluded from the
+gap area to avoid double-counting.
+
+The *Outlet Catchment Splitting* section later in this vignette
+illustrates both splits using Davidson Creek (USGS-08110075).
+
+### Running with Local Data
+
+Two parameters reduce dependence on web services:
+
+- `local_navigation = TRUE` loads the NHDPlusV2 Value Added Attributes
+  via `get_vaa()` for network navigation and flowline attribute
+  lookups. Only HUC12 pour points are still fetched from the NLDI.
+
+- `huc12_data` accepts a pre-loaded `sf` data.frame of HUC12 polygons
+  (e.g. from the NHDPlusV2 national geodatabase). When provided, all
+  HUC12 polygon queries are resolved by subsetting this table locally
+  instead of calling WBD web services. The table must include `huc_12`
+  and `ncontrb_a` columns (case-insensitive).
+
+Using both together eliminates all HUC polygon web service calls and
+most flowline attribute calls, leaving only the NLDI (for HUC12 pour
+points and start feature resolution) and the split-catchment service.
+
+### Web Services and Performance
+
+By default the function contacts several web services. Each adds
+latency and is subject to rate limits or outages:
+
+- **NLDI** (`findNLDI`): resolves the start feature, navigates the
+  upstream network, and retrieves HUC12 pour points. Called in every
+  invocation.
+
+- **NHDPlusV2 OGC API** (`get_nhdplus`): fetches flowline attributes,
+  catchment geometries in the gap zone, and (when `catchments = TRUE`)
+  the full upstream catchment polygon set. Skipped for flowline
+  attributes when `local_navigation = TRUE`.
+
+- **WBD / HUC service** (`get_huc`, `get_huc12_by_huc`): fetches
+  HUC12 polygons by ID or by parent HUC. Skipped when `huc12_data` is
+  provided.
+
+- **Split-catchment service** (`get_split_catchment`): divides
+  catchments at HUC12 outlets and at the gage point. Always called.
+
+- **NHDPlusHR service** (`get_nhdphr`): fetches high-resolution
+  flowlines and catchments for the basin bounding box. Skipped when
+  `nhdplushr = FALSE`.
+
+For large basins (e.g. the Brazos at Rosharon) the cumulative time for
+these calls can be substantial. Setting `nhdplushr = FALSE` eliminates
+the most expensive single call. Providing `huc12_data` and using
+`local_navigation = TRUE` together can reduce total run time to a
+fraction of the default, at the cost of requiring local data files.
+The vignette's `fetch_or_load` wrapper caches results as RDS files so
+that repeated runs avoid repeating the web service calls entirely.
 
 ## Fetch and Cache Results
 

@@ -94,11 +94,14 @@ test_that("big rpu test", {
   skip_on_cran()
   testthat::skip_if_offline("sciencebase.gov")
 
-  vaa <- get_vaa(atts = c("comid", "pathlength", "lengthkm",
-                          "hydroseq", "dnhydroseq", "levelpathi",
-                          "rpuid", "vpuid", "fcode", "arbolatesu",
-                          "terminalfl", "terminalpa", "dnlevelpat",
-                          "dnminorhyd"))
+  vaa <- tryCatch(
+    get_vaa(atts = c("comid", "pathlength", "lengthkm",
+                     "hydroseq", "dnhydroseq", "levelpathi",
+                     "rpuid", "vpuid", "fcode", "arbolatesu",
+                     "terminalfl", "terminalpa", "dnlevelpat",
+                     "dnminorhyd")),
+    error = function(e) testthat::skip(paste("download failed:", e$message))
+  )
 
 
   vaa_sub <- dplyr::filter(vaa, vpuid == "17")
@@ -118,11 +121,14 @@ test_that("big rpu test", {
   expect_false(1356902 %in% sub$comid)
   expect_true(1356902 %in% sub2$comid)
 
-  vaa_new <- get_vaa(atts = c("comid", "tocomid", "pathlength", "lengthkm",
-                          "hydroseq", "dnhydroseq", "levelpathi",
-                          "fcode", "terminalfl", "terminalpa",
-                          "dnlevelpat"),
-                 updated_network = TRUE)
+  vaa_new <- tryCatch(
+    get_vaa(atts = c("comid", "tocomid", "pathlength", "lengthkm",
+                     "hydroseq", "dnhydroseq", "levelpathi",
+                     "fcode", "terminalfl", "terminalpa",
+                     "dnlevelpat"),
+            updated_network = TRUE),
+    error = function(e) testthat::skip(paste("download failed:", e$message))
+  )
 
   vaa_new <- dplyr::right_join(vaa_new,
                                vaa[c("comid", "rpuid", "vpuid")],

@@ -349,16 +349,29 @@ target_zoom <- function(sf_obj, fig_px = 1700) {
 # Fetch USGS topo tiles for an sf bbox. Returns a list with a color
 # matrix (suitable for annotation_raster) and the tile bounding box.
 # Uses annotation_raster (not geom_raster) so the fill aesthetic
-# stays free for choropleth use.
-fetch_topo_raster <- function(sf_obj, zoom = NULL) {
-  bb <- st_bbox(sf_obj)
-  pad_x <- (bb["xmax"] - bb["xmin"]) * 0.05
-  pad_y <- (bb["ymax"] - bb["ymin"]) * 0.05
-  bb["xmin"] <- bb["xmin"] - pad_x
-  bb["xmax"] <- bb["xmax"] + pad_x
-  bb["ymin"] <- bb["ymin"] - pad_y
-  bb["ymax"] <- bb["ymax"] + pad_y
-  bb_sf <- st_as_sfc(bb, crs = st_crs(sf_obj))
+# stays free for choropleth use. When fig_ratio is provided, the
+# bbox is expanded to match the figure aspect ratio via
+# fit_bbox_to_fig so that tiles cover the full canvas.
+fetch_topo_raster <- function(sf_obj, zoom = NULL,
+  fig_ratio = NULL) {
+  fit <- if(!is.null(fig_ratio))
+    fit_bbox_to_fig(sf_obj, fig_ratio = fig_ratio) else NULL
+  if(!is.null(fit)) {
+    bb <- st_bbox(c(
+      xmin = fit$xlim[1], xmax = fit$xlim[2],
+      ymin = fit$ylim[1], ymax = fit$ylim[2]
+    ), crs = st_crs(3857))
+    bb_sf <- st_as_sfc(bb)
+  } else {
+    bb <- st_bbox(sf_obj)
+    pad_x <- (bb["xmax"] - bb["xmin"]) * 0.05
+    pad_y <- (bb["ymax"] - bb["ymin"]) * 0.05
+    bb["xmin"] <- bb["xmin"] - pad_x
+    bb["xmax"] <- bb["xmax"] + pad_x
+    bb["ymin"] <- bb["ymin"] - pad_y
+    bb["ymax"] <- bb["ymax"] + pad_y
+    bb_sf <- st_as_sfc(bb, crs = st_crs(sf_obj))
+  }
   if(is.null(zoom))
     zoom <- target_zoom(st_transform(bb_sf, 3857))
   args <- list(
@@ -388,9 +401,36 @@ fetch_topo_raster <- function(sf_obj, zoom = NULL) {
   )
 }
 
+# Expand a bbox to match the figure aspect ratio so that coord_sf
+# fills the canvas without white sidebars. The basin content is
+# centered and the narrower axis is padded with additional basemap.
+fit_bbox_to_fig <- function(sf_obj, fig_ratio = 12 / 7, pad = 0.08) {
+  bb <- st_bbox(st_transform(sf_obj, 3857))
+  dx <- unname(bb["xmax"] - bb["xmin"])
+  dy <- unname(bb["ymax"] - bb["ymin"])
+  if(!is.finite(dx) || !is.finite(dy) || dx <= 0 || dy <= 0)
+    return(NULL)
+  # Add uniform padding first
+  cx <- unname((bb["xmin"] + bb["xmax"]) / 2)
+  cy <- unname((bb["ymin"] + bb["ymax"]) / 2)
+  dx <- dx * (1 + pad * 2)
+  dy <- dy * (1 + pad * 2)
+  # Expand the narrower axis to match the target aspect ratio
+  current_ratio <- dx / dy
+  if(current_ratio < fig_ratio) {
+    dx <- dy * fig_ratio
+  } else {
+    dy <- dx / fig_ratio
+  }
+  list(
+    xlim = c(cx - dx / 2, cx + dx / 2),
+    ylim = c(cy - dy / 2, cy + dy / 2)
+  )
+}
+
 # Add basemap as annotation_raster (does not consume fill scale)
-add_topo <- function(p, sf_obj) {
-  topo <- fetch_topo_raster(sf_obj)
+add_topo <- function(p, sf_obj, fig_ratio = 12 / 7) {
+  topo <- fetch_topo_raster(sf_obj, fig_ratio = fig_ratio)
   if(is.null(topo)) return(p)
   p + annotation_raster(
     topo$raster,
@@ -506,7 +546,16 @@ plot_boundaries <- function(da, basin_label) {
     boundaries[["NHDPlusHR"]] <- st_transform(
       da$nhdplushr_boundary, target_crs)
 
-  ltypes <- c("solid", "dashed", "dotted", "twodash", "4313")
+  # Named linetypes: HR gets dashed for visibility over the dense
+  # network catchment boundary; network catchments get dotted.
+  all_ltypes <- c(
+    "HUC12 (NLDI)" = "solid",
+    "HUC10" = "longdash",
+    "HUC08" = "dotdash",
+    "Network catchments" = "dashed",
+    "NHDPlusHR" = "dotted"
+  )
+  ltypes <- all_ltypes[names(boundaries)]
 
   bnd_sf <- do.call(rbind, lapply(seq_along(boundaries), function(i) {
     st_sf(source = names(boundaries)[i],
@@ -529,6 +578,8 @@ plot_boundaries <- function(da, basin_label) {
     )
   }
 
+  fig_lims <- fit_bbox_to_fig(basin_poly)
+
   p <- ggplot() |>
     add_topo(basin_poly) |>
     add_basin_underlay(basin_poly) +
@@ -536,8 +587,7 @@ plot_boundaries <- function(da, basin_label) {
       fill = NA, color = "gray10", linewidth = 0.8,
       inherit.aes = FALSE) +
     scale_linetype_manual(
-      values = setNames(ltypes[seq_along(boundaries)],
-        names(boundaries)),
+      values = ltypes,
       name = "DA boundary") +
     geom_sf(data = pts, aes(shape = label, size = label,
       color = label),
@@ -552,7 +602,8 @@ plot_boundaries <- function(da, basin_label) {
       values = c("Stream gage / outlet" = "black",
         "HUC12 outlet" = "darkred"),
       name = NULL) +
-    coord_sf(crs = target_crs, expand = FALSE) +
+    coord_sf(crs = target_crs, expand = FALSE,
+      xlim = fig_lims$xlim, ylim = fig_lims$ylim) +
     labs(title = paste(basin_label, "-- Drainage Area Boundaries")) +
     map_theme()
 
@@ -576,6 +627,8 @@ plot_network <- function(da, fl, basin_label) {
   pts <- st_sf(label = "Stream gage / outlet",
     geometry = st_geometry(gage_pt))
 
+  fig_lims <- fit_bbox_to_fig(basin_poly)
+
   ggplot() |>
     add_topo(basin_poly) |>
     add_basin_underlay(basin_poly) +
@@ -588,7 +641,8 @@ plot_network <- function(da, fl, basin_label) {
       name = "Flow class") +
     scale_linewidth_identity() +
     ggnewscale_color(pts, target_crs) +
-    coord_sf(crs = target_crs, expand = FALSE) +
+    coord_sf(crs = target_crs, expand = FALSE,
+      xlim = fig_lims$xlim, ylim = fig_lims$ylim) +
     labs(title = paste(basin_label, "-- Stream Network")) +
     map_theme()
 }
@@ -607,7 +661,8 @@ ggnewscale_color <- function(pts, target_crs) {
 }
 
 # Mode 3: HUC12 Non-Contributing Area Choropleth
-plot_choropleth <- function(da, fl, basin_label) {
+plot_choropleth <- function(da, fl, basin_label,
+  fig_ratio = 12 / 8) {
   target_crs <- st_crs(3857)
   # Use the largest HUC12 set available (HUC08 superset, HUC10
   # superset, or HUC12 fallback) so every HUC12 inside the largest
@@ -653,8 +708,10 @@ plot_choropleth <- function(da, fl, basin_label) {
   pts <- st_sf(label = "Stream gage / outlet",
     geometry = st_geometry(gage_pt))
 
+  fig_lims <- fit_bbox_to_fig(basin_poly, fig_ratio = fig_ratio)
+
   p <- ggplot() |>
-    add_topo(basin_poly) |>
+    add_topo(basin_poly, fig_ratio = fig_ratio) |>
     add_basin_underlay(basin_poly) +
     geom_sf(data = hu12,
       aes(fill = pct_noncontrib_bin),
@@ -696,7 +753,8 @@ plot_choropleth <- function(da, fl, basin_label) {
     geom_sf(data = fl, color = "steelblue", linewidth = 0.25,
       alpha = 0.8, inherit.aes = FALSE) +
     ggnewscale_color(pts, target_crs) +
-    coord_sf(crs = target_crs, expand = FALSE) +
+    coord_sf(crs = target_crs, expand = FALSE,
+      xlim = fig_lims$xlim, ylim = fig_lims$ylim) +
     labs(title = paste(basin_label,
       "-- HUC12 Non-Contributing Area")) +
     map_theme()

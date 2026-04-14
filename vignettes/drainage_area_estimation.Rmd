@@ -1,0 +1,1355 @@
+---
+title: "Drainage Area Estimation"
+author: "dblodgett@usgs.gov"
+output:
+  rmarkdown::html_vignette:
+    tabset: true
+vignette: >
+  %\VignetteIndexEntry{Drainage Area Estimation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{css, echo = FALSE}
+/* Override html_vignette narrow body to allow wider figures */
+body, div.main-container, div.body, div.contents {
+  max-width: 1600px !important;
+  width: 95% !important;
+}
+img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+.vignette-note {
+  background: #f8f8f8;
+  border-left: 3px solid #ccc;
+  padding: 8px 12px;
+  margin: 8px 0 16px 0;
+  font-size: 0.9em;
+}
+```
+
+```{r setup, include = FALSE}
+library(nhdplusTools)
+
+build_local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 12,
+  fig.height = 7,
+  dpi = 150,
+  out.width = "100%",
+  eval = build_local,
+  fig.path = "drainage_area_figures/"
+)
+
+huc12 <- NULL
+f <- "../../Data/nhdp/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flattened_Lower48.gdb/"
+if(file.exists(f))
+  huc12 <- sf::read_sf(f, "HUC12")
+
+has_davidson <- FALSE
+oldoption <- options(scipen = 9999)
+```
+
+`get_drainage_area_estimates()` combines WBD delineations and non-surface-contributing area estimates with NHDPlusV2 catchment areas for the gap between a basin outlet
+and the nearest upstream HUC12. Non-contributing areas captured in
+HUC12 boundaries are included.
+
+This vignette shows output of the function on five basins that span a range of
+hydrologic settings -- from a well-determined humid basin to arid
+systems, glacial prairie, and an endorheic (closed) basin.
+
+## How `get_drainage_area_estimates()` Works
+
+The function produces drainage area estimates by stitching together
+two kinds of spatial data: HUC12 polygon areas for the bulk of the
+upstream basin and NHDPlusV2 catchment areas for the gap between the
+gage (or other outlet) and the nearest upstream HUC12 boundaries.
+Because HUC12 polygons carry a non-contributing area attribute
+(`ncontrb_a`) and non-surface-contributing HUC12s can be retrieved from HUC10 or HUC08 groupings, the estimates separate total drainage area from surface network contributing drainage area.
+
+### Algorithm Steps
+
+1. **Resolve the start feature.** An NLDI feature list (e.g.
+   `featureSource = "nwissite", featureID = "USGS-05406500"`) is
+   resolved to an NHDPlusV2 COMID via the NLDI. An `sfc_POINT` inside
+   a waterbody triggers a waterbody lookup to find all outlet flowlines.
+
+2. **Negotiate the outlet catchment.** For gage-based starts, the
+   function computes where the gage sits along its outlet flowline as a
+   0--100 measure. This measure determines whether the outlet catchment
+   needs to be split (see *Catchment splitting* below).
+
+3. **Fetch the upstream network and HUC12 pour points.** The full
+   upstream flowline network is retrieved along with all HUC12 pour
+   points on that network. These pour points mark the downstream outlet
+   of each HUC12 watershed unit that drains to the gage.
+
+4. **Identify immediate HUC12 outlets.** A network navigation
+   finds which HUC12 outlets are directly upstream of the gage with no
+   intervening HUC12 outlet. These define the boundary between the
+   "HUC zone" (covered by HUC12 polygon areas) and the "gap zone"
+   (covered by individual catchment areas).
+
+5. **Fetch and assemble HUC12 polygons.** HUC12 polygons are retrieved
+   at three query levels: the specific NLDI-identified HUC12 IDs, all
+   HUC12s within upstream HUC10 boundaries, and all HUC12s within
+   upstream HUC08 boundaries. The broader queries can capture
+   HUC12s that share a parent HUC but lack an on-network pour point --
+   common in prairie-pothole and playa-dominated landscapes. A
+   disconnect filter removes HUC12s pulled incidentally by the broader
+   queries that are not hydrologically connected. Each level is a
+   superset of the narrower level, and each produces both a total and a
+   contributing-only area estimate.
+
+6. **Compute gap area.** Catchment areas between the gage and the
+   immediate HUC12 outlets are summed. Split-catchment logic is applied
+   at both the HUC12 outlets and (optionally) the gage point.
+
+7. **Assemble scalar estimates.** Six drainage area estimates are
+   computed: total and contributing at the HUC12, HUC10, and HUC08
+   query levels. Each equals the HUC12 polygon area sum plus the gap
+   area. A seventh scalar, `network_da_sqkm`, is the NHDPlusV2
+   cumulative drainage area at the outlet -- a comparison baseline.
+
+8. **NHDPlusHR estimate (optional).** When `nhdplushr = TRUE`, the
+   function fetches NHDPlusHR flowlines and catchments for the basin
+   bounding box, indexes the start point to the HR network
+   (disambiguating by drainage area), navigates upstream, and sums
+   catchment areas.
+
+### Catchment Splitting
+
+When a gage sits partway along a flowline rather than at its outlet,
+the downstream portion of the catchment does not contribute to the
+gage. The function calls the NLDI split-catchment service to divide
+the catchment at the gage point and counts only the upstream portion.
+The `outlet_split_threshold_m` parameter (default 100 m) sets the
+minimum gage-to-outlet distance before splitting is performed; if the
+gage is closer than this threshold, the full catchment is used.
+
+A parallel split occurs at HUC12 outlets: the HUC boundary cuts
+through a catchment, and the portion upstream of the pour point
+overlaps with HUC12 area already counted. The split-catchment service
+divides this catchment and the upstream overlap is excluded from the
+gap area to avoid double-counting.
+
+The *Outlet Catchment Splitting* section later in this vignette
+illustrates both splits using Davidson Creek (USGS-08110075).
+
+### Running with Local Data
+
+Two parameters reduce dependence on web services:
+
+- `local_navigation = TRUE` loads the NHDPlusV2 Value Added Attributes
+  via `get_vaa()` for network navigation and flowline attribute
+  lookups. Only HUC12 pour points are still fetched from the NLDI.
+
+- `huc12_data` accepts a pre-loaded `sf` data.frame of HUC12 polygons
+  (e.g. from the NHDPlusV2 national geodatabase). When provided, all
+  HUC12 polygon queries are resolved by subsetting this table locally
+  instead of calling WBD web services. The table must include `huc_12`
+  and `ncontrb_a` columns (case-insensitive).
+
+Using both together eliminates all HUC polygon web service calls and
+most flowline attribute calls, leaving only the NLDI (for HUC12 pour
+points and start feature resolution) and the split-catchment service.
+
+### Web Services and Performance
+
+By default the function contacts several web services. Each adds
+latency and is subject to rate limits or outages:
+
+- **NLDI** (`findNLDI`): resolves the start feature, navigates the
+  upstream network, and retrieves HUC12 pour points. Called in every
+  invocation.
+
+- **NHDPlusV2 OGC API** (`get_nhdplus`): fetches flowline attributes,
+  catchment geometries in the gap zone, and (when `catchments = TRUE`)
+  the full upstream catchment polygon set. Skipped for flowline
+  attributes when `local_navigation = TRUE`.
+
+- **WBD / HUC service** (`get_huc`, `get_huc12_by_huc`): fetches
+  HUC12 polygons by ID or by parent HUC. Skipped when `huc12_data` is
+  provided.
+
+- **Split-catchment service** (`get_split_catchment`): divides
+  catchments at HUC12 outlets and at the gage point. Always called.
+
+- **NHDPlusHR service** (`get_nhdphr`): fetches high-resolution
+  flowlines and catchments for the basin bounding box. Skipped when
+  `nhdplushr = FALSE`.
+
+For large basins (e.g. the Brazos at Rosharon) the cumulative time for
+these calls can be substantial. Setting `nhdplushr = FALSE` eliminates
+the most expensive single call. Providing `huc12_data` and using
+`local_navigation = TRUE` together can reduce total run time to a
+fraction of the default, at the cost of requiring local data files.
+The vignette's `fetch_or_load` wrapper caches results as RDS files so
+that repeated runs avoid repeating the web service calls entirely.
+
+## Fetch and Cache Results
+
+Each basin result is stored in a separate RDS file in the nhdplusTools
+data directory so that subsequent runs skip the web service calls.
+
+```{r fetch_data, message = TRUE}
+library(sf)
+
+data_dir <- nhdplusTools_data_dir()
+dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
+
+# Define the six study sites
+sites <- list(
+  black_earth = list(featureSource = "nwissite",
+    featureID = "USGS-05406500"),
+  french_broad = list(featureSource = "nwissite",
+    featureID = "USGS-03451500"),
+  brazos = list(featureSource = "nwissite",
+    featureID = "USGS-08116650"),
+  james = list(featureSource = "nwissite",
+    featureID = "USGS-06468000"),
+  malheur = st_sfc(st_point(c(-118.8, 43.3)), crs = 4326),
+  purgatoire = list(featureSource = "nwissite",
+    featureID = "USGS-07128500"),
+  davidson = list(featureSource = "nwissite",
+    featureID = "USGS-08110075")
+)
+
+# Skip NHDPlusHR for large basins to keep fetch times reasonable
+hr_basins <- c("black_earth", "french_broad", "davidson", "purgatoire")
+
+fetch_or_load <- function(name, start) {
+  rds_path <- file.path(data_dir,
+    paste0("da_est_", name, ".rds"))
+  if(file.exists(rds_path)) {
+    message("Loading cached: ", name)
+    return(readRDS(rds_path))
+  }
+  message("Fetching: ", name)
+  result <- tryCatch(
+    get_drainage_area_estimates(start, catchments = TRUE,
+      huc12_data = huc12,
+      nhdplushr = name %in% hr_basins),
+    error = function(e) {
+      warning("Failed for ", name, ": ", conditionMessage(e),
+        call. = FALSE)
+      NULL
+    })
+  if(!is.null(result)) saveRDS(result, rds_path)
+  result
+}
+
+da_results <- Map(fetch_or_load, names(sites), sites)
+da_results <- Filter(Negate(is.null), da_results)
+```
+
+```{r fetch_flowlines, message = TRUE}
+fetch_flowlines <- function(name, da_result) {
+  rds_path <- file.path(data_dir, paste0("fl_", name, ".rds"))
+  if(file.exists(rds_path)) {
+    message("Loading cached flowlines: ", name)
+    return(readRDS(rds_path))
+  }
+  message("Fetching flowlines: ", name)
+  comids <- da_result$all_network$comid
+  fl <- tryCatch(
+    get_nhdplus(comid = comids, realization = "flowline"),
+    error = function(e) {
+      warning("Flowline fetch failed for ", name, ": ",
+        conditionMessage(e), call. = FALSE)
+      NULL
+    })
+  if(!is.null(fl)) saveRDS(fl, rds_path)
+  fl
+}
+
+flowlines <- Map(fetch_flowlines, names(da_results), da_results)
+flowlines <- Filter(Negate(is.null), flowlines)
+```
+
+## Return Structure
+
+Each result is a list with scalar drainage area estimates and spatial
+data frames. Here are the elements for Black Earth Creek:
+
+```{r structure}
+names(da_results$black_earth)
+```
+
+The scalar estimates (square kilometers) across all basins:
+
+```{r summary_table}
+basin_labels <- c(
+  black_earth = "Black Earth Creek",
+  french_broad = "French Broad",
+  brazos = "Brazos at Rosharon",
+  james = "James River",
+  malheur = "Malheur Lake",
+  davidson = "Davidson Creek",
+  purgatoire = "Purgatoire River"
+)
+
+summary_df <- data.frame(
+  basin = basin_labels[names(da_results)],
+  network_da = vapply(da_results, \(x) x$network_da_sqkm, numeric(1)),
+  da_huc12 = vapply(da_results, \(x) x$da_huc12_sqkm, numeric(1)),
+  contrib_huc12 = vapply(da_results,
+    \(x) x$contrib_da_huc12_sqkm, numeric(1)),
+  da_huc10 = vapply(da_results,
+    \(x) ifelse(is.na(x$da_huc10_sqkm), NA_real_, x$da_huc10_sqkm),
+    numeric(1)),
+  da_huc08 = vapply(da_results,
+    \(x) ifelse(is.na(x$da_huc08_sqkm), NA_real_, x$da_huc08_sqkm),
+    numeric(1)),
+  nhdplushr = vapply(da_results,
+    \(x) ifelse(is.na(x$nhdplushr_network_dasqkm), NA_real_,
+      x$nhdplushr_network_dasqkm),
+    numeric(1))
+)
+
+knitr::kable(summary_df, digits = 1,
+  col.names = c("Basin", "Network DA", "HUC12 DA",
+    "Contributing DA", "HUC10 DA", "HUC08 DA", "NHDPlusHR DA"),
+  caption = "Drainage area estimates (sq km) by basin and method")
+```
+
+```{r helpers, include = FALSE}
+library(ggplot2)
+
+# USGS USTopo provider for maptiles. The "?f=jpg" suffix is a no-op
+# query parameter that gives maptiles a recognized extension hint.
+usgs_topo_provider <- list(
+  src = "USGS_USTopo",
+  q = paste0("https://basemap.nationalmap.gov/arcgis/rest/services/",
+    "USGSTopo/MapServer/tile/{z}/{y}/{x}?f=jpg"),
+  sub = NA,
+  cit = "USGS The National Map: USGSTopo"
+)
+
+# Cache directory for tiles
+tile_cache <- file.path(nhdplusTools_data_dir(), "da_v_tiles")
+dir.create(tile_cache, recursive = TRUE, showWarnings = FALSE)
+
+# Compute a target tile zoom level so the rendered tiles are sharp
+# at the figure size we use. Web Mercator world width is 40075016 m
+# and tile size is 256 px. The figure pixel width drives the
+# resolution we want from the tile mosaic.
+target_zoom <- function(sf_obj, fig_px = 1700) {
+  bb <- st_bbox(sf_obj)
+  span_m <- max(bb["xmax"] - bb["xmin"], bb["ymax"] - bb["ymin"])
+  if(!is.finite(span_m) || span_m <= 0) return(10L)
+  z <- log2(40075016 * fig_px / (256 * span_m))
+  as.integer(min(max(round(z), 4L), 15L))
+}
+
+# Fetch USGS topo tiles for an sf bbox. Returns a list with a color
+# matrix (suitable for annotation_raster) and the tile bounding box.
+# Uses annotation_raster (not geom_raster) so the fill aesthetic
+# stays free for choropleth use. When fig_ratio is provided, the
+# bbox is expanded to match the figure aspect ratio via
+# fit_bbox_to_fig so that tiles cover the full canvas.
+fetch_topo_raster <- function(sf_obj, zoom = NULL,
+  fig_ratio = NULL) {
+  fit <- if(!is.null(fig_ratio))
+    fit_bbox_to_fig(sf_obj, fig_ratio = fig_ratio) else NULL
+  if(!is.null(fit)) {
+    bb <- st_bbox(c(
+      xmin = fit$xlim[1], xmax = fit$xlim[2],
+      ymin = fit$ylim[1], ymax = fit$ylim[2]
+    ), crs = st_crs(3857))
+    bb_sf <- st_as_sfc(bb)
+  } else {
+    bb <- st_bbox(sf_obj)
+    pad_x <- (bb["xmax"] - bb["xmin"]) * 0.05
+    pad_y <- (bb["ymax"] - bb["ymin"]) * 0.05
+    bb["xmin"] <- bb["xmin"] - pad_x
+    bb["xmax"] <- bb["xmax"] + pad_x
+    bb["ymin"] <- bb["ymin"] - pad_y
+    bb["ymax"] <- bb["ymax"] + pad_y
+    bb_sf <- st_as_sfc(bb, crs = st_crs(sf_obj))
+  }
+  if(is.null(zoom))
+    zoom <- target_zoom(st_transform(bb_sf, 3857))
+  args <- list(
+    x = bb_sf, provider = usgs_topo_provider, crop = TRUE,
+    cachedir = tile_cache, zoom = zoom
+  )
+  tiles <- tryCatch(
+    do.call(maptiles::get_tiles, args),
+    error = function(e) {
+      warning("Tile fetch failed: ", conditionMessage(e),
+        call. = FALSE)
+      NULL
+    })
+  if(is.null(tiles)) return(NULL)
+  rgb_arr <- terra::as.array(tiles)
+  if(length(dim(rgb_arr)) != 3 || dim(rgb_arr)[3] < 3) return(NULL)
+  col_mat <- matrix(
+    rgb(rgb_arr[, , 1], rgb_arr[, , 2], rgb_arr[, , 3],
+      maxColorValue = 255),
+    nrow = dim(rgb_arr)[1], ncol = dim(rgb_arr)[2]
+  )
+  ext <- terra::ext(tiles)
+  list(
+    raster = col_mat,
+    xmin = ext[1], xmax = ext[2],
+    ymin = ext[3], ymax = ext[4]
+  )
+}
+
+# Expand a bbox to match the figure aspect ratio so that coord_sf
+# fills the canvas without white sidebars. The basin content is
+# centered and the narrower axis is padded with additional basemap.
+fit_bbox_to_fig <- function(sf_obj, fig_ratio = 12 / 7, pad = 0.08) {
+  bb <- st_bbox(st_transform(sf_obj, 3857))
+  dx <- unname(bb["xmax"] - bb["xmin"])
+  dy <- unname(bb["ymax"] - bb["ymin"])
+  if(!is.finite(dx) || !is.finite(dy) || dx <= 0 || dy <= 0)
+    return(NULL)
+  # Add uniform padding first
+  cx <- unname((bb["xmin"] + bb["xmax"]) / 2)
+  cy <- unname((bb["ymin"] + bb["ymax"]) / 2)
+  dx <- dx * (1 + pad * 2)
+  dy <- dy * (1 + pad * 2)
+  # Expand the narrower axis to match the target aspect ratio
+  current_ratio <- dx / dy
+  if(current_ratio < fig_ratio) {
+    dx <- dy * fig_ratio
+  } else {
+    dy <- dx / fig_ratio
+  }
+  list(
+    xlim = c(cx - dx / 2, cx + dx / 2),
+    ylim = c(cy - dy / 2, cy + dy / 2)
+  )
+}
+
+# Add basemap as annotation_raster (does not consume fill scale)
+add_topo <- function(p, sf_obj, fig_ratio = 12 / 7) {
+  topo <- fetch_topo_raster(sf_obj, fig_ratio = fig_ratio)
+  if(is.null(topo)) return(p)
+  p + annotation_raster(
+    topo$raster,
+    xmin = topo$xmin, xmax = topo$xmax,
+    ymin = topo$ymin, ymax = topo$ymax
+  )
+}
+
+# Resolve gage point in target CRS
+get_gage_pt <- function(da, target_crs) {
+  pt <- st_geometry(da$start_feature)
+  if(!inherits(pt, "sfc_POINT"))
+    pt <- st_centroid(pt)
+  st_transform(st_sf(geometry = pt), target_crs)
+}
+
+# Pick the spatially-largest of the available HUC12 sets returned by
+# get_drainage_area_estimates: hu12_by_huc08 (if present), otherwise
+# hu12_by_huc10, otherwise hu12_by_huc12. Largest is determined by
+# the sum of HUC12 dasqkm in each set.
+largest_hu12_set <- function(da) {
+  candidates <- list(
+    huc12 = da$hu12_by_huc12,
+    huc10 = da$hu12_by_huc10,
+    huc08 = da$hu12_by_huc08
+  )
+  candidates <- Filter(
+    function(x) !is.null(x) && nrow(x) > 0, candidates)
+  areas <- vapply(candidates,
+    function(x) sum(x$dasqkm, na.rm = TRUE), numeric(1))
+  candidates[[which.max(areas)]]
+}
+
+# Compute a single merged basin polygon for a given HUC level set
+# (hu12_by_huc12, hu12_by_huc10, or hu12_by_huc08), unioned with
+# extra_catchments and the local catchments around the gage.
+# Uses hydroloom::dissolve_polygons() with gap_tolerance to absorb
+# sliver gaps between polygons from different services (WBD HUC12s,
+# NHDPlusV2 catchments, split-catchment service).
+compute_basin_polygon <- function(da, hu_layer, target_crs,
+  tol_m = 250) {
+  common_crs <- st_crs(hu_layer)
+  pieces <- list()
+  pieces$hu <- st_geometry(hu_layer)
+
+  if(!is.null(da$extra_catchments) && nrow(da$extra_catchments) > 0)
+    pieces$extra <- st_geometry(
+      st_transform(da$extra_catchments, common_crs))
+
+  if(!is.null(da$split_catchment) && nrow(da$split_catchment) > 0) {
+    sc <- da$split_catchment
+    sc_full <- sc[sc$id == "catchment", ]
+    if(nrow(sc_full) > 0)
+      pieces$catch <- st_geometry(st_transform(sc_full, common_crs))
+  }
+
+  all_polys <- st_sf(
+    geometry = do.call(c, pieces)
+  ) |> st_set_crs(common_crs)
+
+  hydroloom::dissolve_polygons(all_polys,
+    gap_tolerance = tol_m,
+    max_hole_area = Inf,
+    single_polygon = TRUE) |>
+    st_transform(target_crs)
+}
+
+# Common theme: no axis ticks, labels, or grid
+map_theme <- function() {
+  theme_void() +
+    theme(
+      legend.position = "bottom",
+      legend.box = "horizontal",
+      plot.title = element_blank(),
+      plot.margin = margin(2, 2, 2, 2)
+    )
+}
+
+# Add the gray basin underlay to a plot. The polygon represents the
+# full estimated drainage area envelope (largest available HUC level
+# plus extra catchments and local catchments).
+add_basin_underlay <- function(p, basin_poly) {
+  p + geom_sf(data = basin_poly,
+    fill = "gray30", color = NA, alpha = 0.15,
+    inherit.aes = FALSE)
+}
+
+# Mode 1: Drainage Area Boundaries
+plot_boundaries <- function(da, basin_label) {
+  # Reproject working layers to Web Mercator (3857) so the basemap
+  # tiles align cleanly.
+  target_crs <- st_crs(3857)
+  gage_pt <- get_gage_pt(da, target_crs)
+  basin_poly <- compute_basin_polygon(da, largest_hu12_set(da), target_crs)
+
+  # Dissolve boundaries at each HUC level. Each HUC level is combined
+  # with extra_catchments and split_catchment via compute_basin_polygon
+  # so every boundary reaches the gage instead of stopping at the
+  # lowest complete HUC outlet.
+  boundaries <- list()
+  boundaries[["HUC12 (NLDI)"]] <- st_geometry(
+    compute_basin_polygon(da, da$hu12_by_huc12, target_crs))
+  if(!is.null(da$hu12_by_huc10))
+    boundaries[["HUC10"]] <- st_geometry(
+      compute_basin_polygon(da, da$hu12_by_huc10, target_crs))
+  if(!is.null(da$hu12_by_huc08))
+    boundaries[["HUC08"]] <- st_geometry(
+      compute_basin_polygon(da, da$hu12_by_huc08, target_crs))
+  if(!is.null(da$all_catchments))
+    boundaries[["Network catchments"]] <- st_union(
+      st_transform(da$all_catchments, target_crs))
+  if(!is.null(da$nhdplushr_boundary))
+    boundaries[["NHDPlusHR"]] <- st_transform(
+      da$nhdplushr_boundary, target_crs)
+
+  # Named linetypes: HR gets dashed for visibility over the dense
+  # network catchment boundary; network catchments get dotted.
+  all_ltypes <- c(
+    "HUC12 (NLDI)" = "solid",
+    "HUC10" = "longdash",
+    "HUC08" = "dotdash",
+    "Network catchments" = "dashed",
+    "NHDPlusHR" = "dotted"
+  )
+  ltypes <- all_ltypes[names(boundaries)]
+
+  bnd_sf <- do.call(rbind, lapply(seq_along(boundaries), function(i) {
+    st_sf(source = names(boundaries)[i],
+      geometry = boundaries[[i]])
+  }))
+
+  hu12_pp <- if(!is.null(da$hu12_outlet))
+    st_transform(da$hu12_outlet, target_crs) else NULL
+
+  # Combine point layers into one sf so a shape scale can label both
+  pts <- st_sf(
+    label = "Stream gage / outlet",
+    geometry = st_geometry(gage_pt)
+  )
+  if(!is.null(hu12_pp)) {
+    pts <- rbind(
+      pts,
+      st_sf(label = "HUC12 outlet",
+        geometry = st_geometry(hu12_pp))
+    )
+  }
+
+  fig_lims <- fit_bbox_to_fig(basin_poly)
+
+  p <- ggplot() |>
+    add_topo(basin_poly) |>
+    add_basin_underlay(basin_poly) +
+    geom_sf(data = bnd_sf, aes(linetype = source),
+      fill = NA, color = "gray10", linewidth = 0.8,
+      inherit.aes = FALSE) +
+    scale_linetype_manual(
+      values = ltypes,
+      name = "DA boundary") +
+    geom_sf(data = pts, aes(shape = label, size = label,
+      color = label),
+      fill = "white", stroke = 1.4, inherit.aes = FALSE) +
+    scale_shape_manual(
+      values = c("Stream gage / outlet" = 17, "HUC12 outlet" = 4),
+      name = NULL) +
+    scale_size_manual(
+      values = c("Stream gage / outlet" = 5, "HUC12 outlet" = 3),
+      name = NULL) +
+    scale_color_manual(
+      values = c("Stream gage / outlet" = "black",
+        "HUC12 outlet" = "darkred"),
+      name = NULL) +
+    coord_sf(crs = target_crs, expand = FALSE,
+      xlim = fig_lims$xlim, ylim = fig_lims$ylim) +
+    labs(title = paste(basin_label, "-- Drainage Area Boundaries")) +
+    map_theme()
+
+  p
+}
+
+# Mode 2: Stream Network
+plot_network <- function(da, fl, basin_label) {
+  target_crs <- st_crs(3857)
+  gage_pt <- get_gage_pt(da, target_crs)
+  fl <- st_transform(fl, target_crs)
+  basin_poly <- compute_basin_polygon(da, largest_hu12_set(da), target_crs)
+
+  # fcode 46003 = intermittent, 46007 = ephemeral, 46006 = perennial
+  fl$flow_class <- ifelse(
+    fl$fcode %in% c(46003L, 46007L), "Intermittent/Ephemeral",
+    "Perennial/Other"
+  )
+  fl$lwd <- pmin(pmax(fl$streamorde, 1) / 3, 1.5)
+
+  pts <- st_sf(label = "Stream gage / outlet",
+    geometry = st_geometry(gage_pt))
+
+  fig_lims <- fit_bbox_to_fig(basin_poly)
+
+  ggplot() |>
+    add_topo(basin_poly) |>
+    add_basin_underlay(basin_poly) +
+    geom_sf(data = fl,
+      aes(color = flow_class, linewidth = lwd),
+      show.legend = "line", inherit.aes = FALSE) +
+    scale_color_manual(
+      values = c("Perennial/Other" = "steelblue",
+        "Intermittent/Ephemeral" = "lightskyblue"),
+      name = "Flow class") +
+    scale_linewidth_identity() +
+    ggnewscale_color(pts, target_crs) +
+    coord_sf(crs = target_crs, expand = FALSE,
+      xlim = fig_lims$xlim, ylim = fig_lims$ylim) +
+    labs(title = paste(basin_label, "-- Stream Network")) +
+    map_theme()
+}
+
+# Helper to add the gage point as a labeled layer using a shape scale
+# that doesn't conflict with other color scales already in use.
+ggnewscale_color <- function(pts, target_crs) {
+  list(
+    geom_sf(data = pts, aes(shape = label),
+      size = 5, color = "black", fill = "white", stroke = 1.4,
+      inherit.aes = FALSE),
+    scale_shape_manual(
+      values = c("Stream gage / outlet" = 17),
+      name = NULL)
+  )
+}
+
+# Mode 3: HUC12 Non-Contributing Area Choropleth
+plot_choropleth <- function(da, fl, basin_label,
+  fig_ratio = 12 / 8) {
+  target_crs <- st_crs(3857)
+  # Use the largest HUC12 set available (HUC08 superset, HUC10
+  # superset, or HUC12 fallback) so every HUC12 inside the largest
+  # estimated drainage area envelope appears in the choropleth.
+  largest <- largest_hu12_set(da)
+  hu12 <- st_transform(largest, target_crs)
+  pct <- pmin(pmax(hu12$ncontrb_sqkm / hu12$dasqkm * 100, 0), 100)
+  hu12$pct_noncontrib_bin <- factor(
+    ifelse(pct < 33, "0-33%",
+      ifelse(pct < 66, "33-66%", "66-100%")),
+    levels = c("0-33%", "33-66%", "66-100%"))
+  gage_pt <- get_gage_pt(da, target_crs)
+  fl <- st_transform(fl, target_crs)
+  basin_poly <- compute_basin_polygon(da, largest, target_crs)
+
+  # Collect the gap-filling pieces (catchments between the lowest
+  # complete HUC12 outlet and the gage) into a single sf with a
+  # category column so they share one legend. The three categories
+  # are distinguished by outline color and linetype; fill is uniform.
+  gap_layers <- list()
+  if(!is.null(da$extra_catchments) && nrow(da$extra_catchments) > 0) {
+    extras <- st_transform(da$extra_catchments, target_crs)
+    gap_layers$extras <- st_sf(
+      gap_type = "Gap network catchment",
+      geometry = st_geometry(extras))
+  }
+  if(!is.null(da$split_catchment) && nrow(da$split_catchment) > 0) {
+    sc <- st_transform(da$split_catchment, target_crs)
+    sc_full <- sc[sc$id == "catchment", ]
+    sc_split <- sc[sc$id == "splitCatchment", ]
+    if(nrow(sc_full) > 0)
+      gap_layers$full <- st_sf(
+        gap_type = "Gage local catchment",
+        geometry = st_geometry(sc_full))
+    if(nrow(sc_split) > 0)
+      gap_layers$split <- st_sf(
+        gap_type = "Split catchment at gage",
+        geometry = st_geometry(sc_split))
+  }
+  gap_sf <- if(length(gap_layers) > 0)
+    do.call(rbind, unname(gap_layers)) else NULL
+
+  pts <- st_sf(label = "Stream gage / outlet",
+    geometry = st_geometry(gage_pt))
+
+  fig_lims <- fit_bbox_to_fig(basin_poly, fig_ratio = fig_ratio)
+
+  p <- ggplot() |>
+    add_topo(basin_poly, fig_ratio = fig_ratio) |>
+    add_basin_underlay(basin_poly) +
+    geom_sf(data = hu12,
+      aes(fill = pct_noncontrib_bin),
+      color = "gray50", linewidth = 0.2, alpha = 0.8,
+      inherit.aes = FALSE) +
+    scale_fill_manual(
+      values = c("0-33%" = "#FFFDD0",
+        "33-66%" = "#C68E3F",
+        "66-100%" = "#8B4513"),
+      limits = c("0-33%", "33-66%", "66-100%"),
+      drop = FALSE,
+      name = "Non-contributing\narea")
+
+  gap_colors <- c(
+    "Gap network catchment" = "steelblue",
+    "Gage local catchment" = "steelblue",
+    "Split catchment at gage" = "red")
+  gap_ltypes <- c(
+    "Gap network catchment" = "solid",
+    "Gage local catchment" = "solid",
+    "Split catchment at gage" = "dashed")
+  gap_lwds <- c(
+    "Gap network catchment" = 0.2,
+    "Gage local catchment" = 0.3,
+    "Split catchment at gage" = 0.5)
+
+  if(!is.null(gap_sf)) {
+    p <- p + geom_sf(data = gap_sf,
+      aes(color = gap_type, linetype = gap_type, linewidth = gap_type),
+      fill = "lightblue", alpha = 0.5, inherit.aes = FALSE) +
+      scale_color_manual(values = gap_colors, name = "Gap catchments") +
+      scale_linetype_manual(values = gap_ltypes,
+        name = "Gap catchments") +
+      scale_linewidth_manual(values = gap_lwds,
+        name = "Gap catchments")
+  }
+
+  p +
+    geom_sf(data = fl, color = "steelblue", linewidth = 0.25,
+      alpha = 0.8, inherit.aes = FALSE) +
+    ggnewscale_color(pts, target_crs) +
+    coord_sf(crs = target_crs, expand = FALSE,
+      xlim = fig_lims$xlim, ylim = fig_lims$ylim) +
+    labs(title = paste(basin_label,
+      "-- HUC12 Non-Contributing Area")) +
+    map_theme()
+}
+
+# Per-basin summary table
+basin_summary_table <- function(da) {
+  vals <- data.frame(
+    source = c("Network", "HUC12", "HUC12 contributing",
+      "HUC10", "HUC08", "NHDPlusHR"),
+    total_sqkm = c(
+      da$network_da_sqkm,
+      da$da_huc12_sqkm,
+      da$contrib_da_huc12_sqkm,
+      ifelse(is.na(da$da_huc10_sqkm), NA_real_, da$da_huc10_sqkm),
+      ifelse(is.na(da$da_huc08_sqkm), NA_real_, da$da_huc08_sqkm),
+      ifelse(is.na(da$nhdplushr_network_dasqkm), NA_real_,
+        da$nhdplushr_network_dasqkm)
+    )
+  )
+  knitr::kable(vals, digits = 1,
+    col.names = c("Source", "Area (sq km)"),
+    caption = "Drainage area estimates by source")
+}
+```
+
+## Basin Vignettes {.tabset}
+
+### French Broad River at Asheville
+
+Well-determined humid basin (USGS 03451500). Contributing area
+essentially equals total drainage area across all sources.
+
+#### Drainage Area Boundaries
+
+```{r french_broad_boundaries}
+plot_boundaries(da_results$french_broad, "French Broad")
+```
+
+```{r fb_table}
+basin_summary_table(da_results$french_broad)
+```
+
+::: {.vignette-note}
+- All boundary sources converge tightly around the same watershed outline.
+- The HUC12-, HUC10-, and HUC08-derived boundaries are nearly identical,
+  consistent with a basin whose divides are topographically unambiguous.
+- The gage (triangle) sits on the main stem French Broad River at
+  Asheville.
+:::
+
+#### Stream Network
+
+```{r french_broad_network}
+plot_network(da_results$french_broad, flowlines$french_broad,
+  "French Broad")
+```
+
+::: {.vignette-note}
+- The network is predominantly perennial with dense tributary coverage
+  in the Appalachian headwaters.
+- Intermittent reaches are sparse, concentrated in low-order headwater
+  channels.
+- HUC12 outlets (x markers) align with major tributary junctions.
+:::
+
+#### HUC12 Non-Contributing Area
+
+```{r french_broad_choropleth, fig.height = 8}
+plot_choropleth(da_results$french_broad, flowlines$french_broad,
+  "French Broad")
+```
+
+::: {.vignette-note}
+- Non-contributing area is negligible across all HUC12 units.
+- The choropleth reads as nearly uniform light fill, confirming that
+  the contributing fraction equals or nearly equals total area
+  throughout the basin.
+:::
+
+### Brazos River, West Texas
+
+Arid/ephemeral connectivity basin (USGS 08116650). Transmission
+losses and disconnected uplands create large differences between total
+and contributing drainage area.
+
+#### Drainage Area Boundaries
+
+```{r brazos_boundaries}
+plot_boundaries(da_results$brazos, "Brazos at Rosharon")
+```
+
+```{r bz_table}
+basin_summary_table(da_results$brazos)
+```
+
+::: {.vignette-note}
+- Boundary sources diverge substantially.  HUC-derived boundaries
+  extend further west into arid uplands than the network-derived
+  boundary.
+- The gap between HUC12 total area and contributing area reflects
+  large noncontributing designations in western sub-basins.
+:::
+
+#### Stream Network
+
+```{r brazos_network}
+plot_network(da_results$brazos, flowlines$brazos,
+  "Brazos at Rosharon")
+```
+
+::: {.vignette-note}
+- Extensive intermittent and ephemeral reaches dominate the western
+  (upstream) portion of the basin.
+- Perennial flow is concentrated in the lower main stem and major
+  tributaries east of the Caprock Escarpment.
+- The transition from ephemeral headwaters to perennial mainstem
+  illustrates why contributing area is smaller than total area.
+:::
+
+#### HUC12 Non-Contributing Area
+
+```{r brazos_choropleth, fig.height = 8}
+plot_choropleth(da_results$brazos, flowlines$brazos,
+  "Brazos at Rosharon")
+```
+
+::: {.vignette-note}
+- HUC12 units in the western part of the basin carry high
+  noncontributing fractions (dark brown fill).
+- Noncontributing area drops sharply east of the Caprock Escarpment
+  where the flow regime becomes perennial.
+- The choropleth shows that the noncontributing designation is not
+  distributed uniformly but concentrated in specific arid sub-basins.
+:::
+
+### James River / Cottonwood Lake
+
+Glacial prairie basin (USGS 06468000). Prairie potholes create a
+large noncontributing fraction that varies by sub-basin.
+
+#### Drainage Area Boundaries
+
+```{r james_boundaries}
+plot_boundaries(da_results$james, "James River")
+```
+
+```{r jm_table}
+basin_summary_table(da_results$james)
+```
+
+::: {.vignette-note}
+- Boundary estimates diverge in the upper basin where glacial
+  topography creates ambiguous divides.
+- The HUC12-derived total area exceeds the contributing area by a
+  notable margin, reflecting prairie pothole storage.
+:::
+
+#### Stream Network
+
+```{r james_network}
+plot_network(da_results$james, flowlines$james, "James River")
+```
+
+::: {.vignette-note}
+- The network includes a mix of perennial and intermittent reaches.
+- Intermittent channels are common in the upper basin where glacial
+  drift creates closed depressions and episodic connectivity.
+- The lower main stem is perennial and well-defined.
+:::
+
+#### HUC12 Non-Contributing Area
+
+```{r james_choropleth, fig.height = 8}
+plot_choropleth(da_results$james, flowlines$james, "James River")
+```
+
+::: {.vignette-note}
+- Several HUC12 units carry high noncontributing fractions (dark brown),
+  concentrated in the glacial pothole region.
+- The spatial pattern of noncontributing area follows the extent of
+  glacial drift and closed-basin topography.
+- HUC12 units in the lower basin show negligible noncontributing area.
+:::
+
+### Black Earth Creek
+
+Small humid basin in southern Wisconsin (USGS 05406500).
+Well-determined drainage area with minimal noncontributing fraction.
+
+#### Drainage Area Boundaries
+
+```{r black_earth_boundaries}
+plot_boundaries(da_results$black_earth, "Black Earth Creek")
+```
+
+```{r be_table}
+basin_summary_table(da_results$black_earth)
+```
+
+::: {.vignette-note}
+- All boundary sources converge on a compact watershed outline.
+- The basin is small enough to fall within a single HUC10, so HUC10-
+  and HUC08-level boundaries are not computed separately.
+:::
+
+#### Stream Network
+
+```{r black_earth_network}
+plot_network(da_results$black_earth, flowlines$black_earth,
+  "Black Earth Creek")
+```
+
+::: {.vignette-note}
+- A short, predominantly perennial network drains the Driftless Area
+  landscape.
+- Few intermittent headwater reaches are present.
+:::
+
+#### HUC12 Non-Contributing Area
+
+```{r black_earth_choropleth, fig.height = 8}
+plot_choropleth(da_results$black_earth, flowlines$black_earth,
+  "Black Earth Creek")
+```
+
+::: {.vignette-note}
+- Noncontributing area is negligible across all HUC12 units.
+- The uniform light fill confirms that essentially the entire basin
+  contributes to streamflow at the outlet.
+:::
+
+### Malheur Lake
+
+Harney Basin / Malheur Lake is an endorheic (closed) basin with no
+surface outlet.  The terminal feature is a lake rather than a stream
+gage.
+
+#### Drainage Area Boundaries
+
+```{r malheur_boundaries}
+plot_boundaries(da_results$malheur, "Malheur Lake")
+```
+
+```{r ml_table}
+basin_summary_table(da_results$malheur)
+```
+
+::: {.vignette-note}
+- The basin is endorheic -- all boundaries terminate at Malheur Lake
+  with no downstream outlet.
+- HUC-derived and network-derived boundaries diverge in the
+  surrounding high-desert uplands where surface connectivity is
+  ambiguous.
+- The start feature (triangle) marks the centroid of the Malheur Lake
+  waterbody polygon rather than a stream gage.
+:::
+
+#### Stream Network
+
+```{r malheur_network}
+plot_network(da_results$malheur, flowlines$malheur, "Malheur Lake")
+```
+
+::: {.vignette-note}
+- Intermittent and ephemeral reaches dominate the network, particularly
+  in the southern and eastern tributaries.
+- Perennial flow is limited to the Silvies River and Donner und Blitzen
+  River corridors draining into Malheur and Harney Lakes.
+- The network terminates at the lake with no surface outlet downstream.
+:::
+
+#### HUC12 Non-Contributing Area
+
+```{r malheur_choropleth, fig.height = 8}
+plot_choropleth(da_results$malheur, flowlines$malheur, "Malheur Lake")
+```
+
+::: {.vignette-note}
+- Several HUC12 units carry high noncontributing fractions in the
+  playa and alkali flat margins surrounding the lakes.
+- The endorheic nature of the basin means the entire watershed is
+  effectively noncontributing to any downstream system.
+- The choropleth distinguishes HUC-level noncontributing designations
+  from the basin-scale closed-basin classification.
+:::
+
+### Purgatoire River near Las Animas
+
+Boundary sensitivity basin in southeastern Colorado (USGS 07128500).
+Flat terrain adjacent to the basin produces a drainage divide that
+different delineation methods place in different locations, resulting
+in divergent drainage area estimates for the gage and all downstream
+stations. Documented in
+[Dupree and Crowfoot (2012, TM 11-C6)](https://pubs.usgs.gov/tm/11c6/).
+
+#### Drainage Area Boundaries
+
+```{r purgatoire_boundaries}
+plot_boundaries(da_results$purgatoire, "Purgatoire River")
+```
+
+```{r purgatoire_table}
+basin_summary_table(da_results$purgatoire)
+```
+
+::: {.vignette-note}
+- Boundary sources diverge in the flat terrain along the western and
+  southern margins of the basin where the drainage divide is poorly
+  defined.
+- Traditional delineation methods assigned a noncontributing area
+  adjacent to the basin as part of the Purgatoire drainage; the WBD
+  placed that area in the neighboring hydrologic unit to the west.
+- The resulting differences propagate to all downstream gages on the
+  Purgatoire and Arkansas Rivers.
+:::
+
+#### Stream Network
+
+```{r purgatoire_network}
+plot_network(da_results$purgatoire, flowlines$purgatoire,
+  "Purgatoire River")
+```
+
+::: {.vignette-note}
+- The upper basin drains steep terrain along the Sangre de Cristo
+  Range with predominantly perennial flow.
+- The lower basin crosses the high plains where intermittent and
+  ephemeral channels are more common and terrain gradients weaken.
+- The transition from montane headwaters to plains illustrates why
+  the divide becomes sensitive in the lower-gradient portions of the
+  basin.
+:::
+
+#### HUC12 Non-Contributing Area
+
+```{r purgatoire_choropleth, fig.height = 8}
+plot_choropleth(da_results$purgatoire, flowlines$purgatoire,
+  "Purgatoire River")
+```
+
+::: {.vignette-note}
+- HUC12 units in the flat southern and western margins of the basin
+  carry noncontributing area designations.
+- The choropleth shows the spatial pattern of boundary sensitivity:
+  where terrain gradients are weak, the WBD's placement of the divide
+  determines which land is included or excluded.
+:::
+
+## Outlet Catchment Splitting
+
+When a gage sits partway along a flowline rather than at its outlet,
+the gage's outlet catchment is only partly upstream of the gage. The
+downstream portion does not contribute to the gage and should be
+excluded. A similar situation arises at HUC12 outlets: the HUC
+boundary cuts through a catchment and the portion upstream of the
+pour point overlaps with the HUC area that is already counted.
+
+`get_drainage_area_estimates()` handles both splits automatically.
+The `outlet_split_threshold_m` parameter (default 100 m) controls the
+minimum gage-to-outlet distance before the split is performed.
+
+This example uses a small Texas gage (USGS-08110075, Davidson Creek)
+where the gage falls roughly two thirds of the way up its flowline.
+
+```{r outlet_split_prep, include = FALSE}
+da_dav <- da_results$davidson
+fl_dav <- flowlines$davidson
+has_davidson <- !is.null(da_dav) && !is.null(fl_dav) &&
+  !is.null(da_dav$outlet_split_catchment)
+
+if(has_davidson) {
+  target_crs <- st_crs(3857)
+
+  gage_pt <- get_gage_pt(da_dav, target_crs)
+  gage_comid <- as.integer(da_dav$start_feature$comid)
+
+  # all catchments in the gap between the gage and HUC12 outlets
+  extra_cat <- st_transform(da_dav$extra_catchments, target_crs)
+  all_cat <- st_transform(da_dav$all_catchments, target_crs)
+  fl_sf <- st_transform(fl_dav, target_crs)
+  hu12_pts <- st_transform(da_dav$hu12_outlet, target_crs)
+
+  # HUC12 split catchment (split at the HUC12 pour point)
+  hu12_sc <- st_transform(da_dav$split_catchment, target_crs)
+  hu12_catch_full <- hu12_sc[hu12_sc$id == "catchment", ]
+  hu12_catch_split <- hu12_sc[hu12_sc$id == "splitCatchment", ]
+  hu12_comid <- as.integer(na.omit(hu12_sc$catchmentID))
+
+  # gage outlet split catchment (split at the gage point)
+  osc <- st_transform(da_dav$outlet_split_catchment, target_crs)
+  osc_full <- osc[osc$id == "catchment", ]
+  osc_split <- osc[osc$id == "splitCatchment", ]
+
+  # flowlines in the gap area
+  gap_comids <- c(gage_comid, extra_cat$featureid, hu12_comid)
+  gap_fl <- fl_sf[fl_sf$comid %in% gap_comids, ]
+
+  # focus bbox: union of gap catchments + split catchments + gage
+  focus_geom <- st_union(c(
+    st_geometry(extra_cat),
+    st_geometry(hu12_catch_full),
+    st_geometry(osc_full),
+    st_geometry(gage_pt)
+  ))
+  focus_bb <- st_bbox(focus_geom)
+  pad_x <- (focus_bb["xmax"] - focus_bb["xmin"]) * 0.05
+  pad_y <- (focus_bb["ymax"] - focus_bb["ymin"]) * 0.05
+  focus_xlim <- c(focus_bb["xmin"] - pad_x, focus_bb["xmax"] + pad_x)
+  focus_ylim <- c(focus_bb["ymin"] - pad_y, focus_bb["ymax"] + pad_y)
+}
+```
+
+#### Overview: Gage and HUC Outlet Positions
+
+The gage (triangle) and the nearest HUC12 outlet (x) sit on
+different catchments with a gap between them. The gap catchments
+(light blue) and split catchment boundaries define the area between
+the gage and the HUC12 boundary.
+
+```{r outlet_split_overview, fig.height = 10, eval = has_davidson}
+p_overview <- ggplot() |>
+  add_topo(focus_geom) +
+  # all catchments as light underlay
+  geom_sf(data = all_cat, fill = "gray30", color = NA, alpha = 0.12,
+    inherit.aes = FALSE) +
+  # gap catchments
+  geom_sf(data = extra_cat, fill = "lightblue", color = "steelblue",
+    linewidth = 0.3, alpha = 0.5, inherit.aes = FALSE) +
+  # HUC12 split catchment — full outline
+  geom_sf(data = hu12_catch_full, fill = NA, color = "gray10",
+    linewidth = 0.6, linetype = "dashed", inherit.aes = FALSE) +
+  # gage outlet catchment — full outline
+  geom_sf(data = osc_full, fill = NA, color = "gray10",
+    linewidth = 0.6, inherit.aes = FALSE) +
+  # flowlines in the gap
+  geom_sf(data = gap_fl, color = "steelblue", linewidth = 0.5,
+    inherit.aes = FALSE) +
+  # HUC12 outlet
+  geom_sf(data = hu12_pts[hu12_pts$comid == hu12_comid, ],
+    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    inherit.aes = FALSE) +
+  # gage point
+  geom_sf(data = gage_pt, shape = 17, color = "black",
+    fill = "white", size = 5, stroke = 1.4,
+    inherit.aes = FALSE) +
+  coord_sf(crs = target_crs, xlim = focus_xlim, ylim = focus_ylim,
+    expand = FALSE) +
+  labs(title = paste0("Davidson Creek (USGS-08110075)",
+    " -- Gage and HUC12 Outlet Positions")) +
+  map_theme()
+print(p_overview)
+```
+
+::: {.vignette-note}
+- The gage (triangle) and the HUC12 pour point (x) sit on different
+  catchments with several gap catchments (light blue) between them.
+- The dashed outline marks the catchment where the HUC12 pour point
+  falls; the solid outline marks the gage's catchment.
+- Both the gage and the HUC12 outlet sit partway along their
+  respective flowlines, so splitting is needed at both locations.
+:::
+
+#### HUC Outlet Detail
+
+The HUC12 split catchment is small enough that it is not visible in the
+overview. This view zooms to a 500 m square centered on the HUC12 outlet.
+
+```{r outlet_split_huc_zoom, fig.height = 10, eval = has_davidson}
+hu12_outlet_pt <- hu12_pts[hu12_pts$comid == hu12_comid, ]
+hu12_coords <- st_coordinates(hu12_outlet_pt)
+half_side <- 250 # meters in EPSG:3857
+zoom_xlim <- c(hu12_coords[1, "X"] - half_side,
+  hu12_coords[1, "X"] + half_side)
+zoom_ylim <- c(hu12_coords[1, "Y"] - half_side,
+  hu12_coords[1, "Y"] + half_side)
+
+p_huc_zoom <- ggplot() |>
+  add_topo(hu12_outlet_pt) +
+  # gap catchments
+  geom_sf(data = extra_cat, fill = "lightblue", color = "steelblue",
+    linewidth = 0.3, alpha = 0.5, inherit.aes = FALSE) +
+  # HUC12 split catchment — full outline
+  geom_sf(data = hu12_catch_full, fill = NA, color = "gray10",
+    linewidth = 0.6, linetype = "dashed", inherit.aes = FALSE) +
+  # HUC12 split portion
+  geom_sf(data = hu12_catch_split, fill = "orange", color = "gray10",
+    linewidth = 0.4, alpha = 0.5, inherit.aes = FALSE) +
+  # flowlines in the gap
+  geom_sf(data = gap_fl, color = "steelblue", linewidth = 0.5,
+    inherit.aes = FALSE) +
+  # HUC12 outlet
+  geom_sf(data = hu12_outlet_pt,
+    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    inherit.aes = FALSE) +
+  coord_sf(crs = target_crs, xlim = zoom_xlim, ylim = zoom_ylim,
+    expand = FALSE) +
+  labs(title = paste0("Davidson Creek -- HUC12 Outlet Detail",
+    " (500 m view)")) +
+  map_theme()
+print(p_huc_zoom)
+```
+
+::: {.vignette-note}
+- The HUC12 outlet (x) and its split catchment (orange fill, dashed
+  outline) are visible at this scale.
+- The split catchment upstream of the HUC outlet is excluded from the
+  gap area because it overlaps with the HUC12 drainage area.
+:::
+
+#### Split Catchments: Upstream and Downstream Portions
+
+Two catchments are split. At the gage, the downstream portion is
+removed because it does not contribute flow to the gage. At the
+HUC12 outlet, the upstream portion is removed because it overlaps
+with the HUC12 area already counted in the drainage area estimate.
+
+```{r outlet_split_detail, fig.height = 10, eval = has_davidson}
+# Build an sf with labeled polygons for a single legend
+split_layers <- rbind(
+  st_sf(
+    role = "Upstream of gage (included)",
+    geometry = st_geometry(osc_split)),
+  st_sf(
+    role = "Downstream of gage (excluded)",
+    geometry = st_difference(
+      st_geometry(osc_full), st_geometry(osc_split))),
+  st_sf(
+    role = "Upstream of HUC outlet (excluded, overlaps HUC)",
+    geometry = st_geometry(hu12_catch_split)),
+  st_sf(
+    role = "Downstream of HUC outlet (included as local area)",
+    geometry = st_difference(
+      st_geometry(hu12_catch_full), st_geometry(hu12_catch_split)))
+)
+
+split_colors <- c(
+  "Upstream of gage (included)" = "#4DAF4A",
+  "Downstream of gage (excluded)" = "#E41A1C",
+  "Upstream of HUC outlet (excluded, overlaps HUC)" = "#FF7F00",
+  "Downstream of HUC outlet (included as local area)" = "#377EB8"
+)
+
+split_layers$role <- factor(split_layers$role,
+  levels = names(split_colors))
+
+p_split <- ggplot() |>
+  add_topo(focus_geom) +
+  # gap catchments as underlay
+  geom_sf(data = extra_cat, fill = "gray80", color = "gray60",
+    linewidth = 0.2, alpha = 0.3, inherit.aes = FALSE) +
+  # split polygons with role-based fill
+  geom_sf(data = split_layers,
+    aes(fill = role), color = "gray20", linewidth = 0.4,
+    alpha = 0.6, inherit.aes = FALSE) +
+  scale_fill_manual(values = split_colors, name = NULL) +
+  # flowlines
+  geom_sf(data = gap_fl, color = "steelblue", linewidth = 0.5,
+    inherit.aes = FALSE) +
+  # HUC12 outlet
+  geom_sf(data = hu12_pts[hu12_pts$comid == hu12_comid, ],
+    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    inherit.aes = FALSE) +
+  # gage
+  geom_sf(data = gage_pt, shape = 17, color = "black",
+    fill = "white", size = 5, stroke = 1.4,
+    inherit.aes = FALSE) +
+  coord_sf(crs = target_crs, xlim = focus_xlim, ylim = focus_ylim,
+    expand = FALSE) +
+  labs(title = paste0("Davidson Creek -- Split Catchment Roles"),
+    subtitle = paste0(
+      "Flowline measure at gage: ",
+      round(da_dav$outlet_flowline_measure, 1),
+      "; downstream removed: ",
+      round(osc_full$dasqkm - osc_split$dasqkm, 2), " km\u00B2")) +
+  map_theme() +
+  guides(fill = guide_legend(ncol = 1))
+print(p_split)
+```
+
+::: {.vignette-note}
+- **Green**: the portion of the gage's catchment upstream of the gage —
+  this area is included in the drainage area estimate.
+- **Red**: the portion downstream of the gage — excluded because it
+  does not contribute flow to the gage.
+- **Orange**: the portion of the HUC12 outlet catchment upstream of the
+  pour point — excluded because this area is already counted as part
+  of the HUC12 drainage area.
+- **Blue**: the portion downstream of the HUC12 outlet — included as
+  local area in the gap between the HUC boundary and the gage.
+- The `outlet_split_threshold_m` parameter (default 100 m) controls
+  whether the gage split is performed. If the gage is within the
+  threshold distance of the catchment outlet, no split occurs.
+:::
+
+```{r teardown, include = FALSE}
+options(oldoption)
+```

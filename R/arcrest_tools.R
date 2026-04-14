@@ -197,10 +197,10 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
         out <- bind_rows(unify_types(out))
 
         if("id3dhp" %in% names(out)) {
-          out <- check_valid(out[!duplicated(out[["id3dhp"]]), ],
+          out <- hydroloom::check_valid(out[!duplicated(out[["id3dhp"]]), ],
                              out_prj = t_srs)
         } else {
-          out <- check_valid(out, out_prj = t_srs)
+          out <- hydroloom::check_valid(out, out_prj = t_srs)
         }
 
       } else {

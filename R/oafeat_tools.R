@@ -22,12 +22,19 @@
 #' Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.
 #' @param buffer numeric. The amount (in meters) to buffer a POINT AOI by for an
 #' extended search. Default = 0.5
-#' @return a simple features (sf) object
+#' @param properties character vector. Column names to return. When NULL (default),
+#'   all columns are returned.
+#' @param skip_geometry logical. If TRUE, omit geometry from the response and
+#'   return a plain data.frame. Default FALSE.
+#' @return a simple features (sf) object, or a data.frame when
+#'   \code{skip_geometry = TRUE}
 #' @keywords internal
 query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
                               type = NULL, filter = NULL,
                               t_srs = NULL,
-                              buffer = 0.5) {
+                              buffer = 0.5,
+                              properties = NULL,
+                              skip_geometry = FALSE) {
 
   base <- get("usgs_water_root", envir = nhdplusTools_env)
 
@@ -109,9 +116,19 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
     ids <- stats::setNames(list(ids), here$ids)
   }
 
-  out <- get_oafeat(base, AOI = AOI, type = type, ids = ids, filter = filter, t_srs = t_srs, buffer = buffer, status = FALSE)
+  out <- get_oafeat(base, AOI = AOI, type = type, ids = ids, filter = filter,
+                     t_srs = t_srs, buffer = buffer, status = FALSE,
+                     properties = properties, skip_geometry = skip_geometry)
 
-  out <- check_valid(out)
+  if(skip_geometry) {
+    if(any(is.null(out), nrow(out) == 0)) {
+      warning(paste("No", here$user_call, "features found"), call. = FALSE)
+      return(NULL)
+    }
+    return(out)
+  }
+
+  out <- hydroloom::check_valid(out)
 
   if(any(is.null(out), nrow(out) == 0)) {
 
@@ -200,7 +217,9 @@ get_oafeat <- function(base,
                        filter = NULL,
                        t_srs = NULL,
                        buffer = 0.5,
-                       status = TRUE) {
+                       status = TRUE,
+                       properties = NULL,
+                       skip_geometry = FALSE) {
 
   avail <- discover_oafeat(base)
 
@@ -235,7 +254,8 @@ get_oafeat <- function(base,
 
     if(!inherits(AOI, "bbox") &&
        grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
-      AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m")) |>
+      AOI <- st_transform(AOI, 5070) |>
+        sf::st_buffer(units::as_units(buffer, "m")) |>
         st_transform(4326) |>
         st_bbox()
     } else if(!inherits(AOI, "bbox")) {
@@ -260,7 +280,6 @@ get_oafeat <- function(base,
       base_call <- paste0(base_call, paste0("?", id_attribute, "=", ids))
     } else {
       post_body <- list(ids = ids, id_attribute = id_attribute)
-      limit <- 50
     }
 
   }
@@ -269,7 +288,20 @@ get_oafeat <- function(base,
     base_call <- paste0(add_sep(base_call), "filter=", filter)
   }
 
+  if(skip_geometry)
+    base_call <- paste0(add_sep(base_call), "skipGeometry=true")
+
+  if(!is.null(properties))
+    base_call <- paste0(add_sep(base_call), "properties=",
+                        paste(properties, collapse = ","))
+
   out <- get_features_paging(base_call, post_body, limit = limit, status = status)
+
+  if(skip_geometry) {
+    if(inherits(out, "sf"))
+      out <- sf::st_drop_geometry(out)
+    return(out)
+  }
 
   if(!is.null(t_srs)) out <- st_transform(out, t_srs)
 
@@ -325,71 +357,69 @@ make_request <- function(req, body = "") {
 
 get_features_paging <- function(base_call, ids_list = list(), limit = 1000, status = TRUE) {
 
-  if(!identical(ids_list, list())) {
+  use_ids <- !identical(ids_list, list())
+
+  if(use_ids) {
     # we will page through ids
     ids <- split_equal_size(ids_list$ids, limit)
   }
 
   base_call <- add_sep(base_call)
 
+  if(status & interactive()) message("Starting download of first set of features.")
 
-  post_body <- ""
-
+  out <- list()
+  id_batch <- 1
   offset <- 0
 
   keep_going <- TRUE
 
-  if(status & interactive()) message("Starting download of first set of features.")
-
-  out <- rep(list(list()), 1e6)
-  i <- 1
-
   while(keep_going) {
 
-    if(!identical(ids_list, list())) {
+    if(use_ids) {
 
-      req <- base_call
-      post_body <- id_filter_cql(ids[[i]], ids_list$id_attribute)
-      req <- paste0(base_call, "limit=", limit)
+      post_body <- id_filter_cql(ids[[id_batch]], ids_list$id_attribute)
+      req <- paste0(base_call, "limit=", limit, "&offset=", offset)
 
     } else {
 
+      post_body <- ""
       req <- paste0(base_call, "limit=", limit, "&offset=", offset)
 
     }
 
-    out[[i]] <- make_request(req, post_body)
+    page <- make_request(req, post_body)
 
-    if(!is.null(out[[i]]) & inherits(out[[i]], "response")) {
-      warning("Can't continue, got unexpected response: ", print(out[[i]]))
-      out[[i]] <- NULL
+    if(!is.null(page) & inherits(page, "response")) {
+      warning("Can't continue, got unexpected response: ", print(page))
+      page <- NULL
     }
 
-    if(!is.null(out[[i]]) && inherits(out[[i]], "sf") & nrow(out[[i]]) != 0) {
-      offset <- offset + limit
-    }
-
-    if(nrow(out[[i]]) == 0 & !exists("ids")) keep_going <- FALSE
-
-    if(!inherits(out[[i]], "sf")) {
+    if(!inherits(page, "sf")) {
       warning("Something went wrong requesting data.")
       keep_going <- FALSE
+      next
     }
 
-    if(status & keep_going) {
-      if(identical(ids_list, list())) {
-        message("Starting next download from ", offset, ".")
+    if(nrow(page) > 0) out <- c(out, list(page))
+
+    if(nrow(page) < limit) {
+      # this batch is exhausted
+      if(use_ids && id_batch < length(ids)) {
+        id_batch <- id_batch + 1
+        offset <- 0
+        if(status) message("starting next download from batch ", id_batch,
+          " of ", length(ids), ".")
       } else {
-        message("starting next download from ", i * limit, ".")
+        keep_going <- FALSE
       }
+    } else {
+      offset <- offset + limit
+      if(status) message("Starting next download from offset ", offset, ".")
     }
-
-    if(exists("ids") > 0 && i == length(ids)) keep_going <- FALSE
-
-    i <- i + 1
   }
 
-  out <- out[1:(i - 1)]
+  if(length(out) == 0) return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
 
   sf::st_sf(dplyr::bind_rows(unify_types(out)))
 }
@@ -435,4 +465,33 @@ unify_types <- function(out) {
     out <- out[rows > 0]
 
   out
+}
+
+#' Get HUC12 features filtered by HUC parent IDs
+#'
+#' Queries the nhdplusv2-huc12 OGC API collection for all HUC12 polygons
+#' belonging to the specified HUC08 or HUC10 units.
+#'
+#' @param huc_ids character vector of 8-digit HUC08 or 10-digit HUC10 IDs.
+#'   All IDs must be the same length (all 8-digit or all 10-digit).
+#' @param t_srs target spatial reference system (optional)
+#' @return sf data.frame of HUC12 features
+#' @noRd
+get_huc12_by_huc <- function(huc_ids, t_srs = NULL) {
+  if(length(huc_ids) == 0)
+    return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
+
+  base <- get("usgs_water_root", envir = nhdplusTools_env)
+
+  n <- unique(nchar(huc_ids))
+  if(length(n) != 1 || !n %in% c(8, 10))
+    stop("huc_ids must be all 8-digit (HUC08) or all 10-digit (HUC10)")
+
+  id_name <- if(n == 8) "huc_8" else "huc_10"
+
+  message("  Fetching HUC12s for ", length(huc_ids), " ",
+    id_name, " IDs...")
+  ids_list <- stats::setNames(list(huc_ids), id_name)
+  get_oafeat(base, AOI = NULL, type = "nhdplusv2-huc12",
+    ids = ids_list, t_srs = t_srs, status = FALSE)
 }

@@ -44,7 +44,9 @@ get_nhdplus <- function(AOI = NULL,
                         comid = NULL, nwis = NULL,
                         realization = "flowline",
                         streamorder = NULL,
-                        t_srs = NULL){
+                        t_srs = NULL,
+                        properties = NULL,
+                        skip_geometry = FALSE){
 
 
   if(!is.null(AOI)){
@@ -92,24 +94,33 @@ get_nhdplus <- function(AOI = NULL,
   if("catchment" %in% realization){
     geoms$catchment   <- query_usgs_oafeat(AOI = AOI, ids = comid,
                                               type = "catchment",
-                                              t_srs = t_srs)
+                                              t_srs = t_srs,
+                                              properties = properties,
+                                              skip_geometry = skip_geometry)
   }
 
   if(any(c("flowline", "outlet") %in% realization)){
     geoms$flowline    <- query_usgs_oafeat(AOI = AOI, ids = comid, type = 'nhd',
                                            filter = streamorder_filter_cql(streamorder),
-                                           t_srs = t_srs)
+                                           t_srs = t_srs,
+                                           properties = properties,
+                                           skip_geometry = skip_geometry)
 
     if("outlet" %in% realization){
-      geoms$outlet          <- geoms$flowline
-      geoms$outlet$geometry <-
-        tryCatch({st_geometry(
-          get_node(geoms$outlet,
-                   position = "end")
-        )}, error = function(e) {
-          warning(paste("error getting outlet node:", e))
-          NULL
-        })
+      if(skip_geometry) {
+        warning("outlet realization requires geometry, ignoring skip_geometry",
+          call. = FALSE)
+      } else {
+        geoms$outlet          <- geoms$flowline
+        geoms$outlet$geometry <-
+          tryCatch({st_geometry(
+            get_node(geoms$outlet,
+                     position = "end")
+          )}, error = function(e) {
+            warning(paste("error getting outlet node:", e))
+            NULL
+          })
+      }
     }
   }
 

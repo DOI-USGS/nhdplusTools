@@ -10,7 +10,9 @@ query_usgs_oafeat(
   type = NULL,
   filter = NULL,
   t_srs = NULL,
-  buffer = 0.5
+  buffer = 0.5,
+  properties = NULL,
+  skip_geometry = FALSE
 )
 }
 \arguments{
@@ -32,9 +34,16 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 
 \item{buffer}{numeric. The amount (in meters) to buffer a POINT AOI by for an
 extended search. Default = 0.5}
+
+\item{properties}{character vector. Column names to return. When NULL (default),
+all columns are returned.}
+
+\item{skip_geometry}{logical. If TRUE, omit geometry from the response and
+return a plain data.frame. Default FALSE.}
 }
 \value{
-a simple features (sf) object
+a simple features (sf) object, or a data.frame when
+  \code{skip_geometry = TRUE}
 }
 \description{
 Query the USGS Water OGC API for spatial data by location,

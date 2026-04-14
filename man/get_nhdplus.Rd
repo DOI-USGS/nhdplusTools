@@ -10,7 +10,9 @@ get_nhdplus(
   nwis = NULL,
   realization = "flowline",
   streamorder = NULL,
-  t_srs = NULL
+  t_srs = NULL,
+  properties = NULL,
+  skip_geometry = FALSE
 )
 }
 \arguments{
@@ -35,6 +37,12 @@ Only usable with AOI and flowline realizations.}
 \item{t_srs}{character (PROJ string or EPSG code) or numeric (EPSG code).
 A user specified - target -Spatial Reference System (SRS/CRS) for returned objects.
 Will default to the CRS of the input AOI if provided, and to 4326 for ID requests.}
+
+\item{properties}{character vector. Column names to return. When NULL (default),
+all columns are returned.}
+
+\item{skip_geometry}{logical. If TRUE, omit geometry from the response and
+return a plain data.frame. Default FALSE.}
 }
 \value{
 sfc a single, or list, of simple feature objects

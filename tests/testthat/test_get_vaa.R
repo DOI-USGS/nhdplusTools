@@ -92,11 +92,17 @@ test_that("streamcat catchment chars", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
   test_comids <- walker_catchment$FEATUREID[1:2]
 
-  meta <- get_characteristics_metadata(source = "streamcat")
+  meta <- suppressWarnings(
+    get_characteristics_metadata(source = "streamcat")
+  )
+  if(is.null(meta)) skip("StreamCat API unavailable")
   expect_true(inherits(meta, "data.frame"))
   expect_true(nrow(meta) > 100)
 
-  meta_search <- get_characteristics_metadata("fert", source = "streamcat")
+  meta_search <- suppressWarnings(
+    get_characteristics_metadata("fert", source = "streamcat")
+  )
+  if(is.null(meta_search)) skip("StreamCat API unavailable")
   expect_true(nrow(meta_search) > 0)
 
   expected_names <- c("characteristic_id", "comid",

@@ -52,7 +52,8 @@ if(inherits(basin, "sf") & inherits(basin2, "sf")) {
 length(st_coordinates(basin))
 length(st_coordinates(basin2))
 
-plot(st_geometry(st_buffer(site, units::set_units(3000, "m"))), border = NA)
+plot(st_geometry(st_buffer(st_transform(site, 5070),
+                          units::set_units(3000, "m"))), border = NA)
 
 plot(st_geometry(site), add = TRUE)
 plot(st_geometry(basin2), add = TRUE)

@@ -111,3 +111,14 @@ reference:
       - '`get_terminal`'
       - '`add_plus_network_attributes`'
       - '`get_pfaf`'
+
+articles:
+  - title: Vignettes
+    contents:
+      - nhdplusTools
+      - get_data_overview
+      - plot_nhdplus
+      - indexing
+      - nhdplushr
+      - get_3dhp_data
+      - drainage_area_estimation

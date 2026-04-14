@@ -108,7 +108,8 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' length(st_coordinates(basin))
 #' length(st_coordinates(basin2))
 #'
-#' plot(st_geometry(st_buffer(site, units::set_units(3000, "m"))), border = NA)
+#' plot(st_geometry(st_buffer(st_transform(site, 5070),
+#'                           units::set_units(3000, "m"))), border = NA)
 #'
 #' plot(st_geometry(site), add = TRUE)
 #' plot(st_geometry(basin2), add = TRUE)
@@ -180,7 +181,13 @@ get_nldi_feature <- function(nldi_feature) {
 #'
 #' if(inherits(index, "sf")) {
 #'
-#' plot_nhdplus(bbox = sf::st_bbox(sf::st_buffer(index[1,], units::set_units(1000, "m"))))
+#' plot_nhdplus(
+#'   bbox = sf::st_bbox(
+#'     sf::st_buffer(
+#'       sf::st_transform(index[1,], 5070), units::set_units(1000, "m")
+#'       )
+#'     )
+#' )
 #' plot(sf::st_geometry(sf::st_transform(index, 3857)), add = TRUE)
 #'
 #' }

@@ -344,3 +344,40 @@ test_that("get_nwis", {
   expect_warning(get_nwis(AOI = sf::st_buffer(sf::st_transform(pt2,5070), 1)))
 
 })
+
+test_that("get_huc12_by_huc", {
+  # input validation
+  expect_error(nhdplusTools:::get_huc12_by_huc(c("12050001", "1205000101")),
+               "huc_ids must be all 8-digit")
+  expect_error(nhdplusTools:::get_huc12_by_huc("120500"),
+               "huc_ids must be all 8-digit")
+
+  skip_on_cran()
+
+  # HUC10 query
+  h10 <- nhdplusTools:::get_huc12_by_huc("1701010103")
+  expect_s3_class(h10, "sf")
+  expect_true(nrow(h10) > 0)
+  expect_true(all(substr(h10$huc_12, 1, 10) == "1701010103"))
+
+  # HUC08 query
+  h08 <- nhdplusTools:::get_huc12_by_huc("17010101")
+  expect_s3_class(h08, "sf")
+  expect_true(nrow(h08) > nrow(h10))
+  expect_true(all(substr(h08$huc_12, 1, 8) == "17010101"))
+})
+
+test_that("get_huc12_by_huc pages within batch", {
+  skip_on_cran()
+
+  # two HUC10s together, exercising POST paging
+  h10_multi <- nhdplusTools:::get_huc12_by_huc(c("1701010103", "1701010104"))
+  expect_s3_class(h10_multi, "sf")
+
+  h10_a <- nhdplusTools:::get_huc12_by_huc("1701010103")
+  h10_b <- nhdplusTools:::get_huc12_by_huc("1701010104")
+
+  expect_equal(nrow(h10_multi), nrow(h10_a) + nrow(h10_b))
+  expect_true(all(h10_a$huc_12 %in% h10_multi$huc_12))
+  expect_true(all(h10_b$huc_12 %in% h10_multi$huc_12))
+})

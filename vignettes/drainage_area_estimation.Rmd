@@ -271,6 +271,38 @@ flowlines <- Map(fetch_flowlines, names(da_results), da_results)
 flowlines <- Filter(Negate(is.null), flowlines)
 ```
 
+```{r fetch_nwis_da, message = TRUE}
+# Fetch NWIS drainage area for sites with an nwissite featureSource
+nwis_ids <- vapply(sites, function(s) {
+  if(is.list(s) && identical(s$featureSource, "nwissite"))
+    s$featureID else NA_character_
+}, character(1))
+nwis_ids <- nwis_ids[!is.na(nwis_ids)]
+
+nwis_da <- if(length(nwis_ids) > 0) {
+  tryCatch({
+    ml <- dataRetrieval::read_waterdata_monitoring_location(
+      unname(nwis_ids))
+    # Match returned rows back to site names by monitoring_location_id
+    idx <- match(nwis_ids, ml$monitoring_location_id)
+    # drainage_area and contributing_drainage_area are in sq miles
+    data.frame(
+      name = names(nwis_ids),
+      nwis_da_sqmi = ml$drainage_area[idx],
+      nwis_contrib_da_sqmi = ml$contributing_drainage_area[idx],
+      nwis_da_sqkm = ml$drainage_area[idx] * 2.58999,
+      nwis_contrib_da_sqkm = ml$contributing_drainage_area[idx] *
+        2.58999,
+      stringsAsFactors = FALSE
+    )
+  }, error = function(e) {
+    warning("NWIS site fetch failed: ", conditionMessage(e),
+      call. = FALSE)
+    NULL
+  })
+} else NULL
+```
+
 ## Return Structure
 
 Each result is a list with scalar drainage area estimates and spatial
@@ -311,9 +343,25 @@ summary_df <- data.frame(
     numeric(1))
 )
 
+# Add NWIS drainage areas where available
+if(!is.null(nwis_da)) {
+  summary_df$nwis_da <- ifelse(
+    names(da_results) %in% nwis_da$name,
+    nwis_da$nwis_da_sqkm[match(names(da_results), nwis_da$name)],
+    NA_real_)
+  summary_df$nwis_contrib_da <- ifelse(
+    names(da_results) %in% nwis_da$name,
+    nwis_da$nwis_contrib_da_sqkm[match(names(da_results), nwis_da$name)],
+    NA_real_)
+} else {
+  summary_df$nwis_da <- NA_real_
+  summary_df$nwis_contrib_da <- NA_real_
+}
+
 knitr::kable(summary_df, digits = 1,
   col.names = c("Basin", "Network DA", "HUC12 DA",
-    "Contributing DA", "HUC10 DA", "HUC08 DA", "NHDPlusHR DA"),
+    "Contributing DA", "HUC10 DA", "HUC08 DA", "NHDPlusHR DA",
+    "NWIS DA", "NWIS Contributing DA"),
   caption = "Drainage area estimates (sq km) by basin and method")
 ```
 
@@ -590,13 +638,16 @@ plot_boundaries <- function(da, basin_label) {
       values = ltypes,
       name = "DA boundary") +
     geom_sf(data = pts, aes(shape = label, size = label,
-      color = label),
+      color = label, alpha = label),
       fill = "white", stroke = 1.4, inherit.aes = FALSE) +
     scale_shape_manual(
       values = c("Stream gage / outlet" = 17, "HUC12 outlet" = 4),
       name = NULL) +
     scale_size_manual(
-      values = c("Stream gage / outlet" = 5, "HUC12 outlet" = 3),
+      values = c("Stream gage / outlet" = 5, "HUC12 outlet" = 1),
+      name = NULL) +
+    scale_alpha_manual(
+      values = c("Stream gage / outlet" = 1, "HUC12 outlet" = 0.75),
       name = NULL) +
     scale_color_manual(
       values = c("Stream gage / outlet" = "black",
@@ -761,7 +812,7 @@ plot_choropleth <- function(da, fl, basin_label,
 }
 
 # Per-basin summary table
-basin_summary_table <- function(da) {
+basin_summary_table <- function(da, basin_name = NULL) {
   vals <- data.frame(
     source = c("Network", "HUC12", "HUC12 contributing",
       "HUC10", "HUC08", "NHDPlusHR"),
@@ -775,6 +826,15 @@ basin_summary_table <- function(da) {
         da$nhdplushr_network_dasqkm)
     )
   )
+  # Add NWIS rows if this basin has NWIS data
+  if(!is.null(nwis_da) && !is.null(basin_name) &&
+    basin_name %in% nwis_da$name) {
+    row <- nwis_da[nwis_da$name == basin_name, ]
+    vals <- rbind(vals, data.frame(
+      source = c("NWIS", "NWIS contributing"),
+      total_sqkm = c(row$nwis_da_sqkm, row$nwis_contrib_da_sqkm)
+    ))
+  }
   knitr::kable(vals, digits = 1,
     col.names = c("Source", "Area (sq km)"),
     caption = "Drainage area estimates by source")
@@ -795,7 +855,7 @@ plot_boundaries(da_results$french_broad, "French Broad")
 ```
 
 ```{r fb_table}
-basin_summary_table(da_results$french_broad)
+basin_summary_table(da_results$french_broad, "french_broad")
 ```
 
 ::: {.vignette-note}
@@ -848,7 +908,7 @@ plot_boundaries(da_results$brazos, "Brazos at Rosharon")
 ```
 
 ```{r bz_table}
-basin_summary_table(da_results$brazos)
+basin_summary_table(da_results$brazos, "brazos")
 ```
 
 ::: {.vignette-note}
@@ -903,7 +963,7 @@ plot_boundaries(da_results$james, "James River")
 ```
 
 ```{r jm_table}
-basin_summary_table(da_results$james)
+basin_summary_table(da_results$james, "james")
 ```
 
 ::: {.vignette-note}
@@ -952,7 +1012,7 @@ plot_boundaries(da_results$black_earth, "Black Earth Creek")
 ```
 
 ```{r be_table}
-basin_summary_table(da_results$black_earth)
+basin_summary_table(da_results$black_earth, "black_earth")
 ```
 
 ::: {.vignette-note}
@@ -1000,7 +1060,7 @@ plot_boundaries(da_results$malheur, "Malheur Lake")
 ```
 
 ```{r ml_table}
-basin_summary_table(da_results$malheur)
+basin_summary_table(da_results$malheur, "malheur")
 ```
 
 ::: {.vignette-note}
@@ -1058,7 +1118,7 @@ plot_boundaries(da_results$purgatoire, "Purgatoire River")
 ```
 
 ```{r purgatoire_table}
-basin_summary_table(da_results$purgatoire)
+basin_summary_table(da_results$purgatoire, "purgatoire")
 ```
 
 ::: {.vignette-note}
@@ -1195,7 +1255,7 @@ p_overview <- ggplot() |>
     inherit.aes = FALSE) +
   # HUC12 outlet
   geom_sf(data = hu12_pts[hu12_pts$comid == hu12_comid, ],
-    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    shape = 4, color = "darkred", size = 1, stroke = 0.6, alpha = 0.5,
     inherit.aes = FALSE) +
   # gage point
   geom_sf(data = gage_pt, shape = 17, color = "black",
@@ -1248,7 +1308,7 @@ p_huc_zoom <- ggplot() |>
     inherit.aes = FALSE) +
   # HUC12 outlet
   geom_sf(data = hu12_outlet_pt,
-    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    shape = 4, color = "darkred", size = 1, stroke = 0.6, alpha = 0.5,
     inherit.aes = FALSE) +
   coord_sf(crs = target_crs, xlim = zoom_xlim, ylim = zoom_ylim,
     expand = FALSE) +
@@ -1316,7 +1376,7 @@ p_split <- ggplot() |>
     inherit.aes = FALSE) +
   # HUC12 outlet
   geom_sf(data = hu12_pts[hu12_pts$comid == hu12_comid, ],
-    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    shape = 4, color = "darkred", size = 1, stroke = 0.6, alpha = 0.5,
     inherit.aes = FALSE) +
   # gage
   geom_sf(data = gage_pt, shape = 17, color = "black",

@@ -142,7 +142,7 @@ illustrates both splits using Davidson Creek (USGS-08110075).
 
 ### Running with Local Data
 
-Two parameters reduce dependence on web services:
+Three parameters reduce dependence on web services:
 
 - `local_navigation = TRUE` loads the NHDPlusV2 Value Added Attributes
   via `get_vaa()` for network navigation and flowline attribute
@@ -154,9 +154,27 @@ Two parameters reduce dependence on web services:
   instead of calling WBD web services. The table must include `huc_12`
   and `ncontrb_a` columns (case-insensitive).
 
-Using both together eliminates all HUC polygon web service calls and
-most flowline attribute calls, leaving only the NLDI (for HUC12 pour
-points and start feature resolution) and the split-catchment service.
+- `huc12_outlets` accepts either a path to a GPKG or a pre-loaded `sf`
+  data.frame of on-network HUC12 pour points. A national CONUS file is
+  available from Blodgett, D.L., 2022, *Mainstem Rivers of the
+  Conterminous United States* (ver. 3.0, February 2026): U.S.
+  Geological Survey data release,
+  [doi:10.5066/P13LNDDQ](https://doi.org/10.5066/P13LNDDQ) -- use the
+  `hu_points` layer of `finalwbd_outlets.gpkg`. The function renames
+  `COMID` and `FinalWBD_HUC12` to `comid` and `identifier` and filters
+  the table to the upstream network automatically. When supplied, no
+  NLDI `huc12pp` queries are issued.
+
+Using all three together eliminates all WBD and NLDI `huc12pp` calls
+and most flowline attribute calls. The offline call looks like:
+
+```r
+result <- get_drainage_area_estimates(
+  start, local_navigation = TRUE,
+  huc12_data = wbd_sf,
+  huc12_outlets = "path/to/finalwbd_outlets.gpkg"
+)
+```
 
 ### Web Services and Performance
 
@@ -164,8 +182,8 @@ By default the function contacts several web services. Each adds
 latency and is subject to rate limits or outages:
 
 - **NLDI** (`findNLDI`): resolves the start feature, navigates the
-  upstream network, and retrieves HUC12 pour points. Called in every
-  invocation.
+  upstream network, and retrieves HUC12 pour points. The `huc12pp`
+  query is skipped when `huc12_outlets` is supplied.
 
 - **NHDPlusV2 OGC API** (`get_nhdplus`): fetches flowline attributes,
   catchment geometries in the gap zone, and (when `catchments = TRUE`)

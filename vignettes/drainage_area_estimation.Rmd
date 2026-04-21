@@ -220,6 +220,18 @@ library(sf)
 data_dir <- nhdplusTools_data_dir()
 dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
 
+# On-network HUC12 pour points from the Mainstem Rivers data release
+# (Blodgett 2022, doi:10.5066/P13LNDDQ). Downloaded once and cached so
+# subsequent builds reuse the local file instead of hitting the NLDI.
+outlets_path <- file.path(data_dir, "finalwbd_outlets.gpkg")
+outlets_url <- paste0(
+  "https://prod-is-usgs-sb-prod-publish.s3.amazonaws.com/",
+  "65cbc0b3d34ef4b119cb37e9/finalwbd_outlets.gpkg")
+if(!file.exists(outlets_path)) {
+  message("Downloading HUC12 outlets GPKG to ", outlets_path)
+  download.file(outlets_url, outlets_path, mode = "wb")
+}
+
 # Define the six study sites
 sites <- list(
   black_earth = list(featureSource = "nwissite",
@@ -238,7 +250,8 @@ sites <- list(
 )
 
 # Skip NHDPlusHR for large basins to keep fetch times reasonable
-hr_basins <- c("black_earth", "french_broad", "davidson", "purgatoire")
+hr_basins <- c("black_earth", "french_broad", "davidson", "purgatoire",
+  "james")
 
 fetch_or_load <- function(name, start) {
   rds_path <- file.path(data_dir,
@@ -251,6 +264,7 @@ fetch_or_load <- function(name, start) {
   result <- tryCatch(
     get_drainage_area_estimates(start, catchments = TRUE,
       huc12_data = huc12,
+      huc12_outlets = outlets_path,
       nhdplushr = name %in% hr_basins),
     error = function(e) {
       warning("Failed for ", name, ": ", conditionMessage(e),
@@ -631,32 +645,34 @@ plot_boundaries <- function(da, basin_label) {
   hu12_pp <- if(!is.null(da$hu12_outlet))
     st_transform(da$hu12_outlet, target_crs) else NULL
 
-  # Combine point layers into one sf so a shape scale can label both
-  pts <- st_sf(
-    label = "Stream gage / outlet",
-    geometry = st_geometry(gage_pt)
-  )
-  if(!is.null(hu12_pp)) {
-    pts <- rbind(
-      pts,
-      st_sf(label = "HUC12 outlet",
-        geometry = st_geometry(hu12_pp))
-    )
-  }
+  # Separate layers so HUC12 outlets draw UNDER the basin boundaries
+  # while the gage point stays on top. Both still appear in one shape
+  # legend because the scales below enumerate both labels.
+  hu12_pts <- if(!is.null(hu12_pp))
+    st_sf(label = "HUC12 outlet", geometry = st_geometry(hu12_pp)) else NULL
+  gage_pts <- st_sf(label = "Stream gage / outlet",
+    geometry = st_geometry(gage_pt))
 
   fig_lims <- fit_bbox_to_fig(basin_poly)
 
   p <- ggplot() |>
     add_topo(basin_poly) |>
-    add_basin_underlay(basin_poly) +
+    add_basin_underlay(basin_poly)
+
+  if(!is.null(hu12_pts))
+    p <- p + geom_sf(data = hu12_pts,
+      aes(shape = label, size = label, color = label, alpha = label),
+      fill = "white", stroke = 1.4, inherit.aes = FALSE)
+
+  p <- p +
     geom_sf(data = bnd_sf, aes(linetype = source),
       fill = NA, color = "gray10", linewidth = 0.8,
       inherit.aes = FALSE) +
     scale_linetype_manual(
       values = ltypes,
       name = "DA boundary") +
-    geom_sf(data = pts, aes(shape = label, size = label,
-      color = label, alpha = label),
+    geom_sf(data = gage_pts,
+      aes(shape = label, size = label, color = label, alpha = label),
       fill = "white", stroke = 1.4, inherit.aes = FALSE) +
     scale_shape_manual(
       values = c("Stream gage / outlet" = 17, "HUC12 outlet" = 4),

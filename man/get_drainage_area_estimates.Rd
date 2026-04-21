@@ -10,6 +10,7 @@ get_drainage_area_estimates(
   nhdplushr = TRUE,
   local_navigation = FALSE,
   huc12_data = NULL,
+  huc12_outlets = NULL,
   HU_inclusion_override = NULL,
   outlet_split_threshold_m = 100
 )
@@ -34,6 +35,19 @@ use instead of fetching from web services. Column names are lowercased
 internally; must include at minimum \code{huc_12} and \code{ncontrb_a}
 (case-insensitive). When provided, all HUC12 polygon queries are resolved
 by subsetting this table. Default NULL (use web services).}
+
+\item{huc12_outlets}{sf data.frame, character path, or NULL. HUC12 pour
+points to use instead of the NLDI \code{huc12pp} service. Accepts either
+a preloaded sf data.frame or a path to a GPKG, which is read with
+\code{\link[sf]{read_sf}}. Columns \code{COMID} and \code{FinalWBD_HUC12}
+are renamed to \code{comid} and \code{identifier}; any other columns are
+preserved. When provided, the outlets are filtered to the upstream
+network COMID set and no NLDI \code{huc12pp} queries are issued. Pair
+with \code{local_navigation = TRUE} and \code{huc12_data} to run fully
+offline. National CONUS outlets GPKGs are available from Blodgett, D.L.,
+2022, Mainstem Rivers of the Conterminous United States (ver. 3.0,
+February 2026): U.S. Geological Survey data release,
+\doi{10.5066/P13LNDDQ} (layer \code{hu_points}). Default NULL.}
 
 \item{HU_inclusion_override}{character vector or NULL. Eight- or ten-digit
 HUC codes whose HUC12s should be kept even when the parent HUC outlet is

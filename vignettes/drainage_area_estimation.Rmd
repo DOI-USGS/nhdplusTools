@@ -142,7 +142,7 @@ illustrates both splits using Davidson Creek (USGS-08110075).
 
 ### Running with Local Data
 
-Two parameters reduce dependence on web services:
+Three parameters reduce dependence on web services:
 
 - `local_navigation = TRUE` loads the NHDPlusV2 Value Added Attributes
   via `get_vaa()` for network navigation and flowline attribute
@@ -154,9 +154,27 @@ Two parameters reduce dependence on web services:
   instead of calling WBD web services. The table must include `huc_12`
   and `ncontrb_a` columns (case-insensitive).
 
-Using both together eliminates all HUC polygon web service calls and
-most flowline attribute calls, leaving only the NLDI (for HUC12 pour
-points and start feature resolution) and the split-catchment service.
+- `huc12_outlets` accepts either a path to a GPKG or a pre-loaded `sf`
+  data.frame of on-network HUC12 pour points. A national CONUS file is
+  available from Blodgett, D.L., 2022, *Mainstem Rivers of the
+  Conterminous United States* (ver. 3.0, February 2026): U.S.
+  Geological Survey data release,
+  [doi:10.5066/P13LNDDQ](https://doi.org/10.5066/P13LNDDQ) -- use the
+  `hu_points` layer of `finalwbd_outlets.gpkg`. The function renames
+  `COMID` and `FinalWBD_HUC12` to `comid` and `identifier` and filters
+  the table to the upstream network automatically. When supplied, no
+  NLDI `huc12pp` queries are issued.
+
+Using all three together eliminates all WBD and NLDI `huc12pp` calls
+and most flowline attribute calls. The offline call looks like:
+
+```r
+result <- get_drainage_area_estimates(
+  start, local_navigation = TRUE,
+  huc12_data = wbd_sf,
+  huc12_outlets = "path/to/finalwbd_outlets.gpkg"
+)
+```
 
 ### Web Services and Performance
 
@@ -164,8 +182,8 @@ By default the function contacts several web services. Each adds
 latency and is subject to rate limits or outages:
 
 - **NLDI** (`findNLDI`): resolves the start feature, navigates the
-  upstream network, and retrieves HUC12 pour points. Called in every
-  invocation.
+  upstream network, and retrieves HUC12 pour points. The `huc12pp`
+  query is skipped when `huc12_outlets` is supplied.
 
 - **NHDPlusV2 OGC API** (`get_nhdplus`): fetches flowline attributes,
   catchment geometries in the gap zone, and (when `catchments = TRUE`)
@@ -202,6 +220,18 @@ library(sf)
 data_dir <- nhdplusTools_data_dir()
 dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
 
+# On-network HUC12 pour points from the Mainstem Rivers data release
+# (Blodgett 2022, doi:10.5066/P13LNDDQ). Downloaded once and cached so
+# subsequent builds reuse the local file instead of hitting the NLDI.
+outlets_path <- file.path(data_dir, "finalwbd_outlets.gpkg")
+outlets_url <- paste0(
+  "https://prod-is-usgs-sb-prod-publish.s3.amazonaws.com/",
+  "65cbc0b3d34ef4b119cb37e9/finalwbd_outlets.gpkg")
+if(!file.exists(outlets_path)) {
+  message("Downloading HUC12 outlets GPKG to ", outlets_path)
+  download.file(outlets_url, outlets_path, mode = "wb")
+}
+
 # Define the six study sites
 sites <- list(
   black_earth = list(featureSource = "nwissite",
@@ -220,7 +250,8 @@ sites <- list(
 )
 
 # Skip NHDPlusHR for large basins to keep fetch times reasonable
-hr_basins <- c("black_earth", "french_broad", "davidson", "purgatoire")
+hr_basins <- c("black_earth", "french_broad", "davidson", "purgatoire",
+  "james")
 
 fetch_or_load <- function(name, start) {
   rds_path <- file.path(data_dir,
@@ -233,6 +264,7 @@ fetch_or_load <- function(name, start) {
   result <- tryCatch(
     get_drainage_area_estimates(start, catchments = TRUE,
       huc12_data = huc12,
+      huc12_outlets = outlets_path,
       nhdplushr = name %in% hr_basins),
     error = function(e) {
       warning("Failed for ", name, ": ", conditionMessage(e),
@@ -269,6 +301,38 @@ fetch_flowlines <- function(name, da_result) {
 
 flowlines <- Map(fetch_flowlines, names(da_results), da_results)
 flowlines <- Filter(Negate(is.null), flowlines)
+```
+
+```{r fetch_nwis_da, message = TRUE}
+# Fetch NWIS drainage area for sites with an nwissite featureSource
+nwis_ids <- vapply(sites, function(s) {
+  if(is.list(s) && identical(s$featureSource, "nwissite"))
+    s$featureID else NA_character_
+}, character(1))
+nwis_ids <- nwis_ids[!is.na(nwis_ids)]
+
+nwis_da <- if(length(nwis_ids) > 0) {
+  tryCatch({
+    ml <- dataRetrieval::read_waterdata_monitoring_location(
+      unname(nwis_ids))
+    # Match returned rows back to site names by monitoring_location_id
+    idx <- match(nwis_ids, ml$monitoring_location_id)
+    # drainage_area and contributing_drainage_area are in sq miles
+    data.frame(
+      name = names(nwis_ids),
+      nwis_da_sqmi = ml$drainage_area[idx],
+      nwis_contrib_da_sqmi = ml$contributing_drainage_area[idx],
+      nwis_da_sqkm = ml$drainage_area[idx] * 2.58999,
+      nwis_contrib_da_sqkm = ml$contributing_drainage_area[idx] *
+        2.58999,
+      stringsAsFactors = FALSE
+    )
+  }, error = function(e) {
+    warning("NWIS site fetch failed: ", conditionMessage(e),
+      call. = FALSE)
+    NULL
+  })
+} else NULL
 ```
 
 ## Return Structure
@@ -311,9 +375,25 @@ summary_df <- data.frame(
     numeric(1))
 )
 
+# Add NWIS drainage areas where available
+if(!is.null(nwis_da)) {
+  summary_df$nwis_da <- ifelse(
+    names(da_results) %in% nwis_da$name,
+    nwis_da$nwis_da_sqkm[match(names(da_results), nwis_da$name)],
+    NA_real_)
+  summary_df$nwis_contrib_da <- ifelse(
+    names(da_results) %in% nwis_da$name,
+    nwis_da$nwis_contrib_da_sqkm[match(names(da_results), nwis_da$name)],
+    NA_real_)
+} else {
+  summary_df$nwis_da <- NA_real_
+  summary_df$nwis_contrib_da <- NA_real_
+}
+
 knitr::kable(summary_df, digits = 1,
   col.names = c("Basin", "Network DA", "HUC12 DA",
-    "Contributing DA", "HUC10 DA", "HUC08 DA", "NHDPlusHR DA"),
+    "Contributing DA", "HUC10 DA", "HUC08 DA", "NHDPlusHR DA",
+    "NWIS DA", "NWIS Contributing DA"),
   caption = "Drainage area estimates (sq km) by basin and method")
 ```
 
@@ -565,38 +645,43 @@ plot_boundaries <- function(da, basin_label) {
   hu12_pp <- if(!is.null(da$hu12_outlet))
     st_transform(da$hu12_outlet, target_crs) else NULL
 
-  # Combine point layers into one sf so a shape scale can label both
-  pts <- st_sf(
-    label = "Stream gage / outlet",
-    geometry = st_geometry(gage_pt)
-  )
-  if(!is.null(hu12_pp)) {
-    pts <- rbind(
-      pts,
-      st_sf(label = "HUC12 outlet",
-        geometry = st_geometry(hu12_pp))
-    )
-  }
+  # Separate layers so HUC12 outlets draw UNDER the basin boundaries
+  # while the gage point stays on top. Both still appear in one shape
+  # legend because the scales below enumerate both labels.
+  hu12_pts <- if(!is.null(hu12_pp))
+    st_sf(label = "HUC12 outlet", geometry = st_geometry(hu12_pp)) else NULL
+  gage_pts <- st_sf(label = "Stream gage / outlet",
+    geometry = st_geometry(gage_pt))
 
   fig_lims <- fit_bbox_to_fig(basin_poly)
 
   p <- ggplot() |>
     add_topo(basin_poly) |>
-    add_basin_underlay(basin_poly) +
+    add_basin_underlay(basin_poly)
+
+  if(!is.null(hu12_pts))
+    p <- p + geom_sf(data = hu12_pts,
+      aes(shape = label, size = label, color = label, alpha = label),
+      fill = "white", stroke = 1.4, inherit.aes = FALSE)
+
+  p <- p +
     geom_sf(data = bnd_sf, aes(linetype = source),
       fill = NA, color = "gray10", linewidth = 0.8,
       inherit.aes = FALSE) +
     scale_linetype_manual(
       values = ltypes,
       name = "DA boundary") +
-    geom_sf(data = pts, aes(shape = label, size = label,
-      color = label),
+    geom_sf(data = gage_pts,
+      aes(shape = label, size = label, color = label, alpha = label),
       fill = "white", stroke = 1.4, inherit.aes = FALSE) +
     scale_shape_manual(
       values = c("Stream gage / outlet" = 17, "HUC12 outlet" = 4),
       name = NULL) +
     scale_size_manual(
-      values = c("Stream gage / outlet" = 5, "HUC12 outlet" = 3),
+      values = c("Stream gage / outlet" = 5, "HUC12 outlet" = 1),
+      name = NULL) +
+    scale_alpha_manual(
+      values = c("Stream gage / outlet" = 1, "HUC12 outlet" = 0.75),
       name = NULL) +
     scale_color_manual(
       values = c("Stream gage / outlet" = "black",
@@ -761,7 +846,7 @@ plot_choropleth <- function(da, fl, basin_label,
 }
 
 # Per-basin summary table
-basin_summary_table <- function(da) {
+basin_summary_table <- function(da, basin_name = NULL) {
   vals <- data.frame(
     source = c("Network", "HUC12", "HUC12 contributing",
       "HUC10", "HUC08", "NHDPlusHR"),
@@ -775,6 +860,15 @@ basin_summary_table <- function(da) {
         da$nhdplushr_network_dasqkm)
     )
   )
+  # Add NWIS rows if this basin has NWIS data
+  if(!is.null(nwis_da) && !is.null(basin_name) &&
+    basin_name %in% nwis_da$name) {
+    row <- nwis_da[nwis_da$name == basin_name, ]
+    vals <- rbind(vals, data.frame(
+      source = c("NWIS", "NWIS contributing"),
+      total_sqkm = c(row$nwis_da_sqkm, row$nwis_contrib_da_sqkm)
+    ))
+  }
   knitr::kable(vals, digits = 1,
     col.names = c("Source", "Area (sq km)"),
     caption = "Drainage area estimates by source")
@@ -795,7 +889,7 @@ plot_boundaries(da_results$french_broad, "French Broad")
 ```
 
 ```{r fb_table}
-basin_summary_table(da_results$french_broad)
+basin_summary_table(da_results$french_broad, "french_broad")
 ```
 
 ::: {.vignette-note}
@@ -848,7 +942,7 @@ plot_boundaries(da_results$brazos, "Brazos at Rosharon")
 ```
 
 ```{r bz_table}
-basin_summary_table(da_results$brazos)
+basin_summary_table(da_results$brazos, "brazos")
 ```
 
 ::: {.vignette-note}
@@ -903,7 +997,7 @@ plot_boundaries(da_results$james, "James River")
 ```
 
 ```{r jm_table}
-basin_summary_table(da_results$james)
+basin_summary_table(da_results$james, "james")
 ```
 
 ::: {.vignette-note}
@@ -952,7 +1046,7 @@ plot_boundaries(da_results$black_earth, "Black Earth Creek")
 ```
 
 ```{r be_table}
-basin_summary_table(da_results$black_earth)
+basin_summary_table(da_results$black_earth, "black_earth")
 ```
 
 ::: {.vignette-note}
@@ -1000,7 +1094,7 @@ plot_boundaries(da_results$malheur, "Malheur Lake")
 ```
 
 ```{r ml_table}
-basin_summary_table(da_results$malheur)
+basin_summary_table(da_results$malheur, "malheur")
 ```
 
 ::: {.vignette-note}
@@ -1058,7 +1152,7 @@ plot_boundaries(da_results$purgatoire, "Purgatoire River")
 ```
 
 ```{r purgatoire_table}
-basin_summary_table(da_results$purgatoire)
+basin_summary_table(da_results$purgatoire, "purgatoire")
 ```
 
 ::: {.vignette-note}
@@ -1195,7 +1289,7 @@ p_overview <- ggplot() |>
     inherit.aes = FALSE) +
   # HUC12 outlet
   geom_sf(data = hu12_pts[hu12_pts$comid == hu12_comid, ],
-    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    shape = 4, color = "darkred", size = 1, stroke = 0.6, alpha = 0.5,
     inherit.aes = FALSE) +
   # gage point
   geom_sf(data = gage_pt, shape = 17, color = "black",
@@ -1248,7 +1342,7 @@ p_huc_zoom <- ggplot() |>
     inherit.aes = FALSE) +
   # HUC12 outlet
   geom_sf(data = hu12_outlet_pt,
-    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    shape = 4, color = "darkred", size = 1, stroke = 0.6, alpha = 0.5,
     inherit.aes = FALSE) +
   coord_sf(crs = target_crs, xlim = zoom_xlim, ylim = zoom_ylim,
     expand = FALSE) +
@@ -1316,7 +1410,7 @@ p_split <- ggplot() |>
     inherit.aes = FALSE) +
   # HUC12 outlet
   geom_sf(data = hu12_pts[hu12_pts$comid == hu12_comid, ],
-    shape = 4, color = "darkred", size = 4, stroke = 1.6,
+    shape = 4, color = "darkred", size = 1, stroke = 0.6, alpha = 0.5,
     inherit.aes = FALSE) +
   # gage
   geom_sf(data = gage_pt, shape = 17, color = "black",

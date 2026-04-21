@@ -37,6 +37,18 @@
 #'   internally; must include at minimum \code{huc_12} and \code{ncontrb_a}
 #'   (case-insensitive). When provided, all HUC12 polygon queries are resolved
 #'   by subsetting this table. Default NULL (use web services).
+#' @param huc12_outlets sf data.frame, character path, or NULL. HUC12 pour
+#'   points to use instead of the NLDI \code{huc12pp} service. Accepts either
+#'   a preloaded sf data.frame or a path to a GPKG, which is read with
+#'   \code{\link[sf]{read_sf}}. Columns \code{COMID} and \code{FinalWBD_HUC12}
+#'   are renamed to \code{comid} and \code{identifier}; any other columns are
+#'   preserved. When provided, the outlets are filtered to the upstream
+#'   network COMID set and no NLDI \code{huc12pp} queries are issued. Pair
+#'   with \code{local_navigation = TRUE} and \code{huc12_data} to run fully
+#'   offline. National CONUS outlets GPKGs are available from Blodgett, D.L.,
+#'   2022, Mainstem Rivers of the Conterminous United States (ver. 3.0,
+#'   February 2026): U.S. Geological Survey data release,
+#'   \doi{10.5066/P13LNDDQ} (layer \code{hu_points}). Default NULL.
 #' @param HU_inclusion_override character vector or NULL. Eight- or ten-digit
 #'   HUC codes whose HUC12s should be kept even when the parent HUC outlet is
 #'   not in the on-network set. Useful for regions like the Prairie Potholes
@@ -101,10 +113,14 @@
 #' }
 get_drainage_area_estimates <- function(start, catchments = FALSE,
   nhdplushr = TRUE, local_navigation = FALSE, huc12_data = NULL,
-  HU_inclusion_override = NULL, outlet_split_threshold_m = 100) {
+  huc12_outlets = NULL, HU_inclusion_override = NULL,
+  outlet_split_threshold_m = 100) {
 
   if(!is.null(huc12_data))
     huc12_data <- prepare_huc12_data(huc12_data)
+
+  if(!is.null(huc12_outlets))
+    huc12_outlets <- prepare_huc12_outlets(huc12_outlets)
 
   vaa <- if(local_navigation) {
     message("Loading NHDPlusV2 VAA for local navigation...")
@@ -121,7 +137,7 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
     outlet_split_threshold_m)
 
   # 2. fetch upstream network + HUC12 outlets
-  net_info <- fetch_upstream_network(outlet_comids, vaa)
+  net_info <- fetch_upstream_network(outlet_comids, vaa, huc12_outlets)
   all_net <- net_info$all_net
   huc12_outlets <- net_info$huc12_outlets
 
@@ -396,20 +412,30 @@ negotiate_outlet_catchment <- function(start_info, vaa = NULL,
 #' @param outlet_comids integer. One or more outlet COMIDs.
 #' @param vaa data.frame or NULL. NHDPlusV2 VAA table for local navigation.
 #'   When NULL, uses the NLDI + OGC API path.
+#' @param huc12_outlets sf data.frame or NULL. Pre-prepared HUC12 pour
+#'   points (from \code{prepare_huc12_outlets}). When supplied, the NLDI
+#'   \code{huc12pp} query is skipped and these are filtered to the
+#'   upstream network COMID set.
 #' @return list with \code{all_net} (data.frame with toid column) and
 #'   \code{huc12_outlets} (sf data.frame with comid and identifier columns).
 #' @noRd
-fetch_upstream_network <- function(outlet_comids, vaa = NULL) {
+fetch_upstream_network <- function(outlet_comids, vaa = NULL,
+  huc12_outlets = NULL) {
 
-  message("Finding HUC12 pour points upstream via NLDI...")
+  local_outlets <- !is.null(huc12_outlets)
+
+  if(!local_outlets)
+    message("Finding HUC12 pour points upstream via NLDI...")
 
   if(!is.null(vaa)) {
-    huc12_outlets <- lapply(outlet_comids, \(x) {
-      findNLDI(
-        comid = x, nav = "UT",
-        distance_km = 9999, find = "huc12pp"
-      )$UT_huc12pp
-    }) |> bind_rows()
+    if(!local_outlets) {
+      huc12_outlets <- lapply(outlet_comids, \(x) {
+        findNLDI(
+          comid = x, nav = "UT",
+          distance_km = 9999, find = "huc12pp"
+        )$UT_huc12pp
+      }) |> bind_rows()
+    }
 
     message("Subsetting upstream network from VAA...")
     ut_comids <- lapply(outlet_comids, \(x) {
@@ -417,16 +443,21 @@ fetch_upstream_network <- function(outlet_comids, vaa = NULL) {
     })
     all_net <- filter(vaa, .data$comid %in% do.call(c, ut_comids))
 
+    if(local_outlets)
+      huc12_outlets <- huc12_outlets[huc12_outlets$comid %in% all_net$comid, ]
+
   } else {
+    nldi_find <- if(local_outlets) "flowline" else c("huc12pp", "flowline")
     nldi_results <- lapply(outlet_comids, \(x) {
       findNLDI(
         comid = x, nav = "UT",
-        distance_km = 9999, find = c("huc12pp", "flowline")
+        distance_km = 9999, find = nldi_find
       )
     })
 
-    huc12_outlets <- lapply(nldi_results, \(x) x$UT_huc12pp) |>
-      bind_rows()
+    if(!local_outlets)
+      huc12_outlets <- lapply(nldi_results, \(x) x$UT_huc12pp) |>
+        bind_rows()
 
     upstream_comids <- unique(as.integer(unlist(
       lapply(nldi_results, \(x) x$UT_flowlines$nhdplus_comid)
@@ -438,6 +469,9 @@ fetch_upstream_network <- function(outlet_comids, vaa = NULL) {
       comid = upstream_comids, realization = "flowline",
       skip_geometry = TRUE
     )
+
+    if(local_outlets)
+      huc12_outlets <- huc12_outlets[huc12_outlets$comid %in% upstream_comids, ]
   }
 
   all_net <- add_toids(all_net, return_dendritic = TRUE)
@@ -630,6 +664,44 @@ prepare_huc12_data <- function(huc12_data) {
     stop("huc12_data is missing required columns: ",
       paste(missing, collapse = ", "))
   st_transform(huc12_data, 5070)
+}
+
+#' Prepare HUC12 pour point outlets for local use
+#'
+#' Reads a GPKG path (if given), renames \code{COMID} -> \code{comid} and
+#' \code{FinalWBD_HUC12} -> \code{identifier} to match the NLDI schema, and
+#' validates the required columns. Other columns and geometry are preserved.
+#'
+#' @param huc12_outlets sf data.frame or character path to a GPKG.
+#' @return sf data.frame with \code{comid} (integer) and \code{identifier}
+#'   (character) columns.
+#' @noRd
+prepare_huc12_outlets <- function(huc12_outlets) {
+  if(is.character(huc12_outlets)) {
+    if(!file.exists(huc12_outlets))
+      stop("huc12_outlets file not found: ", huc12_outlets)
+    huc12_outlets <- sf::read_sf(huc12_outlets)
+  }
+
+  if(!inherits(huc12_outlets, "sf"))
+    stop("huc12_outlets must be an sf data.frame or a path to a GPKG file")
+
+  rename_map <- c(COMID = "comid", FinalWBD_HUC12 = "identifier")
+  for(old in names(rename_map)) {
+    new <- rename_map[[old]]
+    if(old %in% names(huc12_outlets) && !new %in% names(huc12_outlets))
+      names(huc12_outlets)[names(huc12_outlets) == old] <- new
+  }
+
+  required <- c("comid", "identifier")
+  missing <- setdiff(required, names(huc12_outlets))
+  if(length(missing) > 0)
+    stop("huc12_outlets is missing required columns: ",
+      paste(missing, collapse = ", "))
+
+  huc12_outlets$comid <- as.integer(huc12_outlets$comid)
+  huc12_outlets$identifier <- as.character(huc12_outlets$identifier)
+  huc12_outlets
 }
 
 #' Subset in-memory HUC12 data to match a fetch plan

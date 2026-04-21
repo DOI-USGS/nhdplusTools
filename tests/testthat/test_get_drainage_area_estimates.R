@@ -735,3 +735,40 @@ test_that("negotiate_outlet_catchment returns correct structure", {
     nhdplusTools:::negotiate_outlet_catchment(wb, NULL)
   ))
 })
+
+test_that("prepare_huc12_outlets renames and validates", {
+  pts <- sf::st_sfc(
+    sf::st_point(c(-89, 43)), sf::st_point(c(-88, 42)),
+    crs = 4326
+  )
+  raw <- sf::st_sf(
+    COMID = c(1001, 1002),
+    FinalWBD_HUC12 = c("070702010101", "070702010102"),
+    other = c("a", "b"),
+    geometry = pts
+  )
+
+  out <- nhdplusTools:::prepare_huc12_outlets(raw)
+
+  expect_true(all(c("comid", "identifier", "other") %in% names(out)))
+  expect_type(out$comid, "integer")
+  expect_type(out$identifier, "character")
+  expect_equal(out$identifier, c("070702010101", "070702010102"))
+  expect_true(inherits(out, "sf"))
+
+  # Missing required columns triggers stop
+  bad <- sf::st_sf(x = 1, geometry = sf::st_sfc(sf::st_point(c(0, 0)),
+    crs = 4326))
+  expect_error(nhdplusTools:::prepare_huc12_outlets(bad),
+    "missing required columns")
+
+  # Non-sf, non-character input triggers stop
+  expect_error(nhdplusTools:::prepare_huc12_outlets(data.frame(comid = 1)),
+    "sf data.frame or a path")
+
+  # Non-existent path triggers stop
+  expect_error(
+    nhdplusTools:::prepare_huc12_outlets("/no/such/file.gpkg"),
+    "file not found"
+  )
+})

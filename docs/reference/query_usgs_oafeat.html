@@ -18,7 +18,7 @@ area, or ID."><meta property="og:image" content="https://doi-usgs.github.io/nhdp
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
       </span>
     </div>
 
@@ -29,28 +29,9 @@ area, or ID."><meta property="og:image" content="https://doi-usgs.github.io/nhdp
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
-    </li>
-    <li>
-      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
-    </li>
-    <li>
-      <a href="../articles/indexing.html">Indexing and Referencing</a>
-    </li>
-    <li>
-      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
-    </li>
-    <li>
-      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -86,7 +67,9 @@ area, or ID.</p>
 <span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  t_srs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  buffer <span class="op">=</span> <span class="fl">0.5</span></span>
+<span>  buffer <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  properties <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  skip_geometry <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -124,10 +107,21 @@ Will default to the CRS of the input AOI if provided, and to 4326 for ID request
 <dd><p>numeric. The amount (in meters) to buffer a POINT AOI by for an
 extended search. Default = 0.5</p></dd>
 
+
+<dt id="arg-properties">properties<a class="anchor" aria-label="anchor" href="#arg-properties"></a></dt>
+<dd><p>character vector. Column names to return. When NULL (default),
+all columns are returned.</p></dd>
+
+
+<dt id="arg-skip-geometry">skip_geometry<a class="anchor" aria-label="anchor" href="#arg-skip-geometry"></a></dt>
+<dd><p>logical. If TRUE, omit geometry from the response and
+return a plain data.frame. Default FALSE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a simple features (sf) object</p>
+    <p>a simple features (sf) object, or a data.frame when
+  <code>skip_geometry = TRUE</code></p>
     </div>
     <div id="details">
     <h2>Details</h2>

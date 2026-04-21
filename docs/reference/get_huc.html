@@ -18,7 +18,7 @@ area (POLYGON), or set of HUC IDs."><meta property="og:image" content="https://d
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
       </span>
     </div>
 
@@ -29,28 +29,9 @@ area (POLYGON), or set of HUC IDs."><meta property="og:image" content="https://d
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
-    </li>
-    <li>
-      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
-    </li>
-    <li>
-      <a href="../articles/indexing.html">Indexing and Referencing</a>
-    </li>
-    <li>
-      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
-    </li>
-    <li>
-      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -80,7 +61,7 @@ area (POLYGON), or set of HUC IDs.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_huc</span><span class="op">(</span>AOI <span class="op">=</span> <span class="cn">NULL</span>, id <span class="op">=</span> <span class="cn">NULL</span>, t_srs <span class="op">=</span> <span class="cn">NULL</span>, buffer <span class="op">=</span> <span class="fl">0.5</span>, type <span class="op">=</span> <span class="st">"huc12"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_huc</span><span class="op">(</span>AOI <span class="op">=</span> <span class="cn">NULL</span>, id <span class="op">=</span> <span class="cn">NULL</span>, t_srs <span class="op">=</span> <span class="cn">NULL</span>, buffer <span class="op">=</span> <span class="fl">0.5</span>, type <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -109,19 +90,22 @@ extended search. Default = 0.5</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>character. Type of feature to return
-('huc02', 'huc04', 'huc06', 'huc08', 'huc10', 'huc12', 'huc12_nhdplusv2').</p>
-<p>Pulls `huc02`-`huc12` from a web service that hosts a snapshot of the
-Watershed Boundary Dataset from October, 2020.</p>
-<p>See &lt;doi:10.5066/P92U7ZUT&gt; for full source data.</p>
-<p>See https://api.water.usgs.gov/fabric/pygeoapi for the web service.</p>
-<p>`huc12_nhdplusv2` derives from a snapshot of the WBD available from the nhdplusv2.
-See <a href="download_nhdplusv2.html">download_nhdplusv2</a> for source data documentation.</p></dd>
+<dd><p>character. Type of feature to return. If `NULL` (default) and
+`id` is provided, the HUC level is autodetected from the character length
+of the IDs (e.g. 2-character IDs → `huc02`, 12-character → `huc12`).
+A version suffix alone (e.g. `"_2020"`, `"_nhdplusv2"`) can also be
+provided to combine autodetected HUC level with a specific version.
+If `NULL` and no `id` is provided, defaults to `huc12`.
+Bare types (`huc02`-`huc12`) default to the 2025 WBD version. Versioned
+types are also available with suffixes `_2025`, `_2020`, `_nhdplusv2`, and
+`_nhdplushr` (e.g. `huc12_nhdplusv2`).</p>
+<p>See https://api.water.usgs.gov/fabric/pygeoapi for the web service.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a simple features (sf) object</p>
+    <p>a simple features (sf) object, or a data.frame when
+  <code>skip_geometry = TRUE</code></p>
     </div>
     <div id="details">
     <h2>Details</h2>

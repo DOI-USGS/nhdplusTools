@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
       </span>
     </div>
 
@@ -28,28 +28,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
-    </li>
-    <li>
-      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
-    </li>
-    <li>
-      <a href="../articles/indexing.html">Indexing and Referencing</a>
-    </li>
-    <li>
-      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
-    </li>
-    <li>
-      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -111,8 +92,8 @@ attributes provided with id, fromnode and tonode in the first three columns.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/new_hope_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="get_tocomid.html">get_tocomid</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">new_hope_flowline</span>, <span class="va">COMID</span>, <span class="va">FromNode</span>, <span class="va">ToNode</span>, <span class="va">Divergence</span>, <span class="va">FTYPE</span>,</span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="get_tocomid.html">get_tocomid</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">new_hope_flowline</span>, <span class="va">COMID</span>, <span class="va">FromNode</span>, <span class="va">ToNode</span>, <span class="va">Divergence</span>, <span class="va">FTYPE</span>,</span></span>
 <span class="r-in"><span>                <span class="va">AreaSqKM</span>, <span class="va">LENGTHKM</span>, <span class="va">GNIS_ID</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span>, <span class="op">-</span><span class="va">tonode</span>, <span class="op">-</span><span class="va">fromnode</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -135,9 +116,10 @@ attributes provided with id, fromnode and tonode in the first three columns.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: geom &lt;LINESTRING [m]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># just the divergences which have unique fromids in x but don't in new hope.</span></span></span>
-<span class="r-in"><span><span class="va">div</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_tocomid.html">get_tocomid</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">new_hope_flowline</span>, <span class="va">COMID</span>, <span class="va">FromNode</span>, <span class="va">ToNode</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="va">div</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_tocomid.html">get_tocomid</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">new_hope_flowline</span>, <span class="va">COMID</span>, <span class="va">FromNode</span>, <span class="va">ToNode</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                   return_dendritic <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                   remove_coastal <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>return_dendritic = FALSE is deprecated. Use to_flownetwork() for non-dendritic edge lists.</span>
 <span class="r-in"><span><span class="va">div</span> <span class="op">&lt;-</span> <span class="va">div</span><span class="op">[</span><span class="va">div</span><span class="op">$</span><span class="va">tocomid</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span></span></span>
 <span class="r-in"><span>             <span class="va">new_hope_flowline</span><span class="op">$</span><span class="va">COMID</span><span class="op">[</span><span class="va">new_hope_flowline</span><span class="op">$</span><span class="va">Divergence</span> <span class="op">==</span> <span class="fl">2</span><span class="op">]</span>,<span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>

@@ -18,7 +18,7 @@ EPSG:3857 Web Mercator Projection."><meta property="og:image" content="https://d
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
       </span>
     </div>
 
@@ -29,28 +29,9 @@ EPSG:3857 Web Mercator Projection."><meta property="og:image" content="https://d
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
-    </li>
-    <li>
-      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
-    </li>
-    <li>
-      <a href="../articles/indexing.html">Indexing and Referencing</a>
-    </li>
-    <li>
-      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
-    </li>
-    <li>
-      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -224,7 +205,7 @@ The following shows the defaults that can be altered.</p><ol><li><p>basin</p><di
 <span class="r-plt img"><img src="plot_nhdplus-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">plot_nhdplus</span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">89.36083</span>,</span></span>
+<span class="r-in"><span><span class="fu">plot_nhdplus</span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">89.36083</span>,</span></span>
 <span class="r-in"><span>                                     y <span class="op">=</span> <span class="fl">43.08944</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                          coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>             streamorder <span class="op">=</span> <span class="fl">2</span>,</span></span>
@@ -242,10 +223,10 @@ The following shows the defaults that can be altered.</p><ol><li><p>basin</p><di
 <span class="r-in"><span>                                               comid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_nhdplus-7.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="op">-</span><span class="fl">89.43</span>, ymin <span class="op">=</span> <span class="fl">43</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">89.28</span>, ymax <span class="op">=</span> <span class="fl">43.1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="op">-</span><span class="fl">89.43</span>, ymin <span class="op">=</span> <span class="fl">43</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">89.28</span>, ymax <span class="op">=</span> <span class="fl">43.1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    crs <span class="op">=</span> <span class="st">"+proj=longlat +datum=WGS84 +no_defs"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">fline</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">sample_data</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fline</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">sample_data</span>, <span class="st">"NHDFlowline_Network"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">comids</span> <span class="op">&lt;-</span> <span class="fu">nhdplusTools</span><span class="fu">::</span><span class="fu"><a href="get_UT.html">get_UT</a></span><span class="op">(</span><span class="va">fline</span>, <span class="fl">13293970</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plot_nhdplus</span><span class="op">(</span><span class="va">comids</span><span class="op">)</span></span></span>

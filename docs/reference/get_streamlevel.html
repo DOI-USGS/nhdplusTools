@@ -23,7 +23,7 @@ the NHD stream leveling rules."><meta property="og:image" content="https://doi-u
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
       </span>
     </div>
 
@@ -34,28 +34,9 @@ the NHD stream leveling rules."><meta property="og:image" content="https://doi-u
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
-    </li>
-    <li>
-      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
-    </li>
-    <li>
-      <a href="../articles/indexing.html">Indexing and Referencing</a>
-    </li>
-    <li>
-      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
-    </li>
-    <li>
-      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -119,21 +100,24 @@ assumed to be coastal.</p></dd>
 <span class="r-in"><span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">dnlevelpat</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown or uninitialised column: `id`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 3 2 2 2 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [39] 3 2 2 3 2 3 3 4 2 2 2 3 3 3 2 2 2 2 2 2 2 1 2 1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">walker_flowline</span><span class="op">$</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="va">level</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">walker_flowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">level</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">walker_flowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="va">walker_flowline</span><span class="op">$</span><span class="va">level</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="get_streamlevel-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">test_flowline</span><span class="op">$</span><span class="va">coastal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown or uninitialised column: `id`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 5 5 5 5 5 5 6 5 5 5 5 5 5 5 6 5 5 6 5 5 5 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [39] 6 5 5 6 5 6 6 7 5 5 5 6 6 6 5 5 5 5 5 5 5 4 5 4</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">test_flowline</span><span class="op">$</span><span class="va">coastal</span><span class="op">[</span><span class="op">!</span><span class="va">test_flowline</span><span class="op">$</span><span class="va">dnlevelpat</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">levelpathi</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown or uninitialised column: `id`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 3 2 2 2 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [39] 3 2 2 3 2 3 3 4 2 2 2 3 3 3 2 2 2 2 2 2 2 1 2 1</span>
 <span class="r-in"><span></span></span>

@@ -18,7 +18,7 @@ aggregate and / or split the characteristics according to a lookup table."><meta
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
       </span>
     </div>
 
@@ -29,28 +29,9 @@ aggregate and / or split the characteristics according to a lookup table."><meta
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
-    </li>
-    <li>
-      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
-    </li>
-    <li>
-      <a href="../articles/indexing.html">Indexing and Referencing</a>
-    </li>
-    <li>
-      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
-    </li>
-    <li>
-      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -85,7 +66,9 @@ aggregate and / or split the characteristics according to a lookup table.</p>
 <span>  <span class="va">lookup_table</span>,</span>
 <span>  refactored_areas <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  catchment_characteristics <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  catchment_areas <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  catchment_areas <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source <span class="op">=</span> <span class="st">"usgs"</span>,</span>
+<span>  aoi <span class="op">=</span> <span class="st">"cat"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -127,6 +110,18 @@ using the characteristic ids from `vars` and the comids from `lookup_table`.</p>
 <dd><p>data.frame containing columns "comid", "areasqkm",
 "split_catchment_areasqkm", and "split_area_prop". If not provided, it will
 be retrieved from `refactored_areas` and/or <a href="get_vaa.html">get_vaa</a>.</p></dd>
+
+
+<dt id="arg-source">source<a class="anchor" aria-label="anchor" href="#arg-source"></a></dt>
+<dd><p>character <code>"usgs"</code> (default) or <code>"streamcat"</code>. Passed
+through to <a href="get_catchment_characteristics.html">get_catchment_characteristics</a> when <code>catchment_characteristics</code>
+is not provided.</p></dd>
+
+
+<dt id="arg-aoi">aoi<a class="anchor" aria-label="anchor" href="#arg-aoi"></a></dt>
+<dd><p>character area of interest, passed through to
+<a href="get_catchment_characteristics.html">get_catchment_characteristics</a> when <code>catchment_characteristics</code>
+is not provided. See <a href="get_catchment_characteristics.html">get_catchment_characteristics</a> for details.</p></dd>
 
 </dl></div>
     <div id="details">
@@ -181,15 +176,6 @@ when working with split catchments.</p>
 <span class="r-in"><span>                           comid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4146596</span>, <span class="fl">4147382</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                           member_comid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4146596</span>, <span class="fl">4147382</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">rescale_catchment_characteristics</span><span class="op">(</span><span class="va">vars</span>, <span class="va">lookup_table</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Potentially unsafe or invalid elements have been discarded from R metadata.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Type: "externalptr"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> → If you trust the source, you can set `options(arrow.unsafe_metadata = TRUE)` to preserve them.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Potentially unsafe or invalid elements have been discarded from R metadata.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Type: "externalptr"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> → If you trust the source, you can set `options(arrow.unsafe_metadata = TRUE)` to preserve them.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Potentially unsafe or invalid elements have been discarded from R metadata.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Type: "externalptr"</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> → If you trust the source, you can set `options(arrow.unsafe_metadata = TRUE)` to preserve them.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Potentially unsafe or invalid elements have been discarded from R metadata.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Type: "externalptr"</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> → If you trust the source, you can set `options(arrow.unsafe_metadata = TRUE)` to preserve them.</span>

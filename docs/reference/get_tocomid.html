@@ -24,7 +24,7 @@ required. Uses the add_toids function."><meta property="og:image" content="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
       </span>
     </div>
 
@@ -35,28 +35,9 @@ required. Uses the add_toids function."><meta property="og:image" content="https
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
-    </li>
-    <li>
-      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
-    </li>
-    <li>
-      <a href="../articles/indexing.html">Indexing and Referencing</a>
-    </li>
-    <li>
-      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
-    </li>
-    <li>
-      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -88,7 +69,7 @@ attribute is included, the join is executed by terminalpa group.
 This is done grouped by terminalpathID because duplicate node
 ids have been encountered across basins in some datasets. If
 `remove_coastal` is `TRUE` (the default) either ftype or fcode are
-required. Uses the <a href="https://doi-usgs.github.io/hydroloom/reference/add_toids.html" class="external-link">add_toids</a> function.</p>
+required. Uses the <a href="https://rdrr.io/pkg/hydroloom/man/add_toids.html" class="external-link">add_toids</a> function.</p>
     </div>
 
     <div id="ref-usage">
@@ -145,6 +126,7 @@ attributes provided with comid and tocomid in the first and second columns..</p>
 <span class="r-in"><span><span class="va">tocomid</span> <span class="op">&lt;-</span> <span class="fu">get_tocomid</span><span class="op">(</span><span class="va">sample_flines</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">tocomid</span> <span class="op">&lt;-</span> <span class="fu">get_tocomid</span><span class="op">(</span><span class="va">sample_flines</span>, return_dendritic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>return_dendritic = FALSE is deprecated. Use to_flownetwork() for non-dendritic edge lists.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

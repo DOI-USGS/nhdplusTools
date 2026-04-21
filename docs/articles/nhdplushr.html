@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
       </span>
     </div>
 
@@ -49,29 +49,8 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/get_3dhp_data.html">3DHP Data Access</a>
-    </li>
-    <li>
-      <a href="../articles/get_data_overview.html">NHDPlusTools Data Access Overview</a>
-    </li>
-    <li>
-      <a href="../articles/indexing.html">Indexing and Referencing</a>
-    </li>
-    <li>
-      <a href="../articles/nhdplushr.html">Working with NHDPlusHR</a>
-    </li>
-    <li>
-      <a href="../articles/plot_nhdplus.html">Plotting with nhdplusTools</a>
-    </li>
-  </ul>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -131,7 +110,7 @@ behavior.</em></p>
 <span><span class="co"># Make a plot and get some background NHDPlusV2 data.</span></span>
 <span><span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>, streamorder <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                          nhdplus_data <span class="op">=</span> <span class="va">sample_data</span><span class="op">)</span></span></code></pre></div>
-<p><img src="nhdplushr_files/figure-html/tldr-1.png" class="r-plt" width="576"></p>
+<p><img src="nhdplushr_files/figure-html/tldr-1.png" class="r-plt" alt="" width="576"></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Find the HU04 we are interested in.</span></span>
@@ -144,8 +123,8 @@ behavior.</em></p>
 <span><span class="va">hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, out_gpkg <span class="op">=</span> <span class="va">hr_gpkg</span>,</span>
 <span>                    proj <span class="op">=</span> <span class="fl">3857</span><span class="op">)</span></span>
 <span></span>
-<span><span class="op">(</span><span class="va">start_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
-<span>                                   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">outlets</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
+<span><span class="op">(</span><span class="va">start_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
+<span>                                   <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">outlets</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
 <span>                                   search_radius <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span> <span class="co"># meters albers eq area</span></span>
 <span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span><span class="co">#&gt; Warning in check_search_radius(search_radius, points): search_radius units not</span></span>
@@ -170,12 +149,12 @@ top of it.</p>
 <span>             plot_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>flowline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span>,</span>
 <span>                                basin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDPlusCatchment</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.25</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDPlusCatchment</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.25</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">0.5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">hr_subset</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="fl">3857</span><span class="op">)</span><span class="op">)</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">hr_subset</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="fl">3857</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>     col <span class="op">=</span> <span class="st">"cyan"</span>, lwd <span class="op">=</span> <span class="fl">1</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="nhdplushr_files/figure-html/plot-1.png" class="r-plt" width="576"></p>
+<p><img src="nhdplushr_files/figure-html/plot-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="download">Download<a class="anchor" aria-label="anchor" href="#download"></a>
@@ -230,8 +209,8 @@ give us back a list with flowlines and catchments as sf data.frames.</p>
 <span><span class="co">#&gt; [2,] "tbl_df"     "tbl_df"        </span></span>
 <span><span class="co">#&gt; [3,] "tbl"        "tbl"           </span></span>
 <span><span class="co">#&gt; [4,] "data.frame" "data.frame"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">$</span><span class="va">StreamOrde</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="nhdplushr_files/figure-html/get_nhdplushr-1.png" class="r-plt" width="576"></p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">$</span><span class="va">StreamOrde</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="nhdplushr_files/figure-html/get_nhdplushr-1.png" class="r-plt" alt="" width="576"></p>
 <p>If we want more data, we can get any of the layer options listed in
 the <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> documentation.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -251,18 +230,18 @@ the <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code> d
 <span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">hr</span>, <span class="va">nrow</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  NHDFlowline NHDWaterbody      NHDArea </span></span>
 <span><span class="co">#&gt;        34532        11444          499</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">$</span><span class="va">StreamOrde</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">$</span><span class="va">StreamOrde</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDWaterbody</span><span class="op">)</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDArea</span><span class="op">)</span><span class="op">)</span>, </span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDWaterbody</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDArea</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>     col <span class="op">=</span> <span class="st">"cyan"</span>, border <span class="op">=</span> <span class="st">"cyan"</span>, lwd <span class="op">=</span> <span class="fl">0.25</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="nhdplushr_files/figure-html/get_nhdplushr2-1.png" class="r-plt" width="576"></p>
+<p><img src="nhdplushr_files/figure-html/get_nhdplushr2-1.png" class="r-plt" alt="" width="576"></p>
 <p>Since this function can work over large amounts of data and we don’t
 want to keep running it again and again, there is an option to save the
 results to a standalone database for later use.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">demo_gpkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"demo.gpkg"</span><span class="op">)</span></span>
 <span><span class="va">hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span>, out_gpkg <span class="op">=</span> <span class="va">demo_gpkg</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">demo_gpkg</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_layers.html" class="external-link">st_layers</a></span><span class="op">(</span><span class="va">demo_gpkg</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Driver: GPKG </span></span>
 <span><span class="co">#&gt; Available layers:</span></span>
 <span><span class="co">#&gt;         layer_name     geometry_type features fields crs_name</span></span>
@@ -278,7 +257,7 @@ of the filters are described in the manual page of the
 <code><a href="../reference/get_hr_data.html">get_hr_data()</a></code> utility function. 1.
 <code>min_size_sqkm</code> will remove flowlines under a certain size
 threshold. 1. <code>sim</code> will simplify all geometry to a given
-tolerance using <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">sf::st_simplify()</a></code>. 1. <code>proj</code>
+tolerance using <code><a href="https://rdrr.io/pkg/sf/man/geos_unary.html" class="external-link">sf::st_simplify()</a></code>. 1. <code>proj</code>
 will project the output into the desired projection. 1.
 <code>keep_cols</code> is used to specify which attributes are desired
 in the output. 1. <code>rename</code> controls whether output is
@@ -289,9 +268,9 @@ network.</em></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">demo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span>, layers <span class="op">=</span> <span class="st">"NHDFlowline"</span>, </span>
 <span>                               min_size_sqkm <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, </span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, </span>
 <span>     lwd <span class="op">=</span> <span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">$</span><span class="va">StreamOrde</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="nhdplushr_files/figure-html/get_nhdplushr4-1.png" class="r-plt" width="576"></p>
+<p><img src="nhdplushr_files/figure-html/get_nhdplushr4-1.png" class="r-plt" alt="" width="576"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">demo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">hr_data_dir</span>, layers <span class="op">=</span> <span class="st">"NHDFlowline"</span>, </span>
 <span>                      min_size_sqkm <span class="op">=</span> <span class="fl">100</span>, </span>
@@ -302,9 +281,9 @@ network.</em></p>
 <span><span class="co">#&gt; messages of this type will be suppressed.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "COMID"      "StreamOrde" "Shape"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, </span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span>, </span>
 <span>     lwd <span class="op">=</span> <span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">$</span><span class="va">StreamOrde</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="nhdplushr_files/figure-html/get_nhdplushr5-1.png" class="r-plt" width="576"></p>
+<p><img src="nhdplushr_files/figure-html/get_nhdplushr5-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="make-standalone-basins">Make Standalone Basins<a class="anchor" aria-label="anchor" href="#make-standalone-basins"></a>
@@ -336,13 +315,13 @@ further use.</p>
 <span><span class="co"># Create a standalone basin with the results for comparison.</span></span>
 <span><span class="va">standalone_demo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_standalone.html">make_standalone</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">demo_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">TotDASqKM</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TotDASqKM</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="va">demo_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">TotDASqKM</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TotDASqKM</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="va">standalone_demo_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">standalone_demo</span>, <span class="va">TotDASqKM</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TotDASqKM</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">standalone_demo_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">standalone_demo</span>, <span class="va">TotDASqKM</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TotDASqKM</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">broken_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">demo_outlet</span><span class="op">)</span>, </span>
+<span><span class="va">broken_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">demo_outlet</span><span class="op">)</span>, </span>
 <span>                               <span class="va">Hydroseq</span>, <span class="va">TerminalPa</span>, <span class="va">TerminalFl</span>, <span class="va">LevelPathI</span><span class="op">)</span></span>
-<span><span class="va">fixed_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">standalone_demo_outlet</span><span class="op">)</span>, </span>
+<span><span class="va">fixed_outlet</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">standalone_demo_outlet</span><span class="op">)</span>, </span>
 <span>                              <span class="va">Hydroseq</span>, <span class="va">TerminalPa</span>, <span class="va">TerminalFl</span>, <span class="va">LevelPathI</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">broken_outlet</span><span class="op">)</span><span class="op">)</span></span>
@@ -352,8 +331,9 @@ further use.</p>
 <span><span class="co">#&gt;         Hydroseq     TerminalPa TerminalFl     LevelPathI</span></span>
 <span><span class="co">#&gt; 1 22001000000414 22001000000414          1 22001000000414</span></span>
 <span></span>
-<span><span class="op">(</span><span class="va">broken</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">TerminalPa</span> <span class="op">==</span> <span class="va">demo_outlet</span><span class="op">$</span><span class="va">Hydroseq</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="va">broken</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">demo</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">TerminalPa</span> <span class="op">==</span> <span class="va">demo_outlet</span><span class="op">$</span><span class="va">Hydroseq</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Simple feature collection with 0 features and 57 fields</span></span>
+<span><span class="co">#&gt; Geometry type: MULTILINESTRING</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: NA ymin: NA xmax: NA ymax: NA</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  NAD83</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 58</span></span></span>
@@ -362,9 +342,9 @@ further use.</p>
 <span><span class="co">#&gt; <span style="color: #949494;">#   FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Shape &lt;GEOMETRY [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;, StreamCalc &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, LevelPathI &lt;dbl&gt;, …</span></span></span>
-<span><span class="op">(</span><span class="va">standalone</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">standalone_demo</span>, <span class="va">TerminalPa</span> <span class="op">==</span> <span class="va">standalone_demo_outlet</span><span class="op">$</span><span class="va">Hydroseq</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Shape &lt;MULTILINESTRING [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, …</span></span></span>
+<span><span class="op">(</span><span class="va">standalone</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">standalone_demo</span>, <span class="va">TerminalPa</span> <span class="op">==</span> <span class="va">standalone_demo_outlet</span><span class="op">$</span><span class="va">Hydroseq</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Simple feature collection with 5358 features and 57 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTILINESTRING</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
@@ -391,8 +371,8 @@ further use.</p>
 <span><span class="co">#&gt; <span style="color: #949494;">#   Shape &lt;MULTILINESTRING [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, …</span></span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">standalone</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="nhdplushr_files/figure-html/make_standalone-1.png" class="r-plt" width="576"></p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">standalone</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="nhdplushr_files/figure-html/make_standalone-1.png" class="r-plt" alt="" width="576"></p>
 </div>
   </div>
 

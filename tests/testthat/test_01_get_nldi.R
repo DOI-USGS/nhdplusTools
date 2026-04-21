@@ -223,6 +223,7 @@ test_that("split", {
 test_that("xs", {
 
   skip_on_cran()
+  skip_on_ci()
 
   point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)
 

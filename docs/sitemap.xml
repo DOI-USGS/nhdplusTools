@@ -2,6 +2,7 @@
 <url><loc>https://doi-usgs.github.io/nhdplusTools/3dhp_demo.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/404.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/articles/advanced_network.html</loc></url>
+<url><loc>https://doi-usgs.github.io/nhdplusTools/articles/drainage_area_estimation.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/articles/get_3dhp_data.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/articles/get_data_overview.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/articles/index.html</loc></url>
@@ -12,6 +13,7 @@
 <url><loc>https://doi-usgs.github.io/nhdplusTools/articles/point_indexing.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/authors.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/awra_2019/index.html</loc></url>
+<url><loc>https://doi-usgs.github.io/nhdplusTools/CLAUDE.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/DISCLAIMER.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/index.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/LICENSE-text.html</loc></url>
@@ -37,6 +39,7 @@
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_characteristics_metadata.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_DD.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_DM.html</loc></url>
+<url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_drainage_area_estimates.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_elev_along_path.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_flowline_index.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_gagesII.html</loc></url>

@@ -1,5 +1,13 @@
-nhdplusTools 1.4.3
+nhdplusTools 1.5.0
 ==========
+
+This release adds drainage area estimation tooling that combines HUC12 areas with NHDPlusV2 catchments to produce drainage area estimates at arbitrary points on the network.
+
+- New `get_drainage_area_estimates()` returns total and contributing-only drainage area estimates at HUC12, HUC10, and HUC08 resolutions, alongside a network-derived comparison value and an optional NHDPlusHR-catchment estimate. Non-contributing areas (from the HUC12 `ncontrb_a` attribute) are accounted for.
+- Between the start point and the nearest upstream HUC12 outlets, NHDPlusV2 catchment areas are used; upstream of those outlets, HUC12 areas are used. The outlet catchment is split at the start point when it is more than `outlet_split_threshold_m` upstream of the catchment outlet.
+- Supports fully offline operation via `local_navigation = TRUE` (uses `get_vaa()` for network navigation), plus `huc12_data` and `huc12_outlets` arguments for user-supplied HUC12 polygons and pour points.
+- `HU_inclusion_override` allows keeping HUC12s in landscape-connected regions (e.g. Prairie Potholes) where parent HUC outlets are not on-network.
+- New `vignette("drainage_area_estimation")` walks through the workflow, including comparisons against NWIS drainage areas.
 
 - `get_catchment_characteristics()` now batches variables by shared S3 source, greatly improving performance when requesting multiple variables. Fixes #449.
 - `get_catchment_characteristics()` and `get_characteristics_metadata()` gain a `source` parameter supporting `"usgs"` (default) and `"streamcat"` for EPA StreamCat data via the `StreamCatTools` package.

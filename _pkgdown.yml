@@ -28,6 +28,7 @@ reference:
       - '`get_characteristics_metadata`'
       - '`get_catchment_characteristics`'
       - '`rescale_catchment_characteristics`'
+      - '`get_drainage_area_estimates`'
   - title: Discovery and Subsetting
     desc: >
       Functions for finding and saving the part of the NHDPlus you are

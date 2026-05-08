@@ -361,8 +361,6 @@ summary_df <- data.frame(
   basin = basin_labels[names(da_results)],
   network_da = vapply(da_results, \(x) x$network_da_sqkm, numeric(1)),
   da_huc12 = vapply(da_results, \(x) x$da_huc12_sqkm, numeric(1)),
-  contrib_huc12 = vapply(da_results,
-    \(x) x$contrib_da_huc12_sqkm, numeric(1)),
   da_huc10 = vapply(da_results,
     \(x) ifelse(is.na(x$da_huc10_sqkm), NA_real_, x$da_huc10_sqkm),
     numeric(1)),
@@ -392,7 +390,7 @@ if(!is.null(nwis_da)) {
 
 knitr::kable(summary_df, digits = 1,
   col.names = c("Basin", "Network DA", "HUC12 DA",
-    "Contributing DA", "HUC10 DA", "HUC08 DA", "NHDPlusHR DA",
+    "HUC10 DA", "HUC08 DA", "NHDPlusHR DA",
     "NWIS DA", "NWIS Contributing DA"),
   caption = "Drainage area estimates (sq km) by basin and method")
 ```
@@ -611,7 +609,7 @@ plot_boundaries <- function(da, basin_label) {
   # so every boundary reaches the gage instead of stopping at the
   # lowest complete HUC outlet.
   boundaries <- list()
-  boundaries[["HUC12 (NLDI)"]] <- st_geometry(
+  boundaries[["HUC12"]] <- st_geometry(
     compute_basin_polygon(da, da$hu12_by_huc12, target_crs))
   if(!is.null(da$hu12_by_huc10))
     boundaries[["HUC10"]] <- st_geometry(
@@ -629,7 +627,7 @@ plot_boundaries <- function(da, basin_label) {
   # Named linetypes: HR gets dashed for visibility over the dense
   # network catchment boundary; network catchments get dotted.
   all_ltypes <- c(
-    "HUC12 (NLDI)" = "solid",
+    "HUC12" = "solid",
     "HUC10" = "longdash",
     "HUC08" = "dotdash",
     "Network catchments" = "dashed",
@@ -745,28 +743,30 @@ ggnewscale_color <- function(pts, target_crs) {
   )
 }
 
-# Mode 3: HUC12 Non-Contributing Area Choropleth
-plot_choropleth <- function(da, fl, basin_label,
+# Mode 3: HUC12 Type (hu_12_type)
+plot_type <- function(da, fl, basin_label,
   fig_ratio = 12 / 8) {
   target_crs <- st_crs(3857)
-  # Use the largest HUC12 set available (HUC08 superset, HUC10
-  # superset, or HUC12 fallback) so every HUC12 inside the largest
-  # estimated drainage area envelope appears in the choropleth.
   largest <- largest_hu12_set(da)
   hu12 <- st_transform(largest, target_crs)
-  pct <- pmin(pmax(hu12$ncontrb_sqkm / hu12$dasqkm * 100, 0), 100)
-  hu12$pct_noncontrib_bin <- factor(
-    ifelse(pct < 33, "0-33%",
-      ifelse(pct < 66, "33-66%", "66-100%")),
-    levels = c("0-33%", "33-66%", "66-100%"))
+
+  type_labels <- c(
+    "S" = "Standard",
+    "C" = "Closed basin",
+    "M" = "Multiple outlets",
+    "F" = "Frontal",
+    "W" = "Water"
+  )
+  hu12$type_label <- factor(
+    type_labels[hu12$hu_12_type],
+    levels = c("Standard", "Closed basin", "Multiple outlets",
+      "Frontal", "Water")
+  )
+
   gage_pt <- get_gage_pt(da, target_crs)
   fl <- st_transform(fl, target_crs)
   basin_poly <- compute_basin_polygon(da, largest, target_crs)
 
-  # Collect the gap-filling pieces (catchments between the lowest
-  # complete HUC12 outlet and the gage) into a single sf with a
-  # category column so they share one legend. The three categories
-  # are distinguished by outline color and linetype; fill is uniform.
   gap_layers <- list()
   if(!is.null(da$extra_catchments) && nrow(da$extra_catchments) > 0) {
     extras <- st_transform(da$extra_catchments, target_crs)
@@ -795,20 +795,49 @@ plot_choropleth <- function(da, fl, basin_label,
 
   fig_lims <- fit_bbox_to_fig(basin_poly, fig_ratio = fig_ratio)
 
+  # 30% alpha baked into the fill so the legend swatches match the map.
+  # Standard is fully transparent (clear).
+  col30 <- function(col) adjustcolor(col, alpha.f = 0.3)
+  type_colors <- c(
+    "Standard" = adjustcolor("white", alpha.f = 0),
+    "Closed basin" = col30("#8B4513"),
+    "Multiple outlets" = col30("#555555"),
+    "Frontal" = col30("#228B22"),
+    "Water" = col30("#1E90FF")
+  )
+
+  # ggplot2 4.0 doesn't apply scale fill values to legend keys for levels
+  # not present in the data, even with drop = FALSE. A dummy layer with
+  # one tiny polygon per level forces each key to render with the
+  # correct fill. Placed inside the plot extent and covered by the
+  # basin underlay and hu12 layer so they're invisible on the map.
+  gage_xy <- st_coordinates(gage_pt)
+  dummy_levels <- levels(hu12$type_label)
+  dummy_polys <- st_sfc(lapply(seq_along(dummy_levels), \(i)
+    st_polygon(list(matrix(
+      c(gage_xy[1], gage_xy[2], gage_xy[1] + 1, gage_xy[2],
+        gage_xy[1] + 1, gage_xy[2] + 1, gage_xy[1], gage_xy[2] + 1,
+        gage_xy[1], gage_xy[2]),
+      ncol = 2, byrow = TRUE)))), crs = target_crs)
+  dummy_hu12 <- st_sf(
+    type_label = factor(dummy_levels, levels = dummy_levels),
+    geometry = dummy_polys)
+
   p <- ggplot() |>
     add_topo(basin_poly, fig_ratio = fig_ratio) |>
     add_basin_underlay(basin_poly) +
+    geom_sf(data = dummy_hu12, aes(fill = type_label),
+      color = "gray50", linewidth = 0.2, inherit.aes = FALSE) +
+    geom_sf(data = fl, color = "steelblue", linewidth = 0.25,
+      alpha = 0.5, inherit.aes = FALSE) +
     geom_sf(data = hu12,
-      aes(fill = pct_noncontrib_bin),
-      color = "gray50", linewidth = 0.2, alpha = 0.8,
+      aes(fill = type_label),
+      color = "gray50", linewidth = 0.2,
       inherit.aes = FALSE) +
     scale_fill_manual(
-      values = c("0-33%" = "#FFFDD0",
-        "33-66%" = "#C68E3F",
-        "66-100%" = "#8B4513"),
-      limits = c("0-33%", "33-66%", "66-100%"),
+      values = type_colors,
       drop = FALSE,
-      name = "Non-contributing\narea")
+      name = "HUC12 type")
 
   gap_colors <- c(
     "Gap network catchment" = "steelblue",
@@ -835,25 +864,26 @@ plot_choropleth <- function(da, fl, basin_label,
   }
 
   p +
-    geom_sf(data = fl, color = "steelblue", linewidth = 0.25,
-      alpha = 0.8, inherit.aes = FALSE) +
     ggnewscale_color(pts, target_crs) +
     coord_sf(crs = target_crs, expand = FALSE,
       xlim = fig_lims$xlim, ylim = fig_lims$ylim) +
-    labs(title = paste(basin_label,
-      "-- HUC12 Non-Contributing Area")) +
-    map_theme()
+    labs(title = paste(basin_label, "-- HUC12 Types")) +
+    map_theme() +
+    theme(legend.box = "vertical") +
+    guides(
+      fill = guide_legend(
+        nrow = 1, order = 1,
+        override.aes = list(color = "gray50", linewidth = 0.4)))
 }
 
 # Per-basin summary table
 basin_summary_table <- function(da, basin_name = NULL) {
   vals <- data.frame(
-    source = c("Network", "HUC12", "HUC12 contributing",
+    source = c("Network", "HUC12",
       "HUC10", "HUC08", "NHDPlusHR"),
     total_sqkm = c(
       da$network_da_sqkm,
       da$da_huc12_sqkm,
-      da$contrib_da_huc12_sqkm,
       ifelse(is.na(da$da_huc10_sqkm), NA_real_, da$da_huc10_sqkm),
       ifelse(is.na(da$da_huc08_sqkm), NA_real_, da$da_huc08_sqkm),
       ifelse(is.na(da$nhdplushr_network_dasqkm), NA_real_,
@@ -915,18 +945,17 @@ plot_network(da_results$french_broad, flowlines$french_broad,
 - HUC12 outlets (x markers) align with major tributary junctions.
 :::
 
-#### HUC12 Non-Contributing Area
+#### HUC12 Types
 
-```{r french_broad_choropleth, fig.height = 8}
-plot_choropleth(da_results$french_broad, flowlines$french_broad,
+```{r french_broad_type, fig.height = 8}
+plot_type(da_results$french_broad, flowlines$french_broad,
   "French Broad")
 ```
 
 ::: {.vignette-note}
-- Non-contributing area is negligible across all HUC12 units.
-- The choropleth reads as nearly uniform light fill, confirming that
-  the contributing fraction equals or nearly equals total area
-  throughout the basin.
+- Every HUC12 in the French Broad basin is classified as Standard.
+- The uniform clear fill confirms that all units link to a downstream
+  HUC12 through normal surface drainage.
 :::
 
 ### Brazos River, West Texas
@@ -969,20 +998,21 @@ plot_network(da_results$brazos, flowlines$brazos,
   illustrates why contributing area is smaller than total area.
 :::
 
-#### HUC12 Non-Contributing Area
+#### HUC12 Types
 
-```{r brazos_choropleth, fig.height = 8}
-plot_choropleth(da_results$brazos, flowlines$brazos,
+```{r brazos_type, fig.height = 8}
+plot_type(da_results$brazos, flowlines$brazos,
   "Brazos at Rosharon")
 ```
 
 ::: {.vignette-note}
-- HUC12 units in the western part of the basin carry high
-  noncontributing fractions (dark brown fill).
-- Noncontributing area drops sharply east of the Caprock Escarpment
-  where the flow regime becomes perennial.
-- The choropleth shows that the noncontributing designation is not
-  distributed uniformly but concentrated in specific arid sub-basins.
+- Closed-basin HUC12s (brown) concentrate in the arid western uplands
+  of the Llano Estacado, where surface water never reaches the Brazos.
+- Multiple-outlet HUC12s (grey) mark units whose drainage splits
+  between more than one downstream HUC.
+- Frontal HUC12s (green) appear near the Gulf where catchments drain
+  directly to the coast rather than to a downstream HUC12.
+- Standard HUC12s (clear) dominate the perennial eastern main stem.
 :::
 
 ### James River / Cottonwood Lake
@@ -1020,18 +1050,17 @@ plot_network(da_results$james, flowlines$james, "James River")
 - The lower main stem is perennial and well-defined.
 :::
 
-#### HUC12 Non-Contributing Area
+#### HUC12 Types
 
-```{r james_choropleth, fig.height = 8}
-plot_choropleth(da_results$james, flowlines$james, "James River")
+```{r james_type, fig.height = 8}
+plot_type(da_results$james, flowlines$james, "James River")
 ```
 
 ::: {.vignette-note}
-- Several HUC12 units carry high noncontributing fractions (dark brown),
-  concentrated in the glacial pothole region.
-- The spatial pattern of noncontributing area follows the extent of
-  glacial drift and closed-basin topography.
-- HUC12 units in the lower basin show negligible noncontributing area.
+- Two closed-basin HUC12s (brown) appear in the upper prairie-pothole
+  headwaters — these are units with no surface outlet to the James.
+- The remaining HUC12s are Standard (clear), including the lower
+  perennial main stem.
 :::
 
 ### Black Earth Creek
@@ -1068,17 +1097,16 @@ plot_network(da_results$black_earth, flowlines$black_earth,
 - Few intermittent headwater reaches are present.
 :::
 
-#### HUC12 Non-Contributing Area
+#### HUC12 Types
 
-```{r black_earth_choropleth, fig.height = 8}
-plot_choropleth(da_results$black_earth, flowlines$black_earth,
+```{r black_earth_type, fig.height = 8}
+plot_type(da_results$black_earth, flowlines$black_earth,
   "Black Earth Creek")
 ```
 
 ::: {.vignette-note}
-- Noncontributing area is negligible across all HUC12 units.
-- The uniform light fill confirms that essentially the entire basin
-  contributes to streamflow at the outlet.
+- The single HUC12 covering Black Earth Creek is Standard type
+  (clear fill), consistent with a well-defined humid basin.
 :::
 
 ### Malheur Lake
@@ -1121,19 +1149,20 @@ plot_network(da_results$malheur, flowlines$malheur, "Malheur Lake")
 - The network terminates at the lake with no surface outlet downstream.
 :::
 
-#### HUC12 Non-Contributing Area
+#### HUC12 Types
 
-```{r malheur_choropleth, fig.height = 8}
-plot_choropleth(da_results$malheur, flowlines$malheur, "Malheur Lake")
+```{r malheur_type, fig.height = 8}
+plot_type(da_results$malheur, flowlines$malheur, "Malheur Lake")
 ```
 
 ::: {.vignette-note}
-- Several HUC12 units carry high noncontributing fractions in the
-  playa and alkali flat margins surrounding the lakes.
-- The endorheic nature of the basin means the entire watershed is
-  effectively noncontributing to any downstream system.
-- The choropleth distinguishes HUC-level noncontributing designations
-  from the basin-scale closed-basin classification.
+- The Water HUC12 (blue) is Malheur Lake itself.
+- Closed-basin HUC12s (brown) line the pluvial-lake margins, where
+  surface drainage terminates in playas rather than reaching the lake.
+- Multiple-outlet HUC12s (grey) appear on the low-gradient flats of
+  the Harney Basin.
+- The surrounding Standard HUC12s (clear) supply the Silvies and
+  Donner und Blitzen corridors that actually reach the lake.
 :::
 
 ### Purgatoire River near Las Animas
@@ -1183,19 +1212,18 @@ plot_network(da_results$purgatoire, flowlines$purgatoire,
   basin.
 :::
 
-#### HUC12 Non-Contributing Area
+#### HUC12 Types
 
-```{r purgatoire_choropleth, fig.height = 8}
-plot_choropleth(da_results$purgatoire, flowlines$purgatoire,
+```{r purgatoire_type, fig.height = 8}
+plot_type(da_results$purgatoire, flowlines$purgatoire,
   "Purgatoire River")
 ```
 
 ::: {.vignette-note}
-- HUC12 units in the flat southern and western margins of the basin
-  carry noncontributing area designations.
-- The choropleth shows the spatial pattern of boundary sensitivity:
-  where terrain gradients are weak, the WBD's placement of the divide
-  determines which land is included or excluded.
+- Every HUC12 in the Purgatoire basin is Standard type (clear fill).
+- The boundary-sensitivity story here is about where the WBD places
+  the divide between Standard HUC12s, not about closed-basin or
+  multiple-outlet designations within the basin.
 :::
 
 ## Outlet Catchment Splitting

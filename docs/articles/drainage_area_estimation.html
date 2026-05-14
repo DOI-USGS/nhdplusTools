@@ -301,7 +301,7 @@ calls.</p>
 <span>    featureID <span class="op">=</span> <span class="st">"USGS-08116650"</span><span class="op">)</span>,</span>
 <span>  james <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>,</span>
 <span>    featureID <span class="op">=</span> <span class="st">"USGS-06468000"</span><span class="op">)</span>,</span>
-<span>  malheur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">118.8</span>, <span class="fl">43.3</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>,</span>
+<span>  malheur <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">118.8</span>, <span class="fl">43.3</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>,</span>
 <span>  purgatoire <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>,</span>
 <span>    featureID <span class="op">=</span> <span class="st">"USGS-07128500"</span><span class="op">)</span>,</span>
 <span>  davidson <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>,</span>
@@ -438,8 +438,6 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <span>  basin <span class="op">=</span> <span class="va">basin_labels</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">da_results</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>  network_da <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">da_results</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">network_da_sqkm</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  da_huc12 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">da_results</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">da_huc12_sqkm</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  contrib_huc12 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">da_results</span>,</span>
-<span>    \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">contrib_da_huc12_sqkm</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  da_huc10 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">da_results</span>,</span>
 <span>    \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">da_huc10_sqkm</span><span class="op">)</span>, <span class="cn">NA_real_</span>, <span class="va">x</span><span class="op">$</span><span class="va">da_huc10_sqkm</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -469,29 +467,27 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">summary_df</span>, digits <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Basin"</span>, <span class="st">"Network DA"</span>, <span class="st">"HUC12 DA"</span>,</span>
-<span>    <span class="st">"Contributing DA"</span>, <span class="st">"HUC10 DA"</span>, <span class="st">"HUC08 DA"</span>, <span class="st">"NHDPlusHR DA"</span>,</span>
+<span>    <span class="st">"HUC10 DA"</span>, <span class="st">"HUC08 DA"</span>, <span class="st">"NHDPlusHR DA"</span>,</span>
 <span>    <span class="st">"NWIS DA"</span>, <span class="st">"NWIS Contributing DA"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"Drainage area estimates (sq km) by basin and method"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Drainage area estimates (sq km) by basin and method</caption>
 <colgroup>
-<col width="10%">
-<col width="14%">
-<col width="8%">
-<col width="6%">
-<col width="12%">
-<col width="6%">
-<col width="6%">
-<col width="10%">
-<col width="6%">
+<col width="11%">
 <col width="16%">
+<col width="9%">
+<col width="7%">
+<col width="7%">
+<col width="7%">
+<col width="11%">
+<col width="7%">
+<col width="18%">
 </colgroup>
 <thead><tr class="header">
 <th align="left"></th>
 <th align="left">Basin</th>
 <th align="right">Network DA</th>
 <th align="right">HUC12 DA</th>
-<th align="right">Contributing DA</th>
 <th align="right">HUC10 DA</th>
 <th align="right">HUC08 DA</th>
 <th align="right">NHDPlusHR DA</th>
@@ -503,7 +499,6 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <td align="left">black_earth</td>
 <td align="left">Black Earth Creek</td>
 <td align="right">114.3</td>
-<td align="right">118.0</td>
 <td align="right">118.0</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -517,7 +512,6 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <td align="right">2446.9</td>
 <td align="right">2446.0</td>
 <td align="right">2446.0</td>
-<td align="right">2446.0</td>
 <td align="right">NA</td>
 <td align="right">2446.3</td>
 <td align="right">2447.5</td>
@@ -528,7 +522,6 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <td align="left">Brazos at Rosharon</td>
 <td align="right">103578.2</td>
 <td align="right">99672.7</td>
-<td align="right">99061.0</td>
 <td align="right">108939.7</td>
 <td align="right">118107.3</td>
 <td align="right">NA</td>
@@ -540,7 +533,6 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <td align="left">James River</td>
 <td align="right">1442.4</td>
 <td align="right">1436.6</td>
-<td align="right">1436.6</td>
 <td align="right">1655.5</td>
 <td align="right">NA</td>
 <td align="right">620.4</td>
@@ -551,7 +543,6 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <td align="left">malheur</td>
 <td align="left">Malheur Lake</td>
 <td align="right">4585.6</td>
-<td align="right">7307.9</td>
 <td align="right">7307.9</td>
 <td align="right">8543.9</td>
 <td align="right">12287.4</td>
@@ -565,7 +556,6 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <td align="right">8930.0</td>
 <td align="right">8875.0</td>
 <td align="right">8875.0</td>
-<td align="right">8875.0</td>
 <td align="right">NA</td>
 <td align="right">8217.8</td>
 <td align="right">8912.2</td>
@@ -575,7 +565,6 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <td align="left">davidson</td>
 <td align="left">Davidson Creek</td>
 <td align="right">183.9</td>
-<td align="right">176.0</td>
 <td align="right">176.0</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -618,26 +607,22 @@ essentially equals total drainage area across all sources.</p>
 <td align="right">2446.0</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC12 contributing</td>
-<td align="right">2446.0</td>
-</tr>
-<tr class="even">
 <td align="left">HUC10</td>
 <td align="right">2446.0</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">HUC08</td>
 <td align="right">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NHDPlusHR</td>
 <td align="right">2446.3</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">NWIS</td>
 <td align="right">2447.5</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NWIS contributing</td>
 <td align="right">NA</td>
 </tr>
@@ -673,18 +658,18 @@ channels.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-non-contributing-area">HUC12 Non-Contributing Area<a class="anchor" aria-label="anchor" href="#huc12-non-contributing-area"></a>
+<h4 id="huc12-types">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types"></a>
 </h4>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_choropleth</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">french_broad</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">french_broad</span>,</span>
+<code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">french_broad</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">french_broad</span>,</span>
 <span>  <span class="st">"French Broad"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="drainage_area_figures/french_broad_choropleth-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="drainage_area_figures/french_broad_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>Non-contributing area is negligible across all HUC12 units.</li>
-<li>The choropleth reads as nearly uniform light fill, confirming that
-the contributing fraction equals or nearly equals total area throughout
-the basin.</li>
+<li>Every HUC12 in the French Broad basin is classified as
+Standard.</li>
+<li>The uniform clear fill confirms that all units link to a downstream
+HUC12 through normal surface drainage.</li>
 </ul>
 </div>
 </div>
@@ -719,26 +704,22 @@ and contributing drainage area.</p>
 <td align="right">99672.7</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC12 contributing</td>
-<td align="right">99061.0</td>
-</tr>
-<tr class="even">
 <td align="left">HUC10</td>
 <td align="right">108939.7</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">HUC08</td>
 <td align="right">118107.3</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NHDPlusHR</td>
 <td align="right">NA</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">NWIS</td>
 <td align="right">117427.6</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NWIS contributing</td>
 <td align="right">92651.7</td>
 </tr>
@@ -773,20 +754,23 @@ illustrates why contributing area is smaller than total area.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-non-contributing-area-1">HUC12 Non-Contributing Area<a class="anchor" aria-label="anchor" href="#huc12-non-contributing-area-1"></a>
+<h4 id="huc12-types-1">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-1"></a>
 </h4>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_choropleth</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">brazos</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">brazos</span>,</span>
+<code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">brazos</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">brazos</span>,</span>
 <span>  <span class="st">"Brazos at Rosharon"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="drainage_area_figures/brazos_choropleth-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="drainage_area_figures/brazos_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>HUC12 units in the western part of the basin carry high
-noncontributing fractions (dark brown fill).</li>
-<li>Noncontributing area drops sharply east of the Caprock Escarpment
-where the flow regime becomes perennial.</li>
-<li>The choropleth shows that the noncontributing designation is not
-distributed uniformly but concentrated in specific arid sub-basins.</li>
+<li>Closed-basin HUC12s (brown) concentrate in the arid western uplands
+of the Llano Estacado, where surface water never reaches the
+Brazos.</li>
+<li>Multiple-outlet HUC12s (grey) mark units whose drainage splits
+between more than one downstream HUC.</li>
+<li>Frontal HUC12s (green) appear near the Gulf where catchments drain
+directly to the coast rather than to a downstream HUC12.</li>
+<li>Standard HUC12s (clear) dominate the perennial eastern main
+stem.</li>
 </ul>
 </div>
 </div>
@@ -820,26 +804,22 @@ large noncontributing fraction that varies by sub-basin.</p>
 <td align="right">1436.6</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC12 contributing</td>
-<td align="right">1436.6</td>
-</tr>
-<tr class="even">
 <td align="left">HUC10</td>
 <td align="right">1655.5</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">HUC08</td>
 <td align="right">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NHDPlusHR</td>
 <td align="right">620.4</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">NWIS</td>
 <td align="right">1849.3</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NWIS contributing</td>
 <td align="right">722.6</td>
 </tr>
@@ -871,19 +851,17 @@ drift creates closed depressions and episodic connectivity.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-non-contributing-area-2">HUC12 Non-Contributing Area<a class="anchor" aria-label="anchor" href="#huc12-non-contributing-area-2"></a>
+<h4 id="huc12-types-2">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-2"></a>
 </h4>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_choropleth</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">james</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">james</span>, <span class="st">"James River"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="drainage_area_figures/james_choropleth-1.png" class="r-plt" alt="" width="100%"></p>
+<code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">james</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">james</span>, <span class="st">"James River"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="drainage_area_figures/james_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>Several HUC12 units carry high noncontributing fractions (dark
-brown), concentrated in the glacial pothole region.</li>
-<li>The spatial pattern of noncontributing area follows the extent of
-glacial drift and closed-basin topography.</li>
-<li>HUC12 units in the lower basin show negligible noncontributing
-area.</li>
+<li>Two closed-basin HUC12s (brown) appear in the upper prairie-pothole
+headwaters — these are units with no surface outlet to the James.</li>
+<li>The remaining HUC12s are Standard (clear), including the lower
+perennial main stem.</li>
 </ul>
 </div>
 </div>
@@ -917,26 +895,22 @@ Well-determined drainage area with minimal noncontributing fraction.</p>
 <td align="right">118.0</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC12 contributing</td>
-<td align="right">118.0</td>
-</tr>
-<tr class="even">
 <td align="left">HUC10</td>
 <td align="right">NA</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">HUC08</td>
 <td align="right">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NHDPlusHR</td>
 <td align="right">107.1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">NWIS</td>
 <td align="right">118.1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NWIS contributing</td>
 <td align="right">110.9</td>
 </tr>
@@ -966,17 +940,16 @@ landscape.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-non-contributing-area-3">HUC12 Non-Contributing Area<a class="anchor" aria-label="anchor" href="#huc12-non-contributing-area-3"></a>
+<h4 id="huc12-types-3">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-3"></a>
 </h4>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_choropleth</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">black_earth</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">black_earth</span>,</span>
+<code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">black_earth</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">black_earth</span>,</span>
 <span>  <span class="st">"Black Earth Creek"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="drainage_area_figures/black_earth_choropleth-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="drainage_area_figures/black_earth_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>Noncontributing area is negligible across all HUC12 units.</li>
-<li>The uniform light fill confirms that essentially the entire basin
-contributes to streamflow at the outlet.</li>
+<li>The single HUC12 covering Black Earth Creek is Standard type (clear
+fill), consistent with a well-defined humid basin.</li>
 </ul>
 </div>
 </div>
@@ -1011,18 +984,14 @@ gage.</p>
 <td align="right">7307.9</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC12 contributing</td>
-<td align="right">7307.9</td>
-</tr>
-<tr class="even">
 <td align="left">HUC10</td>
 <td align="right">8543.9</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">HUC08</td>
 <td align="right">12287.4</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NHDPlusHR</td>
 <td align="right">NA</td>
 </tr>
@@ -1058,19 +1027,21 @@ downstream.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-non-contributing-area-4">HUC12 Non-Contributing Area<a class="anchor" aria-label="anchor" href="#huc12-non-contributing-area-4"></a>
+<h4 id="huc12-types-4">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-4"></a>
 </h4>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_choropleth</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">malheur</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">malheur</span>, <span class="st">"Malheur Lake"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="drainage_area_figures/malheur_choropleth-1.png" class="r-plt" alt="" width="100%"></p>
+<code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">malheur</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">malheur</span>, <span class="st">"Malheur Lake"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="drainage_area_figures/malheur_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>Several HUC12 units carry high noncontributing fractions in the
-playa and alkali flat margins surrounding the lakes.</li>
-<li>The endorheic nature of the basin means the entire watershed is
-effectively noncontributing to any downstream system.</li>
-<li>The choropleth distinguishes HUC-level noncontributing designations
-from the basin-scale closed-basin classification.</li>
+<li>The Water HUC12 (blue) is Malheur Lake itself.</li>
+<li>Closed-basin HUC12s (brown) line the pluvial-lake margins, where
+surface drainage terminates in playas rather than reaching the
+lake.</li>
+<li>Multiple-outlet HUC12s (grey) appear on the low-gradient flats of
+the Harney Basin.</li>
+<li>The surrounding Standard HUC12s (clear) supply the Silvies and
+Donner und Blitzen corridors that actually reach the lake.</li>
 </ul>
 </div>
 </div>
@@ -1108,26 +1079,22 @@ and Crowfoot (2012, TM 11-C6)</a>.</p>
 <td align="right">8875.0</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC12 contributing</td>
-<td align="right">8875.0</td>
-</tr>
-<tr class="even">
 <td align="left">HUC10</td>
 <td align="right">8875.0</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">HUC08</td>
 <td align="right">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NHDPlusHR</td>
 <td align="right">8217.8</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">NWIS</td>
 <td align="right">8912.2</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">NWIS contributing</td>
 <td align="right">8881.6</td>
 </tr>
@@ -1166,19 +1133,19 @@ basin.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-non-contributing-area-5">HUC12 Non-Contributing Area<a class="anchor" aria-label="anchor" href="#huc12-non-contributing-area-5"></a>
+<h4 id="huc12-types-5">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-5"></a>
 </h4>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_choropleth</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">purgatoire</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">purgatoire</span>,</span>
+<code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">purgatoire</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">purgatoire</span>,</span>
 <span>  <span class="st">"Purgatoire River"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="drainage_area_figures/purgatoire_choropleth-1.png" class="r-plt" alt="" width="100%"></p>
+<p><img src="drainage_area_figures/purgatoire_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>HUC12 units in the flat southern and western margins of the basin
-carry noncontributing area designations.</li>
-<li>The choropleth shows the spatial pattern of boundary sensitivity:
-where terrain gradients are weak, the WBD’s placement of the divide
-determines which land is included or excluded.</li>
+<li>Every HUC12 in the Purgatoire basin is Standard type (clear
+fill).</li>
+<li>The boundary-sensitivity story here is about where the WBD places
+the divide between Standard HUC12s, not about closed-basin or
+multiple-outlet designations within the basin.</li>
 </ul>
 </div>
 </div>
@@ -1258,7 +1225,7 @@ the overview. This view zooms to a 500 m square centered on the HUC12
 outlet.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hu12_outlet_pt</span> <span class="op">&lt;-</span> <span class="va">hu12_pts</span><span class="op">[</span><span class="va">hu12_pts</span><span class="op">$</span><span class="va">comid</span> <span class="op">==</span> <span class="va">hu12_comid</span>, <span class="op">]</span></span>
-<span><span class="va">hu12_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="va">hu12_outlet_pt</span><span class="op">)</span></span>
+<span><span class="va">hu12_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="va">hu12_outlet_pt</span><span class="op">)</span></span>
 <span><span class="va">half_side</span> <span class="op">&lt;-</span> <span class="fl">250</span> <span class="co"># meters in EPSG:3857</span></span>
 <span><span class="va">zoom_xlim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">hu12_coords</span><span class="op">[</span><span class="fl">1</span>, <span class="st">"X"</span><span class="op">]</span> <span class="op">-</span> <span class="va">half_side</span>,</span>
 <span>  <span class="va">hu12_coords</span><span class="op">[</span><span class="fl">1</span>, <span class="st">"X"</span><span class="op">]</span> <span class="op">+</span> <span class="va">half_side</span><span class="op">)</span></span>
@@ -1309,20 +1276,20 @@ HUC12 area already counted in the drainage area estimate.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build an sf with labeled polygons for a single legend</span></span>
 <span><span class="va">split_layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
 <span>    role <span class="op">=</span> <span class="st">"Upstream of gage (included)"</span>,</span>
-<span>    geometry <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">osc_split</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
+<span>    geometry <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">osc_split</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
 <span>    role <span class="op">=</span> <span class="st">"Downstream of gage (excluded)"</span>,</span>
-<span>    geometry <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/geos_binary_ops.html" class="external-link">st_difference</a></span><span class="op">(</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">osc_full</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">osc_split</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
+<span>    geometry <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html" class="external-link">st_difference</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">osc_full</span><span class="op">)</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">osc_split</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
 <span>    role <span class="op">=</span> <span class="st">"Upstream of HUC outlet (excluded, overlaps HUC)"</span>,</span>
-<span>    geometry <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hu12_catch_split</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
+<span>    geometry <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hu12_catch_split</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
 <span>    role <span class="op">=</span> <span class="st">"Downstream of HUC outlet (included as local area)"</span>,</span>
-<span>    geometry <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/geos_binary_ops.html" class="external-link">st_difference</a></span><span class="op">(</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hu12_catch_full</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hu12_catch_split</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>    geometry <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html" class="external-link">st_difference</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hu12_catch_full</span><span class="op">)</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hu12_catch_split</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">split_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>

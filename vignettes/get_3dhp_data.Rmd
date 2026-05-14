@@ -59,7 +59,7 @@ The code block just below generates starting locations based on information deri
   
   pc <- function(x) sf::st_geometry(sf::st_transform(x, 3857))
 
-  plot_nhdplus(bbox = sf::st_bbox(flowline), plot_config = list(flowline = list(col = NULL)), zoom = 14)
+  plot_nhdplus(bbox = sf::st_bbox(sf::st_buffer(flowline, 500)), plot_config = list(flowline = list(col = NULL)), zoom = 14)
   plot(pc(flowline), add = TRUE, col = "darkblue", lwd = 2)
   plot(pc(point), pch = "O", add = TRUE)
 ```

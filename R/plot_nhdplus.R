@@ -163,7 +163,11 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
     suppressWarnings({
       if(!add) {
         tryCatch({
-          bb <- gt(pd[[get_plot_bound(pd)]])
+          bb <- if(!is.null(pd$plot_bbox)) {
+            plot_bbox_to_3857(pd$plot_bbox)
+          } else {
+            gt(pd[[get_plot_bound(pd)]])
+          }
 
           if(is.null(zoom)) {
             zoom <- set_zoom(bb)
@@ -172,7 +176,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
           if(interactive())
             message(paste("Zoom set to:", zoom))
 
-          tiles <- maptiles::get_tiles(bb, zoom = zoom, crop = FALSE,
+          tiles <- maptiles::get_tiles(bb, zoom = zoom, crop = TRUE,
                                        cachedir = cache_tiles,
                                        verbose = FALSE, provider = basemap)
 
@@ -184,7 +188,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
           maptiles::plot_tiles(tiles, add = TRUE)
 
           mapsf::mf_map(bb, type = "base", add = TRUE, col = NA, border = NA)
-          mapsf::mf_arrow(adjust = bb)
+          mapsf::mf_arrow()
           mapsf::mf_scale()
 
         },error = function(e) {
@@ -577,6 +581,20 @@ sp_bbox <- function(g) {
   matrix(as.numeric(sf::st_bbox(g)),
          nrow = 2, dimnames = list(c("x", "y"),
                                    c("min", "max")))
+}
+
+plot_bbox_to_3857 <- function(b) {
+  if(inherits(b, "bbox")) {
+    crs <- sf::st_crs(b)
+    if(is.na(crs)) crs <- sf::st_crs(4326)
+    sfc <- sf::st_as_sfc(b)
+    sf::st_crs(sfc) <- crs
+  } else {
+    sfc <- sf::st_as_sfc(sf::st_bbox(c(xmin = b[1, 1], ymin = b[2, 1],
+                                       xmax = b[1, 2], ymax = b[2, 2]),
+                                     crs = 4326))
+  }
+  sf::st_geometry(sf::st_transform(sfc, 3857))
 }
 
 make_basin <- function(x, catchment_layer, comids = NULL) {

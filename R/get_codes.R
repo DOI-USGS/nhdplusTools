@@ -76,7 +76,9 @@ get_streamlevel <- function(x) {
   coastal <- NULL
   coastal <- if("coastal" %in% names(x)) "coastal"
 
-  add_streamlevel(x, coastal)$stream_level
+  # TODO: drop suppressWarnings once hydroloom's hy() stops probing $id
+  # for streamlevel-only inputs (warns "Unknown column: id").
+  suppressWarnings(add_streamlevel(x, coastal))$stream_level
 
 }
 

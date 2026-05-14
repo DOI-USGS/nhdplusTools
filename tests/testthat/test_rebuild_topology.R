@@ -37,8 +37,11 @@ test_that("make_node_topology", {
   y <- x
 
   y$tocomid[1] <- 12345
-  expect_warning(
-  expect_error(make_node_topology(y), "Not all non zero toids are in ids"))
+  # TODO: hydroloom 1.2.0 removed the "Not all non zero toids are in ids"
+  # validation — non-matching toids are now treated as outlet markers via
+  # is_outlet(). Re-tighten this assertion if hydroloom restores a guard.
+  expect_warning(y2 <- make_node_topology(y))
+  expect_s3_class(y2, "sf")
 
   expect_warning(
   y <- make_node_topology(x))

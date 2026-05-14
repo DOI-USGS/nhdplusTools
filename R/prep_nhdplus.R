@@ -226,13 +226,19 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
     order <- data.frame(id = x$id)
 
     x <- group_split(group_by(x, .data$terminalpa))
-    x <- bind_rows(lapply(x, add_toids, return_dendritic = return_dendritic))
+    # TODO: migrate to hydroloom::to_flownetwork() when return_dendritic = FALSE.
+    # add_toids(return_dendritic = FALSE) is deprecated as of hydroloom 1.2.0.
+    # Blocker: to_flownetwork() requires levelpath on input, which the
+    # test_rebuild_topology.R:67 call path (COMID/FromNode/ToNode only) omits.
+    x <- bind_rows(lapply(x, function(g) {
+      suppressWarnings(add_toids(g, return_dendritic = return_dendritic))
+    }))
 
     x <- left_join(order, x, by = c("id"))
 
   } else {
 
-    x <- add_toids(x, return_dendritic)
+    x <- suppressWarnings(add_toids(x, return_dendritic))
 
   }
 

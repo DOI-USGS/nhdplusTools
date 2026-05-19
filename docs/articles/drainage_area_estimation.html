@@ -105,30 +105,33 @@ img {
   font-size: 0.9em;
 }
 </style>
-<p><code><a href="../reference/get_drainage_area_estimates.html">get_drainage_area_estimates()</a></code> combines WBD delineations
-and non-surface-contributing area estimates with NHDPlusV2 catchment
-areas for the gap between a basin outlet and the nearest upstream HUC12.
-Non-contributing areas captured in HUC12 boundaries are included.</p>
+<p><code><a href="../reference/get_drainage_area_estimates.html">get_drainage_area_estimates()</a></code> combines Watershed
+Boundary Dataset (WBD) delineations and non-surface-contributing area
+estimates with National Hydrography Dataset Plus version 2 (NHDPlusV2)
+catchment areas for the gap between a basin outlet and the nearest
+upstream HU12. Non-contributing areas captured in HU12 boundaries are
+included.</p>
 <p>This vignette shows output of the function on five basins that span a
-range of hydrologic settings – from a well-determined humid basin to
-arid systems, glacial prairie, and an endorheic (closed) basin.</p>
+range of hydrologic settings – from basins where topographic signal
+dominates to arid, glacial, and endorheic settings where it does
+not.</p>
 <div class="section level2">
 <h2 id="how-get_drainage_area_estimates-works">How <code>get_drainage_area_estimates()</code> Works<a class="anchor" aria-label="anchor" href="#how-get_drainage_area_estimates-works"></a>
 </h2>
 <p>The function produces drainage area estimates by stitching together
-two kinds of spatial data: HUC12 polygon areas for the bulk of the
+two kinds of spatial data: HU12 polygon areas for the bulk of the
 upstream basin and NHDPlusV2 catchment areas for the gap between the
-gage (or other outlet) and the nearest upstream HUC12 boundaries.
-Because HUC12 polygons carry a non-contributing area attribute
-(<code>ncontrb_a</code>) and non-surface-contributing HUC12s can be
-retrieved from HUC10 or HUC08 groupings, the estimates separate total
+gage (or other outlet) and the nearest upstream HU12 boundaries. Because
+HU12 polygons carry a non-contributing area attribute
+(<code>ncontrb_a</code>) and non-surface-contributing HU12s can be
+retrieved from HU10 or HU8 groupings, the estimates separate total
 drainage area from surface network contributing drainage area.</p>
 <div class="section level3">
 <h3 id="algorithm-steps">Algorithm Steps<a class="anchor" aria-label="anchor" href="#algorithm-steps"></a>
 </h3>
 <ol style="list-style-type: decimal">
-<li><p><strong>Resolve the start feature.</strong> An NLDI feature list
-(e.g.
+<li><p><strong>Resolve the start feature.</strong> A Network Linked Data
+Index (NLDI) feature list (e.g.
 <code>featureSource = "nwissite", featureID = "USGS-05406500"</code>) is
 resolved to an NHDPlusV2 COMID via the NLDI. An <code>sfc_POINT</code>
 inside a waterbody triggers a waterbody lookup to find all outlet
@@ -138,40 +141,39 @@ starts, the function computes where the gage sits along its outlet
 flowline as a 0–100 measure. This measure determines whether the outlet
 catchment needs to be split (see <em>Catchment splitting</em>
 below).</p></li>
-<li><p><strong>Fetch the upstream network and HUC12 pour
-points.</strong> The full upstream flowline network is retrieved along
-with all HUC12 pour points on that network. These pour points mark the
-downstream outlet of each HUC12 watershed unit that drains to the
-gage.</p></li>
-<li><p><strong>Identify immediate HUC12 outlets.</strong> A network
-navigation finds which HUC12 outlets are directly upstream of the gage
-with no intervening HUC12 outlet. These define the boundary between the
-“HUC zone” (covered by HUC12 polygon areas) and the “gap zone” (covered
-by individual catchment areas).</p></li>
-<li><p><strong>Fetch and assemble HUC12 polygons.</strong> HUC12
-polygons are retrieved at three query levels: the specific
-NLDI-identified HUC12 IDs, all HUC12s within upstream HUC10 boundaries,
-and all HUC12s within upstream HUC08 boundaries. The broader queries can
-capture HUC12s that share a parent HUC but lack an on-network pour point
-– common in prairie-pothole and playa-dominated landscapes. A disconnect
-filter removes HUC12s pulled incidentally by the broader queries that
-are not hydrologically connected. Each level is a superset of the
-narrower level, and each produces both a total and a contributing-only
-area estimate.</p></li>
+<li><p><strong>Fetch the upstream network and HU12 pour points.</strong>
+The full upstream flowline network is retrieved along with all HU12 pour
+points on that network. These pour points mark the downstream outlet of
+each HU12 watershed unit that drains to the gage.</p></li>
+<li><p><strong>Identify immediate HU12 outlets.</strong> A network
+navigation finds which HU12 outlets are directly upstream of the gage
+with no intervening HU12 outlet. These define the boundary between the
+“HU zone” (covered by HU12 polygon areas) and the “gap zone” (covered by
+individual catchment areas).</p></li>
+<li><p><strong>Fetch and assemble HU12 polygons.</strong> HU12 polygons
+are retrieved at three query levels: the specific NLDI-identified HU12
+IDs, all HU12s within upstream HU10 boundaries, and all HU12s within
+upstream HU8 boundaries. The broader queries can capture HU12s that
+share a parent HU but lack an on-network pour point – common in
+prairie-pothole and playa-dominated landscapes. A disconnect filter
+removes HU12s pulled incidentally by the broader queries that are not
+hydrologically connected. Each level is a superset of the narrower
+level, and each produces both a total and a contributing-only area
+estimate.</p></li>
 <li><p><strong>Compute gap area.</strong> Catchment areas between the
-gage and the immediate HUC12 outlets are summed. Split-catchment logic
-is applied at both the HUC12 outlets and (optionally) the gage
+gage and the immediate HU12 outlets are summed. Split-catchment logic is
+applied at both the HU12 outlets and (optionally) the gage
 point.</p></li>
 <li><p><strong>Assemble scalar estimates.</strong> Six drainage area
-estimates are computed: total and contributing at the HUC12, HUC10, and
-HUC08 query levels. Each equals the HUC12 polygon area sum plus the gap
+estimates are computed: total and contributing at the HU12, HU10, and
+HU8 query levels. Each equals the HU12 polygon area sum plus the gap
 area. A seventh scalar, <code>network_da_sqkm</code>, is the NHDPlusV2
 cumulative drainage area at the outlet – a comparison baseline.</p></li>
-<li><p><strong>NHDPlusHR estimate (optional).</strong> When
-<code>nhdplushr = TRUE</code>, the function fetches NHDPlusHR flowlines
-and catchments for the basin bounding box, indexes the start point to
-the HR network (disambiguating by drainage area), navigates upstream,
-and sums catchment areas.</p></li>
+<li><p><strong>NHDPlus High Resolution (NHDPlusHR) estimate
+(optional).</strong> When <code>nhdplushr = TRUE</code>, the function
+fetches NHDPlusHR flowlines and catchments for the basin bounding box,
+indexes the start point to the HR network (disambiguating by drainage
+area), navigates upstream, and sums catchment areas.</p></li>
 </ol>
 </div>
 <div class="section level3">
@@ -184,14 +186,14 @@ catchment at the gage point and counts only the upstream portion. The
 <code>outlet_split_threshold_m</code> parameter (default 100 m) sets the
 minimum gage-to-outlet distance before splitting is performed; if the
 gage is closer than this threshold, the full catchment is used.</p>
-<p>A parallel split occurs at HUC12 outlets: the HUC boundary cuts
-through a catchment, and the portion upstream of the pour point overlaps
-with HUC12 area already counted. The split-catchment service divides
-this catchment and the upstream overlap is excluded from the gap area to
+<p>A parallel split occurs at HU12 outlets: the HU boundary cuts through
+a catchment, and the portion upstream of the pour point overlaps with
+HU12 area already counted. The split-catchment service divides this
+catchment and the upstream overlap is excluded from the gap area to
 avoid double-counting.</p>
 <p>The <em>Outlet Catchment Splitting</em> section later in this
-vignette illustrates both splits using Davidson Creek
-(USGS-08110075).</p>
+vignette illustrates both splits using Davidson Creek (USGS streamgage
+08110075).</p>
 </div>
 <div class="section level3">
 <h3 id="running-with-local-data">Running with Local Data<a class="anchor" aria-label="anchor" href="#running-with-local-data"></a>
@@ -200,16 +202,16 @@ vignette illustrates both splits using Davidson Creek
 <ul>
 <li><p><code>local_navigation = TRUE</code> loads the NHDPlusV2 Value
 Added Attributes via <code><a href="../reference/get_vaa.html">get_vaa()</a></code> for network navigation and
-flowline attribute lookups. Only HUC12 pour points are still fetched
-from the NLDI.</p></li>
+flowline attribute lookups. Only HU12 pour points are still fetched from
+the NLDI.</p></li>
 <li><p><code>huc12_data</code> accepts a pre-loaded <code>sf</code>
-data.frame of HUC12 polygons (e.g. from the NHDPlusV2 national
-geodatabase). When provided, all HUC12 polygon queries are resolved by
-subsetting this table locally instead of calling WBD web services. The
-table must include <code>huc_12</code> and <code>ncontrb_a</code>
-columns (case-insensitive).</p></li>
+data.frame of HU12 polygons (e.g. from the WBD National Geodatabase).
+When provided, all HU12 polygon queries are resolved by subsetting this
+table locally instead of calling WBD web services. The table must
+include <code>huc_12</code> and <code>ncontrb_a</code> columns
+(case-insensitive).</p></li>
 <li><p><code>huc12_outlets</code> accepts either a path to a GPKG or a
-pre-loaded <code>sf</code> data.frame of on-network HUC12 pour points. A
+pre-loaded <code>sf</code> data.frame of on-network HU12 pour points. A
 national CONUS file is available from Blodgett, D.L., 2022, <em>Mainstem
 Rivers of the Conterminous United States</em> (ver. 3.0, February 2026):
 U.S. Geological Survey data release, <a href="https://doi.org/10.5066/P13LNDDQ" class="external-link">doi:10.5066/P13LNDDQ</a> – use
@@ -236,19 +238,19 @@ offline call looks like:</p>
 latency and is subject to rate limits or outages:</p>
 <ul>
 <li><p><strong>NLDI</strong> (<code>findNLDI</code>): resolves the start
-feature, navigates the upstream network, and retrieves HUC12 pour
-points. The <code>huc12pp</code> query is skipped when
+feature, navigates the upstream network, and retrieves HU12 pour points.
+The <code>huc12pp</code> query is skipped when
 <code>huc12_outlets</code> is supplied.</p></li>
 <li><p><strong>NHDPlusV2 OGC API</strong> (<code>get_nhdplus</code>):
 fetches flowline attributes, catchment geometries in the gap zone, and
 (when <code>catchments = TRUE</code>) the full upstream catchment
 polygon set. Skipped for flowline attributes when
 <code>local_navigation = TRUE</code>.</p></li>
-<li><p><strong>WBD / HUC service</strong> (<code>get_huc</code>,
-<code>get_huc12_by_huc</code>): fetches HUC12 polygons by ID or by
-parent HUC. Skipped when <code>huc12_data</code> is provided.</p></li>
+<li><p><strong>WBD / HU service</strong> (<code>get_huc</code>,
+<code>get_huc12_by_huc</code>): fetches HU12 polygons by ID or by parent
+HU. Skipped when <code>huc12_data</code> is provided.</p></li>
 <li><p><strong>Split-catchment service</strong>
-(<code>get_split_catchment</code>): divides catchments at HUC12 outlets
+(<code>get_split_catchment</code>): divides catchments at HU12 outlets
 and at the gage point. Always called.</p></li>
 <li><p><strong>NHDPlusHR service</strong> (<code>get_nhdphr</code>):
 fetches high-resolution flowlines and catchments for the basin bounding
@@ -279,7 +281,7 @@ calls.</p>
 <span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">data_dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># On-network HUC12 pour points from the Mainstem Rivers data release</span></span>
+<span><span class="co"># On-network HU12 pour points from the Mainstem Rivers data release</span></span>
 <span><span class="co"># (Blodgett 2022, doi:10.5066/P13LNDDQ). Downloaded once and cached so</span></span>
 <span><span class="co"># subsequent builds reuse the local file instead of hitting the NLDI.</span></span>
 <span><span class="va">outlets_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"finalwbd_outlets.gpkg"</span><span class="op">)</span></span>
@@ -287,7 +289,7 @@ calls.</p>
 <span>  <span class="st">"https://prod-is-usgs-sb-prod-publish.s3.amazonaws.com/"</span>,</span>
 <span>  <span class="st">"65cbc0b3d34ef4b119cb37e9/finalwbd_outlets.gpkg"</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">outlets_path</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Downloading HUC12 outlets GPKG to "</span>, <span class="va">outlets_path</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Downloading HU12 outlets GPKG to "</span>, <span class="va">outlets_path</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">outlets_url</span>, <span class="va">outlets_path</span>, mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -324,6 +326,9 @@ calls.</p>
 <span>    <span class="fu"><a href="../reference/get_drainage_area_estimates.html">get_drainage_area_estimates</a></span><span class="op">(</span><span class="va">start</span>, catchments <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>      huc12_data <span class="op">=</span> <span class="va">huc12</span>,</span>
 <span>      huc12_outlets <span class="op">=</span> <span class="va">outlets_path</span>,</span>
+<span>      waterbody_data <span class="op">=</span> <span class="va">waterbody_data</span>,</span>
+<span>      catchment_data <span class="op">=</span> <span class="va">catchment_data</span>,</span>
+<span>      local_navigation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>      nhdplushr <span class="op">=</span> <span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">hr_basins</span><span class="op">)</span>,</span>
 <span>    error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span></span>
 <span>      <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">"Failed for "</span>, <span class="va">name</span>, <span class="st">": "</span>, <span class="fu"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">conditionMessage</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span>,</span>
@@ -352,14 +357,19 @@ calls.</p>
 <span>  <span class="op">}</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Fetching flowlines: "</span>, <span class="va">name</span><span class="op">)</span></span>
 <span>  <span class="va">comids</span> <span class="op">&lt;-</span> <span class="va">da_result</span><span class="op">$</span><span class="va">all_network</span><span class="op">$</span><span class="va">comid</span></span>
-<span>  <span class="va">fl</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="../reference/get_nhdplus.html">get_nhdplus</a></span><span class="op">(</span>comid <span class="op">=</span> <span class="va">comids</span>, realization <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span>,</span>
-<span>    error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">"Flowline fetch failed for "</span>, <span class="va">name</span>, <span class="st">": "</span>,</span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">conditionMessage</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span>      <span class="cn">NULL</span></span>
-<span>    <span class="op">}</span><span class="op">)</span></span>
-<span>  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">fl</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">fl</span>, <span class="va">rds_path</span><span class="op">)</span></span>
+<span>  <span class="va">fl</span> <span class="op">&lt;-</span> <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">flowlines_data</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"  Subsetting from local NHDFlowline_Network..."</span><span class="op">)</span></span>
+<span>    <span class="va">flowlines_data</span><span class="op">[</span><span class="va">flowlines_data</span><span class="op">$</span><span class="va">comid</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">comids</span>, <span class="op">]</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="../reference/get_nhdplus.html">get_nhdplus</a></span><span class="op">(</span>comid <span class="op">=</span> <span class="va">comids</span>, realization <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span>,</span>
+<span>      error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">"Flowline fetch failed for "</span>, <span class="va">name</span>, <span class="st">": "</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">conditionMessage</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>        <span class="cn">NULL</span></span>
+<span>      <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">fl</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">fl</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">fl</span>, <span class="va">rds_path</span><span class="op">)</span></span>
 <span>  <span class="va">fl</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -466,8 +476,8 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">summary_df</span>, digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Basin"</span>, <span class="st">"Network DA"</span>, <span class="st">"HUC12 DA"</span>,</span>
-<span>    <span class="st">"HUC10 DA"</span>, <span class="st">"HUC08 DA"</span>, <span class="st">"NHDPlusHR DA"</span>,</span>
+<span>  col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Basin"</span>, <span class="st">"Network DA"</span>, <span class="st">"HU12 DA"</span>,</span>
+<span>    <span class="st">"HU10 DA"</span>, <span class="st">"HU8 DA"</span>, <span class="st">"NHDPlusHR DA"</span>,</span>
 <span>    <span class="st">"NWIS DA"</span>, <span class="st">"NWIS Contributing DA"</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"Drainage area estimates (sq km) by basin and method"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -477,19 +487,19 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <col width="16%">
 <col width="9%">
 <col width="7%">
-<col width="7%">
-<col width="7%">
+<col width="8%">
+<col width="8%">
 <col width="11%">
-<col width="7%">
+<col width="8%">
 <col width="18%">
 </colgroup>
 <thead><tr class="header">
 <th align="left"></th>
 <th align="left">Basin</th>
 <th align="right">Network DA</th>
-<th align="right">HUC12 DA</th>
-<th align="right">HUC10 DA</th>
-<th align="right">HUC08 DA</th>
+<th align="right">HU12 DA</th>
+<th align="right">HU10 DA</th>
+<th align="right">HU8 DA</th>
 <th align="right">NHDPlusHR DA</th>
 <th align="right">NWIS DA</th>
 <th align="right">NWIS Contributing DA</th>
@@ -521,9 +531,9 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <td align="left">brazos</td>
 <td align="left">Brazos at Rosharon</td>
 <td align="right">103578.2</td>
-<td align="right">99672.7</td>
-<td align="right">108939.7</td>
-<td align="right">118107.3</td>
+<td align="right">99673.5</td>
+<td align="right">108940.1</td>
+<td align="right">118108.1</td>
 <td align="right">NA</td>
 <td align="right">117427.6</td>
 <td align="right">92651.7</td>
@@ -544,8 +554,8 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <td align="left">Malheur Lake</td>
 <td align="right">4585.6</td>
 <td align="right">7307.9</td>
-<td align="right">8543.9</td>
-<td align="right">12287.4</td>
+<td align="right">9525.0</td>
+<td align="right">14621.8</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -581,8 +591,9 @@ data frames. Here are the elements for Black Earth Creek:</p>
 <div class="section level3">
 <h3 id="french-broad-river-at-asheville">French Broad River at Asheville<a class="anchor" aria-label="anchor" href="#french-broad-river-at-asheville"></a>
 </h3>
-<p>Well-determined humid basin (USGS 03451500). Contributing area
-essentially equals total drainage area across all sources.</p>
+<p>Well-determined basin with strong topographic signal (USGS streamgage
+03451500). Contributing area essentially equals total drainage area
+across all sources.</p>
 <div class="section level4">
 <h4 id="drainage-area-boundaries">Drainage Area Boundaries<a class="anchor" aria-label="anchor" href="#drainage-area-boundaries"></a>
 </h4>
@@ -603,15 +614,15 @@ essentially equals total drainage area across all sources.</p>
 <td align="right">2446.9</td>
 </tr>
 <tr class="even">
-<td align="left">HUC12</td>
+<td align="left">HU12</td>
 <td align="right">2446.0</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC10</td>
+<td align="left">HU10</td>
 <td align="right">2446.0</td>
 </tr>
 <tr class="even">
-<td align="left">HUC08</td>
+<td align="left">HU8</td>
 <td align="right">NA</td>
 </tr>
 <tr class="odd">
@@ -632,8 +643,8 @@ essentially equals total drainage area across all sources.</p>
 <ul>
 <li>All boundary sources converge tightly around the same watershed
 outline.</li>
-<li>The HUC12-, HUC10-, and HUC08-derived boundaries are nearly
-identical, consistent with a basin whose divides are topographically
+<li>The HU12-, HU10-, and HU8-derived boundaries are nearly identical,
+consistent with a basin whose divides are topographically
 unambiguous.</li>
 <li>The gage (triangle) sits on the main stem French Broad River at
 Asheville.</li>
@@ -653,12 +664,12 @@ Asheville.</li>
 in the Appalachian headwaters.</li>
 <li>Intermittent reaches are sparse, concentrated in low-order headwater
 channels.</li>
-<li>HUC12 outlets (x markers) align with major tributary junctions.</li>
+<li>HU12 outlets (x markers) align with major tributary junctions.</li>
 </ul>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-types">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types"></a>
+<h4 id="hu12-types">HU12 Types<a class="anchor" aria-label="anchor" href="#hu12-types"></a>
 </h4>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">french_broad</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">french_broad</span>,</span>
@@ -666,10 +677,9 @@ channels.</li>
 <p><img src="drainage_area_figures/french_broad_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>Every HUC12 in the French Broad basin is classified as
-Standard.</li>
-<li>The uniform clear fill confirms that all units link to a downstream
-HUC12 through normal surface drainage.</li>
+<li>Every HU12 in the French Broad basin is classified as Standard.</li>
+<li>The uniform light-grey fill confirms that all units link to a
+downstream HU12 through normal surface drainage.</li>
 </ul>
 </div>
 </div>
@@ -677,9 +687,9 @@ HUC12 through normal surface drainage.</li>
 <div class="section level3">
 <h3 id="brazos-river-west-texas">Brazos River, West Texas<a class="anchor" aria-label="anchor" href="#brazos-river-west-texas"></a>
 </h3>
-<p>Arid/ephemeral connectivity basin (USGS 08116650). Transmission
-losses and disconnected uplands create large differences between total
-and contributing drainage area.</p>
+<p>Arid/ephemeral connectivity basin (USGS streamgage 08116650).
+Transmission losses and disconnected uplands create large differences
+between total and contributing drainage area.</p>
 <div class="section level4">
 <h4 id="drainage-area-boundaries-1">Drainage Area Boundaries<a class="anchor" aria-label="anchor" href="#drainage-area-boundaries-1"></a>
 </h4>
@@ -700,16 +710,16 @@ and contributing drainage area.</p>
 <td align="right">103578.2</td>
 </tr>
 <tr class="even">
-<td align="left">HUC12</td>
-<td align="right">99672.7</td>
+<td align="left">HU12</td>
+<td align="right">99673.5</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC10</td>
-<td align="right">108939.7</td>
+<td align="left">HU10</td>
+<td align="right">108940.1</td>
 </tr>
 <tr class="even">
-<td align="left">HUC08</td>
-<td align="right">118107.3</td>
+<td align="left">HU8</td>
+<td align="right">118108.1</td>
 </tr>
 <tr class="odd">
 <td align="left">NHDPlusHR</td>
@@ -727,11 +737,10 @@ and contributing drainage area.</p>
 </table>
 <div class="vignette-note">
 <ul>
-<li>Boundary sources diverge substantially. HUC-derived boundaries
-extend further west into arid uplands than the network-derived
-boundary.</li>
-<li>The gap between HUC12 total area and contributing area reflects
-large noncontributing designations in western sub-basins.</li>
+<li>Boundary sources diverge substantially. HU-derived boundaries extend
+further west into arid uplands than the network-derived boundary.</li>
+<li>The gap between HU12 total area and contributing area reflects large
+noncontributing designations in western sub-basins.</li>
 </ul>
 </div>
 </div>
@@ -739,22 +748,26 @@ large noncontributing designations in western sub-basins.</li>
 <h4 id="stream-network-1">Stream Network<a class="anchor" aria-label="anchor" href="#stream-network-1"></a>
 </h4>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_network</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">brazos</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">brazos</span>,</span>
-<span>  <span class="st">"Brazos at Rosharon"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">plot_network_brazos</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">brazos</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">brazos</span>,</span>
+<span>  <span class="st">"Brazos at Rosharon"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Coordinate system already present.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Adding new coordinate system, which will replace the existing one.</span></span></code></pre></div>
 <p><img src="drainage_area_figures/brazos_network-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
 <li>Extensive intermittent and ephemeral reaches dominate the western
 (upstream) portion of the basin.</li>
 <li>Perennial flow is concentrated in the lower main stem and major
-tributaries east of the Caprock Escarpment.</li>
+tributaries east of the Caprock Escarpment, the physiographic boundary
+between the High Plains (Llano Estacado) and the Rolling Plains traced
+on the figure.</li>
 <li>The transition from ephemeral headwaters to perennial mainstem
 illustrates why contributing area is smaller than total area.</li>
 </ul>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-types-1">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-1"></a>
+<h4 id="hu12-types-1">HU12 Types<a class="anchor" aria-label="anchor" href="#hu12-types-1"></a>
 </h4>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">brazos</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">brazos</span>,</span>
@@ -762,14 +775,15 @@ illustrates why contributing area is smaller than total area.</li>
 <p><img src="drainage_area_figures/brazos_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>Closed-basin HUC12s (brown) concentrate in the arid western uplands
+<li>Closed-basin HU12s (brown) concentrate in the arid western uplands
 of the Llano Estacado, where surface water never reaches the
 Brazos.</li>
-<li>Multiple-outlet HUC12s (grey) mark units whose drainage splits
-between more than one downstream HUC.</li>
-<li>Frontal HUC12s (green) appear near the Gulf where catchments drain
-directly to the coast rather than to a downstream HUC12.</li>
-<li>Standard HUC12s (clear) dominate the perennial eastern main
+<li>Multiple-outlet HU12s (grey) have more than one outlet to the same
+downstream system — for example, a HU12 with a braided channel where
+flow leaves through more than one point.</li>
+<li>Frontal HU12s (green), where present, are coastal units that drain
+directly to the Gulf of Mexico rather than to a downstream HU12.</li>
+<li>Standard HU12s (light grey) dominate the perennial eastern main
 stem.</li>
 </ul>
 </div>
@@ -778,8 +792,8 @@ stem.</li>
 <div class="section level3">
 <h3 id="james-river-cottonwood-lake">James River / Cottonwood Lake<a class="anchor" aria-label="anchor" href="#james-river-cottonwood-lake"></a>
 </h3>
-<p>Glacial prairie basin (USGS 06468000). Prairie potholes create a
-large noncontributing fraction that varies by sub-basin.</p>
+<p>Glacial prairie basin (USGS streamgage 06468000). Prairie potholes
+create a large noncontributing fraction that varies by sub-basin.</p>
 <div class="section level4">
 <h4 id="drainage-area-boundaries-2">Drainage Area Boundaries<a class="anchor" aria-label="anchor" href="#drainage-area-boundaries-2"></a>
 </h4>
@@ -800,15 +814,15 @@ large noncontributing fraction that varies by sub-basin.</p>
 <td align="right">1442.4</td>
 </tr>
 <tr class="even">
-<td align="left">HUC12</td>
+<td align="left">HU12</td>
 <td align="right">1436.6</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC10</td>
+<td align="left">HU10</td>
 <td align="right">1655.5</td>
 </tr>
 <tr class="even">
-<td align="left">HUC08</td>
+<td align="left">HU8</td>
 <td align="right">NA</td>
 </tr>
 <tr class="odd">
@@ -829,7 +843,7 @@ large noncontributing fraction that varies by sub-basin.</p>
 <ul>
 <li>Boundary estimates diverge in the upper basin where glacial
 topography creates ambiguous divides.</li>
-<li>The HUC12-derived total area exceeds the contributing area by a
+<li>The HU12-derived total area exceeds the contributing area by a
 notable margin, reflecting prairie pothole storage.</li>
 </ul>
 </div>
@@ -851,16 +865,16 @@ drift creates closed depressions and episodic connectivity.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-types-2">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-2"></a>
+<h4 id="hu12-types-2">HU12 Types<a class="anchor" aria-label="anchor" href="#hu12-types-2"></a>
 </h4>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">james</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">james</span>, <span class="st">"James River"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="drainage_area_figures/james_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>Two closed-basin HUC12s (brown) appear in the upper prairie-pothole
+<li>Two closed-basin HU12s (brown) appear in the upper prairie-pothole
 headwaters — these are units with no surface outlet to the James.</li>
-<li>The remaining HUC12s are Standard (clear), including the lower
+<li>The remaining HU12s are Standard (light grey), including the lower
 perennial main stem.</li>
 </ul>
 </div>
@@ -869,8 +883,9 @@ perennial main stem.</li>
 <div class="section level3">
 <h3 id="black-earth-creek">Black Earth Creek<a class="anchor" aria-label="anchor" href="#black-earth-creek"></a>
 </h3>
-<p>Small humid basin in southern Wisconsin (USGS 05406500).
-Well-determined drainage area with minimal noncontributing fraction.</p>
+<p>Small Driftless-Area basin in southern Wisconsin (USGS streamgage
+05406500). Well-determined drainage area with minimal noncontributing
+fraction.</p>
 <div class="section level4">
 <h4 id="drainage-area-boundaries-3">Drainage Area Boundaries<a class="anchor" aria-label="anchor" href="#drainage-area-boundaries-3"></a>
 </h4>
@@ -891,15 +906,15 @@ Well-determined drainage area with minimal noncontributing fraction.</p>
 <td align="right">114.3</td>
 </tr>
 <tr class="even">
-<td align="left">HUC12</td>
+<td align="left">HU12</td>
 <td align="right">118.0</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC10</td>
+<td align="left">HU10</td>
 <td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">HUC08</td>
+<td align="left">HU8</td>
 <td align="right">NA</td>
 </tr>
 <tr class="odd">
@@ -919,8 +934,8 @@ Well-determined drainage area with minimal noncontributing fraction.</p>
 <div class="vignette-note">
 <ul>
 <li>All boundary sources converge on a compact watershed outline.</li>
-<li>The basin is small enough to fall within a single HUC10, so HUC10-
-and HUC08-level boundaries are not computed separately.</li>
+<li>The basin is small enough to fall within a single HU10, so HU10- and
+HU8-level boundaries are not computed separately.</li>
 </ul>
 </div>
 </div>
@@ -940,7 +955,7 @@ landscape.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-types-3">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-3"></a>
+<h4 id="hu12-types-3">HU12 Types<a class="anchor" aria-label="anchor" href="#hu12-types-3"></a>
 </h4>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">black_earth</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">black_earth</span>,</span>
@@ -948,8 +963,9 @@ landscape.</li>
 <p><img src="drainage_area_figures/black_earth_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>The single HUC12 covering Black Earth Creek is Standard type (clear
-fill), consistent with a well-defined humid basin.</li>
+<li>The single HU12 covering Black Earth Creek is Standard type
+(light-grey fill), consistent with a well-defined basin in
+Driftless-Area terrain.</li>
 </ul>
 </div>
 </div>
@@ -957,9 +973,16 @@ fill), consistent with a well-defined humid basin.</li>
 <div class="section level3">
 <h3 id="malheur-lake">Malheur Lake<a class="anchor" aria-label="anchor" href="#malheur-lake"></a>
 </h3>
-<p>Harney Basin / Malheur Lake is an endorheic (closed) basin with no
-surface outlet. The terminal feature is a lake rather than a stream
-gage.</p>
+<p>Malheur Lake basin is an endorheic (closed) basin with no surface
+outlet. The terminal feature is a lake rather than a stream gage.</p>
+<p>Because the start point falls in a closed-basin HU12 (Malheur Lake,
+171200010710) with no flowline pour point on the NHD network,
+<code><a href="../reference/get_drainage_area_estimates.html">get_drainage_area_estimates()</a></code> auto-promotes the parent
+HUC10 (1712000107) into <code>HU_inclusion_override</code>. The HU08
+estimate then spans the full Harney-Malheur HU8 17120001 – including the
+lake itself, Harney Lake, and the frontal HU12s along the lake margins –
+rather than only the on-network HU12s reachable from the inflow
+tributaries.</p>
 <div class="section level4">
 <h4 id="drainage-area-boundaries-4">Drainage Area Boundaries<a class="anchor" aria-label="anchor" href="#drainage-area-boundaries-4"></a>
 </h4>
@@ -980,16 +1003,16 @@ gage.</p>
 <td align="right">4585.6</td>
 </tr>
 <tr class="even">
-<td align="left">HUC12</td>
+<td align="left">HU12</td>
 <td align="right">7307.9</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC10</td>
-<td align="right">8543.9</td>
+<td align="left">HU10</td>
+<td align="right">9525.0</td>
 </tr>
 <tr class="even">
-<td align="left">HUC08</td>
-<td align="right">12287.4</td>
+<td align="left">HU8</td>
+<td align="right">14621.8</td>
 </tr>
 <tr class="odd">
 <td align="left">NHDPlusHR</td>
@@ -1001,9 +1024,10 @@ gage.</p>
 <ul>
 <li>The basin is endorheic – all boundaries terminate at Malheur Lake
 with no downstream outlet.</li>
-<li>HUC-derived and network-derived boundaries diverge in the
-surrounding high-desert uplands where surface connectivity is
-ambiguous.</li>
+<li>HU-derived and network-derived boundaries diverge in the surrounding
+high-desert uplands where surface connectivity is ambiguous.</li>
+<li>The shaded grey area is the merged basin envelope used as a
+background underlay, not an HU8 boundary.</li>
 <li>The start feature (triangle) marks the centroid of the Malheur Lake
 waterbody polygon rather than a stream gage.</li>
 </ul>
@@ -1027,20 +1051,27 @@ downstream.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-types-4">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-4"></a>
+<h4 id="hu12-types-4">HU12 Types<a class="anchor" aria-label="anchor" href="#hu12-types-4"></a>
 </h4>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">malheur</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">malheur</span>, <span class="st">"Malheur Lake"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="drainage_area_figures/malheur_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>The Water HUC12 (blue) is Malheur Lake itself.</li>
-<li>Closed-basin HUC12s (brown) line the pluvial-lake margins, where
-surface drainage terminates in playas rather than reaching the
-lake.</li>
-<li>Multiple-outlet HUC12s (grey) appear on the low-gradient flats of
-the Harney Basin.</li>
-<li>The surrounding Standard HUC12s (clear) supply the Silvies and
+<li>Closed-basin HU12s (brown) in HU8 17120001 – Malheur Lake itself,
+Harney Lake, Sunset Valley, and Lower Riddle Creek – mark Harney-Malheur
+units where surface drainage terminates internally. These are now
+included in the HU08 estimate via the closed-basin auto-override.</li>
+<li>The brown HU12s south and southwest of the lake (Hay Lake, Capehart
+Lake, Mule Springs Valley, Smoky Hollow, Lake On The Trail, Foster Lake)
+belong to HU8 17120004 Silver Creek-Silver Lake – a separate endorheic
+basin pulled into the HU08 estimate because Silvies/Donner upstream
+HU12s share its parent HU8.</li>
+<li>Water HU12s (blue) — for example, Mud Lake — designate large open
+water bodies coded as Water type in the current WBD.</li>
+<li>Multiple-outlet HU12s (grey) appear on the low-gradient flats of the
+Harney Basin.</li>
+<li>The surrounding Standard HU12s (light grey) supply the Silvies and
 Donner und Blitzen corridors that actually reach the lake.</li>
 </ul>
 </div>
@@ -1049,12 +1080,12 @@ Donner und Blitzen corridors that actually reach the lake.</li>
 <div class="section level3">
 <h3 id="purgatoire-river-near-las-animas">Purgatoire River near Las Animas<a class="anchor" aria-label="anchor" href="#purgatoire-river-near-las-animas"></a>
 </h3>
-<p>Boundary sensitivity basin in southeastern Colorado (USGS 07128500).
-Flat terrain adjacent to the basin produces a drainage divide that
-different delineation methods place in different locations, resulting in
-divergent drainage area estimates for the gage and all downstream
-stations. Documented in <a href="https://pubs.usgs.gov/tm/11c6/" class="external-link">Dupree
-and Crowfoot (2012, TM 11-C6)</a>.</p>
+<p>Boundary placement uncertainty basin in southeastern Colorado (USGS
+streamgage 07128500). Flat terrain adjacent to the basin produces a
+drainage divide that different delineation methods place in different
+locations, resulting in divergent drainage area estimates for the gage
+and all downstream stations. Documented in <a href="https://pubs.usgs.gov/tm/11c6/" class="external-link">Dupree and Crowfoot (2012, TM
+11-C6)</a>.</p>
 <div class="section level4">
 <h4 id="drainage-area-boundaries-5">Drainage Area Boundaries<a class="anchor" aria-label="anchor" href="#drainage-area-boundaries-5"></a>
 </h4>
@@ -1075,15 +1106,15 @@ and Crowfoot (2012, TM 11-C6)</a>.</p>
 <td align="right">8930.0</td>
 </tr>
 <tr class="even">
-<td align="left">HUC12</td>
+<td align="left">HU12</td>
 <td align="right">8875.0</td>
 </tr>
 <tr class="odd">
-<td align="left">HUC10</td>
+<td align="left">HU10</td>
 <td align="right">8875.0</td>
 </tr>
 <tr class="even">
-<td align="left">HUC08</td>
+<td align="left">HU8</td>
 <td align="right">NA</td>
 </tr>
 <tr class="odd">
@@ -1105,9 +1136,10 @@ and Crowfoot (2012, TM 11-C6)</a>.</p>
 <li>Boundary sources diverge in the flat terrain along the western and
 southern margins of the basin where the drainage divide is poorly
 defined.</li>
-<li>Traditional delineation methods assigned a noncontributing area
-adjacent to the basin as part of the Purgatoire drainage; the WBD placed
-that area in the neighboring hydrologic unit to the west.</li>
+<li>Manual delineation from USGS topographic maps assigned a
+noncontributing area adjacent to the basin as part of the Purgatoire
+drainage; the WBD placed that area in the neighboring hydrologic unit to
+the west.</li>
 <li>The resulting differences propagate to all downstream gages on the
 Purgatoire and Arkansas Rivers.</li>
 </ul>
@@ -1127,13 +1159,13 @@ Range with predominantly perennial flow.</li>
 <li>The lower basin crosses the high plains where intermittent and
 ephemeral channels are more common and terrain gradients weaken.</li>
 <li>The transition from montane headwaters to plains illustrates why the
-divide becomes sensitive in the lower-gradient portions of the
+divide becomes uncertain in the lower-gradient portions of the
 basin.</li>
 </ul>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc12-types-5">HUC12 Types<a class="anchor" aria-label="anchor" href="#huc12-types-5"></a>
+<h4 id="hu12-types-5">HU12 Types<a class="anchor" aria-label="anchor" href="#hu12-types-5"></a>
 </h4>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plot_type</span><span class="op">(</span><span class="va">da_results</span><span class="op">$</span><span class="va">purgatoire</span>, <span class="va">flowlines</span><span class="op">$</span><span class="va">purgatoire</span>,</span>
@@ -1141,10 +1173,10 @@ basin.</li>
 <p><img src="drainage_area_figures/purgatoire_type-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>Every HUC12 in the Purgatoire basin is Standard type (clear
+<li>Every HU12 in the Purgatoire basin is Standard type (light-grey
 fill).</li>
-<li>The boundary-sensitivity story here is about where the WBD places
-the divide between Standard HUC12s, not about closed-basin or
+<li>The boundary-placement-uncertainty story here is about where the WBD
+places the divide between Standard HU12s, not about closed-basin or
 multiple-outlet designations within the basin.</li>
 </ul>
 </div>
@@ -1157,22 +1189,23 @@ multiple-outlet designations within the basin.</li>
 <p>When a gage sits partway along a flowline rather than at its outlet,
 the gage’s outlet catchment is only partly upstream of the gage. The
 downstream portion does not contribute to the gage and should be
-excluded. A similar situation arises at HUC12 outlets: the HUC boundary
+excluded. A similar situation arises at HU12 outlets: the HU boundary
 cuts through a catchment and the portion upstream of the pour point
-overlaps with the HUC area that is already counted.</p>
+overlaps with the HU area that is already counted.</p>
 <p><code><a href="../reference/get_drainage_area_estimates.html">get_drainage_area_estimates()</a></code> handles both splits
 automatically. The <code>outlet_split_threshold_m</code> parameter
 (default 100 m) controls the minimum gage-to-outlet distance before the
 split is performed.</p>
-<p>This example uses a small Texas gage (USGS-08110075, Davidson Creek)
-where the gage falls roughly two thirds of the way up its flowline.</p>
+<p>This example uses a small Texas gage (USGS streamgage 08110075,
+Davidson Creek) where the gage falls roughly two thirds of the way up
+its flowline.</p>
 <div class="section level4">
-<h4 id="overview-gage-and-huc-outlet-positions">Overview: Gage and HUC Outlet Positions<a class="anchor" aria-label="anchor" href="#overview-gage-and-huc-outlet-positions"></a>
+<h4 id="overview-gage-and-hu-outlet-positions">Overview: Gage and HU Outlet Positions<a class="anchor" aria-label="anchor" href="#overview-gage-and-hu-outlet-positions"></a>
 </h4>
-<p>The gage (triangle) and the nearest HUC12 outlet (x) sit on different
+<p>The gage (triangle) and the nearest HU12 outlet (x) sit on different
 catchments with a gap between them. The gap catchments (light blue) and
-split catchment boundaries define the area between the gage and the
-HUC12 boundary.</p>
+split catchment boundaries define the area between the gage and the HU12
+boundary.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_overview</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">add_topo</span><span class="op">(</span><span class="va">focus_geom</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1201,27 +1234,27 @@ HUC12 boundary.</p>
 <span>    inherit.aes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">coord_sf</span><span class="op">(</span>crs <span class="op">=</span> <span class="va">target_crs</span>, xlim <span class="op">=</span> <span class="va">focus_xlim</span>, ylim <span class="op">=</span> <span class="va">focus_ylim</span>,</span>
 <span>    expand <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Davidson Creek (USGS-08110075)"</span>,</span>
-<span>    <span class="st">" -- Gage and HUC12 Outlet Positions"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Davidson Creek (USGS streamgage 08110075)"</span>,</span>
+<span>    <span class="st">" -- Gage and HU12 Outlet Positions"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">map_theme</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p_overview</span><span class="op">)</span></span></code></pre></div>
 <p><img src="drainage_area_figures/outlet_split_overview-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>The gage (triangle) and the HUC12 pour point (x) sit on different
+<li>The gage (triangle) and the HU12 pour point (x) sit on different
 catchments with several gap catchments (light blue) between them.</li>
-<li>The dashed outline marks the catchment where the HUC12 pour point
+<li>The dashed outline marks the catchment where the HU12 pour point
 falls; the solid outline marks the gage’s catchment.</li>
-<li>Both the gage and the HUC12 outlet sit partway along their
-respective flowlines, so splitting is needed at both locations.</li>
+<li>Both the gage and the HU12 outlet sit partway along their respective
+flowlines, so splitting is needed at both locations.</li>
 </ul>
 </div>
 </div>
 <div class="section level4">
-<h4 id="huc-outlet-detail">HUC Outlet Detail<a class="anchor" aria-label="anchor" href="#huc-outlet-detail"></a>
+<h4 id="hu-outlet-detail">HU Outlet Detail<a class="anchor" aria-label="anchor" href="#hu-outlet-detail"></a>
 </h4>
-<p>The HUC12 split catchment is small enough that it is not visible in
-the overview. This view zooms to a 500 m square centered on the HUC12
+<p>The HU12 split catchment is small enough that it is not visible in
+the overview. This view zooms to a 500 m square centered on the HU12
 outlet.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hu12_outlet_pt</span> <span class="op">&lt;-</span> <span class="va">hu12_pts</span><span class="op">[</span><span class="va">hu12_pts</span><span class="op">$</span><span class="va">comid</span> <span class="op">==</span> <span class="va">hu12_comid</span>, <span class="op">]</span></span>
@@ -1252,17 +1285,17 @@ outlet.</p>
 <span>    inherit.aes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">coord_sf</span><span class="op">(</span>crs <span class="op">=</span> <span class="va">target_crs</span>, xlim <span class="op">=</span> <span class="va">zoom_xlim</span>, ylim <span class="op">=</span> <span class="va">zoom_ylim</span>,</span>
 <span>    expand <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Davidson Creek -- HUC12 Outlet Detail"</span>,</span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Davidson Creek -- HU12 Outlet Detail"</span>,</span>
 <span>    <span class="st">" (500 m view)"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">map_theme</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p_huc_zoom</span><span class="op">)</span></span></code></pre></div>
 <p><img src="drainage_area_figures/outlet_split_huc_zoom-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="vignette-note">
 <ul>
-<li>The HUC12 outlet (x) and its split catchment (orange fill, dashed
+<li>The HU12 outlet (x) and its split catchment (orange fill, dashed
 outline) are visible at this scale.</li>
-<li>The split catchment upstream of the HUC outlet is excluded from the
-gap area because it overlaps with the HUC12 drainage area.</li>
+<li>The split catchment upstream of the HU outlet is excluded from the
+gap area because it overlaps with the HU12 drainage area.</li>
 </ul>
 </div>
 </div>
@@ -1270,9 +1303,9 @@ gap area because it overlaps with the HUC12 drainage area.</li>
 <h4 id="split-catchments-upstream-and-downstream-portions">Split Catchments: Upstream and Downstream Portions<a class="anchor" aria-label="anchor" href="#split-catchments-upstream-and-downstream-portions"></a>
 </h4>
 <p>Two catchments are split. At the gage, the downstream portion is
-removed because it does not contribute flow to the gage. At the HUC12
+removed because it does not contribute flow to the gage. At the HU12
 outlet, the upstream portion is removed because it overlaps with the
-HUC12 area already counted in the drainage area estimate.</p>
+HU12 area already counted in the drainage area estimate.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build an sf with labeled polygons for a single legend</span></span>
 <span><span class="va">split_layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
@@ -1284,10 +1317,10 @@ HUC12 area already counted in the drainage area estimate.</p>
 <span>    geometry <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html" class="external-link">st_difference</a></span><span class="op">(</span></span>
 <span>      <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">osc_full</span><span class="op">)</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">osc_split</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
-<span>    role <span class="op">=</span> <span class="st">"Upstream of HUC outlet (excluded, overlaps HUC)"</span>,</span>
+<span>    role <span class="op">=</span> <span class="st">"Upstream of HU outlet (excluded, overlaps HU)"</span>,</span>
 <span>    geometry <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hu12_catch_split</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span>
-<span>    role <span class="op">=</span> <span class="st">"Downstream of HUC outlet (included as local area)"</span>,</span>
+<span>    role <span class="op">=</span> <span class="st">"Downstream of HU outlet (included as local area)"</span>,</span>
 <span>    geometry <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html" class="external-link">st_difference</a></span><span class="op">(</span></span>
 <span>      <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hu12_catch_full</span><span class="op">)</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">hu12_catch_split</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -1295,8 +1328,8 @@ HUC12 area already counted in the drainage area estimate.</p>
 <span><span class="va">split_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Upstream of gage (included)"</span> <span class="op">=</span> <span class="st">"#4DAF4A"</span>,</span>
 <span>  <span class="st">"Downstream of gage (excluded)"</span> <span class="op">=</span> <span class="st">"#E41A1C"</span>,</span>
-<span>  <span class="st">"Upstream of HUC outlet (excluded, overlaps HUC)"</span> <span class="op">=</span> <span class="st">"#FF7F00"</span>,</span>
-<span>  <span class="st">"Downstream of HUC outlet (included as local area)"</span> <span class="op">=</span> <span class="st">"#377EB8"</span></span>
+<span>  <span class="st">"Upstream of HU outlet (excluded, overlaps HU)"</span> <span class="op">=</span> <span class="st">"#FF7F00"</span>,</span>
+<span>  <span class="st">"Downstream of HU outlet (included as local area)"</span> <span class="op">=</span> <span class="st">"#377EB8"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">split_layers</span><span class="op">$</span><span class="va">role</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">split_layers</span><span class="op">$</span><span class="va">role</span>,</span>
@@ -1344,12 +1377,12 @@ of the gage — this area is included in the drainage area estimate.</li>
 <strong>Red</strong>: the portion downstream of the gage — excluded
 because it does not contribute flow to the gage.</li>
 <li>
-<strong>Orange</strong>: the portion of the HUC12 outlet catchment
+<strong>Orange</strong>: the portion of the HU12 outlet catchment
 upstream of the pour point — excluded because this area is already
-counted as part of the HUC12 drainage area.</li>
+counted as part of the HU12 drainage area.</li>
 <li>
-<strong>Blue</strong>: the portion downstream of the HUC12 outlet —
-included as local area in the gap between the HUC boundary and the
+<strong>Blue</strong>: the portion downstream of the HU12 outlet —
+included as local area in the gap between the HU boundary and the
 gage.</li>
 <li>The <code>outlet_split_threshold_m</code> parameter (default 100 m)
 controls whether the gage split is performed. If the gage is within the

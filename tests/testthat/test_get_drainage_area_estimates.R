@@ -772,3 +772,170 @@ test_that("prepare_huc12_outlets renames and validates", {
     "file not found"
   )
 })
+
+test_that("get_drainage_area_estimates waterbody_data Lake Mendota smoke test", {
+  skip_on_cran()
+  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
+  start <- sf::st_sfc(sf::st_point(c(-89.4, 43.1)), crs = 4326)
+  waterbody_data <- sf::read_sf(sample_data, "NHDWaterbody")
+
+  result <- suppressWarnings(suppressMessages(
+    get_drainage_area_estimates(start,
+      waterbody_data = waterbody_data,
+      nhdplushr = FALSE)
+  ))
+
+  expect_type(result, "list")
+  expect_s3_class(result$start_feature, "sf")
+  expect_true(result$da_huc12_sqkm > 0)
+  expect_true(result$network_da_sqkm > 0)
+  expect_null(result$all_catchments)
+})
+
+test_that("get_drainage_area_estimates catchment_data local retrieval", {
+  skip_on_cran()
+  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
+  start <- sf::st_sfc(sf::st_point(c(-89.4, 43.1)), crs = 4326)
+  waterbody_data <- sf::read_sf(sample_data, "NHDWaterbody")
+  catchment_data <- sf::read_sf(sample_data, "CatchmentSP")
+
+  result <- suppressWarnings(suppressMessages(
+    get_drainage_area_estimates(start,
+      waterbody_data = waterbody_data,
+      catchment_data = catchment_data,
+      catchments = TRUE,
+      nhdplushr = FALSE)
+  ))
+
+  expect_s3_class(result$all_catchments, "sf")
+  expect_true(nrow(result$all_catchments) > 0)
+})
+
+test_that("find_start_huc12 with local huc12_data", {
+  # two adjacent unit squares in EPSG:4326; HUC12 A on the left, B on the right
+  poly_a <- sf::st_polygon(list(rbind(
+    c(-100, 40), c(-99, 40), c(-99, 41), c(-100, 41), c(-100, 40)
+  )))
+  poly_b <- sf::st_polygon(list(rbind(
+    c(-99, 40), c(-98, 40), c(-98, 41), c(-99, 41), c(-99, 40)
+  )))
+  huc12_data <- sf::st_sf(
+    huc_12 = c("171200010710", "171200010711"),
+    ncontrb_a = c(0, 0),
+    geometry = sf::st_sfc(poly_a, poly_b, crs = 4326)
+  )
+
+  pt_a <- sf::st_sfc(sf::st_point(c(-99.5, 40.5)), crs = 4326)
+  expect_equal(
+    nhdplusTools:::find_start_huc12(pt_a, huc12_data),
+    "171200010710"
+  )
+
+  pt_b <- sf::st_sfc(sf::st_point(c(-98.5, 40.5)), crs = 4326)
+  expect_equal(
+    nhdplusTools:::find_start_huc12(pt_b, huc12_data),
+    "171200010711"
+  )
+
+  pt_out <- sf::st_sfc(sf::st_point(c(-110, 50)), crs = 4326)
+  expect_null(nhdplusTools:::find_start_huc12(pt_out, huc12_data))
+})
+
+test_that("augment_override_for_closed_basin_start adds HUC10 when start is off-network", {
+  poly <- sf::st_polygon(list(rbind(
+    c(-100, 40), c(-99, 40), c(-99, 41), c(-100, 41), c(-100, 40)
+  )))
+  huc12_data <- sf::st_sf(
+    huc_12 = "171200010710",
+    ncontrb_a = 0,
+    geometry = sf::st_sfc(poly, crs = 4326)
+  )
+  pt <- sf::st_sfc(sf::st_point(c(-99.5, 40.5)), crs = 4326)
+
+  # start HUC12 is NOT in the on-network set -> override augmented with HUC10
+  override <- suppressMessages(
+    nhdplusTools:::augment_override_for_closed_basin_start(
+      pt, network_huc12_ids = c("171200020101", "171200030101"),
+      huc12_data = huc12_data, HU_inclusion_override = NULL
+    )
+  )
+  expect_equal(override, "1712000107")
+
+  # existing overrides are preserved, deduplicated
+  override2 <- suppressMessages(
+    nhdplusTools:::augment_override_for_closed_basin_start(
+      pt, network_huc12_ids = c("171200020101"),
+      huc12_data = huc12_data,
+      HU_inclusion_override = c("10130106", "1712000107")
+    )
+  )
+  expect_equal(override2, c("1712000107", "10130106"))
+
+  # start HUC12 IS in the on-network set -> override unchanged
+  override3 <- suppressMessages(
+    nhdplusTools:::augment_override_for_closed_basin_start(
+      pt, network_huc12_ids = c("171200010710", "171200020101"),
+      huc12_data = huc12_data, HU_inclusion_override = NULL
+    )
+  )
+  expect_null(override3)
+
+  # non-point start: passthrough
+  expect_equal(
+    nhdplusTools:::augment_override_for_closed_basin_start(
+      list(featureSource = "x", featureID = "y"),
+      network_huc12_ids = character(0),
+      huc12_data = huc12_data,
+      HU_inclusion_override = "10130106"
+    ),
+    "10130106"
+  )
+})
+
+test_that("force_include_override_huc12s adds missing HU12s under override parents", {
+  # huc12_data with 4 HU12s spanning two HU10s in HU8 17120001
+  poly <- function(xmin, ymin) {
+    sf::st_polygon(list(rbind(
+      c(xmin, ymin), c(xmin + 0.1, ymin),
+      c(xmin + 0.1, ymin + 0.1), c(xmin, ymin + 0.1),
+      c(xmin, ymin)
+    )))
+  }
+  huc12_data <- sf::st_sf(
+    huc_12 = c("171200010704", "171200010710",
+      "171200010501", "171200010504"),
+    ncontrb_a = c(0, 200, 0, 0),
+    geometry = sf::st_sfc(
+      poly(-99.4, 40), poly(-99.3, 40),
+      poly(-99.2, 40), poly(-99.1, 40),
+      crs = 5070
+    )
+  )
+
+  # simulate fetch result: by_huc10 has only the on-network 0501, by_huc08
+  # has the same single HU12 (mimicking the outlet-HU8 partial-fetch case)
+  on_network <- huc12_data[huc12_data$huc_12 == "171200010501", ]
+  on_network <- nhdplusTools:::add_huc12_area_columns(on_network)
+  hu12_result <- list(
+    hu12_by_huc12 = on_network,
+    hu12_by_huc10 = on_network,
+    hu12_by_huc08 = on_network
+  )
+
+  # 10-char override forces fetch of HU10 1712000107 (2 HU12s) at HU10 level,
+  # and HU8 17120001 (all 4 HU12s) at HU08 level via cascade.
+  result <- suppressMessages(
+    nhdplusTools:::force_include_override_huc12s(
+      hu12_result, "1712000107", huc12_data
+    )
+  )
+
+  expect_setequal(result$hu12_by_huc10$huc_12,
+    c("171200010501", "171200010704", "171200010710"))
+  expect_setequal(result$hu12_by_huc08$huc_12,
+    c("171200010501", "171200010504", "171200010704", "171200010710"))
+  # hu12_by_huc12 is the on-network set; not augmented
+  expect_equal(result$hu12_by_huc12$huc_12, "171200010501")
+})

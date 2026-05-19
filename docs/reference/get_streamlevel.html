@@ -100,7 +100,6 @@ assumed to be coastal.</p></dd>
 <span class="r-in"><span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">dnlevelpat</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown or uninitialised column: `id`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 3 2 2 2 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [39] 3 2 2 3 2 3 3 4 2 2 2 3 3 3 2 2 2 2 2 2 2 1 2 1</span>
 <span class="r-in"><span></span></span>
@@ -111,13 +110,11 @@ assumed to be coastal.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">test_flowline</span><span class="op">$</span><span class="va">coastal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown or uninitialised column: `id`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 5 5 5 5 5 5 6 5 5 5 5 5 5 5 6 5 5 6 5 5 5 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [39] 6 5 5 6 5 6 6 7 5 5 5 6 6 6 5 5 5 5 5 5 5 4 5 4</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">test_flowline</span><span class="op">$</span><span class="va">coastal</span><span class="op">[</span><span class="op">!</span><span class="va">test_flowline</span><span class="op">$</span><span class="va">dnlevelpat</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">test_flowline</span><span class="op">$</span><span class="va">levelpathi</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">get_streamlevel</span><span class="op">(</span><span class="va">test_flowline</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown or uninitialised column: `id`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 3 2 2 2 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [39] 3 2 2 3 2 3 3 4 2 2 2 3 3 3 2 2 2 2 2 2 2 1 2 1</span>
 <span class="r-in"><span></span></span>

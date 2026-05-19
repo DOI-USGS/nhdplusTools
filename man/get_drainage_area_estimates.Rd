@@ -11,6 +11,8 @@ get_drainage_area_estimates(
   local_navigation = FALSE,
   huc12_data = NULL,
   huc12_outlets = NULL,
+  waterbody_data = NULL,
+  catchment_data = NULL,
   HU_inclusion_override = NULL,
   outlet_split_threshold_m = 100
 )
@@ -48,6 +50,23 @@ offline. National CONUS outlets GPKGs are available from Blodgett, D.L.,
 2022, Mainstem Rivers of the Conterminous United States (ver. 3.0,
 February 2026): U.S. Geological Survey data release,
 \doi{10.5066/P13LNDDQ} (layer \code{hu_points}). Default NULL.}
+
+\item{waterbody_data}{sf data.frame or NULL. In-memory NHDWaterbody polygon
+table to use instead of fetching from web services. Column names are
+lowercased internally; must include \code{comid} (case-insensitive). When
+provided and \code{start} is an \code{sfc_POINT}, the waterbody containing
+the point is resolved by spatial filter on this table. Default NULL (use
+web services).}
+
+\item{catchment_data}{sf data.frame or NULL. In-memory NHDPlusV2 CatchmentSP
+polygon table. Column names are lowercased internally; must include
+\code{featureid} (case-insensitive). Used in three ways: (1) when
+\code{catchments = TRUE}, catchment polygons for the upstream network are
+subsetted from this table instead of fetched from the OGC API; (2) the
+gap-zone catchment polygons (between the outlet and the immediate HUC12
+outlets) are subsetted from this table instead of fetched; (3) when
+\code{start} is an \code{sfc_POINT} and no waterbody is found, the COMID
+is resolved by spatial join on this table. Default NULL (use web services).}
 
 \item{HU_inclusion_override}{character vector or NULL. Eight- or ten-digit
 HUC codes whose HUC12s should be kept even when the parent HUC outlet is

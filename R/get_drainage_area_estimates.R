@@ -49,6 +49,21 @@
 #'   2022, Mainstem Rivers of the Conterminous United States (ver. 3.0,
 #'   February 2026): U.S. Geological Survey data release,
 #'   \doi{10.5066/P13LNDDQ} (layer \code{hu_points}). Default NULL.
+#' @param waterbody_data sf data.frame or NULL. In-memory NHDWaterbody polygon
+#'   table to use instead of fetching from web services. Column names are
+#'   lowercased internally; must include \code{comid} (case-insensitive). When
+#'   provided and \code{start} is an \code{sfc_POINT}, the waterbody containing
+#'   the point is resolved by spatial filter on this table. Default NULL (use
+#'   web services).
+#' @param catchment_data sf data.frame or NULL. In-memory NHDPlusV2 CatchmentSP
+#'   polygon table. Column names are lowercased internally; must include
+#'   \code{featureid} (case-insensitive). Used in three ways: (1) when
+#'   \code{catchments = TRUE}, catchment polygons for the upstream network are
+#'   subsetted from this table instead of fetched from the OGC API; (2) the
+#'   gap-zone catchment polygons (between the outlet and the immediate HUC12
+#'   outlets) are subsetted from this table instead of fetched; (3) when
+#'   \code{start} is an \code{sfc_POINT} and no waterbody is found, the COMID
+#'   is resolved by spatial join on this table. Default NULL (use web services).
 #' @param HU_inclusion_override character vector or NULL. Eight- or ten-digit
 #'   HUC codes whose HUC12s should be kept even when the parent HUC outlet is
 #'   not in the on-network set. Useful for regions like the Prairie Potholes
@@ -113,8 +128,8 @@
 #' }
 get_drainage_area_estimates <- function(start, catchments = FALSE,
   nhdplushr = TRUE, local_navigation = FALSE, huc12_data = NULL,
-  huc12_outlets = NULL, HU_inclusion_override = NULL,
-  outlet_split_threshold_m = 100) {
+  huc12_outlets = NULL, waterbody_data = NULL, catchment_data = NULL,
+  HU_inclusion_override = NULL, outlet_split_threshold_m = 100) {
 
   if(!is.null(huc12_data))
     huc12_data <- prepare_huc12_data(huc12_data)
@@ -122,13 +137,21 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
   if(!is.null(huc12_outlets))
     huc12_outlets <- prepare_huc12_outlets(huc12_outlets)
 
+  if(!is.null(waterbody_data))
+    waterbody_data <- prepare_waterbody_data(waterbody_data)
+
+  if(!is.null(catchment_data))
+    catchment_data <- prepare_catchment_data(catchment_data)
+
   vaa <- if(local_navigation) {
     message("Loading NHDPlusV2 VAA for local navigation...")
     get_vaa()
   }
 
   # 1. resolve start feature
-  start_info <- resolve_start_feature(start, vaa)
+  start_info <- resolve_start_feature(start, vaa,
+    waterbody_data = waterbody_data,
+    catchment_data = catchment_data)
   start_feature <- start_info$start_feature
   outlet_comids <- start_info$outlet_comids
 
@@ -147,6 +170,17 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
   message("  Found ", nrow(huc12_outlets), " HUC12 outlets")
 
   huc12_comids <- huc12_outlets$comid
+
+  # 2.5 auto-override for closed-basin point starts: when the point falls in a
+  # HUC12 that has no flowline pour point (i.e., not in huc12_outlets), the
+  # disconnected-filter would otherwise drop most of the outlet HUC8/HUC10
+  # because their max-by-sort outlet HUC12 isn't on-network. Include the start
+  # HUC12's parent HUC10 in the override so the whole HUC8/HUC10 is kept.
+  if(inherits(start, "sfc")) {
+    HU_inclusion_override <- augment_override_for_closed_basin_start(
+      start, huc12_outlets$identifier, huc12_data, HU_inclusion_override
+    )
+  }
 
   # 3. find immediately-upstream HUC12 outlets (pure logic)
   immediate_hu12_comids <- find_immediate_huc12_outlets(
@@ -169,6 +203,7 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
   # 5. compute gap area between outlet and HUC12 outlets
   nav_net <- if(local_navigation) vaa else all_net
   gap <- compute_gap_area(outlet_huc, all_net, nav_net,
+    gap_catchments = catchment_data,
     outlet_info = outlet_info)
 
   # 6. assemble DA estimates
@@ -209,10 +244,16 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
 
   # 8. optional full catchment retrieval
   if(catchments) {
-    message("Fetching network catchment geometries...")
-    all_catchments <- get_nhdplus(
-      comid = all_net$comid, realization = "catchment"
-    )
+    if(!is.null(catchment_data)) {
+      message("Subsetting local catchment data...")
+      all_catchments <- catchment_data[
+        catchment_data$featureid %in% all_net$comid, ]
+    } else {
+      message("Fetching network catchment geometries...")
+      all_catchments <- get_nhdplus(
+        comid = all_net$comid, realization = "catchment"
+      )
+    }
   } else {
     all_catchments <- NULL
   }
@@ -248,14 +289,46 @@ get_drainage_area_estimates <- function(start, catchments = FALSE,
 #'   \code{featureID}, or an \code{sfc_POINT} for waterbody lookup.
 #' @param vaa data.frame or NULL. NHDPlusV2 VAA table for local waterbody
 #'   outlet finding. When NULL, uses the OGC API instead.
+#' @param waterbody_data sf data.frame or NULL. Pre-prepared NHDWaterbody table
+#'   (lowercase names). When provided, replaces the \code{get_waterbodies} call.
+#' @param catchment_data sf data.frame or NULL. Pre-prepared CatchmentSP table
+#'   (lowercase names). Used as fallback COMID lookup when no waterbody is found.
 #' @return list with \code{start_feature} (sf data.frame) and
 #'   \code{outlet_comids} (integer vector).
 #' @noRd
-resolve_start_feature <- function(start, vaa = NULL) {
+resolve_start_feature <- function(start, vaa = NULL,
+  waterbody_data = NULL, catchment_data = NULL) {
 
   if(inherits(start, "sfc")) {
-    message("Fetching waterbody...")
-    wb <- get_waterbodies(start)
+    if(!is.null(waterbody_data)) {
+      message("Looking up waterbody in local data...")
+      # Some national NHDWaterbody polygons fail s2 validity checks
+      # (duplicate-vertex loops). Disable s2 just for the spatial
+      # filter and restore the previous setting on exit.
+      old_s2 <- sf::sf_use_s2()
+      sf::sf_use_s2(FALSE)
+      on.exit(sf::sf_use_s2(old_s2), add = TRUE)
+      wb <- sf::st_filter(waterbody_data,
+        sf::st_transform(start, sf::st_crs(waterbody_data)))
+    } else {
+      message("Fetching waterbody...")
+      wb <- get_waterbodies(start)
+    }
+
+    if(nrow(wb) == 0 && !is.null(catchment_data)) {
+      message("No waterbody found; resolving COMID from local catchment data...")
+      pt_sf <- sf::st_sf(geometry = sf::st_transform(start,
+        sf::st_crs(catchment_data)))
+      joined <- sf::st_join(pt_sf, catchment_data)
+      comid_val <- as.integer(joined$featureid[1])
+      if(is.na(comid_val))
+        stop("No catchment found for the provided point in catchment_data.")
+      return(list(
+        start_feature = sf::st_sf(comid = comid_val,
+          geometry = sf::st_sfc(sf::st_point(), crs = sf::st_crs(start))),
+        outlet_comids = comid_val
+      ))
+    }
 
     if(!nrow(wb) == 1 | !inherits(wb, "sf"))
       stop("point needs to fall in a waterbody!")
@@ -295,6 +368,74 @@ resolve_start_feature <- function(start, vaa = NULL) {
       "Check that the input resolves to a valid NHDPlus feature.")
 
   list(start_feature = start_feature, outlet_comids = outlet_comids)
+}
+
+#' Find the HUC12 containing a point
+#'
+#' Used to detect closed-basin / endorheic point starts whose containing HUC12
+#' has no flowline pour point on the NHD network. When \code{huc12_data} is
+#' provided, the HUC12 is found by spatial filter; otherwise, \code{get_huc} is
+#' used.
+#'
+#' @param start sfc_POINT. The start geometry.
+#' @param huc12_data sf data.frame or NULL. Pre-prepared HUC12 polygon table
+#'   (lowercase names, with a \code{huc_12} column) to spatially filter against.
+#'   When NULL, falls back to \code{get_huc(AOI = start, type = "huc12")}.
+#' @return character. The 12-digit HUC12 identifier, or NULL if not resolvable.
+#' @noRd
+find_start_huc12 <- function(start, huc12_data = NULL) {
+  if(!inherits(start, "sfc")) return(NULL)
+
+  if(!is.null(huc12_data)) {
+    old_s2 <- sf::sf_use_s2()
+    sf::sf_use_s2(FALSE)
+    on.exit(sf::sf_use_s2(old_s2), add = TRUE)
+    pt <- sf::st_transform(start, sf::st_crs(huc12_data))
+    hit <- sf::st_filter(huc12_data, pt)
+    if(nrow(hit) == 0) return(NULL)
+    return(as.character(hit$huc_12[1]))
+  }
+
+  hu12 <- tryCatch(
+    get_huc(AOI = start, type = "huc12"),
+    error = function(e) NULL
+  )
+  if(is.null(hu12) || nrow(hu12) == 0) return(NULL)
+  huc_col <- intersect(c("huc12", "huc_12"), names(hu12))[1]
+  if(is.na(huc_col)) return(NULL)
+  as.character(hu12[[huc_col]][1])
+}
+
+#' Augment HU_inclusion_override when a point start sits in a closed-basin HUC12
+#'
+#' Looks up the HUC12 containing the start point. If that HUC12 is not present
+#' in \code{network_huc12_ids} (i.e., NLDI returned no pour point for it on
+#' the upstream network), prepends the HUC12's parent HUC10 to
+#' \code{HU_inclusion_override}. A 10-digit override cascades to also match
+#' the parent HUC08 in \code{filter_disconnected_huc12s} because that function
+#' truncates overrides to its \code{parent_nchar}.
+#'
+#' @param start sfc_POINT. The start geometry.
+#' @param network_huc12_ids character. HUC12 identifiers in the on-network set
+#'   (typically \code{huc12_outlets$identifier}).
+#' @param huc12_data sf data.frame or NULL. Pre-prepared HUC12 table.
+#' @param HU_inclusion_override character or NULL. Existing override codes.
+#' @return character vector of override codes (unchanged when no augmentation
+#'   is warranted).
+#' @noRd
+augment_override_for_closed_basin_start <- function(start, network_huc12_ids,
+  huc12_data = NULL, HU_inclusion_override = NULL) {
+
+  start_huc12 <- find_start_huc12(start, huc12_data)
+  if(is.null(start_huc12)) return(HU_inclusion_override)
+
+  if(start_huc12 %in% network_huc12_ids) return(HU_inclusion_override)
+
+  start_huc10 <- substr(start_huc12, 1, 10)
+  message("Start point HUC12 ", start_huc12,
+    " has no flowline pour point (closed-basin-like); ",
+    "adding HUC10 ", start_huc10, " to HU_inclusion_override.")
+  unique(c(start_huc10, HU_inclusion_override))
 }
 
 #' Compute the flowline measure for a gage in its outlet catchment
@@ -704,6 +845,38 @@ prepare_huc12_outlets <- function(huc12_outlets) {
   huc12_outlets
 }
 
+#' Prepare in-memory NHDWaterbody data for local waterbody lookup
+#'
+#' Lowercases column names and validates the required \code{comid} column.
+#'
+#' @param waterbody_data sf data.frame. NHDWaterbody polygon table.
+#' @return sf data.frame with lowercase column names.
+#' @noRd
+prepare_waterbody_data <- function(waterbody_data) {
+  waterbody_data <- rename_geometry(waterbody_data, "geom")
+  names(waterbody_data) <- tolower(names(waterbody_data))
+  if(!"comid" %in% names(waterbody_data))
+    stop("waterbody_data is missing required column: comid")
+  waterbody_data
+}
+
+#' Prepare in-memory CatchmentSP data for local catchment operations
+#'
+#' Lowercases column names and validates the required \code{featureid} column.
+#'
+#' @param catchment_data sf data.frame. CatchmentSP polygon table.
+#' @return sf data.frame with lowercase column names.
+#' @noRd
+prepare_catchment_data <- function(catchment_data) {
+  catchment_data <- rename_geometry(catchment_data, "geom")
+  names(catchment_data) <- tolower(names(catchment_data))
+  if(!"featureid" %in% names(catchment_data))
+    stop("catchment_data is missing required column: featureid")
+  if(!"comid" %in% names(catchment_data))
+    catchment_data$comid <- catchment_data$featureid
+  catchment_data
+}
+
 #' Subset in-memory HUC12 data to match a fetch plan
 #'
 #' Local equivalent of \code{fetch_hu12_polygons} that subsets a pre-loaded
@@ -1093,8 +1266,77 @@ get_upstream_huc12s <- function(huc12_outlets, outlet_huc,
   outlet_huc12_ids <- outlet_huc$identifier
 
   plan <- plan_upstream_huc12_fetches(all_huc12_ids, outlet_huc12_ids)
-  fetch_upstream_huc12s(plan, huc12_data = huc12_data,
+  result <- fetch_upstream_huc12s(plan, huc12_data = huc12_data,
     HU_inclusion_override = HU_inclusion_override)
+
+  # The network-driven plan may not fetch every HU12 under an
+  # HU_inclusion_override parent. For closed-basin starts the outlet HU8 is
+  # treated as an outlet HU8 by the plan (not bulk-fetched), so HU12s that
+  # have no flowline pour point (e.g. lakes, frontal units) are missed.
+  # Force-include all HU12s under override parents from huc12_data.
+  if(!is.null(HU_inclusion_override) && !is.null(huc12_data)) {
+    result <- force_include_override_huc12s(result, HU_inclusion_override,
+      huc12_data)
+  }
+
+  result
+}
+
+#' Force-include all HU12s under override parents
+#'
+#' Adds HU12s from \code{huc12_data} whose parent HU10 (or HU8) matches any
+#' code in \code{HU_inclusion_override}, into \code{hu12_by_huc10} and
+#' \code{hu12_by_huc08}. Mirrors the cascade in
+#' \code{filter_disconnected_huc12s}: a 10-digit override applies at the
+#' HUC10 grouping and (via truncation) at the HUC08 grouping; an 8-digit
+#' override applies at the HUC08 grouping only.
+#'
+#' @param hu12_result list. Output of \code{fetch_upstream_huc12s}.
+#' @param HU_inclusion_override character. Override codes (8 or 10 digits).
+#' @param huc12_data sf data.frame. Pre-prepared HUC12 table.
+#' @return list with the same shape as \code{hu12_result}, with augmented
+#'   \code{hu12_by_huc10} and \code{hu12_by_huc08}.
+#' @noRd
+force_include_override_huc12s <- function(hu12_result, HU_inclusion_override,
+  huc12_data) {
+
+  override_10 <- HU_inclusion_override[nchar(HU_inclusion_override) >= 10]
+  override_10 <- unique(substr(override_10, 1, 10))
+  override_8 <- unique(substr(HU_inclusion_override, 1, 8))
+
+  added_h10 <- 0L
+  added_h08 <- 0L
+
+  if(length(override_10) > 0 && !is.null(hu12_result$hu12_by_huc10)) {
+    must_have <- huc12_data[
+      substr(huc12_data$huc_12, 1, 10) %in% override_10, ]
+    if(nrow(must_have) > 0) {
+      must_have <- add_huc12_area_columns(must_have)
+      before_n <- nrow(hu12_result$hu12_by_huc10)
+      hu12_result$hu12_by_huc10 <- union_huc12_sets(
+        hu12_result$hu12_by_huc10, must_have)
+      added_h10 <- nrow(hu12_result$hu12_by_huc10) - before_n
+    }
+  }
+
+  if(length(override_8) > 0 && !is.null(hu12_result$hu12_by_huc08)) {
+    must_have <- huc12_data[
+      substr(huc12_data$huc_12, 1, 8) %in% override_8, ]
+    if(nrow(must_have) > 0) {
+      must_have <- add_huc12_area_columns(must_have)
+      before_n <- nrow(hu12_result$hu12_by_huc08)
+      hu12_result$hu12_by_huc08 <- union_huc12_sets(
+        hu12_result$hu12_by_huc08, must_have)
+      added_h08 <- nrow(hu12_result$hu12_by_huc08) - before_n
+    }
+  }
+
+  if(added_h10 > 0 || added_h08 > 0)
+    message("  Force-included from HU_inclusion_override: +",
+      added_h10, " HU12s in HUC10 result, +", added_h08,
+      " HU12s in HUC08 result")
+
+  hu12_result
 }
 
 #' Filter disconnected HUC12s from broader HUC queries

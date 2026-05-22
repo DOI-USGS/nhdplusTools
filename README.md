@@ -9,23 +9,23 @@
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 
-## Renaming to `hydrogfetch`
+## Renaming to `hydrogeofetch`
 
-`nhdplusTools` is being renamed to `hydrogfetch` (hydrologic geospatial
+`nhdplusTools` is being renamed to `hydrogeofetch` (hydrologic geospatial
 fabric extraction tool chain). The package’s scope has grown beyond
-NHDPlus, and the name is no longer accurate. `hydrogfetch` will be a
+NHDPlus, and the name is no longer accurate. `hydrogeofetch` will be a
 pure rename. Functions, function signatures, behavior, will all stay the
-same. `hydrogfetch` will be published to CRAN as a new package.
+same. `hydrogeofetch` will be published to CRAN as a new package.
 
 Development on `nhdplusTools` has stopped; only critical bug fixes will
-be applied. Once `hydrogfetch` v1.0 is released, `nhdplusTools` will
-become a deprecation shim that forwards calls to `hydrogfetch` with a
+be applied. Once `hydrogeofetch` v1.0 is released, `nhdplusTools` will
+become a deprecation shim that forwards calls to `hydrogeofetch` with a
 deprecation warnings. The shim will remain on CRAN until **October
 2028**, at which point `nhdplusTools` will be archived. Archived
 packages stay installable from the CRAN archive, so code pinned to
 `nhdplusTools` will continue to run.
 
-Plan to switch to `hydrogfetch` once v1.0 is available.
+Plan to switch to `hydrogeofetch` once v1.0 is available.
 
 Follow this repository to keep up to date!
 

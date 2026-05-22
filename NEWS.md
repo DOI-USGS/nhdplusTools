@@ -1,6 +1,8 @@
 nhdplusTools 1.5.0
 ==========
 
+nhdplusTools 1.5.0 will be the last minor release of nhdplusTools before the package is renamed. Path releases may occur to fix minor issues or change things necessary for the name change, but the API is effectively frozen and all new dvelopment will go toward the replacement package `hydrogeofetch`. For more, see the README.md. 
+
 This release adds drainage area estimation tooling that combines HUC12 areas with NHDPlusV2 catchments to produce drainage area estimates at arbitrary points on the network.
 
 - New `get_drainage_area_estimates()` returns total and contributing-only drainage area estimates at HUC12, HUC10, and HUC08 resolutions, alongside a network-derived comparison value and an optional NHDPlusHR-catchment estimate. Non-contributing areas (from the HUC12 `ncontrb_a` attribute) are accounted for.

@@ -26,3 +26,6 @@ cran-comments.md
 ^CRAN-SUBMISSION$
 temp.R
 revdep
+CLAUDE.md
+dev
+.claude

@@ -9,6 +9,26 @@
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 
+## Renaming to `hydrogeofetch`
+
+`nhdplusTools` is being renamed to `hydrogeofetch` (hydrologic geospatial
+fabric extraction tool chain). The package’s scope has grown beyond
+NHDPlus, and the name is no longer accurate. `hydrogeofetch` will be a
+pure rename. Functions, function signatures, behavior, will all stay the
+same. `hydrogeofetch` will be published to CRAN as a new package.
+
+Development on `nhdplusTools` has stopped; only critical bug fixes will
+be applied. Once `hydrogeofetch` v1.0 is released, `nhdplusTools` will
+become a deprecation shim that forwards calls to `hydrogeofetch` with a
+deprecation warnings. The shim will remain on CRAN until **October
+2028**, at which point `nhdplusTools` will be archived. Archived
+packages stay installable from the CRAN archive, so code pinned to
+`nhdplusTools` will continue to run.
+
+Plan to switch to `hydrogeofetch` once v1.0 is available.
+
+Follow this repository to keep up to date!
+
 ## nhdplusTools: Tools for Accessing and Working with the NHDPlus and other US hydrographic data.
 
 ### Recommended Citation:
@@ -166,11 +186,11 @@ is also supported.
 
 ### Related similar packages:
 
-<https://github.com/mbtyers/riverdist>  
-<https://github.com/jsta/nhdR>  
-<https://github.com/lawinslow/hydrolinks>  
-<https://github.com/mikejohnson51/HydroData>  
-<https://github.com/ropensci/FedData>  
+<https://github.com/mbtyers/riverdist>\
+<https://github.com/jsta/nhdR>\
+<https://github.com/lawinslow/hydrolinks>\
+<https://github.com/mikejohnson51/HydroData>\
+<https://github.com/ropensci/FedData>\
 <https://github.com/hyriver/pygeohydro> … others – please suggest
 additions?
 
@@ -224,13 +244,13 @@ package a community created resource for us all to gain from and won’t
 be able to do that without your help!
 
 1)  Contributions should be thoroughly tested with
-    [`testthat`](https://testthat.r-lib.org/).  
+    [`testthat`](https://testthat.r-lib.org/).\
 2)  Code style should attempt to follow the [`tidyverse` style
-    guide.](https://style.tidyverse.org/)  
+    guide.](https://style.tidyverse.org/)\
 3)  Please attempt to describe what you want to do prior to contributing
-    by submitting an issue.  
+    by submitting an issue.\
 4)  Please follow the typical github [fork - pull-request
-    workflow.](https://gist.github.com/Chaser324/ce0505fbed06b947d962)  
+    workflow.](https://gist.github.com/Chaser324/ce0505fbed06b947d962)\
 5)  Make sure you use roxygen and run Check before contributing. More on
     this front as the package matures.
 
@@ -242,27 +262,23 @@ documentation. - this package uses pkgdown. Running
 
 # Disclaimer
 
-This information is preliminary or provisional and is subject to
-revision. It is being provided to meet the need for timely best science.
-The information has not received final approval by the U.S. Geological
-Survey (USGS) and is provided on the condition that neither the USGS nor
-the U.S. Government shall be held liable for any damages resulting from
-the authorized or unauthorized use of the information.
+This software has been approved for release by the U.S. Geological
+Survey (USGS). Although the software has been subjected to rigorous
+review, the USGS reserves the right to update the software as needed
+pursuant to further analysis and review. No warranty, expressed or
+implied, is made by the USGS or the U.S. Government as to the
+functionality of the software and related material nor shall the fact of
+release constitute any such warranty. Furthermore, the software is
+released on condition that neither the USGS nor the U.S. Government
+shall be held liable for any damages resulting from its authorized or
+unauthorized use.
 
-From:
-<https://www.usgs.gov/office-of-science-quality-and-integrity/fundamental-science-practices#5>
+From: <https://www2.usgs.gov/fsp/fsp_disclaimers.asp#5>
 
 This software is in the public domain because it contains materials that
 originally came from the U.S. Geological Survey, an agency of the United
 States Department of Interior. For more information, see the [official
 USGS copyright
 policy](https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits "official USGS copyright policy")
-
-Although this software program has been used by the USGS, no warranty,
-expressed or implied, is made by the USGS or the U.S. Government as to
-the accuracy and functioning of the program and related program material
-nor shall the fact of distribution constitute any such warranty, and no
-responsibility is assumed by the USGS in connection therewith. This
-software is provided “AS IS.”
 
 [![CC0](https://i.creativecommons.org/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)

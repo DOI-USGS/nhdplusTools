@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
       </span>
     </div>
 
@@ -55,6 +55,7 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.0" id="nhdplustools-150">nhdplusTools 1.5.0<a class="anchor" aria-label="anchor" href="#nhdplustools-150"></a></h2>
+<p>nhdplusTools 1.5.0 will be the last minor release of nhdplusTools before the package is renamed. Path releases may occur to fix minor issues or change things necessary for the name change, but the API is effectively frozen and all new development will go toward the replacement package <code>hydrogeofetch</code>. For more, see the README.md.</p>
 <p>This release adds drainage area estimation tooling that combines HUC12 areas with NHDPlusV2 catchments to produce drainage area estimates at arbitrary points on the network.</p>
 <ul><li><p>New <code><a href="../reference/get_drainage_area_estimates.html">get_drainage_area_estimates()</a></code> returns total and contributing-only drainage area estimates at HUC12, HUC10, and HUC08 resolutions, alongside a network-derived comparison value and an optional NHDPlusHR-catchment estimate. Non-contributing areas (from the HUC12 <code>ncontrb_a</code> attribute) are accounted for.</p></li>
 <li><p>Between the start point and the nearest upstream HUC12 outlets, NHDPlusV2 catchment areas are used; upstream of those outlets, HUC12 areas are used. The outlet catchment is split at the start point when it is more than <code>outlet_split_threshold_m</code> upstream of the catchment outlet.</p></li>

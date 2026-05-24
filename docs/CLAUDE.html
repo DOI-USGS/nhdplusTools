@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
       </span>
     </div>
 
@@ -54,15 +54,36 @@
 
 
 <div class="section level2">
+<h2 id="rename-to-hydrogeofetch">Rename to <code>hydrogeofetch</code>
+<a class="anchor" aria-label="anchor" href="#rename-to-hydrogeofetch"></a></h2>
+<p><code>nhdplusTools</code> is being renamed to <code>hydrogeofetch</code> (hydrologic geospatial fabric extraction tool chain) with a 2-year sunset ending <strong>October 2028</strong>, at which point <code>nhdplusTools</code> will be archived on CRAN.</p>
+<ul><li>
+<strong>Pure rename</strong>: function names and signatures stay identical in <code>hydrogeofetch</code> v1.0. No renames or signature changes during the sunset — the shim depends on stability. Cleanup happens post-archive or in <code>hydrogeofetch</code> 2.0 with its own deprecation cycle.</li>
+<li>
+<strong><code>hydrogeofetch</code> v1.0</strong> is a drop-in equivalent with some non-breaking updates.</li>
+<li>
+<strong><code>nhdplusTools</code> API is frozen</strong>. Critical bug fixes only — no features, no refactors, unless explicitly asked.</li>
+<li>
+<strong>Shim</strong>: once <code>hydrogeofetch</code> is on CRAN, <code>nhdplusTools</code> becomes function-level <code><a href="https://rdrr.io/r/base/Deprecated.html" class="external-link">.Deprecated()</a></code> aliases forwarding to <code>hydrogeofetch::*</code>. Maintained as a branch in the renamed repo.</li>
+<li>
+<strong>Repo</strong>: rename in place to <code>hydrogeofetch</code> (preserves issues, PRs, redirects). Timing within the sunset window.</li>
+<li>
+<strong>Cache</strong>: <code>hydrogeofetch</code> replaces the cache layer with no migration; users re-download on switch.</li>
+<li>
+<strong>Reverse deps</strong> (small, friendly): <code>amadeus</code>, <code>elfgen</code>, <code>StreamCatTools</code> — coordinate directly.</li>
+<li>
+<strong>DOIs</strong>: USGS-minted. <code>hydrogeofetch</code> gets a new USGS software release on code.usgs.gov with its own DOI. The existing <code>nhdplusTools</code> DOI will redirect to a historical release page for <code>hydrogeofetch</code>.</li>
+<li>
+<strong>USGS software release</strong> for <code>hydrogeofetch</code> starts as soon as the renamed code is on GitHub, before CRAN submission.</li>
+</ul><p>When working in this repo, treat <code>nhdplusTools</code> as frozen and <code>hydrogeofetch</code> v1.x as the future canonical line. Avoid signature changes to public functions — they break the shim.</p>
+</div>
+<div class="section level2">
 <h2 id="commands">Commands<a class="anchor" aria-label="anchor" href="#commands"></a></h2>
 <ul><li><code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code></li>
 <li>
 <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code> — R CMD check</li>
 <li>
 <code><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">devtools::document()</a></code> — rebuild roxygen docs</li>
-<li>Rscript: <code>/c/Users/dblodgett/AppData/Local/Programs/R/R-4.5.2/bin/Rscript.exe</code>
-</li>
-<li>multiline commands must be run in a script to avoid terminal errors (segfaults)</li>
 </ul></div>
 <div class="section level2">
 <h2 id="style">Style<a class="anchor" aria-label="anchor" href="#style"></a></h2>

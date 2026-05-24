@@ -11,11 +11,12 @@ Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://
 
 ## Renaming to `hydrogeofetch`
 
-`nhdplusTools` is being renamed to `hydrogeofetch` (hydrologic geospatial
-fabric extraction tool chain). The package’s scope has grown beyond
-NHDPlus, and the name is no longer accurate. `hydrogeofetch` will be a
-pure rename. Functions, function signatures, behavior, will all stay the
-same. `hydrogeofetch` will be published to CRAN as a new package.
+`nhdplusTools` is being renamed to `hydrogeofetch` (hydrologic
+geospatial fabric extraction tool chain). The package’s scope has grown
+beyond NHDPlus, and the name is no longer accurate. `hydrogeofetch` will
+be a pure rename. Functions, function signatures, behavior, will all
+stay the same. `hydrogeofetch` will be published to CRAN as a new
+package.
 
 Development on `nhdplusTools` has stopped; only critical bug fixes will
 be applied. Once `hydrogeofetch` v1.0 is released, `nhdplusTools` will
@@ -262,23 +263,14 @@ documentation. - this package uses pkgdown. Running
 
 # Disclaimer
 
-This software has been approved for release by the U.S. Geological
-Survey (USGS). Although the software has been subjected to rigorous
-review, the USGS reserves the right to update the software as needed
-pursuant to further analysis and review. No warranty, expressed or
-implied, is made by the USGS or the U.S. Government as to the
-functionality of the software and related material nor shall the fact of
-release constitute any such warranty. Furthermore, the software is
-released on condition that neither the USGS nor the U.S. Government
-shall be held liable for any damages resulting from its authorized or
-unauthorized use.
-
-From: <https://www2.usgs.gov/fsp/fsp_disclaimers.asp#5>
-
-This software is in the public domain because it contains materials that
-originally came from the U.S. Geological Survey, an agency of the United
-States Department of Interior. For more information, see the [official
-USGS copyright
-policy](https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits "official USGS copyright policy")
+This software is preliminary or provisional and is subject to revision.
+It is being provided to meet the need for timely best science. The
+software has not received final approval by the U.S. Geological Survey
+(USGS). No warranty, expressed or implied, is made by the USGS or the
+U.S. Government as to the functionality of the software and related
+material nor shall the fact of release constitute any such warranty. The
+software is provided on the condition that neither the USGS nor the U.S.
+Government shall be held liable for any damages resulting from the
+authorized or unauthorized use of the software.
 
 [![CC0](https://i.creativecommons.org/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)

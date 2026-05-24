@@ -265,9 +265,9 @@ download_rf1 <- function(outdir,
 
   message("Extracting data ...")
 
-  R.utils::gunzip(file, remove = FALSE, skip = T)
+  R.utils::gunzip(file, remove = FALSE, skip = TRUE)
 
-  path     <- list.files(outdir, full.names = T)[!grepl("gz", list.files(outdir))]
+  path     <- list.files(outdir, full.names = TRUE)[!grepl("gz", list.files(outdir))]
   path     <- path[grepl("rf1", path)]
 
   message(paste("RF1 data extracted to:", path))
@@ -291,7 +291,7 @@ download_rf1 <- function(outdir,
 downloader <- function(dir, url, type, progress = TRUE){
 
   if (!dir.exists(dir)) {
-    dir.create(dir, recursive = T)
+    dir.create(dir, recursive = TRUE)
   }
 
   file <-  file.path(dir, basename(url))

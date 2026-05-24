@@ -1,5 +1,7 @@
 if(!dir.exists("inst/doc")) dir.create("inst/doc", recursive = TRUE)
 
+Sys.setenv(BUILD_VIGNETTES = "TRUE", BUILD_VIGNETTES_CRAN = "TRUE")
+
 build_one <- function(name) {
   src <- file.path("vignettes", paste0(name, ".Rmd"))
   html <- file.path("inst/doc", paste0(name, ".html"))
@@ -9,7 +11,8 @@ build_one <- function(name) {
   }
   message("Building ", name, "...")
   tryCatch({
-    suppressWarnings(rmarkdown::render(src, output_dir = "inst/doc", quiet = TRUE))
+    out <- suppressWarnings(rmarkdown::render(src, quiet = TRUE))
+    file.rename(out, html)
     knitr::purl(src, output = file.path("inst/doc", paste0(name, ".R")))
     file.copy(src, "inst/doc/", overwrite = TRUE)
     message("  done.")
@@ -26,4 +29,4 @@ build_one("nhdplusTools")
 build_one("nhdplushr")
 build_one("plot_nhdplus")
 
-message("Run devtools::check(build_args = '--no-build-vignettes')")
+message('Run devtools::check(build_args = "--no-build-vignettes") or devtools::release(pkg = ".", args = c("--no-build-vignettes", "--no-resave-data"))')

@@ -32,7 +32,11 @@ img {
 ```{r setup, include = FALSE}
 library(nhdplusTools)
 
+#pkgdown build uses this
 build_local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
+
+#cran package uses this
+cran_build <- (Sys.getenv("BUILD_VIGNETTES_CRAN") == "TRUE")
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -41,13 +45,13 @@ knitr::opts_chunk$set(
   fig.height = 7,
   dpi = 150,
   out.width = "100%",
-  eval = build_local,
+  eval = build_local && !cran_build,
   fig.path = "drainage_area_figures/"
 )
 
 huc12 <- NULL
 wbd_gdb <- "../../Data/final_wbd/WBD_National_GDB/WBD_National_GDB.gdb"
-if(file.exists(wbd_gdb)) {
+if(file.exists(wbd_gdb) & !cran_build) {
   huc12 <- sf::read_sf(wbd_gdb, "WBDHU12")
   # Rename columns to the schema expected by
   # get_drainage_area_estimates() and the vignette plot helpers.
@@ -87,6 +91,9 @@ if(Sys.getenv("USE_LOCAL_NHDP") == "TRUE") {
 has_davidson <- FALSE
 oldoption <- options(scipen = 9999)
 ```
+
+*A fully rendered version of this vignette with figures is available at
+<https://doi-usgs.github.io/nhdplusTools/articles/drainage_area_estimation.html>.*
 
 `get_drainage_area_estimates()` combines Watershed Boundary Dataset
 (WBD) delineations and non-surface-contributing area estimates with

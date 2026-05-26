@@ -1,4 +1,4 @@
-﻿# Primary HydroShare Data Resource
+# Primary HydroShare Data Resource
 vaa_hydroshare <-
   'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
 
@@ -421,8 +421,8 @@ hydrogeofetch_memoise_cache <- function() {
   if(sys_memo_cache == "") {
     old <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_CACHE")
     if(old != "") {
-      message("NHDPLUSTOOLS_MEMOISE_CACHE is deprecated. ",
-              "Set HYDROGEOFETCH_MEMOISE_CACHE instead.")
+      packageStartupMessage("NHDPLUSTOOLS_MEMOISE_CACHE is deprecated. ",
+                            "Set HYDROGEOFETCH_MEMOISE_CACHE instead.")
       sys_memo_cache <- old
     }
   }
@@ -446,8 +446,8 @@ hydrogeofetch_memoise_timeout <- function() {
   if(sys_timeout == "") {
     old <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_TIMEOUT")
     if(old != "") {
-      message("NHDPLUSTOOLS_MEMOISE_TIMEOUT is deprecated. ",
-              "Set HYDROGEOFETCH_MEMOISE_TIMEOUT instead.")
+      packageStartupMessage("NHDPLUSTOOLS_MEMOISE_TIMEOUT is deprecated. ",
+                            "Set HYDROGEOFETCH_MEMOISE_TIMEOUT instead.")
       sys_timeout <- old
     }
   }

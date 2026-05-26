@@ -1,4 +1,4 @@
-﻿# Hex sticker for hydrogeofetch.
+# Hex sticker for hydrogeofetch.
 # Uses the New Hope sample data shipped with the package.
 # Iterate by tweaking colors, line weights, fade band placement, and the
 # hexSticker p_*/s_*/h_* args at the bottom.

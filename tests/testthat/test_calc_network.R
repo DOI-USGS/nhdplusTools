@@ -1,4 +1,4 @@
-﻿test_that("get_sorted error", {
+test_that("get_sorted error", {
   test_data <- data.frame(id = c(1, 2, 3, 4, 6, 7, 8, 9),
                           toid = c(2, 3, 4, 9, 7, 8, 9, 4))
 

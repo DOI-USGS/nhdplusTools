@@ -1,4 +1,4 @@
-﻿AOI_esri <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
+AOI_esri <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
                                    xmax = -89.24681, ymax = 43.17192),
                                  crs = "+proj=longlat +datum=WGS84 +no_defs"))
 

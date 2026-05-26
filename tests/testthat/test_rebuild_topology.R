@@ -1,4 +1,4 @@
-﻿source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
+source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 test_that("get_tocomid", {
 

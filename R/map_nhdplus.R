@@ -1,4 +1,4 @@
-﻿#' Check for a package
+#' Check for a package
 #' @param pkg package name
 #' @noRd
 

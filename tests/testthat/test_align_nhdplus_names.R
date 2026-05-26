@@ -1,4 +1,4 @@
-﻿source(system.file("extdata/new_hope_data.R", package = "hydrogeofetch"))
+source(system.file("extdata/new_hope_data.R", package = "hydrogeofetch"))
 names(new_hope_flowline) <- tolower(names(new_hope_flowline))
 
 test_that("aligned names work", {

@@ -1,4 +1,4 @@
-﻿get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
+get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
 
   stopifnot(service %in% c("3DHP_all", "NHDPlus_HR"))
 

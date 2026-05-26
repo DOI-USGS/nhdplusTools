@@ -1,4 +1,4 @@
-﻿sr <- units::set_units(0.1, "degrees")
+sr <- units::set_units(0.1, "degrees")
 
 source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 

@@ -1,4 +1,4 @@
-﻿test_that("degenerate levelpath", {
+test_that("degenerate levelpath", {
   x <- structure(list(ID = c(203071, 202863, 202883, 205509, 203069, 202875, 942110034),
                       toID = c(202863, 202883, 205509, 203069, 202875, 942110034, 0),
                       fcode = c(33600, 33600, 33600, 33600, 33600, 46006, 55800),

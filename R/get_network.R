@@ -1,4 +1,4 @@
-﻿#' @title Navigate Upstream with Tributaries
+#' @title Navigate Upstream with Tributaries
 #' @description Traverse NHDPlus network upstream with tributaries
 #' @param network data.frame NHDPlus flowlines including at a minimum:
 #' COMID, Pathlength, LENGTHKM, and Hydroseq.

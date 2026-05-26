@@ -1,4 +1,4 @@
-﻿#' @importFrom dplyr all_of
+#' @importFrom dplyr all_of
 get_hyg <- function(x, add, id = "comid") {
   if(add && inherits(x, "sf")) {
     select(x, all_of(id))

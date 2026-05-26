@@ -1,4 +1,4 @@
-﻿
+
 test_that("path_lengths", {
   source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
   fline <- walker_flowline

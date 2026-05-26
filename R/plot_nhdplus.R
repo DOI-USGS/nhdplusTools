@@ -1,4 +1,4 @@
-﻿#' @title Plot NHDPlus
+#' @title Plot NHDPlus
 #' @description Given a list of outlets, get their basin boundaries and network and return a plot in
 #' EPSG:3857 Web Mercator Projection.
 #' @param outlets list of nldi outlets. Other inputs are coerced into nldi outlets, see details.

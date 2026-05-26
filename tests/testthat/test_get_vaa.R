@@ -1,4 +1,4 @@
-﻿
+
 
 test_that("vaa examples", {
   skip_on_cran()

@@ -1,4 +1,4 @@
-﻿#' @title File path to value added attribute (vaa) Cache
+#' @title File path to value added attribute (vaa) Cache
 #' @description hydrogeofetch will download and cache an `fst` file with
 #' NHDPlusV2 attribute data sans geometry. This function returns the
 #' file path to the cached file. Will use the user data dir indicated

@@ -1,4 +1,4 @@
-﻿#' Get Path Members (DEPRECATED)
+#' Get Path Members (DEPRECATED)
 #' @description Given a network and set of IDs, finds paths between all
 #' identified flowpath outlets. This algorithm finds members between outlets
 #' regardless of flow direction.

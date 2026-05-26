@@ -1,4 +1,4 @@
-﻿
+
 
 test_that("navigation basics", {
   skip_on_cran()

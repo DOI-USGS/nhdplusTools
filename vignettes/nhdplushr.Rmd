@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Working with NHDPlusHR"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette

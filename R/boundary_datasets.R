@@ -1,4 +1,4 @@
-﻿#' VPU Boundaries
+#' VPU Boundaries
 #' Vector Processing Unit boundaries
 #' @docType data
 #' @format An object of class \code{"sf"}

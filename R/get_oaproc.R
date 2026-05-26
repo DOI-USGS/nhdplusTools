@@ -1,4 +1,4 @@
-﻿#' Get Raindrop Trace
+#' Get Raindrop Trace
 #' @description Uses a raindrop trace web service to trace the
 #' nhdplus digital elevation model to the nearest downslope flowline.
 #' @param point sfc POINT including crs as created by:

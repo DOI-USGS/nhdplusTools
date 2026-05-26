@@ -1,4 +1,4 @@
-﻿#' @title Subset NHDPlus
+#' @title Subset NHDPlus
 #' @description Saves a subset of the National Seamless database or other
 #' hydrogeofetch compatible data based on a specified collection of COMIDs.
 #' This function uses \code{\link{get_nhdplus}} for the "download" data

@@ -1,4 +1,4 @@
-﻿#' @title Get Streamorder
+#' @title Get Streamorder
 #' @description Applies a topological sort and calculates strahler stream order.
 #' Algorithm: If more than one upstream flowpath has an order equal to the
 #' maximum upstream order then the downstream flowpath is assigned the maximum

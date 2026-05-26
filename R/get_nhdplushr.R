@@ -1,4 +1,4 @@
-﻿#' Get NHDPlus HiRes
+#' Get NHDPlus HiRes
 #' @param hr_dir character directory with geodatabases (gdb search is recursive)
 #' @param out_gpkg character path to write output geopackage
 #' @param layers character vector with desired layers to return.

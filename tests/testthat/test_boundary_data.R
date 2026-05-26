@@ -1,4 +1,4 @@
-﻿test_that("data", {
+test_that("data", {
   expect_equal(nrow(hydrogeofetch::vpu_boundaries), 23)
   expect_equal(nrow(hydrogeofetch::rpu_boundaries), 70)
 

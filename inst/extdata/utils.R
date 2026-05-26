@@ -1,4 +1,4 @@
-﻿download_pkg_data <- function(f, u, work_dir) {
+download_pkg_data <- function(f, u, work_dir) {
   dir.create(work_dir, showWarnings = FALSE, recursive = TRUE)
 
   d <- file.path(work_dir, f)

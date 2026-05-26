@@ -1,4 +1,4 @@
-﻿#' discover geoconnex reference feature layers
+#' discover geoconnex reference feature layers
 #' @description
 #' Queries the geoconnex.us reference feature server for available layers and
 #' attributes.

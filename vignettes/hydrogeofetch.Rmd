@@ -1,4 +1,4 @@
-﻿---
+---
 title: "U.S. Data and Package Basics"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette

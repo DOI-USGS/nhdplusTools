@@ -1,4 +1,4 @@
-﻿test_that("find_immediate_huc12_outlets with synthetic network", {
+test_that("find_immediate_huc12_outlets with synthetic network", {
   # Linear: 1 -> 2 -> 3 -> 4 -> 5 (outlet)
   # HUC12 outlets at 2 and 4.
   # Trimmed (remove {2,4}): {1,3,5} with toids {2,4,0}.

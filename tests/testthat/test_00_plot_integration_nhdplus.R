@@ -1,4 +1,4 @@
-﻿source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 test_that("basics work", {
   options("rgdal_show_exportToProj4_warnings"="none")

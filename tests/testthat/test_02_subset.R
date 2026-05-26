@@ -1,4 +1,4 @@
-﻿source(list.files(pattern = "helper.R", recursive = TRUE, full.names = TRUE))
+source(list.files(pattern = "helper.R", recursive = TRUE, full.names = TRUE))
 
 test_that("subset errors", {
 

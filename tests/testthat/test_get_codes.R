@@ -1,4 +1,4 @@
-﻿source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
+source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 test_that("get streamorder", {
   skip_on_cran()

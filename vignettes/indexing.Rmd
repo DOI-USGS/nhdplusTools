@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Indexing and Referencing"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette

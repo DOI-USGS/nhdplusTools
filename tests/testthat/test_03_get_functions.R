@@ -1,4 +1,4 @@
-﻿# TESTING UNITS
+# TESTING UNITS
 # ==============================================================================
 # area = AOI::aoi_get("Eureka, Montana")
 # st_as_text(area$geometry)

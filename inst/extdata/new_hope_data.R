@@ -1,4 +1,4 @@
-﻿# See hyRefactor package for how this data was created.
+# See hyRefactor package for how this data was created.
 # nolint start
 source(system.file("extdata", "utils.R", package = "hydrogeofetch"))
 

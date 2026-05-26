@@ -1,4 +1,4 @@
-﻿test_that("get_node", {
+test_that("get_node", {
   source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   fline <- sf::read_sf(sample_data,

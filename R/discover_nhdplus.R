@@ -1,4 +1,4 @@
-﻿#' @title Discover NHDPlus ID
+#' @title Discover NHDPlus ID
 #' @description Multipurpose function to find a COMID of interest.
 #'
 #' Note that NHDPlusV2 uses "featureid" for catchment polygons and "comid" for

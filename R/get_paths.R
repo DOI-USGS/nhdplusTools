@@ -1,4 +1,4 @@
-﻿#' Get Level Paths (DEPRECATED)
+#' Get Level Paths (DEPRECATED)
 #' @description Calculates level paths using the stream-leveling approach of
 #' NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
 #' levelpath outlet identifier is provided in output. If arbolate sum is provided in

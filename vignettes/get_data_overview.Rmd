@@ -1,4 +1,4 @@
-﻿---
+---
 title: "hydrogeofetch Data Access Overview"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette

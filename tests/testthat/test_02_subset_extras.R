@@ -1,4 +1,4 @@
-﻿test_that("subset by bounding box", {
+test_that("subset by bounding box", {
   source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   bbox <- sf::st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = sf::st_crs(4326))

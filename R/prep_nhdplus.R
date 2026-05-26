@@ -1,4 +1,4 @@
-﻿#' @title Prep NHDPlus Data
+#' @title Prep NHDPlus Data
 #' @description Function to prep NHDPlus data for use by hydrogeofetch functions
 #' @param flines data.frame NHDPlus flowlines including:
 #' COMID, LENGTHKM, FTYPE (or FCODE), TerminalFl, FromNode, ToNode, TotDASqKM,

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Plotting with hydrogeofetch"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette

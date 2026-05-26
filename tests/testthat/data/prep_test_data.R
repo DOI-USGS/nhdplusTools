@@ -1,4 +1,4 @@
-﻿# data moved to extdata
+# data moved to extdata
 
 library(hydrogeofetch)
 

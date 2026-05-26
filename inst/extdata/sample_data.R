@@ -1,4 +1,4 @@
-﻿source(system.file("extdata", "utils.R", package = "hydrogeofetch"))
+source(system.file("extdata", "utils.R", package = "hydrogeofetch"))
 
 data_dir <- file.path(tempdir(check = TRUE), "hydrogeofetch")
 

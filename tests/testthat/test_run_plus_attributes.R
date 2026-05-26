@@ -1,4 +1,4 @@
-﻿test_that("basic two flowline network", {
+test_that("basic two flowline network", {
 
   net_new <- structure(list(comid = c(6170348, 6170858),
                             tocomid = c(0, 6170348),

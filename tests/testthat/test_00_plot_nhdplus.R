@@ -1,4 +1,4 @@
-﻿
+
 source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 test_that("tile_cache_dir", {

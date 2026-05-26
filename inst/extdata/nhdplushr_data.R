@@ -1,4 +1,4 @@
-﻿# nolint start
+# nolint start
 source(system.file("extdata", "utils.R", package = "hydrogeofetch"))
 
 if(!exists("work_dir")) {

@@ -1,4 +1,4 @@
-﻿#' @title Query USGS Water OGC API Features
+#' @title Query USGS Water OGC API Features
 #' @description Query the USGS Water OGC API for spatial data by location,
 #' area, or ID.
 #' @details The returned object(s) will have the same

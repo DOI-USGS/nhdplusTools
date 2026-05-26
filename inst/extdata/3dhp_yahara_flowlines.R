@@ -1,4 +1,4 @@
-﻿# ms <- sf::read_sf("https://geoconnex.us/ref/mainstems/377002")
+# ms <- sf::read_sf("https://geoconnex.us/ref/mainstems/377002")
 #
 # outlet_comid <- as.integer(gsub("https://geoconnex.us/nhdplusv2/comid/", "",
 #                                 ms$outlet_nhdpv2_comid))

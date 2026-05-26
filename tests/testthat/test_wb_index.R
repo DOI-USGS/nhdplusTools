@@ -1,4 +1,4 @@
-﻿test_that("index to waterbodies", {
+test_that("index to waterbodies", {
   source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 wb <- sf::read_sf(sample_data, "NHDWaterbody")

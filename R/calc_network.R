@@ -1,4 +1,4 @@
-﻿#' DEPRECATED: Total Drainage Area
+#' DEPRECATED: Total Drainage Area
 #' @description Calculates total drainage area given a dendritic
 #' network and incremental areas.
 #' @param x data.frame with ID, toID, and area columns.

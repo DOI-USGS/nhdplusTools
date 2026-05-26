@@ -1,5 +1,6 @@
 
 
+# TODO: test on internal network (R session crash during check)
 test_that("vaa examples", {
   skip_on_cran()
   skip_on_ci()

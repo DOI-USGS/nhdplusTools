@@ -4,7 +4,6 @@
 LICENSE
 .travis.yml
 .lintr
-inst/doc/*.html
 docs
 _pkgdown.yml
 data-raw
@@ -29,3 +28,6 @@ revdep
 CLAUDE.md
 dev
 .claude
+inst/build
+vignettes/drainage_area_figures
+PLAN.md

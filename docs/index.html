@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
       </span>
     </div>
 
@@ -82,6 +82,15 @@
 <div class="page-header"><h1 id="nhdplustools-">nhdplusTools <img src="reference/figures/logo.png" align="right" alt="" width="120"><a class="anchor" aria-label="anchor" href="#nhdplustools-"></a>
 </h1></div>
 <p><img src="https://github.com/doi-usgs/nhdplusTools/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"><a href="https://app.codecov.io/gh/doi-usgs/nhdplusTools" class="external-link"><img src="https://codecov.io/gh/doi-usgs/nhdplusTools/branch/master/graph/badge.svg" alt="codecov"></a> <a href="https://cran.r-project.org/package=nhdplusTools" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools" alt="CRAN Downloads"></a> <a href="https://cran.r-project.org/package=nhdplusTools" class="external-link"><img src="https://www.r-pkg.org/badges/version/nhdplusTools" alt="CRAN"></a></p>
+<div class="section level2">
+<h2 id="renaming-to-hydrogeofetch">Renaming to <code>hydrogeofetch</code>
+<a class="anchor" aria-label="anchor" href="#renaming-to-hydrogeofetch"></a>
+</h2>
+<p><code>nhdplusTools</code> is being renamed to <code>hydrogeofetch</code> (hydrologic geospatial fabric extraction tool chain). The package’s scope has grown beyond NHDPlus, and the name is no longer accurate. <code>hydrogeofetch</code> will be a pure rename. Functions, function signatures, behavior, will all stay the same. <code>hydrogeofetch</code> will be published to CRAN as a new package.</p>
+<p>Development on <code>nhdplusTools</code> has stopped; only critical bug fixes will be applied. Once <code>hydrogeofetch</code> v1.0 is released, <code>nhdplusTools</code> will become a deprecation shim that forwards calls to <code>hydrogeofetch</code> with a deprecation warnings. The shim will remain on CRAN until <strong>October 2028</strong>, at which point <code>nhdplusTools</code> will be archived. Archived packages stay installable from the CRAN archive, so code pinned to <code>nhdplusTools</code> will continue to run.</p>
+<p>Plan to switch to <code>hydrogeofetch</code> once v1.0 is available.</p>
+<p>Follow this repository to keep up to date!</p>
+</div>
 <div class="section level2">
 <h2 id="nhdplustools-tools-for-accessing-and-working-with-the-nhdplus-and-other-us-hydrographic-data">nhdplusTools: Tools for Accessing and Working with the NHDPlus and other US hydrographic data.<a class="anchor" aria-label="anchor" href="#nhdplustools-tools-for-accessing-and-working-with-the-nhdplus-and-other-us-hydrographic-data"></a>
 </h2>
@@ -239,10 +248,7 @@
 <div class="section level1">
 <h1 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
 </h1>
-<p>This information is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The information has not received final approval by the U.S. Geological Survey (USGS) and is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the information.</p>
-<p>From: <a href="https://www.usgs.gov/office-of-science-quality-and-integrity/fundamental-science-practices#5" class="external-link uri">https://www.usgs.gov/office-of-science-quality-and-integrity/fundamental-science-practices#5</a></p>
-<p>This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey, an agency of the United States Department of Interior. For more information, see the <a href="https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits" title="official USGS copyright policy" class="external-link">official USGS copyright policy</a></p>
-<p>Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith. This software is provided “AS IS.”</p>
+<p>This software is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The software has not received final approval by the U.S. Geological Survey (USGS). No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. The software is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the software.</p>
 <p><a href="https://creativecommons.org/publicdomain/zero/1.0/" class="external-link"><img src="https://i.creativecommons.org/p/zero/1.0/88x31.png" alt="CC0"></a></p>
 </div>
 

@@ -1,3 +1,8 @@
+hydrogeofetch 1.0.0
+==========
+
+`hydrogeofetch` is the renamed successor to `nhdplusTools`. The package scope has grown beyond NHDPlus, and the new name reflects its broader role as a hydrologic geospatial data access and network tool chain. All functions and signatures carry over unchanged. `nhdplusTools` will remain on CRAN as a deprecation shim until October 2028.
+
 nhdplusTools 1.5.0
 ==========
 

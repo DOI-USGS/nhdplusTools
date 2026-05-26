@@ -1,4 +1,4 @@
-# TESTING UNITS
+﻿# TESTING UNITS
 # ==============================================================================
 # area = AOI::aoi_get("Eureka, Montana")
 # st_as_text(area$geometry)
@@ -19,21 +19,21 @@ pt2 = data.frame(loc = "ucsb", geometry = "POINT (-119.8458 34.4146)") %>%
 test_that("query water oafeat...",{
   testthat::skip_on_cran()
   #available?
-  df <- nhdplusTools:::query_usgs_oafeat()
+  df <- hydrogeofetch:::query_usgs_oafeat()
   expect_equal(ncol(df), 6)
 
   # errors
   # Bad type request
-  expect_error(nhdplusTools:::query_usgs_oafeat(AOI = pt, type = 'wrong'),
+  expect_error(hydrogeofetch:::query_usgs_oafeat(AOI = pt, type = 'wrong'),
                "Type")
   # Missing AOI and ID(s)
-  expect_error(nhdplusTools:::query_usgs_oafeat(AOI = NULL, id = NULL,  type = 'catchmentsp'),
+  expect_error(hydrogeofetch:::query_usgs_oafeat(AOI = NULL, id = NULL,  type = 'catchmentsp'),
                "IDs or a spatial AOI")
   # Providing both an AOI and ID(s)
-  expect_error(nhdplusTools:::query_usgs_oafeat(AOI = pt, id = 17010101,  type = 'huc8_legacy'),
+  expect_error(hydrogeofetch:::query_usgs_oafeat(AOI = pt, id = 17010101,  type = 'huc8_legacy'),
                "Either")
 
-  # nhdplusTools:::query_usgs_oafeat(AOI = pt2, type = "huc08_legacy")
+  # hydrogeofetch:::query_usgs_oafeat(AOI = pt2, type = "huc08_legacy")
 })
 
 # Walk our way through the 7 different offerings...
@@ -347,21 +347,21 @@ test_that("get_nwis", {
 
 test_that("get_huc12_by_huc", {
   # input validation
-  expect_error(nhdplusTools:::get_huc12_by_huc(c("12050001", "1205000101")),
+  expect_error(hydrogeofetch:::get_huc12_by_huc(c("12050001", "1205000101")),
                "huc_ids must be all 8-digit")
-  expect_error(nhdplusTools:::get_huc12_by_huc("120500"),
+  expect_error(hydrogeofetch:::get_huc12_by_huc("120500"),
                "huc_ids must be all 8-digit")
 
   skip_on_cran()
 
   # HUC10 query
-  h10 <- nhdplusTools:::get_huc12_by_huc("1701010103")
+  h10 <- hydrogeofetch:::get_huc12_by_huc("1701010103")
   expect_s3_class(h10, "sf")
   expect_true(nrow(h10) > 0)
   expect_true(all(substr(h10$huc_12, 1, 10) == "1701010103"))
 
   # HUC08 query
-  h08 <- nhdplusTools:::get_huc12_by_huc("17010101")
+  h08 <- hydrogeofetch:::get_huc12_by_huc("17010101")
   expect_s3_class(h08, "sf")
   expect_true(nrow(h08) > nrow(h10))
   expect_true(all(substr(h08$huc_12, 1, 8) == "17010101"))
@@ -371,11 +371,11 @@ test_that("get_huc12_by_huc pages within batch", {
   skip_on_cran()
 
   # two HUC10s together, exercising POST paging
-  h10_multi <- nhdplusTools:::get_huc12_by_huc(c("1701010103", "1701010104"))
+  h10_multi <- hydrogeofetch:::get_huc12_by_huc(c("1701010103", "1701010104"))
   expect_s3_class(h10_multi, "sf")
 
-  h10_a <- nhdplusTools:::get_huc12_by_huc("1701010103")
-  h10_b <- nhdplusTools:::get_huc12_by_huc("1701010104")
+  h10_a <- hydrogeofetch:::get_huc12_by_huc("1701010103")
+  h10_b <- hydrogeofetch:::get_huc12_by_huc("1701010104")
 
   expect_equal(nrow(h10_multi), nrow(h10_a) + nrow(h10_b))
   expect_true(all(h10_a$huc_12 %in% h10_multi$huc_12))

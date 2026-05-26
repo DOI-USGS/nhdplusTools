@@ -10,7 +10,7 @@
 #' @importFrom hydroloom add_streamorder
 #' @export
 #' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #'
 #' test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
 #'
@@ -49,7 +49,7 @@ get_streamorder <- function(x, status = TRUE) {
 #' @importFrom hydroloom add_streamlevel
 #' @export
 #' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #'
 #' test_flowline <- data.frame(
 #'  levelpathi = walker_flowline$LevelPathI,
@@ -97,7 +97,7 @@ get_streamlevel <- function(x) {
 #' @examples
 #' \donttest{
 #' library(dplyr)
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 #' hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 #'
 #' fl <-  select(hr_flowline, COMID, AreaSqKM) %>%
@@ -130,7 +130,7 @@ get_streamlevel <- function(x) {
 #' plot(hr_catchment["color"], border = NA, reset = FALSE)
 #' plot(sf::st_geometry(hr_flowline), col = "blue", add = TRUE)
 #'
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #'
 #' fl <- select(walker_flowline, COMID, AreaSqKM) %>%
 #'   right_join(prepare_nhdplus(walker_flowline, 0, 0,

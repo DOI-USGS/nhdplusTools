@@ -1,6 +1,6 @@
 ﻿#' @title Subset NHDPlus
 #' @description Saves a subset of the National Seamless database or other
-#' nhdplusTools compatible data based on a specified collection of COMIDs.
+#' hydrogeofetch compatible data based on a specified collection of COMIDs.
 #' This function uses \code{\link{get_nhdplus}} for the "download" data
 #' source but returns data consistent with local data subsets in a subset
 #' file.
@@ -40,7 +40,7 @@
 #' @examples
 #' \donttest{
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' nhdplus_path(sample_data)
 #'
@@ -93,7 +93,7 @@
 #' sf::st_layers(output_file)
 #'
 #' # NHDPlusHR
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 #'
 #' up_ids <- get_UT(hr_data$NHDFlowline, 15000500028335)
 #'
@@ -495,7 +495,7 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #' @return data.frame containing subset network
 #' @examples
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 #'
@@ -564,7 +564,7 @@ recase_sf <- function(x, orig_names) {
 #' @importFrom sf st_sf st_drop_geometry
 #' @examples
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 #'

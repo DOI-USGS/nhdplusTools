@@ -1,22 +1,22 @@
-test_that("get_sorted error", {
+﻿test_that("get_sorted error", {
   test_data <- data.frame(id = c(1, 2, 3, 4, 6, 7, 8, 9),
                           toid = c(2, 3, 4, 9, 7, 8, 9, 4))
 
-  expect_error(nhdplusTools::get_sorted(test_data))
+  expect_error(hydrogeofetch::get_sorted(test_data))
 
   test_data <- data.frame(id = c(1, 2, 3, 4, 6, 7, 8, 9),
                           toid = c(2, 3, 4, 0, 7, 8, 9, 4))
 
-  expect_equal(nrow(nhdplusTools::get_sorted(test_data)), nrow(test_data))
+  expect_equal(nrow(hydrogeofetch::get_sorted(test_data)), nrow(test_data))
 
   test_data <- data.frame(id = c(1, 2, 3, 4),
                           toid = c(2, 3, 4, 0))
 
-  expect_equal(nrow(nhdplusTools::get_sorted(test_data)), nrow(test_data))
+  expect_equal(nrow(hydrogeofetch::get_sorted(test_data)), nrow(test_data))
 })
 
 test_that("total drainage area works", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
   catchment_area <- prepare_nhdplus(walker_flowline, 0, 0,
                                     purge_non_dendritic = FALSE, warn = FALSE)
@@ -38,7 +38,7 @@ test_that("total drainage area works", {
 })
 
 test_that("arbolate sum works", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
   catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
                                       purge_non_dendritic = FALSE, warn = FALSE)
 
@@ -57,7 +57,7 @@ test_that("arbolate sum works", {
 
 test_that("get_terminal", {
   suppressMessages(
-    source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
+    source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch")))
   hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 
   suppressWarnings(
@@ -72,7 +72,7 @@ test_that("get_terminal", {
   expect_true(is.numeric(terminal$ID))
   expect_equal(nrow(terminal), nrow(fl))
 
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
   fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
     select(ID = COMID, toID = toCOMID)
@@ -87,7 +87,7 @@ test_that("get_terminal", {
 })
 
 test_that("get_terminal", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
   fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
     select(ID = COMID, toID = toCOMID, length = LENGTHKM)

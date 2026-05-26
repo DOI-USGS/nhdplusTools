@@ -1,4 +1,4 @@
----
+﻿---
 title: "U.S. Data and Package Basics"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
@@ -9,11 +9,11 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-library(nhdplusTools)
+library(hydrogeofetch)
 
 local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 if(local) {
-  cache_path <- file.path(nhdplusTools_data_dir(), "nhdpt_v_cache")
+  cache_path <- file.path(hydrogeofetch_data_dir(), "nhdpt_v_cache")
 } else {
   cache_path <- tempdir()
 }
@@ -40,7 +40,7 @@ Pick an outlet location and download some data.
 # Uncomment to install!
 # install.packages("nhdplusTools")
 
-library(nhdplusTools)
+library(hydrogeofetch)
 library(sf)
 
 start_point <- st_sfc(st_point(c(-89.362239, 43.090266)), crs = 4269)
@@ -83,18 +83,18 @@ plot_data <- plot_nhdplus(
 
 ```
 
-This vignette covers a range of utilities the nhdplusTools package offers for working with data in a U.S. context.
+This vignette covers a range of utilities the hydrogeofetch package offers for working with data in a U.S. context.
 
-The first thing you are going to need to do is go get some data to work with. `nhdplusTools` provides the ability to download small subsets of the NHDPlus directly from web services. For large subsets, greater than a few thousand square kilometers, you can use `download_nhdplusv2()`.
+The first thing you are going to need to do is go get some data to work with. `hydrogeofetch` provides the ability to download small subsets of the NHDPlus directly from web services. For large subsets, greater than a few thousand square kilometers, you can use `download_nhdplusv2()`.
 
-If you are working with the whole National Seamless database, `nhdplusTools` has some convenience functions you should be aware of. Once you have it downloaded and extracted, you can tell the nhdplusTools package where it is with the `nhdplus_path()` function.
+If you are working with the whole National Seamless database, `hydrogeofetch` has some convenience functions you should be aware of. Once you have it downloaded and extracted, you can tell the hydrogeofetch package where it is with the `nhdplus_path()` function.
 
 ```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
-work_dir <- file.path(nhdplusTools_data_dir(), "nhdpt_v_cache")
+work_dir <- file.path(hydrogeofetch_data_dir(), "nhdpt_v_cache")
 
 dir.create(work_dir, showWarnings = FALSE, recursive = TRUE)
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 file.copy(sample_data,
           file.path(work_dir, "natseamless.gpkg"))
@@ -115,12 +115,12 @@ nrow(vaa)
 
 ### NHDPlus HiRes
 
-NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, `nhdplusTools` will have complete support for NHDPlus HiRes. So far, `nhdplusTools` will help download and interface NHDPlus HiRes data with existing `nhdplusTools` functionality. It's important to note that `nhdplusTools` was primarily implemented using NHDPlusV2 and any use of HiRes should be subject to scrutiny.
+NHDPlus HiRes is an in-development dataset that introduces much more dense flowlines and catchments. In the long run, `hydrogeofetch` will have complete support for NHDPlus HiRes. So far, `hydrogeofetch` will help download and interface NHDPlus HiRes data with existing `hydrogeofetch` functionality. It's important to note that `hydrogeofetch` was primarily implemented using NHDPlusV2 and any use of HiRes should be subject to scrutiny.
 
-For the demo below, a small sample of HiRes data that has been loaded into `nhdplusTools` is used. The first line shows how you can download additional data (just change `download_files` to `TRUE`).
+For the demo below, a small sample of HiRes data that has been loaded into `hydrogeofetch` is used. The first line shows how you can download additional data (just change `download_files` to `TRUE`).
 
 ```{r nhdplushr_secret, echo=FALSE, include=FALSE} 
-source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 ```
 
 ```{r nhdplus_hr}
@@ -144,7 +144,7 @@ names(hr_data)
 
 ## Discovery and Subsetting
 
-One of the primary workflows `nhdplusTools` is designed to accomplish can be described in three steps:
+One of the primary workflows `hydrogeofetch` is designed to accomplish can be described in three steps:
 
 1. what NHDPlus catchment is at the outlet of a watershed, 
 2. figure out what catchments are up or downstream of that catchment, and 
@@ -180,7 +180,7 @@ plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
 
 ### Web Service Data Subsetting
 
-`nhdplusTools` supports discovery and data subsetting using web services made available through the [Network Linked Data Index](https://waterdata.usgs.gov/blog/nldi-intro/) (NLDI) and the [Water Mission Area pygeoapir.](https://api.water.usgs.gov/fabric/pygeoapi) The code below shows how to use the NLDI functions to build a dataset upstream of our `start_comid` that we found above.
+`hydrogeofetch` supports discovery and data subsetting using web services made available through the [Network Linked Data Index](https://waterdata.usgs.gov/blog/nldi-intro/) (NLDI) and the [Water Mission Area pygeoapir.](https://api.water.usgs.gov/fabric/pygeoapi) The code below shows how to use the NLDI functions to build a dataset upstream of our `start_comid` that we found above.
 
 The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these "featureSources". We can query the NLDI for an identifier of a given feature from any of its "featureSources" and find out what our navigation options are as shown below.
 ```{r discover_nldi}
@@ -263,7 +263,7 @@ plot(sf::st_geometry(upstream_nwis$UT_nwissite),
 
 ### Local Data Subsetting
 
-While web service data access is very convenient, some use cases make working with web services impossible or cumbersome such that working with local data is preferable. nhdplusTools supports such workflows with hybrid, web-service and local, workflows.
+While web service data access is very convenient, some use cases make working with web services impossible or cumbersome such that working with local data is preferable. hydrogeofetch supports such workflows with hybrid, web-service and local, workflows.
 
 With the starting COMID we found with `discover_nhdplus_id()` above, we can use one of the network navigation functions, `get_UM()`, `get_UT()`, `get_DM()`, or `get_DD()` to retrieve a collection of comids along the upstream mainstem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we'll use upstream with tributaries.
 
@@ -312,7 +312,7 @@ plot(sf::st_geometry(waterbody), col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 
 ## Indexing
 
-nhdplusTools supports a number of indexing use cases. [See the function index for specifics](https://doi-usgs.github.io/nhdplusTools/reference/index.html#indexing-and-network-navigation).
+hydrogeofetch supports a number of indexing use cases. [See the function index for specifics](https://doi-usgs.github.io/nhdplusTools/reference/index.html#indexing-and-network-navigation).
 
 Using the data above, we can use the `get_flowline_index()` function to get the comid, reachcode, and measure of our starting point like this.
 

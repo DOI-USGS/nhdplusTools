@@ -1,5 +1,5 @@
-test_that("get_node", {
-  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+﻿test_that("get_node", {
+  source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   fline <- sf::read_sf(sample_data,
                        "NHDFlowline_Network")
@@ -23,7 +23,7 @@ test_that("get_node", {
 })
 
 test_that("fix_flowdir", {
-  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+  source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
 

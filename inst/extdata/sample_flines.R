@@ -1,6 +1,6 @@
-source(system.file("extdata", "utils.R", package = "nhdplusTools"))
+﻿source(system.file("extdata", "utils.R", package = "hydrogeofetch"))
 
-data_dir <- file.path(tempdir(check = TRUE), "nhdplusTools")
+data_dir <- file.path(tempdir(check = TRUE), "hydrogeofetch")
 
 download_pkg_data("petapsco_flowlines.gpkg",
                   "https://doi-usgs.github.io/nhdplusTools/data/petapsco_flowlines.gpkg",

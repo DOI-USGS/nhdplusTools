@@ -1,4 +1,4 @@
----
+﻿---
 title: "Drainage Area Estimation"
 author: "dblodgett@usgs.gov"
 output:
@@ -30,7 +30,7 @@ img {
 ```
 
 ```{r setup, include = FALSE}
-library(nhdplusTools)
+library(hydrogeofetch)
 
 #pkgdown build uses this
 build_local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
@@ -257,13 +257,13 @@ that repeated runs avoid repeating the web service calls entirely.
 
 ## Fetch and Cache Results
 
-Each basin result is stored in a separate RDS file in the nhdplusTools
+Each basin result is stored in a separate RDS file in the hydrogeofetch
 data directory so that subsequent runs skip the web service calls.
 
 ```{r fetch_data, message = TRUE}
 library(sf)
 
-data_dir <- nhdplusTools_data_dir()
+data_dir <- hydrogeofetch_data_dir()
 dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
 
 # On-network HU12 pour points from the Mainstem Rivers data release
@@ -463,7 +463,7 @@ usgs_topo_provider <- list(
 )
 
 # Cache directory for tiles
-tile_cache <- file.path(nhdplusTools_data_dir(), "da_v_tiles")
+tile_cache <- file.path(hydrogeofetch_data_dir(), "da_v_tiles")
 dir.create(tile_cache, recursive = TRUE, showWarnings = FALSE)
 
 # Compute a target tile zoom level so the rendered tiles are sharp

@@ -1,6 +1,6 @@
-sr <- units::set_units(0.1, "degrees")
+﻿sr <- units::set_units(0.1, "degrees")
 
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 flines_in <- sample_flines
 
@@ -110,7 +110,7 @@ test_that("multipart indexing", {
   lines <- sf::read_sf(list.files(pattern = "*flowline_index_reprex.gpkg",
                                   recursive = TRUE, full.names = TRUE), "reaches")
 
-  warn <- capture_warnings(index <- nhdplusTools::get_flowline_index(lines, points,
+  warn <- capture_warnings(index <- hydrogeofetch::get_flowline_index(lines, points,
                                                            search_radius = 500))
 
   expect_true(all(c("Attempting to combine multipart lines into single part lines. Check results!!",
@@ -123,7 +123,7 @@ test_that("multipart indexing", {
 
 test_that("disambiguate", {
 
-  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+  source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
   hydro_location <- sf::st_sf(id = c(1, 2, 3),
                               geom = sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
@@ -188,7 +188,7 @@ test_that("rescale", {
 })
 
 test_that("get location", {
-  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+  source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
   suppressWarnings(
     sample_flines <- sf::st_zm(sf::st_cast(sample_flines, "LINESTRING"))

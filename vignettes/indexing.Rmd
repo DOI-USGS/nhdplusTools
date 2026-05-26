@@ -1,4 +1,4 @@
----
+﻿---
 title: "Indexing and Referencing"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
@@ -9,11 +9,11 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-library(nhdplusTools)
+library(hydrogeofetch)
 
 local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 if(local) {
-  cache_path <- file.path(nhdplusTools_data_dir(), "index_v")
+  cache_path <- file.path(hydrogeofetch_data_dir(), "index_v")
 } else {
   cache_path <- tempdir()
 }
@@ -34,7 +34,7 @@ oldoption <- options(scipen = 9999,
 
 ## Introduction
 
-`nhdplusTools` offers a few indexing functions and some supporting functions that are worth being aware of. Most of these functions wrap similar but more general functions from [`hydroloom`](https://doi-usgs.github.io/hydroloom/reference/index.html#indexing-and-linear-referencing). 
+`hydrogeofetch` offers a few indexing functions and some supporting functions that are worth being aware of. Most of these functions wrap similar but more general functions from [`hydroloom`](https://doi-usgs.github.io/hydroloom/reference/index.html#indexing-and-linear-referencing). 
 
 The core functions are: `get_flowline_index()` and `get_waterbody_index()` -- they do the heavy lifting of finding flowlines and waterbodies near point locations. 
 
@@ -54,17 +54,17 @@ First we'll load up some data. In this case, we use flowlines from the NHDPlus s
 ```{r nhdplus_path_setup, echo=FALSE, include=FALSE}
 library(dplyr, warn.conflicts = FALSE)
 
-work_dir <- file.path(nhdplusTools_data_dir(), "index_vignette")
+work_dir <- file.path(hydrogeofetch_data_dir(), "index_vignette")
 dir.create(work_dir, recursive = TRUE)
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 file.copy(sample_data,
           file.path(work_dir, "natseamless.gpkg"))
 ```
 
 ```{r nhdplus_path, echo=TRUE}
-library(nhdplusTools)
+library(hydrogeofetch)
 
 nhdplus_path(file.path(work_dir, "natseamless.gpkg"))
 

@@ -1,21 +1,21 @@
----
-title: "NHDPlusTools Data Access Overview"
+﻿---
+title: "hydrogeofetch Data Access Overview"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{NHDPlusTools Data Access Overview}
+  %\VignetteIndexEntry{hydrogeofetch Data Access Overview}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 
 ```{r setup, include = FALSE}
-library(nhdplusTools)
+library(hydrogeofetch)
 
 local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 
 if(local) {
-  cache_path <- file.path(nhdplusTools_data_dir(), "data_v_cache")
+  cache_path <- file.path(hydrogeofetch_data_dir(), "data_v_cache")
 } else {
   cache_path <- tempdir()
 }
@@ -34,16 +34,16 @@ oldoption <- options(scipen = 9999)
 
 ```
 
-Since it's original release in 2019, data access in nhdplusTools has evolved and grown considerably. This vignette, prepared for a workshop in Summer 2024 shows the diversity of data available with nhdplusTools in one holistic overview.
+Since it's original release in 2019, data access in hydrogeofetch has evolved and grown considerably. This vignette, prepared for a workshop in Summer 2024 shows the diversity of data available with hydrogeofetch in one holistic overview.
 
-The function naming in `nhdplusTools` related to data access uses three common terms:  
+The function naming in `hydrogeofetch` related to data access uses three common terms:  
 1. "download" will generally download complete data sets for use locally.
 2. "get" will pull a data subset from a web service.
 3. "subset" will pull a subset from a local file and, when available, a web service.
 
 ## Dataset function index.
 
-The following summarizes specific data access functions available for the datasets that `nhdplusTools` has supporting functionality for.
+The following summarizes specific data access functions available for the datasets that `hydrogeofetch` has supporting functionality for.
 
 - NHDPlusV2
   - `download_nhdplusv2()` - downloads a National seamless geodatabase 
@@ -70,7 +70,7 @@ The following summarizes specific data access functions available for the datase
   
 ## Network Linked Data Index integration
 
-The Network Linked Data Index plays a key role in discovery `nhdplusTools`. It provides access to an easy network navigation and basin boundary delineation tool. Behind the scenes, the NLDI is based on the network of the NHDPlusV2 -- so has some special functionality related directly to that dataset. Functions that utilize the NLDI include:
+The Network Linked Data Index plays a key role in discovery `hydrogeofetch`. It provides access to an easy network navigation and basin boundary delineation tool. Behind the scenes, the NLDI is based on the network of the NHDPlusV2 -- so has some special functionality related directly to that dataset. Functions that utilize the NLDI include:
 
 - `subset_nhdplus()`
 - `plot_nhdplus()`
@@ -84,15 +84,15 @@ The Network Linked Data Index plays a key role in discovery `nhdplusTools`. It p
 - `get_split_catchment()`
 - `get_raindrop_trace()`
 
-In the demo below, we'll choose a stream gage and show how to access data related to it from all the datasets that nhdplusTools works with as well as use some of the NLDI functionality in question.
+In the demo below, we'll choose a stream gage and show how to access data related to it from all the datasets that hydrogeofetch works with as well as use some of the NLDI functionality in question.
 
 For the sake of demonstration, we'll look at the Wolf River at Langlade, WI -- site ID "04074950". 
 
-nhdplusTools allows us to start from a stream gage to build a subset of NHDPlusV2 data. Below, we'll do just that and plot the results on a default map.
+hydrogeofetch allows us to start from a stream gage to build a subset of NHDPlusV2 data. Below, we'll do just that and plot the results on a default map.
 
 ```{r}
 
-demo_dir <- nhdplusTools_data_dir()
+demo_dir <- hydrogeofetch_data_dir()
 
 site_id <- "USGS-04074950"
 
@@ -126,7 +126,7 @@ plot_nhdplus(outlets = list(featureSource = "nwissite",
              nhdplus_data = demo_data, flowline_only = TRUE)
 ```
 
-The above is the original way NHDPlusTools supported access NHDPlusV2 data. A dedicated web service subset utility is available in `get_nhdplus` -- which is what `subset_nhdplus()` calls behind the scenes.
+The above is the original way hydrogeofetch supported access NHDPlusV2 data. A dedicated web service subset utility is available in `get_nhdplus` -- which is what `subset_nhdplus()` calls behind the scenes.
 
 Here we grab the basin for our site and request NHDPlus with its geometry as the Area of Interest.
 
@@ -143,7 +143,7 @@ plot(sf::st_geometry(subset), col = "blue", add = TRUE)
 
 ```
 
-For NHDPlusHR data, which is much denser than NHDPlusV2, `nhdplusTools` supports downloading four-digit Hydrologic Unit Code staged geodatabases. The function `get_huc()` is useful to discover the code needed here.
+For NHDPlusHR data, which is much denser than NHDPlusV2, `hydrogeofetch` supports downloading four-digit Hydrologic Unit Code staged geodatabases. The function `get_huc()` is useful to discover the code needed here.
 
 ```{r}
 
@@ -169,7 +169,7 @@ plot(sf::st_geometry(basin), col = "grey", add = TRUE)
 ```
 ```{r}
 
-outdir <- file.path(nhdplusTools_data_dir(), "hr_access_demo")
+outdir <- file.path(hydrogeofetch_data_dir(), "hr_access_demo")
 
 dir.create(outdir)
 
@@ -196,7 +196,7 @@ nhdplushr <- get_nhdplushr(
 sapply(nhdplushr, nrow)
 
 ```
-At a lower level, we can use `get_hr_data()` to access particular layers. Here, `rename=TRUE` causes the nhdplushr names to be normalized to `nhdplusTools` conventions using `align_nhdplus_names()`. 
+At a lower level, we can use `get_hr_data()` to access particular layers. Here, `rename=TRUE` causes the nhdplushr names to be normalized to `hydrogeofetch` conventions using `align_nhdplus_names()`. 
 
 NOTE: "NHDPlusID" from nhdplushr is replaced with the name "COMID". This attribute is merely a unique integer identifier and should not be assumed to relate to anything outside the context of a given dataset.
 
@@ -252,7 +252,7 @@ If what you really need is the base NHD, which is now a static dataset, the patt
 
 ```{r}
 
-outdir <- file.path(nhdplusTools_data_dir(), "nhd_access_demo")
+outdir <- file.path(hydrogeofetch_data_dir(), "nhd_access_demo")
 
 dir.create(outdir)
 
@@ -284,7 +284,7 @@ plot(sf::st_geometry(sf::st_zm(sub_3dhp)), col = "skyblue", lwd = 2.5, add = TRU
 plot(sf::st_geometry(sf::st_zm(nhd_fline)), col = "blue", lwd = 0.1, add = TRUE)
 ```
 
-A brand new, May 2024, feature in nhdplusTools is access to the geoconnex.us reference feature server. The reference feature server provides easy access to representations of datasets that people use to cross reference other data. `discover_geoconnex_reference()` provides access to a full table of what's available. 
+A brand new, May 2024, feature in hydrogeofetch is access to the geoconnex.us reference feature server. The reference feature server provides easy access to representations of datasets that people use to cross reference other data. `discover_geoconnex_reference()` provides access to a full table of what's available. 
 
 ```{r}
 
@@ -317,7 +317,7 @@ The Watershed Boundary Dataset contains hydrologic units that are used as catalo
 
 ```{r}
 
-wbd_dir <- file.path(nhdplusTools_data_dir(), "wbd_access_demo")
+wbd_dir <- file.path(hydrogeofetch_data_dir(), "wbd_access_demo")
   
 wbd_out <- download_wbd(wbd_dir)
 

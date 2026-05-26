@@ -63,7 +63,7 @@
 #' options("rgdal_show_exportToProj4_warnings"="none")
 #' # Beware plot_nhdplus caches data to the default location.
 #' # If you do not want data in "user space" change the default.
-#' old_dir <- nhdplusTools::hydrogeofetch_data_dir()
+#' old_dir <- hydrogeofetch::hydrogeofetch_data_dir()
 #' hydrogeofetch_data_dir(tempdir())
 #'
 #' plot_nhdplus("05428500")
@@ -72,7 +72,7 @@
 #'
 #' plot_nhdplus(list(13293970, 13293750))
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' plot_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
 #'
@@ -104,7 +104,7 @@
 #'                     crs = "+proj=longlat +datum=WGS84 +no_defs")
 #'
 #' fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
-#' comids <- nhdplusTools::get_UT(fline, 13293970)
+#' comids <- hydrogeofetch::get_UT(fline, 13293970)
 #'
 #' plot_nhdplus(comids)
 #'
@@ -120,7 +120,7 @@
 #' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
 #'              plot_config = list(flowline = list(col = "darkblue")))
 #'
-#' nhdplusTools::hydrogeofetch_data_dir(old_dir)
+#' hydrogeofetch::hydrogeofetch_data_dir(old_dir)
 #' }
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
@@ -725,7 +725,7 @@ off_network <- function(waterbody, flowline) {
 #' @examples
 #' \donttest{
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
 #' wtbdy <- sf::read_sf(sample_data, "NHDWaterbody")

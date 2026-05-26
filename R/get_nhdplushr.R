@@ -132,7 +132,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 #' @param min_size_sqkm numeric minimum basin size to be included in the output
 #' @param proj a projection specification compatible with \link[sf]{st_crs}
 #' @param simp numeric simplification tolerance in units of projection
-#' @param rename boolean if TRUE, nhdplusTools standard attribute values will
+#' @param rename boolean if TRUE, hydrogeofetch standard attribute values will
 #' be applied.
 #' @export
 #' @return sf data.frame containing requested data
@@ -217,7 +217,7 @@ cull_cols <- function(x, keep_cols) {
 #' \donttest{
 #' library(dplyr)
 #' library(sf)
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 #'
 #' (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
 #' nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
@@ -227,7 +227,7 @@ cull_cols <- function(x, keep_cols) {
 #' (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
 #' nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
 #'
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 #'
 #' # Remove mainstem and non-dendritic stuff.
 #' subset <- filter(hr_data$NHDFlowline,

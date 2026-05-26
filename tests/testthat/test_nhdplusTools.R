@@ -1,6 +1,6 @@
+﻿
 
-
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 pt_data <- sample_flines
 
@@ -18,21 +18,21 @@ test_that("nhdplus_data path sets and gets right", {
   nhdplus_path("../NHDPlusV21_National_Seamless.gdb")
 })
 
-test_that("nhdplusTools_data_path works", {
-  check <- tools::R_user_dir("nhdplusTools")
+test_that("hydrogeofetch_data_dir works", {
+  check <- tools::R_user_dir("hydrogeofetch")
 
-  orig <- nhdplusTools_data_dir()
+  orig <- hydrogeofetch_data_dir()
 
-  expect_equal(nhdplusTools_data_dir(),
+  expect_equal(hydrogeofetch_data_dir(),
                check)
 
-  expect_equal(nhdplusTools_data_dir("test"),
+  expect_equal(hydrogeofetch_data_dir("test"),
                "test")
 
-  expect_equal(nhdplusTools_data_dir(check),
+  expect_equal(hydrogeofetch_data_dir(check),
                check)
 
-  nhdplusTools_data_dir(orig)
+  hydrogeofetch_data_dir(orig)
 })
 
 

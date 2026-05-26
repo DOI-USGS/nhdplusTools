@@ -1,4 +1,4 @@
-#' DEPRECATED: Total Drainage Area
+﻿#' DEPRECATED: Total Drainage Area
 #' @description Calculates total drainage area given a dendritic
 #' network and incremental areas.
 #' @param x data.frame with ID, toID, and area columns.
@@ -8,7 +8,7 @@
 #' @export
 #' @examples
 #' library(dplyr)
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #' catchment_area <- select(walker_flowline, COMID, AreaSqKM) %>%
 #'   right_join(prepare_nhdplus(walker_flowline, 0, 0,
 #'                             purge_non_dendritic = FALSE, warn = FALSE), by = "COMID") %>%
@@ -40,7 +40,7 @@ calculate_total_drainage_area <- function(x) {
 #' @export
 #' @examples
 #' library(dplyr)
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #' catchment_length <- select(walker_flowline, COMID, AreaSqKM) %>%
 #'   right_join(prepare_nhdplus(walker_flowline, 0, 0,
 #'                             purge_non_dendritic = FALSE, warn = FALSE), by = "COMID") %>%

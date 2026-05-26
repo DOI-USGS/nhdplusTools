@@ -1,4 +1,4 @@
-#' VPU Boundaries
+﻿#' VPU Boundaries
 #' Vector Processing Unit boundaries
 #' @docType data
 #' @format An object of class \code{"sf"}
@@ -21,9 +21,9 @@
 
 get_boundaries = function(type = "vpu"){
   if(tolower(type) == "vpu"){
-    nhdplusTools::vpu_boundaries
+    hydrogeofetch::vpu_boundaries
   } else if(tolower(type) == "rpu"){
-    nhdplusTools::rpu_boundaries
+    hydrogeofetch::rpu_boundaries
   } else {
     stop("Type must be either: rpu or vpu", call. = FALSE)
   }

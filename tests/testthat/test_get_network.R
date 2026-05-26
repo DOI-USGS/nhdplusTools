@@ -1,6 +1,6 @@
+﻿
 
-
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 pt_data <- sample_flines %>%
   align_nhdplus_names()

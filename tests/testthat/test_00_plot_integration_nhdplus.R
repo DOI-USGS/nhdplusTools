@@ -1,4 +1,4 @@
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+﻿source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 test_that("basics work", {
   options("rgdal_show_exportToProj4_warnings"="none")
@@ -10,7 +10,7 @@ test_that("basics work", {
   site <- "USGS-05428500"
   g_temp <- file.path(tempd, "foo.gpkg")
 
-  d <-  nhdplusTools:::get_plot_data(site, gpkg = g_temp, flowline_only = FALSE)
+  d <-  hydrogeofetch:::get_plot_data(site, gpkg = g_temp, flowline_only = FALSE)
   expect_equal(names(d), c("plot_bbox", "outlets", "flowline", "basin",
                            "catchment","network_wtbd","off_network_wtbd"))
 

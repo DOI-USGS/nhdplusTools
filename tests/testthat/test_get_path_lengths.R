@@ -1,6 +1,6 @@
-
+﻿
 test_that("path_lengths", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
   fline <- walker_flowline
 
   names(fline) <- tolower(names(fline))
@@ -8,7 +8,7 @@ test_that("path_lengths", {
   outlets <- c(5329357, 5329317, 5329365, 5329435, 5329817)
 
   #' Add toCOMID
-  fline <- nhdplusTools::get_tocomid(fline)
+  fline <- hydrogeofetch::get_tocomid(fline)
 
   fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm = lengthkm)
 
@@ -49,7 +49,7 @@ test_that("path_lengths", {
 })
 
 test_that("get_partial_length", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
   hydro_location <- list(comid = 5329339,
                          reachcode = "18050005000078",
                          reach_meas = 30)

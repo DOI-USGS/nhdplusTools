@@ -1,4 +1,4 @@
-# Primary HydroShare Data Resource
+﻿# Primary HydroShare Data Resource
 vaa_hydroshare <-
   'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
 
@@ -303,7 +303,7 @@ get_nldi_url <- function(pygeo = FALSE) {
   }
 }
 
-#' Get or set nhdplusTools data directory
+#' Get or set hydrogeofetch data directory
 #' @description if left unset, will return the user data dir
 #' as returned by `tools::R_user_dir` for this package.
 #' @param dir path of desired data directory
@@ -477,7 +477,7 @@ hydrogeofetch_memoise_timeout <- function() {
 #' @return data.frame renamed \code{sf} object
 #' @export
 #' @examples
-#' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/new_hope_data.R", package = "hydrogeofetch"))
 #'
 #' names(new_hope_flowline)
 #'

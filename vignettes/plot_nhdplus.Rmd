@@ -1,20 +1,20 @@
----
-title: "Plotting with nhdplusTools"
+﻿---
+title: "Plotting with hydrogeofetch"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Plotting with nhdplusTools}
+  %\VignetteIndexEntry{Plotting with hydrogeofetch}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
-library(nhdplusTools)
+library(hydrogeofetch)
 
 local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 
 if(local) {
-  cache_path <- file.path(nhdplusTools_data_dir(), "plot_v_cache")
+  cache_path <- file.path(hydrogeofetch_data_dir(), "plot_v_cache")
 } else {
   cache_path <- tempdir()
 }
@@ -35,12 +35,12 @@ oldoption <- options(scipen = 9999,
 
 ```
 ```{r data_dir_setup, echo=FALSE, include=FALSE}
-work_dir <- file.path(nhdplusTools_data_dir(), "plot_v_cache")
+work_dir <- file.path(hydrogeofetch_data_dir(), "plot_v_cache")
 dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
-library(nhdplusTools)
+library(hydrogeofetch)
 ```
 
-# Plotting with nhdplusTools
+# Plotting with hydrogeofetch
 
 The goal of this vignette is to demonstrate a simple and lightweight approach to building maps with NHDPlus data. 
 
@@ -48,15 +48,15 @@ The goal of this vignette is to demonstrate a simple and lightweight approach to
 
 **`plot_nhdplus` is a work in progress. Not all inputs in the function have been implemented as of 11/18/2019 and additional functionality will be added later. Please leave feature requests and issues you find in an [issue here](https://github.com/DOI-USGS/nhdplusTools/).**
 
-`plot_nhdplus` is a function that makes getting a simple plot of NHDPlus data as easy as possible. It works with other functions from `nhdplusTools` for identifying and retrieving watershed outlet locations. See the `plot_nhdplus` documentation for more info.
+`plot_nhdplus` is a function that makes getting a simple plot of NHDPlus data as easy as possible. It works with other functions from `hydrogeofetch` for identifying and retrieving watershed outlet locations. See the `plot_nhdplus` documentation for more info.
 
-If we pass `plot_nhdplus` a single NWIS site id, `nhdplusTools` uses web services to get data and we get a plot like this:
+If we pass `plot_nhdplus` a single NWIS site id, `hydrogeofetch` uses web services to get data and we get a plot like this:
 
 ```{r nwis_simple1, message=FALSE} 
 plot_nhdplus("05428500")
 ```
 
-If we want to add other watersheds, we can use any outlet available from the Network Linked Data Index. See "nldi" functions elsewhere in `nhdplusTools`.
+If we want to add other watersheds, we can use any outlet available from the Network Linked Data Index. See "nldi" functions elsewhere in `hydrogeofetch`.
 
 ```{r nwis_simple2, message=FALSE} 
 plot_nhdplus(list(list("nwissite", "USGS-05428500"),
@@ -81,7 +81,7 @@ plot_nhdplus(start_point)
 
 ```{r plot_styles, message=FALSE} 
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 plot_nhdplus(list(list("comid", "13293970"),
                   list("nwissite", "USGS-05428500"),
@@ -107,13 +107,13 @@ Any data added to these plots must be projected to this coordinate system to be 
 
 ## Getting Data
 
-What follows shows how to use `nhdplusTools` to create plots without the `plot_nhdplus` function. While super convenient, we all know the "easy button" is never quite right, the description below should help get you started.
+What follows shows how to use `hydrogeofetch` to create plots without the `plot_nhdplus` function. While super convenient, we all know the "easy button" is never quite right, the description below should help get you started.
 
 For this example, we'll start from an outlet NWIS Site. Note that other options are possible with `discover_nhdplus_id` and `dataRetrieval::get_nldi_sources`.
 
 ```{r get data}
 library(sf)
-library(nhdplusTools)
+library(hydrogeofetch)
 nwissite <- list(featureSource = "nwissite", 
                      featureID = "USGS-05428500")
 

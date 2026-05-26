@@ -1,4 +1,4 @@
-#' DEPRECATED: Add NHDPlus Network Attributes to a provided network.
+﻿#' DEPRECATED: Add NHDPlus Network Attributes to a provided network.
 #' @description Given a river network with required base attributes, adds the
 #' NHDPlus network attributes: hydrosequence, levelpath, terminalpath, pathlength,
 #' down levelpath, down hydroseq, total drainage area, and terminalflag.
@@ -22,7 +22,7 @@
 #' @export
 #' @examples
 #'
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #'
 #' test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
 #'

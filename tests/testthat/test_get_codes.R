@@ -1,4 +1,4 @@
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+﻿source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 test_that("get streamorder", {
   skip_on_cran()
@@ -17,7 +17,7 @@ test_that("get streamorder", {
 
     if(Sys.getenv("_R_CHECK_ON_GH_") != "true") { # broken on github actions
 
-    source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+    source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
     pt_data <- sample_flines
 
@@ -61,7 +61,7 @@ test_that("get_pfaf", {
   # layers <- "NHDFlowline"
   #
   # suppressMessages(
-  #   source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
+  #   source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch")))
   #
   # hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
   #

@@ -1,3 +1,3 @@
-library("testthat")
+﻿library("testthat")
 
-test_check("nhdplusTools")
+test_check("hydrogeofetch")

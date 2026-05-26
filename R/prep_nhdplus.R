@@ -1,5 +1,5 @@
 ﻿#' @title Prep NHDPlus Data
-#' @description Function to prep NHDPlus data for use by nhdplusTools functions
+#' @description Function to prep NHDPlus data for use by hydrogeofetch functions
 #' @param flines data.frame NHDPlus flowlines including:
 #' COMID, LENGTHKM, FTYPE (or FCODE), TerminalFl, FromNode, ToNode, TotDASqKM,
 #' StartFlag, StreamOrde, StreamCalc, TerminalPa, Pathlength,
@@ -22,7 +22,7 @@
 #' @export
 #' @examples
 #'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #'
 #' prepare_nhdplus(sample_flines,
 #'                 min_network_size = 10,
@@ -201,7 +201,7 @@ filter_coastal <- function(flines) {
 #' @importFrom hydroloom add_toids
 #' @export
 #' @examples
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #'
 #' tocomid <- get_tocomid(sample_flines)
 #'

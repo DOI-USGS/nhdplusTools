@@ -1,4 +1,4 @@
-# Hex sticker for hydrogeofetch.
+﻿# Hex sticker for hydrogeofetch.
 # Uses the New Hope sample data shipped with the package.
 # Iterate by tweaking colors, line weights, fade band placement, and the
 # hexSticker p_*/s_*/h_* args at the bottom.
@@ -6,7 +6,7 @@
 # Source from an R session that has hexSticker, sf, and dplyr installed:
 #   source("inst/extdata/hex.R")
 
-source(system.file("extdata", "new_hope_data.R", package = "nhdplusTools"))
+source(system.file("extdata", "new_hope_data.R", package = "hydrogeofetch"))
 
 zone_outlets <- c(8895440, 8893396, 8894326, 8894344, 8894356, 8897784)
 ibm_colors <- c("#FFB000", "#785EF0", "#DC267F", "#FE6100", "#648FFF", "#009D9A")
@@ -14,7 +14,7 @@ ibm_colors <- c("#FFB000", "#785EF0", "#DC267F", "#FE6100", "#648FFF", "#009D9A"
 seen_comids <- integer(0)
 zone_catchments <- list()
 for (i in seq_along(zone_outlets)) {
-  ut <- nhdplusTools::get_UT(new_hope_flowline, zone_outlets[i])
+  ut <- hydrogeofetch::get_UT(new_hope_flowline, zone_outlets[i])
   ut <- setdiff(ut, seen_comids)
   zone_catchments[[i]] <- new_hope_catchment[new_hope_catchment$FEATUREID %in% ut, ]
   seen_comids <- c(seen_comids, ut)

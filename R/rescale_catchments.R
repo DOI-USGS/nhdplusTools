@@ -1,4 +1,4 @@
-rescale_characteristics <- function(vars, lookup_table) {
+﻿rescale_characteristics <- function(vars, lookup_table) {
   # assign columns based on the desired summary operation
   cols_sum <- vars$characteristic_id[vars$summary_statistic == "sum"]
   cols_area_wtd_mean <- vars$characteristic_id[vars$summary_statistic == "area_weighted_mean"]
@@ -58,7 +58,7 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
     mutate(comid = as.integer(.data$member_comid))
 
   # fetch basin area for all comids
-  catchment_areas <- nhdplusTools::get_vaa(atts = c("comid", "areasqkm", "lengthkm")) |>
+  catchment_areas <- hydrogeofetch::get_vaa(atts = c("comid", "areasqkm", "lengthkm")) |>
     select(all_of(c("comid", "areasqkm", "lengthkm"))) |>
     right_join(comids_fmt, by = "comid", multiple = "all")
 

@@ -1,4 +1,4 @@
-#' Get Path Members (DEPRECATED)
+﻿#' Get Path Members (DEPRECATED)
 #' @description Given a network and set of IDs, finds paths between all
 #' identified flowpath outlets. This algorithm finds members between outlets
 #' regardless of flow direction.
@@ -7,13 +7,13 @@
 #' outlets.
 #' @export
 #' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #' fline <- walker_flowline
 #'
 #' outlets <- c(5329303, 5329357, 5329317, 5329365, 5329435, 5329817)
 #'
 #' # Add toCOMID
-#' fline <- nhdplusTools::get_tocomid(fline, add = TRUE)
+#' fline <- hydrogeofetch::get_tocomid(fline, add = TRUE)
 #'
 #' fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm)
 #'
@@ -40,13 +40,13 @@ get_path_members <- function(outlets, network, cores = 1, status = FALSE) {
 #' @importFrom utils combn
 #' @export
 #' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #' fline <- walker_flowline
 #'
 #' outlets <- c(5329303, 5329357, 5329317, 5329365, 5329435, 5329817)
 #'
 #' # Add toCOMID
-#' fline <- nhdplusTools::get_tocomid(fline, add = TRUE)
+#' fline <- hydrogeofetch::get_tocomid(fline, add = TRUE)
 #'
 #' fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm)
 #'

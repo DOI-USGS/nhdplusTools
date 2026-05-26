@@ -1,4 +1,4 @@
-
+﻿
 
 test_that("navigation basics", {
   skip_on_cran()
@@ -69,13 +69,13 @@ test_that("navigation basics", {
 
 test_that("walker", {
   skip_on_cran()
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
   hydro_location <- list(comid = 5329339,
                          reachcode = "18050005000078",
                          reach_meas = 30)
 
   hydro_location <- sf::st_sf(hydro_location,
-                              geom = nhdplusTools::get_hydro_location(data.frame(hydro_location),
+                              geom = hydrogeofetch::get_hydro_location(data.frame(hydro_location),
                                                                       walker_flowline))
 
   netD <- navigate_network(hydro_location,

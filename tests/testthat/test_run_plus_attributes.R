@@ -1,4 +1,4 @@
-test_that("basic two flowline network", {
+﻿test_that("basic two flowline network", {
 
   net_new <- structure(list(comid = c(6170348, 6170858),
                             tocomid = c(0, 6170348),
@@ -21,7 +21,7 @@ test_that("example", {
   skip_on_cran()
   skip_on_ci()
 
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
   test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
 

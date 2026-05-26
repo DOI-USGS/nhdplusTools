@@ -1,4 +1,4 @@
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+﻿source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 test_that("get_tocomid", {
 
@@ -22,7 +22,7 @@ test_that("get_tocomid", {
 })
 
 test_that("make_node_topology", {
-  source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+  source(system.file("extdata/new_hope_data.R", package = "hydrogeofetch"))
 
   d <- get_tocomid(
     dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,

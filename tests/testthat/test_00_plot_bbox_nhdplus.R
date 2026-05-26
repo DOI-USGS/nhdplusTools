@@ -1,5 +1,5 @@
-
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+﻿
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 test_that("bbox", {
   skip_on_cran()
@@ -9,16 +9,16 @@ test_that("bbox", {
                       crs = "+proj=longlat +datum=WGS84 +no_defs")
 
   # With downloaded data
-  d <- nhdplusTools:::get_plot_data(bbox = bbox)
+  d <- hydrogeofetch:::get_plot_data(bbox = bbox)
 
   expect_equal(nrow(d$flowline), 183)
 
   # With Local Data (note this sample is already subset to a watershed basis)
-  d <- nhdplusTools:::get_plot_data(bbox = bbox, streamorder = 2,
+  d <- hydrogeofetch:::get_plot_data(bbox = bbox, streamorder = 2,
                                     nhdplus_data = sample_data)
 
   expect_equal(nrow(d$flowline), 76)
 
-  expect_error(nhdplusTools:::get_plot_data(c(1,2,3), bbox = bbox),
+  expect_error(hydrogeofetch:::get_plot_data(c(1,2,3), bbox = bbox),
                "Both bbox and outlets not supported.")
 })

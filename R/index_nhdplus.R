@@ -1,4 +1,4 @@
-#' @title Get Flowline Index
+﻿#' @title Get Flowline Index
 #' @description given an sf point geometry column, return COMID, reachcode,
 #' and measure for each.
 #' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
@@ -40,7 +40,7 @@
 #' @examples
 #' \donttest{
 #'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #'
 #' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)),
 #'                     crs = 4326)
@@ -120,7 +120,7 @@ get_flowline_index <- function(flines, points,
 #' @importFrom hydroloom disambiguate_indexes
 #' @export
 #' @examples
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #'
 #' hydro_location <- sf::st_sf(id = c(1, 2, 3),
 #'                             geom = sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
@@ -185,7 +185,7 @@ disambiguate_flowline_indexes <- function(indexes, flowpath, hydro_location) {
 #' @export
 #' @examples
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' waterbodies <- sf::st_transform(
 #'   sf::read_sf(sample_data, "NHDWaterbody"), 5070)

@@ -1,4 +1,4 @@
-#' @title Navigate Upstream with Tributaries
+﻿#' @title Navigate Upstream with Tributaries
 #' @description Traverse NHDPlus network upstream with tributaries
 #' @param network data.frame NHDPlus flowlines including at a minimum:
 #' COMID, Pathlength, LENGTHKM, and Hydroseq.
@@ -12,7 +12,7 @@
 #' @export
 #' @examples
 #' library(sf)
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #' plot(sample_flines$geom)
 #' start_COMID <- 11690196
 #' UT_COMIDs <- get_UT(sample_flines, start_COMID)
@@ -43,7 +43,7 @@ get_UT <- function(network, comid, distance = NULL) {
 #' @examples
 #' library(sf)
 #'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #'
 #' plot(sample_flines$geom)
 #' start_COMID <- 11690196
@@ -84,7 +84,7 @@ get_UM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 #' @examples
 #' library(sf)
 #'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #'
 #' plot(sample_flines$geom)
 #' start_COMID <- 11690092
@@ -127,7 +127,7 @@ get_DM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 #' library(sf)
 #' start_COMID <- 11688818
 #'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #'
 #' DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
 #' plot(dplyr::filter(sample_flines, COMID %in% DD_COMIDs)$geom,
@@ -169,14 +169,14 @@ get_DD <- function(network, comid, distance = NULL) {
 #'                 trim_start = TRUE)
 #' }
 #'
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #' hydro_location <- list(comid = 5329339,
 #'                       reachcode = "18050005000078",
 #'                        reach_meas = 30)
 #'
 #' hydro_location <- sf::st_sf(
 #'   hydro_location,
-#'   geom = nhdplusTools::get_hydro_location(data.frame(hydro_location),
+#'   geom = hydrogeofetch::get_hydro_location(data.frame(hydro_location),
 #'                                           walker_flowline))
 #'
 #' net <- navigate_network(hydro_location,

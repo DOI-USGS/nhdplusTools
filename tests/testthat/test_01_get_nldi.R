@@ -1,4 +1,4 @@
-
+﻿
 
 test_that("nldi basics work", {
 
@@ -14,7 +14,7 @@ test_that("nldi basics work", {
 
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
-  expect_error(nhdplusTools:::check_nldi_feature(nldi_nwis[1]),
+  expect_error(hydrogeofetch:::check_nldi_feature(nldi_nwis[1]),
                  "Missing some required input for NLDI. Expected length 2 character vector or list with optional names: featureID")
 
   expect_equal(nrow(get_nldi_index(c(-89.276, 42.988))), 2)
@@ -274,10 +274,10 @@ test_that("xs", {
 
 test_that("coverage", {
   assign("nldi_tier", "borked",
-         envir = nhdplusTools:::nhdplusTools_env)
+         envir = hydrogeofetch:::hydrogeofetch_env)
 
   # may bring back but not relevant now
-  # expect_error(nhdplusTools:::get_nldi_url(),
+  # expect_error(hydrogeofetch:::get_nldi_url(),
   #              "only prod or test allowed.")
 
   tier_env <- Sys.getenv("NLDI_TIER")
@@ -285,19 +285,19 @@ test_that("coverage", {
   Sys.unsetenv("NLDI_TIER")
 
   assign("nldi_tier", "test",
-         envir = nhdplusTools:::nhdplusTools_env)
+         envir = hydrogeofetch:::hydrogeofetch_env)
 
-  test <- nhdplusTools:::get_nldi_url()
+  test <- hydrogeofetch:::get_nldi_url()
 
   expect_true(grepl("https", test))
 
-  test <- nhdplusTools:::get_nldi_url(pygeo = TRUE)
+  test <- hydrogeofetch:::get_nldi_url(pygeo = TRUE)
 
   expect_true(grepl("pygeoapi", test))
 
   Sys.setenv("NLDI_TIER"= tier_env)
 
   assign("nldi_tier", "prod",
-         envir = nhdplusTools:::nhdplusTools_env)
+         envir = hydrogeofetch:::hydrogeofetch_env)
 
 })

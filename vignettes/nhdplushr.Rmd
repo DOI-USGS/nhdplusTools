@@ -1,4 +1,4 @@
----
+﻿---
 title: "Working with NHDPlusHR"
 author: "dblodgett@usgs.gov"
 output: rmarkdown::html_vignette
@@ -9,11 +9,11 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-library(nhdplusTools)
+library(hydrogeofetch)
 
 local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
 if(local) {
-  cache_path <- file.path(nhdplusTools_data_dir(), "hr_v_cache")
+  cache_path <- file.path(hydrogeofetch_data_dir(), "hr_v_cache")
 } else {
   cache_path <- tempdir()
 }
@@ -35,16 +35,16 @@ oldoption <- options(scipen = 9999,
 
 ## TL;DR;
 
-Most functions in `nhdplusTools` work with NHDPlus High Res (HR) the same as they do with medium res. The demo below shows how to get a single four-digit hydrologic unit worth of HR data, index a point to it, subset it, and plot the results. 
+Most functions in `hydrogeofetch` work with NHDPlus High Res (HR) the same as they do with medium res. The demo below shows how to get a single four-digit hydrologic unit worth of HR data, index a point to it, subset it, and plot the results. 
 
-_Note: For consistency, identifiers from NHDPlusV2 are used with HiRes data. A future release of nhdplusTools may alter this behavior._
+_Note: For consistency, identifiers from NHDPlusV2 are used with HiRes data. A future release of hydrogeofetch may alter this behavior._
 ```{r tldr}
-library(nhdplusTools)
+library(hydrogeofetch)
 library(sf)
 
-work_dir <- file.path(nhdplusTools_data_dir(), "hr_v_cache")
+work_dir <- file.path(hydrogeofetch_data_dir(), "hr_v_cache")
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 hr_gpkg <- file.path(work_dir, "hr_data.gpkg")
 
@@ -88,7 +88,7 @@ plot(st_geometry(st_transform(hr_subset$NHDFlowline, 3857)),
 
 ## Download
 
-NHDPlusHR support in nhdplusTools begins with the function `download_nhdplushr()`. The NHDPlusHR can be downloaded in [four digit hydrologic unit code subsets here.](https://www.usgs.gov/national-hydrography/access-national-hydrography-products) `download_nhdplushr()` facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.
+NHDPlusHR support in hydrogeofetch begins with the function `download_nhdplushr()`. The NHDPlusHR can be downloaded in [four digit hydrologic unit code subsets here.](https://www.usgs.gov/national-hydrography/access-national-hydrography-products) `download_nhdplushr()` facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.
 
 _Note: Data for each HU02 are put in their own output folder._
 
@@ -101,7 +101,7 @@ list.files(hr_data_dir)
 
 ## Basic functionality
 
-The second part of nhdplusTools support for NHDPlusHR is a bit more involved. The entry point is a function called `get_nhdplushr()`. At it's core, it will take a collection of NHDPlusHR subsets, open them up one by one and build a single output table for later use. It also 
+The second part of hydrogeofetch support for NHDPlusHR is a bit more involved. The entry point is a function called `get_nhdplushr()`. At it's core, it will take a collection of NHDPlusHR subsets, open them up one by one and build a single output table for later use. It also 
 1. joins flowline attributes to the flowline geometry, 
 1. can return one or more selected layers, 
 1. can save the result to a standalone geopackage for later use, and 
@@ -143,7 +143,7 @@ Since NHDPlusHR data can be very large, `get_nhdplushr()` offers the ability to 
 1. `sim` will simplify all geometry to a given tolerance using `sf::st_simplify()`.
 1. `proj` will project the output into the desired projection.
 1. `keep_cols` is used to specify which attributes are desired in the output.
-1. `rename` controls whether output is automatically renamed to be compatible with `nhdplusTools` functions.
+1. `rename` controls whether output is automatically renamed to be compatible with `hydrogeofetch` functions.
 
 _Note: These options only operate on the flowline network._
 

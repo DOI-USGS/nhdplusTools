@@ -1,8 +1,8 @@
-# See hyRefactor package for how this data was created.
+﻿# See hyRefactor package for how this data was created.
 # nolint start
-source(system.file("extdata", "utils.R", package = "nhdplusTools"))
+source(system.file("extdata", "utils.R", package = "hydrogeofetch"))
 
-data_dir <- file.path(tempdir(check = TRUE), "nhdplusTools")
+data_dir <- file.path(tempdir(check = TRUE), "hydrogeofetch")
 
 f <- "new_hope.gpkg"
 f2 <- "new_hope_wbd.gpkg"

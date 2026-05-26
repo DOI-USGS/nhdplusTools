@@ -1,4 +1,4 @@
-#' Get Level Paths (DEPRECATED)
+﻿#' Get Level Paths (DEPRECATED)
 #' @description Calculates level paths using the stream-leveling approach of
 #' NHD and NHDPlus. In addition to a levelpath identifier, a topological sort and
 #' levelpath outlet identifier is provided in output. If arbolate sum is provided in
@@ -25,7 +25,7 @@
 #' }
 #' @export
 #' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #'
 #' test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
 #'
@@ -97,7 +97,7 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' of the requested network and optionally a terminal id.
 #' @importFrom hydroloom sort_network
 #' @examples
-#' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/new_hope_data.R", package = "hydrogeofetch"))
 #'
 #' fpath <- get_tocomid(
 #'   dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
@@ -181,7 +181,7 @@ topo_sort_network <- function(x, reverse = TRUE) {
 #' @export
 #' @return data.frame containing the terminal ID for each outlet
 #' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #'
 #' fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
 #'                     ID = COMID, toID = toCOMID)
@@ -209,7 +209,7 @@ get_terminal <- function(x, outlets) {
 #' @export
 #' @return data.frame containing pathlength for each ID
 #' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #'
 #' fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
 #'                     ID = COMID, toID = toCOMID, length = LENGTHKM)

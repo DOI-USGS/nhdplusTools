@@ -1,4 +1,4 @@
-#' Check for a package
+﻿#' Check for a package
 #' @param pkg package name
 #' @noRd
 
@@ -44,7 +44,7 @@ check_pkg <- function(pkg) {
 #'
 #' map_nhdplus(list(13293970, 13293750))
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' map_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
 #'

@@ -1,4 +1,4 @@
-
+﻿
 test_that("we get urls for nhdplushr and base", {
   skip_on_cran()
 
@@ -220,7 +220,7 @@ test_that("make_standalone", {
 
   expect_true(all(sa[sa$Hydroseq == min(sa$Hydroseq), ][c("DnLevel", "DnLevelPat", "DnHydroseq")] == 0))
 
-  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+  source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
   sample_flines <- get_tocomid(sample_flines)
 

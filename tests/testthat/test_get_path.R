@@ -1,4 +1,4 @@
-test_that("degenerate levelpath", {
+﻿test_that("degenerate levelpath", {
   x <- structure(list(ID = c(203071, 202863, 202883, 205509, 203069, 202875, 942110034),
                       toID = c(202863, 202883, 205509, 203069, 202875, 942110034, 0),
                       fcode = c(33600, 33600, 33600, 33600, 33600, 46006, 55800),
@@ -14,13 +14,13 @@ test_that("degenerate levelpath", {
                       )), row.names = c(NA, 7L), class = "data.frame")
 
   expect_warning(
-  y <- nhdplusTools::get_levelpaths(x)
+  y <- hydrogeofetch::get_levelpaths(x)
   )
   expect_equal(nrow(y), nrow(x))
 })
 
 test_that("calculate level path", {
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
   test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
 
@@ -70,7 +70,7 @@ test_that("hr levelpath", {
   skip_on_ci()
 
   suppressMessages(
-    source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools")))
+    source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch")))
   hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 
   suppressWarnings(
@@ -113,7 +113,7 @@ test_that("degenerate", {
 })
 
 test_that("from vignette works", {
-  source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+  source(system.file("extdata/new_hope_data.R", package = "hydrogeofetch"))
 
   suppressWarnings(fpath <- get_tocomid(
     dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,

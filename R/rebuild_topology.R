@@ -1,4 +1,4 @@
-#' @importFrom dplyr all_of
+﻿#' @importFrom dplyr all_of
 get_hyg <- function(x, add, id = "comid") {
   if(add && inherits(x, "sf")) {
     select(x, all_of(id))
@@ -18,7 +18,7 @@ get_hyg <- function(x, add, id = "comid") {
 #' attributes provided with id, fromnode and tonode in the first three columns.
 #' @export
 #' @examples
-#' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/new_hope_data.R", package = "hydrogeofetch"))
 #'
 #' x <- dplyr::select(get_tocomid(
 #'   dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
@@ -39,7 +39,7 @@ get_hyg <- function(x, add, id = "comid") {
 
 make_node_topology <- function(x, add_div = NULL, add = TRUE) {
 
-  warning("nhdplusTools make_node_topology is deprecated. Use hydroloom version.")
+  warning("hydrogeofetch make_node_topology is deprecated. Use hydroloom version.")
 
   orig_name <- names(x)[1:2]
 

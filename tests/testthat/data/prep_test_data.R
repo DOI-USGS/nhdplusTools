@@ -1,6 +1,6 @@
-# data moved to extdata
+﻿# data moved to extdata
 
-library(nhdplusTools)
+library(hydrogeofetch)
 
 # get path from env
 flines <- readRDS("../../../nhdplus_flowline.rds")

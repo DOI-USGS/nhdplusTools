@@ -1,4 +1,4 @@
-#' discover geoconnex reference feature layers
+﻿#' discover geoconnex reference feature layers
 #' @description
 #' Queries the geoconnex.us reference feature server for available layers and
 #' attributes.
@@ -12,7 +12,7 @@
 #'
 discover_geoconnex_reference <- function() {
 
-  discover_oafeat(get("gocnx_ref_base_url", envir = nhdplusTools_env))
+  discover_oafeat(get("gocnx_ref_base_url", envir = hydrogeofetch_env))
 
 }
 
@@ -52,7 +52,7 @@ get_geoconnex_reference <- function(AOI,
                                     buffer = 0.5,
                                     status = TRUE) {
 
-  base <- get("gocnx_ref_base_url", envir = nhdplusTools_env)
+  base <- get("gocnx_ref_base_url", envir = hydrogeofetch_env)
 
   get_oafeat(base, AOI, type = type, t_srs = t_srs, buffer = buffer, status = status)
 

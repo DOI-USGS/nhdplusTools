@@ -1,4 +1,4 @@
-#' @title Discover NHDPlus ID
+﻿#' @title Discover NHDPlus ID
 #' @description Multipurpose function to find a COMID of interest.
 #'
 #' Note that NHDPlusV2 uses "featureid" for catchment polygons and "comid" for
@@ -53,7 +53,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
 
     comid <- tryCatch({
 
-      URL <- paste0(get("usgs_water_root", envir = nhdplusTools_env),
+      URL <- paste0(get("usgs_water_root", envir = hydrogeofetch_env),
                     "collections/catchmentsp/items",
                     "?bbox=", coords[1], ",", coords[2], ",", coords[1], ",", coords[2],
                     "&properties=featureid&skipGeometry=true")

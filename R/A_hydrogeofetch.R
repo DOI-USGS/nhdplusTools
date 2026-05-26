@@ -5,7 +5,7 @@ vaa_hydroshare <-
 vaa_sciencebase <-
   'https://www.sciencebase.gov/catalog/file/get/63cb311ed34e06fef14f40a3?name=enhd_nhdplusatts.fst'
 
-nhdplusTools_env <- new.env()
+hydrogeofetch_env <- new.env()
 
 # NHDPlus Attributes
 COMID <- "COMID"
@@ -90,143 +90,143 @@ nhdplus_attributes <- list(
 
 .data <- . <- NULL
 
-assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
+assign("nhdplus_attributes", nhdplus_attributes, envir = hydrogeofetch_env)
 
 assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("gocnx_ref_base_url", "https://reference.geoconnex.us/",
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("usgs_water_root", "https://api.water.usgs.gov/fabric/pygeoapi/",
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("split_flowlines_attributes",
        c("COMID", "toCOMID", "LENGTHKM"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("collapse_flowlines_attributes",
        c("COMID", "toCOMID", "LENGTHKM", "LevelPathI", "Hydroseq"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("reconcile_collapsed_flowlines_attributes",
        c("COMID", "toCOMID", "LENGTHKM", "LevelPathI", "Hydroseq"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_UT_attributes",
        c("COMID", "Pathlength", "LENGTHKM", "Hydroseq",
          "LevelPathI", "DnHydroseq"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_UM_attributes",
        c("COMID", "Pathlength", "LevelPathI",
          "Hydroseq"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_DM_attributes",
        c("COMID", "Pathlength", "LENGTHKM",
          "LevelPathI", "DnLevelPat",
          "DnHydroseq", "Hydroseq"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_DM_nolength_attributes",
        c("COMID",
          "LevelPathI", "DnLevelPat",
          "DnHydroseq", "Hydroseq"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_DD_attributes",
        c("COMID", "Pathlength", "LENGTHKM",
          "LevelPathI", "DnLevelPat",
          "DnHydroseq", "Hydroseq", "DnMinorHyd"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_flowline_index_attributes",
        c("COMID", "REACHCODE", "ToMeas", "FromMeas"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_levelpaths_attributes",
        c("ID", "toID", "nameID", "weight"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_streamorder_attributes",
        c("ID", "toID"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_streamlevel_attributes",
        c("LevelPathI", "DnLevelPat"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_pfaf_attributes",
        c("ID", "toID", "totda", "outletID", "topo_sort", "levelpath"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("make_standalone_tonode_attributes",
        c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
          "LevelPathI", "FCODE"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("make_standalone_tocomid_attributes",
        c("COMID", "toCOMID", "Hydroseq", "TerminalPa",
-         "LevelPathI", "FCODE"), envir = nhdplusTools_env)
+         "LevelPathI", "FCODE"), envir = hydrogeofetch_env)
 
 assign("get_waterbody_index_waterbodies_attributes",
-       c("COMID"), envir = nhdplusTools_env)
+       c("COMID"), envir = hydrogeofetch_env)
 
 assign("get_waterbody_index_flines_attributes",
        c("COMID", "WBAREACOMI", "Hydroseq"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("disambiguate_flowline_indexes_attributes",
        c("id", "COMID", "REACHCODE", "REACH_meas", "offset"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("add_plus_network_attributes_attributes",
        c("comid", "tocomid", "nameID", "lengthkm"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("subset_rpu_attributes",
        c("COMID", "Pathlength", "LENGTHKM",
          "Hydroseq", "LevelPathI", "DnLevelPat",
          "RPUID", "ArbolateSu", "TerminalPa"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("subset_vpu_attributes",
        c(get("subset_rpu_attributes",
-             envir = nhdplusTools_env),
+             envir = hydrogeofetch_env),
          "VPUID"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("fix_flowdir_attributes",
        c("COMID", "toCOMID"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_hydro_location_attributes",
        c("COMID", "ToMeas", "FromMeas"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_wb_outlet_mres_attributes",
        c("COMID", "Hydroseq", "WBAREACOMI"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_wb_outlet_hires_attributes",
        c("WBArea_Permanent_Identifier", "Hydroseq"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("on_off_network_attributes",
        c("COMID", "WBAREACOMI"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_tocomid_attributes",
        c("COMID", "ToNode", "FromNode"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 assign("get_partial_length_attributes",
        c("REACHCODE", "FromNode", "ToNode", "LENGTHKM"),
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.
-assign("cur_count", 0, envir = nhdplusTools_env)
+assign("cur_count", 0, envir = hydrogeofetch_env)
 
 check_names <- function(x, function_name, align = TRUE, tolower = FALSE) {
   if(align) {
@@ -234,7 +234,7 @@ check_names <- function(x, function_name, align = TRUE, tolower = FALSE) {
   }
   names_x <- names(x)
   expect_names <- get(paste0(function_name, "_attributes"),
-                      envir = nhdplusTools_env)
+                      envir = hydrogeofetch_env)
   if ( !all(expect_names %in% names_x)) {
     stop(paste0("Missing some required attributes in call to: ",
                 function_name, ". Expected: ",
@@ -255,22 +255,22 @@ check_names <- function(x, function_name, align = TRUE, tolower = FALSE) {
 
 default_nhdplus_path <- "../NHDPlusV21_National_Seamless.gdb"
 
-assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
+assign("default_nhdplus_path", default_nhdplus_path, envir = hydrogeofetch_env)
 
 nhd_bucket <- "https://prd-tnm.s3.amazonaws.com/"
 nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Current/GDB/"
 archive_nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Archive/GDB/"
 nhd_file_list <- "?prefix=StagedProducts/Hydrography/NHD/HU4/GDB/"
 
-assign("nhd_bucket", nhd_bucket, envir = nhdplusTools_env)
-assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
-assign("archive_nhdhr_file_list", archive_nhdhr_file_list, envir = nhdplusTools_env)
+assign("nhd_bucket", nhd_bucket, envir = hydrogeofetch_env)
+assign("nhdhr_file_list", nhdhr_file_list, envir = hydrogeofetch_env)
+assign("archive_nhdhr_file_list", archive_nhdhr_file_list, envir = hydrogeofetch_env)
 
 assign("nldi_tier", "prod",
-       envir = nhdplusTools_env)
+       envir = hydrogeofetch_env)
 
 nhdplus_debug <- function() {
-  Sys.getenv("debug_nhdplusTools") == "true"
+  Sys.getenv("debug_hydrogeofetch") == "true"
 }
 
 #' @noRd
@@ -281,7 +281,7 @@ get_nldi_url <- function(pygeo = FALSE) {
   tier <- if(tier_env != "") {
     tier_env
   } else {
-    get("nldi_tier", envir = nhdplusTools_env)
+    get("nldi_tier", envir = hydrogeofetch_env)
   }
 
   if(pygeo) {
@@ -311,32 +311,32 @@ get_nldi_url <- function(pygeo = FALSE) {
 #' @importFrom tools R_user_dir
 #' @export
 #' @examples
-#' nhdplusTools_data_dir()
+#' hydrogeofetch_data_dir()
 #'
-#' nhdplusTools_data_dir("demo")
+#' hydrogeofetch_data_dir("demo")
 #'
-#' nhdplusTools_data_dir(tools::R_user_dir("nhdplusTools"))
+#' hydrogeofetch_data_dir(tools::R_user_dir("hydrogeofetch"))
 #'
-nhdplusTools_data_dir <- function(dir = NULL) {
+hydrogeofetch_data_dir <- function(dir = NULL) {
 
   if(is.null(dir)) {
 
-    nhdpt_dat_dir <- try(get("nhdpt_dat_dir", envir = nhdplusTools_env), silent = TRUE)
+    nhdpt_dat_dir <- try(get("nhdpt_dat_dir", envir = hydrogeofetch_env), silent = TRUE)
 
     if(inherits(nhdpt_dat_dir, "try-error") || grepl("CRAN", nhdpt_dat_dir)) {
       assign("nhdpt_dat_dir",
-             tools::R_user_dir("nhdplusTools"),
-             envir = nhdplusTools_env)
+             tools::R_user_dir("hydrogeofetch"),
+             envir = hydrogeofetch_env)
     }
 
-    return(get("nhdpt_dat_dir", envir = nhdplusTools_env))
+    return(get("nhdpt_dat_dir", envir = hydrogeofetch_env))
 
 
   } else {
     assign("nhdpt_dat_dir",
            dir,
-           envir = nhdplusTools_env)
-    return(invisible(get("nhdpt_dat_dir", envir = nhdplusTools_env)))
+           envir = hydrogeofetch_env)
+    return(invisible(get("nhdpt_dat_dir", envir = hydrogeofetch_env)))
   }
 }
 
@@ -362,7 +362,7 @@ nhdplusTools_data_dir <- function(dir = NULL) {
 nhdplus_path <- function(path = NULL, warn = FALSE) {
   if (!is.null(path)) {
 
-    assign("nhdplus_data", path, envir = nhdplusTools_env)
+    assign("nhdplus_data", path, envir = hydrogeofetch_env)
 
     if (warn) {
       warning("Path does not exist.")
@@ -372,13 +372,13 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
       invisible(0)
     }
   } else {
-      return(get("nhdplus_data", envir = nhdplusTools_env))
+      return(get("nhdplus_data", envir = hydrogeofetch_env))
   }
 }
 
-#' @title nhdplusTools cache settings
+#' @title hydrogeofetch cache settings
 #' @description
-#' Provides an interface to adjust nhdplusTools `memoise` cache.
+#' Provides an interface to adjust hydrogeofetch `memoise` cache.
 #'
 #' Mode and timeout can also be set using environment variables.
 #' `NHDPLUSTOOLS_MEMOISE_CACHE` and `NHDPLUSTOOLS_MEMOISE_TIMEOUT` are
@@ -390,18 +390,18 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' NULL, current settings. If settings are altered, previous setting values.
 #' @export
 #'
-nhdplusTools_cache_settings <- function(mode = NULL, timeout = NULL) {
-  current_mode <- tryCatch(get("nhdpt_mem_cache", envir = nhdplusTools_env),
+hydrogeofetch_cache_settings <- function(mode = NULL, timeout = NULL) {
+  current_mode <- tryCatch(get("nhdpt_mem_cache", envir = hydrogeofetch_env),
                            error = \(e) "filesystem") # default to filesystem
-  current_timeout <- tryCatch(get("nhdpt_cache_timeout", envir = nhdplusTools_env),
-                              error = \(e) nhdplusTools_memoise_timeout())
+  current_timeout <- tryCatch(get("nhdpt_cache_timeout", envir = hydrogeofetch_env),
+                              error = \(e) hydrogeofetch_memoise_timeout())
 
   if(!is.null(mode) && mode %in% c("memory", "filesystem")) {
-    assign("nhdpt_mem_cache", mode, envir = nhdplusTools_env)
+    assign("nhdpt_mem_cache", mode, envir = hydrogeofetch_env)
   }
 
   if(!is.null(timeout) && is.numeric(timeout)) {
-    assign("nhdpt_cache_timeout", timeout, envir = nhdplusTools_env)
+    assign("nhdpt_cache_timeout", timeout, envir = hydrogeofetch_env)
   }
 
   return(invisible(list(mode = current_mode, timeout = current_timeout)))
@@ -409,9 +409,9 @@ nhdplusTools_cache_settings <- function(mode = NULL, timeout = NULL) {
 
 #' @importFrom memoise memoise cache_memory cache_filesystem
 #' @importFrom digest digest
-nhdplusTools_memoise_cache <- function() {
+hydrogeofetch_memoise_cache <- function() {
   sys_memo_cache <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_CACHE")
-  ses_memo_cache <- try(get("nhdpt_mem_cache", envir = nhdplusTools_env), silent = TRUE)
+  ses_memo_cache <- try(get("nhdpt_mem_cache", envir = hydrogeofetch_env), silent = TRUE)
 
   # if it hasn't been set up yet, try to use the system env
   if(!inherits(ses_memo_cache, "try-error")) {
@@ -420,18 +420,18 @@ nhdplusTools_memoise_cache <- function() {
     if(sys_memo_cache == "memory") {
       memoise::cache_memory()
     } else {
-      dir.create(nhdplusTools_data_dir(), showWarnings = FALSE, recursive = TRUE)
+      dir.create(hydrogeofetch_data_dir(), showWarnings = FALSE, recursive = TRUE)
 
-      memoise::cache_filesystem(nhdplusTools_data_dir())
+      memoise::cache_filesystem(hydrogeofetch_data_dir())
     }
 
   }
 
 }
 
-nhdplusTools_memoise_timeout <- function() {
+hydrogeofetch_memoise_timeout <- function() {
   sys_timeout <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_TIMEOUT")
-  ses_timeout <- try(get("nhdpt_cache_timeout", envir = nhdplusTools_env), silent = TRUE)
+  ses_timeout <- try(get("nhdpt_cache_timeout", envir = hydrogeofetch_env), silent = TRUE)
 
   # if it hasn't been set up yet, try to use the system env
   if(!inherits(ses_timeout, "try-error")) {
@@ -448,18 +448,18 @@ nhdplusTools_memoise_timeout <- function() {
 
 .onLoad <- function(libname, pkgname) {
   query_usgs_arcrest <<- memoise::memoise(query_usgs_arcrest,
-                                          ~memoise::timeout(nhdplusTools_memoise_timeout()),
-                                          cache = nhdplusTools_memoise_cache())
+                                          ~memoise::timeout(hydrogeofetch_memoise_timeout()),
+                                          cache = hydrogeofetch_memoise_cache())
   query_usgs_oafeat <<- memoise::memoise(query_usgs_oafeat,
-                                            ~memoise::timeout(nhdplusTools_memoise_timeout()),
-                                            cache = nhdplusTools_memoise_cache())
+                                            ~memoise::timeout(hydrogeofetch_memoise_timeout()),
+                                            cache = hydrogeofetch_memoise_cache())
   query_nldi <<- memoise::memoise(query_nldi,
-                                  ~memoise::timeout(nhdplusTools_memoise_timeout()),
-                                  cache = nhdplusTools_memoise_cache())
+                                  ~memoise::timeout(hydrogeofetch_memoise_timeout()),
+                                  cache = hydrogeofetch_memoise_cache())
 }
 
 #' @title Align NHD Dataset Names
-#' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.
+#' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in hydrogeofetch.
 #' @param x a \code{sf} object of nhdplus flowlines
 #' @return data.frame renamed \code{sf} object
 #' @export
@@ -476,7 +476,7 @@ nhdplusTools_memoise_timeout <- function() {
 #'
 align_nhdplus_names <- function(x){
 
-  attribute_names <- get("nhdplus_attributes", envir = nhdplusTools_env)
+  attribute_names <- get("nhdplus_attributes", envir = hydrogeofetch_env)
 
   # get into correct case
   good_names <- unique(unlist(do.call(rbind, attribute_names))[,1])

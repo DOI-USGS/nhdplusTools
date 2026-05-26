@@ -1,4 +1,4 @@
-#####################################################################
+﻿#####################################################################
 # File contains general downloading tools and API utility functions #
 #####################################################################
 
@@ -31,11 +31,11 @@
 #' }
 download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE, archive = FALSE) {
 
-  list_source <- get("nhdhr_file_list", envir = nhdplusTools_env)
+  list_source <- get("nhdhr_file_list", envir = hydrogeofetch_env)
 
-  if(archive) list_source <- get("archive_nhdhr_file_list", envir = nhdplusTools_env)
+  if(archive) list_source <- get("archive_nhdhr_file_list", envir = hydrogeofetch_env)
 
-  download_nhd_internal(get("nhd_bucket", envir = nhdplusTools_env),
+  download_nhd_internal(get("nhd_bucket", envir = hydrogeofetch_env),
                list_source,
                "NHDPLUS_H_", nhd_dir, hu_list, download_files)
 }
@@ -56,8 +56,8 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE, archive 
 #' }
 download_nhd <- function(nhd_dir, hu_list, download_files = TRUE) {
 
-  download_nhd_internal(get("nhd_bucket", envir = nhdplusTools_env),
-               get("nhd_file_list", envir = nhdplusTools_env),
+  download_nhd_internal(get("nhd_bucket", envir = hydrogeofetch_env),
+               get("nhd_file_list", envir = hydrogeofetch_env),
                "NHD_H_",
                nhd_dir, hu_list, download_files)
 }

@@ -1,4 +1,4 @@
-#' Get NHDPlus HiRes
+﻿#' Get NHDPlus HiRes
 #' @param hr_dir character directory with geodatabases (gdb search is recursive)
 #' @param out_gpkg character path to write output geopackage
 #' @param layers character vector with desired layers to return.
@@ -33,7 +33,7 @@
 #' \dontrun{
 #' # Note this will download a lot of data to a temp directory.
 #' # Change 'temp_dir' to your directory of choice.
-#' temp_dir <- file.path(nhdplusTools_data_dir(), "temp_hr_cache")
+#' temp_dir <- file.path(hydrogeofetch_data_dir(), "temp_hr_cache")
 #'
 #' download_dir <- download_nhdplushr(temp_dir, c("0302", "0303"))
 #'
@@ -102,7 +102,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 
     if(grepl("flowline", layer, ignore.case = TRUE) & check_terminals) {
       expect_names <- get(paste0("make_standalone_tonode_attributes"),
-                          envir = nhdplusTools_env)
+                          envir = hydrogeofetch_env)
       if(!all(expect_names %in% names(out))) {
         warning("check_terminals is true but attributes selected do not support the checks.")
       } else {

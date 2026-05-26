@@ -1,4 +1,4 @@
-#' @title Get Streamorder
+﻿#' @title Get Streamorder
 #' @description Applies a topological sort and calculates strahler stream order.
 #' Algorithm: If more than one upstream flowpath has an order equal to the
 #' maximum upstream order then the downstream flowpath is assigned the maximum
@@ -159,7 +159,7 @@ get_pfaf <- function(x, max_level = 2, status = FALSE) {
   check_names(x, "get_pfaf")
 
   x <- select(x, all_of(get("get_pfaf_attributes",
-                            envir = nhdplusTools_env)))
+                            envir = hydrogeofetch_env)))
 
   x <- add_pfafstetter(x, max_level, status)
 

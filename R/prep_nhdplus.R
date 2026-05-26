@@ -1,4 +1,4 @@
-#' @title Prep NHDPlus Data
+﻿#' @title Prep NHDPlus Data
 #' @description Function to prep NHDPlus data for use by nhdplusTools functions
 #' @param flines data.frame NHDPlus flowlines including:
 #' COMID, LENGTHKM, FTYPE (or FCODE), TerminalFl, FromNode, ToNode, TotDASqKM,
@@ -66,7 +66,7 @@ prepare_nhdplus <- function(flines,
 
   assign("prepare_nhdplus_attributes",
          unique(req_names),
-         envir = nhdplusTools_env)
+         envir = hydrogeofetch_env)
 
   flines <- check_names(flines, "prepare_nhdplus", tolower = TRUE)
 

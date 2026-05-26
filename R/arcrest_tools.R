@@ -1,8 +1,8 @@
-get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
+﻿get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
 
   stopifnot(service %in% c("3DHP_all", "NHDPlus_HR"))
 
-  url_base <- paste0(get("arcrest_root", envir = nhdplusTools_env),
+  url_base <- paste0(get("arcrest_root", envir = hydrogeofetch_env),
                      service,
                      "/MapServer/")
 
@@ -238,7 +238,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 }
 
 
-assign("bb_break_size", value = 2, nhdplusTools_env)
+assign("bb_break_size", value = 2, hydrogeofetch_env)
 
 #' @title Construct a BBOX spatial filter for geoservers
 #' @description From an 'area of intferest' object (sf POINT or POLYGON),

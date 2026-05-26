@@ -1,4 +1,4 @@
-#' @title Plot NHDPlus
+﻿#' @title Plot NHDPlus
 #' @description Given a list of outlets, get their basin boundaries and network and return a plot in
 #' EPSG:3857 Web Mercator Projection.
 #' @param outlets list of nldi outlets. Other inputs are coerced into nldi outlets, see details.
@@ -63,8 +63,8 @@
 #' options("rgdal_show_exportToProj4_warnings"="none")
 #' # Beware plot_nhdplus caches data to the default location.
 #' # If you do not want data in "user space" change the default.
-#' old_dir <- nhdplusTools::nhdplusTools_data_dir()
-#' nhdplusTools_data_dir(tempdir())
+#' old_dir <- nhdplusTools::hydrogeofetch_data_dir()
+#' hydrogeofetch_data_dir(tempdir())
 #'
 #' plot_nhdplus("05428500")
 #'
@@ -120,7 +120,7 @@
 #' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
 #'              plot_config = list(flowline = list(col = "darkblue")))
 #'
-#' nhdplusTools::nhdplusTools_data_dir(old_dir)
+#' nhdplusTools::hydrogeofetch_data_dir(old_dir)
 #' }
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
@@ -231,7 +231,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 }
 
 tile_cache_dir <- function() {
-  tile_cache_dir <- file.path(nhdplusTools_data_dir(),
+  tile_cache_dir <- file.path(hydrogeofetch_data_dir(),
                        "tile_cache_dir")
 
   # Checks to see if tile_cache_dir is writable

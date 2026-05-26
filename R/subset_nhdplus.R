@@ -1,4 +1,4 @@
-#' @title Subset NHDPlus
+﻿#' @title Subset NHDPlus
 #' @description Saves a subset of the National Seamless database or other
 #' nhdplusTools compatible data based on a specified collection of COMIDs.
 #' This function uses \code{\link{get_nhdplus}} for the "download" data
@@ -372,15 +372,15 @@ get_nhd_data <- function(nhdplus_data, layer_name, comids, id, status) {
     comids[start:end]
   })
 
-  assign("cur_count", 0, envir = nhdplusTools_env)
+  assign("cur_count", 0, envir = hydrogeofetch_env)
 
   out <- lapply(sets, function(x, total) {
     if(status) {
 
       cur_count <-
-        get("cur_count", envir = nhdplusTools_env) + length(x)
+        get("cur_count", envir = hydrogeofetch_env) + length(x)
 
-      assign("cur_count", cur_count, envir = nhdplusTools_env)
+      assign("cur_count", cur_count, envir = hydrogeofetch_env)
 
       message(paste(cur_count, "comids of", total))
 

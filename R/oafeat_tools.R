@@ -1,4 +1,4 @@
-#' @title Query USGS Water OGC API Features
+﻿#' @title Query USGS Water OGC API Features
 #' @description Query the USGS Water OGC API for spatial data by location,
 #' area, or ID.
 #' @details The returned object(s) will have the same
@@ -36,7 +36,7 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
                               properties = NULL,
                               skip_geometry = FALSE) {
 
-  base <- get("usgs_water_root", envir = nhdplusTools_env)
+  base <- get("usgs_water_root", envir = hydrogeofetch_env)
 
   source <- data.frame(server = 'usgs_oafeat',
                        user_call  = c('huc02_2020', 'huc04_2020', 'huc06_2020',
@@ -481,7 +481,7 @@ get_huc12_by_huc <- function(huc_ids, t_srs = NULL) {
   if(length(huc_ids) == 0)
     return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
 
-  base <- get("usgs_water_root", envir = nhdplusTools_env)
+  base <- get("usgs_water_root", envir = hydrogeofetch_env)
 
   n <- unique(nchar(huc_ids))
   if(length(n) != 1 || !n %in% c(8, 10))

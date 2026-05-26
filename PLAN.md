@@ -3,13 +3,9 @@
 nhdplusTools 1.5.0 is the last feature release under the old name. This plan covers the rename to hydrogeofetch, the deprecation shim, and the eventual CRAN archive of nhdplusTools. Each milestone ends with a gate — review or communication work that should finish before moving on.
 
 
-## 1. Close out nhdplusTools 1.5.0
+## 1. Close out nhdplusTools 1.5.0 ✓
 
-Deploy the pkgdown site and confirm CRAN acceptance. This is the last version of nhdplusTools that carries new functionality.
-
-**Done when:** pkgdown site live, package on CRAN, announcement posted.
-
-**Gate:** Announce 1.5.0 as the final feature release. The README already points to the rename plan; confirm it reads clearly after the pkgdown rebuild.
+*Complete.* nhdplusTools v1.5.0 released on CRAN, tagged and released on both GitHub and GitLab (May 2026). pkgdown site live. README points to the rename plan.
 
 
 ## 2. Build hydrogeofetch v1.0

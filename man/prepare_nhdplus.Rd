@@ -47,11 +47,11 @@ or not.}
 data.frame ready to be used with the refactor_flowlines function.
 }
 \description{
-Function to prep NHDPlus data for use by nhdplusTools functions
+Function to prep NHDPlus data for use by hydrogeofetch functions
 }
 \examples{
 
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 prepare_nhdplus(sample_flines,
                 min_network_size = 10,

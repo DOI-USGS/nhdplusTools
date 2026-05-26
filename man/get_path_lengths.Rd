@@ -26,13 +26,13 @@ identified flowpath outlets. This algorithm finds distance between outlets
 regardless of flow direction.
 }
 \examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 fline <- walker_flowline
 
 outlets <- c(5329303, 5329357, 5329317, 5329365, 5329435, 5329817)
 
 # Add toCOMID
-fline <- nhdplusTools::get_tocomid(fline, add = TRUE)
+fline <- hydrogeofetch::get_tocomid(fline, add = TRUE)
 
 fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm)
 

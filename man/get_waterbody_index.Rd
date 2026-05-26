@@ -29,7 +29,7 @@ COMID of dominant artificial path
 }
 \examples{
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 waterbodies <- sf::st_transform(
   sf::read_sf(sample_data, "NHDWaterbody"), 5070)

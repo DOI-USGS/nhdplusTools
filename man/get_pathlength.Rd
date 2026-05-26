@@ -16,7 +16,7 @@ data.frame containing pathlength for each ID
 Generates the main path length to a basin's terminal path.
 }
 \examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
                     ID = COMID, toID = toCOMID, length = LENGTHKM)

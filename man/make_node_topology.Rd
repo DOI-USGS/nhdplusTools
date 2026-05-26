@@ -25,7 +25,7 @@ attributes provided with id, fromnode and tonode in the first three columns.
 creates a node topology table from an edge topology
 }
 \examples{
-source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+source(system.file("extdata/new_hope_data.R", package = "hydrogeofetch"))
 
 x <- dplyr::select(get_tocomid(
   dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,

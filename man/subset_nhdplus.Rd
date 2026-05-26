@@ -56,7 +56,7 @@ character path to the saved subset geopackage
 }
 \description{
 Saves a subset of the National Seamless database or other
-nhdplusTools compatible data based on a specified collection of COMIDs.
+hydrogeofetch compatible data based on a specified collection of COMIDs.
 This function uses \code{\link{get_nhdplus}} for the "download" data
 source but returns data consistent with local data subsets in a subset
 file.
@@ -73,7 +73,7 @@ be available permanently.
 \examples{
 \donttest{
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 nhdplus_path(sample_data)
 
@@ -126,7 +126,7 @@ subset_nhdplus(comids = comids,
 sf::st_layers(output_file)
 
 # NHDPlusHR
-source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 
 up_ids <- get_UT(hr_data$NHDFlowline, 15000500028335)
 

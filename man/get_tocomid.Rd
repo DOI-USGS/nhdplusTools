@@ -45,7 +45,7 @@ ids have been encountered across basins in some datasets. If
 required. Uses the \link[hydroloom]{add_toids} function.
 }
 \examples{
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 tocomid <- get_tocomid(sample_flines)
 

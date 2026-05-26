@@ -29,7 +29,7 @@ Traverse NHDPlus network upstream main stem
 \examples{
 library(sf)
 
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 plot(sample_flines$geom)
 start_COMID <- 11690196

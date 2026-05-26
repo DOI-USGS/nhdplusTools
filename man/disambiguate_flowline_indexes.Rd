@@ -31,7 +31,7 @@ the \link[utils]{adist} function is used with the following algorithm:
 `1 - adist_score / max_string_length`. Comparisons ignore case.
 }
 \examples{
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 hydro_location <- sf::st_sf(id = c(1, 2, 3),
                             geom = sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),

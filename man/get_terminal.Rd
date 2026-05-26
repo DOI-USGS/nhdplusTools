@@ -19,7 +19,7 @@ Get the ID of the basin outlet for each flowline.
 This function has been deprecated in favor of get_sorted.
 }
 \examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
                     ID = COMID, toID = toCOMID)

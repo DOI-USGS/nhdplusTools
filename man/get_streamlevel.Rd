@@ -25,7 +25,7 @@ begin at 1 and internal terminal paths begin at 4 as is implemented by
 the NHD stream leveling rules.
 }
 \examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 test_flowline <- data.frame(
  levelpathi = walker_flowline$LevelPathI,

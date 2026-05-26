@@ -29,7 +29,7 @@ against the entire NHDPlusV2 domain and satisfies a number of edge cases.
 }
 \examples{
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 

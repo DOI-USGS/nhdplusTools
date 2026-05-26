@@ -41,7 +41,7 @@ respectively. If a number of cores is specified, parallel execution will be used
 }
 \examples{
 
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
 

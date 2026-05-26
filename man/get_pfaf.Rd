@@ -26,7 +26,7 @@ total drainage area, levelpath, and topo_sort attributes.
 \examples{
 \donttest{
 library(dplyr)
-source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 
 fl <-  select(hr_flowline, COMID, AreaSqKM) \%>\%
@@ -59,7 +59,7 @@ hr_catchment <- left_join(hr_catchment, colors, by = "pf_level_4")
 plot(hr_catchment["color"], border = NA, reset = FALSE)
 plot(sf::st_geometry(hr_flowline), col = "blue", add = TRUE)
 
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 fl <- select(walker_flowline, COMID, AreaSqKM) \%>\%
   right_join(prepare_nhdplus(walker_flowline, 0, 0,

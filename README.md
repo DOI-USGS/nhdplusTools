@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# nhdplusTools <img src="man/figures/logo.png" align="right" alt="" width="120" />
+# hydrogeofetch <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 ![R-CMD-check](https://github.com/doi-usgs/nhdplusTools/workflows/R-CMD-check/badge.svg)
 [![codecov](https://codecov.io/gh/doi-usgs/nhdplusTools/branch/master/graph/badge.svg)](https://app.codecov.io/gh/doi-usgs/nhdplusTools)
@@ -9,28 +9,19 @@
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 
-## Renaming to `hydrogeofetch`
+## Renamed from `nhdplusTools`
 
-`nhdplusTools` is being renamed to `hydrogeofetch` (hydrologic
-geospatial fabric extraction tool chain). The package’s scope has grown
-beyond NHDPlus, and the name is no longer accurate. `hydrogeofetch` will
-be a pure rename. Functions, function signatures, behavior, will all
-stay the same. `hydrogeofetch` will be published to CRAN as a new
-package.
+`hydrogeofetch` (hydrologic geospatial fabric extraction tool chain) is
+the renamed successor to `nhdplusTools`. The package scope has grown
+beyond NHDPlus, and the new name reflects that broader role. All
+functions, signatures, and behavior carry over unchanged.
 
-Development on `nhdplusTools` has stopped; only critical bug fixes will
-be applied. Once `hydrogeofetch` v1.0 is released, `nhdplusTools` will
-become a deprecation shim that forwards calls to `hydrogeofetch` with a
-deprecation warnings. The shim will remain on CRAN until **October
-2028**, at which point `nhdplusTools` will be archived. Archived
-packages stay installable from the CRAN archive, so code pinned to
-`nhdplusTools` will continue to run.
+`nhdplusTools` will remain on CRAN as a deprecation shim forwarding
+calls to `hydrogeofetch` until **October 2028**, at which point it will
+be archived. Archived packages stay installable from the CRAN archive,
+so code pinned to `nhdplusTools` will continue to run.
 
-Plan to switch to `hydrogeofetch` once v1.0 is available.
-
-Follow this repository to keep up to date!
-
-## nhdplusTools: Tools for Accessing and Working with the NHDPlus and other US hydrographic data.
+## hydrogeofetch: Tools for Accessing and Working with the NHDPlus and other US hydrographic data.
 
 ### Recommended Citation:
 
@@ -63,21 +54,20 @@ page**](https://doi-usgs.github.io/nhdplusTools/reference/).
 
 ### Data:
 
-`nhdplusTools`, is designed to provide easy access to data associated
-with the U.S. National Hydrography Dataset. Many functions provided in
-`nhdplusTools` are thin wrappers around functions that have been
-migrated to `hydroloom`.
+`hydrogeofetch` provides easy access to data associated with the U.S.
+National Hydrography Dataset. Many functions are thin wrappers around
+functions that have been migrated to `hydroloom`.
 
 ## Package Vision
 
-The `nhdplusTools` package is intended to provide a reusable set of
+The `hydrogeofetch` package is intended to provide a reusable set of
 tools to subset, relate data to, and generate network attributes for
 U.S. NHDPlus data.
 
 General, globally applicable functionality has been moved to
 [`hydroloom`](https://github.com/DOI-USGS/hydroloom)
 
-`nhdplusTools` implements a data model consistent with both the
+`hydrogeofetch` implements a data model consistent with both the
 [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
 dataset and the
 [HY_Features](http://opengeospatial.github.io/HY_Features/) data model.
@@ -110,12 +100,11 @@ that uses the network like this is indexing relevant data to the
 network. A number of methods for indexing exist, they can be broken into
 two main categories: linear referencing and catchment indexing. Both
 operate on features represented by points, lines, and polygons.
-`nhdplusTools` should eventually support both linear and catchment
-indexing.
+`hydrogeofetch` supports both linear and catchment indexing.
 
 ### Data Model
 
-Given that `nhdplusTools` is focused on working with NHDPlus data, the
+Given that `hydrogeofetch` is focused on working with NHDPlus data, the
 NHDPlus data model will largely govern the data model the package is
 designed to work with. That said, much of the package functionality also
 uses concepts from the HY_Features standard.
@@ -137,7 +126,7 @@ collection of data that together fully describe an NHDPlus catchment.
 [See the NHDPlus mapping to HY_Features in the HY_Features
 specification.](https://docs.ogc.org/is/14-111r6/14-111r6.html#annexD_1)
 
-Below is a description of the scope of data used by the `nhdplusTools`
+Below is a description of the scope of data used by the `hydrogeofetch`
 package. While other data and attributes may come into scope, it should
 only be done as a naive pass-through, as in data subsetting, or with
 considerable deliberation.
@@ -169,13 +158,13 @@ important.
 
 ##### Web vs Local Data
 
-`nhdplusTools` offers a mix of web service and local data functionality.
-Web services have generally been avoided for large processes. However,
-applications that would require loading significant amounts of data to
-perform something that can be accomplished with a web service very
-quickly are supported. Systems like the [Network Linked Data
-Index](https://waterdata.usgs.gov/blog/nldi-intro/) are used for data
-discovery.
+`hydrogeofetch` offers a mix of web service and local data
+functionality. Web services have generally been avoided for large
+processes. However, applications that would require loading significant
+amounts of data to perform something that can be accomplished with a web
+service very quickly are supported. Systems like the [Network Linked
+Data Index](https://waterdata.usgs.gov/blog/nldi-intro/) are used for
+data discovery.
 
 ##### NHDPlus Version
 

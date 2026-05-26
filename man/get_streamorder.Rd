@@ -21,7 +21,7 @@ maximum upstream order then the downstream flowpath is assigned the maximum
 upstream order plus one. Otherwise it is assigned the max upstream order.
 }
 \examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
 

@@ -40,7 +40,7 @@ included in this column and the largest value will be followed when no nameID is
 }
 }
 \examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
 

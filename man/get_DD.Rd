@@ -29,7 +29,7 @@ For reference, the lower Mississippi will take over a minute.
 library(sf)
 start_COMID <- 11688818
 
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
 DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
 plot(dplyr::filter(sample_flines, COMID \%in\% DD_COMIDs)$geom,

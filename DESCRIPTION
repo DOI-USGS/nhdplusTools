@@ -37,4 +37,5 @@ VignetteBuilder: knitr
 Config/testthat/parallel: true
 Config/testthat/edition: 3
 LazyData: true
+LazyDataCompression: xz
 Language: en-US

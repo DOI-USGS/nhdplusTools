@@ -118,6 +118,8 @@ Confirm the plan for the old nhdplusTools DOI redirect with the DOI coordinator.
 
 Submit hydrogeofetch v1.0 to CRAN. The repo is still named nhdplusTools at this point — that's fine, CRAN only cares about the package tarball.
 
+**Release workflow:** Push an `rc/1.0.0` branch to code.usgs.gov. The GitLab CI pipeline runs a lightweight structural check, builds the source tarball, uploads it to the GitLab package registry, and runs `R CMD check --as-cran` on that tarball. Download the verified tarball from the registry and submit it to CRAN. See `.gitlab-ci.yml` and the README "Build and release" section for details.
+
 **Done when:** Package accepted and available on CRAN.
 
 **Gate:** Update README.Rmd `install.packages()` line to `install.packages("hydrogeofetch")`. Announce hydrogeofetch v1.0. Notify reverse-dependency maintainers (amadeus, elfgen, StreamCatTools) that the deprecation shim is coming and they should plan to switch their imports.

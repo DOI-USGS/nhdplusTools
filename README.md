@@ -195,59 +195,55 @@ is also supported.
 <https://github.com/hyriver/pygeohydro> … others – please suggest
 additions?
 
-### Build notes:
+### Build and release:
 
-This package uses a convention to avoid building vignettes on CRAN. The
-`BUILD_VIGNETTES` environment variable must be set to `TRUE`. This is
-done with a .Renviron file in the package directory with the line
-`BUILD_VIGNETTES=TRUE`.
+Development happens on GitHub (doi-usgs/nhdplusTools). Official builds
+and release candidates are produced on code.usgs.gov
+(code.usgs.gov/water/nhdplusTools) using GitLab CI.
 
-Given this, the package should be built locally to include vignettes
-using:
+**Vignettes** use the `BUILD_VIGNETTES` environment variable to control
+code evaluation. Set `BUILD_VIGNETTES=TRUE` in a local `.Renviron` to
+build vignettes with live code. Without it, vignettes render with static
+output only. An additional `BUILD_VIGNETTES_CRAN=TRUE` variable controls
+image size in the drainage area vignette.
 
-``` r
-devtools::build()
-```
+**Local development** does not require building the source package. Use
+`devtools::test()`, `devtools::check()`, and `devtools::document()`
+directly.
 
-An additional CRAN build environment variable also must be set to avoid
-submitting a vignette with very large embedded images.
+**Release candidates** are built on code.usgs.gov. Push a branch named
+`rc/<version>` (e.g. `rc/1.0.0`) to trigger the GitLab CI pipeline,
+which runs three stages:
 
-``` r
-Sys.setenv(BUILD_VIGNETTES = "TRUE", BUILD_VIGNETTES_CRAN = "TRUE")
-devtools::build()
+1.  **check** – lightweight structural check (no tests, no examples, no
+    vignettes). Gates the rest of the pipeline.
+2.  **build** – `R CMD build .` to produce the source tarball. Uploads
+    the tarball to the GitLab generic package registry.
+3.  **verify** – `R CMD check --as-cran` on the built tarball.
 
+Once the pipeline passes, download the tarball from the package registry
+and submit it to CRAN. The tarball that CRAN receives is the exact
+artifact that passed `--as-cran` in CI.
 
-devtools::release()
-```
+### Release checklist:
 
-### Check notes:
-
-In addition to typical R package checking, a Dockerfile is included in
-this repository. Once built, it can be run with the following command.
-
-    docker build -t nhdplustools_test .
-
-    docker run --rm -it -v $PWD:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ && cp /src/.Rbuildignore /check/ && cd /check && Rscript -e 'devtools::build()' && R CMD check --as-cran ../nhdplusTools_*"
-
-### Release procedure:
-
-- ensure all checks pass and code coverage is adequate.
-- ensure news has been updated
-- convert disclaimer to [released
+- All checks pass and code coverage is adequate
+- NEWS.md is up to date
+- Disclaimer is in [released
   form](https://code.usgs.gov/water/sbtools/-/blob/v1.1.14/README.md#L113)
-- update version in inst/CITATION file
-- update version in code.json file
-- Build source package and upload to CRAN
-- Once a new version has been accepted by cran,
-- ensure pkgdown is up to date
-- commit, push, and PR/MR changes
-- create release page and tag
-- attach cran tar.gz to release page
-- update DOI to point to release page
-- switch README disclaimer back to [“dev”
-  mode.](https://code.usgs.gov/water/sbtools#disclaimer)
-- Update version in Description.
-- push an PR/MR changes.
+- Version updated in inst/CITATION and code.json
+- Push `rc/<version>` branch to code.usgs.gov and confirm pipeline
+  passes
+- Download tarball from GitLab package registry and submit to CRAN
+- After CRAN acceptance:
+  - Ensure pkgdown is up to date
+  - Commit, push, and PR/MR changes
+  - Create release page and tag
+  - Attach CRAN tar.gz to release page
+  - Update DOI to point to release page
+  - Switch README disclaimer back to [“dev”
+    mode](https://code.usgs.gov/water/sbtools#disclaimer)
+  - Bump version in DESCRIPTION
 
 ### Contributing:
 

@@ -421,8 +421,12 @@ hydrogeofetch_memoise_cache <- function() {
   if(sys_memo_cache == "") {
     old <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_CACHE")
     if(old != "") {
-      packageStartupMessage("NHDPLUSTOOLS_MEMOISE_CACHE is deprecated. ",
-                            "Set HYDROGEOFETCH_MEMOISE_CACHE instead.")
+      warned <- try(get("warned_cache_env", envir = hydrogeofetch_env), silent = TRUE)
+      if(inherits(warned, "try-error")) {
+        packageStartupMessage("NHDPLUSTOOLS_MEMOISE_CACHE is deprecated. ",
+                              "Set HYDROGEOFETCH_MEMOISE_CACHE instead.")
+        assign("warned_cache_env", TRUE, envir = hydrogeofetch_env)
+      }
       sys_memo_cache <- old
     }
   }
@@ -446,8 +450,12 @@ hydrogeofetch_memoise_timeout <- function() {
   if(sys_timeout == "") {
     old <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_TIMEOUT")
     if(old != "") {
-      packageStartupMessage("NHDPLUSTOOLS_MEMOISE_TIMEOUT is deprecated. ",
-                            "Set HYDROGEOFETCH_MEMOISE_TIMEOUT instead.")
+      warned <- try(get("warned_timeout_env", envir = hydrogeofetch_env), silent = TRUE)
+      if(inherits(warned, "try-error")) {
+        packageStartupMessage("NHDPLUSTOOLS_MEMOISE_TIMEOUT is deprecated. ",
+                              "Set HYDROGEOFETCH_MEMOISE_TIMEOUT instead.")
+        assign("warned_timeout_env", TRUE, envir = hydrogeofetch_env)
+      }
       sys_timeout <- old
     }
   }

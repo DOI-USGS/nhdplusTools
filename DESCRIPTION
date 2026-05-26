@@ -34,7 +34,7 @@ License: CC0
 Encoding: UTF-8
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
-Config/testthat/parallel: true
+Config/testthat/parallel: false
 Config/testthat/edition: 3
 LazyData: true
 LazyDataCompression: xz

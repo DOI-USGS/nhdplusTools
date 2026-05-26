@@ -17,7 +17,9 @@ test_that("nldi basics work", {
   expect_error(hydrogeofetch:::check_nldi_feature(nldi_nwis[1]),
                  "Missing some required input for NLDI. Expected length 2 character vector or list with optional names: featureID")
 
-  expect_equal(nrow(get_nldi_index(c(-89.276, 42.988))), 2)
+  idx <- get_nldi_index(c(-89.276, 42.988))
+  skip_if(is.null(idx), "NLDI service unavailable")
+  expect_equal(nrow(idx), 2)
 })
 
 test_that("navigation works", {

@@ -92,7 +92,12 @@ Clean up legacy dependencies and bring the codebase to a consistent modern style
 
 **Code style:** Convert all `%>%` to native `|>` and drop the magrittr import. Apply current style conventions across the full codebase — alignment, spacing, and any other holdovers from earlier eras of the package.
 
-**Done when:** No remaining httr, magrittr, R.utils, tidyr, or fst usage. arrow wired up for VAA caching. httptest2 fixtures recorded for JSON/GeoJSON service calls. Tests pass in both mock and live modes. R CMD check clean.
+**Test fragility found during milestone 2:** Several tests crash or fail when web services are unavailable or misbehaving. These need attention during the httptest2 migration:
+- `test_get_vaa.R` and `test_02_subset_extras.R`: R subprocess segfaults under parallel testing. Parallel testing disabled (`Config/testthat/parallel: false`) as a workaround. Investigate whether fst/arrow memory use is the root cause; may resolve itself once fst is replaced with arrow/parquet.
+- `test_01_get_nldi.R`: `get_nldi_index()` test fails when NLDI pygeoapi returns server errors. Added `skip_if(is.null(...))` as a stopgap. With httptest2 fixtures this test should run deterministically.
+- `get_geoconnex_reference` `\donttest` examples: fail on TLS certificate errors or when geoconnex.us is unreachable. Consider converting to `\dontrun` or recording fixtures.
+
+**Done when:** No remaining httr, magrittr, R.utils, tidyr, or fst usage. arrow wired up for VAA caching. httptest2 fixtures recorded for JSON/GeoJSON service calls. Tests pass in both mock and live modes. R CMD check clean. Re-enable parallel testing once subprocess crashes are resolved.
 
 **Gate:** Run the full test suite live to confirm service compatibility. Review httptest2 fixture sizes — if any are too large to check in, simplify or move those tests to live-only.
 

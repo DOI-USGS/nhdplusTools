@@ -381,8 +381,9 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' Provides an interface to adjust hydrogeofetch `memoise` cache.
 #'
 #' Mode and timeout can also be set using environment variables.
-#' `NHDPLUSTOOLS_MEMOISE_CACHE` and `NHDPLUSTOOLS_MEMOISE_TIMEOUT` are
-#' used unless overriden with this function.
+#' `HYDROGEOFETCH_MEMOISE_CACHE` and `HYDROGEOFETCH_MEMOISE_TIMEOUT` are
+#' used unless overridden with this function. The old `NHDPLUSTOOLS_*`
+#' names are still recognized as a fallback.
 #'
 #' @param mode character 'memory' or 'filesystem'
 #' @param timeout numeric number of seconds until caches invalidate
@@ -410,39 +411,51 @@ hydrogeofetch_cache_settings <- function(mode = NULL, timeout = NULL) {
 #' @importFrom memoise memoise cache_memory cache_filesystem
 #' @importFrom digest digest
 hydrogeofetch_memoise_cache <- function() {
-  sys_memo_cache <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_CACHE")
   ses_memo_cache <- try(get("nhdpt_mem_cache", envir = hydrogeofetch_env), silent = TRUE)
 
-  # if it hasn't been set up yet, try to use the system env
   if(!inherits(ses_memo_cache, "try-error")) {
     return(ses_memo_cache)
-  } else {
-    if(sys_memo_cache == "memory") {
-      memoise::cache_memory()
-    } else {
-      dir.create(hydrogeofetch_data_dir(), showWarnings = FALSE, recursive = TRUE)
-
-      memoise::cache_filesystem(hydrogeofetch_data_dir())
-    }
-
   }
 
+  sys_memo_cache <- Sys.getenv("HYDROGEOFETCH_MEMOISE_CACHE")
+  if(sys_memo_cache == "") {
+    old <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_CACHE")
+    if(old != "") {
+      message("NHDPLUSTOOLS_MEMOISE_CACHE is deprecated. ",
+              "Set HYDROGEOFETCH_MEMOISE_CACHE instead.")
+      sys_memo_cache <- old
+    }
+  }
+
+  if(sys_memo_cache == "memory") {
+    memoise::cache_memory()
+  } else {
+    dir.create(hydrogeofetch_data_dir(), showWarnings = FALSE, recursive = TRUE)
+    memoise::cache_filesystem(hydrogeofetch_data_dir())
+  }
 }
 
 hydrogeofetch_memoise_timeout <- function() {
-  sys_timeout <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_TIMEOUT")
   ses_timeout <- try(get("nhdpt_cache_timeout", envir = hydrogeofetch_env), silent = TRUE)
 
-  # if it hasn't been set up yet, try to use the system env
   if(!inherits(ses_timeout, "try-error")) {
     return(ses_timeout)
-  } else {
-    if(sys_timeout != "") {
-      as.numeric(sys_timeout)
-    } else {
-      # default to one day
-      oneday_seconds <- 60 * 60 * 24
+  }
+
+  sys_timeout <- Sys.getenv("HYDROGEOFETCH_MEMOISE_TIMEOUT")
+  if(sys_timeout == "") {
+    old <- Sys.getenv("NHDPLUSTOOLS_MEMOISE_TIMEOUT")
+    if(old != "") {
+      message("NHDPLUSTOOLS_MEMOISE_TIMEOUT is deprecated. ",
+              "Set HYDROGEOFETCH_MEMOISE_TIMEOUT instead.")
+      sys_timeout <- old
     }
+  }
+
+  if(sys_timeout != "") {
+    as.numeric(sys_timeout)
+  } else {
+    60 * 60 * 24
   }
 }
 

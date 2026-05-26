@@ -29,4 +29,5 @@ CLAUDE.md
 dev
 .claude
 inst/build
+vignettes/drainage_area_figures
 PLAN.md

@@ -209,6 +209,17 @@ using:
 devtools::build()
 ```
 
+An additional CRAN build environment variable also must be set to avoid
+submitting a vignette with very large embedded images.
+
+``` r
+Sys.setenv(BUILD_VIGNETTES = "TRUE", BUILD_VIGNETTES_CRAN = "TRUE")
+devtools::build()
+
+
+devtools::release()
+```
+
 ### Check notes:
 
 In addition to typical R package checking, a Dockerfile is included in

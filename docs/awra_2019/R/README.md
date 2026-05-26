@@ -1,1 +1,0 @@
-Folder that will be used for R functions to be sourced.

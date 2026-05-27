@@ -40,7 +40,8 @@ get_raindrop_trace <- function(point, direction = "down") {
     stop(paste("direction must be in",
                paste(allowed_direction, collapse = ", ")))
 
-  return(sf_post(url, make_json_input_trace(point, direction = direction)))
+  return(hgf_sf(url, body = make_json_input_trace(point, direction = direction),
+                content_type = "application/json"))
 
 }
 
@@ -127,10 +128,13 @@ get_split_catchment <- function(point, upstream = TRUE) {
 
   url <- paste0(url_base, "nldi-splitcatchment/execution")
 
-  out <- sf_post(url, make_json_input_split(point, upstream),
-                 err_mess = paste("Ensure that the point you submitted is within\n the",
-                                  "coterminous US and consider trying get_raindrop_trace\ to ensure",
-                                  "your point is not too close to a catchment boundary."))
+  out <- hgf_sf(url, body = make_json_input_split(point, upstream),
+                content_type = "application/json")
+
+  if(is.null(out))
+    message("Ensure that the point you submitted is within the ",
+            "coterminous US and consider trying get_raindrop_trace to ensure ",
+            "your point is not too close to a catchment boundary.")
 
   try({
     if(!is.null(out)) {
@@ -364,7 +368,7 @@ get_elev <- function(url, fun, points, num_pts, res, status) {
 
 #' @importFrom dplyr rename
 get_xs <- function(url, fun, ...) {
-  sf <- sf_post(url, fun(...))
+  sf <- hgf_sf(url, body = fun(...), content_type = "application/json")
 
   if(is.null(sf)) {
     return(NULL)
@@ -374,32 +378,6 @@ get_xs <- function(url, fun, ...) {
          distance_m = "distance",
          elevation_m = "elevation")
 }
-
-sf_post <- function(url, json, err_mess = "") {
-  tryCatch({
-
-    if(nhdplus_debug()) {
-      message(paste(url, "\n"))
-      message(json)
-    }
-
-    out <- httr::RETRY("POST", url, httr::accept_json(),
-                       httr::content_type_json(),
-                       body = json)
-
-    if(out$status_code == 200) {
-      sf::read_sf(rawToChar(out$content))
-    } else {
-      stop(rawToChar(out$content))
-    }
-
-  }, error = function(e) {
-    message("Error calling processing service. \n Original error: \n", e,
-            "\n", err_mess)
-    NULL
-  })
-}
-
 
 check_point <- function(p) {
   mess <- "Point must be of type sfc and have a CRS declared."

@@ -123,19 +123,20 @@ get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
   tryCatch({
   nldi_feature <- check_nldi_feature(nldi_feature, convert = FALSE)
 
-  o <- query_nldi(
-    paste0(nldi_feature[["featureSource"]], "/",
-           nldi_feature[["featureID"]], "/",
-           "basin?simplify=",
-           ifelse(simplify, "true", "false"), "&",
-           "splitCatchment=",
-           ifelse(split, "true", "false")),
-    parse_json = FALSE,
-    err_mess = "Are you sure your featureID exists in the NLDI?")
+  url <- utils::URLencode(paste0(
+    get_nldi_url(), "/linked-data/",
+    nldi_feature[["featureSource"]], "/",
+    nldi_feature[["featureID"]],
+    "/basin?simplify=", ifelse(simplify, "true", "false"),
+    "&splitCatchment=", ifelse(split, "true", "false")))
 
-  if(is.null(o)) return(NULL)
+  out <- hgf_sf(url)
 
-  read_sf(o)
+  if(is.null(out))
+    warning("Are you sure your featureID exists in the NLDI?",
+            call. = FALSE)
+
+  out
   }, error = function(e) {
     warning(e)
     return(NULL)
@@ -194,53 +195,34 @@ get_nldi_feature <- function(nldi_feature) {
 #' }
 get_nldi_index <- function(location) {
 
-  tryCatch({
-  sf::read_sf(query_nldi(paste0("hydrolocation?coords=POINT(",
-                                location[1],"%20", location[2],")"),
-                         parse_json = FALSE,
-                         err_mess = "Make sure your POINT is lon,lat and in the NHDPlusV2 domain."))
-  }, error = function(e) {
-    warning(paste("Something went wrong querying the NLDI.\n", e))
-    NULL
-  })
+  url <- utils::URLencode(paste0(
+    get_nldi_url(), "/linked-data/hydrolocation?coords=POINT(",
+    location[1], "%20", location[2], ")"))
+
+  out <- hgf_sf(url)
+
+  if(is.null(out))
+    warning("Make sure your POINT is lon,lat and in the NHDPlusV2 domain.",
+            call. = FALSE)
+
+  out
 
 }
 
-#' @importFrom httr GET
 #' @importFrom jsonlite fromJSON
 #' @noRd
-query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE, err_mess = "") {
+query_nldi <- function(query, base_path = "/linked-data", err_mess = "") {
   nldi_base_url <- paste0(get_nldi_url(), base_path)
 
-  url <- paste(nldi_base_url, query,
-               sep = "/")
+  url <- utils::URLencode(paste(nldi_base_url, query, sep = "/"))
 
-  tryCatch({
-    if(nhdplus_debug()) {
-      message(url)
-    }
+  out <- hgf_json(url)
 
-    req_data <- rawToChar(httr::RETRY("GET", utils::URLencode(url))$content)
+  if(is.null(out) && nchar(err_mess) > 0)
+    warning("Something went wrong accessing the NLDI.\n", err_mess,
+            call. = FALSE)
 
-    if (nchar(req_data) == 0) {
-      NULL
-    } else {
-      if (parse_json) {
-        tryCatch(jsonlite::fromJSON(req_data, simplifyVector = TRUE),
-                 error = function(e) {
-                   message("Something went wrong accessing the NLDI.\n", e)
-                 }, warning = function(w) {
-                   message("Something went wrong accessing the NLDI.\n", w)
-                 })
-      } else {
-        req_data
-      }
-    }
-  }, error = function(e) {
-    warning("Something went wrong accessing the NLDI.\n", e,
-            "\n", err_mess)
-    NULL
-  })
+  out
 }
 
 #' @noRd

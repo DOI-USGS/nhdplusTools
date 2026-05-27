@@ -169,7 +169,6 @@ check_vaa_path <- function(path, download, updated_network = FALSE) {
 #' @param force logical. Force data re-download. Default = FALSE
 #' @return character path to cached data
 #' @export
-#' @importFrom httr GET progress write_disk
 
 download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, updated_network = FALSE) {
 
@@ -184,13 +183,7 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 
     dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
 
-    resp <- httr::GET(url,
-                      httr::write_disk(path, overwrite = TRUE),
-                      httr::progress())
-
-    if (resp$status_code != 200) {
-      stop("Download unsuccessfull :(")
-    }
+    hgf_download(url, path)
   }
   # return file path
   return(path)
@@ -277,7 +270,7 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
 
       if(!dir.exists(dirname(f))) dir.create(dirname(f), recursive = TRUE)
 
-      if(!file.exists(f)) resp <- httr::RETRY("GET", u, httr::write_disk(f))
+      if(!file.exists(f)) hgf_download(u, f, progress = FALSE)
 
       out <- read.delim(f, sep = "\t")
 

@@ -124,7 +124,7 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
           unlink(out_file)
         }
 
-        httr::RETRY("GET", url, httr::write_disk(out_file), httr::progress())
+        hgf_download(url, out_file)
 
         tryCatch({zip::unzip(out_file, exdir = out[length(out)])},
                  error = function(e) {
@@ -179,7 +179,12 @@ download_nhdplusv2 <- function(outdir,
                                progress = TRUE) {
 
   tryCatch({
-  file <- downloader(outdir, url, "nhdplusV2", progress)
+  if(!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+  file <- file.path(outdir, basename(url))
+  if(!file.exists(file)) {
+    message("Downloading ", basename(url))
+    hgf_download(url, file, progress)
+  }
 
   if(!any(grepl("gdb", list.dirs(outdir)))) {
 
@@ -228,7 +233,12 @@ download_wbd <- function(outdir,
                          progress = TRUE) {
 
   tryCatch({
-  file <- downloader(outdir, url, "WBD", progress)
+  if(!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+  file <- file.path(outdir, basename(url))
+  if(!file.exists(file)) {
+    message("Downloading ", basename(url))
+    hgf_download(url, file, progress)
+  }
 
   message("Extracting data ...")
 
@@ -261,7 +271,12 @@ download_rf1 <- function(outdir,
                          url = "https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz",
                          progress = TRUE){
   tryCatch({
-  file <- downloader(outdir, url, "RF1", progress)
+  if(!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+  file <- file.path(outdir, basename(url))
+  if(!file.exists(file)) {
+    message("Downloading ", basename(url))
+    hgf_download(url, file, progress)
+  }
 
   message("Extracting data ...")
 
@@ -277,51 +292,6 @@ download_rf1 <- function(outdir,
     warning("Something went wrong trying to download RF1 data.")
     return(NULL)
   })
-
-}
-
-#' @title Function to download data from URL to out directory using `httr`.
-#' @description General downloader
-#' @param dir path to output directory
-#' @param url the location of the online resource
-#' @param type the type of data being downloaded
-#' @return the downloaded file path
-#' @importFrom httr GET write_disk progress
-#' @noRd
-downloader <- function(dir, url, type, progress = TRUE){
-
-  if (!dir.exists(dir)) {
-    dir.create(dir, recursive = TRUE)
-  }
-
-  file <-  file.path(dir, basename(url))
-
-  if(grepl("name=", basename(url))) {
-    file <- file.path(dir, tail(strsplit(basename(url), "=")[[1]], 1))
-  }
-
-  if (!file.exists(file)) {
-
-    message("Downloading ", basename(url))
-
-    if(progress) {
-      resp <-  httr::GET(url,
-                         httr::write_disk(file, overwrite = TRUE),
-                         httr::progress())
-    } else {
-      resp <-  httr::GET(url,
-                         httr::write_disk(file, overwrite = TRUE))
-    }
-
-    if (resp$status_code != 200) {
-      stop("Download unsuccessfull :(")
-    }
-
-  } else {
-    message("Compressed ", toupper(type), " file already exists ...")
-  }
-
-  return(file)
 
 }
 
@@ -346,30 +316,71 @@ check7z <- function() {
 
 }
 
-#' memoise get json
-#' @description
-#' attempts to get a url as JSON and return the content.
-#'
-#' Will return NULL if anything fails
-#'
-#' @param url character url to get
-#' @return list containing parsed json on success, NULL otherwise
-#' @noRd
-mem_get_json <- memoise::memoise(\(url) {
-  tryCatch({
-    retn <- httr::GET(url, httr::accept_json())
+#################################################################
+# httr2 helpers — all HTTP in the package flows through these  #
+#################################################################
 
-    if(retn$status_code == 200 & grepl("json", retn$headers$`content-type`)) {
-      return(httr::content(retn, simplifyVector = FALSE, type = "application/json"))
+#' @importFrom httr2 request req_perform
+#' @noRd
+build_hgf_req <- function(url, body = NULL, content_type = NULL, encode = NULL) {
+  req <- httr2::request(url) |>
+    httr2::req_user_agent(
+      paste0("hydrogeofetch/", utils::packageVersion("hydrogeofetch"))
+    ) |>
+    httr2::req_retry(max_tries = 3)
+
+  if(nhdplus_debug()) {
+    message(if(is.null(body)) "GET " else "POST ", url)
+    if(!is.null(body) && is.character(body)) message(body)
+  }
+
+  if(!is.null(body)) {
+    if(identical(encode, "form")) {
+      req <- do.call(httr2::req_body_form, c(list(req), body))
     } else {
-      warning("Can't access json from ", url)
-      return(NULL)
+      ct <- content_type %||% "application/octet-stream"
+      req <- httr2::req_body_raw(req, charToRaw(body), type = ct)
     }
+  }
+
+  req
+}
+
+#' @noRd
+hgf_json <- function(url, body = NULL, content_type = NULL, encode = NULL,
+                      simplifyVector = TRUE, ...) {
+  tryCatch({
+    resp <- httr2::req_perform(build_hgf_req(url, body, content_type, encode))
+    httr2::resp_body_json(resp, simplifyVector = simplifyVector, ...)
   }, error = function(e) {
-    warning("Error accessing ", url, "\n\n", e)
-    return(NULL)
+    warning("Failed to get JSON from ", url, ": ", conditionMessage(e),
+            call. = FALSE)
+    NULL
   })
-})
+}
+
+#' @noRd
+hgf_sf <- function(url, body = NULL, content_type = NULL, encode = NULL) {
+  tryCatch({
+    resp <- httr2::req_perform(build_hgf_req(url, body, content_type, encode))
+    sf::st_zm(sf::read_sf(httr2::resp_body_string(resp)))
+  }, error = function(e) {
+    warning("Failed to get features from ", url, ": ", conditionMessage(e),
+            call. = FALSE)
+    NULL
+  })
+}
+
+#' @noRd
+hgf_download <- function(url, path, progress = TRUE) {
+  req <- build_hgf_req(url)
+  if(progress && interactive()) req <- httr2::req_progress(req)
+  httr2::req_perform(req, path = path)
+  invisible(path)
+}
+
+#' @noRd
+mem_get_json <- memoise::memoise(\(url) hgf_json(url, simplifyVector = FALSE))
 
 #' @importFrom sf st_make_valid st_as_sfc st_bbox st_buffer st_transform st_crs
 check_query_params <- function(AOI, ids, type, where, source, t_srs, buffer) {

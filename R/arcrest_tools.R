@@ -6,8 +6,7 @@ get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
                      service,
                      "/MapServer/")
 
-  resp <- httr::GET(paste0(url_base, "?f=json"))
-  all_layers <- jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE)
+  all_layers <- hgf_json(paste0(url_base, "?f=json"), simplifyVector = FALSE)
 
   id_name <- "id3dhp"
   if(service == "NHDPlus_HR") id_name <- "nhdplusid"
@@ -47,7 +46,6 @@ get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
 #' @return a simple features (sf) object or valid types if no type supplied
 #' @keywords internal
 #' @importFrom sf st_crs st_geometry_type st_buffer st_transform st_zm read_sf st_bbox st_as_sfc
-#' @importFrom httr RETRY content
 #' @importFrom dplyr filter
 #' @importFrom methods as
 query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
@@ -132,16 +130,9 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
     }
 
     tryCatch({
-      if(nhdplus_debug()) {
-        message(paste(URL, "\n"))
-        message(post_body)
-      }
-
-      all_ids <- content(RETRY("POST",
-                               URL,
-                               body = post_body,
-                               encode = "form"))
-      all_ids <- unlist(all_ids$objectIds)
+      resp <- hgf_json(URL, body = post_body, encode = "form",
+                        simplifyVector = FALSE)
+      all_ids <- unlist(resp$objectIds)
 
     }, error = function(e) {
       warning("Something went wrong trying to access a service.")
@@ -172,26 +163,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
                           outFields = "*",
                           f = "geojson")
 
-        tryCatch({
-          if(nhdplus_debug()) {
-            message(paste(URL, "\n"))
-            message(post_body)
-          }
-
-          out[[i]] <- rawToChar(httr::RETRY("POST",
-                                            URL,
-                                            body = post_body,
-                                            encode = "form",
-                                            pause_base = 2,
-                                            times = 3)$content)
-        }, error = function(e) {
-          warning("Something went wrong trying to access a service.")
-          out <- NULL
-        })
-
-        out[[i]] <- tryCatch({
-          sf::st_zm(sf::read_sf(out[[i]]))},
-          error = function(e) NULL)
+        out[[i]] <- hgf_sf(URL, body = post_body, encode = "form")
       }
 
       if(inherits(out[[1]], "data.frame")) {

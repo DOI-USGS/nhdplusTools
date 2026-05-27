@@ -42,7 +42,7 @@ test_that("catchment chars", {
 
   old_opts <- options(arrow.unsafe_metadata = TRUE)
 
-  httptest::without_internet({
+  httptest2::without_internet({
     suppressMessages(expect_warning(w <- get_characteristics_metadata(cache = FALSE)))
     expect_null(w)
   })

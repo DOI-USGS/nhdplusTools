@@ -140,15 +140,10 @@ get_nhdplus <- function(AOI = NULL,
 #' @keywords internal
 #' @return a vector of COMIDs
 #' @noRd
-#' @importFrom httr RETRY GET
 #' @importFrom jsonlite fromJSON
 
 extact_comid_nwis <- memoise::memoise(function(nwis){
-  # We could export this from dataRetrieval dataRetrieval:::pkg.env$nldi_base
-  #but currently its not...
-  baseURL  <- paste0(get_nldi_url(), "/linked-data/")
-  url      <-  paste0(baseURL, "nwissite/USGS-", nwis)
-  c        <-  rawToChar(httr::RETRY("GET", url)$content)
-  f.comid  <-  jsonlite::fromJSON(c, simplifyVector = TRUE)
+  url <- paste0(get_nldi_url(), "/linked-data/nwissite/USGS-", nwis)
+  f.comid <- hgf_json(url)
   f.comid$features$properties$comid
 })

@@ -317,50 +317,11 @@ add_sep <- function(bc) {
   bc
 }
 
-make_request <- function(req, body = "") {
-  tryCatch({
-    if(nhdplus_debug()) {
-      message(paste(req, "\n"))
-      message(body)
-    }
-
-    if(body != "") {
-      r <- RETRY("POST",
-                   req,
-                   body = body,
-                   httr::content_type("application/query-cql-json"),
-                 pause_min = 5, pause_base = 5)
-
-      if(r$status != 200) {
-        return(r)
-      }
-
-      out <- rawToChar(r$content)
-    } else {
-
-      out <- rawToChar(RETRY("GET", req)$content)
-
-    }
-
-
-  }, error = function(e) {
-    warning("Something went wrong trying to access a service.")
-    return(NULL)
-  })
-
-  out <- tryCatch({
-    st_zm(read_sf(out))},
-    error = function(e) return(NULL))
-
-  out
-}
-
 get_features_paging <- function(base_call, ids_list = list(), limit = 1000, status = TRUE) {
 
   use_ids <- !identical(ids_list, list())
 
   if(use_ids) {
-    # we will page through ids
     ids <- split_equal_size(ids_list$ids, limit)
   }
 
@@ -377,22 +338,18 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
   while(keep_going) {
 
     if(use_ids) {
-
       post_body <- id_filter_cql(ids[[id_batch]], ids_list$id_attribute)
-      req <- paste0(base_call, "limit=", limit, "&offset=", offset)
-
     } else {
-
       post_body <- ""
-      req <- paste0(base_call, "limit=", limit, "&offset=", offset)
-
     }
 
-    page <- make_request(req, post_body)
+    req <- paste0(base_call, "limit=", limit, "&offset=", offset)
 
-    if(!is.null(page) & inherits(page, "response")) {
-      warning("Can't continue, got unexpected response: ", print(page))
-      page <- NULL
+    if(post_body != "") {
+      page <- hgf_sf(req, body = post_body,
+                      content_type = "application/query-cql-json")
+    } else {
+      page <- hgf_sf(req)
     }
 
     if(!inherits(page, "sf")) {
@@ -404,7 +361,6 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
     if(nrow(page) > 0) out <- c(out, list(page))
 
     if(nrow(page) < limit) {
-      # this batch is exhausted
       if(use_ids && id_batch < length(ids)) {
         id_batch <- id_batch + 1
         offset <- 0

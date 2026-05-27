@@ -58,7 +58,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
                     "?bbox=", coords[1], ",", coords[2], ",", coords[1], ",", coords[2],
                     "&properties=featureid&skipGeometry=true")
 
-      d <- jsonlite::fromJSON(rawToChar(RETRY("GET", utils::URLencode(URL))$content))
+      d <- hgf_json(utils::URLencode(URL))
 
       as.integer(d$features$properties$featureid)
 

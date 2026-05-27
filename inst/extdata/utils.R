@@ -29,9 +29,9 @@ download_pkg_data <- function(f, u, work_dir) {
     file.copy(project_file, d, overwrite = TRUE)
   } else {
     url <- u
-    invisible(httr::RETRY("GET", url,
-                          httr::write_disk(d, overwrite=TRUE),
-                          times = 3, pause_cap = 20))
+    invisible(httr2::request(url) |>
+                httr2::req_retry(max_tries = 3) |>
+                httr2::req_perform(path = d))
   }
 
   if(grepl(".zip$", d)) {

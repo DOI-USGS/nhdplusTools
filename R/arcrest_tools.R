@@ -6,7 +6,8 @@ get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
                      service,
                      "/MapServer/")
 
-  all_layers <- jsonlite::read_json(paste0(url_base, "?f=json"))
+  resp <- httr::GET(paste0(url_base, "?f=json"))
+  all_layers <- jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE)
 
   id_name <- "id3dhp"
   if(service == "NHDPlus_HR") id_name <- "nhdplusid"

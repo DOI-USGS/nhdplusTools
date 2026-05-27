@@ -16,8 +16,9 @@ test_that("get_nhdphr", {
 
   expect_s3_class(f, "sf")
 
-  skip("performance")
-  f2 <- get_nhdphr(reachcode = f$reachcode,
-                   type = "networknhdflowline")
+  # skip("performance, need to mock?")
+  # this test was mostly a stub I think -- it is slow
+  # f2 <- get_nhdphr(reachcode = f$reachcode,
+  #                  type = "networknhdflowline")
 
 })

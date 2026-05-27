@@ -86,7 +86,6 @@ test_that("basin works", {
 
   skip_on_cran()
   skip_on_ci()
-  skip("nldi split basin not working?")
 
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 

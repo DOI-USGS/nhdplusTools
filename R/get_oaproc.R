@@ -453,16 +453,16 @@ make_json_input_xspt <- function(p, w, n) {
 
   jsonlite::toJSON(list(inputs = list(list(id = "lat",
                                            type = "text/plain",
-                                           value = p[2]),
+                                           value = as.character(p[2])),
                                       list(id = "lon",
                                            type = "text/plain",
-                                           value = p[1]),
+                                           value = as.character(p[1])),
                                       list(id = "width",
                                            type = "text/plain",
-                                           value = w),
+                                           value = as.character(w)),
                                       list(id = "numpts",
                                            type = "text/plain",
-                                           value = n))),
+                                           value = as.character(n)))),
                    pretty = TRUE, auto_unbox = TRUE)
 }
 
@@ -471,15 +471,15 @@ make_json_input_xspts <- function(p1, p2, n, r) {
 
   jsonlite::toJSON(list(inputs = list(list(id = "lat",
                                            type = "text/plain",
-                                           value = c(p1[2], p2[2])),
+                                           value = as.character(c(p1[2], p2[2]))),
                                       list(id = "lon",
                                            type = "text/plain",
-                                           value = c(p1[1], p2[1])),
+                                           value = as.character(c(p1[1], p2[1]))),
                                       list(id = "3dep_res",
                                            type = "text/plain",
                                            value = as.character(r)),
                                       list(id = "numpts",
                                            type = "text/plain",
-                                           value = n))),
+                                           value = as.character(n)))),
                    pretty = TRUE, auto_unbox = TRUE)
 }

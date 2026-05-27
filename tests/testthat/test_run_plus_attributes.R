@@ -57,6 +57,7 @@ test_that("example", {
                                      split_temp = (tempf <- tempfile(fileext = ".rds")),
                                      status = FALSE)
   )
+  
   expect_equal(fl, fl2, ignore_attr = TRUE)
 
   expect_true(file.exists(tempf))

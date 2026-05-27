@@ -17,6 +17,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{hydroloom}{\code{\link[hydroloom]{fix_flowdir}}, \code{\link[hydroloom]{get_hydro_location}}, \code{\link[hydroloom]{get_node}}, \code{\link[hydroloom]{get_partial_length}}, \code{\link[hydroloom]{rename_geometry}}, \code{\link[hydroloom]{rescale_measures}}, \code{\link[hydroloom]{st_compatibalize}}}
+  \item{hydroloom}{\code{\link[hydroloom:fix_flowdir]{fix_flowdir()}}, \code{\link[hydroloom:get_hydro_location]{get_hydro_location()}}, \code{\link[hydroloom:get_node]{get_node()}}, \code{\link[hydroloom:get_partial_length]{get_partial_length()}}, \code{\link[hydroloom:rename_geometry]{rename_geometry()}}, \code{\link[hydroloom:rescale_measures]{rescale_measures()}}, \code{\link[hydroloom:st_compatibalize]{st_compatibalize()}}}
 }}
 

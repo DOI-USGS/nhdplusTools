@@ -1,8 +1,6 @@
 
 
-# TODO: crashes R session — investigate in milestone 3 (fst → arrow migration)
 test_that("vaa examples", {
-  skip("R session crash — deferred to milestone 3")
   skip_on_cran()
   skip_on_ci()
 
@@ -30,7 +28,8 @@ test_that("vaa examples", {
 
   expect_equal(names(update), c("comid", "reachcode"))
 
-  expect_error(capture_messages(get_vaa("bad", updated_network = TRUE)))
+  expect_message(get_vaa("bad", updated_network = TRUE),
+                 "bad not in vaa data")
 
   expect_true("tocomid" %in% get_vaa_names(updated_network = TRUE))
 })

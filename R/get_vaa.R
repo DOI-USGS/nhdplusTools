@@ -1,5 +1,5 @@
 #' @title File path to value added attribute (vaa) Cache
-#' @description hydrogeofetch will download and cache an `fst` file with
+#' @description hydrogeofetch will download and cache a parquet file with
 #' NHDPlusV2 attribute data sans geometry. This function returns the
 #' file path to the cached file. Will use the user data dir indicated
 #' by \link{hydrogeofetch_data_dir}.
@@ -16,9 +16,9 @@
 
 get_vaa_path <- function(updated_network = FALSE) {
   if(updated_network) {
-    file.path(hydrogeofetch_data_dir(), "enhd_nhdplusatts.fst")
+    file.path(hydrogeofetch_data_dir(), "enhd_nhdplusatts.parquet")
   } else {
-    file.path(hydrogeofetch_data_dir(), "nhdplusVAA.fst")
+    file.path(hydrogeofetch_data_dir(), "nhdplusVAA.parquet")
   }
 }
 
@@ -27,7 +27,6 @@ get_vaa_path <- function(updated_network = FALSE) {
 #' @inherit download_vaa details
 #' @inheritParams get_vaa
 #' @return character vector
-#' @importFrom fst metadata_fst
 #' @export
 #' @examples
 #' \dontrun{
@@ -42,7 +41,7 @@ get_vaa_names <- function(updated_network = FALSE) {
 
   check_vaa_path(path, TRUE)
 
-  fst::metadata_fst(path)[["columnNames"]]
+  arrow::open_dataset(path)$schema$names
 }
 
 #' @title NHDPlusV2 Attribute Subset
@@ -58,7 +57,6 @@ get_vaa_names <- function(updated_network = FALSE) {
 #' from E2NHD and National Water Model retrieved from
 #' \doi{10.5066/P976XCVT}.
 #' @return data.frame containing requested VAA data
-#' @importFrom fst read.fst
 #' @export
 #' @examples
 #' \dontrun{
@@ -82,11 +80,11 @@ get_vaa <- function(atts = NULL,
   check_vaa_path(path, download, FALSE)
 
   if(updated_network) {
-    updated_net_path <- file.path(dirname(path), "enhd_nhdplusatts.fst")
+    updated_net_path <- file.path(dirname(path), "enhd_nhdplusatts.parquet")
 
     check_vaa_path(updated_net_path, download, TRUE)
 
-    new_names <- fst::metadata_fst(updated_net_path)[["columnNames"]]
+    new_names <- arrow::open_dataset(updated_net_path)$schema$names
   }
 
   available_names = get_vaa_names(updated_network)
@@ -121,17 +119,17 @@ get_vaa <- function(atts = NULL,
 
     replace_names <- atts[atts %in% new_names & !atts %in% deprecated_names]
 
-    # Grab the original vaas but not the ones we are going to replace.
-    out <- fst::read.fst(path, include_names)
+    out <- arrow::read_parquet(path, col_select = include_names)
 
-    # grab all the new attributes.
-    new_comid <- fst::read.fst(updated_net_path, "comid")
+    new_comid <- arrow::read_parquet(updated_net_path, col_select = "comid")
 
-    # reorder out to match new -- also drop stuff missing from new.
     out <- out[match(new_comid$comid, out$comid), , drop = FALSE]
 
-    out <- cbind(out, fst::read.fst(updated_net_path,
-                                    c(replace_names[replace_names != "comid"])))
+    cols_to_add <- replace_names[replace_names != "comid"]
+    if(length(cols_to_add) > 0) {
+      out <- cbind(out, arrow::read_parquet(updated_net_path,
+                                            col_select = cols_to_add))
+    }
 
     reorder <- match(get_vaa_names(updated_network), names(out))
 
@@ -141,7 +139,7 @@ get_vaa <- function(atts = NULL,
 
   } else {
 
-    return(fst::read_fst(path, c('comid', atts[atts != 'comid'])))
+    return(arrow::read_parquet(path, col_select = c('comid', atts[atts != 'comid'])))
   }
 
 }

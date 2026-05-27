@@ -1,9 +1,9 @@
 # Primary HydroShare Data Resource
 vaa_hydroshare <-
-  'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
+  'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.parquet'
 
 vaa_sciencebase <-
-  'https://www.sciencebase.gov/catalog/file/get/63cb311ed34e06fef14f40a3?name=enhd_nhdplusatts.fst'
+  'https://www.sciencebase.gov/catalog/file/get/63cb311ed34e06fef14f40a3?name=enhd_nhdplusatts.parquet'
 
 hydrogeofetch_env <- new.env()
 

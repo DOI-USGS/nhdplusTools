@@ -14,7 +14,7 @@ network parameters. See \link{get_vaa} for more.}
 character file path
 }
 \description{
-hydrogeofetch will download and cache an `fst` file with
+hydrogeofetch will download and cache a parquet file with
 NHDPlusV2 attribute data sans geometry. This function returns the
 file path to the cached file. Will use the user data dir indicated
 by \link{hydrogeofetch_data_dir}.

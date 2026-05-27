@@ -103,8 +103,11 @@ Clean up legacy dependencies and bring the codebase to a consistent modern style
 - `test_get_vaa.R` and `test_02_subset_extras.R`: R subprocess segfaults under parallel testing. Parallel testing disabled (`Config/testthat/parallel: false`) as a workaround. Investigate whether fst/arrow memory use is the root cause; may resolve itself once fst is replaced with arrow/parquet.
 - `test_01_get_nldi.R`: `get_nldi_index()` test fails when NLDI pygeoapi returns server errors. Added `skip_if(is.null(...))` as a stopgap. With httptest2 fixtures this test should run deterministically.
 - `get_geoconnex_reference` `\donttest` examples: fail on TLS certificate errors or when geoconnex.us is unreachable. Consider converting to `\dontrun` or recording fixtures.
+- `example(get_nldi)` and other `\donttest` examples that hit live services: CRAN runs these during their checks. Decide per-example whether to convert to `\dontrun`, record httptest2 fixtures that cover example execution, or guard with a connectivity check. Resolve before milestone 5 submission.
 
-**Done when:** No remaining httr, magrittr, R.utils, tidyr, or fst usage. arrow wired up for VAA caching. httptest2 fixtures recorded for JSON/GeoJSON service calls. Tests pass in both mock and live modes. R CMD check clean. Re-enable parallel testing once subprocess crashes are resolved.
+**Vignettes:** `devtools::build_vignettes()` was deferred during milestone 2 (slow, network-dependent). Vignette examples that call web services need the same treatment as `\donttest` examples — httptest2 fixtures, `\dontrun`, or connectivity guards. Verify vignettes build cleanly as part of this milestone.
+
+**Done when:** No remaining httr, magrittr, R.utils, tidyr, or fst usage. arrow wired up for VAA caching. httptest2 fixtures recorded for JSON/GeoJSON service calls. Tests pass in both mock and live modes. Vignettes build cleanly. `\donttest` examples either pass reliably or are converted to `\dontrun`. R CMD check clean. Re-enable parallel testing once subprocess crashes are resolved.
 
 **Gate:** Run the full test suite live to confirm service compatibility. Review httptest2 fixture sizes — if any are too large to check in, simplify or move those tests to live-only.
 
@@ -125,6 +128,12 @@ Confirm the plan for the old nhdplusTools DOI redirect with the DOI coordinator.
 ## 5. hydrogeofetch on CRAN
 
 Submit hydrogeofetch v1.0 to CRAN. The repo is still named nhdplusTools at this point — that's fine, CRAN only cares about the package tarball.
+
+**Pre-submission checklist:**
+- `R CMD check --as-cran` clean (0 errors, 0 warnings, ideally 0 notes)
+- `devtools::build_vignettes()` succeeds — vignettes render without network failures
+- All `\donttest` examples pass or have been converted to `\dontrun` (CRAN runs `\donttest` examples)
+- Help pages for renamed functions (`?hydrogeofetch_data_dir`, `?hydrogeofetch_cache_settings`) render correctly
 
 **Release workflow:** Push an `rc/1.0.0` branch to code.usgs.gov. The GitLab CI pipeline runs a lightweight structural check, builds the source tarball, uploads it to the GitLab package registry, and runs `R CMD check --as-cran` on that tarball. Download the verified tarball from the registry and submit it to CRAN. See `.gitlab-ci.yml` and the README "Build and release" section for details.
 

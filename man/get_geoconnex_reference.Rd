@@ -35,6 +35,7 @@ Queries the geoconnex reference feature server for features of interest.
 }
 \examples{
 \donttest{
+# TODO: test on internal network (TLS cert failure on geoconnex.us)
 
 dplyr::distinct(discover_geoconnex_reference()[c("id", "title")])
 

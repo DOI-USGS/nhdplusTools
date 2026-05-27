@@ -1,0 +1,48 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "featureid": 11689978
+            },
+            "id": 139905,
+            "geometry": null
+        }
+    ],
+    "numberReturned": 1,
+    "numberMatched": 1,
+    "links": [
+        {
+            "type": "application/geo+json",
+            "rel": "self",
+            "title": "This document as GeoJSON",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/catchmentsp/items?f=json&bbox=-76.874,39.482,-76.874,39.482&properties=featureid&skipGeometry=true"
+        },
+        {
+            "rel": "alternate",
+            "type": "application/ld+json",
+            "title": "This document as RDF (JSON-LD)",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/catchmentsp/items?f=jsonld&bbox=-76.874,39.482,-76.874,39.482&properties=featureid&skipGeometry=true"
+        },
+        {
+            "type": "text/html",
+            "rel": "alternate",
+            "title": "This document as HTML",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/catchmentsp/items?f=html&bbox=-76.874,39.482,-76.874,39.482&properties=featureid&skipGeometry=true"
+        },
+        {
+            "type": "text/csv; charset=utf-8",
+            "rel": "alternate",
+            "title": "This document as CSV",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/catchmentsp/items?f=csv&bbox=-76.874,39.482,-76.874,39.482&properties=featureid&skipGeometry=true"
+        },
+        {
+            "type": "application/json",
+            "title": "NHDPlusV2 Catchmentsp Features",
+            "rel": "collection",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/catchmentsp"
+        }
+    ],
+    "timeStamp": "2026-05-27T16:18:12.294123Z"
+}

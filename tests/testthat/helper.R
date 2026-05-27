@@ -50,3 +50,12 @@ setup_workdir <- function() {
 teardown_workdir <- function(work_dir) {
   unlink(work_dir, recursive = TRUE, force = TRUE)
 }
+
+with_mock_hgf <- function(fixture, expr,
+    live = identical(Sys.getenv("HYDROGEOFETCH_LIVE"), "true")) {
+  if(live) {
+    expr
+  } else {
+    httptest2::with_mock_dir(file.path("fixtures", fixture), expr)
+  }
+}

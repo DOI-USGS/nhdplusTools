@@ -1,11 +1,11 @@
 test_that("discover", {
 
-  skip_on_cran()
+  with_mock_hgf("geoconnex_discover", {
+    expect_s3_class(discover_geoconnex_reference(), "data.frame")
 
-  expect_s3_class(discover_geoconnex_reference(), "data.frame")
-
-  expect_equal(names(discover_geoconnex_reference()),
-               c("id", "title", "description", "url", "attribute", "type"))
+    expect_equal(names(discover_geoconnex_reference()),
+                 c("id", "title", "description", "url", "attribute", "type"))
+  })
 
 })
 

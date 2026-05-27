@@ -1,0 +1,41 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+
+    ],
+    "numberReturned": 0,
+    "numberMatched": 0,
+    "links": [
+        {
+            "type": "application/geo+json",
+            "rel": "self",
+            "title": "This document as GeoJSON",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdarea/items?f=json&bbox=-115.053507942812,48.8799546350752,-115.053492057189,48.8799653649247&limit=500"
+        },
+        {
+            "rel": "alternate",
+            "type": "application/ld+json",
+            "title": "This document as RDF (JSON-LD)",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdarea/items?f=jsonld&bbox=-115.053507942812,48.8799546350752,-115.053492057189,48.8799653649247&limit=500"
+        },
+        {
+            "type": "text/html",
+            "rel": "alternate",
+            "title": "This document as HTML",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdarea/items?f=html&bbox=-115.053507942812,48.8799546350752,-115.053492057189,48.8799653649247&limit=500"
+        },
+        {
+            "type": "text/csv; charset=utf-8",
+            "rel": "alternate",
+            "title": "This document as CSV",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdarea/items?f=csv&bbox=-115.053507942812,48.8799546350752,-115.053492057189,48.8799653649247&limit=500"
+        },
+        {
+            "type": "application/json",
+            "title": "NHDPlusV2 NHD Area Features",
+            "rel": "collection",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdarea"
+        }
+    ],
+    "timeStamp": "2026-05-27T16:12:23.633753Z"
+}

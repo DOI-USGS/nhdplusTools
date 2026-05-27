@@ -1,0 +1,71 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "ogc_fid": 2,
+                "id": null,
+                "staid": "01013500",
+                "staname": "Fish River near Fort Kent, Maine",
+                "class": "Ref",
+                "aggecoregi": "NorthEast",
+                "drain_sqkm": 2252.696,
+                "huc02": "01",
+                "lat_gage": 47.237394,
+                "lng_gage": -68.582642,
+                "state": "ME",
+                "hcdn_2009": "yes",
+                "active09": "yes",
+                "flyrs1900": 85,
+                "flyrs1950": 60,
+                "flyrs1990": 20
+            },
+            "id": "01013500",
+            "geometry": {
+                "type": "MultiPoint",
+                "coordinates": [
+                    [
+                        -68.58264172486935,
+                        47.237404059801946
+                    ]
+                ]
+            }
+        }
+    ],
+    "numberReturned": 1,
+    "numberMatched": 1,
+    "links": [
+        {
+            "type": "application/geo+json",
+            "rel": "self",
+            "title": "This document as GeoJSON",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii/items?f=json&staid=01013500&limit=500"
+        },
+        {
+            "rel": "alternate",
+            "type": "application/ld+json",
+            "title": "This document as RDF (JSON-LD)",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii/items?f=jsonld&staid=01013500&limit=500"
+        },
+        {
+            "type": "text/html",
+            "rel": "alternate",
+            "title": "This document as HTML",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii/items?f=html&staid=01013500&limit=500"
+        },
+        {
+            "type": "text/csv; charset=utf-8",
+            "rel": "alternate",
+            "title": "This document as CSV",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii/items?f=csv&staid=01013500&limit=500"
+        },
+        {
+            "type": "application/json",
+            "title": "Gages-II Gages",
+            "rel": "collection",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii"
+        }
+    ],
+    "timeStamp": "2026-05-27T16:12:39.706404Z"
+}

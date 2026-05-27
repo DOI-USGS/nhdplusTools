@@ -48,20 +48,21 @@ test_that("check_query_params", {
 })
 
 test_that("basic 3dhp service requests", {
-  skip_on_cran()
 
   AOI_new <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.5, ymin = 43.0,
                                      xmax = -89.4, ymax = 43.1),
                                    crs = "+proj=longlat +datum=WGS84 +no_defs"))
 
-  expect_message(expect_s3_class(hydrogeofetch:::query_usgs_arcrest(AOI_new, service = "3DHP_all"),
-                                 "data.frame"))
+  with_mock_hgf("arcrest_3dhp", {
+    expect_message(expect_s3_class(hydrogeofetch:::query_usgs_arcrest(AOI_new, service = "3DHP_all"),
+                                   "data.frame"))
 
-  expect_warning(hydrogeofetch:::query_usgs_arcrest(AOI_new, service = "3DHP_all",
-                                                   type = "hydrolocation"))
+    expect_warning(hydrogeofetch:::query_usgs_arcrest(AOI_new, service = "3DHP_all",
+                                                     type = "hydrolocation"))
 
-  test_data <- hydrogeofetch:::query_usgs_arcrest(AOI_new, , service = "3DHP_all",
-                                                 type = "hydrolocation - reach code, external connection")
+    test_data <- hydrogeofetch:::query_usgs_arcrest(AOI_new, , service = "3DHP_all",
+                                                   type = "hydrolocation - reach code, external connection")
 
-  expect_s3_class(test_data, "sf")
+    expect_s3_class(test_data, "sf")
+  })
 })

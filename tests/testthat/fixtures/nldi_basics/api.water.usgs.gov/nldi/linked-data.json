@@ -1,0 +1,107 @@
+[
+    {
+        "source": "comid",
+        "sourceName": "NHDPlus comid",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/comid"
+    },
+    {
+        "source": "huc12pp",
+        "sourceName": "HUC12 Pour Points NHDPlusV2",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/huc12pp"
+    },
+    {
+        "source": "WQP",
+        "sourceName": "Water Quality Portal",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/WQP"
+    },
+    {
+        "source": "nwissite",
+        "sourceName": "NWIS Surface Water Sites",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/nwissite"
+    },
+    {
+        "source": "wade",
+        "sourceName": "Water Data Exchange 2.0 Sites",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/wade"
+    },
+    {
+        "source": "ref_gage",
+        "sourceName": "geoconnex.us reference gages",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/ref_gage"
+    },
+    {
+        "source": "ca_gages",
+        "sourceName": "Streamgage catalog for CA SB19",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/ca_gages"
+    },
+    {
+        "source": "gfv11_pois",
+        "sourceName": "USGS Geospatial Fabric V1.1 Points of Interest",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/gfv11_pois"
+    },
+    {
+        "source": "vigil",
+        "sourceName": "Vigil Network Data",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/vigil"
+    },
+    {
+        "source": "nwisgw",
+        "sourceName": "NWIS Groundwater Sites",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/nwisgw"
+    },
+    {
+        "source": "nmwdi-st",
+        "sourceName": "New Mexico Water Data Initative Sites",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/nmwdi-st"
+    },
+    {
+        "source": "geoconnex-demo",
+        "sourceName": "geoconnex contribution demo sites",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/geoconnex-demo"
+    },
+    {
+        "source": "epa_nrsa",
+        "sourceName": "EPA National Rivers and Streams Assessment",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/epa_nrsa"
+    },
+    {
+        "source": "census2020-nhdpv2",
+        "sourceName": "2020 Census Block - NHDPlusV2 Catchment Intersections",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/census2020-nhdpv2"
+    },
+    {
+        "source": "npdes",
+        "sourceName": "NPDES Facilities that Discharge to Water",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/npdes"
+    },
+    {
+        "source": "huc12pp_102020",
+        "sourceName": "HUC12 Pour Points circa 10-2020",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/huc12pp_102020"
+    },
+    {
+        "source": "ref_dams",
+        "sourceName": "geoconnex.us reference dams",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/ref_dams"
+    },
+    {
+        "source": "wade_rights",
+        "sourceName": "Water Data Exchange Water Rights",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/wade_rights"
+    },
+    {
+        "source": "wade_timeseries",
+        "sourceName": "Water Data Exchange Time Series",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/wade_timeseries"
+    },
+    {
+        "source": "GRAND",
+        "sourceName": "Selected GRAND Reservoirs",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/GRAND"
+    },
+    {
+        "source": "HILARRI",
+        "sourceName": "HILARRI Hydropower Infrastructure",
+        "features": "https://api.water.usgs.gov/nldi/linked-data/HILARRI"
+    }
+]

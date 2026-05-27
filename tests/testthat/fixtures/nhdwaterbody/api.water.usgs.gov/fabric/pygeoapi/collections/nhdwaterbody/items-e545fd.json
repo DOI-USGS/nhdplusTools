@@ -1,0 +1,205 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "objectid": 424600,
+                "comid": 22887007,
+                "fdate": "2001-02-28T05:00:00+00:00",
+                "resolution": "Medium",
+                "gnis_id": "784322",
+                "gnis_name": "Gregor Lake",
+                "areasqkm": 0.072,
+                "elevation": 0.0,
+                "reachcode": "17010101002164",
+                "ftype": "LakePond",
+                "fcode": 39004,
+                "shape_length": 0.0208299874871707,
+                "shape_area": 8.88729337203678e-06,
+                "onoffnet": 0,
+                "purpcode": " ",
+                "purpdesc": " ",
+                "meandepth": null,
+                "lakevolume": null,
+                "maxdepth": null,
+                "meandused": null,
+                "meandcode": null,
+                "lakearea": null
+            },
+            "id": 22887007,
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                    [
+                        [
+                            [
+                                -115.07930782012659,
+                                48.87569180836427
+                            ],
+                            [
+                                -115.07986482025414,
+                                48.875756808309056
+                            ],
+                            [
+                                -115.08035282041402,
+                                48.87600880827428
+                            ],
+                            [
+                                -115.08031482049677,
+                                48.87637480830414
+                            ],
+                            [
+                                -115.07962082043099,
+                                48.876671808399465
+                            ],
+                            [
+                                -115.07761382012482,
+                                48.877060875308786
+                            ],
+                            [
+                                -115.0761946865232,
+                                48.87712587546558
+                            ],
+                            [
+                                -115.07550068641254,
+                                48.877240875548246
+                            ],
+                            [
+                                -115.07532468642981,
+                                48.87745387558212
+                            ],
+                            [
+                                -115.0752946865189,
+                                48.87783987561243
+                            ],
+                            [
+                                -115.07546968665004,
+                                48.87822887562087
+                            ],
+                            [
+                                -115.07584368683129,
+                                48.87865987561088
+                            ],
+                            [
+                                -115.07577468698123,
+                                48.87932387566491
+                            ],
+                            [
+                                -115.07539368716918,
+                                48.88039487578101
+                            ],
+                            [
+                                -115.07511868713108,
+                                48.8804638758153
+                            ],
+                            [
+                                -115.07487468707657,
+                                48.880440875839895
+                            ],
+                            [
+                                -115.07470668701572,
+                                48.88033087585021
+                            ],
+                            [
+                                -115.074668686928,
+                                48.88000587583163
+                            ],
+                            [
+                                -115.07491268683205,
+                                48.879418875764124
+                            ],
+                            [
+                                -115.07494368668004,
+                                48.878777875715755
+                            ],
+                            [
+                                -115.07484468659808,
+                                48.87852587570878
+                            ],
+                            [
+                                -115.07463868648256,
+                                48.87822487570983
+                            ],
+                            [
+                                -115.0738376194634,
+                                48.877446875741164
+                            ],
+                            [
+                                -115.07359261933519,
+                                48.87712587574484
+                            ],
+                            [
+                                -115.07356261922283,
+                                48.87669487571789
+                            ],
+                            [
+                                -115.07373061921706,
+                                48.87653487568868
+                            ],
+                            [
+                                -115.07432561930342,
+                                48.876401875615436
+                            ],
+                            [
+                                -115.07487468601796,
+                                48.87614987553889
+                            ],
+                            [
+                                -115.07532468609014,
+                                48.87607687548539
+                            ],
+                            [
+                                -115.07695768648611,
+                                48.87635587532977
+                            ],
+                            [
+                                -115.07792682000228,
+                                48.87630987522259
+                            ],
+                            [
+                                -115.07930782012659,
+                                48.87569180836427
+                            ]
+                        ]
+                    ]
+                ]
+            }
+        }
+    ],
+    "numberReturned": 1,
+    "numberMatched": 1,
+    "links": [
+        {
+            "type": "application/geo+json",
+            "rel": "self",
+            "title": "This document as GeoJSON",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdwaterbody/items?f=json&comid=22887007&limit=500"
+        },
+        {
+            "rel": "alternate",
+            "type": "application/ld+json",
+            "title": "This document as RDF (JSON-LD)",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdwaterbody/items?f=jsonld&comid=22887007&limit=500"
+        },
+        {
+            "type": "text/html",
+            "rel": "alternate",
+            "title": "This document as HTML",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdwaterbody/items?f=html&comid=22887007&limit=500"
+        },
+        {
+            "type": "text/csv; charset=utf-8",
+            "rel": "alternate",
+            "title": "This document as CSV",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdwaterbody/items?f=csv&comid=22887007&limit=500"
+        },
+        {
+            "type": "application/json",
+            "title": "NHDPlusV2 NHD Waterbody Features",
+            "rel": "collection",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdwaterbody"
+        }
+    ],
+    "timeStamp": "2026-05-27T16:12:32.028287Z"
+}

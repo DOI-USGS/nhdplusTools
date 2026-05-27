@@ -2,84 +2,78 @@
 
 test_that("nldi basics work", {
 
-  skip_on_cran()
-
-  nldi_sources <- dataRetrieval::get_nldi_sources()
-
-  expect_equal(class(nldi_sources), "data.frame")
-
-  expect_true(all(c("comid", "huc12pp", "nwissite") %in% nldi_sources$source))
-
-  expect_true(all(names(nldi_sources) %in% c("source", "sourceName", "features")))
-
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
   expect_error(hydrogeofetch:::check_nldi_feature(nldi_nwis[1]),
                  "Missing some required input for NLDI. Expected length 2 character vector or list with optional names: featureID")
 
-  idx <- get_nldi_index(c(-89.276, 42.988))
-  skip_if(is.null(idx), "NLDI service unavailable")
-  expect_equal(nrow(idx), 2)
+  with_mock_hgf("nldi_basics", {
+    nldi_sources <- dataRetrieval::get_nldi_sources()
+
+    expect_equal(class(nldi_sources), "data.frame")
+
+    expect_true(all(c("comid", "huc12pp", "nwissite") %in% nldi_sources$source))
+
+    expect_true(all(names(nldi_sources) %in% c("source", "sourceName", "features")))
+
+    idx <- get_nldi_index(c(-89.276, 42.988))
+    expect_equal(nrow(idx), 2)
+  })
 })
 
 test_that("navigation works", {
 
-  skip_on_cran()
+  with_mock_hgf("nldi_navigation", {
+    nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
-  nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
+    nav <- navigate_nldi(nldi_feature = nldi_nwis,
+                         mode = "UM",
+                         data_source = "nwissite",
+                         distance_km = 1)
 
-  nav <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "UM",
-                       data_source = "nwissite",
-                       distance_km = 1)
+    expect_true("sf" %in% class(nav$UM_nwissite))
 
-  expect_true("sf" %in% class(nav$UM_nwissite))
+    expect_true("sfc_POINT" %in% class(sf::st_geometry(nav$UM_nwissite)),
+           "expected point response")
 
-  expect_true("sfc_POINT" %in% class(sf::st_geometry(nav$UM_nwissite)),
-         "expected point response")
+    nav2 <- navigate_nldi(nldi_feature = nldi_nwis,
+                         mode = "upstreamMain",
+                         data_source = "nwissite",
+                         distance_km = 100)
 
-  nav2 <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "upstreamMain",
-                       data_source = "nwissite",
-                       distance_km = 100)
+    expect_true(nrow(nav2$UM_nwissite) > nrow(nav$UM_nwissite))
 
-  expect_true(nrow(nav2$UM_nwissite) > nrow(nav$UM_nwissite))
+    nldi_nwis <- as.character(nldi_nwis)
 
-  nldi_nwis <- as.character(nldi_nwis)
+    nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
+                          mode = "upstreamMain",
+                          data_source = "flowlines",
+                          distance_km = 10)
 
-  nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
-                        mode = "upstreamMain",
-                        data_source = "flowlines",
-                        distance_km = 10)
+    expect_s3_class(sf::st_geometry(nav3$UM), "sfc_LINESTRING")
 
-  expect_s3_class(sf::st_geometry(nav3$UM), "sfc_LINESTRING")
+    expect_warning(nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
+                                         mode = "upstreamMain",
+                                         data_source = "flowline",
+                                         distance_km = 10),
+                   "data source specified as flowline or '' is deprecated")
 
-  expect_warning(nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
-                                       mode = "upstreamMain",
-                                       data_source = "flowline",
-                                       distance_km = 10),
-                 "data source specified as flowline or '' is deprecated")
+    nav <- navigate_nldi(nldi_feature = nldi_nwis,
+                         mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
+                         data_source = "dumb",
+                         distance_km = 1)
 
-  nav <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
-                       data_source = "dumb",
-                       distance_km = 1)
+    expect_equal(nav$origin$sourceName, "NWIS Surface Water Sites")
 
-  expect_equal(nav$origin$sourceName, "NWIS Surface Water Sites")
+    expect_equal(class(as.integer(nav$origin$comid)), "integer")
 
-  expect_equal(class(as.integer(nav$origin$comid)), "integer") # is coercable to integer
+    nav <- navigate_nldi(nldi_feature = nldi_nwis,
+                         mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
+                         data_source = "nwissite",
+                         distance_km = 1)
 
-  nav <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
-                       data_source = "nwissite",
-                       distance_km = 1)
-
-  expect_true("sf" %in% sapply(nav, class))
-
-  # expect_equal(navigate_nldi(list(featureSource = "wqp",
-  #                                 featureID = "TCEQMAIN-16638"),
-  #                            mode = "upstreamMain",
-  #                            data_source = "nwissite"), dplyr::tibble())
+    expect_true("sf" %in% sapply(nav, class))
+  })
 })
 
 test_that("basin works", {

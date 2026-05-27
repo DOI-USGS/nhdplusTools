@@ -14,8 +14,10 @@ get_test_file <- function(temp_dir) {
   check_location <- check_locations[file.exists(check_locations)]
   if(length(check_location) == 0) {
     temp_file <- file.path(temp_dir, "temp.zip")
-    download.file("https://doi-usgs.github.io/nhdplusTools/data/03_sub.zip",
-                  temp_file, quiet = FALSE)
+    resp <- httr::GET("https://doi-usgs.github.io/nhdplusTools/data/03_sub.zip",
+                      httr::write_disk(temp_file, overwrite = TRUE),
+                      httr::progress())
+    if(httr::http_error(resp)) stop("Failed to download test file")
   } else {
     temp_file <- check_location[1]
   }

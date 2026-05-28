@@ -272,7 +272,7 @@ test_that("union_huc12_sets deduplicates and adds missing", {
 })
 
 test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
 
@@ -317,7 +317,7 @@ test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
 })
 
 test_that("get_drainage_area_estimates local_navigation smoke test", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
 
@@ -355,7 +355,7 @@ test_that("get_drainage_area_estimates local_navigation smoke test", {
 })
 
 test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   start <- list(featureSource = "nwissite", featureID = "USGS-05428000")
 
@@ -693,7 +693,7 @@ test_that("negotiate_outlet_catchment threshold not exceeded", {
 })
 
 test_that("negotiate_outlet_catchment threshold exceeded fetches gage_point", {
-  skip_on_cran()
+  skip_if_no_integration()
   # USGS-08110075: flowline_measure=64.8248, lengthkm=4.92
   # distance to outlet = 64.8248/100 * 4920 = ~3190 m
   fix <- readRDS(list.files(pattern = "negotiate_outlet_fixture.rds",
@@ -774,7 +774,7 @@ test_that("prepare_huc12_outlets renames and validates", {
 })
 
 test_that("get_drainage_area_estimates waterbody_data Lake Mendota smoke test", {
-  skip_on_cran()
+  skip_if_no_integration()
   source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   start <- sf::st_sfc(sf::st_point(c(-89.4, 43.1)), crs = 4326)
@@ -794,7 +794,7 @@ test_that("get_drainage_area_estimates waterbody_data Lake Mendota smoke test", 
 })
 
 test_that("get_drainage_area_estimates catchment_data local retrieval", {
-  skip_on_cran()
+  skip_if_no_integration()
   source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   start <- sf::st_sfc(sf::st_point(c(-89.4, 43.1)), crs = 4326)

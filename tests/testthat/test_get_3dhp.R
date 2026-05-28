@@ -27,7 +27,7 @@ test_that("get_3dhp", {
     expect_equal(unique(hl$mainstemid), "https://geoconnex.us/ref/mainstems/377002")
   })
 
-  skip_on_cran()
+  skip_if_no_integration()
 
   wufl <- get_3dhp(ids = "workunitid:300585", type = "flowline")
 

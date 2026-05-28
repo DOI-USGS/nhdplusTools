@@ -40,7 +40,7 @@ test_that("get_nhdplus_bybox", {
 })
 
 test_that("downloaders run", {
-  skip_on_cran()
+  skip_if_no_integration()
   dir <- tempdir()
   mess <- capture_messages(
     out <- download_nhdplusv2(outdir = dir,

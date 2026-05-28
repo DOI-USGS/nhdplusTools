@@ -51,6 +51,11 @@ teardown_workdir <- function(work_dir) {
   unlink(work_dir, recursive = TRUE, force = TRUE)
 }
 
+skip_if_no_integration <- function() {
+  if(!identical(Sys.getenv("HYDROGEOFETCH_INTEGRATION"), "true"))
+    skip("Set HYDROGEOFETCH_INTEGRATION=true for integration tests")
+}
+
 with_mock_hgf <- function(fixture, expr,
     live = identical(Sys.getenv("HYDROGEOFETCH_LIVE"), "true")) {
   if(live) {

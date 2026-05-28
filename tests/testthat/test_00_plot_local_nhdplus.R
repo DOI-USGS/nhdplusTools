@@ -6,7 +6,7 @@ test_that("local data", {
   Sys.setenv(MAKE_BASIN="FALSE")
   options("rgdal_show_exportToProj4_warnings"="none")
 
-  testthat::skip_on_cran()
+  skip_if_no_integration()
 
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   gage <- sf::read_sf(sample_data, "Gage")

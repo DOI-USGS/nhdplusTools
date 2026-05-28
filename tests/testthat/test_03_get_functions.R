@@ -41,7 +41,7 @@ test_that("query water oafeat...",{
 # ==============================================================================
 
 test_that("huc8", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   expect_error(get_huc(AOI = rbind(pt, pt2), type = "huc08_2020"),
                "AOI must be one an only one feature.")
@@ -63,7 +63,7 @@ test_that("huc8", {
 # ==============================================================================
 
 test_that("huc", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   expect_error(get_huc(AOI = pt, type = "borked"),
                "type must be one of")
@@ -156,7 +156,7 @@ test_that("huc type autodetection from id length", {
 # ==============================================================================
 
 test_that("huc all versions and levels", {
-  testthat::skip_on_cran()
+  skip_if_no_integration()
 
   huc_ids <- c(huc02 = "07", huc04 = "0709", huc06 = "070900",
                huc08 = "07090002", huc10 = "0709000206", huc12 = "070900020604")
@@ -283,14 +283,14 @@ test_that("gagesii", {
 # ==============================================================================
 
 test_that("discover_nhdplus_id", {
-  testthat::skip_on_cran()
+  skip_if_no_integration()
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
   discover_nhdplus_id(nldi_feature = nldi_nwis)
   expect_error(discover_nhdplus_id(nldi_feature = NULL, point = NULL))
 })
 
 test_that("get_nwis", {
-  testthat::skip_on_cran()
+  skip_if_no_integration()
   areaSearch = get_nwis(AOI = area)
   expect_equal(nrow(areaSearch), 1)
   expect_equal(sf::st_crs(areaSearch)$epsg, 4326)
@@ -324,7 +324,7 @@ test_that("get_huc12_by_huc", {
   expect_error(hydrogeofetch:::get_huc12_by_huc("120500"),
                "huc_ids must be all 8-digit")
 
-  skip_on_cran()
+  skip_if_no_integration()
 
   h10 <- hydrogeofetch:::get_huc12_by_huc("1701010103")
   expect_s3_class(h10, "sf")
@@ -338,7 +338,7 @@ test_that("get_huc12_by_huc", {
 })
 
 test_that("get_huc12_by_huc pages within batch", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   # two HUC10s together, exercising POST paging
   h10_multi <- hydrogeofetch:::get_huc12_by_huc(c("1701010103", "1701010104"))

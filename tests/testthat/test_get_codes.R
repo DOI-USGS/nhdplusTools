@@ -1,8 +1,6 @@
 source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
 test_that("get streamorder", {
-  skip_on_cran()
-
     test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE, warn = FALSE)
 
     test_flowline <- data.frame(

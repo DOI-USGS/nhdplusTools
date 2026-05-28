@@ -78,7 +78,7 @@ test_that("navigation works", {
 
 test_that("basin works", {
 
-  skip_on_cran()
+  skip_if_no_integration()
   skip_on_ci()
 
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
@@ -114,7 +114,7 @@ test_that("basin works", {
 })
 
 test_that("get feature works", {
-  skip_on_cran()
+  skip_if_no_integration()
   # TODO: re-enable once NLDI consistently returns the `mainstem` column
   # for USGS-05428500 (intermittently absent → ncol(f) == 8 vs 9).
   skip("in process API fix")
@@ -160,7 +160,7 @@ test_that("raindrop", {
 
 test_that("split", {
 
-  skip_on_cran()
+  skip_if_no_integration()
   skip_on_ci()
 
   # Doesn't improve coverage
@@ -209,7 +209,7 @@ test_that("split", {
 
 test_that("xs", {
 
-  skip_on_cran()
+  skip_if_no_integration()
   skip_on_ci()
 
   point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)

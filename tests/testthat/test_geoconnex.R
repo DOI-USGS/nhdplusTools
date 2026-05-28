@@ -11,7 +11,7 @@ test_that("discover", {
 
 test_that("get", {
 
-  skip_on_cran()
+  skip_if_no_integration()
 
   will_work <- try(sf::read_sf("https://reference.geoconnex.us/collections/gages/items?limit=100"))
 

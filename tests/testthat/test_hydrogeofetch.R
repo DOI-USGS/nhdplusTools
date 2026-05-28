@@ -38,7 +38,7 @@ test_that("hydrogeofetch_data_dir works", {
 
 
 test_that("discover nhdplus id errors", {
-  skip_on_cran()
+  skip_if_no_integration()
   expect_error(discover_nhdplus_id(),
                "Must provide point or nldi_feature input.")
 
@@ -54,7 +54,7 @@ test_that("discover nhdplus id works as expected", {
     expect_equal(discover_nhdplus_id(point = point), 11689978)
   })
 
-  skip_on_cran()
+  skip_if_no_integration()
 
   nldi_huc12 <- list(featureSource = "huc12pp", featureID = "070700051701")
   expect_equal(discover_nhdplus_id(nldi_feature = nldi_huc12), 13637491)

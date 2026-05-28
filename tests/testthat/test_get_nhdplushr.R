@@ -1,6 +1,6 @@
 
 test_that("we get urls for nhdplushr and base", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -20,7 +20,7 @@ test_that("we get urls for nhdplushr and base", {
 })
 
 test_that("get_nhdplushr layers and gpkg", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -50,7 +50,7 @@ test_that("get_nhdplushr layers and gpkg", {
 })
 
 test_that("get_nhdplushr duplicate vpus", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -77,7 +77,7 @@ test_that("get_nhdplushr duplicate vpus", {
 })
 
 test_that("nhdplus hr waterbody", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -98,7 +98,7 @@ test_that("nhdplus hr waterbody", {
 })
 
 test_that("get_nhdplushr overwrite gpkg and pattern", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -144,7 +144,7 @@ test_that("get_nhdplushr overwrite gpkg and pattern", {
 })
 
 test_that("get_nhdplushr simp and proj", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -171,7 +171,7 @@ test_that("get_nhdplushr simp and proj", {
 })
 
 test_that("get_nhdplushr rename and keep_cols", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -193,7 +193,7 @@ test_that("get_nhdplushr rename and keep_cols", {
 })
 
 test_that("make_standalone", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 

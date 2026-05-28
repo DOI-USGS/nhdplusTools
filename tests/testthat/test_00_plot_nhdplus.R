@@ -3,7 +3,7 @@ source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 test_that("tile_cache_dir", {
   testthat::skip_on_ci()
-  testthat::skip_on_cran()
+  skip_if_no_integration()
   dir <- hydrogeofetch:::tile_cache_dir()
 
   expect_equal(dir,
@@ -87,7 +87,7 @@ test_that("test_as_outlets", {
                list(list(featureSource = "comid", featureID = "13293970"),
                     list(featureSource = "nwissite", featureID = "USGS-05428500")))
 
-  skip_on_cran()
+  skip_if_no_integration()
   o <- sf::st_as_sf(data.frame(x = -122.765037511658,
                                y = 45.6534111629304),
                     coords = c("x", "y"), crs = 4326)
@@ -131,7 +131,7 @@ test_that("comids", {
   testthat::skip_on_ci()
   Sys.setenv(MAKE_BASIN="FALSE")
 
-  testthat::skip_on_cran()
+  skip_if_no_integration()
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   comids <- hydrogeofetch::get_UT(fline, 13293970)
   d <- hydrogeofetch:::plot_nhdplus(comids, flowline_only = TRUE,
@@ -161,7 +161,7 @@ test_that("comids", {
 
 test_that("waterbodies", {
   testthat::skip_on_ci()
-  testthat::skip_on_cran()
+  skip_if_no_integration()
   site <- "USGS-05428500"
   tempd <- tempdir(check = TRUE)
   g_temp <- file.path(tempd, "foo.gpkg")
@@ -198,7 +198,7 @@ test_that("waterbodies", {
 
 test_that("get_waterbody_outlet", {
   testthat::skip_on_ci()
-  testthat::skip_on_cran()
+  skip_if_no_integration()
   lake_comid <- 13293262
   site <- "USGS-05428500"
   tempd <- tempdir(check = TRUE)

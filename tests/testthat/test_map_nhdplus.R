@@ -1,7 +1,7 @@
 source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 test_that("map_nhdplus", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   out1 = map_nhdplus("05428500")
   expect_equal(class(out1), "list")

@@ -2,7 +2,7 @@
 source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 test_that("bbox", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
                         xmax = -89.24681, ymax = 43.17192),

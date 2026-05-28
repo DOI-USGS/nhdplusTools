@@ -1,6 +1,5 @@
 
 test_that("rescale", {
-  skip_on_cran()
   skip_on_os("mac")
 
   old_opts <- options(arrow.unsafe_metadata = TRUE)

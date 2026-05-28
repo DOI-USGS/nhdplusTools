@@ -18,7 +18,6 @@ test_that("basic two flowline network", {
 })
 
 test_that("example", {
-  skip_on_cran()
   skip_on_ci()
 
   source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))

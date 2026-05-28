@@ -134,7 +134,7 @@ test_that("subset runs as expected", {
 
 test_that("subset download", {
 
-  skip_on_cran()
+  skip_if_no_integration()
 
   temp_dir <- tempdir()
   dir.create(temp_dir, recursive = TRUE, showWarnings = FALSE)
@@ -190,7 +190,7 @@ test_that("subset download", {
 test_that("subset works with HR", {
   work_dir <- tempdir()
 
-  skip_on_cran()
+  skip_if_no_integration()
   get_test_file(work_dir)
 
   out_gpkg <- file.path(work_dir, "temp.gpkg")

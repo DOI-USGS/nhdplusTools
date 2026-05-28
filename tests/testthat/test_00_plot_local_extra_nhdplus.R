@@ -6,7 +6,7 @@ test_that("local data 2", {
   Sys.setenv(MAKE_BASIN="FALSE")
   options("rgdal_show_exportToProj4_warnings"="none")
 
-  testthat::skip_on_cran()
+  skip_if_no_integration()
 
   gage <- sf::read_sf(sample_data, "Gage")
 

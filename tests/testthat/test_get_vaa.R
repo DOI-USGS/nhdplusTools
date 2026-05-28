@@ -1,7 +1,7 @@
 
 
 test_that("vaa examples", {
-  skip_on_cran()
+  skip_if_no_integration()
   skip_on_ci()
 
   vaa_names <- get_vaa_names()
@@ -36,7 +36,7 @@ test_that("vaa examples", {
 
 test_that("catchment chars", {
 
-  skip_on_cran()
+  skip_if_no_integration()
   skip_on_os("linux")
   skip_on_os("mac")
 
@@ -87,7 +87,7 @@ test_that("catchment chars", {
 
 test_that("streamcat catchment chars", {
 
-  skip_on_cran()
+  skip_if_no_integration()
   skip_if_not_installed("StreamCatTools")
 
   source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))

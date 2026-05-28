@@ -1,7 +1,7 @@
 
 
 test_that("navigation basics", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   suppressWarnings(
   # 06287800
@@ -68,7 +68,7 @@ test_that("navigation basics", {
 })
 
 test_that("walker", {
-  skip_on_cran()
+  skip_if_no_integration()
   source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
   hydro_location <- list(comid = 5329339,
                          reachcode = "18050005000078",

@@ -10,7 +10,7 @@ flines_in <- sf::st_zm(sf::st_cast(sf::st_transform(flines_in, 4269),
 )
 
 test_that("point indexing to nearest existing node works as expected", {
-    skip_on_cran()
+    skip_if_no_integration()
 
   point <- sf::st_sfc(sf::st_point(c(-76.86876, 39.49345)), crs = 4269)
 
@@ -58,8 +58,6 @@ test_that("point indexing to nearest existing node works as expected", {
 })
 
 test_that("point indexing to for multiple points works", {
-  skip_on_cran()
-
   point <- sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
                            sf::st_point(c(-76.91711, 39.40884)),
                            sf::st_point(c(-76.88081, 39.36354))), crs = 4269)

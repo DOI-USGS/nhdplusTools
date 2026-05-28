@@ -91,7 +91,7 @@ test_that("by rpu", {
 })
 
 test_that("big rpu test", {
-  skip_on_cran()
+  skip_if_no_integration()
   testthat::skip_if_offline("sciencebase.gov")
 
   vaa <- tryCatch(
@@ -153,7 +153,7 @@ test_that("big rpu test", {
 
 test_that("projection check", {
 
-  skip_on_cran()
+  skip_if_no_integration()
 
   out <- tempfile(fileext = ".gpkg")
 

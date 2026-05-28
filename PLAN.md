@@ -93,21 +93,44 @@ Additional fixes applied during check:
 
 Clean up legacy dependencies and bring the codebase to a consistent modern style.
 
-**HTTP client:** Replace httr with httr2. Adopt httptest2 for web service tests so they run against recorded fixtures in CI and live against real services on demand. Binary downloads (GeoPackage files) stay as live-only tests behind `skip_on_cran()`.
+### 3a. HTTP client ✓
 
-**Dependency cleanup:** Drop R.utils (one `gunzip()` call, replaceable with base R), tidyr (one `unnest()` call), and unused arrow import. Move maptiles/mapsf to Suggests. Replace fst with arrow/parquet for VAA table caching.
+- [x] httr → httr2 migration across all web-service callers
+- [x] httptest2 adopted for unit tests (recorded fixtures via `with_mock_hgf`); live integration tests gated behind `skip_if_no_integration()`
+- [x] Binary downloads (GeoPackage etc.) stay as live-only tests behind `skip_on_cran()`
+- [x] `hgf_json` / `hgf_sf` wrappers at the HTTP boundary catch errors (including TLS failures) and return `NULL` with a warning instead of propagating
 
-**Code style:** Convert all `%>%` to native `|>` and drop the magrittr import. Apply current style conventions across the full codebase — alignment, spacing, and any other holdovers from earlier eras of the package.
+### 3b. Dependency cleanup
 
-**Test fragility found during milestone 2:** Several tests crash or fail when web services are unavailable or misbehaving. These need attention during the httptest2 migration:
-- `test_get_vaa.R` and `test_02_subset_extras.R`: R subprocess segfaults under parallel testing. Parallel testing disabled (`Config/testthat/parallel: false`) as a workaround. Investigate whether fst/arrow memory use is the root cause; may resolve itself once fst is replaced with arrow/parquet.
-- `test_01_get_nldi.R`: `get_nldi_index()` test fails when NLDI pygeoapi returns server errors. Added `skip_if(is.null(...))` as a stopgap. With httptest2 fixtures this test should run deterministically.
-- `get_geoconnex_reference` `\donttest` examples: fail on TLS certificate errors or when geoconnex.us is unreachable. Consider converting to `\dontrun` or recording fixtures.
-- `example(get_nldi)` and other `\donttest` examples that hit live services: CRAN runs these during their checks. Decide per-example whether to convert to `\dontrun`, record httptest2 fixtures that cover example execution, or guard with a connectivity check. Resolve before milestone 5 submission.
+- [x] fst removed (commit `1a43313`)
+- [ ] Drop R.utils (one `gunzip()` call → base R)
+- [ ] Drop tidyr (one `unnest()` call)
+- [ ] Move maptiles, mapsf to Suggests
+- [ ] arrow: confirm wired up for VAA caching now that fst is gone; if still unused, drop the import
 
-**Vignettes:** `devtools::build_vignettes()` was deferred during milestone 2 (slow, network-dependent). Vignette examples that call web services need the same treatment as `\donttest` examples — httptest2 fixtures, `\dontrun`, or connectivity guards. Verify vignettes build cleanly as part of this milestone.
+### 3c. Code style
 
-**Done when:** No remaining httr, magrittr, R.utils, tidyr, or fst usage. arrow wired up for VAA caching. httptest2 fixtures recorded for JSON/GeoJSON service calls. Tests pass in both mock and live modes. Vignettes build cleanly. `\donttest` examples either pass reliably or are converted to `\dontrun`. R CMD check clean. Re-enable parallel testing once subprocess crashes are resolved.
+- [ ] Convert all `%>%` to native `|>`; drop magrittr from Imports
+- [ ] Apply current style conventions to legacy files (minimal-diff rule still applies — only on lines being touched for other reasons)
+
+### 3d. Caller hardening (web-service robustness)
+
+Policy is set in CLAUDE.md and the `feedback_web_service_response_handling` memory: keep `\donttest` examples, but every web-service caller must validate response shape strictly and degrade gracefully so CRAN-run `\donttest` examples don't crash on degraded services. HTTP boundary now returns `NULL` on failure; the work left is making the downstream callers handle that `NULL` and unexpected payload shapes cleanly.
+
+- [x] `test_01_get_nldi.R get_nldi_index()` flakiness — resolved by httptest2 mocking (the `skip_if(is.null(...))` carryover at [test_01_get_nldi.R:212](tests/testthat/test_01_get_nldi.R#L212) is a different `xs` test gated by integration skips)
+- [x] `get_geoconnex_reference` TLS crash at the HTTP boundary — `hgf_sf`/`hgf_json` now warn + return `NULL` instead of crashing
+- [ ] `discover_oafeat` / `get_oafeat` at [oafeat_tools.R:164-199](R/oafeat_tools.R#L164-L199): don't yet check for `NULL` from `mem_get_json` — `landing$links` on a NULL would error. Known concrete instance of the caller-hardening pass.
+- [ ] Full audit across all web-service callers for strict response-shape validation and clean empty/`NULL` returns on unexpected responses (HTML error pages, partial JSON, wrong content types, etc.).
+
+### 3e. Test infrastructure
+
+- [ ] Re-enable `Config/testthat/parallel: true` (currently `false` at [DESCRIPTION:36](DESCRIPTION#L36)) and confirm `test_get_vaa.R` / `test_02_subset_extras.R` no longer segfault now that fst is removed.
+
+### 3f. Vignettes
+
+- [ ] Run `devtools::build_vignettes()` (deferred from milestone 2). Vignette code that calls web services benefits from the same caller-hardening pass as `\donttest` examples. Verify vignettes build cleanly.
+
+**Done when:** No remaining httr, magrittr, R.utils, or tidyr usage. arrow wired up for VAA caching or removed. Tests pass in both mock and live modes. Vignettes build cleanly. Every web-service caller validates response shape strictly and degrades gracefully so `\donttest` examples remain CRAN-safe under failing services. R CMD check clean. Parallel testing re-enabled with no subprocess crashes.
 
 **Gate:** Run the full test suite live to confirm service compatibility. Review httptest2 fixture sizes — if any are too large to check in, simplify or move those tests to live-only.
 
@@ -132,7 +155,7 @@ Submit hydrogeofetch v1.0 to CRAN. The repo is still named nhdplusTools at this 
 **Pre-submission checklist:**
 - `R CMD check --as-cran` clean (0 errors, 0 warnings, ideally 0 notes)
 - `devtools::build_vignettes()` succeeds — vignettes render without network failures
-- All `\donttest` examples pass or have been converted to `\dontrun` (CRAN runs `\donttest` examples)
+- All `\donttest` examples fail gracefully under degraded service conditions (CRAN runs `\donttest` examples) — strict response-type checking in every web-service caller, not `\dontrun` conversions
 - Help pages for renamed functions (`?hydrogeofetch_data_dir`, `?hydrogeofetch_cache_settings`) render correctly
 
 **Release workflow:** Push an `rc/1.0.0` branch to code.usgs.gov. The GitLab CI pipeline runs a lightweight structural check, builds the source tarball, uploads it to the GitLab package registry, and runs `R CMD check --as-cran` on that tarball. Download the verified tarball from the registry and submit it to CRAN. See `.gitlab-ci.yml` and the README "Build and release" section for details.

@@ -160,31 +160,24 @@ test_that("raindrop", {
 
 test_that("split", {
 
-  skip_if_no_integration()
-  skip_on_ci()
+  with_mock_hgf("split_catchment", {
+    snap_point <- sf::st_sfc(sf::st_point(c(-89.213274, 42.956989)),
+                             crs = 4326)
 
-  # Doesn't improve coverage
-  # point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
-  #
-  # trace <- get_raindrop_trace(point)
-  #
-  # dput(sf::st_point(trace$intersection_point[[1]][2:1]))
+    catchment <- get_split_catchment(snap_point, upstream = TRUE)
 
-  snap_point <- sf::st_sfc(sf::st_point(c(-89.213274, 42.956989)),
-                           crs = 4326)
+    area <- sf::st_area(catchment)
 
-  catchment <- get_split_catchment(snap_point, upstream = TRUE)
+    expect_true(area[1] < units::set_units(7000000, "m^2"))
 
-  area <- sf::st_area(catchment)
+    expect_true(area[2] > units::set_units(900000000, "m^2"))
 
-  expect_true(area[1] < units::set_units(7000000, "m^2"))
+    point <- sf::st_sfc(sf::st_point(c(-20.213274, 42.956989)),
+                        crs = 4326)
 
-  expect_true(area[2] > units::set_units(900000000, "m^2"))
-
-  point <- sf::st_sfc(sf::st_point(c(-20.213274, 42.956989)),
-                      crs = 4326)
-
-  expect_message(get_split_catchment(point, upstream = TRUE), "Ensure that the point")
+    expect_message(suppressWarnings(get_split_catchment(point, upstream = TRUE)),
+                   "Ensure that the point")
+  })
 
   # Doesn't improve coverage
   # catchment2 <- get_split_catchment(snap_point, upstream = FALSE)

@@ -29,8 +29,6 @@ discover_geoconnex_reference <- function() {
 #' @export
 #' @examples
 #' \donttest{
-#' # TODO: test on internal network (TLS cert failure on geoconnex.us)
-#'
 #' dplyr::distinct(discover_geoconnex_reference()[c("id", "title")])
 #'
 #' AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,

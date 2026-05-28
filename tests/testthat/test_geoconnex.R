@@ -11,41 +11,38 @@ test_that("discover", {
 
 test_that("get", {
 
-  skip_if_no_integration()
+  with_mock_hgf("geoconnex_get", {
+    expect_warning(avail <- get_geoconnex_reference())
 
-  will_work <- try(sf::read_sf("https://reference.geoconnex.us/collections/gages/items?limit=100"))
+    expect_equal(avail, discover_geoconnex_reference())
 
-  skip_if(inherits(will_work, "try-error"))
+    AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
+                                       xmax = -89.24681, ymax = 43.17192),
+                                     crs = "+proj=longlat +datum=WGS84 +no_defs"))
 
-  expect_warning(avail <- get_geoconnex_reference())
+    AOI_b <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
+                           xmax = -89.24681, ymax = 43.17192))
 
-  expect_equal(avail, discover_geoconnex_reference())
+    out <- get_geoconnex_reference(AOI, type = "hu04")
 
-  AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
-                                     xmax = -89.24681, ymax = 43.17192),
-                                   crs = "+proj=longlat +datum=WGS84 +no_defs"))
+    expect_silent(out2 <- get_geoconnex_reference(AOI_b, type = "hu04", status = FALSE))
 
-  AOI_b <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
-                         xmax = -89.24681, ymax = 43.17192))
+    expect_true(all(out$id %in% out2$id))
 
-  out <- get_geoconnex_reference(AOI, type = "hu04")
+    expect_s3_class(out, "sf")
+    expect_equal(nrow(out), 2)
 
-  expect_silent(out2 <- get_geoconnex_reference(AOI_b, type = "hu04", status = FALSE))
+    AOI <- sf::st_sfc(sf::st_point(c(-89.56684, 42.99816)),
+                      crs = "+proj=longlat +datum=WGS84 +no_defs")
 
-  expect_true(all(out$id %in% out2$id))
+    out <- get_geoconnex_reference(AOI, type = "hu04", buffer = 10000,
+                                   t_srs = 5070, status = FALSE)
 
-  expect_s3_class(out, "sf")
-  expect_equal(nrow(out), 2)
+    expect_true(sf::st_crs(out) == sf::st_crs(5070))
 
-  AOI <- sf::st_sfc(sf::st_point(c(-89.56684, 42.99816)),
-                    crs = "+proj=longlat +datum=WGS84 +no_defs")
+    out <- get_geoconnex_reference("https://geoconnex.us/ref/mainstems/359842",
+                                   type = "hu04")
 
-  out <- get_geoconnex_reference(AOI, type = "hu04", buffer = 10000,
-                                 t_srs = 5070, status = FALSE)
-
-  expect_true(sf::st_crs(out) == sf::st_crs(5070))
-
-  out <- get_geoconnex_reference("https://geoconnex.us/ref/mainstems/359842", type = "hu04")
-
-  expect_s3_class(out, "sf", exact = FALSE)
+    expect_s3_class(out, "sf", exact = FALSE)
+  })
 })

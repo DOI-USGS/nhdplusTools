@@ -243,12 +243,17 @@ get_oafeat <- function(base,
   if(!is.null(AOI)) {
     if(is.character(AOI)) {
 
-      AOI <- try(sf::read_sf(AOI)) |>
-        st_transform(4326)
+      if(grepl("^https?://", AOI)) {
+        AOI <- hgf_sf(AOI)
+      } else {
+        AOI <- try(sf::read_sf(AOI), silent = TRUE)
+      }
 
       if(!inherits(AOI, "sf")) {
         stop("AOI did not return an sf object when read")
       }
+
+      AOI <- st_transform(AOI, 4326)
 
     }
 

@@ -21,8 +21,8 @@ test_that("total drainage area works", {
   catchment_area <- prepare_nhdplus(walker_flowline, 0, 0,
                                     purge_non_dendritic = FALSE, warn = FALSE)
 
-  catchment_area <- select(walker_flowline, COMID, AreaSqKM) %>%
-    left_join(catchment_area, by = "COMID") %>%
+  catchment_area <- select(walker_flowline, COMID, AreaSqKM) |>
+    left_join(catchment_area, by = "COMID") |>
     select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
   suppressMessages(suppressWarnings(new_da <- calculate_total_drainage_area(catchment_area)))
@@ -42,8 +42,8 @@ test_that("arbolate sum works", {
   catchment_length <- prepare_nhdplus(walker_flowline, 0, 0,
                                       purge_non_dendritic = FALSE, warn = FALSE)
 
-  catchment_length <- select(walker_flowline, COMID) %>%
-    left_join(catchment_length, by = "COMID") %>%
+  catchment_length <- select(walker_flowline, COMID) |>
+    left_join(catchment_length, by = "COMID") |>
     select(ID = COMID, toID = toCOMID, length = LENGTHKM)
 
   suppressMessages(suppressWarnings(arb_sum <- calculate_arbolate_sum(catchment_length)))
@@ -61,7 +61,7 @@ test_that("get_terminal", {
   hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 
   suppressWarnings(
-    fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
+    fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) |>
       select(ID = COMID, toID = toCOMID))
 
   outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
@@ -74,7 +74,7 @@ test_that("get_terminal", {
 
   source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
-  fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
+  fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) |>
     select(ID = COMID, toID = toCOMID)
 
   outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
@@ -89,7 +89,7 @@ test_that("get_terminal", {
 test_that("get_terminal", {
   source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
-  fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
+  fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) |>
     select(ID = COMID, toID = toCOMID, length = LENGTHKM)
 
   suppressWarnings(pl <- get_pathlength(fl))

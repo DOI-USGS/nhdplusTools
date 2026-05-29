@@ -744,9 +744,9 @@ get_wb_outlet <- function(lake_id, network) {
     network <- check_names(network, "get_wb_outlet_hires",
                            align = FALSE, tolower = FALSE)
     if (lake_id %in% network$WBArea_Permanent_Identifier){
-    outlet <- network %>%
-      filter(.data$WBArea_Permanent_Identifier == lake_id) %>%
-      group_by(.data$WBArea_Permanent_Identifier) %>%
+    outlet <- network |>
+      filter(.data$WBArea_Permanent_Identifier == lake_id) |>
+      group_by(.data$WBArea_Permanent_Identifier) |>
       filter(.data$Hydroseq == min(.data$Hydroseq))
     return(outlet)
     } else {
@@ -756,9 +756,9 @@ get_wb_outlet <- function(lake_id, network) {
     network <- check_names(network, "get_wb_outlet_mres", tolower = TRUE)
 
     if (lake_id %in% network$wbareacomi){
-      outlet <- network %>%
-        filter(.data$wbareacomi == lake_id) %>%
-        group_by(.data$wbareacomi) %>%
+      outlet <- network |>
+        filter(.data$wbareacomi == lake_id) |>
+        group_by(.data$wbareacomi) |>
         filter(.data$hydroseq == min(.data$hydroseq))
       return(outlet)
     } else {

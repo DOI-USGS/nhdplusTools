@@ -143,8 +143,8 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 
   if(AOI_type == "POINT"){
     pt  <-  AOI
-    AOI <-  sf::st_buffer(sf::st_transform(AOI, 5070), buffer) %>%
-      sf::st_bbox() %>%
+    AOI <-  sf::st_buffer(sf::st_transform(AOI, 5070), buffer) |>
+      sf::st_bbox() |>
       sf::st_as_sfc()
   }
 
@@ -193,14 +193,13 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
                            station_nm = xml2::xml_attr(sites, "sna"),
                            site_type  = xml2::xml_attr(sites, "cat"),
                            lat = as.numeric(xml2::xml_attr(sites, "lat")),
-                           lon = as.numeric(xml2::xml_attr(sites, "lng"))) %>%
+                           lon = as.numeric(xml2::xml_attr(sites, "lng"))) |>
       st_as_sf(coords = c("lon", "lat"), crs = 4326)
 
     if(AOI_type == "POINT"){
-      sites_sf <- sites_sf %>%
-        mutate(distance_m = st_distance(st_transform(., 5070),
-                                        st_transform(pt, 5070))) %>%
-        arrange(.data$distance_m)
+      sites_sf$distance_m <- st_distance(st_transform(sites_sf, 5070),
+                                         st_transform(pt, 5070))
+      sites_sf <- arrange(sites_sf, .data$distance_m)
     }
 
     return(st_transform(sites_sf, t_srs))

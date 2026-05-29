@@ -5,8 +5,8 @@ wb <- sf::read_sf(sample_data, "NHDWaterbody")
 gage <- sf::read_sf(sample_data, "Gage")
 fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
 
-gage_l <- sf::st_drop_geometry(gage) %>%
-  dplyr::filter(!is.na(LonSite)) %>%
+gage_l <- sf::st_drop_geometry(gage) |>
+  dplyr::filter(!is.na(LonSite)) |>
   sf::st_as_sf(coords = c("LonSite", "LatSite"), crs = 4326)
 
 gage_l <- dplyr::select(gage_l, hy_locid = SOURCE_FEA)

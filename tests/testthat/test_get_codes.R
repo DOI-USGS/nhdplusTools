@@ -66,9 +66,9 @@ test_that("get_pfaf", {
   # suppressWarnings(
   #   fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE))
   #
-  # fl <- select(hr_flowline, COMID, AreaSqKM) %>%
-  #   left_join(fl, by = "COMID") %>%
-  #   st_sf() %>%
+  # fl <- select(hr_flowline, COMID, AreaSqKM) |>
+  #   left_join(fl, by = "COMID") |>
+  #   st_sf() |>
   #   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
   #
   # fl$nameID = " "
@@ -106,9 +106,9 @@ test_that("get_pfaf", {
 
   fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE)
 
-  fl <- dplyr::select(walker_flowline, COMID, AreaSqKM) %>%
-    dplyr::left_join(fl, by = "COMID") %>%
-    sf::st_sf() %>%
+  fl <- dplyr::select(walker_flowline, COMID, AreaSqKM) |>
+    dplyr::left_join(fl, by = "COMID") |>
+    sf::st_sf() |>
     dplyr::select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
   fl$nameID = ""

@@ -219,7 +219,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     tryCatch({
     for (layer_name in intersection_names) {
       if(is.null(out_list[layer_name][[1]])) {
-        layer <- sf::st_transform(envelope, 4326) %>%
+        layer <- sf::st_transform(envelope, 4326) |>
           get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
       } else {
         layer <- out_list[layer_name][[1]]

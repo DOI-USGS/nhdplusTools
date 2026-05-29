@@ -35,7 +35,6 @@
 #' Note 5: "from" is downstream -- 0 is the outlet "to" is upstream -- 100 is the inlet
 #'
 #' @importFrom hydroloom index_points_to_lines
-#' @importFrom magrittr `%>%`
 #' @export
 #' @examples
 #' \donttest{

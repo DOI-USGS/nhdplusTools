@@ -19,9 +19,9 @@ network and incremental areas.
 \examples{
 library(dplyr)
 source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
-catchment_area <- select(walker_flowline, COMID, AreaSqKM) \%>\%
+catchment_area <- select(walker_flowline, COMID, AreaSqKM) |>
   right_join(prepare_nhdplus(walker_flowline, 0, 0,
-                            purge_non_dendritic = FALSE, warn = FALSE), by = "COMID") \%>\%
+                            purge_non_dendritic = FALSE, warn = FALSE), by = "COMID") |>
   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 
 new_da <- calculate_total_drainage_area(catchment_area)

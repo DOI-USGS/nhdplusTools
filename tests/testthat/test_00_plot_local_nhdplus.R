@@ -14,8 +14,8 @@ test_that("local data", {
   # site_data <- dataRetrieval::whatNWISdata(siteNumber = gage$SOURCE_FEA,
   #                                          parameterCd = c("00060"), statCd = c("00003"))
   #
-  # site <- filter(site_data, stat_cd == "00003") %>%
-  #   filter(count_nu == max(count_nu)) %>%
+  # site <- filter(site_data, stat_cd == "00003") |>
+  #   filter(count_nu == max(count_nu)) |>
   #   sf::st_as_sf(coords = c("dec_long_va", "dec_lat_va"), crs = sf::st_crs(4326))
   #
   # start <- hydrogeofetch::get_flowline_index(fline, sf::st_transform(site, sf::st_crs(fline)))$COMID

@@ -2,10 +2,10 @@
 
 source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
-pt_data <- sample_flines %>%
+pt_data <- sample_flines |>
   align_nhdplus_names()
 
-cida <- sf::read_sf(list.files(pattern = "cida_flowlines.gpkg", full.names = TRUE, recursive = TRUE)) %>%
+cida <- sf::read_sf(list.files(pattern = "cida_flowlines.gpkg", full.names = TRUE, recursive = TRUE)) |>
   align_nhdplus_names()
 
 test_that("get_DM works normal", {

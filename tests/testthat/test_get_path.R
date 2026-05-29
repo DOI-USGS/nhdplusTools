@@ -75,9 +75,9 @@ test_that("hr levelpath", {
   suppressWarnings(
     fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE))
 
-  fl <- select(hr_flowline, COMID, ArbolateSu, GNIS_Name) %>%
-    left_join(fl, by = "COMID") %>%
-    st_sf() %>%
+  fl <- select(hr_flowline, COMID, ArbolateSu, GNIS_Name) |>
+    left_join(fl, by = "COMID") |>
+    st_sf() |>
     select(ID = COMID, toID = toCOMID, weight = ArbolateSu, nameID = GNIS_Name)
 
   expect_warning(expect_message(
@@ -116,9 +116,9 @@ test_that("from vignette works", {
 
   suppressWarnings(fpath <- get_tocomid(
     dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
-                  AreaSqKM, LENGTHKM, GNIS_ID)) %>%
-    sf::st_cast("LINESTRING") %>%
-    select(-tonode, -fromnode, -divergence, -ftype) %>%
+                  AreaSqKM, LENGTHKM, GNIS_ID)) |>
+    sf::st_cast("LINESTRING") |>
+    select(-tonode, -fromnode, -divergence, -ftype) |>
     get_sorted(split = TRUE))
 
   suppressWarnings(

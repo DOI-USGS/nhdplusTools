@@ -113,10 +113,13 @@ Clean up legacy dependencies and bring the codebase to a consistent modern style
 - [x] maptiles, mapsf moved to Suggests with `check_pkg()` guards at the basemap call in [plot_nhdplus.R](R/plot_nhdplus.R#L165)
 - [x] arrow confirmed wired up for VAA caching (`open_dataset`, `read_parquet` in `R/get_vaa.R`) — stays in Imports
 
-### 3c. Code style
+### 3c. Code style ✓
 
-- [ ] Convert all `%>%` to native `|>`; drop magrittr from Imports
-- [ ] Apply current style conventions to legacy files (minimal-diff rule still applies — only on lines being touched for other reasons)
+- [x] All `%>%` converted to native `|>` — 51 occurrences across 10 R/ files, 32 across 8 test files, 6 in `vignettes/indexing.Rmd`, 7 in `inst/extdata/get_hr_data.R`
+- [x] magrittr dropped from Imports; `@importFrom magrittr `%>%`` removed from `R/index_nhdplus.R`
+- [x] Modernized formula-style lambdas in files we touched: `~ifelse(. == -9999, ...)` → `\(x) ifelse(x == -9999, ...)` in `R/get_vaa.R`; `~gsub("_rescaled", "", .)` and `~.x*.data$split_area_prop` → `\(x) ...` in `R/rescale_catchments.R`
+- [x] One `.` placeholder in a magrittr pipe (`get_hydro.R` site-distance block) rewritten without the placeholder so the native pipe works without needing R 4.2's `_`
+- [x] `R CMD check --no-tests` clean: 0 errors, 0 warnings, 1 pre-existing fixture-path note (from milestone 3a httptest2 fixtures)
 
 ### 3d. Caller hardening (web-service robustness)
 

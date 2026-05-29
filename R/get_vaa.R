@@ -386,7 +386,7 @@ get_catchment_characteristics <- function(varname, ids,
       # `att[, cols, drop = FALSE]` keeps the data.frame semantics it expects.
       att <- as.data.frame(collect(sub))
 
-      att <- dplyr::mutate_all(att, ~ifelse(. == -9999, NA, .))
+      att <- dplyr::mutate_all(att, \(x) ifelse(x == -9999, NA, x))
 
       has_pct_nodata <- "percent_nodata" %in% names(att)
 

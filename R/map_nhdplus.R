@@ -90,22 +90,22 @@ map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 
   ########################
 
-  m <- leaflet::leaflet()  %>%
-    leaflet::addProviderTiles("Esri.NatGeoWorldMap", group = "Terrain")  %>%
-    leaflet::addProviderTiles("CartoDB.Positron", group = "Grayscale")  %>%
-    leaflet::addProviderTiles("Esri.WorldImagery", group = "Imagery")  %>%
-    leaflet::addScaleBar("bottomleft")  %>%
+  m <- leaflet::leaflet()  |>
+    leaflet::addProviderTiles("Esri.NatGeoWorldMap", group = "Terrain")  |>
+    leaflet::addProviderTiles("CartoDB.Positron", group = "Grayscale")  |>
+    leaflet::addProviderTiles("Esri.WorldImagery", group = "Imagery")  |>
+    leaflet::addScaleBar("bottomleft")  |>
     leaflet::addMiniMap(
       toggleDisplay = TRUE,
       minimized = TRUE
-    )  %>%
+    )  |>
     leaflet::addMeasure(
       position = "bottomleft",
       primaryLengthUnit = "feet",
       primaryAreaUnit = "sqmiles",
       activeColor = "red",
       completedColor = "green"
-    )  %>%
+    )  |>
     leaflet::fitBounds(lng1 = pd$plot_bbox[1,1], lng2 = pd$plot_bbox[1,2],
                        lat1 = pd$plot_bbox[2,1], lat2 = pd$plot_bbox[2,2])
 
@@ -178,7 +178,7 @@ map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                                    stroke = FALSE,
                                    radius = ~cex*5,
                                    group = "outlets"
-                             ) %>%
+                             ) |>
       leaflet::addLegend(position = 'topright',
                 colors = pal(unique(outs$type)), labels = unique(outs$type),
                 title = "Outlet Type", opacity = .7

@@ -22,9 +22,9 @@ test_that("get_nhdplus_byid", {
 })
 
 test_that("get_nhdplus_bybox", {
-  bbox <- pt_data %>%
-    sf::st_transform(4326) %>%
-    sf::st_bbox() %>%
+  bbox <- pt_data |>
+    sf::st_transform(4326) |>
+    sf::st_bbox() |>
     sf::st_as_sfc()
 
   expect_error(hydrogeofetch:::get_nhdplus_bybox(bbox, "borked"),

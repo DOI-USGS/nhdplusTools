@@ -86,9 +86,9 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
 
     file_list <- tryCatch({
       read_xml(paste0(bucket, file_list_snip,
-                      prefix, hu02)) %>%
-        xml_ns_strip() %>%
-        xml_find_all(xpath = "//Key") %>%
+                      prefix, hu02)) |>
+        xml_ns_strip() |>
+        xml_find_all(xpath = "//Key") |>
         xml_text()
     }, error= function(e) {
       NULL

@@ -108,8 +108,8 @@ matched <- cbind(indexes,
                  dplyr::select(sf::st_drop_geometry(gages), 
                                REACHCODE_ref = REACHCODE, 
                                COMID_ref = FLComID, 
-                               REACH_meas_ref = Measure)) %>%
-  dplyr::filter(REACHCODE == REACHCODE_ref) %>%
+                               REACH_meas_ref = Measure)) |>
+  dplyr::filter(REACHCODE == REACHCODE_ref) |>
   dplyr::mutate(REACH_meas_diff = REACH_meas - REACH_meas_ref)
 
 hist(matched$REACH_meas_diff, breaks = 100, 
@@ -150,8 +150,8 @@ matched <- cbind(indexes,
                  dplyr::select(sf::st_set_geometry(gages, NULL), 
                                REACHCODE_ref = REACHCODE, 
                                COMID_ref = FLComID, 
-                               REACH_meas_ref = Measure)) %>%
-  dplyr::filter(REACHCODE == REACHCODE_ref) %>%
+                               REACH_meas_ref = Measure)) |>
+  dplyr::filter(REACHCODE == REACHCODE_ref) |>
   dplyr::mutate(REACH_meas_diff = REACH_meas - REACH_meas_ref)
 
 hist(matched$REACH_meas_diff, breaks = 100, 
@@ -219,8 +219,8 @@ This next block of code loads the NHDPlus Waterbody layer and creates an interac
 ```{r waterbodies}
 waterbody <- sf::read_sf(nhdplus_path(), "NHDWaterbody")
 
-gages <- sf::st_drop_geometry(gages) %>%
-  dplyr::filter(!is.na(LonSite)) %>%
+gages <- sf::st_drop_geometry(gages) |>
+  dplyr::filter(!is.na(LonSite)) |>
   sf::st_as_sf(coords = c("LonSite", "LatSite"), crs = 4326)
 
 plot(sf::st_geometry(sf::st_zm(flowlines)))

@@ -3,15 +3,15 @@
 # area = AOI::aoi_get("Eureka, Montana")
 # st_as_text(area$geometry)
 area = data.frame(loc = "eurika", geometry =
-        "POLYGON ((-115.0631 48.86286, -115.0345 48.86286, -115.0345 48.88706, -115.0631 48.88706, -115.0631 48.86286))") %>%
+        "POLYGON ((-115.0631 48.86286, -115.0345 48.86286, -115.0345 48.88706, -115.0631 48.88706, -115.0631 48.86286))") |>
 sf::st_as_sf(wkt = "geometry", crs = 4326)
 
 # pt = AOI::geocode("Eureka, Montana", pt = TRUE)
 # st_as_text(pt$geometry)
-pt = data.frame(loc = "eurika", geometry = "POINT (-115.0535 48.87996)") %>%
+pt = data.frame(loc = "eurika", geometry = "POINT (-115.0535 48.87996)") |>
   sf::st_as_sf(wkt = "geometry", crs = 4326)
 
-pt2 = data.frame(loc = "ucsb", geometry = "POINT (-119.8458 34.4146)") %>%
+pt2 = data.frame(loc = "ucsb", geometry = "POINT (-119.8458 34.4146)") |>
   sf::st_as_sf(wkt = "geometry", crs = 4326)
 
 # ==============================================================================
@@ -78,7 +78,7 @@ test_that("huc", {
   HUC12id = get_huc(id = "170101010306", type = "huc12_nhdplusv2")
   expect_identical(ptHUC12$huc_12, HUC12id$huc_12)
 
-  HUC12id2 = get_huc(id = areaHUC12$huc_12, type = "huc12_nhdplusv2") %>%
+  HUC12id2 = get_huc(id = areaHUC12$huc_12, type = "huc12_nhdplusv2") |>
     sf::st_transform(sf::st_crs(area))
 
   expect_identical(HUC12id2$geometry, areaHUC12$geometry)

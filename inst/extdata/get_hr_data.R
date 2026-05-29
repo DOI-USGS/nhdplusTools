@@ -46,10 +46,10 @@ outlet <- 15000500005634
 ut <- get_UT(hr_fline, outlet)
 
 hr_fline <- filter(hr_fline, COMID %in% ut)
-clipper <- st_bbox(hr_fline) %>%
-  st_as_sfc() %>%
-  st_transform(5070) %>%
-  st_buffer(1000) %>%
+clipper <- st_bbox(hr_fline) |>
+  st_as_sfc() |>
+  st_transform(5070) |>
+  st_buffer(1000) |>
   st_transform(st_crs(hr_fline))
 
 out <- "03_sub.gpkg"
@@ -68,9 +68,9 @@ for(l in st_layers("0303.gpkg")$name) {
     dbDisconnect(con)
   } else {
     if(!st_geometry_type(l_data)[1] == "POINT") {
-      l_data <- st_zm(l_data) %>%
-        st_transform(5070) %>%
-        rmapshaper::ms_simplify(keep = 0.5) %>% #  st_simplify(dTolerance = 10)
+      l_data <- st_zm(l_data) |>
+        st_transform(5070) |>
+        rmapshaper::ms_simplify(keep = 0.5) |> #  st_simplify(dTolerance = 10)
         st_transform(st_crs(l_data))
     }
     write_sf(l_data, out, l)

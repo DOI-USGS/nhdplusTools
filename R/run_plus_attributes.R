@@ -152,7 +152,7 @@ add_plus_network_attributes <- function(net, override = 5,
 
   lp <- combine_networks(lp)
 
-  net <- net %>%
+  net <- net |>
     left_join(select(lp,
                      comid = "ID", terminalpa = "terminalpath",
                      hydroseq = "topo_sort", levelpathi = "levelpath"),
@@ -162,32 +162,32 @@ add_plus_network_attributes <- function(net, override = 5,
 
   pathlength <- get_pathlength(in_pathlength)
 
-  pathlength <- distinct(pathlength) %>%
+  pathlength <- distinct(pathlength) |>
     filter(!is.na(.data$pathlength))
 
   net <- left_join(net,
-                       select(pathlength,
-                              comid = "ID",
-                              "pathlength"),
-                       by = "comid")
+                   select(pathlength,
+                          comid = "ID",
+                          "pathlength"),
+                   by = "comid")
 
-  dn_lp <- net %>%
+  dn_lp <- net |>
     left_join(select(net,
                      "comid", dnlevelpat = "levelpathi"),
-              by = c("tocomid" = "comid"), ) %>%
-    filter(!is.na(.data$dnlevelpat)) %>%
+              by = c("tocomid" = "comid")) |>
+    filter(!is.na(.data$dnlevelpat)) |>
     select("comid", "dnlevelpat")
 
-  net <- left_join(net, dn_lp, by = "comid") %>%
+  net <- left_join(net, dn_lp, by = "comid") |>
     mutate(dnlevelpat = ifelse(is.na(.data$dnlevelpat), 0, .data$dnlevelpat))
 
-  dn_hs <- net %>%
+  dn_hs <- net |>
     left_join(select(net,
                      "comid", dnhydroseq = "hydroseq"),
-              by = c("tocomid" = "comid")) %>%
+              by = c("tocomid" = "comid")) |>
     select("comid", "dnhydroseq")
 
-  net <- left_join(net, dn_hs, by = "comid") %>%
+  net <- left_join(net, dn_hs, by = "comid") |>
     mutate(dnhydroseq = ifelse(is.na(.data$dnhydroseq), 0, .data$dnhydroseq))
 
   if("areasqkm" %in% names(net)) {
@@ -196,9 +196,9 @@ add_plus_network_attributes <- function(net, override = 5,
     )
   }
 
-  net <- net %>%
-    group_by(.data$terminalpa) %>%
-    mutate(terminalfl = ifelse(.data$hydroseq == min(.data$hydroseq), 1, 0)) %>%
+  net <- net |>
+    group_by(.data$terminalpa) |>
+    mutate(terminalfl = ifelse(.data$hydroseq == min(.data$hydroseq), 1, 0)) |>
     ungroup()
 
   if(add_sf) {

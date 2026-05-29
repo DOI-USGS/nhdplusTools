@@ -100,12 +100,12 @@ get_streamlevel <- function(x) {
 #' source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 #' hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 #'
-#' fl <-  select(hr_flowline, COMID, AreaSqKM) %>%
+#' fl <-  select(hr_flowline, COMID, AreaSqKM) |>
 #'   right_join(prepare_nhdplus(hr_flowline, 0, 0,
 #'                              purge_non_dendritic = FALSE,
 #'                              warn = FALSE),
-#'              by = "COMID") %>%
-#'   sf::st_sf() %>%
+#'              by = "COMID") |>
+#'   sf::st_sf() |>
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 #'
 #' fl$nameID = ""
@@ -132,11 +132,11 @@ get_streamlevel <- function(x) {
 #'
 #' source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 #'
-#' fl <- select(walker_flowline, COMID, AreaSqKM) %>%
+#' fl <- select(walker_flowline, COMID, AreaSqKM) |>
 #'   right_join(prepare_nhdplus(walker_flowline, 0, 0,
 #'                             purge_non_dendritic = FALSE, warn = FALSE),
-#'             by = "COMID") %>%
-#'   sf::st_sf() %>%
+#'             by = "COMID") |>
+#'   sf::st_sf() |>
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 #'
 #' fl$nameID = ""

@@ -170,8 +170,8 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
 #' @param aoi character area of interest, passed through to
 #' \link{get_catchment_characteristics} when \code{catchment_characteristics}
 #' is not provided. See \link{get_catchment_characteristics} for details.
-#' @importFrom dplyr left_join rename_with mutate across group_by summarize ungroup distinct starts_with any_of
-#' @importFrom tidyr pivot_wider contains
+#' @importFrom dplyr left_join rename_with mutate across group_by summarize ungroup distinct starts_with any_of contains
+#' @importFrom data.table as.data.table dcast
 #' @export
 #'
 rescale_catchment_characteristics <- function(vars, lookup_table,
@@ -217,9 +217,10 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
   var_names <- unique(catchment_characteristics$characteristic_id)
 
   # pivot to wide format
-  catchment_characteristics <- pivot_wider(catchment_characteristics,
-                                           names_from = "characteristic_id",
-                                           values_from = c("characteristic_value", "percent_nodata"))
+  catchment_characteristics <- as.data.frame(dcast(
+    as.data.table(catchment_characteristics),
+    comid ~ characteristic_id,
+    value.var = c("characteristic_value", "percent_nodata")))
   catchment_characteristics <- rename_with(.data = catchment_characteristics,
                                            .fn = ~gsub("characteristic_value_", "", .x, fixed = TRUE))
 

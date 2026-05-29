@@ -141,11 +141,10 @@ get_index_ids <- function(x,
 
   names(out) <- c("id", "toid")
 
-  out <- make_index_ids(out)
+  out <- make_index_ids(out)$to_list
 
-  out <- tidyr::unnest(out$to_list, "toindid")
-
-  out <- select(out, "indid", "toindid")
+  out <- data.frame(indid = rep(out$indid, lengths(out$toindid)),
+                    toindid = unlist(out$toindid))
 
   names(out) <- outnames
 
@@ -156,12 +155,11 @@ get_index_ids <- function(x,
 #' @noRd
 #' @param x data.frame with ID and toID
 #' @param rev logical if TRUE (default) top down
-#' @importFrom tidyr replace_na
 topo_sort_network <- function(x, reverse = TRUE) {
 
   if(any(x$ID == 0)) stop("ID 0 must not be present. It is used as the outlet ID.")
 
-  x[["toID"]] <- replace_na(x[["toID"]], 0)
+  x[["toID"]][is.na(x[["toID"]])] <- 0
 
   x <- get_sorted(x[, c("ID", "toID", names(x)[!names(x) %in% c("ID", "toID")])])
 

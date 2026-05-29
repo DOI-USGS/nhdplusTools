@@ -18,7 +18,6 @@
 #' rather than recreated.
 #' @param status logical should progress be printed?
 #' @return data.frame with added attributes
-#' @importFrom tidyr replace_na
 #' @export
 #' @examples
 #'
@@ -62,7 +61,7 @@ add_plus_network_attributes <- function(net, override = 5,
     on.exit(pbapply::pboptions(type = old_opt$type))
   }
 
-  net[["tocomid"]] <- replace_na(net[["tocomid"]], 0)
+  net[["tocomid"]][is.na(net[["tocomid"]])] <- 0
 
   rename_arb <- FALSE
 

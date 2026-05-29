@@ -163,6 +163,9 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
     suppressWarnings({
       if(!add) {
         tryCatch({
+          check_pkg("maptiles")
+          check_pkg("mapsf")
+
           bb <- if(!is.null(pd$plot_bbox)) {
             plot_bbox_to_3857(pd$plot_bbox)
           } else {

@@ -100,13 +100,18 @@ Clean up legacy dependencies and bring the codebase to a consistent modern style
 - [x] Binary downloads (GeoPackage etc.) stay as live-only tests behind `skip_on_cran()`
 - [x] `hgf_json` / `hgf_sf` wrappers at the HTTP boundary catch errors (including TLS failures) and return `NULL` with a warning instead of propagating
 
-### 3b. Dependency cleanup
+### 3b. Dependency cleanup ✓
 
 - [x] fst removed (commit `1a43313`)
-- [ ] Drop R.utils (one `gunzip()` call → base R)
-- [ ] Drop tidyr (one `unnest()` call)
-- [ ] Move maptiles, mapsf to Suggests
-- [ ] arrow: confirm wired up for VAA caching now that fst is gone; if still unused, drop the import
+- [x] R.utils dropped — single `gunzip(remove = FALSE, skip = TRUE)` call replaced by a local `gunzip_keep()` helper using base-R `gzfile()`/`readBin()`/`writeBin()`
+- [x] tidyr dropped — four call sites swapped:
+  - `tidyr::unnest()` in `get_index_ids` → base-R `rep()` + `unlist()` against `make_index_ids()$to_list`
+  - two `replace_na()` calls (`topo_sort_network`, `add_plus_network_attributes`) → base-R `x[is.na(x)] <- 0`
+  - `pivot_wider()` in `rescale_catchment_characteristics` → `data.table::dcast`
+  - stale `tidyr::contains` import → dplyr re-export
+- [x] data.table added to Imports (replaces tidyr); arrow boundary in [get_vaa.R](R/get_vaa.R) hardened to call `as.data.frame()` on `collect()` / `read_parquet()` output so `[` keeps data.frame semantics when arrow's R metadata roundtrip falls back to data.table (the "Potentially unsafe or invalid elements ... externalptr" warning case)
+- [x] maptiles, mapsf moved to Suggests with `check_pkg()` guards at the basemap call in [plot_nhdplus.R](R/plot_nhdplus.R#L165)
+- [x] arrow confirmed wired up for VAA caching (`open_dataset`, `read_parquet` in `R/get_vaa.R`) — stays in Imports
 
 ### 3c. Code style
 

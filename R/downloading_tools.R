@@ -256,6 +256,25 @@ download_wbd <- function(outdir,
   })
 }
 
+#' @noRd
+#' @description gunzip a file in place. Leaves the .gz file intact. Skips if
+#' the destination already exists. Replaces R.utils::gunzip(remove = FALSE,
+#' skip = TRUE) so we don't carry R.utils as a dependency for one call.
+gunzip_keep <- function(file) {
+  out <- sub("\\.gz$", "", file)
+  if(file.exists(out)) return(invisible(out))
+  con_in <- gzfile(file, "rb")
+  on.exit(close(con_in), add = TRUE)
+  con_out <- file(out, "wb")
+  on.exit(close(con_out), add = TRUE)
+  repeat {
+    chunk <- readBin(con_in, what = "raw", n = 1e6)
+    if(length(chunk) == 0) break
+    writeBin(chunk, con_out)
+  }
+  invisible(out)
+}
+
 #' @title Download the seamless Reach File (RF1) Database
 #' @description This function downloads and decompresses staged RF1 data.
 #' See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.
@@ -280,7 +299,7 @@ download_rf1 <- function(outdir,
 
   message("Extracting data ...")
 
-  R.utils::gunzip(file, remove = FALSE, skip = TRUE)
+  gunzip_keep(file)
 
   path     <- list.files(outdir, full.names = TRUE)[!grepl("gz", list.files(outdir))]
   path     <- path[grepl("rf1", path)]

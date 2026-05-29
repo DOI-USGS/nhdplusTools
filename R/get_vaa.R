@@ -119,7 +119,9 @@ get_vaa <- function(atts = NULL,
 
     replace_names <- atts[atts %in% new_names & !atts %in% deprecated_names]
 
-    out <- arrow::read_parquet(path, col_select = include_names)
+    # as.data.frame strips any data.table class arrow may attach on metadata
+    # roundtrip failure, keeping the data.frame `[` semantics downstream.
+    out <- as.data.frame(arrow::read_parquet(path, col_select = include_names))
 
     new_comid <- arrow::read_parquet(updated_net_path, col_select = "comid")
 
@@ -127,8 +129,8 @@ get_vaa <- function(atts = NULL,
 
     cols_to_add <- replace_names[replace_names != "comid"]
     if(length(cols_to_add) > 0) {
-      out <- cbind(out, arrow::read_parquet(updated_net_path,
-                                            col_select = cols_to_add))
+      out <- cbind(out, as.data.frame(arrow::read_parquet(updated_net_path,
+                                                          col_select = cols_to_add)))
     }
 
     reorder <- match(get_vaa_names(updated_network), names(out))
@@ -139,7 +141,7 @@ get_vaa <- function(atts = NULL,
 
   } else {
 
-    return(arrow::read_parquet(path, col_select = c('comid', atts[atts != 'comid'])))
+    return(as.data.frame(arrow::read_parquet(path, col_select = c('comid', atts[atts != 'comid']))))
   }
 
 }
@@ -379,7 +381,10 @@ get_catchment_characteristics <- function(varname, ids,
       sub <- filter(select(ds, any_of(cols_to_select)),
                     .data$COMID %in% ids)
 
-      att <- collect(sub)
+      # as.data.frame strips the data.table class arrow may attach when its
+      # R metadata roundtrip fails (e.g. externalptr columns) so downstream
+      # `att[, cols, drop = FALSE]` keeps the data.frame semantics it expects.
+      att <- as.data.frame(collect(sub))
 
       att <- dplyr::mutate_all(att, ~ifelse(. == -9999, NA, .))
 

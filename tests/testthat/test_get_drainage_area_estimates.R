@@ -316,6 +316,86 @@ test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
   expect_s3_class(result$split_catchment, "sf")
 })
 
+test_that("resolve_comid_from_reachcode picks flowline by measure interval", {
+  vaa <- data.frame(
+    comid = c(101L, 102L, 103L, 999L),
+    reachcode = c("14070003001234", "14070003001234",
+      "14070003001234", "14070003009999"),
+    frommeas = c(0, 50, 80, 0),
+    tomeas = c(50, 80, 100, 100)
+  )
+
+  # measure in second interval
+  expect_equal(
+    hydrogeofetch:::resolve_comid_from_reachcode("14070003001234", 65, vaa),
+    102L
+  )
+  # measure on boundary -> first matching interval
+  expect_equal(
+    hydrogeofetch:::resolve_comid_from_reachcode("14070003001234", 50, vaa),
+    101L
+  )
+  # measure out of bounds (>100) -> closest interval boundary (comid 103, tomeas=100)
+  expect_equal(
+    hydrogeofetch:::resolve_comid_from_reachcode("14070003001234", 110, vaa),
+    103L
+  )
+  # missing reachcode -> error
+  expect_error(
+    hydrogeofetch:::resolve_comid_from_reachcode("00000000000000", 50, vaa),
+    "No flowlines found in VAA"
+  )
+})
+
+test_that("get_drainage_area_estimates accepts reachcode/measure in start", {
+  skip_if_no_integration()
+
+  # source the actual reachcode/measure from a one-time NLDI call
+  ref <- get_nldi_feature(
+    list(featureSource = "nwissite", featureID = "USGS-05406500")
+  )
+  ref_measure <- as.numeric(ref$measure)
+
+  # 1. override path: NLDI still called for COMID, reachcode/measure overridden
+  override_measure <- ref_measure - 5
+  start_ovr <- list(
+    featureSource = "nwissite", featureID = "USGS-05406500",
+    reachcode = ref$reachcode, measure = override_measure
+  )
+  res_ovr <- suppressWarnings(suppressMessages(
+    get_drainage_area_estimates(start_ovr, nhdplushr = FALSE)
+  ))
+  expect_equal(res_ovr$start_feature$measure, override_measure)
+  expect_equal(res_ovr$start_feature$reachcode, ref$reachcode)
+  expect_true(res_ovr$da_huc12_sqkm > 0)
+  expect_true(res_ovr$network_da_sqkm > 0)
+
+  # 2. no-NLDI path: only reachcode/measure provided; COMID resolved via OGC,
+  # start point derived from the flowline at the supplied measure
+  start_no_nldi <- list(
+    reachcode = ref$reachcode, measure = ref_measure
+  )
+  res_no_nldi <- suppressWarnings(suppressMessages(
+    get_drainage_area_estimates(start_no_nldi, nhdplushr = FALSE)
+  ))
+  expect_equal(as.integer(res_no_nldi$start_feature$comid),
+    as.integer(ref$comid))
+  expect_equal(res_no_nldi$start_feature$reachcode, ref$reachcode)
+  expect_equal(res_no_nldi$start_feature$measure, ref_measure)
+  expect_true(res_no_nldi$da_huc12_sqkm > 0)
+  expect_equal(res_no_nldi$network_da_sqkm, res_ovr$network_da_sqkm)
+
+  # derived start point should be a real POINT near the NLDI-reported location
+  geom <- sf::st_geometry(res_no_nldi$start_feature)
+  expect_s3_class(geom, "sfc_POINT")
+  expect_false(sf::st_is_empty(geom)[1])
+  dist_m <- as.numeric(sf::st_distance(
+    sf::st_transform(geom, 5070),
+    sf::st_transform(sf::st_geometry(ref), 5070)
+  ))
+  expect_lt(dist_m, 500)
+})
+
 test_that("get_drainage_area_estimates local_navigation smoke test", {
   skip_if_no_integration()
 

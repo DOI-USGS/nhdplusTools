@@ -130,9 +130,9 @@ Policy is set in CLAUDE.md and the `feedback_web_service_response_handling` memo
 - [ ] `discover_oafeat` / `get_oafeat` at [oafeat_tools.R:164-199](R/oafeat_tools.R#L164-L199): don't yet check for `NULL` from `mem_get_json` — `landing$links` on a NULL would error. Known concrete instance of the caller-hardening pass.
 - [ ] Full audit across all web-service callers for strict response-shape validation and clean empty/`NULL` returns on unexpected responses (HTML error pages, partial JSON, wrong content types, etc.).
 
-### 3e. Test infrastructure
+### 3e. Test infrastructure ✓
 
-- [ ] Re-enable `Config/testthat/parallel: true` (currently `false` at [DESCRIPTION:36](DESCRIPTION#L36)) and confirm `test_get_vaa.R` / `test_02_subset_extras.R` no longer segfault now that fst is removed.
+- [x] `Config/testthat/parallel: true` re-enabled at [DESCRIPTION:36](DESCRIPTION#L36). Full `devtools::test()` run completed clean — no R subprocess crashes, no test failures, only pre-existing warnings (tidyselect bare-variable deprecation in `arrow::read_parquet(col_select = include_names)` inside `R/get_vaa.R` — known, not parallel-related) and the two `skip_if(...)` skips from milestone 3a. Confirms fst removal resolved the parallel/fst+arrow segfault.
 
 ### 3f. Vignettes
 

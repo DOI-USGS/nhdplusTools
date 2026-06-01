@@ -33,7 +33,7 @@ Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, lwgeom, gifski, leaflet, h
 License: CC0
 Encoding: UTF-8
 VignetteBuilder: knitr
-Config/testthat/parallel: false
+Config/testthat/parallel: true
 Config/testthat/edition: 3
 LazyData: true
 LazyDataCompression: xz

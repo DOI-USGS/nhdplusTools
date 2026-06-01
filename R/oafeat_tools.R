@@ -164,11 +164,21 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
 discover_oafeat <- function(landing_url) {
 
   landing <- mem_get_json(landing_url)
+  if(is.null(landing)) {
+    warning("OGC API landing page unavailable at ", landing_url,
+            call. = FALSE)
+    return(NULL)
+  }
 
   collections <- landing$links |>
     filter_list_kvp("rel", "data", n = 1) |>
     extract("href") |>
     mem_get_json()
+  if(is.null(collections)) {
+    warning("OGC API collections endpoint unavailable from ", landing_url,
+            call. = FALSE)
+    return(NULL)
+  }
 
   collections_meta <- dplyr::bind_rows(
     lapply(collections$collections,
@@ -222,6 +232,8 @@ get_oafeat <- function(base,
                        skip_geometry = FALSE) {
 
   avail <- discover_oafeat(base)
+
+  if(is.null(avail)) return(NULL)
 
   if(is.null(type)) {
     warning("type is required, returning choices.")

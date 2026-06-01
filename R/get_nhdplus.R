@@ -19,7 +19,8 @@
 #' @param realization character. What realization to return.
 #' Default is flowline and options include: outlet, flowline, catchment,
 #' and all
-#' @return sfc a single, or list, of simple feature objects
+#' @return sf single, or named list of, simple feature objects. \code{NULL} if
+#' no realization succeeded (e.g. degraded service).
 #' @examples
 #' \donttest{
 #'  point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)
@@ -127,6 +128,8 @@ get_nhdplus <- function(AOI = NULL,
   geoms = tc(geoms)
 
   geoms = geoms[names(geoms) %in% realization]
+
+  if(length(geoms) == 0) return(NULL)
 
   if(length(geoms) == 1){ geoms = geoms[[1]]}
 

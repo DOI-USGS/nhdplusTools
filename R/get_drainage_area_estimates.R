@@ -701,6 +701,11 @@ fetch_upstream_network <- function(outlet_comids, vaa = NULL,
       skip_geometry = TRUE
     )
 
+    if(is.null(all_net) || nrow(all_net) == 0)
+      stop("Could not fetch flowline attributes for upstream network ",
+        "(NHDPlusV2 OGC API unavailable). Try again or supply local data.",
+        call. = FALSE)
+
     if(local_outlets)
       huc12_outlets <- huc12_outlets[huc12_outlets$comid %in% upstream_comids, ]
   }
@@ -1679,6 +1684,12 @@ compute_gap_area <- function(outlet_huc, all_net, nav_net = all_net,
       extra_cat <- get_nhdplus(
         comid = extra_net$comid, realization = "catchment"
       )
+      if(is.null(extra_cat)) {
+        warning("Could not fetch extra catchment geometries ",
+          "(NHDPlusV2 OGC API unavailable); scalar estimates still ",
+          "valid but catchment polygons unavailable.", call. = FALSE)
+        extra_cat <- st_sf(geometry = st_sfc(crs = 5070))
+      }
     } else {
       extra_cat <- gap_catchments[
         gap_catchments$comid %in% extra_net$comid, ]

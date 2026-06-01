@@ -45,7 +45,8 @@ all columns are returned.}
 return a plain data.frame. Default FALSE.}
 }
 \value{
-sfc a single, or list, of simple feature objects
+sf single, or named list of, simple feature objects. \code{NULL} if
+no realization succeeded (e.g. degraded service).
 }
 \description{
 Subsets NHDPlusV2 features by location (POINT), area (POLYGON),

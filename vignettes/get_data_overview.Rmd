@@ -318,19 +318,22 @@ The Watershed Boundary Dataset contains hydrologic units that are used as catalo
 ```{r}
 
 wbd_dir <- file.path(hydrogeofetch_data_dir(), "wbd_access_demo")
-  
+
 wbd_out <- download_wbd(wbd_dir)
 
-# zip::unzip doesn't always work
-if(length(wbd_out == 0)) {
-  f <- list.files(wbd_dir, pattern = ".zip", full.names = TRUE)  
-  
-  utils::unzip(f, exdir = wbd_dir)
+# zip::unzip in download_wbd() doesn't always work -- fall back to utils::unzip
+if(length(wbd_out) == 0) {
+  f <- list.files(wbd_dir, pattern = ".zip", full.names = TRUE)
+  if(length(f) > 0) utils::unzip(f, exdir = wbd_dir)
+  wbd_out <- list.files(wbd_dir, pattern = "\\.gdb$",
+                        full.names = TRUE, include.dirs = TRUE)
 }
 
-wbd_gdb <- list.files(wbd_dir, pattern = ".gdb", full.names = TRUE)
-
-sf::st_layers(wbd_gdb)
+if(length(wbd_out) > 0) {
+  sf::st_layers(wbd_out[1])
+} else {
+  message("WBD .gdb not available -- service may be unavailable.")
+}
 
 ```
 

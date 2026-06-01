@@ -124,7 +124,7 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
           unlink(out_file)
         }
 
-        hgf_download(url, out_file)
+        if(is.null(hgf_download(url, out_file))) return(NULL)
 
         tryCatch({zip::unzip(out_file, exdir = out[length(out)])},
                  error = function(e) {
@@ -183,7 +183,7 @@ download_nhdplusv2 <- function(outdir,
   file <- file.path(outdir, basename(url))
   if(!file.exists(file)) {
     message("Downloading ", basename(url))
-    hgf_download(url, file, progress)
+    if(is.null(hgf_download(url, file, progress))) return(NULL)
   }
 
   if(!any(grepl("gdb", list.dirs(outdir)))) {
@@ -237,7 +237,7 @@ download_wbd <- function(outdir,
   file <- file.path(outdir, basename(url))
   if(!file.exists(file)) {
     message("Downloading ", basename(url))
-    hgf_download(url, file, progress)
+    if(is.null(hgf_download(url, file, progress))) return(NULL)
   }
 
   message("Extracting data ...")
@@ -294,7 +294,7 @@ download_rf1 <- function(outdir,
   file <- file.path(outdir, basename(url))
   if(!file.exists(file)) {
     message("Downloading ", basename(url))
-    hgf_download(url, file, progress)
+    if(is.null(hgf_download(url, file, progress))) return(NULL)
   }
 
   message("Extracting data ...")
@@ -392,10 +392,16 @@ hgf_sf <- function(url, body = NULL, content_type = NULL, encode = NULL) {
 
 #' @noRd
 hgf_download <- function(url, path, progress = TRUE) {
-  req <- build_hgf_req(url)
-  if(progress && interactive()) req <- httr2::req_progress(req)
-  httr2::req_perform(req, path = path)
-  invisible(path)
+  tryCatch({
+    req <- build_hgf_req(url)
+    if(progress && interactive()) req <- httr2::req_progress(req)
+    httr2::req_perform(req, path = path)
+    invisible(path)
+  }, error = function(e) {
+    warning("Failed to download from ", url, ": ", conditionMessage(e),
+            call. = FALSE)
+    NULL
+  })
 }
 
 #' @noRd

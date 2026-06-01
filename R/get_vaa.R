@@ -185,7 +185,7 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 
     dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
 
-    hgf_download(url, path)
+    if(is.null(hgf_download(url, path))) return(NULL)
   }
   # return file path
   return(path)

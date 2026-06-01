@@ -59,8 +59,12 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
                     "&properties=featureid&skipGeometry=true")
 
       d <- hgf_json(utils::URLencode(URL))
+      if(is.null(d)) return(NULL)
 
-      as.integer(d$features$properties$featureid)
+      featureid <- d$features$properties$featureid
+      if(is.null(featureid) || length(featureid) == 0) return(NULL)
+
+      as.integer(featureid)
 
     }, error = function(e) NULL)
 
@@ -68,6 +72,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
   } else if (!is.null(nldi_feature)) {
 
     nldi <- get_nldi_feature(nldi_feature)
+    if(is.null(nldi)) return(NULL)
 
     return(as.integer(nldi$comid))
 

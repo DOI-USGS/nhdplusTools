@@ -129,6 +129,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
                      post_body)
     }
 
+    all_ids <- NULL
     tryCatch({
       resp <- hgf_json(URL, body = post_body, encode = "form",
                         simplifyVector = FALSE)
@@ -136,7 +137,6 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 
     }, error = function(e) {
       warning("Something went wrong trying to access a service.")
-      out <- NULL
     })
 
     length_ids <- length(all_ids)

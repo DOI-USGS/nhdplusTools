@@ -127,8 +127,12 @@ Policy is set in CLAUDE.md and the `feedback_web_service_response_handling` memo
 
 - [x] `test_01_get_nldi.R get_nldi_index()` flakiness — resolved by httptest2 mocking (the `skip_if(is.null(...))` carryover at [test_01_get_nldi.R:212](tests/testthat/test_01_get_nldi.R#L212) is a different `xs` test gated by integration skips)
 - [x] `get_geoconnex_reference` TLS crash at the HTTP boundary — `hgf_sf`/`hgf_json` now warn + return `NULL` instead of crashing
-- [ ] `discover_oafeat` / `get_oafeat` at [oafeat_tools.R:164-199](R/oafeat_tools.R#L164-L199): don't yet check for `NULL` from `mem_get_json` — `landing$links` on a NULL would error. Known concrete instance of the caller-hardening pass.
-- [ ] Full audit across all web-service callers for strict response-shape validation and clean empty/`NULL` returns on unexpected responses (HTML error pages, partial JSON, wrong content types, etc.).
+- [x] `discover_oafeat` / `get_oafeat` at [oafeat_tools.R:164-199](R/oafeat_tools.R#L164-L199) — both `mem_get_json` returns are now `NULL`-checked with a warning + early return; `get_oafeat` short-circuits on `NULL avail` instead of falling through to a misleading "Type must be in available ids: ." `stop()`.
+- [x] Methodical audit of downstream callers complete. Concrete crash sites and shape-inconsistencies fixed:
+  - `hgf_download` ([downloading_tools.R:394-405](R/downloading_tools.R#L394-L405)) was the only HTTP-boundary helper without a tryCatch — now matches `hgf_json`/`hgf_sf` (warn + `NULL` on transport failure). Callers at [downloading_tools.R:127,186,240](R/downloading_tools.R#L127) and [get_vaa.R:188](R/get_vaa.R#L188) now guard with `if(is.null(hgf_download(...))) return(NULL)` so the next-step unzip/7z/`read_sf` doesn't run on a missing file. The [get_vaa.R:275](R/get_vaa.R#L275) site already has an enclosing `tryCatch` that converts the failure cleanly.
+  - `query_usgs_arcrest` ([arcrest_tools.R:132](R/arcrest_tools.R#L132)) — `all_ids` is now declared `NULL` before the `tryCatch` so a future change to `hgf_json` that re-introduces throwing can't leave the variable unbound. Inert `out <- NULL` in the handler removed.
+  - `discover_nhdplus_id` ([discover_nhdplus.R:54-77](R/discover_nhdplus.R#L54-L77)) — failure mode normalized from `integer(0)` (via `as.integer(NULL)`) to explicit `NULL`. Caller `is.null()` checks at [get_nhdplus.R:65](R/get_nhdplus.R#L65) and elsewhere now actually catch degraded service.
+  - `extract_comid_nwis` ([get_nhdplus.R:145-153](R/get_nhdplus.R#L145-L153)) — `hgf_json` returning `NULL` no longer silently disappears into the caller's `unlist`; now warns with the NWIS id so failed lookups are visible. (Memoise caching of `NULL` accepted as-is — short timeout makes natural re-attempt cheap.)
 
 ### 3e. Test infrastructure ✓
 

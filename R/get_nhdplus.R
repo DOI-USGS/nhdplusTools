@@ -88,7 +88,7 @@ get_nhdplus <- function(AOI = NULL,
   geoms = list()
 
   if(!is.null(nwis)){
-    comid = c(unlist(lapply(nwis, extact_comid_nwis)), comid)
+    comid = c(unlist(lapply(nwis, extract_comid_nwis)), comid)
   }
 
   if("catchment" %in% realization){
@@ -142,8 +142,12 @@ get_nhdplus <- function(AOI = NULL,
 #' @noRd
 #' @importFrom jsonlite fromJSON
 
-extact_comid_nwis <- memoise::memoise(function(nwis){
+extract_comid_nwis <- memoise::memoise(function(nwis){
   url <- paste0(get_nldi_url(), "/linked-data/nwissite/USGS-", nwis)
   f.comid <- hgf_json(url)
+  if(is.null(f.comid)) {
+    warning("NWIS lookup failed for USGS-", nwis, call. = FALSE)
+    return(NULL)
+  }
   f.comid$features$properties$comid
 })

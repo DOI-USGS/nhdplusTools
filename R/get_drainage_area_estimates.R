@@ -23,7 +23,15 @@
 #'   the \code{ncontrb_a} (non-contributing acres) attribute on HUC12 features.
 #'
 #' @param start list with \code{featureSource} and \code{featureID} compatible
-#'   with \code{\link{get_nldi_feature}}.
+#'   with \code{\link{get_nldi_feature}}. May also include optional
+#'   \code{reachcode} and \code{measure} fields; when present these override the
+#'   NLDI-supplied values used to position the outlet-catchment split point,
+#'   without affecting upstream network navigation. NLDI can be bypassed
+#'   entirely by passing only \code{reachcode} and \code{measure} (no
+#'   \code{featureSource}/\code{featureID}); in that case the start COMID is
+#'   resolved from the reachcode via the VAA when \code{local_navigation = TRUE},
+#'   otherwise via the NHD OGC API, and the start point geometry is computed
+#'   from the flowline at the supplied measure.
 #' @param catchments logical. If TRUE, fetch and return NHDPlusV2 catchment
 #'   polygons for the full upstream network. Default FALSE.
 #' @param nhdplushr logical. If TRUE (the default), compute a drainage area
@@ -357,10 +365,43 @@ resolve_start_feature <- function(start, vaa = NULL,
     message("Found ", length(outlet_comids), " outlets for waterbody")
     start_feature <- wb
 
+  } else if(is.list(start) && !is.null(start$reachcode) &&
+             !is.null(start$measure) &&
+             is.null(start$featureSource) && is.null(start$featureID)) {
+    message("Resolving start COMID from reachcode/measure ",
+      "(bypassing NLDI)...")
+    measure <- as.numeric(start$measure)
+    comid <- resolve_comid_from_reachcode(start$reachcode, measure, vaa)
+    message("  Resolved COMID = ", comid)
+
+    fl <- get_nhdplus(comid = comid, realization = "flowline")
+    if(is.null(fl) || nrow(fl) == 0)
+      stop("Could not fetch flowline geometry for COMID ", comid)
+    indexes <- data.frame(
+      COMID = comid,
+      REACHCODE = start$reachcode,
+      REACHCODE_measure = measure,
+      offset = 0
+    )
+    start_point <- get_hydro_location(indexes, dplyr::rename(fl, id = "comid"))
+
+    start_feature <- sf::st_sf(
+      comid = comid,
+      reachcode = start$reachcode,
+      measure = measure,
+      geometry = sf::st_sfc(start_point, crs = sf::st_crs(fl))
+    )
+    outlet_comids <- comid
+
   } else {
     message("Resolving start feature via NLDI...")
-    start_feature <- get_nldi_feature(start)
+    start_feature <- get_nldi_feature(start[c("featureSource", "featureID")])
     outlet_comids <- start_feature$comid
+
+    if(!is.null(start$reachcode))
+      start_feature$reachcode <- start$reachcode
+    if(!is.null(start$measure))
+      start_feature$measure <- as.numeric(start$measure)
   }
 
   if(length(outlet_comids) == 0 || all(is.na(outlet_comids)))
@@ -368,6 +409,55 @@ resolve_start_feature <- function(start, vaa = NULL,
       "Check that the input resolves to a valid NHDPlus feature.")
 
   list(start_feature = start_feature, outlet_comids = outlet_comids)
+}
+
+#' Resolve a COMID from a reachcode + measure
+#'
+#' Used by \code{resolve_start_feature} when the caller bypasses NLDI by passing
+#' a reachcode/measure directly in \code{start}. A reachcode can contain
+#' multiple flowlines; the one whose \code{[frommeas, tomeas]} interval covers
+#' \code{measure} is selected. If \code{measure} is outside every interval, the
+#' flowline whose interval boundary is closest is chosen.
+#'
+#' @param reachcode character. NHDPlusV2 reachcode (14-digit string).
+#' @param measure numeric. Reach measure 0-100.
+#' @param vaa data.frame or NULL. NHDPlusV2 VAA table with \code{comid},
+#'   \code{reachcode}, \code{frommeas}, \code{tomeas} columns. When NULL, the
+#'   USGS NHD OGC API is queried by reachcode.
+#' @return integer COMID.
+#' @noRd
+resolve_comid_from_reachcode <- function(reachcode, measure, vaa = NULL) {
+  measure <- as.numeric(measure)
+
+  if(!is.null(vaa)) {
+    rows <- vaa[vaa$reachcode == reachcode,
+      c("comid", "frommeas", "tomeas")]
+    if(nrow(rows) == 0)
+      stop("No flowlines found in VAA for reachcode ", reachcode)
+  } else {
+    base <- get("usgs_water_root", envir = nhdplusTools_env)
+    out <- get_oafeat(
+      base = base, AOI = NULL, type = "nhdflowline_network",
+      filter = paste0("reachcode%20=%20%27", reachcode, "%27"),
+      properties = c("comid", "frommeas", "tomeas"),
+      skip_geometry = TRUE, status = FALSE
+    )
+    if(is.null(out) || nrow(out) == 0)
+      stop("No flowlines found via OGC API for reachcode ", reachcode)
+    rows <- data.frame(
+      comid = as.integer(out$comid),
+      frommeas = as.numeric(out$frommeas),
+      tomeas = as.numeric(out$tomeas)
+    )
+  }
+
+  in_bounds <- measure >= rows$frommeas & measure <= rows$tomeas
+  if(any(in_bounds))
+    return(as.integer(rows$comid[which(in_bounds)[1]]))
+
+  dist <- pmin(abs(measure - rows$frommeas),
+    abs(measure - rows$tomeas))
+  as.integer(rows$comid[which.min(dist)])
 }
 
 #' Find the HUC12 containing a point

@@ -19,7 +19,15 @@ get_drainage_area_estimates(
 }
 \arguments{
 \item{start}{list with \code{featureSource} and \code{featureID} compatible
-with \code{\link{get_nldi_feature}}.}
+with \code{\link{get_nldi_feature}}. May also include optional
+\code{reachcode} and \code{measure} fields; when present these override the
+NLDI-supplied values used to position the outlet-catchment split point,
+without affecting upstream network navigation. NLDI can be bypassed
+entirely by passing only \code{reachcode} and \code{measure} (no
+\code{featureSource}/\code{featureID}); in that case the start COMID is
+resolved from the reachcode via the VAA when \code{local_navigation = TRUE},
+otherwise via the NHD OGC API, and the start point geometry is computed
+from the flowline at the supplied measure.}
 
 \item{catchments}{logical. If TRUE, fetch and return NHDPlusV2 catchment
 polygons for the full upstream network. Default FALSE.}

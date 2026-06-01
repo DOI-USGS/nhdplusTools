@@ -327,28 +327,28 @@ test_that("resolve_comid_from_reachcode picks flowline by measure interval", {
 
   # measure in second interval
   expect_equal(
-    hydrogeofetch:::resolve_comid_from_reachcode("14070003001234", 65, vaa),
+    nhdplusTools:::resolve_comid_from_reachcode("14070003001234", 65, vaa),
     102L
   )
   # measure on boundary -> first matching interval
   expect_equal(
-    hydrogeofetch:::resolve_comid_from_reachcode("14070003001234", 50, vaa),
+    nhdplusTools:::resolve_comid_from_reachcode("14070003001234", 50, vaa),
     101L
   )
   # measure out of bounds (>100) -> closest interval boundary (comid 103, tomeas=100)
   expect_equal(
-    hydrogeofetch:::resolve_comid_from_reachcode("14070003001234", 110, vaa),
+    nhdplusTools:::resolve_comid_from_reachcode("14070003001234", 110, vaa),
     103L
   )
   # missing reachcode -> error
   expect_error(
-    hydrogeofetch:::resolve_comid_from_reachcode("00000000000000", 50, vaa),
+    nhdplusTools:::resolve_comid_from_reachcode("00000000000000", 50, vaa),
     "No flowlines found in VAA"
   )
 })
 
 test_that("get_drainage_area_estimates accepts reachcode/measure in start", {
-  skip_if_no_integration()
+  skip_on_cran()
 
   # source the actual reachcode/measure from a one-time NLDI call
   ref <- get_nldi_feature(

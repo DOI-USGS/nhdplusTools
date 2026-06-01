@@ -435,7 +435,7 @@ resolve_comid_from_reachcode <- function(reachcode, measure, vaa = NULL) {
     if(nrow(rows) == 0)
       stop("No flowlines found in VAA for reachcode ", reachcode)
   } else {
-    base <- get("usgs_water_root", envir = hydrogeofetch_env)
+    base <- get("usgs_water_root", envir = nhdplusTools_env)
     out <- get_oafeat(
       base = base, AOI = NULL, type = "nhdflowline_network",
       filter = paste0("reachcode%20=%20%27", reachcode, "%27"),

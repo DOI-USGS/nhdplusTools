@@ -268,7 +268,7 @@ nhd_fline <- sf::read_sf(nhd_gdb, "NHDFlowline")
 
 ```
 
-We'll wait to plot this up until after we've done some work with 3DHP. As of writing, the 3DHP is more or less the same as the NHD but in a new database schema. The `get_3dhp()` uses a web service to pull data for subsets much the same as the other `get_*` functions. See `vignette("get_3dhp_data.Rmd")` for more on how to work with 3DHP data.
+We'll wait to plot this up until after we've done some work with 3DHP. As of writing, the 3DHP is more or less the same as the NHD but in a new database schema. The `get_3dhp()` uses a web service to pull data for subsets much the same as the other `get_*` functions. See the [3DHP Data Access](get_3dhp_data.html) article for more on how to work with 3DHP data.
 
 ```{r}
 

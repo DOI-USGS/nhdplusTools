@@ -69,16 +69,23 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
     return(source)
   }
 
-  if(!type %in% source$user_call) {
+  exact_match <- type %in% source$user_call
+  # Allow a prefix to act as a virtual group, e.g. "hydrolocation" expands to
+  # all user_call entries of the form "hydrolocation - ...".
+  prefix_match <- !exact_match & startsWith(source$user_call, paste0(type, " - "))
+
+  if(!exact_match && !any(prefix_match)) {
     warning("\"", type, "\" not in `type` input. Must be one of: \n\t\"",
             paste(source$user_call, collapse = "\"\n\t\""), "\"")
     return(NULL)
   }
 
-  if(length(group_layers) > 0 &&
-     grepl(paste(sapply(group_layers, \(x) x$name),
-                 collapse = "|"),
-           type, ignore.case = TRUE)) {
+  if(any(prefix_match)) {
+    need_layers <- as.integer(source$layer[prefix_match])
+  } else if(length(group_layers) > 0 &&
+            grepl(paste(sapply(group_layers, \(x) x$name),
+                        collapse = "|"),
+                  type, ignore.case = TRUE)) {
     layer_id <- filter(source, .data$user_call == !!type)$layer
 
     group_layer <- group_layers[[sapply(group_layers, \(x) x$id == layer_id)]]

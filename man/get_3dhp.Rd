@@ -74,17 +74,17 @@ plot(sf::st_geometry(hydrolocation), col = "grey", pch = "+", add = TRUE) }
 
 # given mainstem ids from any source, can query for them in ids.
 
-CO <- get_3dhp(ids = "https://geoconnex.us/ref/mainstems/29559",
+SU <- get_3dhp(ids = "https://geoconnex.us/ref/mainstems/194408",
                type = "flowline")
 
-if(!is.null(CO))
-  plot(sf::st_geometry(CO), col = "blue")
+if(!is.null(SU))
+  plot(sf::st_geometry(SU), col = "blue")
 
-# get all the waterbodies along the CO river
-CO_wb <- get_3dhp(ids = unique(CO$waterbodyid3dhp), type = "waterbody")
+# get all the waterbodies along the Susquehanna river
+SU_wb <- get_3dhp(ids = unique(SU$waterbodyid3dhp), type = "waterbody")
 
-if(!is.null(CO_wb)) {
-plot(sf::st_geometry(CO_wb[grepl("Powell", CO_wb$gnisidlabel),]),
+if(!is.null(SU_wb)) {
+plot(sf::st_geometry(SU_wb[grepl("Otsego", SU_wb$gnisidlabel),]),
      col = "blue", border = "NA") }
 
 # given a workunitid, can query for features in that work unit

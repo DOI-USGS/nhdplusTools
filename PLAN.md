@@ -119,7 +119,7 @@ Clean up legacy dependencies and bring the codebase to a consistent modern style
 - [x] magrittr dropped from Imports; `@importFrom magrittr `%>%`` removed from `R/index_nhdplus.R`
 - [x] Modernized formula-style lambdas in files we touched: `~ifelse(. == -9999, ...)` → `\(x) ifelse(x == -9999, ...)` in `R/get_vaa.R`; `~gsub("_rescaled", "", .)` and `~.x*.data$split_area_prop` → `\(x) ...` in `R/rescale_catchments.R`
 - [x] One `.` placeholder in a magrittr pipe (`get_hydro.R` site-distance block) rewritten without the placeholder so the native pipe works without needing R 4.2's `_`
-- [x] `R CMD check --no-tests` clean: 0 errors, 0 warnings, 1 pre-existing fixture-path note (from milestone 3a httptest2 fixtures)
+- [x] `R CMD check --no-tests` clean: 0 errors, 0 warnings, 0 notes. The pre-existing httptest2 fixture-path NOTE (61 paths >100 chars under `tests/testthat/fixtures/`) was resolved by bundling the fixture tree as `tests/testthat/fixtures.tar.gz` (1.3 MB) and `.Rbuildignore`-ing the loose directory. [helper.R](tests/testthat/helper.R#L59) handles both modes transparently: when the loose tree is present (dev), it is used directly and the tarball is auto-regenerated whenever any fixture is newer than it (so re-record runs never need a manual repack); when the loose tree is absent (R CMD check / CRAN unpack of the source tarball), the tarball is extracted to `tempdir()` on first use. Built source tarball confirmed to have zero paths over 100 chars.
 
 ### 3d. Caller hardening (web-service robustness)
 

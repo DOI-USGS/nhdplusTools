@@ -31,3 +31,4 @@ dev
 inst/build
 vignettes/drainage_area_figures
 PLAN.md
+^tests/testthat/fixtures$

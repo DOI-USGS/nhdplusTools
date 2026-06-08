@@ -53,7 +53,7 @@ discover_nhdplus_id <- function(point = NULL, nldi_feature = NULL, raindrop = FA
 
     comid <- tryCatch({
 
-      URL <- paste0(get("usgs_water_root", envir = hydrogeofetch_env),
+      URL <- paste0(get_water_url(),
                     "collections/catchmentsp/items",
                     "?bbox=", coords[1], ",", coords[2], ",", coords[1], ",", coords[2],
                     "&properties=featureid&skipGeometry=true")

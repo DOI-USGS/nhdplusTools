@@ -266,7 +266,7 @@ assign("nhd_bucket", nhd_bucket, envir = hydrogeofetch_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = hydrogeofetch_env)
 assign("archive_nhdhr_file_list", archive_nhdhr_file_list, envir = hydrogeofetch_env)
 
-assign("nldi_tier", "prod",
+assign("api_water_tier", "prod",
        envir = hydrogeofetch_env)
 
 nhdplus_debug <- function() {
@@ -274,15 +274,16 @@ nhdplus_debug <- function() {
 }
 
 #' @noRd
+get_api_water_tier <- function() {
+  tier_env <- Sys.getenv("API_WATER_TIER")
+  if(tier_env != "") tier_env
+  else get("api_water_tier", envir = hydrogeofetch_env)
+}
+
+#' @noRd
 get_nldi_url <- function(pygeo = FALSE) {
 
-  tier_env <- Sys.getenv("NLDI_TIER")
-
-  tier <- if(tier_env != "") {
-    tier_env
-  } else {
-    get("nldi_tier", envir = hydrogeofetch_env)
-  }
+  tier <- get_api_water_tier()
 
   if(pygeo) {
     if (tier == "prod") {
@@ -300,6 +301,18 @@ get_nldi_url <- function(pygeo = FALSE) {
     } else {
       stop("only prod or test allowed.")
     }
+  }
+}
+
+#' @noRd
+get_water_url <- function() {
+  tier <- get_api_water_tier()
+  if (tier == "prod") {
+    "https://api.water.usgs.gov/fabric/pygeoapi/"
+  } else if (tier == "test") {
+    "https://labs-beta.waterdata.usgs.gov/api/fabric/pygeoapi/"
+  } else {
+    stop("only prod or test allowed.")
   }
 }
 

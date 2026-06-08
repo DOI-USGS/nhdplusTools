@@ -36,7 +36,7 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
                               properties = NULL,
                               skip_geometry = FALSE) {
 
-  base <- get("usgs_water_root", envir = hydrogeofetch_env)
+  base <- get_water_url()
 
   source <- data.frame(server = 'usgs_oafeat',
                        user_call  = c('huc02_2020', 'huc04_2020', 'huc06_2020',
@@ -454,7 +454,7 @@ get_huc12_by_huc <- function(huc_ids, t_srs = NULL) {
   if(length(huc_ids) == 0)
     return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
 
-  base <- get("usgs_water_root", envir = hydrogeofetch_env)
+  base <- get_water_url()
 
   n <- unique(nchar(huc_ids))
   if(length(n) != 1 || !n %in% c(8, 10))

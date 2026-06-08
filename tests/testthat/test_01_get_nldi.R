@@ -257,11 +257,11 @@ test_that("coverage", {
   # expect_error(hydrogeofetch:::get_nldi_url(),
   #              "only prod or test allowed.")
 
-  tier_env <- Sys.getenv("NLDI_TIER")
+  tier_env <- Sys.getenv("API_WATER_TIER")
 
-  Sys.unsetenv("NLDI_TIER")
+  Sys.unsetenv("API_WATER_TIER")
 
-  assign("nldi_tier", "test",
+  assign("api_water_tier", "test",
          envir = hydrogeofetch:::hydrogeofetch_env)
 
   test <- hydrogeofetch:::get_nldi_url()
@@ -272,9 +272,13 @@ test_that("coverage", {
 
   expect_true(grepl("pygeoapi", test))
 
-  Sys.setenv("NLDI_TIER"= tier_env)
+  test <- hydrogeofetch:::get_water_url()
 
-  assign("nldi_tier", "prod",
+  expect_true(grepl("fabric/pygeoapi", test))
+
+  Sys.setenv("API_WATER_TIER" = tier_env)
+
+  assign("api_water_tier", "prod",
          envir = hydrogeofetch:::hydrogeofetch_env)
 
 })

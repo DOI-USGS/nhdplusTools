@@ -322,15 +322,18 @@ check7z <- function() {
   tryCatch({
     system("7z", intern = TRUE)
   }, error = function(e) {
-    stop( simpleError(
-
-        "Please Install 7zip (Windows) or p7zip (MacOS/Unix). Choose accordingly:
+    # 7z not on PATH; check default Windows install location
+    win_path <- "C:/Program Files/7-Zip/7z.exe"
+    if(.Platform$OS.type == "windows" && file.exists(win_path)) {
+      Sys.setenv(PATH = paste(Sys.getenv("PATH"), dirname(win_path), sep = ";"))
+      return(invisible(TRUE))
+    }
+    stop(simpleError(
+      "Please Install 7zip (Windows) or p7zip (MacOS/Unix). Choose accordingly:
         Windows: https://www.7-zip.org/download.html
         Mac: 'brew install p7zip' or 'sudo port install p7zip'
         Linux: https://sourceforge.net/projects/p7zip/"
-
-      )
-      )
+    ))
   })
 
 }

@@ -1,7 +1,41 @@
 hydrogeofetch 1.0.0
 ==========
 
-`hydrogeofetch` is the renamed successor to `nhdplusTools`. The package scope has grown beyond NHDPlus, and the new name reflects its broader role as a hydrologic geospatial data access and network tool chain. All functions and signatures carry over unchanged. `nhdplusTools` will remain on CRAN as a deprecation shim until October 2028.
+`hydrogeofetch` is the renamed successor to `nhdplusTools`. The package scope has grown beyond NHDPlus, and the new name reflects its broader role as a hydrologic geospatial data access and network tool chain. `nhdplusTools` will remain on CRAN as a deprecation shim until October 2028.
+
+## Removed functions (moved to hydroloom)
+
+Network analysis and spatial indexing functions that duplicated [hydroloom](https://doi-usgs.github.io/hydroloom/) have been removed. Users should call hydroloom directly. See the [hydroloom reference](https://doi-usgs.github.io/hydroloom/reference/) for full documentation, especially the [indexing](https://doi-usgs.github.io/hydroloom/reference/index.html#indexing-and-linear-referencing) and [navigation](https://doi-usgs.github.io/hydroloom/reference/index.html#network-navigation-and-accumulation) sections.
+
+- `get_flowline_index()` → `hydroloom::index_points_to_lines()`
+- `get_waterbody_index()` → `hydroloom::index_points_to_waterbodies()`
+- `disambiguate_flowline_indexes()` → `hydroloom::disambiguate_indexes()`
+- `get_UT()`, `get_DD()` → `hydroloom::navigate_hydro_network(x, start, "UT")` / `"DD"`
+- `get_UM()`, `get_DM()` → `hydroloom::navigate_hydro_network(x, start, "UM")` / `"DM"` (note: the old wrappers also ran `align_nhdplus_names`, filtered, and supported `sort`/`include` arguments)
+- `navigate_network()` — workflow glue; use `navigate_nldi()` + `subset_nhdplus()` or hydroloom navigation directly
+- `get_sorted()` → `hydroloom::sort_network()`
+- `get_pathlength()` → `hydroloom::add_pathlength()`
+- `get_streamorder()` → `hydroloom::add_streamorder()`
+- `get_streamlevel()` → `hydroloom::add_streamlevel()`
+- `get_levelpaths()` → `hydroloom::add_levelpaths()`
+- `get_pfaf()` → `hydroloom::add_pfafstetter()`
+- `get_terminal()` → `hydroloom::sort_network(x, split = TRUE)`
+- `calculate_total_drainage_area()` → `hydroloom::accumulate_downstream(x, "area")`
+- `calculate_arbolate_sum()` → `hydroloom::accumulate_downstream(x, "length")`
+- `get_path_members()`, `get_path_lengths()` → `hydroloom::navigate_connected_paths()`
+- `make_node_topology()` → `hydroloom::make_node_topology()`
+- `add_plus_network_attributes()` → use hydroloom's `add_levelpaths()`, `add_pathlength()`, `accumulate_downstream()` etc. directly
+
+## Removed re-exports
+
+These hydroloom functions are no longer re-exported; call `hydroloom::fn()` directly:
+
+- `st_compatibalize()`, `rename_geometry()`, `get_node()`, `fix_flowdir()`, `rescale_measures()`, `get_hydro_location()`, `get_partial_length()`
+
+## Dependency changes
+
+- Removed `pbapply` from Imports (no longer needed)
+- Removed `future`, `future.apply` from Suggests (no longer needed)
 
 nhdplusTools 1.5.0
 ==========

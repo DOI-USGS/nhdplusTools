@@ -1,0 +1,115 @@
+---
+title: "Migrating from nhdplusTools"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+This guide helps users switching from nhdplusTools to hydrogeofetch + hydroloom.
+
+## What moved where
+
+hydrogeofetch fetches and prepares NHD data. hydroloom does network analysis and spatial indexing. Users who did both now load both packages.
+
+| Old (nhdplusTools) | Replacement |
+|--------------------|-------------|
+| `get_flowline_index()` | `hydroloom::index_points_to_lines()` |
+| `get_waterbody_index()` | `hydroloom::index_points_to_waterbodies()` |
+| `disambiguate_flowline_indexes()` | `hydroloom::disambiguate_indexes()` |
+| `get_UT()` / `get_DD()` | `hydroloom::navigate_hydro_network(x, start, "UT"/"DD")` |
+| `get_UM()` / `get_DM()` | `hydroloom::navigate_hydro_network(x, start, "UM"/"DM")` |
+| `navigate_network()` | `navigate_nldi()` + `subset_nhdplus()`, or hydroloom navigation |
+| `get_sorted()` | `hydroloom::sort_network()` |
+| `get_pathlength()` | `hydroloom::add_pathlength()` |
+| `get_streamorder()` | `hydroloom::add_streamorder()` |
+| `get_streamlevel()` | `hydroloom::add_streamlevel()` |
+| `get_levelpaths()` | `hydroloom::add_levelpaths()` |
+| `get_pfaf()` | `hydroloom::add_pfafstetter()` |
+| `get_terminal()` | `hydroloom::sort_network(x, split = TRUE)` |
+| `calculate_total_drainage_area()` | `hydroloom::accumulate_downstream(x, "area")` |
+| `calculate_arbolate_sum()` | `hydroloom::accumulate_downstream(x, "length")` |
+| `get_path_members()` / `get_path_lengths()` | `hydroloom::navigate_connected_paths()` |
+| `make_node_topology()` | `hydroloom::make_node_topology()` |
+| `add_plus_network_attributes()` | hydroloom's `add_levelpaths()`, `add_pathlength()`, etc. |
+| `st_compatibalize()` | `hydroloom::st_compatibalize()` |
+| `rename_geometry()` | `hydroloom::rename_geometry()` |
+| `get_node()` | `hydroloom::get_node()` |
+| `fix_flowdir()` | `hydroloom::fix_flowdir()` |
+| `rescale_measures()` | `hydroloom::rescale_measures()` |
+| `get_hydro_location()` | `hydroloom::get_hydro_location()` |
+| `get_partial_length()` | `hydroloom::get_partial_length()` |
+
+Functions that remain in hydrogeofetch unchanged: `get_nhdplus()`, `subset_nhdplus()`, `get_vaa()`, `prepare_nhdplus()`, `get_tocomid()`, `plot_nhdplus()`, `navigate_nldi()`, `get_nldi_basin()`, all download functions, and `get_drainage_area_estimates()`.
+
+## Migration patterns
+
+### Navigation
+
+Before:
+```{r}
+library(nhdplusTools)
+comids <- get_UT(flowlines, start_comid)
+```
+
+After:
+```{r}
+library(hydroloom)
+comids <- navigate_hydro_network(flowlines, start_comid, "UT")
+```
+
+`get_UM()` and `get_DM()` had extra behavior: they called `align_nhdplus_names()`, filtered the network, and supported `sort`/`include` arguments returning a COMID vector. To reproduce:
+
+```{r}
+library(hydroloom)
+library(hydrogeofetch)
+
+network <- align_nhdplus_names(flowlines)
+main_us <- network[network$COMID %in%
+  navigate_hydro_network(network, start_comid, "UM"), ]
+# sort by Hydroseq if needed:
+main_us <- main_us[order(main_us$Hydroseq), ]
+# exclude start if needed:
+main_us <- main_us[main_us$COMID != start_comid, ]
+main_us$COMID
+```
+
+### Indexing
+
+Before:
+```{r}
+idx <- get_flowline_index(flowlines, points, search_radius = 200)
+```
+
+After:
+```{r}
+idx <- hydroloom::index_points_to_lines(flowlines, points, search_radius = 200)
+```
+
+Note: the old `get_flowline_index()` accepted `"download_nhdplusv2"` as the first argument to auto-download flowlines. With hydroloom, fetch the data first with `get_nhdplus()`, then index.
+
+### Re-exports (package qualifier)
+
+Before:
+```{r}
+library(nhdplusTools)
+result <- st_compatibalize(x, y)
+```
+
+After:
+```{r}
+library(hydroloom)
+result <- st_compatibalize(x, y)
+```
+
+## The deprecation shim
+
+During the sunset period, `install.packages("nhdplusTools")` still works. Every function emits a deprecation warning naming the replacement and forwards the call to hydroloom or hydrogeofetch. The shim will be archived in October 2028.
+ 
+## Environment variables
+
+`NHDPLUSTOOLS_MEMOISE_CACHE` and `NHDPLUSTOOLS_MEMOISE_TIMEOUT` are still recognized as a one-time fallback. The canonical names are now `HYDROGEOFETCH_MEMOISE_CACHE` and `HYDROGEOFETCH_MEMOISE_TIMEOUT`.

@@ -158,7 +158,7 @@ test_that("compatibalize", {
 
   two <- sf::st_transform(pt_data, 5070)
 
-  three <- st_compatibalize(one, two)
+  three <- hydroloom::st_compatibalize(one, two)
 
   expect_equal(sf::st_crs(two), sf::st_crs(three))
 
@@ -170,7 +170,7 @@ test_that("compatibalize", {
 test_that("rname geometry", {
   g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2)))
 
-  g <- rename_geometry(g, "geometry")
+  g <- hydroloom::rename_geometry(g, "geometry")
 
   expect_true("geometry" %in% names(g))
 

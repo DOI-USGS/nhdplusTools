@@ -81,7 +81,6 @@ articles:
       - hydrogeofetch
       - get_data_overview
       - plot_nhdplus
-      - indexing
       - nhdplushr
       - get_3dhp_data
       - drainage_area_estimation

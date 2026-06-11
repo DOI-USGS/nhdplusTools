@@ -62,11 +62,11 @@ hr_data_dir <- download_nhdplushr(work_dir, hu04)
 hr <- get_nhdplushr(work_dir, out_gpkg = hr_gpkg,
                     proj = 3857)
 
-(start_index <- get_flowline_index(st_transform(hr$NHDFlowline, 5070),
+(start_index <- hydroloom::index_points_to_lines(st_transform(hr$NHDFlowline, 5070),
                                    st_transform(plot_data$outlets, 5070),
                                    search_radius = 200)) # meters albers eq area
 
-ids <- get_UT(hr$NHDFlowline, start_index$COMID)
+ids <- hydroloom::navigate_hydro_network(hr$NHDFlowline, start_index$COMID, "UT")
 
 hr_subset <- subset_nhdplus(ids, nhdplus_data = hr_gpkg)
 ```

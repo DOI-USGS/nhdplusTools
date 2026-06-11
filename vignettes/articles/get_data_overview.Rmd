@@ -79,7 +79,6 @@ The Network Linked Data Index plays a key role in discovery `hydrogeofetch`. It 
 - `get_nldi_basin()`
 - `get_nldi_feature()`
 - `get_nldi_index()`
-- `navigate_network()`
 - `navigate_nldi()`
 - `get_split_catchment()`
 - `get_raindrop_trace()`
@@ -208,8 +207,8 @@ nhdplushr <- get_hr_data(list.files(download_dir, pattern = ".gdb", full.names =
 names(nhdplushr)
 
 # Great Lakes coast are flowlines -- remove for visuals
-gl_coast <- c(get_DM(nhdplushr, 60002700000331),
-              get_DM(nhdplushr, 60002700049157))
+gl_coast <- c(hydroloom::navigate_hydro_network(nhdplushr, 60002700000331, "DM"),
+              hydroloom::navigate_hydro_network(nhdplushr, 60002700049157, "DM"))
 
 plot_data <- dplyr::filter(nhdplushr, FCODE != 56600 & StreamOrde > 2 & !COMID %in% gl_coast)
 
@@ -224,11 +223,11 @@ plot(sf::st_geometry(plot_data), lwd = plot_data$StreamOrde / 2, col = "blue", a
 ```
 BONUS DEMO: Say we want to know where our stream gage is on the river in question...
 
-`get_flowline_index()` and `disambiguate_flowline_indexes()` are your friends. 
+`hydroloom::index_points_to_lines()` and `hydroloom::disambiguate_indexes()` are your friends. 
 
 ```{r}
 
-potential_matches <- get_flowline_index(nhdplushr, 
+potential_matches <- hydroloom::index_points_to_lines(nhdplushr, 
                                         points = site_feature, 
                                         search_radius = units::as_units(500, "m"),
                                         max_matches = 5)
@@ -242,7 +241,7 @@ sqmi_to_sqkm <- 2.59
 da_df <- data.frame(id = 1, drainagearea = site_meta$drain_area_va * sqmi_to_sqkm)
 
 # uses nearest drainage area match
-disambiguate_flowline_indexes(potential_matches,
+hydroloom::disambiguate_indexes(potential_matches,
                               flowpath = dplyr::select(nhdplushr, COMID, TotDASqKM),
                               hydro_location = da_df)
 

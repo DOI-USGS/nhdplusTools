@@ -682,7 +682,7 @@ get_all_navigable <- function(fline, rpu) {
   outlets <- arrange(outlets, desc(.data$arbolatesu))
 
   network <- sort_network(
-    stats::setNames(fline[c("comid", "tocomid")], c("id", "toid")),
+    stats::setNames(sf::st_drop_geometry(fline[c("comid", "tocomid")]), c("id", "toid")),
     split = FALSE, outlets = outlets$comid)
 
   network$id

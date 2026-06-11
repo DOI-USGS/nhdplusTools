@@ -204,7 +204,7 @@ plot(sf::st_geometry(flowline_nldi$origin), lwd = 3, col = "red", add = TRUE)
 plot(sf::st_geometry(flowline_nldi$UT), lwd = 1, col = "red", add = TRUE)
 ```
 
-The NLDI only provides geometry and a comid for each of the flowlines. The `subset_nhdplus()` function has a "download" option that allows us to download four layers and all attributes as shown below. There is also a `navigate_network()` function that will replace `navigate_nldi()` and `subset_nhdplus()` for many use cases.
+The NLDI only provides geometry and a comid for each of the flowlines. The `subset_nhdplus()` function has a "download" option that allows us to download four layers and all attributes as shown below.
 
 ```{r subset_nhdplus_download}
 output_file_download <- file.path(work_dir, "subset_download.gpkg")
@@ -265,10 +265,10 @@ plot(sf::st_geometry(upstream_nwis$UT_nwissite),
 
 While web service data access is very convenient, some use cases make working with web services impossible or cumbersome such that working with local data is preferable. hydrogeofetch supports such workflows with hybrid, web-service and local, workflows.
 
-With the starting COMID we found with `discover_nhdplus_id()` above, we can use one of the network navigation functions, `get_UM()`, `get_UT()`, `get_DM()`, or `get_DD()` to retrieve a collection of comids along the upstream mainstem, upstream with tributaries, downstream mainstem, or downstream with diversions network paths. Here we'll use upstream with tributaries.
+With the starting COMID we found with `discover_nhdplus_id()` above, we can use hydroloom's `navigate_hydro_network()` to retrieve a collection of COMIDs along the upstream-with-tributaries network path.
 
 ```{r get_UT}
-UT_comids <- get_UT(flowline, start_comid$comid[1])
+UT_comids <- hydroloom::navigate_hydro_network(flowline, start_comid$comid[1], "UT")
 UT_comids
 ```
 
@@ -312,23 +312,21 @@ plot(sf::st_geometry(waterbody), col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 
 ## Indexing
 
-hydrogeofetch supports a number of indexing use cases. [See the function index for specifics](https://doi-usgs.github.io/nhdplusTools/reference/index.html#indexing-and-network-navigation).
-
-Using the data above, we can use the `get_flowline_index()` function to get the comid, reachcode, and measure of our starting point like this.
+Indexing functions have moved to the [hydroloom](https://doi-usgs.github.io/hydroloom/) package. Use hydrogeofetch to fetch flowline data and hydroloom to index points to those flowlines.
 
 ```{r indexing}
-get_flowline_index(flowline, start_point)
+hydroloom::index_points_to_lines(flowline, start_point)
 ```
 
-`get_flowline_index()` will work with a list of points too. For demonstration purposes, we can use the gages in our subset from above.
+`index_points_to_lines()` works with a list of points too. For demonstration purposes, we can use the gages in our subset from above.
 
 ```{r index_list}
 gage <- sf::read_sf(output_file, "Gage")
 
-get_flowline_index(flowline, sf::st_geometry(gage), precision = 10)
+hydroloom::index_points_to_lines(flowline, sf::st_geometry(gage), precision = 10)
 ```
 
-For more info about `get_flowline_index()` and other indexing functions, see the [Indexing and Referencing](https://doi-usgs.github.io/nhdplusTools/articles/indexing.html) article or the reference page that describes it.
+See the [hydroloom indexing documentation](https://doi-usgs.github.io/hydroloom/reference/index.html#indexing-and-linear-referencing) and `vignette("migrating_from_nhdplusTools")` for more.
 
 ```{r teardown, include=FALSE}
 options(oldoption)

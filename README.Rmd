@@ -27,6 +27,18 @@ knitr::opts_chunk$set(
 
 ## hydrogeofetch: Tools for Accessing and Working with the NHDPlus and other US hydrographic data.
 
+## Major changes in 1.0.0
+
+Indexing, network navigation, and network attribute functions have moved to [**hydroloom**](https://doi-usgs.github.io/hydroloom/). hydrogeofetch is now focused on data access and NHD-specific preparation; hydroloom handles the general-purpose network analysis that was previously bundled here.
+
+If you use any of the following, you now need `library(hydroloom)`:
+
+- **Indexing** (`get_flowline_index`, `get_waterbody_index`, `disambiguate_flowline_indexes`) → [`hydroloom::index_points_to_lines()`](https://doi-usgs.github.io/hydroloom/reference/index_points_to_lines.html), [`index_points_to_waterbodies()`](https://doi-usgs.github.io/hydroloom/reference/index_points_to_waterbodies.html), [`disambiguate_indexes()`](https://doi-usgs.github.io/hydroloom/reference/disambiguate_indexes.html)
+- **Navigation** (`get_UT`, `get_DM`, `get_UM`, `get_DD`, `navigate_network`) → [`hydroloom::navigate_hydro_network()`](https://doi-usgs.github.io/hydroloom/reference/navigate_hydro_network.html)
+- **Network attributes** (`get_streamorder`, `get_levelpaths`, `get_pathlength`, `calculate_total_drainage_area`, etc.) → hydroloom's [`add_streamorder()`](https://doi-usgs.github.io/hydroloom/reference/add_streamorder.html), [`add_levelpaths()`](https://doi-usgs.github.io/hydroloom/reference/add_levelpaths.html), [`add_pathlength()`](https://doi-usgs.github.io/hydroloom/reference/add_pathlength.html), [`accumulate_downstream()`](https://doi-usgs.github.io/hydroloom/reference/accumulate_downstream.html)
+
+The typical workflow is now: use hydrogeofetch to fetch and prepare NHD data, then hand off to hydroloom for indexing, navigation, and network analysis. See `vignette("migrating_from_nhdplusTools")` for a complete mapping of old to new function names.
+
 ### Recommended Citation:
 
 ```
@@ -55,14 +67,15 @@ Detailed documentation of all the package functions can be found at the [**Refer
 
 ### Data:
 
-`hydrogeofetch` provides easy access to data associated with the U.S. National Hydrography Dataset. Many functions are thin wrappers around functions that have been migrated to `hydroloom`.
+`hydrogeofetch` provides easy access to data associated with the U.S. National Hydrography Dataset. Network analysis and spatial indexing live in [`hydroloom`](https://doi-usgs.github.io/hydroloom/).
 
 ## Package Vision
 
-The `hydrogeofetch` package is intended to provide a reusable set of tools to
-subset, relate data to, and generate network attributes for U.S. NHDPlus data.
+The `hydrogeofetch` package provides tools to discover, download, subset, and 
+prepare U.S. NHDPlus data. Network analysis (navigation, indexing, attribute 
+generation) belongs in [`hydroloom`](https://doi-usgs.github.io/hydroloom/).
 
-General, globally applicable functionality has been moved to [`hydroloom`](https://github.com/DOI-USGS/hydroloom) 
+General, globally applicable functionality has been moved to [`hydroloom`](https://doi-usgs.github.io/hydroloom/).
 
 `hydrogeofetch` implements a data model consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
 dataset and the [HY\_Features](http://opengeospatial.github.io/HY_Features/) data
@@ -84,13 +97,9 @@ discovery, network navigation, and data export utilities to generate spatial
 and attribute subsets of the NHDPlus dataset.
 
 ##### Indexing
-One of the most important roles of the NHDPlus is as a connecting network for
-ancillary data and models. The first step in any workflow that uses the
-network like this is indexing relevant data to the network. A number of methods
-for indexing exist, they can be broken into two main categories: linear
-referencing and catchment indexing. Both operate on features represented by
-points, lines, and polygons. `hydrogeofetch` supports both
-linear and catchment indexing.
+Indexing data to the hydrographic network (linear referencing and catchment 
+indexing) is handled by [`hydroloom`](https://doi-usgs.github.io/hydroloom/).
+`hydrogeofetch` provides the data access needed to set up indexing workflows.
 
 ### Data Model
 Given that `hydrogeofetch` is focused on working with NHDPlus data, the NHDPlus

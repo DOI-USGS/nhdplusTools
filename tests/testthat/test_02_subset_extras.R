@@ -135,8 +135,8 @@ test_that("big rpu test", {
                                by = "comid")
 
   suppressWarnings(
-  vaa_new$arbolatesu <- calculate_arbolate_sum(
-    dplyr::select(vaa_new, ID = comid, toID = tocomid, length = lengthkm))
+  vaa_new$arbolatesu <- hydroloom::accumulate_downstream(
+    dplyr::select(vaa_new, ID = comid, toID = tocomid, length = lengthkm), "length")
   )
 
   suppressWarnings(

@@ -325,7 +325,7 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
 #' (for metrics like BankfullDepth, IWI, etc.). Ignored when
 #' \code{source = "usgs"} where the area of interest is encoded in the
 #' variable name prefix (e.g. CAT_, TOT_, ACC_).
-#' @importFrom dplyr bind_rows filter select everything collect
+#' @importFrom dplyr bind_rows filter select everything collect all_of
 #' @importFrom arrow s3_bucket open_dataset
 #' @export
 #' @examples

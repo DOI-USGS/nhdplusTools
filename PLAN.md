@@ -152,7 +152,188 @@ Policy is set in CLAUDE.md and the `feedback_web_service_response_handling` memo
 **Gate:** Run the full test suite live to confirm service compatibility. Review httptest2 fixture sizes — if any are too large to check in, simplify or move those tests to live-only.
 
 
-## 4. USGS software release
+## 4. Reduce hydroloom duplication
+
+hydrogeofetch should be a data-fetching and NHD-specific preparation package. Network analysis and spatial indexing belong in hydroloom. Functions that are thin wrappers over hydroloom — adding only column renames or trivial glue — should be removed so users call hydroloom directly.
+
+### 4a. Drop re-exports
+
+Remove the 7 pure re-export *exports* from `R/A_hydrogeofetch.R` (the `@export` + `hydroloom::fn` lines, ~585–602). These pass through hydroloom functions with zero added logic:
+
+- `st_compatibalize`
+- `rename_geometry`
+- `get_node`
+- `fix_flowdir`
+- `rescale_measures`
+- `get_hydro_location`
+- `get_partial_length`
+
+Users who need these call `hydroloom::fn()` or `library(hydroloom)`.
+
+**Keep four as plain imports, not exports.** Retained internal code calls these as bare names, and the re-export block is currently the only thing that imports them into the namespace:
+
+- `get_hydro_location` — `get_drainage_area_estimates.R` (lines 386, 625)
+- `rescale_measures` — `get_drainage_area_estimates.R` (line 593)
+- `rename_geometry` — `get_drainage_area_estimates.R` (lines 895, 951)
+- `get_node` — `get_nhdplus.R` (line 118)
+
+When the re-export block is deleted, replace it with a plain roxygen import (no `@export`) so these still resolve:
+
+```r
+#' @importFrom hydroloom get_node get_hydro_location rescale_measures rename_geometry
+NULL
+```
+
+Without this, `R CMD check` raises "no visible global function definition" and the functions error at runtime. `st_compatibalize`, `fix_flowdir`, and `get_partial_length` have no internal callers and can be dropped completely.
+
+### 4b. Drop indexing functions
+
+Remove `R/index_nhdplus.R` entirely:
+
+- `get_flowline_index` — wraps `hydroloom::index_points_to_lines` with optional auto-download and column rename
+- `disambiguate_flowline_indexes` — renames `id` ↔ `point_id` around `hydroloom::disambiguate_indexes`
+- `get_waterbody_index` — literally just `index_points_to_waterbodies(...)`
+
+The only internal caller is `navigate_network` (see 4d below).
+
+### 4c. Drop navigation shorthands
+
+Remove `get_UT`, `get_UM`, `get_DM`, `get_DD` from `R/get_network.R`. `get_UT` and `get_DD` are true one-liners over `hydroloom::navigate_hydro_network`. `get_UM` and `get_DM` are *not* — they call `align_nhdplus_names`, filter the network, add `sort`/`include` arguments, and return the `COMID` column rather than the raw navigation result. Users who only want the COMID set call hydroloom directly with the mode string; the `sort`/`include` behavior has to be reproduced by hand (and is preserved in the shim — see 4i).
+
+Removing all four empties `R/get_network.R` (it also holds `navigate_network`, removed in 4d), so delete the file.
+
+Internal callers to fix:
+- `plot_nhdplus.R` (2 sites: lines 418, 475) — replace `get_UT(align_nhdplus_names(flowline), x)` with `navigate_hydro_network(align_nhdplus_names(flowline), x, "UT")`. The `navigate_hydro_network` import survives the `get_network.R` deletion because `get_drainage_area_estimates.R` also declares it.
+
+### 4d. Drop `navigate_network`
+
+Remove the `navigate_network` function. It stitches together NLDI calls, navigation, indexing, and trimming — workflow glue that belongs in a vignette example, not a function. It's the main internal consumer of both indexing and navigation shorthands.
+
+### 4e. Drop remaining thin wrappers
+
+Remove these exported functions that add only column renames around a single hydroloom call:
+
+- `get_sorted` — rename cols → `sort_network` → rename back
+- `get_streamorder` — `check_names` + `add_streamorder()$stream_order`
+- `get_streamlevel` — `check_names` + `add_streamlevel()$stream_level`
+- `get_pathlength` — rename cols → `add_pathlength` → rename back
+
+Internal callers to fix:
+- `subset_nhdplus.R` line 683 — call `sort_network` directly. `sort_network` takes `id`/`toid`, the call site passes `fline[c("comid", "tocomid")]`, and the next line reads `network$comid`. `get_sorted` did the rename round-trip internally, so the replacement must rename in and read the renamed column out:
+
+  ```r
+  network <- sort_network(
+    stats::setNames(fline[c("comid", "tocomid")], c("id", "toid")),
+    split = FALSE, outlets = outlets$comid)
+  network$id
+  ```
+
+  Add `#' @importFrom hydroloom sort_network` to `subset_nhdplus.R` — that tag currently lives only in `get_paths.R` (line 98), which is deleted below.
+
+Note: `topo_sort_network`, `get_index_ids`, and `get_fromids` (all internal, `@noRd`, in `get_paths.R`) have **no callers** anywhere in `R/`, `tests/`, or `vignettes/`. They are dead helpers, so there is nothing to rewrite — they are removed along with `get_sorted`. With `get_levelpaths`/`get_terminal` (4f) also gone, `R/get_paths.R` is empty and should be deleted. Their hydroloom imports (`make_index_ids`, `make_fromids`) drop out with them. (Confirm these aren't intentional scaffolding for planned work before deleting.)
+
+### 4f. Drop all already-deprecated wrappers
+
+Remove these functions that already emit deprecation warnings and just forward to hydroloom:
+
+- `get_levelpaths` → `hydroloom::add_levelpaths`
+- `get_pfaf` → `hydroloom::add_pfafstetter`
+- `get_terminal` → `sort_network` (via `get_sorted`)
+- `calculate_total_drainage_area` → `hydroloom::accumulate_downstream`
+- `calculate_arbolate_sum` → `hydroloom::accumulate_downstream`
+- `get_path_members` / `get_path_lengths` → `hydroloom::navigate_connected_paths`
+- `make_node_topology` → `hydroloom::make_node_topology`
+- `add_plus_network_attributes` → multiple hydroloom fns
+
+This removes `R/calc_network.R`, `R/get_path_lengths.R`, `R/rebuild_topology.R`, and `R/run_plus_attributes.R`. Combined with the thin-wrapper and dead-helper removals in 4e, `R/get_paths.R` and `R/get_codes.R` are also emptied and deleted (`get_paths.R`: `get_levelpaths`/`get_levelpaths_internal`, `get_terminal`, `get_sorted`, dead helpers; `get_codes.R`: `get_pfaf`, `get_streamorder`, `get_streamlevel`). `get_levelpaths_internal` and `get_paths_internal` are removed here too — their only callers (`add_plus_network_attributes`, `get_levelpaths`, `get_path_members`/`get_path_lengths`) are all in this set.
+
+### 4g. Fix the `:::` call
+
+`hydroloom:::check_search_radius` in `index_nhdplus.R` uses an unexported hydroloom function. Since we're removing `get_flowline_index`, this goes away automatically. If any remaining code needs this logic, copy the few lines of unit-conversion rather than depending on an unexported function.
+
+### 4h. What stays
+
+Functions that have real NHD-specific logic beyond what hydroloom provides:
+
+- **`get_tocomid`** — NHD-specific coastal filtering, divergence-to-headwater handling, terminalpa grouping around `add_toids`
+- **`prepare_nhdplus`** — substantial NHD-specific filtering (network size, path length, dendritic purging), calls `get_tocomid`
+- **`align_nhdplus_names`** — NHD column name translation (bridge between NHD names and hydroloom's expected names)
+
+Internal hydroloom imports that stay (used as implementation details by functions above):
+- `add_toids` (via `get_tocomid`)
+- `navigate_hydro_network` (via `plot_nhdplus` after rewrite, and `get_drainage_area_estimates`)
+- `navigate_network_dfs` (via `get_nhdplushr`, `get_drainage_area_estimates`)
+- `index_points_to_lines` (via `get_drainage_area_estimates` — direct call, no wrapper)
+- `accumulate_downstream` (if needed internally by retained code)
+- `sort_network` (via `subset_nhdplus` after rewrite)
+- `check_valid` (via `subset_nhdplus`, `oafeat_tools`, `arcrest_tools`)
+- `get_node`, `get_hydro_location`, `rescale_measures`, `rename_geometry` (formerly re-exported; now plain imports — see 4a — used by `get_nhdplus` and `get_drainage_area_estimates`)
+
+`make_fromids` and `make_index_ids` do **not** stay — their only users (`get_fromids`, `get_index_ids`) are dead helpers removed in 4e.
+
+### 4i. Shim implications
+
+The nhdplusTools shim (milestone 8) needs to forward the removed functions somewhere. For functions that mapped directly to hydroloom, the shim forwards to `hydroloom::*` directly rather than routing through hydrogeofetch. The shim's `get_UT` calls `hydroloom::navigate_hydro_network(..., "UT")`, etc. This removes the two-level indirection problem.
+
+Exception: `get_UM` and `get_DM` are not bare forwards (see 4c). Their shim versions must carry the wrapper body — `align_nhdplus_names`, the network filter, and the `sort`/`include` arguments returning `$COMID` — so existing `get_UM(net, comid, sort = TRUE)` calls keep working. Copy the current function bodies into the shim rather than forwarding.
+
+### 4j. Verification
+
+1. `devtools::document()` — NAMESPACE regenerates without the removed exports
+2. `devtools::check()` — 0 errors, 0 warnings
+3. `devtools::test()` — remove or relocate tests for dropped functions:
+   - **Delete** (dedicated to removed functions): `test_get_network.R`, `test_index.R`, `test_navigate.R`, `test_calc_network.R`, `test_get_path.R`, `test_get_path_lengths.R`, `test_rebuild_topology.R`, `test_run_plus_attributes.R`, `test_wb_index.R`, `test_get_codes.R`, `test_get_geometry.R` (re-exports).
+   - **Rewrite, don't delete**: `test_02_subset.R`, `test_get_nhdplushr.R`, `test_00_plot_nhdplus.R`, `test_00_plot_local_nhdplus.R`, `test_get_drainage_area_estimates.R` use `get_UT` only to build input COMID lists — swap to `navigate_hydro_network(..., "UT")`.
+4. Grep: `grep -r "get_UT\|get_UM\|get_DM\|get_DD\|get_flowline_index\|get_waterbody_index\|get_sorted\|get_streamorder\|get_streamlevel" R/` returns zero hits outside of retained internal uses
+5. NAMESPACE contains no `hydroloom::` re-exports (but retains the plain `importFrom` for `get_node`/`get_hydro_location`/`rescale_measures`/`rename_geometry`)
+6. No `:::` calls remain
+7. `R CMD check`'s "checking R code for possible problems" pass shows no "no visible global function definition" notes — the canary for a dropped import (4a)
+8. Prune `_pkgdown.yml` reference sections: ~28 entries point at the removed functions and will be dangling man topics. `pkgdown::build_site()` (deferred to milestone 6) errors on missing topics, so either prune now or carry an explicit note into milestone 6's gate.
+
+### 4k. Sequencing
+
+1. **Commit 1**: Remove the re-export *exports* but keep the four plain imports (4a). Remove `R/index_nhdplus.R` and `navigate_network` (4b, 4d) — `navigate_network` is the consumer of the indexing and navigation shorthands, so it goes before them.
+2. **Commit 2**: Remove navigation shorthands and delete `R/get_network.R`. Fix `plot_nhdplus.R` internal calls (4c).
+3. **Commit 3**: Remove all deprecated wrappers and their source files (`calc_network.R`, `get_path_lengths.R`, `rebuild_topology.R`, `run_plus_attributes.R`, plus `get_pfaf`/`get_terminal`/`get_levelpaths` and the internal helpers) (4f). **This must precede the thin-wrapper removal** — `add_plus_network_attributes` depends on `get_sorted`, `get_pathlength`, and `get_levelpaths_internal`, so removing those first would break the intermediate build.
+4. **Commit 4**: Remove the remaining thin wrappers `get_sorted`, `get_streamorder`, `get_streamlevel`, `get_pathlength`; delete the now-empty `get_paths.R`/`get_codes.R`. Rewrite the `subset_nhdplus.R` caller to use `sort_network` directly (4e).
+5. **Commit 5**: Update tests (4j step 3), scale back vignettes (4l, 4m), examples, NEWS.md, and the `_pkgdown.yml` reference index. NEWS: add a new entry listing the removed functions and their hydroloom replacements; do not rewrite the historical nhdplusTools entries (they document shipped versions).
+
+Each commit leaves R CMD check clean. (Commits 3 and 4 are deliberately ordered deprecated-before-thin so no intermediate state references a removed function.)
+
+### 4l. Migration vignette
+
+Write `vignettes/articles/migrating_from_nhdplusTools.Rmd` — a concise guide for users switching from nhdplusTools.
+
+Contents:
+
+1. **What moved where** — a lookup table grouped by category (indexing, navigation, network attributes, re-exports). Two columns: old nhdplusTools call → replacement call (`hydroloom::fn()` or `hydrogeofetch::fn()`).
+2. **Why the split** — one paragraph. hydrogeofetch fetches and prepares NHD data; hydroloom does network analysis and spatial indexing. Users who did both now load both.
+3. **The three migration patterns** — before/after code blocks:
+   - Functions that moved to hydroloom with a changed signature (e.g. `get_UT(net, 101)` → `hydroloom::navigate_hydro_network(net, 101, "UT")`). For `get_UM`/`get_DM`, note the extra behavior: the old wrappers ran `align_nhdplus_names`, filtered, and returned the sorted/included `COMID` vector, so a bare `navigate_hydro_network(..., "UM")` is not equivalent — show how to reproduce `sort`/`include` if a user relied on them.
+   - Pure re-exports that just need the package qualifier (e.g. `st_compatibalize` → `hydroloom::st_compatibalize`)
+   - Thin wrappers that had column-name magic — show the hydroloom call plus `align_nhdplus_names()` if needed
+4. **The deprecation shim** — `install.packages("nhdplusTools")` still works during the sunset period, gives deprecation warnings naming the replacement, and forwards to the right place.
+5. **Environment variables** — `NHDPLUSTOOLS_*` still recognized as fallback; `HYDROGEOFETCH_*` is the new name.
+
+Skip internal refactoring details, exhaustive hydroloom API docs (link to hydroloom's site), and history of the rename decision.
+
+### 4m. Scale back existing vignettes
+
+Four existing article vignettes document functionality that moved to hydroloom and will fail to build once the functions are gone. Scale them back: remove the moved-function material, and where a retained example still needs that behavior, call the hydroloom function directly rather than a re-export.
+
+- `vignettes/articles/indexing.Rmd` — the entire vignette is built on `get_flowline_index`, `get_waterbody_index`, `disambiguate_flowline_indexes`, `get_path_lengths`, and `get_partial_length`. This is now hydroloom's territory. Cut it down to a short pointer that indexing lives in hydroloom (link to hydroloom's indexing vignette), keeping only any hydrogeofetch-specific framing (e.g. fetching the flowlines to index with `get_nhdplus()`, then handing off to `hydroloom::index_points_to_lines()`). Do not maintain a parallel indexing tutorial here.
+- `vignettes/hydrogeofetch.Rmd` (main intro) — the navigation walk-through uses `navigate_network`, `get_UM`/`get_UT`/`get_DM`/`get_DD`, and `get_flowline_index`. Replace the navigation section with the fetch-then-hand-off pattern: use hydrogeofetch to get/prepare the network, then `hydroloom::navigate_hydro_network()` for navigation and `hydroloom::index_points_to_lines()` for indexing. Drop the `navigate_network()` mention.
+- `vignettes/articles/get_data_overview.Rmd` — uses `navigate_network`, `get_DM`, `get_flowline_index`, `disambiguate_flowline_indexes`. Replace the navigation/indexing snippets with direct hydroloom calls; keep the data-overview/fetching content that is the point of the vignette.
+- `vignettes/articles/nhdplushr.Rmd` — uses `get_flowline_index` and `get_UT`. Swap to `hydroloom::index_points_to_lines()` and `hydroloom::navigate_hydro_network(..., "UT")`.
+
+Where these examples currently lean on re-exported helpers (`get_node`, `get_hydro_location`, `rescale_measures`, `rename_geometry`, etc.), call `hydroloom::fn()` directly so the vignettes don't depend on imports that are no longer user-facing.
+
+**Done when:** hydrogeofetch exports only data-fetching, NHD-specific preparation, and visualization functions. No thin hydroloom wrappers remain. R CMD check clean.
+
+**Gate:** Update vignettes and README to show users how to combine hydrogeofetch (for fetching) with hydroloom (for network analysis/indexing). Confirm reverse-dep packages don't import the removed functions from hydrogeofetch directly.
+
+
+## 5. USGS software release
 
 Create a new entry on code.usgs.gov for hydrogeofetch. Mint a new DOI. The existing nhdplusTools DOI stays pointed at a historical release page.
 
@@ -165,7 +346,7 @@ Create a new entry on code.usgs.gov for hydrogeofetch. Mint a new DOI. The exist
 Confirm the plan for the old nhdplusTools DOI redirect with the DOI coordinator.
 
 
-## 5. hydrogeofetch on CRAN
+## 6. hydrogeofetch on CRAN
 
 Submit hydrogeofetch v1.0 to CRAN. The repo is still named nhdplusTools at this point — that's fine, CRAN only cares about the package tarball.
 
@@ -182,7 +363,7 @@ Submit hydrogeofetch v1.0 to CRAN. The repo is still named nhdplusTools at this 
 **Gate:** Update README.Rmd `install.packages()` line to `install.packages("hydrogeofetch")`. Announce hydrogeofetch v1.0. Notify reverse-dependency maintainers (amadeus, elfgen, StreamCatTools) that the deprecation shim is coming and they should plan to switch their imports.
 
 
-## 6. Rename the GitHub repo
+## 7. Rename the GitHub repo
 
 Rename doi-usgs/nhdplusTools to doi-usgs/hydrogeofetch. GitHub maintains redirects from the old URL. Requires org admin access — this milestone can move earlier if access becomes available.
 
@@ -196,16 +377,16 @@ Rename doi-usgs/nhdplusTools to doi-usgs/hydrogeofetch. GitHub maintains redirec
 - Re-knit README.md, deploy pkgdown site
 
 
-## 7. nhdplusTools deprecation shim
+## 8. nhdplusTools deprecation shim
 
-Build a shim version of nhdplusTools (maintained as a branch in the hydrogeofetch repo). Every exported function becomes a `.Deprecated()` wrapper that forwards to `hydrogeofetch::*`. Submit to CRAN.
+Build a shim version of nhdplusTools (maintained as a branch in the hydrogeofetch repo). Every exported function becomes a `.Deprecated()` wrapper that forwards to `hydrogeofetch::*` or `hydroloom::*` as appropriate. Functions that were removed from hydrogeofetch because they duplicated hydroloom (indexing, navigation shorthands, network analysis wrappers) forward directly to hydroloom. Functions that remain in hydrogeofetch forward there. Submit to CRAN.
 
-**Done when:** Shim accepted on CRAN. Installing nhdplusTools gives deprecation warnings that name hydrogeofetch as the replacement.
+**Done when:** Shim accepted on CRAN. Installing nhdplusTools gives deprecation warnings that name hydrogeofetch or hydroloom as the replacement.
 
 **Gate:** Confirm reverse-dep maintainers have a migration path and timeline. Announce the deprecation and the October 2028 archive date.
 
 
-## 8. Archive nhdplusTools — October 2028
+## 9. Archive nhdplusTools — October 2028
 
 Request CRAN archive after the two-year sunset. Archived packages remain installable from the CRAN archive, so existing code pinned to nhdplusTools keeps working.
 

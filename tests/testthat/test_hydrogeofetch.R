@@ -132,7 +132,7 @@ test_that("prep_nhdplus removes tiny networks", {
 test_that("prep_nhdplus works with inland network", {
   flines_in <- pt_data
 
-  flines <- dplyr::filter(flines_in, COMID %in% get_UT(flines_in, 11690564))
+  flines <- dplyr::filter(flines_in, COMID %in% hydroloom::navigate_hydro_network(flines_in, 11690564, "UT"))
   flines <- sf::st_set_geometry(flines, NULL)
   expect_warning(prepare_nhdplus(flines, 0, 0, 0, FALSE, FALSE),
                  "Got NHDPlus data without a Terminal catchment. Attempting to find it.")

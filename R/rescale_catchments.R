@@ -47,7 +47,7 @@ rescale_characteristics <- function(vars, lookup_table) {
 #' "areasqkm." Used to retrieve adjusted catchment areas in the case of split
 #' catchments.
 #'
-#' @importFrom dplyr mutate select right_join left_join filter rename bind_rows
+#' @importFrom dplyr mutate select right_join left_join filter rename bind_rows all_of
 #' @importFrom stats weighted.mean
 #' @noRd
 #'

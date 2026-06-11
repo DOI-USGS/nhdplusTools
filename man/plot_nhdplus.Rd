@@ -142,7 +142,7 @@ bbox <- sf::st_bbox(c(xmin = -89.43, ymin = 43, xmax = -89.28, ymax = 43.1),
                     crs = "+proj=longlat +datum=WGS84 +no_defs")
 
 fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
-comids <- hydrogeofetch::get_UT(fline, 13293970)
+comids <- hydroloom::navigate_hydro_network(fline, 13293970, "UT")
 
 plot_nhdplus(comids)
 

@@ -4,6 +4,6 @@ names(new_hope_flowline) <- tolower(names(new_hope_flowline))
 test_that("aligned names work", {
   aligned = align_nhdplus_names(new_hope_flowline)
   expect_true("COMID" %in% names(aligned))
-  result <- get_DM(aligned, 8893770)
+  result <- hydroloom::navigate_hydro_network(aligned, 8893770, "DM")
   expect_equal(length(result), 13)
 })

@@ -133,7 +133,7 @@ test_that("comids", {
 
   skip_if_no_integration()
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
-  comids <- hydrogeofetch::get_UT(fline, 13293970)
+  comids <- hydroloom::navigate_hydro_network(fline, 13293970, "UT")
   d <- hydrogeofetch:::plot_nhdplus(comids, flowline_only = TRUE,
                                    nhdplus_data = sample_data, cache_data = FALSE)
 

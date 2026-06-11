@@ -113,54 +113,6 @@ assign("reconcile_collapsed_flowlines_attributes",
        c("COMID", "toCOMID", "LENGTHKM", "LevelPathI", "Hydroseq"),
        envir = hydrogeofetch_env)
 
-assign("get_UT_attributes",
-       c("COMID", "Pathlength", "LENGTHKM", "Hydroseq",
-         "LevelPathI", "DnHydroseq"),
-       envir = hydrogeofetch_env)
-
-assign("get_UM_attributes",
-       c("COMID", "Pathlength", "LevelPathI",
-         "Hydroseq"),
-       envir = hydrogeofetch_env)
-
-assign("get_DM_attributes",
-       c("COMID", "Pathlength", "LENGTHKM",
-         "LevelPathI", "DnLevelPat",
-         "DnHydroseq", "Hydroseq"),
-       envir = hydrogeofetch_env)
-
-assign("get_DM_nolength_attributes",
-       c("COMID",
-         "LevelPathI", "DnLevelPat",
-         "DnHydroseq", "Hydroseq"),
-       envir = hydrogeofetch_env)
-
-assign("get_DD_attributes",
-       c("COMID", "Pathlength", "LENGTHKM",
-         "LevelPathI", "DnLevelPat",
-         "DnHydroseq", "Hydroseq", "DnMinorHyd"),
-       envir = hydrogeofetch_env)
-
-assign("get_flowline_index_attributes",
-       c("COMID", "REACHCODE", "ToMeas", "FromMeas"),
-       envir = hydrogeofetch_env)
-
-assign("get_levelpaths_attributes",
-       c("ID", "toID", "nameID", "weight"),
-       envir = hydrogeofetch_env)
-
-assign("get_streamorder_attributes",
-       c("ID", "toID"),
-       envir = hydrogeofetch_env)
-
-assign("get_streamlevel_attributes",
-       c("LevelPathI", "DnLevelPat"),
-       envir = hydrogeofetch_env)
-
-assign("get_pfaf_attributes",
-       c("ID", "toID", "totda", "outletID", "topo_sort", "levelpath"),
-       envir = hydrogeofetch_env)
-
 assign("make_standalone_tonode_attributes",
        c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
          "LevelPathI", "FCODE"),
@@ -169,21 +121,6 @@ assign("make_standalone_tonode_attributes",
 assign("make_standalone_tocomid_attributes",
        c("COMID", "toCOMID", "Hydroseq", "TerminalPa",
          "LevelPathI", "FCODE"), envir = hydrogeofetch_env)
-
-assign("get_waterbody_index_waterbodies_attributes",
-       c("COMID"), envir = hydrogeofetch_env)
-
-assign("get_waterbody_index_flines_attributes",
-       c("COMID", "WBAREACOMI", "Hydroseq"),
-       envir = hydrogeofetch_env)
-
-assign("disambiguate_flowline_indexes_attributes",
-       c("id", "COMID", "REACHCODE", "REACH_meas", "offset"),
-       envir = hydrogeofetch_env)
-
-assign("add_plus_network_attributes_attributes",
-       c("comid", "tocomid", "nameID", "lengthkm"),
-       envir = hydrogeofetch_env)
 
 assign("subset_rpu_attributes",
        c("COMID", "Pathlength", "LENGTHKM",
@@ -195,10 +132,6 @@ assign("subset_vpu_attributes",
        c(get("subset_rpu_attributes",
              envir = hydrogeofetch_env),
          "VPUID"),
-       envir = hydrogeofetch_env)
-
-assign("fix_flowdir_attributes",
-       c("COMID", "toCOMID"),
        envir = hydrogeofetch_env)
 
 assign("get_hydro_location_attributes",
@@ -219,10 +152,6 @@ assign("on_off_network_attributes",
 
 assign("get_tocomid_attributes",
        c("COMID", "ToNode", "FromNode"),
-       envir = hydrogeofetch_env)
-
-assign("get_partial_length_attributes",
-       c("REACHCODE", "FromNode", "ToNode", "LENGTHKM"),
        envir = hydrogeofetch_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.
@@ -578,30 +507,5 @@ tc <- function(x) {
   Filter(Negate(is.null), x)
 }
 
-#' @importFrom hydroloom st_compatibalize
-#' @export
-hydroloom::st_compatibalize
-
-#' @importFrom hydroloom rename_geometry
-#' @export
-hydroloom::rename_geometry
-
-#' @importFrom hydroloom get_node
-#' @export
-hydroloom::get_node
-
-#' @importFrom hydroloom fix_flowdir
-#' @export
-hydroloom::fix_flowdir
-
-#' @importFrom hydroloom rescale_measures
-#' @export
-hydroloom::rescale_measures
-
-#' @importFrom hydroloom get_hydro_location
-#' @export
-hydroloom::get_hydro_location
-
-#' @importFrom hydroloom get_partial_length
-#' @export
-hydroloom::get_partial_length
+#' @importFrom hydroloom get_node get_hydro_location rescale_measures rename_geometry
+NULL

@@ -60,7 +60,7 @@ test_that("subset runs as expected", {
 
   all_comids <- fline$COMID
 
-  comids <- get_UM(fline, 13293392)
+  comids <- hydroloom::navigate_hydro_network(fline, 13293392, "UM")
 
   out_file <- tempfile(fileext = ".gpkg")
 
@@ -145,7 +145,7 @@ test_that("subset download", {
 
   fl <-  sf::read_sf(sample_data, "NHDFlowline_Network")
 
-  comids <- get_UM(fl, 13293392)
+  comids <- hydroloom::navigate_hydro_network(fl, 13293392, "UM")
 
   all_comids <- fl$COMID
 
@@ -204,7 +204,7 @@ test_that("subset works with HR", {
 
   flowlines <- sf::read_sf(out_gpkg, "NHDFlowline")
 
-  up_ids <- get_UT(flowlines, 15000500028335)
+  up_ids <- hydroloom::navigate_hydro_network(flowlines, 15000500028335, "UT")
 
   suppressWarnings(sub <- subset_nhdplus(up_ids,
                                          file.path(work_dir,

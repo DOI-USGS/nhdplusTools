@@ -18,7 +18,7 @@
 #' @param skip_toCOMID logical if TRUE, toCOMID will not be added to output.
 #' @param align_names logical
 #' @return data.frame ready to be used with the refactor_flowlines function.
-#' @importFrom dplyr select filter left_join group_split group_by bind_rows
+#' @importFrom dplyr select filter left_join group_split group_by bind_rows all_of
 #' @export
 #' @examples
 #'
@@ -262,5 +262,14 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
     as.data.frame(select(x, "comid", "tocomid"))
 
+  }
+}
+
+#' @noRd
+get_hyg <- function(x, add, id = "comid") {
+  if(add && inherits(x, "sf")) {
+    select(x, all_of(id))
+  } else {
+    NULL
   }
 }

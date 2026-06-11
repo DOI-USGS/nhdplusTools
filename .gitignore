@@ -26,3 +26,4 @@ vignettes/*_figures/
 vignettes/articles/*.html
 vignettes/articles/*_figures/
 vignettes/articles/*_files/
+.kiro/

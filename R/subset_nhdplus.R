@@ -492,6 +492,7 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #' should the run_make_standalone function be run on result?
 #' @export
 #' @importFrom dplyr filter select
+#' @importFrom hydroloom sort_network
 #' @return data.frame containing subset network
 #' @examples
 #'
@@ -560,7 +561,7 @@ recase_sf <- function(x, orig_names) {
 #' have no tributaries in the upstream RPU will be included in the output.
 #' @export
 #' @return data.frame containing subset network
-#' @importFrom dplyr filter arrange summarize
+#' @importFrom dplyr filter arrange summarize desc
 #' @importFrom sf st_sf st_drop_geometry
 #' @examples
 #'
@@ -680,10 +681,11 @@ get_all_navigable <- function(fline, rpu) {
 
   outlets <- arrange(outlets, desc(.data$arbolatesu))
 
-  network <- get_sorted(fline[c("comid", "tocomid")],
-                        split = FALSE, outlets = outlets$comid)
+  network <- sort_network(
+    stats::setNames(fline[c("comid", "tocomid")], c("id", "toid")),
+    split = FALSE, outlets = outlets$comid)
 
-  network$comid
+  network$id
 }
 
 #' @noRd

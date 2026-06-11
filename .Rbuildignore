@@ -32,3 +32,4 @@ inst/build
 PLAN.md
 ^tests/testthat/fixtures$
 ^vignettes/articles$
+^\.kiro$

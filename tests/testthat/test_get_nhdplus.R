@@ -5,7 +5,7 @@ source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 pt_data <- sample_flines
 
 test_that("get_nhdplus_byid", {
-  comid_set <- get_UT(pt_data, 11687180)
+  comid_set <- hydroloom::navigate_hydro_network(pt_data, 11687180, "UT")
 
   expect_error(hydrogeofetch:::get_nhdplus_byid(comid_set, "testest"),
                "Layer must be one of catchmentsp, nhdflowline_network")

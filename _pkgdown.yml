@@ -48,75 +48,37 @@ reference:
       - '`get_nldi_feature`'
       - '`get_split_catchment`'
       - '`get_raindrop_trace`'
-  - title: Indexing and Network Navigation
-    desc: >
-      Functions to index and match data to NHDPlus features. Most of these
-      work with any data that fits the expected data model. Some are very
-      specific to the NHDPlus data model but are not specific to a U.S
-      spatial context.
-  - contents:
-      - '`get_flowline_index`'
-      - '`get_hydro_location`'
-      - '`get_waterbody_index`'
-      - '`get_wb_outlet`'
-      - '`get_nldi_index`'
-      - '`get_node`'
-      - '`rescale_measures`'
-      - '`disambiguate_flowline_indexes`'
-      - '`get_partial_length`'
-      - '`get_path_lengths`'
-      - '`get_path_members`'
   - title: Network Navigation
     desc: >
-      Functions to traverse and return network subsets. All except `navigate_nldi()`
-      have applicability outside the U.S. context.
+      Functions to traverse and return network subsets. Navigation and indexing
+      functions have moved to the hydroloom package.
   - contents:
-      - '`get_DD`'
-      - '`get_DM`'
-      - '`get_UM`'
-      - '`get_UT`'
-      - '`navigate_network`'
       - '`navigate_nldi`'
+  - title: NHD-Specific Preparation
+    desc: >
+      Functions that prepare NHD data for use with hydroloom and other packages.
+  - contents:
+      - '`get_tocomid`'
+      - '`prepare_nhdplus`'
+      - '`align_nhdplus_names`'
   - title: Package Helpers
     desc: >
       Functions that make the package easier to work with.
   - contents:
-      - '`nhdplusTools_cache_settings`'
-      - '`st_compatibalize`'
-      - '`rename_geometry`'
-      - '`align_nhdplus_names`'
+      - '`hydrogeofetch_cache_settings`'
       - '`nhdplus_path`'
-      - '`nhdplusTools_data_dir`'
+      - '`hydrogeofetch_data_dir`'
       - '`plot_nhdplus`'
       - '`map_nhdplus`'
-      - '`prepare_nhdplus`'
       - '`get_vaa_names`'
       - '`get_vaa_path`'
-      - '`rescale_catchment_characteristics`'
-  - title: Network Attributes
-    desc: >
-      Functions that generate common river network attributes. These can be
-      used with any data that adheres to the supported data model. See function
-      documentation for specifics.
-  - contents:
-      - '`fix_flowdir`'
-      - '`get_tocomid`'
-      - '`make_node_topology`'
-      - '`get_sorted`'
-      - '`calculate_total_drainage_area`'
-      - '`calculate_arbolate_sum`'
-      - '`get_streamlevel`'
-      - '`get_levelpaths`'
-      - '`get_pathlength`'
-      - '`get_streamorder`'
-      - '`get_terminal`'
-      - '`add_plus_network_attributes`'
-      - '`get_pfaf`'
+      - '`get_nldi_index`'
+      - '`get_wb_outlet`'
 
 articles:
   - title: Vignettes
     contents:
-      - nhdplusTools
+      - hydrogeofetch
       - get_data_overview
       - plot_nhdplus
       - indexing

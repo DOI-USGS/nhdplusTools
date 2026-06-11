@@ -214,8 +214,8 @@ test_that("make_standalone", {
 
   outlet <- sa$COMID[sa$Hydroseq == min(sa$Hydroseq)]
 
-  sa_UT <- get_UT(sa, outlet)
-  fl_UT <- get_UT(fl, outlet)
+  sa_UT <- hydroloom::navigate_hydro_network(sa, outlet, "UT")
+  fl_UT <- hydroloom::navigate_hydro_network(fl, outlet, "UT")
   expect_equal(sa_UT, fl_UT)
 
   expect_true(all(sa[sa$Hydroseq == min(sa$Hydroseq), ][c("DnLevel", "DnLevelPat", "DnHydroseq")] == 0))

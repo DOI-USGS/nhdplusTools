@@ -58,6 +58,7 @@
 #'
 #' @export
 #' @importFrom graphics par
+#' @importFrom hydroloom navigate_hydro_network
 #' @examples
 #' \donttest{
 #' options("rgdal_show_exportToProj4_warnings"="none")
@@ -104,7 +105,7 @@
 #'                     crs = "+proj=longlat +datum=WGS84 +no_defs")
 #'
 #' fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
-#' comids <- hydrogeofetch::get_UT(fline, 13293970)
+#' comids <- hydroloom::navigate_hydro_network(fline, 13293970, "UT")
 #'
 #' plot_nhdplus(comids)
 #'
@@ -415,7 +416,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
       return(NULL)
     }
 
-    all_comids <- lapply(nexus, function(x) get_UT(align_nhdplus_names(flowline), x$comid))
+    all_comids <- lapply(nexus, function(x) navigate_hydro_network(align_nhdplus_names(flowline), x$comid, "UT"))
 
     subsets <- subset_nhdplus(comids = unlist(all_comids), output_file = gpkg,
                               nhdplus_data = nhdplus_data, status = FALSE,
@@ -472,7 +473,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
     flowline <- align_nhdplus_names(nhd_data$flowline)
 
     flowline <- do.call(rbind, lapply(nexus$comid, function(x) {
-      flowline[flowline$COMID %in% get_UT(align_nhdplus_names(flowline), x), ]
+      flowline[flowline$COMID %in% navigate_hydro_network(align_nhdplus_names(flowline), x, "UT"), ]
     }))
 
     catchment <- nhd_data$catchment

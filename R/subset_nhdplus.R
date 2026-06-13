@@ -56,7 +56,7 @@
 #'
 #' start_comid <- discover_nhdplus_id(start_point)
 #'
-#' comids <- get_UT(sample_flines, start_comid)
+#' comids <- hydroloom::navigate_hydro_network(sample_flines, start_comid, "UT")
 #'
 #' plot(sf::st_geometry(dplyr::filter(sample_flines, COMID %in% comids)),
 #'      add=TRUE, col = "red", lwd = 2)
@@ -95,7 +95,7 @@
 #' # NHDPlusHR
 #' source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 #'
-#' up_ids <- get_UT(hr_data$NHDFlowline, 15000500028335)
+#' up_ids <- hydroloom::navigate_hydro_network(hr_data$NHDFlowline, 15000500028335, "UT")
 #'
 #' sub_gpkg <- file.path(work_dir, "sub.gpkg")
 #' sub_nhdhr <- subset_nhdplus(up_ids, output_file = sub_gpkg,

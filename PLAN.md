@@ -151,6 +151,10 @@ Policy is set in CLAUDE.md and the `feedback_web_service_response_handling` memo
 
 **Gate:** Run the full test suite live to confirm service compatibility. Review httptest2 fixture sizes — if any are too large to check in, simplify or move those tests to live-only.
 
+### Deferred: Lazy OGC API discovery
+
+`discover_oafeat` ([oafeat_tools.R:164](R/oafeat_tools.R#L164)) eagerly fetches queryables for every collection (~30 requests) even though each caller needs only one. Make queryables fetching lazy — fetch only for the collection actually requested. Cuts ~30 HTTP round-trips to 3 (landing, collections, one queryables), shrinks httptest2 fixture directories from ~35 files to ~5, and reduces fragility when the API adds or renames collections.
+
 
 ## 4. Reduce hydroloom duplication
 

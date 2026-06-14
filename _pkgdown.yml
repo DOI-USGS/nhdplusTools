@@ -79,8 +79,9 @@ articles:
   - title: Vignettes
     contents:
       - hydrogeofetch
-      - get_data_overview
-      - plot_nhdplus
-      - nhdplushr
-      - get_3dhp_data
-      - drainage_area_estimation
+      - articles/get_data_overview
+      - articles/plot_nhdplus
+      - articles/nhdplushr
+      - articles/get_3dhp_data
+      - articles/drainage_area_estimation
+      - articles/migrating_from_nhdplusTools

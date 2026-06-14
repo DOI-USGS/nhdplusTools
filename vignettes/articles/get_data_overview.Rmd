@@ -275,7 +275,7 @@ sub_3dhp <- get_3dhp(basin, type = "flowline")
 
 plot(sub_3dhp)
 
-sub_3dhp <- st_compatibalize(sub_3dhp, nhd_fline)
+sub_3dhp <- hydroloom::st_compatibalize(sub_3dhp, nhd_fline)
 
 par(mar = c(0, 0, 0, 0))
 plot(sf::st_geometry(basin), col = "grey")

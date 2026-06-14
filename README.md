@@ -25,9 +25,8 @@ so code pinned to `nhdplusTools` will continue to run.
 
 ### Recommended Citation:
 
-      Blodgett, D., Johnson, J.M., 2022, nhdplusTools: Tools for
-      Accessing and Working with the NHDPlus,
-      https://doi.org/10.5066/P97AS8JD
+      Blodgett, D. 2026, hydrogeofetch: Hydrologic Geospatial
+      Fabric Data Extraction Tool Chain, TBD-DOI
 
 ### Installation:
 

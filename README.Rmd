@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 
 ## hydrogeofetch: Tools for Accessing and Working with the NHDPlus and other US hydrographic data.
 
-## Major changes in 1.0.0
+## Major changes in 2.0.0
 
 Indexing, network navigation, and network attribute functions have moved to [**hydroloom**](https://doi-usgs.github.io/hydroloom/). hydrogeofetch is now focused on data access and NHD-specific preparation; hydroloom handles the general-purpose network analysis that was previously bundled here.
 
@@ -174,7 +174,7 @@ Development happens on GitHub (doi-usgs/nhdplusTools). Official builds and relea
 
 **Local development** does not require building the source package. Use `devtools::test()`, `devtools::check()`, and `devtools::document()` directly.
 
-**Release candidates** are built on code.usgs.gov. Push a branch named `rc/<version>` (e.g. `rc/1.0.0`) to trigger the GitLab CI pipeline, which runs three stages:
+**Release candidates** are built on code.usgs.gov. Push a branch named `rc/<version>` (e.g. `rc/2.0.0`) to trigger the GitLab CI pipeline, which runs three stages:
 
 1. **check** -- lightweight structural check (no tests, no examples, no vignettes). Gates the rest of the pipeline.
 2. **build** -- `R CMD build .` to produce the source tarball. Uploads the tarball to the GitLab generic package registry.

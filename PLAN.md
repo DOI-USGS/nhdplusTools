@@ -14,8 +14,8 @@ Rename all internal references so the package installs and loads as `hydrogeofet
 
 ### 2a. Package identity ✓
 
-- [x] DESCRIPTION: `Package: hydrogeofetch`, `Title: Hydrologic Geospatial Fabric Extraction Tool Chain`, `Version: 1.0.0`, updated `Description:` (leave `URL:` and `BugReports:` pointing at current repo until milestone 6)
-- [x] NEWS.md: added hydrogeofetch 1.0.0 header; nhdplusTools history preserved below
+- [x] DESCRIPTION: `Package: hydrogeofetch`, `Title: Hydrologic Geospatial Fabric Extraction Tool Chain`, `Version: 2.0.0`, updated `Description:` (leave `URL:` and `BugReports:` pointing at current repo until milestone 6)
+- [x] NEWS.md: added hydrogeofetch 2.0.0 header; nhdplusTools history preserved below
 - [x] README.Rmd: updated title, heading, narrative text. Badge URLs, `install.packages()`, `remotes::install_github()` left pointing at nhdplusTools. README.md re-knit.
 
 Deferred to later milestones:
@@ -360,7 +360,7 @@ Submit hydrogeofetch v1.0 to CRAN. The repo is still named nhdplusTools at this 
 - All `\donttest` examples fail gracefully under degraded service conditions (CRAN runs `\donttest` examples) — strict response-type checking in every web-service caller, not `\dontrun` conversions
 - Help pages for renamed functions (`?hydrogeofetch_data_dir`, `?hydrogeofetch_cache_settings`) render correctly
 
-**Release workflow:** Push an `rc/1.0.0` branch to code.usgs.gov. The GitLab CI pipeline runs a lightweight structural check, builds the source tarball, uploads it to the GitLab package registry, and runs `R CMD check --as-cran` on that tarball. Download the verified tarball from the registry and submit it to CRAN. See `.gitlab-ci.yml` and the README "Build and release" section for details.
+**Release workflow:** Push an `rc/2.0.0` branch to code.usgs.gov. The GitLab CI pipeline runs a lightweight structural check, builds the source tarball, uploads it to the GitLab package registry, and runs `R CMD check --as-cran` on that tarball. Download the verified tarball from the registry and submit it to CRAN. See `.gitlab-ci.yml` and the README "Build and release" section for details.
 
 **Done when:** Package accepted and available on CRAN.
 

@@ -200,7 +200,7 @@ image size in the drainage area vignette.
 directly.
 
 **Release candidates** are built on code.usgs.gov. Push a branch named
-`rc/<version>` (e.g. `rc/1.0.0`) to trigger the GitLab CI pipeline,
+`rc/<version>` (e.g. `rc/2.0.0`) to trigger the GitLab CI pipeline,
 which runs three stages:
 
 1.  **check** – lightweight structural check (no tests, no examples, no

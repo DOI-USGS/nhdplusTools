@@ -18,4 +18,10 @@ translating geoconnex mainstem identifiers to NHDPlusV2 comids
 (\code{type = "nhdpv2"}) or NHDPlusHR NHDPlusIDs (\code{type = "nhdphr"}).
 Will use the user data dir indicated by \link{hydrogeofetch_data_dir}.
 }
+\details{
+Source data comes from the ref_rivers GitHub release
+\href{https://github.com/internetofwater/ref_rivers/releases}{here}. The
+csv source data is downloaded once, converted to parquet, and cached in
+the user data dir indicated by \link{hydrogeofetch_data_dir}.
+}
 \keyword{internal}

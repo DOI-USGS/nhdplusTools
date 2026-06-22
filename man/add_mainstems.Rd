@@ -23,8 +23,13 @@ automatically from \code{join_col} if not provided.}
 \description{
 Joins geoconnex mainstem identifiers onto a table that
 contains NHDPlusV2 (comid/featureid) or NHDPlusHR (nhdplusid)
-identifiers using the ref_rivers lookup table. See
-\link{download_mainstem_lookup} for source data details.
+identifiers using a lookup table.
+}
+\details{
+Source data comes from the ref_rivers GitHub release
+\href{https://github.com/internetofwater/ref_rivers/releases}{here}. The
+csv source data is downloaded once, converted to parquet, and cached in
+the user data dir indicated by \link{hydrogeofetch_data_dir}.
 }
 \examples{
 \donttest{

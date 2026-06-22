@@ -10,7 +10,7 @@ mainstem_lookup_id_col <- function(type) {
 #' (\code{type = "nhdpv2"}) or NHDPlusHR NHDPlusIDs (\code{type = "nhdphr"}).
 #' Will use the user data dir indicated by \link{hydrogeofetch_data_dir}.
 #' @param type character one of "nhdpv2" or "nhdphr"
-#' @inherit download_mainstem_lookup details
+#' @inherit add_mainstems details
 #' @return character file path
 #' @keywords internal
 get_mainstem_lookup_path <- function(type) {
@@ -25,9 +25,8 @@ get_mainstem_lookup_path <- function(type) {
 
 #' @title Download mainstem lookup table from ref_rivers
 #' @description Downloads and caches a geoconnex mainstem identifier lookup
-#' table on your computer. Source data comes from the ref_rivers GitHub
-#' release \href{https://github.com/internetofwater/ref_rivers/releases}{here}.
-#' The csv source data is converted to parquet for caching.
+#' table on your computer.
+#' @inherit add_mainstems details
 #' @inheritParams get_mainstem_lookup_path
 #' @param path character path where the file should be saved. Default is a
 #' persistent system data dir as retrieved by \link{hydrogeofetch_data_dir}.
@@ -108,8 +107,11 @@ parse_replacement_uris <- function(x) {
 #' @title Add mainstem identifiers
 #' @description Joins geoconnex mainstem identifiers onto a table that
 #' contains NHDPlusV2 (comid/featureid) or NHDPlusHR (nhdplusid)
-#' identifiers using the ref_rivers lookup table. See
-#' \link{download_mainstem_lookup} for source data details.
+#' identifiers using a lookup table.
+#' @details Source data comes from the ref_rivers GitHub release
+#' \href{https://github.com/internetofwater/ref_rivers/releases}{here}. The
+#' csv source data is downloaded once, converted to parquet, and cached in
+#' the user data dir indicated by \link{hydrogeofetch_data_dir}.
 #' @param x data.frame or sf containing an identifier column joinable to
 #' NHDPlusV2 or NHDPlusHR.
 #' @param join_col character name of the identifier column in \code{x}.

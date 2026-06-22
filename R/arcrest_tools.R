@@ -170,7 +170,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
                           outFields = "*",
                           f = "geojson")
 
-        out[[i]] <- hgf_sf(URL, body = post_body, encode = "form")
+        out[i] <- list(hgf_sf(URL, body = post_body, encode = "form"))
       }
 
       if(inherits(out[[1]], "data.frame")) {

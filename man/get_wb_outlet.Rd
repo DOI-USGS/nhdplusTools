@@ -21,7 +21,7 @@ Get Waterbody Outlet
 \examples{
 \donttest{
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
 wtbdy <- sf::read_sf(sample_data, "NHDWaterbody")

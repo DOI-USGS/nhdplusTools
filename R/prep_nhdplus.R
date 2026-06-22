@@ -1,5 +1,5 @@
 #' @title Prep NHDPlus Data
-#' @description Function to prep NHDPlus data for use by nhdplusTools functions
+#' @description Function to prep NHDPlus data for use by hydrogeofetch functions
 #' @param flines data.frame NHDPlus flowlines including:
 #' COMID, LENGTHKM, FTYPE (or FCODE), TerminalFl, FromNode, ToNode, TotDASqKM,
 #' StartFlag, StreamOrde, StreamCalc, TerminalPa, Pathlength,
@@ -18,11 +18,11 @@
 #' @param skip_toCOMID logical if TRUE, toCOMID will not be added to output.
 #' @param align_names logical
 #' @return data.frame ready to be used with the refactor_flowlines function.
-#' @importFrom dplyr select filter left_join group_split group_by bind_rows
+#' @importFrom dplyr select filter left_join group_split group_by bind_rows all_of
 #' @export
 #' @examples
 #'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #'
 #' prepare_nhdplus(sample_flines,
 #'                 min_network_size = 10,
@@ -66,7 +66,7 @@ prepare_nhdplus <- function(flines,
 
   assign("prepare_nhdplus_attributes",
          unique(req_names),
-         envir = nhdplusTools_env)
+         envir = hydrogeofetch_env)
 
   flines <- check_names(flines, "prepare_nhdplus", tolower = TRUE)
 
@@ -201,7 +201,7 @@ filter_coastal <- function(flines) {
 #' @importFrom hydroloom add_toids
 #' @export
 #' @examples
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#' source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 #'
 #' tocomid <- get_tocomid(sample_flines)
 #'
@@ -262,5 +262,14 @@ get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
 
     as.data.frame(select(x, "comid", "tocomid"))
 
+  }
+}
+
+#' @noRd
+get_hyg <- function(x, add, id = "comid") {
+  if(add && inherits(x, "sf")) {
+    select(x, all_of(id))
+  } else {
+    NULL
   }
 }

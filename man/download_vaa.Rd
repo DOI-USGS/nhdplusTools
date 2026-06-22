@@ -12,7 +12,7 @@ download_vaa(
 }
 \arguments{
 \item{path}{character path where the file should be saved. Default is a
-persistent system data as retrieved by \link{nhdplusTools_data_dir}.
+persistent system data as retrieved by \link{hydrogeofetch_data_dir}.
 Also see: \link{get_vaa_path}}
 
 \item{force}{logical. Force data re-download. Default = FALSE}

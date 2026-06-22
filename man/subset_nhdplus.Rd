@@ -56,7 +56,7 @@ character path to the saved subset geopackage
 }
 \description{
 Saves a subset of the National Seamless database or other
-nhdplusTools compatible data based on a specified collection of COMIDs.
+hydrogeofetch compatible data based on a specified collection of COMIDs.
 This function uses \code{\link{get_nhdplus}} for the "download" data
 source but returns data consistent with local data subsets in a subset
 file.
@@ -73,7 +73,7 @@ be available permanently.
 \examples{
 \donttest{
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 nhdplus_path(sample_data)
 
@@ -89,7 +89,7 @@ plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
 
 start_comid <- discover_nhdplus_id(start_point)
 
-comids <- get_UT(sample_flines, start_comid)
+comids <- hydroloom::navigate_hydro_network(sample_flines, start_comid, "UT")
 
 plot(sf::st_geometry(dplyr::filter(sample_flines, COMID \%in\% comids)),
      add=TRUE, col = "red", lwd = 2)
@@ -126,9 +126,9 @@ subset_nhdplus(comids = comids,
 sf::st_layers(output_file)
 
 # NHDPlusHR
-source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 
-up_ids <- get_UT(hr_data$NHDFlowline, 15000500028335)
+up_ids <- hydroloom::navigate_hydro_network(hr_data$NHDFlowline, 15000500028335, "UT")
 
 sub_gpkg <- file.path(work_dir, "sub.gpkg")
 sub_nhdhr <- subset_nhdplus(up_ids, output_file = sub_gpkg,

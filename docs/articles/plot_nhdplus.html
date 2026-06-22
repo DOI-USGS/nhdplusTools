@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plotting with nhdplusTools • nhdplusTools</title>
+<title>Plotting with hydrogeofetch • hydrogeofetch</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -16,7 +16,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Plotting with nhdplusTools">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Plotting with hydrogeofetch">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -36,15 +36,15 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0.9000</span>
+        <a class="navbar-link" href="../index.html">hydrogeofetch</a>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/nhdplusTools.html">Get started</a>
+  <a href="../articles/hydrogeofetch.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -76,11 +76,11 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Plotting with nhdplusTools</h1>
+      <h1 data-toc-skip>Plotting with hydrogeofetch</h1>
                         <h4 data-toc-skip class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/doi-usgs/nhdplusTools/blob/HEAD/vignettes/plot_nhdplus.Rmd" class="external-link"><code>vignettes/plot_nhdplus.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/doi-usgs/nhdplusTools/blob/HEAD/vignettes/articles/plot_nhdplus.Rmd" class="external-link"><code>vignettes/articles/plot_nhdplus.Rmd</code></a></small>
       <div class="hidden name"><code>plot_nhdplus.Rmd</code></div>
 
     </div>
@@ -88,7 +88,7 @@
     
     
 <div class="section level2">
-<h2 id="plotting-with-nhdplustools">Plotting with nhdplusTools<a class="anchor" aria-label="anchor" href="#plotting-with-nhdplustools"></a>
+<h2 id="plotting-with-hydrogeofetch">Plotting with hydrogeofetch<a class="anchor" aria-label="anchor" href="#plotting-with-hydrogeofetch"></a>
 </h2>
 <p>The goal of this vignette is to demonstrate a simple and lightweight
 approach to building maps with NHDPlus data.</p>
@@ -102,18 +102,18 @@ requests and issues you find in an <a href="https://github.com/DOI-USGS/nhdplusT
 here</a>.</strong></p>
 <p><code>plot_nhdplus</code> is a function that makes getting a simple
 plot of NHDPlus data as easy as possible. It works with other functions
-from <code>nhdplusTools</code> for identifying and retrieving watershed
+from <code>hydrogeofetch</code> for identifying and retrieving watershed
 outlet locations. See the <code>plot_nhdplus</code> documentation for
 more info.</p>
 <p>If we pass <code>plot_nhdplus</code> a single NWIS site id,
-<code>nhdplusTools</code> uses web services to get data and we get a
+<code>hydrogeofetch</code> uses web services to get data and we get a
 plot like this:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="st">"05428500"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="plot_nhdplus_files/figure-html/nwis_simple1-1.png" class="r-plt" alt="" width="432"></p>
 <p>If we want to add other watersheds, we can use any outlet available
 from the Network Linked Data Index. See “nldi” functions elsewhere in
-<code>nhdplusTools</code>.</p>
+<code>hydrogeofetch</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>,</span>
 <span>                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"huc12pp"</span>, <span class="st">"070900020602"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -136,7 +136,7 @@ to get a subset of data for a plot and the range of options. See
 documentation for more details.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"hydrogeofetch"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_nhdplus.html">plot_nhdplus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"comid"</span>, <span class="st">"13293970"</span><span class="op">)</span>,</span>
 <span>                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"nwissite"</span>, <span class="st">"USGS-05428500"</span><span class="op">)</span>,</span>
@@ -161,7 +161,7 @@ to this coordinate system to be added to the plot.</p>
 <div class="section level3">
 <h3 id="getting-data">Getting Data<a class="anchor" aria-label="anchor" href="#getting-data"></a>
 </h3>
-<p>What follows shows how to use <code>nhdplusTools</code> to create
+<p>What follows shows how to use <code>hydrogeofetch</code> to create
 plots without the <code>plot_nhdplus</code> function. While super
 convenient, we all know the “easy button” is never quite right, the
 description below should help get you started.</p>
@@ -170,7 +170,8 @@ other options are possible with <code>discover_nhdplus_id</code> and
 <code><a href="https://rdrr.io/pkg/dataRetrieval/man/get_nldi_sources.html" class="external-link">dataRetrieval::get_nldi_sources</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi-usgs.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Linking to GEOS 3.14.1, GDAL 3.12.1, PROJ 9.7.1; sf_use_s2() is TRUE</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi-usgs.github.io/nhdplusTools/">hydrogeofetch</a></span><span class="op">)</span></span>
 <span><span class="va">nwissite</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>featureSource <span class="op">=</span> <span class="st">"nwissite"</span>, </span>
 <span>                     featureID <span class="op">=</span> <span class="st">"USGS-05428500"</span><span class="op">)</span></span>
 <span></span>
@@ -369,7 +370,7 @@ suggestions.</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by David Blodgett, Mike Johnson.</p>
+<p>Developed by David Blodgett.</p>
 </div>
 
 <div class="pkgdown">

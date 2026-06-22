@@ -1,0 +1,495 @@
+{
+    "type": "Feature",
+    "properties": {
+        "fid": 33931,
+        "id": "2086637",
+        "uri": "https://geoconnex.us/ref/mainstems/2086637",
+        "featuretype": "['https://www.opengis.net/def/schema/hy_features/hyf/HY_FlowPath', 'https://www.opengis.net/def/schema/hy_features/hyf/HY_WaterBody']",
+        "downstream_mainstem_id": "",
+        "encompassing_mainstem_basins": "",
+        "name_at_outlet": "Stony Creek",
+        "name_at_outlet_gnis_id": 966555,
+        "head_nhdpv2_comid": "https://geoconnex.us/nhdplusv2/comid/22023788",
+        "outlet_nhdpv2_comid": "https://geoconnex.us/nhdplusv2/comid/22023492",
+        "head_nhdpv2huc12": "https://geoconnex.us/nhdplusv2/huc12/041402020303",
+        "outlet_nhdpv2huc12": "https://geoconnex.us/nhdplusv2/huc12/041402020303",
+        "lengthkm": 15.7,
+        "outlet_drainagearea_sqkm": 116.8,
+        "head_rf1id": null,
+        "outlet_rf1id": null,
+        "head_nhdpv1_comid": 22023788,
+        "outlet_nhdpv1_comid": 22023492,
+        "head_2020huc12": "",
+        "outlet_2020huc12": "",
+        "superseded": true,
+        "new_mainstemid": "",
+        "datasets": [
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Ammonia at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Ammonia",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Ammonia&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Count at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Count",
+                "variableUnit": "count (no unit)",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Count&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Calcium at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Calcium",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Calcium&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Nitrate at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Nitrate",
+                "variableUnit": "milligrams per liter as nitrogen",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Nitrate&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Total suspended solids at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Total suspended solids",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Total suspended solids&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Sulfate at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Sulfate",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Sulfate&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Conductivity at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Conductivity",
+                "variableUnit": "microsiemens per centimeter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Conductivity&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "True color at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "True color",
+                "variableUnit": "platinum-cobalt units",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=True color&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "pH at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "pH",
+                "variableUnit": "Unknown",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=pH&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Gran acid neutralizing capacity at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Gran acid neutralizing capacity",
+                "variableUnit": "microequivalents per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Gran acid neutralizing capacity&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Nitrite at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Nitrite",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Nitrite&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Chlorophyll a at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Chlorophyll a",
+                "variableUnit": "micrograms per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Chlorophyll a&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Potassium at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Potassium",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Potassium&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Turbidity at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Turbidity",
+                "variableUnit": "Jackson turbidity units",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Turbidity&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Magnesium at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Magnesium",
+                "variableUnit": "percent",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Magnesium&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Sodium at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Sodium",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Sodium&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Chloride at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Chloride",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Chloride&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Silica at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Silica",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Silica&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Dissolved oxygen (DO) at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Dissolved oxygen (DO)",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Dissolved oxygen (DO)&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Specific conductance at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Specific conductance",
+                "variableUnit": "microsiemens per centimeter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Specific conductance&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Organic carbon at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Organic carbon",
+                "variableUnit": "milligrams per liter",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Organic carbon&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            },
+            {
+                "monitoringLocation": "https://geoconnex.us/iow/wqp/NARS_WQX-NYSS-1238",
+                "siteName": "NARS_WQX-NYSS-1238",
+                "datasetDescription": "Temperature, water at NARS_WQX-NYSS-1238",
+                "type": "River/Stream",
+                "url": "https://www.waterqualitydata.us/provider/STORET/NARS_WQX/NARS_WQX-NYSS-1238/",
+                "variableMeasured": "Temperature, water",
+                "variableUnit": "degrees Celsius",
+                "measurementTechnique": "observation",
+                "temporalCoverage": "2013-01-01T00:00:00Z/2013-12-31T00:00:00Z",
+                "distributionName": "Water Quality Portal",
+                "distributionURL": "https://www.waterqualitydata.us/data/Result/search?siteid=NARS_WQX-NYSS-1238&CharacteristicName=Temperature, water&mimeType=csv",
+                "distributionFormat": "text/comma-separated-values",
+                "wkt": "POINT (-75.58383 43.12556)"
+            }
+        ]
+    },
+    "id": "2086637",
+    "geometry": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -75.57267279313614,
+                43.11657299974126
+            ],
+            [
+                -75.56914012647485,
+                43.12217519973247
+            ],
+            [
+                -75.56970012647406,
+                43.124348199729155
+            ],
+            [
+                -75.57329092646849,
+                43.12448713306218
+            ],
+            [
+                -75.57659772646332,
+                43.12858253305591
+            ],
+            [
+                -75.58381292645208,
+                43.125657599727106
+            ],
+            [
+                -75.58936772644347,
+                43.131903399717366
+            ],
+            [
+                -75.57898099312632,
+                43.158156999676635
+            ],
+            [
+                -75.5773175931289,
+                43.16856319966048
+            ],
+            [
+                -75.5650541264813,
+                43.18390493297
+            ],
+            [
+                -75.56051332648832,
+                43.19263959962312
+            ],
+            [
+                -75.55106432650291,
+                43.20006753294503
+            ],
+            [
+                -75.55474919316396,
+                43.20377499960578
+            ],
+            [
+                -75.54964559317187,
+                43.21013033292926
+            ],
+            [
+                -75.55245879316749,
+                43.21095553292805
+            ],
+            [
+                -75.55208019316802,
+                43.21383699959013
+            ],
+            [
+                -75.55608152649518,
+                43.21502879958836
+            ],
+            [
+                -75.55392212649849,
+                43.21658273291944
+            ],
+            [
+                -75.55782999315909,
+                43.217774332917415
+            ],
+            [
+                -75.56145319315351,
+                43.22212199957738
+            ]
+        ]
+    },
+    "prev": "2086621",
+    "next": "2086663",
+    "links": [
+        {
+            "type": "application/json",
+            "rel": "root",
+            "title": "The landing page of this server as JSON",
+            "href": "https://reference.geoconnex.us?f=json"
+        },
+        {
+            "type": "text/html",
+            "rel": "root",
+            "title": "The landing page of this server as HTML",
+            "href": "https://reference.geoconnex.us?f=html"
+        },
+        {
+            "rel": "self",
+            "type": "application/geo+json",
+            "title": "This document as JSON",
+            "href": "https://geoconnex.us/ref/mainstems/2086637?f=json"
+        },
+        {
+            "rel": "alternate",
+            "type": "application/ld+json",
+            "title": "This document as RDF (JSON-LD)",
+            "href": "https://geoconnex.us/ref/mainstems/2086637?f=jsonld"
+        },
+        {
+            "rel": "alternate",
+            "type": "text/html",
+            "title": "This document as HTML",
+            "href": "https://geoconnex.us/ref/mainstems/2086637?f=html"
+        },
+        {
+            "rel": "collection",
+            "type": "application/json",
+            "title": "Reference Mainstems",
+            "href": "https://reference.geoconnex.us/collections/mainstems"
+        },
+        {
+            "rel": "prev",
+            "type": "application/json",
+            "href": "https://reference.geoconnex.us/collections/mainstems/items/2086621?f=json"
+        },
+        {
+            "rel": "next",
+            "type": "application/json",
+            "href": "https://reference.geoconnex.us/collections/mainstems/items/2086663?f=json"
+        }
+    ]
+}

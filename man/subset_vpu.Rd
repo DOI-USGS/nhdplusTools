@@ -29,7 +29,7 @@ requested vector processing unit.
 }
 \examples{
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 

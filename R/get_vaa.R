@@ -1,8 +1,8 @@
 #' @title File path to value added attribute (vaa) Cache
-#' @description nhdplusTools will download and cache an `fst` file with
+#' @description hydrogeofetch will download and cache a parquet file with
 #' NHDPlusV2 attribute data sans geometry. This function returns the
 #' file path to the cached file. Will use the user data dir indicated
-#' by \link{nhdplusTools_data_dir}.
+#' by \link{hydrogeofetch_data_dir}.
 #' @param updated_network logical default FALSE. If TRUE, returns path to updated
 #' network parameters. See \link{get_vaa} for more.
 #' @inherit download_vaa details
@@ -16,9 +16,9 @@
 
 get_vaa_path <- function(updated_network = FALSE) {
   if(updated_network) {
-    file.path(nhdplusTools_data_dir(), "enhd_nhdplusatts.fst")
+    file.path(hydrogeofetch_data_dir(), "enhd_nhdplusatts.parquet")
   } else {
-    file.path(nhdplusTools_data_dir(), "nhdplusVAA.fst")
+    file.path(hydrogeofetch_data_dir(), "nhdplusVAA.parquet")
   }
 }
 
@@ -27,7 +27,6 @@ get_vaa_path <- function(updated_network = FALSE) {
 #' @inherit download_vaa details
 #' @inheritParams get_vaa
 #' @return character vector
-#' @importFrom fst metadata_fst
 #' @export
 #' @examples
 #' \dontrun{
@@ -42,7 +41,7 @@ get_vaa_names <- function(updated_network = FALSE) {
 
   check_vaa_path(path, TRUE)
 
-  fst::metadata_fst(path)[["columnNames"]]
+  arrow::open_dataset(path)$schema$names
 }
 
 #' @title NHDPlusV2 Attribute Subset
@@ -50,7 +49,7 @@ get_vaa_names <- function(updated_network = FALSE) {
 #' @inherit download_vaa details
 #' @param atts character The variable names you would like, always includes comid
 #' @param path character path where the file should be saved. Default is a
-#' persistent system data as retrieved by \link{nhdplusTools_data_dir}.
+#' persistent system data as retrieved by \link{hydrogeofetch_data_dir}.
 #' Also see: \link{get_vaa_path}
 #' @param download logical if TRUE, the default, will download VAA table if not
 #' found at path.
@@ -58,7 +57,6 @@ get_vaa_names <- function(updated_network = FALSE) {
 #' from E2NHD and National Water Model retrieved from
 #' \doi{10.5066/P976XCVT}.
 #' @return data.frame containing requested VAA data
-#' @importFrom fst read.fst
 #' @export
 #' @examples
 #' \dontrun{
@@ -82,11 +80,11 @@ get_vaa <- function(atts = NULL,
   check_vaa_path(path, download, FALSE)
 
   if(updated_network) {
-    updated_net_path <- file.path(dirname(path), "enhd_nhdplusatts.fst")
+    updated_net_path <- file.path(dirname(path), "enhd_nhdplusatts.parquet")
 
     check_vaa_path(updated_net_path, download, TRUE)
 
-    new_names <- fst::metadata_fst(updated_net_path)[["columnNames"]]
+    new_names <- arrow::open_dataset(updated_net_path)$schema$names
   }
 
   available_names = get_vaa_names(updated_network)
@@ -121,17 +119,19 @@ get_vaa <- function(atts = NULL,
 
     replace_names <- atts[atts %in% new_names & !atts %in% deprecated_names]
 
-    # Grab the original vaas but not the ones we are going to replace.
-    out <- fst::read.fst(path, include_names)
+    # as.data.frame strips any data.table class arrow may attach on metadata
+    # roundtrip failure, keeping the data.frame `[` semantics downstream.
+    out <- as.data.frame(arrow::read_parquet(path, col_select = include_names))
 
-    # grab all the new attributes.
-    new_comid <- fst::read.fst(updated_net_path, "comid")
+    new_comid <- arrow::read_parquet(updated_net_path, col_select = "comid")
 
-    # reorder out to match new -- also drop stuff missing from new.
     out <- out[match(new_comid$comid, out$comid), , drop = FALSE]
 
-    out <- cbind(out, fst::read.fst(updated_net_path,
-                                    c(replace_names[replace_names != "comid"])))
+    cols_to_add <- replace_names[replace_names != "comid"]
+    if(length(cols_to_add) > 0) {
+      out <- cbind(out, as.data.frame(arrow::read_parquet(updated_net_path,
+                                                          col_select = cols_to_add)))
+    }
 
     reorder <- match(get_vaa_names(updated_network), names(out))
 
@@ -141,7 +141,7 @@ get_vaa <- function(atts = NULL,
 
   } else {
 
-    return(fst::read_fst(path, c('comid', atts[atts != 'comid'])))
+    return(as.data.frame(arrow::read_parquet(path, col_select = c('comid', atts[atts != 'comid']))))
   }
 
 }
@@ -171,7 +171,6 @@ check_vaa_path <- function(path, download, updated_network = FALSE) {
 #' @param force logical. Force data re-download. Default = FALSE
 #' @return character path to cached data
 #' @export
-#' @importFrom httr GET progress write_disk
 
 download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, updated_network = FALSE) {
 
@@ -186,13 +185,7 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 
     dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
 
-    resp <- httr::GET(url,
-                      httr::write_disk(path, overwrite = TRUE),
-                      httr::progress())
-
-    if (resp$status_code != 200) {
-      stop("Download unsuccessfull :(")
-    }
+    if(is.null(hgf_download(url, path))) return(NULL)
   }
   # return file path
   return(path)
@@ -231,7 +224,7 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
   if(source == "streamcat") {
     check_pkg("StreamCatTools")
 
-    r <- file.path(nhdplusTools_data_dir(), "streamcat_metadata.rds")
+    r <- file.path(hydrogeofetch_data_dir(), "streamcat_metadata.rds")
 
     if(!cache) unlink(r, force = TRUE)
 
@@ -241,8 +234,8 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
       } else {
         params <- StreamCatTools::sc_get_params(param = "variable_info")
 
-        if(!dir.exists(nhdplusTools_data_dir()))
-          dir.create(nhdplusTools_data_dir(), recursive = TRUE)
+        if(!dir.exists(hydrogeofetch_data_dir()))
+          dir.create(hydrogeofetch_data_dir(), recursive = TRUE)
 
         saveRDS(params, r)
         params
@@ -265,8 +258,8 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
   out <- tryCatch({
     u <- "https://prod-is-usgs-sb-prod-publish.s3.amazonaws.com/5669a79ee4b08895842a1d47/metadata_table.tsv"
 
-    f <- file.path(nhdplusTools_data_dir(), "metadata_table.tsv")
-    r <- file.path(nhdplusTools_data_dir(), "metadata_table.rds")
+    f <- file.path(hydrogeofetch_data_dir(), "metadata_table.tsv")
+    r <- file.path(hydrogeofetch_data_dir(), "metadata_table.rds")
 
     if(!cache) {
       unlink(r, force = TRUE)
@@ -279,7 +272,7 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
 
       if(!dir.exists(dirname(f))) dir.create(dirname(f), recursive = TRUE)
 
-      if(!file.exists(f)) resp <- httr::RETRY("GET", u, httr::write_disk(f))
+      if(!file.exists(f)) hgf_download(u, f, progress = FALSE)
 
       out <- read.delim(f, sep = "\t")
 
@@ -332,7 +325,7 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
 #' (for metrics like BankfullDepth, IWI, etc.). Ignored when
 #' \code{source = "usgs"} where the area of interest is encoded in the
 #' variable name prefix (e.g. CAT_, TOT_, ACC_).
-#' @importFrom dplyr bind_rows filter select everything collect
+#' @importFrom dplyr bind_rows filter select everything collect all_of
 #' @importFrom arrow s3_bucket open_dataset
 #' @export
 #' @examples
@@ -388,9 +381,12 @@ get_catchment_characteristics <- function(varname, ids,
       sub <- filter(select(ds, any_of(cols_to_select)),
                     .data$COMID %in% ids)
 
-      att <- collect(sub)
+      # as.data.frame strips the data.table class arrow may attach when its
+      # R metadata roundtrip fails (e.g. externalptr columns) so downstream
+      # `att[, cols, drop = FALSE]` keeps the data.frame semantics it expects.
+      att <- as.data.frame(collect(sub))
 
-      att <- dplyr::mutate_all(att, ~ifelse(. == -9999, NA, .))
+      att <- dplyr::mutate_all(att, \(x) ifelse(x == -9999, NA, x))
 
       has_pct_nodata <- "percent_nodata" %in% names(att)
 

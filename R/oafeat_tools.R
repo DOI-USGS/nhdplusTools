@@ -36,7 +36,7 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
                               properties = NULL,
                               skip_geometry = FALSE) {
 
-  base <- get("usgs_water_root", envir = nhdplusTools_env)
+  base <- get_water_url()
 
   source <- data.frame(server = 'usgs_oafeat',
                        user_call  = c('huc02_2020', 'huc04_2020', 'huc06_2020',
@@ -164,11 +164,21 @@ query_usgs_oafeat <- function(AOI = NULL,  ids = NULL,
 discover_oafeat <- function(landing_url) {
 
   landing <- mem_get_json(landing_url)
+  if(is.null(landing)) {
+    warning("OGC API landing page unavailable at ", landing_url,
+            call. = FALSE)
+    return(NULL)
+  }
 
   collections <- landing$links |>
     filter_list_kvp("rel", "data", n = 1) |>
     extract("href") |>
     mem_get_json()
+  if(is.null(collections)) {
+    warning("OGC API collections endpoint unavailable from ", landing_url,
+            call. = FALSE)
+    return(NULL)
+  }
 
   collections_meta <- dplyr::bind_rows(
     lapply(collections$collections,
@@ -223,6 +233,8 @@ get_oafeat <- function(base,
 
   avail <- discover_oafeat(base)
 
+  if(is.null(avail)) return(NULL)
+
   if(is.null(type)) {
     warning("type is required, returning choices.")
     return(avail)
@@ -243,12 +255,17 @@ get_oafeat <- function(base,
   if(!is.null(AOI)) {
     if(is.character(AOI)) {
 
-      AOI <- try(sf::read_sf(AOI)) |>
-        st_transform(4326)
+      if(grepl("^https?://", AOI)) {
+        AOI <- hgf_sf(AOI)
+      } else {
+        AOI <- try(sf::read_sf(AOI), silent = TRUE)
+      }
 
       if(!inherits(AOI, "sf")) {
         stop("AOI did not return an sf object when read")
       }
+
+      AOI <- st_transform(AOI, 4326)
 
     }
 
@@ -317,50 +334,11 @@ add_sep <- function(bc) {
   bc
 }
 
-make_request <- function(req, body = "") {
-  tryCatch({
-    if(nhdplus_debug()) {
-      message(paste(req, "\n"))
-      message(body)
-    }
-
-    if(body != "") {
-      r <- RETRY("POST",
-                   req,
-                   body = body,
-                   httr::content_type("application/query-cql-json"),
-                 pause_min = 5, pause_base = 5)
-
-      if(r$status != 200) {
-        return(r)
-      }
-
-      out <- rawToChar(r$content)
-    } else {
-
-      out <- rawToChar(RETRY("GET", req)$content)
-
-    }
-
-
-  }, error = function(e) {
-    warning("Something went wrong trying to access a service.")
-    return(NULL)
-  })
-
-  out <- tryCatch({
-    st_zm(read_sf(out))},
-    error = function(e) return(NULL))
-
-  out
-}
-
 get_features_paging <- function(base_call, ids_list = list(), limit = 1000, status = TRUE) {
 
   use_ids <- !identical(ids_list, list())
 
   if(use_ids) {
-    # we will page through ids
     ids <- split_equal_size(ids_list$ids, limit)
   }
 
@@ -377,22 +355,18 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
   while(keep_going) {
 
     if(use_ids) {
-
       post_body <- id_filter_cql(ids[[id_batch]], ids_list$id_attribute)
-      req <- paste0(base_call, "limit=", limit, "&offset=", offset)
-
     } else {
-
       post_body <- ""
-      req <- paste0(base_call, "limit=", limit, "&offset=", offset)
-
     }
 
-    page <- make_request(req, post_body)
+    req <- paste0(base_call, "limit=", limit, "&offset=", offset)
 
-    if(!is.null(page) & inherits(page, "response")) {
-      warning("Can't continue, got unexpected response: ", print(page))
-      page <- NULL
+    if(post_body != "") {
+      page <- hgf_sf(req, body = post_body,
+                      content_type = "application/query-cql-json")
+    } else {
+      page <- hgf_sf(req)
     }
 
     if(!inherits(page, "sf")) {
@@ -404,7 +378,6 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
     if(nrow(page) > 0) out <- c(out, list(page))
 
     if(nrow(page) < limit) {
-      # this batch is exhausted
       if(use_ids && id_batch < length(ids)) {
         id_batch <- id_batch + 1
         offset <- 0
@@ -481,7 +454,7 @@ get_huc12_by_huc <- function(huc_ids, t_srs = NULL) {
   if(length(huc_ids) == 0)
     return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
 
-  base <- get("usgs_water_root", envir = nhdplusTools_env)
+  base <- get_water_url()
 
   n <- unique(nchar(huc_ids))
   if(length(n) != 1 || !n %in% c(8, 10))

@@ -2,28 +2,60 @@ variables:
   _R_CHECK_CRAN_INCOMING_: "false"
   _R_CHECK_FORCE_SUGGESTS_: "true"
   _R_CHECK_DONTTEST_EXAMPLES_: "false"
-  APT_PKGS: "p7zip-full"
+  _R_CHECK_RD_XREFS_: "false"
 
-before_script:
-  - wget --no-check-certificate -O /usr/local/share/ca-certificates/DOIRootCA2.crt https://raw.githubusercontent.com/dblodgett-usgs/hydrogeoenv/master/linux/DOIRootCA2.cer
-  - chmod 644 /usr/local/share/ca-certificates/DOIRootCA2.crt && update-ca-certificates
-  - apt-get update
-  - apt-get install -y --no-install-recommends ${APT_PKGS}
-  - apt-get install -y --no-install-recommends qpdf pandoc
-  - export PATH="/usr/local/lib/R/site-library/littler/examples/:${PATH}"
-  - echo "options(Ncpus = $(nproc --all))" >> /usr/local/lib/R/etc/Rprofile.site
-  - install2.r devtools
-  - r -e 'devtools::install_dev_deps()'
+stages:
+  - check
+  - build
+  - verify
 
-test:
-  stage: test
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^rc\//
+
+.r-base:
   tags:
     - chs-shared
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/rocker/geospatial:latest
+  before_script:
+    - wget --no-check-certificate -O /usr/local/share/ca-certificates/DOIRootCA2.crt https://raw.githubusercontent.com/dblodgett-usgs/hydrogeoenv/master/linux/DOIRootCA2.cer
+    - chmod 644 /usr/local/share/ca-certificates/DOIRootCA2.crt && update-ca-certificates
+    - apt-get update
+    - apt-get install -y --no-install-recommends p7zip-full qpdf pandoc curl
+    - export PATH="/usr/local/lib/R/site-library/littler/examples/:${PATH}"
+    - echo "options(Ncpus = $(nproc --all))" >> /usr/local/lib/R/etc/Rprofile.site
+    - r -e 'pak::local_install_dev_deps()'
+
+check:
+  extends: .r-base
+  stage: check
   script:
-    - r -e 'devtools::check(check_dir = ".")'
-    - r -e 'capture.output(print(covr::coverage_to_list(covr::package_coverage(type = "all")), width = 20),  file = "covr.txt", split = TRUE)'
+    - R CMD build --no-build-vignettes --no-manual .
+    - R CMD check --no-tests --no-examples --no-vignettes --no-manual *.tar.gz
   artifacts:
     paths:
       - "*.Rcheck"
-      - "covr.txt"
+    when: always
+
+build:
+  extends: .r-base
+  stage: build
+  script:
+    - R CMD build .
+    - PKG_FILE=$(ls *.tar.gz)
+    - PKG_NAME=$(echo "$PKG_FILE" | sed 's/_.*//')
+    - PKG_VERSION=$(echo "$PKG_FILE" | sed 's/.*_\(.*\)\.tar\.gz/\1/')
+    - 'curl --silent --show-error --write-out "\nHTTP status: %{http_code}\n" --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "$PKG_FILE" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PKG_NAME}/${PKG_VERSION}/${PKG_FILE}"'
+  artifacts:
+    paths:
+      - "*.tar.gz"
+
+verify:
+  extends: .r-base
+  stage: verify
+  script:
+    - R CMD check --as-cran --no-manual *.tar.gz
+  artifacts:
+    paths:
+      - "*.Rcheck"
+    when: always

@@ -58,13 +58,14 @@
 #'
 #' @export
 #' @importFrom graphics par
+#' @importFrom hydroloom navigate_hydro_network
 #' @examples
 #' \donttest{
 #' options("rgdal_show_exportToProj4_warnings"="none")
 #' # Beware plot_nhdplus caches data to the default location.
 #' # If you do not want data in "user space" change the default.
-#' old_dir <- nhdplusTools::nhdplusTools_data_dir()
-#' nhdplusTools_data_dir(tempdir())
+#' old_dir <- hydrogeofetch::hydrogeofetch_data_dir()
+#' hydrogeofetch_data_dir(tempdir())
 #'
 #' plot_nhdplus("05428500")
 #'
@@ -72,7 +73,7 @@
 #'
 #' plot_nhdplus(list(13293970, 13293750))
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' plot_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
 #'
@@ -104,7 +105,7 @@
 #'                     crs = "+proj=longlat +datum=WGS84 +no_defs")
 #'
 #' fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
-#' comids <- nhdplusTools::get_UT(fline, 13293970)
+#' comids <- hydroloom::navigate_hydro_network(fline, 13293970, "UT")
 #'
 #' plot_nhdplus(comids)
 #'
@@ -120,7 +121,7 @@
 #' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
 #'              plot_config = list(flowline = list(col = "darkblue")))
 #'
-#' nhdplusTools::nhdplusTools_data_dir(old_dir)
+#' hydrogeofetch::hydrogeofetch_data_dir(old_dir)
 #' }
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
@@ -163,6 +164,9 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
     suppressWarnings({
       if(!add) {
         tryCatch({
+          check_pkg("maptiles")
+          check_pkg("mapsf")
+
           bb <- if(!is.null(pd$plot_bbox)) {
             plot_bbox_to_3857(pd$plot_bbox)
           } else {
@@ -231,7 +235,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 }
 
 tile_cache_dir <- function() {
-  tile_cache_dir <- file.path(nhdplusTools_data_dir(),
+  tile_cache_dir <- file.path(hydrogeofetch_data_dir(),
                        "tile_cache_dir")
 
   # Checks to see if tile_cache_dir is writable
@@ -412,7 +416,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
       return(NULL)
     }
 
-    all_comids <- lapply(nexus, function(x) get_UT(align_nhdplus_names(flowline), x$comid))
+    all_comids <- lapply(nexus, function(x) navigate_hydro_network(align_nhdplus_names(flowline), x$comid, "UT"))
 
     subsets <- subset_nhdplus(comids = unlist(all_comids), output_file = gpkg,
                               nhdplus_data = nhdplus_data, status = FALSE,
@@ -469,7 +473,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
     flowline <- align_nhdplus_names(nhd_data$flowline)
 
     flowline <- do.call(rbind, lapply(nexus$comid, function(x) {
-      flowline[flowline$COMID %in% get_UT(align_nhdplus_names(flowline), x), ]
+      flowline[flowline$COMID %in% navigate_hydro_network(align_nhdplus_names(flowline), x, "UT"), ]
     }))
 
     catchment <- nhd_data$catchment
@@ -725,7 +729,7 @@ off_network <- function(waterbody, flowline) {
 #' @examples
 #' \donttest{
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
 #' wtbdy <- sf::read_sf(sample_data, "NHDWaterbody")
@@ -741,9 +745,9 @@ get_wb_outlet <- function(lake_id, network) {
     network <- check_names(network, "get_wb_outlet_hires",
                            align = FALSE, tolower = FALSE)
     if (lake_id %in% network$WBArea_Permanent_Identifier){
-    outlet <- network %>%
-      filter(.data$WBArea_Permanent_Identifier == lake_id) %>%
-      group_by(.data$WBArea_Permanent_Identifier) %>%
+    outlet <- network |>
+      filter(.data$WBArea_Permanent_Identifier == lake_id) |>
+      group_by(.data$WBArea_Permanent_Identifier) |>
       filter(.data$Hydroseq == min(.data$Hydroseq))
     return(outlet)
     } else {
@@ -753,9 +757,9 @@ get_wb_outlet <- function(lake_id, network) {
     network <- check_names(network, "get_wb_outlet_mres", tolower = TRUE)
 
     if (lake_id %in% network$wbareacomi){
-      outlet <- network %>%
-        filter(.data$wbareacomi == lake_id) %>%
-        group_by(.data$wbareacomi) %>%
+      outlet <- network |>
+        filter(.data$wbareacomi == lake_id) |>
+        group_by(.data$wbareacomi) |>
         filter(.data$hydroseq == min(.data$hydroseq))
       return(outlet)
     } else {

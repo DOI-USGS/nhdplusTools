@@ -1,6 +1,6 @@
 #' @title Subset NHDPlus
 #' @description Saves a subset of the National Seamless database or other
-#' nhdplusTools compatible data based on a specified collection of COMIDs.
+#' hydrogeofetch compatible data based on a specified collection of COMIDs.
 #' This function uses \code{\link{get_nhdplus}} for the "download" data
 #' source but returns data consistent with local data subsets in a subset
 #' file.
@@ -40,7 +40,7 @@
 #' @examples
 #' \donttest{
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' nhdplus_path(sample_data)
 #'
@@ -56,7 +56,7 @@
 #'
 #' start_comid <- discover_nhdplus_id(start_point)
 #'
-#' comids <- get_UT(sample_flines, start_comid)
+#' comids <- hydroloom::navigate_hydro_network(sample_flines, start_comid, "UT")
 #'
 #' plot(sf::st_geometry(dplyr::filter(sample_flines, COMID %in% comids)),
 #'      add=TRUE, col = "red", lwd = 2)
@@ -93,9 +93,9 @@
 #' sf::st_layers(output_file)
 #'
 #' # NHDPlusHR
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 #'
-#' up_ids <- get_UT(hr_data$NHDFlowline, 15000500028335)
+#' up_ids <- hydroloom::navigate_hydro_network(hr_data$NHDFlowline, 15000500028335, "UT")
 #'
 #' sub_gpkg <- file.path(work_dir, "sub.gpkg")
 #' sub_nhdhr <- subset_nhdplus(up_ids, output_file = sub_gpkg,
@@ -219,7 +219,7 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
     tryCatch({
     for (layer_name in intersection_names) {
       if(is.null(out_list[layer_name][[1]])) {
-        layer <- sf::st_transform(envelope, 4326) %>%
+        layer <- sf::st_transform(envelope, 4326) |>
           get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
       } else {
         layer <- out_list[layer_name][[1]]
@@ -372,15 +372,15 @@ get_nhd_data <- function(nhdplus_data, layer_name, comids, id, status) {
     comids[start:end]
   })
 
-  assign("cur_count", 0, envir = nhdplusTools_env)
+  assign("cur_count", 0, envir = hydrogeofetch_env)
 
   out <- lapply(sets, function(x, total) {
     if(status) {
 
       cur_count <-
-        get("cur_count", envir = nhdplusTools_env) + length(x)
+        get("cur_count", envir = hydrogeofetch_env) + length(x)
 
-      assign("cur_count", cur_count, envir = nhdplusTools_env)
+      assign("cur_count", cur_count, envir = hydrogeofetch_env)
 
       message(paste(cur_count, "comids of", total))
 
@@ -492,10 +492,11 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #' should the run_make_standalone function be run on result?
 #' @export
 #' @importFrom dplyr filter select
+#' @importFrom hydroloom sort_network
 #' @return data.frame containing subset network
 #' @examples
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 #'
@@ -560,11 +561,11 @@ recase_sf <- function(x, orig_names) {
 #' have no tributaries in the upstream RPU will be included in the output.
 #' @export
 #' @return data.frame containing subset network
-#' @importFrom dplyr filter arrange summarize
+#' @importFrom dplyr filter arrange summarize desc
 #' @importFrom sf st_sf st_drop_geometry
 #' @examples
 #'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 #'
 #' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 #'
@@ -680,10 +681,11 @@ get_all_navigable <- function(fline, rpu) {
 
   outlets <- arrange(outlets, desc(.data$arbolatesu))
 
-  network <- get_sorted(fline[c("comid", "tocomid")],
-                        split = FALSE, outlets = outlets$comid)
+  network <- sort_network(
+    stats::setNames(sf::st_drop_geometry(fline[c("comid", "tocomid")]), c("id", "toid")),
+    split = FALSE, outlets = outlets$comid)
 
-  network$comid
+  network$id
 }
 
 #' @noRd

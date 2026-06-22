@@ -1,0 +1,71 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "ogc_fid": 8377,
+                "id": null,
+                "staid": "12301300",
+                "staname": "Tobacco River near Eureka MT",
+                "class": "Non-ref",
+                "aggecoregi": "WestMnts",
+                "drain_sqkm": 1084.973,
+                "huc02": "17",
+                "lat_gage": 48.893576,
+                "lng_gage": -115.087946,
+                "state": "MT",
+                "hcdn_2009": null,
+                "active09": "yes",
+                "flyrs1900": 51,
+                "flyrs1950": 51,
+                "flyrs1990": 20
+            },
+            "id": "12301300",
+            "geometry": {
+                "type": "MultiPoint",
+                "coordinates": [
+                    [
+                        -115.08795969447527,
+                        48.89358204458256
+                    ]
+                ]
+            }
+        }
+    ],
+    "numberReturned": 1,
+    "numberMatched": 1,
+    "links": [
+        {
+            "type": "application/geo+json",
+            "rel": "self",
+            "title": "This document as GeoJSON",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii/items?f=json&bbox=-115.101172698107,48.8477690780084,-115.00585895351,48.9121481763574&limit=500"
+        },
+        {
+            "rel": "alternate",
+            "type": "application/ld+json",
+            "title": "This document as RDF (JSON-LD)",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii/items?f=jsonld&bbox=-115.101172698107,48.8477690780084,-115.00585895351,48.9121481763574&limit=500"
+        },
+        {
+            "type": "text/html",
+            "rel": "alternate",
+            "title": "This document as HTML",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii/items?f=html&bbox=-115.101172698107,48.8477690780084,-115.00585895351,48.9121481763574&limit=500"
+        },
+        {
+            "type": "text/csv; charset=utf-8",
+            "rel": "alternate",
+            "title": "This document as CSV",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii/items?f=csv&bbox=-115.101172698107,48.8477690780084,-115.00585895351,48.9121481763574&limit=500"
+        },
+        {
+            "type": "application/json",
+            "title": "Gages-II Gages",
+            "rel": "collection",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/gagesii"
+        }
+    ],
+    "timeStamp": "2026-05-27T16:12:36.263567Z"
+}

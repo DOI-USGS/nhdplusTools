@@ -2,89 +2,84 @@
 
 test_that("nldi basics work", {
 
-  skip_on_cran()
-
-  nldi_sources <- dataRetrieval::get_nldi_sources()
-
-  expect_equal(class(nldi_sources), "data.frame")
-
-  expect_true(all(c("comid", "huc12pp", "nwissite") %in% nldi_sources$source))
-
-  expect_true(all(names(nldi_sources) %in% c("source", "sourceName", "features")))
-
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
-  expect_error(nhdplusTools:::check_nldi_feature(nldi_nwis[1]),
+  expect_error(hydrogeofetch:::check_nldi_feature(nldi_nwis[1]),
                  "Missing some required input for NLDI. Expected length 2 character vector or list with optional names: featureID")
 
-  expect_equal(nrow(get_nldi_index(c(-89.276, 42.988))), 2)
+  with_mock_hgf("nldi_basics", {
+    nldi_sources <- dataRetrieval::get_nldi_sources()
+
+    expect_equal(class(nldi_sources), "data.frame")
+
+    expect_true(all(c("comid", "huc12pp", "nwissite") %in% nldi_sources$source))
+
+    expect_true(all(names(nldi_sources) %in% c("source", "sourceName", "features")))
+
+    idx <- get_nldi_index(c(-89.276, 42.988))
+    expect_equal(nrow(idx), 2)
+  })
 })
 
 test_that("navigation works", {
 
-  skip_on_cran()
+  with_mock_hgf("nldi_navigation", {
+    nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
 
-  nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
+    nav <- navigate_nldi(nldi_feature = nldi_nwis,
+                         mode = "UM",
+                         data_source = "nwissite",
+                         distance_km = 1)
 
-  nav <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "UM",
-                       data_source = "nwissite",
-                       distance_km = 1)
+    expect_true("sf" %in% class(nav$UM_nwissite))
 
-  expect_true("sf" %in% class(nav$UM_nwissite))
+    expect_true("sfc_POINT" %in% class(sf::st_geometry(nav$UM_nwissite)),
+           "expected point response")
 
-  expect_true("sfc_POINT" %in% class(sf::st_geometry(nav$UM_nwissite)),
-         "expected point response")
+    nav2 <- navigate_nldi(nldi_feature = nldi_nwis,
+                         mode = "upstreamMain",
+                         data_source = "nwissite",
+                         distance_km = 100)
 
-  nav2 <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "upstreamMain",
-                       data_source = "nwissite",
-                       distance_km = 100)
+    expect_true(nrow(nav2$UM_nwissite) > nrow(nav$UM_nwissite))
 
-  expect_true(nrow(nav2$UM_nwissite) > nrow(nav$UM_nwissite))
+    nldi_nwis <- as.character(nldi_nwis)
 
-  nldi_nwis <- as.character(nldi_nwis)
+    nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
+                          mode = "upstreamMain",
+                          data_source = "flowlines",
+                          distance_km = 10)
 
-  nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
-                        mode = "upstreamMain",
-                        data_source = "flowlines",
-                        distance_km = 10)
+    expect_s3_class(sf::st_geometry(nav3$UM), "sfc_LINESTRING")
 
-  expect_s3_class(sf::st_geometry(nav3$UM), "sfc_LINESTRING")
+    expect_warning(nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
+                                         mode = "upstreamMain",
+                                         data_source = "flowline",
+                                         distance_km = 10),
+                   "data source specified as flowline or '' is deprecated")
 
-  expect_warning(nav3 <- navigate_nldi(nldi_feature = nldi_nwis,
-                                       mode = "upstreamMain",
-                                       data_source = "flowline",
-                                       distance_km = 10),
-                 "data source specified as flowline or '' is deprecated")
+    nav <- navigate_nldi(nldi_feature = nldi_nwis,
+                         mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
+                         data_source = "dumb",
+                         distance_km = 1)
 
-  nav <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
-                       data_source = "dumb",
-                       distance_km = 1)
+    expect_equal(nav$origin$sourceName, "NWIS Surface Water Sites")
 
-  expect_equal(nav$origin$sourceName, "NWIS Surface Water Sites")
+    expect_equal(class(as.integer(nav$origin$comid)), "integer")
 
-  expect_equal(class(as.integer(nav$origin$comid)), "integer") # is coercable to integer
+    nav <- navigate_nldi(nldi_feature = nldi_nwis,
+                         mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
+                         data_source = "nwissite",
+                         distance_km = 1)
 
-  nav <- navigate_nldi(nldi_feature = nldi_nwis,
-                       mode = "https://api.water.usgs.gov/api/nldi/linked-data/nwissite/USGS-08279500/navigation/UM",
-                       data_source = "nwissite",
-                       distance_km = 1)
-
-  expect_true("sf" %in% sapply(nav, class))
-
-  # expect_equal(navigate_nldi(list(featureSource = "wqp",
-  #                                 featureID = "TCEQMAIN-16638"),
-  #                            mode = "upstreamMain",
-  #                            data_source = "nwissite"), dplyr::tibble())
+    expect_true("sf" %in% sapply(nav, class))
+  })
 })
 
 test_that("basin works", {
 
-  skip_on_cran()
+  skip_if_no_integration()
   skip_on_ci()
-  skip("nldi split basin not working?")
 
   nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
 
@@ -119,7 +114,7 @@ test_that("basin works", {
 })
 
 test_that("get feature works", {
-  skip_on_cran()
+  skip_if_no_integration()
   # TODO: re-enable once NLDI consistently returns the `mainstem` column
   # for USGS-05428500 (intermittently absent → ncol(f) == 8 vs 9).
   skip("in process API fix")
@@ -140,67 +135,49 @@ test_that("get feature works", {
 
 test_that("raindrop", {
 
-  skip_on_cran()
+  with_mock_hgf("raindrop", {
+    point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
 
-  point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
+    trace <- get_raindrop_trace(point, direction = "up")
 
-  trace <- get_raindrop_trace(point, direction = "up")
+    expect_equal(trace$id[1], 'upstreamFlowline')
 
-  expect_equal(trace$id[1], 'upstreamFlowline')
+    expect_equal(trace$id[2], "raindropPath")
 
-  expect_equal(trace$id[2], "raindropPath")
+    expect_equal(nrow(trace), 2)
 
-  expect_equal(nrow(trace), 2)
+    expect_true(inherits(trace, "sf"))
 
-  expect_true(inherits(trace, "sf"))
+    expect_type(trace$intersection_point, "list")
+  })
 
-  expect_type(trace$intersection_point, "list")
-#
-# Doesn't improve coverage
-#   trace2 <- get_raindrop_trace(point, direction = "up")
-#
-#   expect_equal(trace2$id[1], 'upstreamFlowline')
-#
-#   trace3 <- get_raindrop_trace(point, direction = "none")
-#
-#   expect_equal(trace3$id[1], "nhdFlowline")
-#
-#   expect_equal(length(trace3$intersection_point[[1]]), 2)
-#
-#   expect_equal(length(trace3$intersection_point[[2]]), 0)
-
-  expect_error(get_raindrop_trace(point, direction = "borked"),
-               "direction must be in up, down, none")
+  expect_error(get_raindrop_trace(
+    sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326),
+    direction = "borked"),
+    "direction must be in up, down, none")
 
 })
 
 test_that("split", {
 
-  skip_on_cran()
-  skip_on_ci()
+  with_mock_hgf("split_catchment", {
+    snap_point <- sf::st_sfc(sf::st_point(c(-89.213274, 42.956989)),
+                             crs = 4326)
 
-  # Doesn't improve coverage
-  # point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
-  #
-  # trace <- get_raindrop_trace(point)
-  #
-  # dput(sf::st_point(trace$intersection_point[[1]][2:1]))
+    catchment <- get_split_catchment(snap_point, upstream = TRUE)
 
-  snap_point <- sf::st_sfc(sf::st_point(c(-89.213274, 42.956989)),
-                           crs = 4326)
+    area <- sf::st_area(catchment)
 
-  catchment <- get_split_catchment(snap_point, upstream = TRUE)
+    expect_true(area[1] < units::set_units(7000000, "m^2"))
 
-  area <- sf::st_area(catchment)
+    expect_true(area[2] > units::set_units(900000000, "m^2"))
 
-  expect_true(area[1] < units::set_units(7000000, "m^2"))
+    point <- sf::st_sfc(sf::st_point(c(-20.213274, 42.956989)),
+                        crs = 4326)
 
-  expect_true(area[2] > units::set_units(900000000, "m^2"))
-
-  point <- sf::st_sfc(sf::st_point(c(-20.213274, 42.956989)),
-                      crs = 4326)
-
-  expect_message(get_split_catchment(point, upstream = TRUE), "Ensure that the point")
+    expect_message(suppressWarnings(get_split_catchment(point, upstream = TRUE)),
+                   "Ensure that the point")
+  })
 
   # Doesn't improve coverage
   # catchment2 <- get_split_catchment(snap_point, upstream = FALSE)
@@ -225,7 +202,7 @@ test_that("split", {
 
 test_that("xs", {
 
-  skip_on_cran()
+  skip_if_no_integration()
   skip_on_ci()
 
   point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)
@@ -274,30 +251,34 @@ test_that("xs", {
 
 test_that("coverage", {
   assign("nldi_tier", "borked",
-         envir = nhdplusTools:::nhdplusTools_env)
+         envir = hydrogeofetch:::hydrogeofetch_env)
 
   # may bring back but not relevant now
-  # expect_error(nhdplusTools:::get_nldi_url(),
+  # expect_error(hydrogeofetch:::get_nldi_url(),
   #              "only prod or test allowed.")
 
-  tier_env <- Sys.getenv("NLDI_TIER")
+  tier_env <- Sys.getenv("API_WATER_TIER")
 
-  Sys.unsetenv("NLDI_TIER")
+  Sys.unsetenv("API_WATER_TIER")
 
-  assign("nldi_tier", "test",
-         envir = nhdplusTools:::nhdplusTools_env)
+  assign("api_water_tier", "test",
+         envir = hydrogeofetch:::hydrogeofetch_env)
 
-  test <- nhdplusTools:::get_nldi_url()
+  test <- hydrogeofetch:::get_nldi_url()
 
   expect_true(grepl("https", test))
 
-  test <- nhdplusTools:::get_nldi_url(pygeo = TRUE)
+  test <- hydrogeofetch:::get_nldi_url(pygeo = TRUE)
 
   expect_true(grepl("pygeoapi", test))
 
-  Sys.setenv("NLDI_TIER"= tier_env)
+  test <- hydrogeofetch:::get_water_url()
 
-  assign("nldi_tier", "prod",
-         envir = nhdplusTools:::nhdplusTools_env)
+  expect_true(grepl("fabric/pygeoapi", test))
+
+  Sys.setenv("API_WATER_TIER" = tier_env)
+
+  assign("api_water_tier", "prod",
+         envir = hydrogeofetch:::hydrogeofetch_env)
 
 })

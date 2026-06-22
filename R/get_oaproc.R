@@ -18,7 +18,7 @@
 #' if(inherits(trace, "sf")) {
 #' bbox <- sf::st_bbox(trace) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
+#' hydrogeofetch::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
 #' plot(sf::st_transform(sf::st_geometry(trace)[1], 3857), add = TRUE, col = "red")
@@ -40,7 +40,8 @@ get_raindrop_trace <- function(point, direction = "down") {
     stop(paste("direction must be in",
                paste(allowed_direction, collapse = ", ")))
 
-  return(sf_post(url, make_json_input_trace(point, direction = direction)))
+  return(hgf_sf(url, body = make_json_input_trace(point, direction = direction),
+                content_type = "application/json"))
 
 }
 
@@ -82,7 +83,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' if(inherits(catchment, "sf")) {
 #' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
+#' hydrogeofetch::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
@@ -95,7 +96,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' if(inherits(catchment, "sf")) {
 #' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
+#' hydrogeofetch::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
@@ -109,7 +110,7 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' if(inherits(catchment, "sf")) {
 #' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
+#' hydrogeofetch::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
@@ -127,10 +128,13 @@ get_split_catchment <- function(point, upstream = TRUE) {
 
   url <- paste0(url_base, "nldi-splitcatchment/execution")
 
-  out <- sf_post(url, make_json_input_split(point, upstream),
-                 err_mess = paste("Ensure that the point you submitted is within\n the",
-                                  "coterminous US and consider trying get_raindrop_trace\ to ensure",
-                                  "your point is not too close to a catchment boundary."))
+  out <- hgf_sf(url, body = make_json_input_split(point, upstream),
+                content_type = "application/json")
+
+  if(is.null(out))
+    message("Ensure that the point you submitted is within the ",
+            "coterminous US and consider trying get_raindrop_trace to ensure ",
+            "your point is not too close to a catchment boundary.")
 
   try({
     if(!is.null(out)) {
@@ -184,7 +188,7 @@ remove_shards <- function(g, thresh = 0.01) {
 #'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
+#' hydrogeofetch::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
@@ -227,7 +231,7 @@ get_xs_point <- function(point, width, num_pts) {
 #'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
+#' hydrogeofetch::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)
@@ -286,7 +290,7 @@ check_res <- function(res) {
 #'
 #' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 #'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
+#' hydrogeofetch::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 #'
 #' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
 #' plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)
@@ -364,7 +368,7 @@ get_elev <- function(url, fun, points, num_pts, res, status) {
 
 #' @importFrom dplyr rename
 get_xs <- function(url, fun, ...) {
-  sf <- sf_post(url, fun(...))
+  sf <- hgf_sf(url, body = fun(...), content_type = "application/json")
 
   if(is.null(sf)) {
     return(NULL)
@@ -374,32 +378,6 @@ get_xs <- function(url, fun, ...) {
          distance_m = "distance",
          elevation_m = "elevation")
 }
-
-sf_post <- function(url, json, err_mess = "") {
-  tryCatch({
-
-    if(nhdplus_debug()) {
-      message(paste(url, "\n"))
-      message(json)
-    }
-
-    out <- httr::RETRY("POST", url, httr::accept_json(),
-                       httr::content_type_json(),
-                       body = json)
-
-    if(out$status_code == 200) {
-      sf::read_sf(rawToChar(out$content))
-    } else {
-      stop(rawToChar(out$content))
-    }
-
-  }, error = function(e) {
-    message("Error calling processing service. \n Original error: \n", e,
-            "\n", err_mess)
-    NULL
-  })
-}
-
 
 check_point <- function(p) {
   mess <- "Point must be of type sfc and have a CRS declared."
@@ -453,16 +431,16 @@ make_json_input_xspt <- function(p, w, n) {
 
   jsonlite::toJSON(list(inputs = list(list(id = "lat",
                                            type = "text/plain",
-                                           value = p[2]),
+                                           value = as.character(p[2])),
                                       list(id = "lon",
                                            type = "text/plain",
-                                           value = p[1]),
+                                           value = as.character(p[1])),
                                       list(id = "width",
                                            type = "text/plain",
-                                           value = w),
+                                           value = as.character(w)),
                                       list(id = "numpts",
                                            type = "text/plain",
-                                           value = n))),
+                                           value = as.character(n)))),
                    pretty = TRUE, auto_unbox = TRUE)
 }
 
@@ -471,15 +449,15 @@ make_json_input_xspts <- function(p1, p2, n, r) {
 
   jsonlite::toJSON(list(inputs = list(list(id = "lat",
                                            type = "text/plain",
-                                           value = c(p1[2], p2[2])),
+                                           value = as.character(c(p1[2], p2[2]))),
                                       list(id = "lon",
                                            type = "text/plain",
-                                           value = c(p1[1], p2[1])),
+                                           value = as.character(c(p1[1], p2[1]))),
                                       list(id = "3dep_res",
                                            type = "text/plain",
                                            value = as.character(r)),
                                       list(id = "numpts",
                                            type = "text/plain",
-                                           value = n))),
+                                           value = as.character(n)))),
                    pretty = TRUE, auto_unbox = TRUE)
 }

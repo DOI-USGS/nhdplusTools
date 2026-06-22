@@ -31,11 +31,11 @@
 #' }
 download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE, archive = FALSE) {
 
-  list_source <- get("nhdhr_file_list", envir = nhdplusTools_env)
+  list_source <- get("nhdhr_file_list", envir = hydrogeofetch_env)
 
-  if(archive) list_source <- get("archive_nhdhr_file_list", envir = nhdplusTools_env)
+  if(archive) list_source <- get("archive_nhdhr_file_list", envir = hydrogeofetch_env)
 
-  download_nhd_internal(get("nhd_bucket", envir = nhdplusTools_env),
+  download_nhd_internal(get("nhd_bucket", envir = hydrogeofetch_env),
                list_source,
                "NHDPLUS_H_", nhd_dir, hu_list, download_files)
 }
@@ -56,8 +56,8 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE, archive 
 #' }
 download_nhd <- function(nhd_dir, hu_list, download_files = TRUE) {
 
-  download_nhd_internal(get("nhd_bucket", envir = nhdplusTools_env),
-               get("nhd_file_list", envir = nhdplusTools_env),
+  download_nhd_internal(get("nhd_bucket", envir = hydrogeofetch_env),
+               get("nhd_file_list", envir = hydrogeofetch_env),
                "NHD_H_",
                nhd_dir, hu_list, download_files)
 }
@@ -86,9 +86,9 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
 
     file_list <- tryCatch({
       read_xml(paste0(bucket, file_list_snip,
-                      prefix, hu02)) %>%
-        xml_ns_strip() %>%
-        xml_find_all(xpath = "//Key") %>%
+                      prefix, hu02)) |>
+        xml_ns_strip() |>
+        xml_find_all(xpath = "//Key") |>
         xml_text()
     }, error= function(e) {
       NULL
@@ -124,7 +124,7 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
           unlink(out_file)
         }
 
-        httr::RETRY("GET", url, httr::write_disk(out_file), httr::progress())
+        if(is.null(hgf_download(url, out_file))) return(NULL)
 
         tryCatch({zip::unzip(out_file, exdir = out[length(out)])},
                  error = function(e) {
@@ -179,7 +179,12 @@ download_nhdplusv2 <- function(outdir,
                                progress = TRUE) {
 
   tryCatch({
-  file <- downloader(outdir, url, "nhdplusV2", progress)
+  if(!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+  file <- file.path(outdir, basename(url))
+  if(!file.exists(file)) {
+    message("Downloading ", basename(url))
+    if(is.null(hgf_download(url, file, progress))) return(NULL)
+  }
 
   if(!any(grepl("gdb", list.dirs(outdir)))) {
 
@@ -228,7 +233,12 @@ download_wbd <- function(outdir,
                          progress = TRUE) {
 
   tryCatch({
-  file <- downloader(outdir, url, "WBD", progress)
+  if(!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+  file <- file.path(outdir, basename(url))
+  if(!file.exists(file)) {
+    message("Downloading ", basename(url))
+    if(is.null(hgf_download(url, file, progress))) return(NULL)
+  }
 
   message("Extracting data ...")
 
@@ -246,6 +256,25 @@ download_wbd <- function(outdir,
   })
 }
 
+#' @noRd
+#' @description gunzip a file in place. Leaves the .gz file intact. Skips if
+#' the destination already exists. Replaces R.utils::gunzip(remove = FALSE,
+#' skip = TRUE) so we don't carry R.utils as a dependency for one call.
+gunzip_keep <- function(file) {
+  out <- sub("\\.gz$", "", file)
+  if(file.exists(out)) return(invisible(out))
+  con_in <- gzfile(file, "rb")
+  on.exit(close(con_in), add = TRUE)
+  con_out <- file(out, "wb")
+  on.exit(close(con_out), add = TRUE)
+  repeat {
+    chunk <- readBin(con_in, what = "raw", n = 1e6)
+    if(length(chunk) == 0) break
+    writeBin(chunk, con_out)
+  }
+  invisible(out)
+}
+
 #' @title Download the seamless Reach File (RF1) Database
 #' @description This function downloads and decompresses staged RF1 data.
 #' See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.
@@ -261,11 +290,16 @@ download_rf1 <- function(outdir,
                          url = "https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz",
                          progress = TRUE){
   tryCatch({
-  file <- downloader(outdir, url, "RF1", progress)
+  if(!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+  file <- file.path(outdir, basename(url))
+  if(!file.exists(file)) {
+    message("Downloading ", basename(url))
+    if(is.null(hgf_download(url, file, progress))) return(NULL)
+  }
 
   message("Extracting data ...")
 
-  R.utils::gunzip(file, remove = FALSE, skip = TRUE)
+  gunzip_keep(file)
 
   path     <- list.files(outdir, full.names = TRUE)[!grepl("gz", list.files(outdir))]
   path     <- path[grepl("rf1", path)]
@@ -280,51 +314,6 @@ download_rf1 <- function(outdir,
 
 }
 
-#' @title Function to download data from URL to out directory using `httr`.
-#' @description General downloader
-#' @param dir path to output directory
-#' @param url the location of the online resource
-#' @param type the type of data being downloaded
-#' @return the downloaded file path
-#' @importFrom httr GET write_disk progress
-#' @noRd
-downloader <- function(dir, url, type, progress = TRUE){
-
-  if (!dir.exists(dir)) {
-    dir.create(dir, recursive = TRUE)
-  }
-
-  file <-  file.path(dir, basename(url))
-
-  if(grepl("name=", basename(url))) {
-    file <- file.path(dir, tail(strsplit(basename(url), "=")[[1]], 1))
-  }
-
-  if (!file.exists(file)) {
-
-    message("Downloading ", basename(url))
-
-    if(progress) {
-      resp <-  httr::GET(url,
-                         httr::write_disk(file, overwrite = TRUE),
-                         httr::progress())
-    } else {
-      resp <-  httr::GET(url,
-                         httr::write_disk(file, overwrite = TRUE))
-    }
-
-    if (resp$status_code != 200) {
-      stop("Download unsuccessfull :(")
-    }
-
-  } else {
-    message("Compressed ", toupper(type), " file already exists ...")
-  }
-
-  return(file)
-
-}
-
 #' @title Utility to see in 7z is local
 #' @description Checks if 7z is on system. If not, provides an informative error
 #' @noRd
@@ -333,43 +322,93 @@ check7z <- function() {
   tryCatch({
     system("7z", intern = TRUE)
   }, error = function(e) {
-    stop( simpleError(
-
-        "Please Install 7zip (Windows) or p7zip (MacOS/Unix). Choose accordingly:
+    # 7z not on PATH; check default Windows install location
+    win_path <- "C:/Program Files/7-Zip/7z.exe"
+    if(.Platform$OS.type == "windows" && file.exists(win_path)) {
+      Sys.setenv(PATH = paste(Sys.getenv("PATH"), dirname(win_path), sep = ";"))
+      return(invisible(TRUE))
+    }
+    stop(simpleError(
+      "Please Install 7zip (Windows) or p7zip (MacOS/Unix). Choose accordingly:
         Windows: https://www.7-zip.org/download.html
         Mac: 'brew install p7zip' or 'sudo port install p7zip'
         Linux: https://sourceforge.net/projects/p7zip/"
-
-      )
-      )
+    ))
   })
 
 }
 
-#' memoise get json
-#' @description
-#' attempts to get a url as JSON and return the content.
-#'
-#' Will return NULL if anything fails
-#'
-#' @param url character url to get
-#' @return list containing parsed json on success, NULL otherwise
-#' @noRd
-mem_get_json <- memoise::memoise(\(url) {
-  tryCatch({
-    retn <- httr::GET(url, httr::accept_json())
+#################################################################
+# httr2 helpers — all HTTP in the package flows through these  #
+#################################################################
 
-    if(retn$status_code == 200 & grepl("json", retn$headers$`content-type`)) {
-      return(httr::content(retn, simplifyVector = FALSE, type = "application/json"))
+#' @importFrom httr2 request req_perform
+#' @noRd
+build_hgf_req <- function(url, body = NULL, content_type = NULL, encode = NULL) {
+  req <- httr2::request(url) |>
+    httr2::req_user_agent(
+      paste0("hydrogeofetch/", utils::packageVersion("hydrogeofetch"))
+    ) |>
+    httr2::req_retry(max_tries = 3)
+
+  if(nhdplus_debug()) {
+    message(if(is.null(body)) "GET " else "POST ", url)
+    if(!is.null(body) && is.character(body)) message(body)
+  }
+
+  if(!is.null(body)) {
+    if(identical(encode, "form")) {
+      req <- do.call(httr2::req_body_form, c(list(req), body))
     } else {
-      warning("Can't access json from ", url)
-      return(NULL)
+      ct <- content_type %||% "application/octet-stream"
+      req <- httr2::req_body_raw(req, charToRaw(body), type = ct)
     }
+  }
+
+  req
+}
+
+#' @noRd
+hgf_json <- function(url, body = NULL, content_type = NULL, encode = NULL,
+                      simplifyVector = TRUE, ...) {
+  tryCatch({
+    resp <- httr2::req_perform(build_hgf_req(url, body, content_type, encode))
+    httr2::resp_body_json(resp, simplifyVector = simplifyVector, ...)
   }, error = function(e) {
-    warning("Error accessing ", url, "\n\n", e)
-    return(NULL)
+    warning("Failed to get JSON from ", url, ": ", conditionMessage(e),
+            call. = FALSE)
+    NULL
   })
-})
+}
+
+#' @noRd
+hgf_sf <- function(url, body = NULL, content_type = NULL, encode = NULL) {
+  tryCatch({
+    resp <- httr2::req_perform(build_hgf_req(url, body, content_type, encode))
+    sf::st_zm(sf::read_sf(httr2::resp_body_string(resp)))
+  }, error = function(e) {
+    warning("Failed to get features from ", url, ": ", conditionMessage(e),
+            call. = FALSE)
+    NULL
+  })
+}
+
+#' @noRd
+hgf_download <- function(url, path, progress = TRUE) {
+  tryCatch({
+    req <- build_hgf_req(url)
+    if(progress && interactive()) req <- httr2::req_progress(req)
+    httr2::req_perform(req, path = path)
+    invisible(path)
+  }, error = function(e) {
+    warning("Failed to download from ", url, ": ", conditionMessage(e),
+            call. = FALSE)
+    NULL
+  })
+}
+
+#' @noRd
+mem_get_json <- memoise::memoise(\(url) hgf_json(url, simplifyVector = FALSE))
 
 #' @importFrom sf st_make_valid st_as_sfc st_bbox st_buffer st_transform st_crs
 check_query_params <- function(AOI, ids, type, where, source, t_srs, buffer) {

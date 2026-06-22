@@ -24,7 +24,7 @@ get_hr_data(
 
 \item{proj}{a projection specification compatible with \link[sf]{st_crs}}
 
-\item{rename}{boolean if TRUE, nhdplusTools standard attribute values will
+\item{rename}{boolean if TRUE, hydrogeofetch standard attribute values will
 be applied.}
 }
 \value{

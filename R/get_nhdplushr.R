@@ -33,7 +33,7 @@
 #' \dontrun{
 #' # Note this will download a lot of data to a temp directory.
 #' # Change 'temp_dir' to your directory of choice.
-#' temp_dir <- file.path(nhdplusTools_data_dir(), "temp_hr_cache")
+#' temp_dir <- file.path(hydrogeofetch_data_dir(), "temp_hr_cache")
 #'
 #' download_dir <- download_nhdplushr(temp_dir, c("0302", "0303"))
 #'
@@ -102,7 +102,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 
     if(grepl("flowline", layer, ignore.case = TRUE) & check_terminals) {
       expect_names <- get(paste0("make_standalone_tonode_attributes"),
-                          envir = nhdplusTools_env)
+                          envir = hydrogeofetch_env)
       if(!all(expect_names %in% names(out))) {
         warning("check_terminals is true but attributes selected do not support the checks.")
       } else {
@@ -132,7 +132,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 #' @param min_size_sqkm numeric minimum basin size to be included in the output
 #' @param proj a projection specification compatible with \link[sf]{st_crs}
 #' @param simp numeric simplification tolerance in units of projection
-#' @param rename boolean if TRUE, nhdplusTools standard attribute values will
+#' @param rename boolean if TRUE, hydrogeofetch standard attribute values will
 #' be applied.
 #' @export
 #' @return sf data.frame containing requested data
@@ -217,7 +217,7 @@ cull_cols <- function(x, keep_cols) {
 #' \donttest{
 #' library(dplyr)
 #' library(sf)
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 #'
 #' (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
 #' nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
@@ -227,7 +227,7 @@ cull_cols <- function(x, keep_cols) {
 #' (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
 #' nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
 #'
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+#' source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 #'
 #' # Remove mainstem and non-dendritic stuff.
 #' subset <- filter(hr_data$NHDFlowline,

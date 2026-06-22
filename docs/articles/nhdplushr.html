@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Working with NHDPlusHR • nhdplusTools</title>
+<title>Working with NHDPlusHR • hydrogeofetch</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -36,15 +36,15 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">nhdplusTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
+        <a class="navbar-link" href="../index.html">hydrogeofetch</a>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/nhdplusTools.html">Get started</a>
+  <a href="../articles/hydrogeofetch.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author"><a href="mailto:dblodgett@usgs.gov" class="email">dblodgett@usgs.gov</a></h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/doi-usgs/nhdplusTools/blob/HEAD/vignettes/nhdplushr.Rmd" class="external-link"><code>vignettes/nhdplushr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/doi-usgs/nhdplusTools/blob/HEAD/vignettes/articles/nhdplushr.Rmd" class="external-link"><code>vignettes/articles/nhdplushr.Rmd</code></a></small>
       <div class="hidden name"><code>nhdplushr.Rmd</code></div>
 
     </div>
@@ -90,20 +90,21 @@
 <div class="section level2">
 <h2 id="tldr">TL;DR;<a class="anchor" aria-label="anchor" href="#tldr"></a>
 </h2>
-<p>Most functions in <code>nhdplusTools</code> work with NHDPlus High
+<p>Most functions in <code>hydrogeofetch</code> work with NHDPlus High
 Res (HR) the same as they do with medium res. The demo below shows how
 to get a single four-digit hydrologic unit worth of HR data, index a
 point to it, subset it, and plot the results.</p>
 <p><em>Note: For consistency, identifiers from NHDPlusV2 are used with
-HiRes data. A future release of nhdplusTools may alter this
+HiRes data. A future release of hydrogeofetch may alter this
 behavior.</em></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi-usgs.github.io/nhdplusTools/">nhdplusTools</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi-usgs.github.io/nhdplusTools/">hydrogeofetch</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Linking to GEOS 3.14.1, GDAL 3.12.1, PROJ 9.7.1; sf_use_s2() is TRUE</span></span>
 <span></span>
-<span><span class="va">work_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/nhdplusTools_data_dir.html">nhdplusTools_data_dir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"hr_v_cache"</span><span class="op">)</span></span>
+<span><span class="va">work_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/hydrogeofetch_data_dir.html">hydrogeofetch_data_dir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"hr_v_cache"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"nhdplusTools"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/sample_data.R"</span>, package <span class="op">=</span> <span class="st">"hydrogeofetch"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hr_gpkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">work_dir</span>, <span class="st">"hr_data.gpkg"</span><span class="op">)</span></span>
 <span></span>
@@ -123,7 +124,7 @@ behavior.</em></p>
 <span><span class="va">hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nhdplushr.html">get_nhdplushr</a></span><span class="op">(</span><span class="va">work_dir</span>, out_gpkg <span class="op">=</span> <span class="va">hr_gpkg</span>,</span>
 <span>                    proj <span class="op">=</span> <span class="fl">3857</span><span class="op">)</span></span>
 <span></span>
-<span><span class="op">(</span><span class="va">start_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_flowline_index.html">get_flowline_index</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
+<span><span class="op">(</span><span class="va">start_index</span> <span class="op">&lt;-</span> <span class="fu">hydroloom</span><span class="fu">::</span><span class="fu"><a href="https://doi-usgs.github.io/hydroloom/reference/index_points_to_lines.html" class="external-link">index_points_to_lines</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
 <span>                                   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">outlets</span>, <span class="fl">5070</span><span class="op">)</span>,</span>
 <span>                                   search_radius <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span> <span class="co"># meters albers eq area</span></span>
 <span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
@@ -131,10 +132,10 @@ behavior.</em></p>
 <span><span class="co">#&gt; set, trying units of points CRS.</span></span>
 <span><span class="co">#&gt; Warning in force_linestring(x): converting to LINESTRING, this may be slow,</span></span>
 <span><span class="co">#&gt; check results</span></span>
-<span><span class="co">#&gt;   id          COMID      REACHCODE REACH_meas   offset</span></span>
-<span><span class="co">#&gt; 1  1 22001000032700 07090002006114    37.6572 87.71874</span></span>
+<span><span class="co">#&gt;   point_id          COMID      REACHCODE REACHCODE_measure   offset</span></span>
+<span><span class="co">#&gt; 1        1 22001000032700 07090002006114           37.6572 87.71874</span></span>
 <span></span>
-<span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_UT.html">get_UT</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">start_index</span><span class="op">$</span><span class="va">COMID</span><span class="op">)</span></span>
+<span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu">hydroloom</span><span class="fu">::</span><span class="fu"><a href="https://doi-usgs.github.io/hydroloom/reference/navigate_hydro_network.html" class="external-link">navigate_hydro_network</a></span><span class="op">(</span><span class="va">hr</span><span class="op">$</span><span class="va">NHDFlowline</span>, <span class="va">start_index</span><span class="op">$</span><span class="va">COMID</span>, <span class="st">"UT"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span></span>
 <span><span class="va">hr_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_nhdplus.html">subset_nhdplus</a></span><span class="op">(</span><span class="va">ids</span>, nhdplus_data <span class="op">=</span> <span class="va">hr_gpkg</span><span class="op">)</span></span></code></pre></div>
@@ -159,7 +160,7 @@ top of it.</p>
 <div class="section level2">
 <h2 id="download">Download<a class="anchor" aria-label="anchor" href="#download"></a>
 </h2>
-<p>NHDPlusHR support in nhdplusTools begins with the function
+<p>NHDPlusHR support in hydrogeofetch begins with the function
 <code><a href="../reference/download_nhdplushr.html">download_nhdplushr()</a></code>. The NHDPlusHR can be downloaded in <a href="https://www.usgs.gov/national-hydrography/access-national-hydrography-products" class="external-link">four
 digit hydrologic unit code subsets here.</a>
 <code><a href="../reference/download_nhdplushr.html">download_nhdplushr()</a></code> facilitates downloading these subsets
@@ -187,7 +188,7 @@ folder.</em></p>
 <div class="section level2">
 <h2 id="basic-functionality">Basic functionality<a class="anchor" aria-label="anchor" href="#basic-functionality"></a>
 </h2>
-<p>The second part of nhdplusTools support for NHDPlusHR is a bit more
+<p>The second part of hydrogeofetch support for NHDPlusHR is a bit more
 involved. The entry point is a function called
 <code><a href="../reference/get_nhdplushr.html">get_nhdplushr()</a></code>. At it’s core, it will take a collection of
 NHDPlusHR subsets, open them up one by one and build a single output
@@ -261,7 +262,7 @@ tolerance using <code><a href="https://r-spatial.github.io/sf/reference/geos_una
 will project the output into the desired projection. 1.
 <code>keep_cols</code> is used to specify which attributes are desired
 in the output. 1. <code>rename</code> controls whether output is
-automatically renamed to be compatible with <code>nhdplusTools</code>
+automatically renamed to be compatible with <code>hydrogeofetch</code>
 functions.</p>
 <p><em>Note: These options only operate on the flowline
 network.</em></p>
@@ -386,7 +387,7 @@ further use.</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by David Blodgett, Mike Johnson.</p>
+<p>Developed by David Blodgett.</p>
 </div>
 
 <div class="pkgdown">

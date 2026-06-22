@@ -1,7 +1,7 @@
 
 
 test_that("vaa examples", {
-  skip_on_cran()
+  skip_if_no_integration()
   skip_on_ci()
 
   vaa_names <- get_vaa_names()
@@ -28,42 +28,43 @@ test_that("vaa examples", {
 
   expect_equal(names(update), c("comid", "reachcode"))
 
-  expect_error(capture_messages(get_vaa("bad", updated_network = TRUE)))
+  expect_message(get_vaa("bad", updated_network = TRUE),
+                 "bad not in vaa data")
 
   expect_true("tocomid" %in% get_vaa_names(updated_network = TRUE))
 })
 
 test_that("catchment chars", {
 
-  skip_on_cran()
+  skip_if_no_integration()
   skip_on_os("linux")
   skip_on_os("mac")
 
   old_opts <- options(arrow.unsafe_metadata = TRUE)
 
-  httptest::without_internet({
+  httptest2::without_internet({
     suppressMessages(expect_warning(w <- get_characteristics_metadata(cache = FALSE)))
     expect_null(w)
   })
 
-  meta <- nhdplusTools::get_characteristics_metadata(cache = FALSE)
+  meta <- hydrogeofetch::get_characteristics_metadata(cache = FALSE)
 
   expect_true(inherits(meta, "data.frame"))
   expect_true(nrow(meta) > 1000)
 
-  meta <- nhdplusTools::get_characteristics_metadata()
+  meta <- hydrogeofetch::get_characteristics_metadata()
 
   expect_true(inherits(meta, "data.frame"))
   expect_true(nrow(meta) > 1000)
 
-  meta <- nhdplusTools::get_characteristics_metadata("BFI")
+  meta <- hydrogeofetch::get_characteristics_metadata("BFI")
   expect_equal(nrow(meta), 3)
 
   expect_equal(names(meta), c("ID", "description", "units", "datasetLabel", "datasetURL",
                               "themeLabel", "themeURL", "watershedType",
                               "sbid", "end", "s3_url", "http_url"))
 
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
 
   suppressWarnings(
     dat <- get_catchment_characteristics(c("CAT_BFI", "ACC_BFI", "TOT_BFI"), walker_catchment$FEATUREID)
@@ -86,10 +87,10 @@ test_that("catchment chars", {
 
 test_that("streamcat catchment chars", {
 
-  skip_on_cran()
+  skip_if_no_integration()
   skip_if_not_installed("StreamCatTools")
 
-  source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
+  source(system.file("extdata", "walker_data.R", package = "hydrogeofetch"))
   test_comids <- walker_catchment$FEATUREID[1:2]
 
   meta <- suppressWarnings(

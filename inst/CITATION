@@ -1,13 +1,13 @@
-citHeader("To cite nhdplusTools in publications, please use:")
+citHeader("To cite hydrogeofetch in publications, please use:")
 
 bibentry(bibtype = "Manual",
-         author = "David Blodgett and Mike Johnson",
-         title = "nhdplusTools: Tools for Accessing and Working with the NHDPlus",
+         author = "David Blodgett",
+         title = "hydrogeofetch: Hydrologic Geospatial Fabric Data Extraction Tool Chain",
          publisher = "U.S. Geological Survey",
          address="Reston, VA",
-         version = "1.5.0",
+         version = "2.0.0",
          institution = "U.S. Geological Survey",
-         year = 2025,
-         url = "https://doi.org/10.5066/P97AS8JD",
-         textVersion = "Blodgett, D., Johnson, J.M., 2022, nhdplusTools: Tools for Accessing and Working with the NHDPlus, https://doi.org/10.5066/P97AS8JD"
+         year = 2026,
+         url = "TBD",
+         textVersion = "Blodgett, D. 2026, hydrogeofetch: Hydrologic Geospatial Fabric Data Extraction Tool Chain, TBD-DOI"
 )

@@ -30,7 +30,7 @@ test_that("subset runs as expected", {
   dir.create(temp_dir, recursive = TRUE, showWarnings = FALSE)
   unlink(file.path(temp_dir, "*"))
 
-  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+  source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   fl <- sf::read_sf(sample_data, "NHDFlowline_Network")
 
@@ -43,14 +43,14 @@ test_that("subset runs as expected", {
 
   expect_null(hydroloom::check_valid(NULL))
 
-  expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, sample_data), "CatchmentSP")
-  expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, "download"), "CatchmentSP")
-  expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, "download"), "CatchmentSP")
+  expect_equal(hydrogeofetch:::get_catchment_layer_name(TRUE, sample_data), "CatchmentSP")
+  expect_equal(hydrogeofetch:::get_catchment_layer_name(TRUE, "download"), "CatchmentSP")
+  expect_equal(hydrogeofetch:::get_catchment_layer_name(FALSE, "download"), "CatchmentSP")
 
   nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
   tempf <- file.path(temp_dir, "temp.geojson")
   sf::write_sf(nc, tempf, "Catchment")
-  expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, tempf), "Catchment")
+  expect_equal(hydrogeofetch:::get_catchment_layer_name(FALSE, tempf), "Catchment")
 
   nhdplus_path(sample_data)
 
@@ -60,7 +60,7 @@ test_that("subset runs as expected", {
 
   all_comids <- fline$COMID
 
-  comids <- get_UM(fline, 13293392)
+  comids <- hydroloom::navigate_hydro_network(fline, 13293392, "UM")
 
   out_file <- tempfile(fileext = ".gpkg")
 
@@ -134,18 +134,18 @@ test_that("subset runs as expected", {
 
 test_that("subset download", {
 
-  skip_on_cran()
+  skip_if_no_integration()
 
   temp_dir <- tempdir()
   dir.create(temp_dir, recursive = TRUE, showWarnings = FALSE)
 
   out_file <- tempfile(fileext = ".gpkg")
 
-  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+  source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   fl <-  sf::read_sf(sample_data, "NHDFlowline_Network")
 
-  comids <- get_UM(fl, 13293392)
+  comids <- hydroloom::navigate_hydro_network(fl, 13293392, "UM")
 
   all_comids <- fl$COMID
 
@@ -172,8 +172,8 @@ test_that("subset download", {
 
   unlink(file.path(temp_dir, "*"))
 
-  bs <- get("bb_break_size", nhdplusTools:::nhdplusTools_env)
-  assign("bb_break_size", value = 0.1, nhdplusTools:::nhdplusTools_env)
+  bs <- get("bb_break_size", hydrogeofetch:::hydrogeofetch_env)
+  assign("bb_break_size", value = 0.1, hydrogeofetch:::hydrogeofetch_env)
 
   fi <- subset_nhdplus(comids = all_comids,
                        output_file = out_file,
@@ -183,14 +183,14 @@ test_that("subset download", {
 
   expect_equal(nrow(fi$NHDFlowline_Network), length(all_comids))
 
-  assign("bb_break_size", value = bs, nhdplusTools:::nhdplusTools_env)
+  assign("bb_break_size", value = bs, hydrogeofetch:::hydrogeofetch_env)
 
   })
 
 test_that("subset works with HR", {
   work_dir <- tempdir()
 
-  skip_on_cran()
+  skip_if_no_integration()
   get_test_file(work_dir)
 
   out_gpkg <- file.path(work_dir, "temp.gpkg")
@@ -199,12 +199,12 @@ test_that("subset works with HR", {
                       layers = c("NHDFlowline", "NHDPlusCatchment", "NHDWaterbody",
                                  "NHDArea", "NHDPlusSink"))
 
-  expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, out_gpkg), "NHDPlusCatchment")
-  expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, out_gpkg), "NHDPlusCatchment")
+  expect_equal(hydrogeofetch:::get_catchment_layer_name(TRUE, out_gpkg), "NHDPlusCatchment")
+  expect_equal(hydrogeofetch:::get_catchment_layer_name(FALSE, out_gpkg), "NHDPlusCatchment")
 
   flowlines <- sf::read_sf(out_gpkg, "NHDFlowline")
 
-  up_ids <- get_UT(flowlines, 15000500028335)
+  up_ids <- hydroloom::navigate_hydro_network(flowlines, 15000500028335, "UT")
 
   suppressWarnings(sub <- subset_nhdplus(up_ids,
                                          file.path(work_dir,

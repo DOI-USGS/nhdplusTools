@@ -1,5 +1,5 @@
 test_that("subset by bounding box", {
-  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+  source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   bbox <- sf::st_bbox(c(xmin = -89.4, ymin = 43, xmax = -89.3, ymax = 43.1), crs = sf::st_crs(4326))
 
@@ -63,7 +63,7 @@ test_that("subset by bounding box", {
 })
 
 test_that("by rpu", {
-  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+  source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   nhdplus_path(sample_data)
 
@@ -91,7 +91,7 @@ test_that("by rpu", {
 })
 
 test_that("big rpu test", {
-  skip_on_cran()
+  skip_if_no_integration()
   testthat::skip_if_offline("sciencebase.gov")
 
   vaa <- tryCatch(
@@ -135,8 +135,8 @@ test_that("big rpu test", {
                                by = "comid")
 
   suppressWarnings(
-  vaa_new$arbolatesu <- calculate_arbolate_sum(
-    dplyr::select(vaa_new, ID = comid, toID = tocomid, length = lengthkm))
+  vaa_new$arbolatesu <- hydroloom::accumulate_downstream(
+    dplyr::select(vaa_new, ID = comid, toID = tocomid, length = lengthkm), "length")
   )
 
   suppressWarnings(
@@ -153,13 +153,13 @@ test_that("big rpu test", {
 
 test_that("projection check", {
 
-  skip_on_cran()
+  skip_if_no_integration()
 
   out <- tempfile(fileext = ".gpkg")
 
   unlink(out, recursive = TRUE)
 
-  mr <- nhdplusTools::plot_nhdplus(list(13293970), gpkg = out,
+  mr <- hydrogeofetch::plot_nhdplus(list(13293970), gpkg = out,
                                    nhdplus_data = out,
                                    overwrite = FALSE,
                                    actually_plot = FALSE)
@@ -179,7 +179,7 @@ test_that("unify_types", {
 
   check <- list(data.frame(), data.frame(one = 1, two = "2"), data.frame(one = "1", two = 2))
 
-  out <- nhdplusTools:::unify_types(check)
+  out <- hydrogeofetch:::unify_types(check)
 
   expect_equal(out,
                list(structure(list(one = 1, two = 2), row.names = c(NA, -1L), class = "data.frame"),

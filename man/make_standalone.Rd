@@ -22,7 +22,7 @@ the domain is independently complete.
 \donttest{
 library(dplyr)
 library(sf)
-source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 
 (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
 nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
@@ -32,7 +32,7 @@ hr_data$NHDFlowline <- make_standalone(hr_data$NHDFlowline)
 (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
 nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
 
-source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
+source(system.file("extdata/nhdplushr_data.R", package = "hydrogeofetch"))
 
 # Remove mainstem and non-dendritic stuff.
 subset <- filter(hr_data$NHDFlowline,

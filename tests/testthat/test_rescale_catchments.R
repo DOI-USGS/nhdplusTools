@@ -1,6 +1,5 @@
 
 test_that("rescale", {
-  skip_on_cran()
   skip_on_os("mac")
 
   old_opts <- options(arrow.unsafe_metadata = TRUE)
@@ -29,7 +28,7 @@ test_that("rescale", {
   # catchment_characteristic <- get_catchment_characteristics(varname = vars$characteristic_id,
   #                                                           ids = unique(lookup_table$comid))
   #
-  # catchment_areas <- nhdplusTools:::get_catchment_areas(unique(lookup_table$member_comid), split_divides)
+  # catchment_areas <- hydrogeofetch:::get_catchment_areas(unique(lookup_table$member_comid), split_divides)
   #
   # saveRDS(list(lookup_table = lookup_table,
   #              split_divides = split_divides,

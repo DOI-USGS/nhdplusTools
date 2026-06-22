@@ -2,11 +2,11 @@ get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
 
   stopifnot(service %in% c("3DHP_all", "NHDPlus_HR"))
 
-  url_base <- paste0(get("arcrest_root", envir = nhdplusTools_env),
+  url_base <- paste0(get("arcrest_root", envir = hydrogeofetch_env),
                      service,
                      "/MapServer/")
 
-  all_layers <- jsonlite::read_json(paste0(url_base, "?f=json"))
+  all_layers <- hgf_json(paste0(url_base, "?f=json"), simplifyVector = FALSE)
 
   id_name <- "id3dhp"
   if(service == "NHDPlus_HR") id_name <- "nhdplusid"
@@ -46,7 +46,6 @@ get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
 #' @return a simple features (sf) object or valid types if no type supplied
 #' @keywords internal
 #' @importFrom sf st_crs st_geometry_type st_buffer st_transform st_zm read_sf st_bbox st_as_sfc
-#' @importFrom httr RETRY content
 #' @importFrom dplyr filter
 #' @importFrom methods as
 query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
@@ -70,16 +69,23 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
     return(source)
   }
 
-  if(!type %in% source$user_call) {
+  exact_match <- type %in% source$user_call
+  # Allow a prefix to act as a virtual group, e.g. "hydrolocation" expands to
+  # all user_call entries of the form "hydrolocation - ...".
+  prefix_match <- !exact_match & startsWith(source$user_call, paste0(type, " - "))
+
+  if(!exact_match && !any(prefix_match)) {
     warning("\"", type, "\" not in `type` input. Must be one of: \n\t\"",
             paste(source$user_call, collapse = "\"\n\t\""), "\"")
     return(NULL)
   }
 
-  if(length(group_layers) > 0 &&
-     grepl(paste(sapply(group_layers, \(x) x$name),
-                 collapse = "|"),
-           type, ignore.case = TRUE)) {
+  if(any(prefix_match)) {
+    need_layers <- as.integer(source$layer[prefix_match])
+  } else if(length(group_layers) > 0 &&
+            grepl(paste(sapply(group_layers, \(x) x$name),
+                        collapse = "|"),
+                  type, ignore.case = TRUE)) {
     layer_id <- filter(source, .data$user_call == !!type)$layer
 
     group_layer <- group_layers[[sapply(group_layers, \(x) x$id == layer_id)]]
@@ -130,21 +136,14 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
                      post_body)
     }
 
+    all_ids <- NULL
     tryCatch({
-      if(nhdplus_debug()) {
-        message(paste(URL, "\n"))
-        message(post_body)
-      }
-
-      all_ids <- content(RETRY("POST",
-                               URL,
-                               body = post_body,
-                               encode = "form"))
-      all_ids <- unlist(all_ids$objectIds)
+      resp <- hgf_json(URL, body = post_body, encode = "form",
+                        simplifyVector = FALSE)
+      all_ids <- unlist(resp$objectIds)
 
     }, error = function(e) {
       warning("Something went wrong trying to access a service.")
-      out <- NULL
     })
 
     length_ids <- length(all_ids)
@@ -171,26 +170,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
                           outFields = "*",
                           f = "geojson")
 
-        tryCatch({
-          if(nhdplus_debug()) {
-            message(paste(URL, "\n"))
-            message(post_body)
-          }
-
-          out[[i]] <- rawToChar(httr::RETRY("POST",
-                                            URL,
-                                            body = post_body,
-                                            encode = "form",
-                                            pause_base = 2,
-                                            times = 3)$content)
-        }, error = function(e) {
-          warning("Something went wrong trying to access a service.")
-          out <- NULL
-        })
-
-        out[[i]] <- tryCatch({
-          sf::st_zm(sf::read_sf(out[[i]]))},
-          error = function(e) NULL)
+        out[i] <- list(hgf_sf(URL, body = post_body, encode = "form"))
       }
 
       if(inherits(out[[1]], "data.frame")) {
@@ -238,7 +218,7 @@ query_usgs_arcrest <- function(AOI = NULL,  ids = NULL,
 }
 
 
-assign("bb_break_size", value = 2, nhdplusTools_env)
+assign("bb_break_size", value = 2, hydrogeofetch_env)
 
 #' @title Construct a BBOX spatial filter for geoservers
 #' @description From an 'area of intferest' object (sf POINT or POLYGON),

@@ -35,7 +35,6 @@ Queries the geoconnex reference feature server for features of interest.
 }
 \examples{
 \donttest{
-
 dplyr::distinct(discover_geoconnex_reference()[c("id", "title")])
 
 AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,

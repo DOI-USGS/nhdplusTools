@@ -1,6 +1,6 @@
 
 test_that("we get urls for nhdplushr and base", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -20,7 +20,7 @@ test_that("we get urls for nhdplushr and base", {
 })
 
 test_that("get_nhdplushr layers and gpkg", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -50,7 +50,7 @@ test_that("get_nhdplushr layers and gpkg", {
 })
 
 test_that("get_nhdplushr duplicate vpus", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -77,7 +77,7 @@ test_that("get_nhdplushr duplicate vpus", {
 })
 
 test_that("nhdplus hr waterbody", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -98,7 +98,7 @@ test_that("nhdplus hr waterbody", {
 })
 
 test_that("get_nhdplushr overwrite gpkg and pattern", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -144,7 +144,7 @@ test_that("get_nhdplushr overwrite gpkg and pattern", {
 })
 
 test_that("get_nhdplushr simp and proj", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -171,7 +171,7 @@ test_that("get_nhdplushr simp and proj", {
 })
 
 test_that("get_nhdplushr rename and keep_cols", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -193,7 +193,7 @@ test_that("get_nhdplushr rename and keep_cols", {
 })
 
 test_that("make_standalone", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   sw <- setup_workdir()
 
@@ -214,13 +214,13 @@ test_that("make_standalone", {
 
   outlet <- sa$COMID[sa$Hydroseq == min(sa$Hydroseq)]
 
-  sa_UT <- get_UT(sa, outlet)
-  fl_UT <- get_UT(fl, outlet)
+  sa_UT <- hydroloom::navigate_hydro_network(sa, outlet, "UT")
+  fl_UT <- hydroloom::navigate_hydro_network(fl, outlet, "UT")
   expect_equal(sa_UT, fl_UT)
 
   expect_true(all(sa[sa$Hydroseq == min(sa$Hydroseq), ][c("DnLevel", "DnLevelPat", "DnHydroseq")] == 0))
 
-  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+  source(system.file("extdata", "sample_flines.R", package = "hydrogeofetch"))
 
   sample_flines <- get_tocomid(sample_flines)
 

@@ -13,7 +13,7 @@ test_that("find_immediate_huc12_outlets with synthetic network", {
     totdasqkm = c(50, 40, 30, 20, 10)
   )
 
-  result <- suppressWarnings(nhdplusTools:::find_immediate_huc12_outlets(
+  result <- suppressWarnings(hydrogeofetch:::find_immediate_huc12_outlets(
     net, 5, c(2, 4)
   ))
   expect_equal(result, 4)
@@ -29,7 +29,7 @@ test_that("find_immediate_huc12_outlets with synthetic network", {
     toid = c(4, 4, 4, 5, 0)
   )
 
-  result2 <- suppressWarnings(nhdplusTools:::find_immediate_huc12_outlets(
+  result2 <- suppressWarnings(hydrogeofetch:::find_immediate_huc12_outlets(
     net2, 5, c(1, 2)
   ))
   expect_equal(sort(result2), c(1, 2))
@@ -45,7 +45,7 @@ test_that("find_immediate_huc12_outlets with synthetic network", {
     toid = c(2, 3, 4, 0)
   )
 
-  result3 <- suppressWarnings(nhdplusTools:::find_immediate_huc12_outlets(
+  result3 <- suppressWarnings(hydrogeofetch:::find_immediate_huc12_outlets(
     net3, 4, c(1, 3)
   ))
   expect_equal(result3, 3)
@@ -60,7 +60,7 @@ test_that("add_huc12_area_columns", {
   )
   hu12 <- sf::st_sf(ncontrb_a = 100, geometry = poly)
 
-  result <- nhdplusTools:::add_huc12_area_columns(hu12)
+  result <- hydrogeofetch:::add_huc12_area_columns(hu12)
 
   expect_true("dasqkm" %in% names(result))
   expect_true("ncontrb_sqkm" %in% names(result))
@@ -75,7 +75,7 @@ test_that("plan_upstream_huc12_fetches single HUC10", {
   ids <- c("070702010101", "070702010102", "070702010103")
   outlet <- "070702010101"
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlet)
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(ids, outlet)
 
   expect_equal(plan$huc12_est$fetch_ids, ids)
   expect_true(plan$huc10_est$same_as_huc12)
@@ -91,7 +91,7 @@ test_that("plan_upstream_huc12_fetches multi-HUC10 single-HUC08", {
   ids <- c("070702010101", "070702010102", "070702010501")
   outlet <- "070702010101"
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlet)
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(ids, outlet)
 
   # HUC10 estimate: one upstream HUC10, one local HUC12 in outlet HUC10
   expect_false(plan$huc10_est$same_as_huc12)
@@ -114,7 +114,7 @@ test_that("plan_upstream_huc12_fetches multi-HUC08", {
   )
   outlet <- "070702010101"
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlet)
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(ids, outlet)
 
   # HUC10 estimate: 2 upstream HUC10s
   expect_false(plan$huc10_est$same_as_huc12)
@@ -139,7 +139,7 @@ test_that("plan_upstream_huc12_fetches multi-HUC08", {
 })
 
 test_that("plan_upstream_huc12_fetches single ID equals outlet", {
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(
     "070702010101", "070702010101"
   )
 
@@ -154,7 +154,7 @@ test_that("plan_upstream_huc12_fetches multiple outlets same HUC10", {
   ids <- c("070702010101", "070702010102", "070702010103", "070702010501")
   outlets <- c("070702010101", "070702010102")
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlets)
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(ids, outlets)
 
   expect_equal(plan$huc12_est$fetch_ids, ids)
   # Both outlets in HUC10 0707020101. One upstream HUC10 0707020105.
@@ -172,7 +172,7 @@ test_that("plan_upstream_huc12_fetches multiple outlets different HUC10s", {
   ids <- c("070702010101", "070702010501", "070702010502", "070703020301")
   outlets <- c("070702010101", "070702010501")
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlets)
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(ids, outlets)
 
   # outlet HUC10s: 0707020101, 0707020105
   # upstream HUC10: 0707030203
@@ -191,7 +191,7 @@ test_that("plan_upstream_huc12_fetches multiple outlets different HUC08s", {
   ids <- c("070702010101", "070703020301", "070703020302", "070801010101")
   outlets <- c("070702010101", "070703020301")
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlets)
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(ids, outlets)
 
   # outlet HUC08s: 07070201, 07070302
   # upstream HUC08: 07080101
@@ -210,7 +210,7 @@ test_that("plan_upstream_huc12_fetches multiple outlets all same HUC10", {
   ids <- c("070702010101", "070702010102", "070702010103")
   outlets <- c("070702010101", "070702010102")
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlets)
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(ids, outlets)
 
   expect_true(plan$huc10_est$same_as_huc12)
   expect_null(plan$huc10_est$outlet_backfill)
@@ -229,7 +229,7 @@ test_that("plan_upstream_huc12_fetches backfill for missing huc12pp", {
     "171200010501")
   outlet <- "171200010710"
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(ids, outlet)
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(ids, outlet)
 
   # multi-HUC10: HUC10s 1712000107 (outlet) and 1712000105
   expect_false(plan$huc10_est$same_as_huc12)
@@ -257,22 +257,22 @@ test_that("union_huc12_sets deduplicates and adds missing", {
   target <- sf::st_sf(huc_12 = c("A", "B"), geometry = c(poly1, poly2))
   base <- sf::st_sf(huc_12 = c("B", "C"), geometry = c(poly2, poly3))
 
-  result <- nhdplusTools:::union_huc12_sets(target, base)
+  result <- hydrogeofetch:::union_huc12_sets(target, base)
   expect_equal(nrow(result), 3)
   expect_equal(sort(result$huc_12), c("A", "B", "C"))
 
   # NULL/empty base returns target unchanged
-  expect_equal(nrow(nhdplusTools:::union_huc12_sets(target, NULL)), 2)
+  expect_equal(nrow(hydrogeofetch:::union_huc12_sets(target, NULL)), 2)
   empty <- sf::st_sf(geometry = sf::st_sfc(crs = 5070))
-  expect_equal(nrow(nhdplusTools:::union_huc12_sets(target, empty)), 2)
+  expect_equal(nrow(hydrogeofetch:::union_huc12_sets(target, empty)), 2)
 
   # NULL/empty target returns base
-  expect_equal(nrow(nhdplusTools:::union_huc12_sets(NULL, base)), 2)
-  expect_equal(nrow(nhdplusTools:::union_huc12_sets(empty, base)), 2)
+  expect_equal(nrow(hydrogeofetch:::union_huc12_sets(NULL, base)), 2)
+  expect_equal(nrow(hydrogeofetch:::union_huc12_sets(empty, base)), 2)
 })
 
 test_that("get_drainage_area_estimates Black Earth Creek smoke test", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
 
@@ -327,28 +327,28 @@ test_that("resolve_comid_from_reachcode picks flowline by measure interval", {
 
   # measure in second interval
   expect_equal(
-    nhdplusTools:::resolve_comid_from_reachcode("14070003001234", 65, vaa),
+    hydrogeofetch:::resolve_comid_from_reachcode("14070003001234", 65, vaa),
     102L
   )
   # measure on boundary -> first matching interval
   expect_equal(
-    nhdplusTools:::resolve_comid_from_reachcode("14070003001234", 50, vaa),
+    hydrogeofetch:::resolve_comid_from_reachcode("14070003001234", 50, vaa),
     101L
   )
   # measure out of bounds (>100) -> closest interval boundary (comid 103, tomeas=100)
   expect_equal(
-    nhdplusTools:::resolve_comid_from_reachcode("14070003001234", 110, vaa),
+    hydrogeofetch:::resolve_comid_from_reachcode("14070003001234", 110, vaa),
     103L
   )
   # missing reachcode -> error
   expect_error(
-    nhdplusTools:::resolve_comid_from_reachcode("00000000000000", 50, vaa),
+    hydrogeofetch:::resolve_comid_from_reachcode("00000000000000", 50, vaa),
     "No flowlines found in VAA"
   )
 })
 
 test_that("get_drainage_area_estimates accepts reachcode/measure in start", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   # source the actual reachcode/measure from a one-time NLDI call
   ref <- get_nldi_feature(
@@ -397,7 +397,7 @@ test_that("get_drainage_area_estimates accepts reachcode/measure in start", {
 })
 
 test_that("get_drainage_area_estimates local_navigation smoke test", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
 
@@ -435,7 +435,7 @@ test_that("get_drainage_area_estimates local_navigation smoke test", {
 })
 
 test_that("get_drainage_area_estimates Lake Mendota multi-outlet smoke test", {
-  skip_on_cran()
+  skip_if_no_integration()
 
   start <- list(featureSource = "nwissite", featureID = "USGS-05428000")
 
@@ -500,7 +500,7 @@ test_that("assemble_hu12_sets with synthetic polygons (HUC08 active)", {
   h12_up1 <- make_poly("070702010501", 1000)
   h12_up2 <- make_poly("070703020301", 2000)
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(
     all_huc12_ids = c("070702010101", "070702010501", "070703020301"),
     outlet_huc12_ids = "070702010101"
   )
@@ -513,7 +513,7 @@ test_that("assemble_hu12_sets with synthetic polygons (HUC08 active)", {
     huc10_bulk = NULL
   )
 
-  result <- nhdplusTools:::assemble_hu12_sets(plan, polygons)
+  result <- hydrogeofetch:::assemble_hu12_sets(plan, polygons)
 
   expect_type(result, "list")
   expect_s3_class(result$hu12_by_huc12, "sf")
@@ -550,7 +550,7 @@ test_that("assemble_hu12_sets single HUC10 returns NULL for broader", {
     )
   }
 
-  plan <- nhdplusTools:::plan_upstream_huc12_fetches(
+  plan <- hydrogeofetch:::plan_upstream_huc12_fetches(
     all_huc12_ids = c("070702010101", "070702010102"),
     outlet_huc12_ids = "070702010101"
   )
@@ -566,7 +566,7 @@ test_that("assemble_hu12_sets single HUC10 returns NULL for broader", {
     huc10_bulk = NULL
   )
 
-  result <- nhdplusTools:::assemble_hu12_sets(plan, polygons)
+  result <- hydrogeofetch:::assemble_hu12_sets(plan, polygons)
 
   expect_true(nrow(result$hu12_by_huc12) == 2)
   expect_null(result$hu12_by_huc10)
@@ -591,7 +591,7 @@ test_that("assemble_da_estimates", {
   hu12 <- dplyr::bind_rows(
     make_poly("A", 0), make_poly("B", 1000)
   )
-  hu12 <- nhdplusTools:::add_huc12_area_columns(hu12)
+  hu12 <- hydrogeofetch:::add_huc12_area_columns(hu12)
 
   hu12_result <- list(
     hu12_by_huc12 = hu12,
@@ -599,7 +599,7 @@ test_that("assemble_da_estimates", {
     hu12_by_huc08 = NULL
   )
 
-  est <- nhdplusTools:::assemble_da_estimates(hu12_result, 5.0)
+  est <- hydrogeofetch:::assemble_da_estimates(hu12_result, 5.0)
 
   expect_true(est$da_huc12_sqkm > 0)
   expect_equal(est$da_huc12_sqkm, sum(hu12$dasqkm) + 5.0)
@@ -621,14 +621,14 @@ test_that("filter_disconnected_huc12s", {
   )
   # HUC08 grouping: outlet 120500011305 (max in HUC08) is on-network
   # -> keep all HUC12s.
-  result <- nhdplusTools:::filter_disconnected_huc12s(
+  result <- hydrogeofetch:::filter_disconnected_huc12s(
     broader_12050001, net_12050001, parent_nchar = 8L
   )
   expect_equal(sort(result), sort(broader_12050001))
 
   # HUC08 12040205: outlet 120402050400 (max in HUC08) is NOT on-network
   # -> only keep 120402050100 which is individually on-network.
-  result <- nhdplusTools:::filter_disconnected_huc12s(
+  result <- hydrogeofetch:::filter_disconnected_huc12s(
     c("120402050100", "120402050200", "120402050300", "120402050400"),
     "120402050100",
     parent_nchar = 8L
@@ -645,7 +645,7 @@ test_that("negotiate_outlet_catchment with single-flowline reachcode", {
   d <- fix[["USGS-08110075"]]
 
   # threshold high enough that no split is triggered (no web call for geometry)
-  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+  result <- suppressMessages(hydrogeofetch:::negotiate_outlet_catchment(
     d$start_info, d$vaa_row, outlet_split_threshold_m = 99999
   ))
 
@@ -662,7 +662,7 @@ test_that("negotiate_outlet_catchment with multi-flowline reachcode", {
     recursive = TRUE, full.names = TRUE))
   d <- fix[["USGS-08109000"]]
 
-  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+  result <- suppressMessages(hydrogeofetch:::negotiate_outlet_catchment(
     d$start_info, d$vaa_row, outlet_split_threshold_m = 99999
   ))
 
@@ -684,7 +684,7 @@ test_that("negotiate_outlet_catchment returns NULL for waterbody start", {
   )
 
   expect_null(suppressMessages(
-    nhdplusTools:::negotiate_outlet_catchment(start_info, NULL)
+    hydrogeofetch:::negotiate_outlet_catchment(start_info, NULL)
   ))
 })
 
@@ -701,7 +701,7 @@ test_that("negotiate_outlet_catchment returns NULL when measure is NA", {
   )
 
   expect_null(suppressMessages(
-    nhdplusTools:::negotiate_outlet_catchment(start_info, NULL)
+    hydrogeofetch:::negotiate_outlet_catchment(start_info, NULL)
   ))
 })
 
@@ -725,7 +725,7 @@ test_that("negotiate_outlet_catchment returns NULL at outlet", {
 
   # rescale_measures(0.5, 0, 100) = 0.5 which is < 1 => NULL
   expect_null(suppressMessages(
-    nhdplusTools:::negotiate_outlet_catchment(start_info, vaa)
+    hydrogeofetch:::negotiate_outlet_catchment(start_info, vaa)
   ))
 })
 
@@ -749,7 +749,7 @@ test_that("negotiate_outlet_catchment handles out-of-bounds measure", {
 
   # measure 10 is closer to frommeas=50 => flowline_measure=0 => < 1 => NULL
   expect_message(
-    result <- nhdplusTools:::negotiate_outlet_catchment(start_info, vaa),
+    result <- hydrogeofetch:::negotiate_outlet_catchment(start_info, vaa),
     "outside flowline bounds"
   )
   expect_null(result)
@@ -763,7 +763,7 @@ test_that("negotiate_outlet_catchment threshold not exceeded", {
   d <- fix[["USGS-08110075"]]
 
   # threshold above distance => not exceeded, no geometry fetch
-  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+  result <- suppressMessages(hydrogeofetch:::negotiate_outlet_catchment(
     d$start_info, d$vaa_row, outlet_split_threshold_m = 99999
   ))
   expect_true(is.list(result))
@@ -773,7 +773,7 @@ test_that("negotiate_outlet_catchment threshold not exceeded", {
 })
 
 test_that("negotiate_outlet_catchment threshold exceeded fetches gage_point", {
-  skip_on_cran()
+  skip_if_no_integration()
   # USGS-08110075: flowline_measure=64.8248, lengthkm=4.92
   # distance to outlet = 64.8248/100 * 4920 = ~3190 m
   fix <- readRDS(list.files(pattern = "negotiate_outlet_fixture.rds",
@@ -781,7 +781,7 @@ test_that("negotiate_outlet_catchment threshold exceeded fetches gage_point", {
   d <- fix[["USGS-08110075"]]
 
   # threshold well below distance => exceeded, fetches geometry
-  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+  result <- suppressMessages(hydrogeofetch:::negotiate_outlet_catchment(
     d$start_info, d$vaa_row, outlet_split_threshold_m = 100
   ))
   expect_true(result$threshold_exceeded)
@@ -795,7 +795,7 @@ test_that("negotiate_outlet_catchment returns correct structure", {
   d <- fix[["USGS-08110075"]]
 
   # threshold not exceeded — list with NULL gage_point
-  result <- suppressMessages(nhdplusTools:::negotiate_outlet_catchment(
+  result <- suppressMessages(hydrogeofetch:::negotiate_outlet_catchment(
     d$start_info, d$vaa_row, outlet_split_threshold_m = 99999
   ))
 
@@ -812,7 +812,7 @@ test_that("negotiate_outlet_catchment returns correct structure", {
       geometry = sf::st_sfc(sf::st_point(c(-89, 43)), crs = 4326)),
     outlet_comids = 99999L)
   expect_null(suppressMessages(
-    nhdplusTools:::negotiate_outlet_catchment(wb, NULL)
+    hydrogeofetch:::negotiate_outlet_catchment(wb, NULL)
   ))
 })
 
@@ -828,7 +828,7 @@ test_that("prepare_huc12_outlets renames and validates", {
     geometry = pts
   )
 
-  out <- nhdplusTools:::prepare_huc12_outlets(raw)
+  out <- hydrogeofetch:::prepare_huc12_outlets(raw)
 
   expect_true(all(c("comid", "identifier", "other") %in% names(out)))
   expect_type(out$comid, "integer")
@@ -839,23 +839,23 @@ test_that("prepare_huc12_outlets renames and validates", {
   # Missing required columns triggers stop
   bad <- sf::st_sf(x = 1, geometry = sf::st_sfc(sf::st_point(c(0, 0)),
     crs = 4326))
-  expect_error(nhdplusTools:::prepare_huc12_outlets(bad),
+  expect_error(hydrogeofetch:::prepare_huc12_outlets(bad),
     "missing required columns")
 
   # Non-sf, non-character input triggers stop
-  expect_error(nhdplusTools:::prepare_huc12_outlets(data.frame(comid = 1)),
+  expect_error(hydrogeofetch:::prepare_huc12_outlets(data.frame(comid = 1)),
     "sf data.frame or a path")
 
   # Non-existent path triggers stop
   expect_error(
-    nhdplusTools:::prepare_huc12_outlets("/no/such/file.gpkg"),
+    hydrogeofetch:::prepare_huc12_outlets("/no/such/file.gpkg"),
     "file not found"
   )
 })
 
 test_that("get_drainage_area_estimates waterbody_data Lake Mendota smoke test", {
-  skip_on_cran()
-  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+  skip_if_no_integration()
+  source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   start <- sf::st_sfc(sf::st_point(c(-89.4, 43.1)), crs = 4326)
   waterbody_data <- sf::read_sf(sample_data, "NHDWaterbody")
@@ -874,8 +874,8 @@ test_that("get_drainage_area_estimates waterbody_data Lake Mendota smoke test", 
 })
 
 test_that("get_drainage_area_estimates catchment_data local retrieval", {
-  skip_on_cran()
-  source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+  skip_if_no_integration()
+  source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
   start <- sf::st_sfc(sf::st_point(c(-89.4, 43.1)), crs = 4326)
   waterbody_data <- sf::read_sf(sample_data, "NHDWaterbody")
@@ -909,18 +909,18 @@ test_that("find_start_huc12 with local huc12_data", {
 
   pt_a <- sf::st_sfc(sf::st_point(c(-99.5, 40.5)), crs = 4326)
   expect_equal(
-    nhdplusTools:::find_start_huc12(pt_a, huc12_data),
+    hydrogeofetch:::find_start_huc12(pt_a, huc12_data),
     "171200010710"
   )
 
   pt_b <- sf::st_sfc(sf::st_point(c(-98.5, 40.5)), crs = 4326)
   expect_equal(
-    nhdplusTools:::find_start_huc12(pt_b, huc12_data),
+    hydrogeofetch:::find_start_huc12(pt_b, huc12_data),
     "171200010711"
   )
 
   pt_out <- sf::st_sfc(sf::st_point(c(-110, 50)), crs = 4326)
-  expect_null(nhdplusTools:::find_start_huc12(pt_out, huc12_data))
+  expect_null(hydrogeofetch:::find_start_huc12(pt_out, huc12_data))
 })
 
 test_that("augment_override_for_closed_basin_start adds HUC10 when start is off-network", {
@@ -936,7 +936,7 @@ test_that("augment_override_for_closed_basin_start adds HUC10 when start is off-
 
   # start HUC12 is NOT in the on-network set -> override augmented with HUC10
   override <- suppressMessages(
-    nhdplusTools:::augment_override_for_closed_basin_start(
+    hydrogeofetch:::augment_override_for_closed_basin_start(
       pt, network_huc12_ids = c("171200020101", "171200030101"),
       huc12_data = huc12_data, HU_inclusion_override = NULL
     )
@@ -945,7 +945,7 @@ test_that("augment_override_for_closed_basin_start adds HUC10 when start is off-
 
   # existing overrides are preserved, deduplicated
   override2 <- suppressMessages(
-    nhdplusTools:::augment_override_for_closed_basin_start(
+    hydrogeofetch:::augment_override_for_closed_basin_start(
       pt, network_huc12_ids = c("171200020101"),
       huc12_data = huc12_data,
       HU_inclusion_override = c("10130106", "1712000107")
@@ -955,7 +955,7 @@ test_that("augment_override_for_closed_basin_start adds HUC10 when start is off-
 
   # start HUC12 IS in the on-network set -> override unchanged
   override3 <- suppressMessages(
-    nhdplusTools:::augment_override_for_closed_basin_start(
+    hydrogeofetch:::augment_override_for_closed_basin_start(
       pt, network_huc12_ids = c("171200010710", "171200020101"),
       huc12_data = huc12_data, HU_inclusion_override = NULL
     )
@@ -964,7 +964,7 @@ test_that("augment_override_for_closed_basin_start adds HUC10 when start is off-
 
   # non-point start: passthrough
   expect_equal(
-    nhdplusTools:::augment_override_for_closed_basin_start(
+    hydrogeofetch:::augment_override_for_closed_basin_start(
       list(featureSource = "x", featureID = "y"),
       network_huc12_ids = character(0),
       huc12_data = huc12_data,
@@ -997,7 +997,7 @@ test_that("force_include_override_huc12s adds missing HU12s under override paren
   # simulate fetch result: by_huc10 has only the on-network 0501, by_huc08
   # has the same single HU12 (mimicking the outlet-HU8 partial-fetch case)
   on_network <- huc12_data[huc12_data$huc_12 == "171200010501", ]
-  on_network <- nhdplusTools:::add_huc12_area_columns(on_network)
+  on_network <- hydrogeofetch:::add_huc12_area_columns(on_network)
   hu12_result <- list(
     hu12_by_huc12 = on_network,
     hu12_by_huc10 = on_network,
@@ -1007,7 +1007,7 @@ test_that("force_include_override_huc12s adds missing HU12s under override paren
   # 10-char override forces fetch of HU10 1712000107 (2 HU12s) at HU10 level,
   # and HU8 17120001 (all 4 HU12s) at HU08 level via cascade.
   result <- suppressMessages(
-    nhdplusTools:::force_include_override_huc12s(
+    hydrogeofetch:::force_include_override_huc12s(
       hu12_result, "1712000107", huc12_data
     )
   )

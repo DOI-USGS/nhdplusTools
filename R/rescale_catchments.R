@@ -33,7 +33,7 @@ rescale_characteristics <- function(vars, lookup_table) {
       across(any_of(cols_max), \(x) max(x, na.rm = TRUE), .names = "{col}_max")
     ) |>
     ungroup() |>
-    rename_with(~gsub("_rescaled", "", .), contains("_rescaled"))
+    rename_with(\(x) gsub("_rescaled", "", x), contains("_rescaled"))
 }
 
 #' @description
@@ -47,7 +47,7 @@ rescale_characteristics <- function(vars, lookup_table) {
 #' "areasqkm." Used to retrieve adjusted catchment areas in the case of split
 #' catchments.
 #'
-#' @importFrom dplyr mutate select right_join left_join filter rename bind_rows
+#' @importFrom dplyr mutate select right_join left_join filter rename bind_rows all_of
 #' @importFrom stats weighted.mean
 #' @noRd
 #'
@@ -58,7 +58,7 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
     mutate(comid = as.integer(.data$member_comid))
 
   # fetch basin area for all comids
-  catchment_areas <- nhdplusTools::get_vaa(atts = c("comid", "areasqkm", "lengthkm")) |>
+  catchment_areas <- hydrogeofetch::get_vaa(atts = c("comid", "areasqkm", "lengthkm")) |>
     select(all_of(c("comid", "areasqkm", "lengthkm"))) |>
     right_join(comids_fmt, by = "comid", multiple = "all")
 
@@ -170,8 +170,8 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
 #' @param aoi character area of interest, passed through to
 #' \link{get_catchment_characteristics} when \code{catchment_characteristics}
 #' is not provided. See \link{get_catchment_characteristics} for details.
-#' @importFrom dplyr left_join rename_with mutate across group_by summarize ungroup distinct starts_with any_of
-#' @importFrom tidyr pivot_wider contains
+#' @importFrom dplyr left_join rename_with mutate across group_by summarize ungroup distinct starts_with any_of contains
+#' @importFrom data.table as.data.table dcast
 #' @export
 #'
 rescale_catchment_characteristics <- function(vars, lookup_table,
@@ -217,11 +217,12 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
   var_names <- unique(catchment_characteristics$characteristic_id)
 
   # pivot to wide format
-  catchment_characteristics <- pivot_wider(catchment_characteristics,
-                                           names_from = "characteristic_id",
-                                           values_from = c("characteristic_value", "percent_nodata"))
+  catchment_characteristics <- as.data.frame(dcast(
+    as.data.table(catchment_characteristics),
+    comid ~ characteristic_id,
+    value.var = c("characteristic_value", "percent_nodata")))
   catchment_characteristics <- rename_with(.data = catchment_characteristics,
-                                           .fn = ~gsub("characteristic_value_", "", .x, fixed = TRUE))
+                                           .fn = \(x) gsub("characteristic_value_", "", x, fixed = TRUE))
 
   if(is.null(catchment_areas)) {
     # get comid catchment areas, adjusting area for catchments that have been "split"
@@ -236,7 +237,7 @@ rescale_catchment_characteristics <- function(vars, lookup_table,
   # rescale the nldi characteristics if needed (i.e., for split catchments)
   if(!all(lookup_table$comid == lookup_table$member_comid)){
     lookup_table <- mutate(lookup_table,
-                           across(any_of(var_names), ~.x*.data$split_area_prop, .names = "{col}_rescaled"))
+                           across(any_of(var_names), \(x) x * .data$split_area_prop, .names = "{col}_rescaled"))
   }
 
   return(rescale_characteristics(vars, lookup_table))

@@ -1,0 +1,41 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+
+    ],
+    "numberReturned": 0,
+    "numberMatched": 0,
+    "links": [
+        {
+            "type": "application/geo+json",
+            "rel": "self",
+            "title": "This document as GeoJSON",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdflowline_network/items?f=json&comid=1&limit=500"
+        },
+        {
+            "rel": "alternate",
+            "type": "application/ld+json",
+            "title": "This document as RDF (JSON-LD)",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdflowline_network/items?f=jsonld&comid=1&limit=500"
+        },
+        {
+            "type": "text/html",
+            "rel": "alternate",
+            "title": "This document as HTML",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdflowline_network/items?f=html&comid=1&limit=500"
+        },
+        {
+            "type": "text/csv; charset=utf-8",
+            "rel": "alternate",
+            "title": "This document as CSV",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdflowline_network/items?f=csv&comid=1&limit=500"
+        },
+        {
+            "type": "application/json",
+            "title": "NHDPlusV2 NHD Flowline Network",
+            "rel": "collection",
+            "href": "https://api.water.usgs.gov:443/fabric/pygeoapi/collections/nhdflowline_network"
+        }
+    ],
+    "timeStamp": "2026-05-27T16:23:08.961522Z"
+}

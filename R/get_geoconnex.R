@@ -12,7 +12,7 @@
 #'
 discover_geoconnex_reference <- function() {
 
-  discover_oafeat(get("gocnx_ref_base_url", envir = nhdplusTools_env))
+  discover_oafeat(get("gocnx_ref_base_url", envir = hydrogeofetch_env))
 
 }
 
@@ -29,7 +29,6 @@ discover_geoconnex_reference <- function() {
 #' @export
 #' @examples
 #' \donttest{
-#'
 #' dplyr::distinct(discover_geoconnex_reference()[c("id", "title")])
 #'
 #' AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
@@ -52,7 +51,7 @@ get_geoconnex_reference <- function(AOI,
                                     buffer = 0.5,
                                     status = TRUE) {
 
-  base <- get("gocnx_ref_base_url", envir = nhdplusTools_env)
+  base <- get("gocnx_ref_base_url", envir = hydrogeofetch_env)
 
   get_oafeat(base, AOI, type = type, t_srs = t_srs, buffer = buffer, status = status)
 

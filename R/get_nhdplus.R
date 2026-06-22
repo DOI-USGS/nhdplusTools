@@ -19,7 +19,8 @@
 #' @param realization character. What realization to return.
 #' Default is flowline and options include: outlet, flowline, catchment,
 #' and all
-#' @return sfc a single, or list, of simple feature objects
+#' @return sf single, or named list of, simple feature objects. \code{NULL} if
+#' no realization succeeded (e.g. degraded service).
 #' @examples
 #' \donttest{
 #'  point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)
@@ -88,7 +89,7 @@ get_nhdplus <- function(AOI = NULL,
   geoms = list()
 
   if(!is.null(nwis)){
-    comid = c(unlist(lapply(nwis, extact_comid_nwis)), comid)
+    comid = c(unlist(lapply(nwis, extract_comid_nwis)), comid)
   }
 
   if("catchment" %in% realization){
@@ -128,6 +129,8 @@ get_nhdplus <- function(AOI = NULL,
 
   geoms = geoms[names(geoms) %in% realization]
 
+  if(length(geoms) == 0) return(NULL)
+
   if(length(geoms) == 1){ geoms = geoms[[1]]}
 
   return(geoms)
@@ -140,15 +143,14 @@ get_nhdplus <- function(AOI = NULL,
 #' @keywords internal
 #' @return a vector of COMIDs
 #' @noRd
-#' @importFrom httr RETRY GET
 #' @importFrom jsonlite fromJSON
 
-extact_comid_nwis <- memoise::memoise(function(nwis){
-  # We could export this from dataRetrieval dataRetrieval:::pkg.env$nldi_base
-  #but currently its not...
-  baseURL  <- paste0(get_nldi_url(), "/linked-data/")
-  url      <-  paste0(baseURL, "nwissite/USGS-", nwis)
-  c        <-  rawToChar(httr::RETRY("GET", url)$content)
-  f.comid  <-  jsonlite::fromJSON(c, simplifyVector = TRUE)
+extract_comid_nwis <- memoise::memoise(function(nwis){
+  url <- paste0(get_nldi_url(), "/linked-data/nwissite/USGS-", nwis)
+  f.comid <- hgf_json(url)
+  if(is.null(f.comid)) {
+    warning("NWIS lookup failed for USGS-", nwis, call. = FALSE)
+    return(NULL)
+  }
   f.comid$features$properties$comid
 })

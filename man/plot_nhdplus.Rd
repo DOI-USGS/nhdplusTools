@@ -101,8 +101,8 @@ If adding additional layers to the plot, data must be projected to EPSG:3857 wit
 options("rgdal_show_exportToProj4_warnings"="none")
 # Beware plot_nhdplus caches data to the default location.
 # If you do not want data in "user space" change the default.
-old_dir <- nhdplusTools::nhdplusTools_data_dir()
-nhdplusTools_data_dir(tempdir())
+old_dir <- hydrogeofetch::hydrogeofetch_data_dir()
+hydrogeofetch_data_dir(tempdir())
 
 plot_nhdplus("05428500")
 
@@ -110,7 +110,7 @@ plot_nhdplus("05428500", streamorder = 2)
 
 plot_nhdplus(list(13293970, 13293750))
 
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+source(system.file("extdata/sample_data.R", package = "hydrogeofetch"))
 
 plot_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
 
@@ -142,7 +142,7 @@ bbox <- sf::st_bbox(c(xmin = -89.43, ymin = 43, xmax = -89.28, ymax = 43.1),
                     crs = "+proj=longlat +datum=WGS84 +no_defs")
 
 fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
-comids <- nhdplusTools::get_UT(fline, 13293970)
+comids <- hydroloom::navigate_hydro_network(fline, 13293970, "UT")
 
 plot_nhdplus(comids)
 
@@ -158,6 +158,6 @@ plot_nhdplus(bbox = bbox, nhdplus_data = sample_data,
 plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
              plot_config = list(flowline = list(col = "darkblue")))
 
-nhdplusTools::nhdplusTools_data_dir(old_dir)
+hydrogeofetch::hydrogeofetch_data_dir(old_dir)
 }
 }

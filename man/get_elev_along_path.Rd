@@ -40,7 +40,7 @@ if(inherits(xs, "sf")) {
 
 bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
 
-nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
+hydrogeofetch::plot_nhdplus(bbox = bbox, cache_data = FALSE)
 
 plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
 plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)

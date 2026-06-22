@@ -1,0 +1,239 @@
+{
+    "type": "Feature",
+    "properties": {
+        "fid": 33705,
+        "id": "2479066",
+        "uri": "https://geoconnex.us/ref/mainstems/2479066",
+        "featuretype": "['https://www.opengis.net/def/schema/hy_features/hyf/HY_FlowPath', 'https://www.opengis.net/def/schema/hy_features/hyf/HY_WaterBody']",
+        "downstream_mainstem_id": "https://geoconnex.us/ref/mainstems/2085470",
+        "encompassing_mainstem_basins": "['https://geoconnex.us/ref/mainstems/2085470', 'https://geoconnex.us/ref/mainstems/2085319']",
+        "name_at_outlet": "",
+        "name_at_outlet_gnis_id": null,
+        "head_nhdpv2_comid": "https://geoconnex.us/nhdplusv2/comid/22024676",
+        "outlet_nhdpv2_comid": "https://geoconnex.us/nhdplusv2/comid/22030254",
+        "head_nhdpv2huc12": "https://geoconnex.us/nhdplusv2/huc12/041402020302",
+        "outlet_nhdpv2huc12": "https://geoconnex.us/nhdplusv2/huc12/041402020302",
+        "lengthkm": 38.3,
+        "outlet_drainagearea_sqkm": 324.7,
+        "head_rf1id": 11532,
+        "outlet_rf1id": 11532,
+        "head_nhdpv1_comid": 22024676,
+        "outlet_nhdpv1_comid": 22030254,
+        "head_2020huc12": "041402020302",
+        "outlet_2020huc12": "041402020302",
+        "superseded": false,
+        "new_mainstemid": ""
+    },
+    "id": "2479066",
+    "geometry": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -75.52121512654924,
+                43.1009857330987
+            ],
+            [
+                -75.52808319320525,
+                43.10019113309986
+            ],
+            [
+                -75.53416772652918,
+                43.101568333097916
+            ],
+            [
+                -75.5373805931909,
+                43.10310319976222
+            ],
+            [
+                -75.5378765265234,
+                43.105596733091566
+            ],
+            [
+                -75.53431272652892,
+                43.109207799752724
+            ],
+            [
+                -75.52678579320735,
+                43.111420333082535
+            ],
+            [
+                -75.52749819320621,
+                43.11514919974339
+            ],
+            [
+                -75.53195839319932,
+                43.11794319973915
+            ],
+            [
+                -75.52982759320258,
+                43.12313353306449
+            ],
+            [
+                -75.52198799321474,
+                43.12440779972905
+            ],
+            [
+                -75.51500552655892,
+                43.135448733045294
+            ],
+            [
+                -75.50488019324126,
+                43.138800933040045
+            ],
+            [
+                -75.50403299324267,
+                43.140835733037015
+            ],
+            [
+                -75.50749492657059,
+                43.143538199699314
+            ],
+            [
+                -75.52192999321483,
+                43.14076133303702
+            ],
+            [
+                -75.52641779320788,
+                43.14705499969389
+            ],
+            [
+                -75.53312932653085,
+                43.149942399689444
+            ],
+            [
+                -75.53588059319316,
+                43.1483435330252
+            ],
+            [
+                -75.53803532652313,
+                43.14880253302455
+            ],
+            [
+                -75.54299572651553,
+                43.15376933301686
+            ],
+            [
+                -75.54351792651465,
+                43.16065413300611
+            ],
+            [
+                -75.53819859318963,
+                43.166414132997204
+            ],
+            [
+                -75.54003872652004,
+                43.16888559965996
+            ],
+            [
+                -75.53878632652203,
+                43.17078319965717
+            ],
+            [
+                -75.53140199320018,
+                43.1772731329803
+            ],
+            [
+                -75.52395939321167,
+                43.18012599964255
+            ],
+            [
+                -75.5255789932092,
+                43.183695532970304
+            ],
+            [
+                -75.52445092654432,
+                43.18550139963429
+            ],
+            [
+                -75.5171039265557,
+                43.18647839963279
+            ],
+            [
+                -75.51356839322784,
+                43.18844213296295
+            ],
+            [
+                -75.51336559322812,
+                43.19706459961618
+            ],
+            [
+                -75.5082695932361,
+                43.1971741329493
+            ],
+            [
+                -75.50557792657355,
+                43.19886379961351
+            ],
+            [
+                -75.50345385991011,
+                43.203693332939345
+            ],
+            [
+                -75.6375683263687,
+                43.20982279959638
+            ],
+            [
+                -75.65225059301252,
+                43.208994199597825
+            ],
+            [
+                -75.68256839296555,
+                43.20362833293945
+            ],
+            [
+                -75.7171073929119,
+                43.20218959960841
+            ]
+        ]
+    },
+    "prev": "2479059",
+    "next": "2479073",
+    "links": [
+        {
+            "type": "application/json",
+            "rel": "root",
+            "title": "The landing page of this server as JSON",
+            "href": "https://reference.geoconnex.us?f=json"
+        },
+        {
+            "type": "text/html",
+            "rel": "root",
+            "title": "The landing page of this server as HTML",
+            "href": "https://reference.geoconnex.us?f=html"
+        },
+        {
+            "rel": "self",
+            "type": "application/geo+json",
+            "title": "This document as JSON",
+            "href": "https://geoconnex.us/ref/mainstems/2479066?f=json"
+        },
+        {
+            "rel": "alternate",
+            "type": "application/ld+json",
+            "title": "This document as RDF (JSON-LD)",
+            "href": "https://geoconnex.us/ref/mainstems/2479066?f=jsonld"
+        },
+        {
+            "rel": "alternate",
+            "type": "text/html",
+            "title": "This document as HTML",
+            "href": "https://geoconnex.us/ref/mainstems/2479066?f=html"
+        },
+        {
+            "rel": "collection",
+            "type": "application/json",
+            "title": "Reference Mainstems",
+            "href": "https://reference.geoconnex.us/collections/mainstems"
+        },
+        {
+            "rel": "prev",
+            "type": "application/json",
+            "href": "https://reference.geoconnex.us/collections/mainstems/items/2479059?f=json"
+        },
+        {
+            "rel": "next",
+            "type": "application/json",
+            "href": "https://reference.geoconnex.us/collections/mainstems/items/2479073?f=json"
+        }
+    ]
+}

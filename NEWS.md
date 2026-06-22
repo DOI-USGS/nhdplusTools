@@ -3,6 +3,11 @@ hydrogeofetch 2.0.0
 
 `hydrogeofetch` is the renamed successor to `nhdplusTools`. The package scope has grown beyond NHDPlus, and the new name reflects its broader role as a hydrologic geospatial data access and network tool chain. `nhdplusTools` will remain on CRAN as a deprecation shim until October 2028.
 
+## New features
+
+- New `add_mainstems()` joins geoconnex mainstem identifiers onto a table containing NHDPlusV2 (comid/featureid) or NHDPlusHR (nhdplusid) identifiers, using a cached lookup table from the [ref_rivers](https://github.com/internetofwater/ref_rivers) release. #469
+- New `check_mainstems()` checks whether mainstem identifiers have been superseded by a newer reference release; new `update_mainstems()` re-indexes points with a known mainstem id onto its replacement using `hydroloom::index_points_to_lines()`. #470
+
 ## Removed functions (moved to hydroloom)
 
 Network analysis and spatial indexing functions that duplicated [hydroloom](https://doi-usgs.github.io/hydroloom/) have been removed. Users should call hydroloom directly. See the [hydroloom reference](https://doi-usgs.github.io/hydroloom/reference/) for full documentation, especially the [indexing](https://doi-usgs.github.io/hydroloom/reference/index.html#indexing-and-linear-referencing) and [navigation](https://doi-usgs.github.io/hydroloom/reference/index.html#network-navigation-and-accumulation) sections.

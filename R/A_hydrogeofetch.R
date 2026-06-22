@@ -98,6 +98,12 @@ assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
 assign("gocnx_ref_base_url", "https://reference.geoconnex.us/",
        envir = hydrogeofetch_env)
 
+assign("ref_rivers_release", "v3.2", envir = hydrogeofetch_env)
+
+assign("ref_rivers_base_url",
+       "https://github.com/internetofwater/ref_rivers/releases/download/",
+       envir = hydrogeofetch_env)
+
 assign("usgs_water_root", "https://api.water.usgs.gov/fabric/pygeoapi/",
        envir = hydrogeofetch_env)
 

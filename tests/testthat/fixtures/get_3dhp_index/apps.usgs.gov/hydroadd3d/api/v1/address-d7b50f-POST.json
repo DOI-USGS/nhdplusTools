@@ -1,0 +1,63 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -89.276,
+                    42.988,
+                    261.635253906
+                ]
+            },
+            "properties": {
+                "source_id": "2",
+                "xorig": -89.276,
+                "yorig": 42.988,
+                "zorig": 0.0,
+                "xsnap": -89.276,
+                "ysnap": 42.988,
+                "zsnap": 261.635253906,
+                "reachcode": "",
+                "mainstemid": "",
+                "m": -1.0,
+                "gnisidlabel": "",
+                "gnisid": 0,
+                "featuredate": null,
+                "snapdistance": -1.0,
+                "snapdate": "2026-06-23T16:30:24.306396+00:00"
+            },
+            "id": "2"
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -91.19644600945934,
+                    30.441894578083254,
+                    4.029520035
+                ]
+            },
+            "properties": {
+                "source_id": "1",
+                "xorig": -91.1962,
+                "yorig": 30.4419,
+                "zorig": 0.0,
+                "xsnap": -91.19644600945934,
+                "ysnap": 30.441894578083254,
+                "zsnap": 4.029520035,
+                "reachcode": "",
+                "mainstemid": "https://geoconnex.us/ref/mainstems/312091",
+                "m": 10.10123042649278,
+                "gnisidlabel": "Mississippi River",
+                "gnisid": 1629903,
+                "featuredate": "2023-09-14T00:00:00+00:00",
+                "snapdistance": 23.638312269145935,
+                "snapdate": "2026-06-23T16:30:24.582711+00:00"
+            },
+            "id": "1"
+        }
+    ]
+}

@@ -107,6 +107,9 @@ assign("ref_rivers_base_url",
 assign("usgs_water_root", "https://api.water.usgs.gov/fabric/pygeoapi/",
        envir = hydrogeofetch_env)
 
+assign("hydroadd_root", "https://apps.usgs.gov/hydroadd3d/api",
+       envir = hydrogeofetch_env)
+
 assign("split_flowlines_attributes",
        c("COMID", "toCOMID", "LENGTHKM"),
        envir = hydrogeofetch_env)
@@ -249,6 +252,11 @@ get_water_url <- function() {
   } else {
     stop("only prod or test allowed.")
   }
+}
+
+#' @noRd
+get_hydroadd_url <- function() {
+  get("hydroadd_root", envir = hydrogeofetch_env)
 }
 
 #' Get or set hydrogeofetch data directory

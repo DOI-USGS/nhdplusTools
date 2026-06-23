@@ -5,6 +5,7 @@ hydrogeofetch 2.0.0
 
 ## New features
 
+- New `get_3dhp_index()` addresses (snaps) point features to the 3DHP network using the HydroAdd3D web service, returning the snapped location and elevation, the matched mainstem (as a geoconnex uri), the measure along the mainstem, and associated GNIS attributes.
 - New `add_mainstems()` joins geoconnex mainstem identifiers onto a table containing NHDPlusV2 (comid/featureid) or NHDPlusHR (nhdplusid) identifiers, using a cached lookup table from the [ref_rivers](https://github.com/internetofwater/ref_rivers) release. #469
 - New `check_mainstems()` checks whether mainstem identifiers have been superseded by a newer reference release; new `update_mainstems()` re-indexes points with a known mainstem id onto its replacement using `hydroloom::index_points_to_lines()`. #470
 

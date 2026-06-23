@@ -88,6 +88,20 @@
 <strong>USGS software release</strong> for <code>hydrogeofetch</code> starts as soon as the renamed code is on GitHub, before CRAN submission.</li>
 </ul><p>When working in this repo, treat <code>nhdplusTools</code> as frozen and <code>hydrogeofetch</code> v1.x as the future canonical line. Avoid signature changes to public functions — they break the shim.</p>
 </div>
+<div class="section level3">
+<h3 id="reverse-dependencies">Reverse dependencies<a class="anchor" aria-label="anchor" href="#reverse-dependencies"></a></h3>
+<p>Three packages depend on <code>nhdplusTools</code>/<code>hydrogeofetch</code> directly. Small and friendly — coordinate directly rather than waiting on CRAN policy.</p>
+<ul><li>
+<strong><a href="https://github.com/NIEHS/amadeus" class="external-link">amadeus</a></strong> (NIEHS) — uses <code>get_huc</code>
+</li>
+<li>
+<strong><a href="https://github.com/HARPgroup/elfgen" class="external-link">elfgen</a></strong> (HARPgroup) — uses <code>get_nhdplus</code>
+</li>
+<li>
+<strong><a href="https://github.com/USEPA/StreamCatTools" class="external-link">StreamCatTools</a></strong> (USEPA) — uses <code>get_waterbodies</code>, <code>navigate_nldi</code>, <code>get_nldi_basin</code>, <code>get_nhdplus</code>, <code>discover_nhdplus_id</code>
+</li>
+</ul><p>None call any function removed in the milestone 4 hydroloom-deduplication pass (<code>get_UT</code>/<code>get_UM</code>/<code>get_DM</code>/<code>get_DD</code>, the indexing functions, navigation/network-attribute wrappers) — confirmed by grepping each repo’s source. Before removing or changing the signature of a function any of them call, re-check their source rather than assuming this list is still current.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="ci-and-release">CI and release<a class="anchor" aria-label="anchor" href="#ci-and-release"></a></h2>

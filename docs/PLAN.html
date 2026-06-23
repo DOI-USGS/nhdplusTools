@@ -56,11 +56,16 @@
 
 <p>nhdplusTools 1.5.0 is the last feature release under the old name. This plan covers the rename to hydrogeofetch, the deprecation shim, and the eventual CRAN archive of nhdplusTools. Each milestone ends with a gate — review or communication work that should finish before moving on.</p>
 <div class="section level2">
+<h2 id="status-as-of-2026-06-22">Status (as of 2026-06-22)<a class="anchor" aria-label="anchor" href="#status-as-of-2026-06-22"></a></h2>
+<p><strong>Done:</strong> Milestones 1–4. <code>hydrogeofetch</code> v2.0.0 builds and checks clean under its new name, dependencies are modernized (httr2, no fst/tidyr/R.utils/magrittr), every web-service caller degrades gracefully, and the functions that duplicated hydroloom are gone — replaced with a migration vignette, an updated README, and a NEWS.md entry. A fresh reverse-dependency sweep of <code>amadeus</code>, <code>elfgen</code>, and <code>StreamCatTools</code> (2026-06-22) confirmed none of them call a removed function.</p>
+<p><strong>Outstanding:</strong> - <strong>Milestone 5 (USGS release/DOI)</strong> — not started. <code>inst/CITATION</code> has been pre-updated with the <code>hydrogeofetch</code> title/author/version text, but the DOI/URL fields are still <code>"TBD"</code>; <code>code.json</code> still describes <code>nhdplusTools</code> entirely; no DOI has been minted on code.usgs.gov yet. <strong>This is the next concrete blocker</strong> — milestones 6 and 7 both depend on identifiers/URLs that come out of this step. - <strong>Milestone 6 (CRAN submission)</strong> — not started. No <code>rc/2.0.0</code> branch exists yet. - <strong>Milestone 7 (GitHub repo rename)</strong> — not started. <code>origin</code> is still <code>doi-usgs/nhdplusTools</code>. - <strong>Milestone 8 (deprecation shim)</strong> — not started. No shim branch exists. - <strong>Milestone 9 (archive nhdplusTools, Oct 2028)</strong> — blocked on 8; not due for ~2 years.</p>
+</div>
+<div class="section level2">
 <h2 id="id_1-close-out-nhdplustools-150-">1. Close out nhdplusTools 1.5.0 ✓<a class="anchor" aria-label="anchor" href="#id_1-close-out-nhdplustools-150-"></a></h2>
 <p><em>Complete.</em> nhdplusTools v1.5.0 released on CRAN, tagged and released on both GitHub and GitLab (May 2026). pkgdown site live. README points to the rename plan.</p>
 </div>
 <div class="section level2">
-<h2 id="id_2-build-hydrogeofetch-v10">2. Build hydrogeofetch v1.0<a class="anchor" aria-label="anchor" href="#id_2-build-hydrogeofetch-v10"></a></h2>
+<h2 id="id_2-build-hydrogeofetch-v200-">2. Build hydrogeofetch v2.0.0 ✓<a class="anchor" aria-label="anchor" href="#id_2-build-hydrogeofetch-v200-"></a></h2>
 <p>Rename all internal references so the package installs and loads as <code>hydrogeofetch</code>. Function names and signatures stay identical except where the package name is embedded in the function name itself (<code>nhdplusTools_data_dir</code>, <code>nhdplusTools_cache_settings</code>). New hex sticker is already in place.</p>
 <div class="section level3">
 <h3 id="id_2a-package-identity-">2a. Package identity ✓<a class="anchor" aria-label="anchor" href="#id_2a-package-identity-"></a></h3>
@@ -124,7 +129,7 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="id_3-dependency-and-code-modernization">3. Dependency and code modernization<a class="anchor" aria-label="anchor" href="#id_3-dependency-and-code-modernization"></a></h2>
+<h2 id="id_3-dependency-and-code-modernization-">3. Dependency and code modernization ✓<a class="anchor" aria-label="anchor" href="#id_3-dependency-and-code-modernization-"></a></h2>
 <p>Clean up legacy dependencies and bring the codebase to a consistent modern style.</p>
 <div class="section level3">
 <h3 id="id_3a-http-client-">3a. HTTP client ✓<a class="anchor" aria-label="anchor" href="#id_3a-http-client-"></a></h3>
@@ -184,7 +189,7 @@
 <ul class="task-list"><li><label><input type="checkbox" checked><code>Config/testthat/parallel: true</code> re-enabled at <a href="DESCRIPTION#L36">DESCRIPTION:36</a>. Full <code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code> run completed clean — no R subprocess crashes, no test failures, only pre-existing warnings (tidyselect bare-variable deprecation in <code>arrow::read_parquet(col_select = include_names)</code> inside <code>R/get_vaa.R</code> — known, not parallel-related) and the two <code>skip_if(...)</code> skips from milestone 3a. Confirms fst removal resolved the parallel/fst+arrow segfault.</label></li>
 </ul></div>
 <div class="section level3">
-<h3 id="id_3f-vignettes">3f. Vignettes<a class="anchor" aria-label="anchor" href="#id_3f-vignettes"></a></h3>
+<h3 id="id_3f-vignettes-">3f. Vignettes ✓<a class="anchor" aria-label="anchor" href="#id_3f-vignettes-"></a></h3>
 <ul class="task-list"><li><label><input type="checkbox" checked><code>tools::buildVignettes(dir = '.')</code> run with <code>BUILD_VIGNETTES</code> unset — all 7 vignettes build clean (no errors, no warnings). This is the CRAN path: every vignette uses <code>eval = local</code> gated on <code>Sys.getenv("BUILD_VIGNETTES") == "TRUE"</code>, so on CRAN no chunk evaluates and no service is contacted. Confirms that flaky or unavailable services cannot break the CRAN vignette build.</label></li>
 <li>
 <label><input type="checkbox" checked>Two live-build failures (<code>BUILD_VIGNETTES=TRUE</code>) surfaced and fixed:</label>
@@ -204,10 +209,10 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="id_4-reduce-hydroloom-duplication">4. Reduce hydroloom duplication<a class="anchor" aria-label="anchor" href="#id_4-reduce-hydroloom-duplication"></a></h2>
+<h2 id="id_4-reduce-hydroloom-duplication-">4. Reduce hydroloom duplication ✓<a class="anchor" aria-label="anchor" href="#id_4-reduce-hydroloom-duplication-"></a></h2>
 <p>hydrogeofetch should be a data-fetching and NHD-specific preparation package. Network analysis and spatial indexing belong in hydroloom. Functions that are thin wrappers over hydroloom — adding only column renames or trivial glue — should be removed so users call hydroloom directly.</p>
 <div class="section level3">
-<h3 id="id_4a-drop-re-exports">4a. Drop re-exports<a class="anchor" aria-label="anchor" href="#id_4a-drop-re-exports"></a></h3>
+<h3 id="id_4a-drop-re-exports-">4a. Drop re-exports ✓<a class="anchor" aria-label="anchor" href="#id_4a-drop-re-exports-"></a></h3>
 <p>Remove the 7 pure re-export <em>exports</em> from <code>R/A_hydrogeofetch.R</code> (the <code>@export</code> + <code>hydroloom::fn</code> lines, ~585–602). These pass through hydroloom functions with zero added logic:</p>
 <ul><li><code>st_compatibalize</code></li>
 <li><code>rename_geometry</code></li>
@@ -233,7 +238,7 @@
 <p>Without this, <code>R CMD check</code> raises “no visible global function definition” and the functions error at runtime. <code>st_compatibalize</code>, <code>fix_flowdir</code>, and <code>get_partial_length</code> have no internal callers and can be dropped completely.</p>
 </div>
 <div class="section level3">
-<h3 id="id_4b-drop-indexing-functions">4b. Drop indexing functions<a class="anchor" aria-label="anchor" href="#id_4b-drop-indexing-functions"></a></h3>
+<h3 id="id_4b-drop-indexing-functions-">4b. Drop indexing functions ✓<a class="anchor" aria-label="anchor" href="#id_4b-drop-indexing-functions-"></a></h3>
 <p>Remove <code>R/index_nhdplus.R</code> entirely:</p>
 <ul><li>
 <code>get_flowline_index</code> — wraps <code><a href="https://doi-usgs.github.io/hydroloom/reference/index_points_to_lines.html" class="external-link">hydroloom::index_points_to_lines</a></code> with optional auto-download and column rename</li>
@@ -246,18 +251,17 @@
 </ul><p>The only internal caller is <code>navigate_network</code> (see 4d below).</p>
 </div>
 <div class="section level3">
-<h3 id="id_4c-drop-navigation-shorthands">4c. Drop navigation shorthands<a class="anchor" aria-label="anchor" href="#id_4c-drop-navigation-shorthands"></a></h3>
+<h3 id="id_4c-drop-navigation-shorthands-">4c. Drop navigation shorthands ✓<a class="anchor" aria-label="anchor" href="#id_4c-drop-navigation-shorthands-"></a></h3>
 <p>Remove <code>get_UT</code>, <code>get_UM</code>, <code>get_DM</code>, <code>get_DD</code> from <code>R/get_network.R</code>. <code>get_UT</code> and <code>get_DD</code> are true one-liners over <code><a href="https://doi-usgs.github.io/hydroloom/reference/navigate_hydro_network.html" class="external-link">hydroloom::navigate_hydro_network</a></code>. <code>get_UM</code> and <code>get_DM</code> are <em>not</em> — they call <code>align_nhdplus_names</code>, filter the network, add <code>sort</code>/<code>include</code> arguments, and return the <code>COMID</code> column rather than the raw navigation result. Users who only want the COMID set call hydroloom directly with the mode string; the <code>sort</code>/<code>include</code> behavior has to be reproduced by hand (and is preserved in the shim — see 4i).</p>
 <p>Removing all four empties <code>R/get_network.R</code> (it also holds <code>navigate_network</code>, removed in 4d), so delete the file.</p>
 <p>Internal callers to fix: - <code>plot_nhdplus.R</code> (2 sites: lines 418, 475) — replace <code>get_UT(align_nhdplus_names(flowline), x)</code> with <code>navigate_hydro_network(align_nhdplus_names(flowline), x, "UT")</code>. The <code>navigate_hydro_network</code> import survives the <code>get_network.R</code> deletion because <code>get_drainage_area_estimates.R</code> also declares it.</p>
 </div>
 <div class="section level3">
-<h3 id="id_4d-drop-navigate_network">4d. Drop <code>navigate_network</code>
-<a class="anchor" aria-label="anchor" href="#id_4d-drop-navigate_network"></a></h3>
+<h3 id="id_4d-drop-navigate_network-">4d. Drop <code>navigate_network</code> ✓<a class="anchor" aria-label="anchor" href="#id_4d-drop-navigate_network-"></a></h3>
 <p>Remove the <code>navigate_network</code> function. It stitches together NLDI calls, navigation, indexing, and trimming — workflow glue that belongs in a vignette example, not a function. It’s the main internal consumer of both indexing and navigation shorthands.</p>
 </div>
 <div class="section level3">
-<h3 id="id_4e-drop-remaining-thin-wrappers">4e. Drop remaining thin wrappers<a class="anchor" aria-label="anchor" href="#id_4e-drop-remaining-thin-wrappers"></a></h3>
+<h3 id="id_4e-drop-remaining-thin-wrappers-">4e. Drop remaining thin wrappers ✓<a class="anchor" aria-label="anchor" href="#id_4e-drop-remaining-thin-wrappers-"></a></h3>
 <p>Remove these exported functions that add only column renames around a single hydroloom call:</p>
 <ul><li>
 <code>get_sorted</code> — rename cols → <code>sort_network</code> → rename back</li>
@@ -279,7 +283,7 @@
 <p>Note: <code>topo_sort_network</code>, <code>get_index_ids</code>, and <code>get_fromids</code> (all internal, <code>@noRd</code>, in <code>get_paths.R</code>) have <strong>no callers</strong> anywhere in <code>R/</code>, <code>tests/</code>, or <code>vignettes/</code>. They are dead helpers, so there is nothing to rewrite — they are removed along with <code>get_sorted</code>. With <code>get_levelpaths</code>/<code>get_terminal</code> (4f) also gone, <code>R/get_paths.R</code> is empty and should be deleted. Their hydroloom imports (<code>make_index_ids</code>, <code>make_fromids</code>) drop out with them. (Confirm these aren’t intentional scaffolding for planned work before deleting.)</p>
 </div>
 <div class="section level3">
-<h3 id="id_4f-drop-all-already-deprecated-wrappers">4f. Drop all already-deprecated wrappers<a class="anchor" aria-label="anchor" href="#id_4f-drop-all-already-deprecated-wrappers"></a></h3>
+<h3 id="id_4f-drop-all-already-deprecated-wrappers-">4f. Drop all already-deprecated wrappers ✓<a class="anchor" aria-label="anchor" href="#id_4f-drop-all-already-deprecated-wrappers-"></a></h3>
 <p>Remove these functions that already emit deprecation warnings and just forward to hydroloom:</p>
 <ul><li>
 <code>get_levelpaths</code> → <code><a href="https://doi-usgs.github.io/hydroloom/reference/add_levelpaths.html" class="external-link">hydroloom::add_levelpaths</a></code>
@@ -306,7 +310,7 @@
 </ul><p>This removes <code>R/calc_network.R</code>, <code>R/get_path_lengths.R</code>, <code>R/rebuild_topology.R</code>, and <code>R/run_plus_attributes.R</code>. Combined with the thin-wrapper and dead-helper removals in 4e, <code>R/get_paths.R</code> and <code>R/get_codes.R</code> are also emptied and deleted (<code>get_paths.R</code>: <code>get_levelpaths</code>/<code>get_levelpaths_internal</code>, <code>get_terminal</code>, <code>get_sorted</code>, dead helpers; <code>get_codes.R</code>: <code>get_pfaf</code>, <code>get_streamorder</code>, <code>get_streamlevel</code>). <code>get_levelpaths_internal</code> and <code>get_paths_internal</code> are removed here too — their only callers (<code>add_plus_network_attributes</code>, <code>get_levelpaths</code>, <code>get_path_members</code>/<code>get_path_lengths</code>) are all in this set.</p>
 </div>
 <div class="section level3">
-<h3 id="id_4g-fix-the--call">4g. Fix the <code>:::</code> call<a class="anchor" aria-label="anchor" href="#id_4g-fix-the--call"></a></h3>
+<h3 id="id_4g-fix-the--call-">4g. Fix the <code>:::</code> call ✓<a class="anchor" aria-label="anchor" href="#id_4g-fix-the--call-"></a></h3>
 <p><code>hydroloom:::check_search_radius</code> in <code>index_nhdplus.R</code> uses an unexported hydroloom function. Since we’re removing <code>get_flowline_index</code>, this goes away automatically. If any remaining code needs this logic, copy the few lines of unit-conversion rather than depending on an unexported function.</p>
 </div>
 <div class="section level3">
@@ -329,7 +333,7 @@
 <p>Exception: <code>get_UM</code> and <code>get_DM</code> are not bare forwards (see 4c). Their shim versions must carry the wrapper body — <code>align_nhdplus_names</code>, the network filter, and the <code>sort</code>/<code>include</code> arguments returning <code>$COMID</code> — so existing <code>get_UM(net, comid, sort = TRUE)</code> calls keep working. Copy the current function bodies into the shim rather than forwarding.</p>
 </div>
 <div class="section level3">
-<h3 id="id_4j-verification">4j. Verification<a class="anchor" aria-label="anchor" href="#id_4j-verification"></a></h3>
+<h3 id="id_4j-verification-">4j. Verification ✓<a class="anchor" aria-label="anchor" href="#id_4j-verification-"></a></h3>
 <ol style="list-style-type: decimal"><li>
 <code><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">devtools::document()</a></code> — NAMESPACE regenerates without the removed exports</li>
 <li>
@@ -349,7 +353,7 @@
 <li>Prune <code>_pkgdown.yml</code> reference sections: ~28 entries point at the removed functions and will be dangling man topics. <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> (deferred to milestone 6) errors on missing topics, so either prune now or carry an explicit note into milestone 6’s gate.</li>
 </ol></div>
 <div class="section level3">
-<h3 id="id_4k-sequencing">4k. Sequencing<a class="anchor" aria-label="anchor" href="#id_4k-sequencing"></a></h3>
+<h3 id="id_4k-sequencing-">4k. Sequencing ✓<a class="anchor" aria-label="anchor" href="#id_4k-sequencing-"></a></h3>
 <ol style="list-style-type: decimal"><li>
 <strong>Commit 1</strong>: Remove the re-export <em>exports</em> but keep the four plain imports (4a). Remove <code>R/index_nhdplus.R</code> and <code>navigate_network</code> (4b, 4d) — <code>navigate_network</code> is the consumer of the indexing and navigation shorthands, so it goes before them.</li>
 <li>
@@ -363,7 +367,7 @@
 </ol><p>Each commit leaves R CMD check clean. (Commits 3 and 4 are deliberately ordered deprecated-before-thin so no intermediate state references a removed function.)</p>
 </div>
 <div class="section level3">
-<h3 id="id_4l-migration-vignette">4l. Migration vignette<a class="anchor" aria-label="anchor" href="#id_4l-migration-vignette"></a></h3>
+<h3 id="id_4l-migration-vignette-">4l. Migration vignette ✓<a class="anchor" aria-label="anchor" href="#id_4l-migration-vignette-"></a></h3>
 <p>Write <code>vignettes/articles/migrating_from_nhdplusTools.Rmd</code> — a concise guide for users switching from nhdplusTools.</p>
 <p>Contents:</p>
 <ol style="list-style-type: decimal"><li>
@@ -383,7 +387,7 @@
 </ol><p>Skip internal refactoring details, exhaustive hydroloom API docs (link to hydroloom’s site), and history of the rename decision.</p>
 </div>
 <div class="section level3">
-<h3 id="id_4m-scale-back-existing-vignettes">4m. Scale back existing vignettes<a class="anchor" aria-label="anchor" href="#id_4m-scale-back-existing-vignettes"></a></h3>
+<h3 id="id_4m-scale-back-existing-vignettes-">4m. Scale back existing vignettes ✓<a class="anchor" aria-label="anchor" href="#id_4m-scale-back-existing-vignettes-"></a></h3>
 <p>Four existing article vignettes document functionality that moved to hydroloom and will fail to build once the functions are gone. Scale them back: remove the moved-function material, and where a retained example still needs that behavior, call the hydroloom function directly rather than a re-export.</p>
 <ul><li>
 <code>vignettes/articles/indexing.Rmd</code> — the entire vignette is built on <code>get_flowline_index</code>, <code>get_waterbody_index</code>, <code>disambiguate_flowline_indexes</code>, <code>get_path_lengths</code>, and <code>get_partial_length</code>. This is now hydroloom’s territory. Cut it down to a short pointer that indexing lives in hydroloom (link to hydroloom’s indexing vignette), keeping only any hydrogeofetch-specific framing (e.g. fetching the flowlines to index with <code><a href="reference/get_nhdplus.html">get_nhdplus()</a></code>, then handing off to <code><a href="https://doi-usgs.github.io/hydroloom/reference/index_points_to_lines.html" class="external-link">hydroloom::index_points_to_lines()</a></code>). Do not maintain a parallel indexing tutorial here.</li>
@@ -394,15 +398,16 @@
 <li>
 <code>vignettes/articles/nhdplushr.Rmd</code> — uses <code>get_flowline_index</code> and <code>get_UT</code>. Swap to <code><a href="https://doi-usgs.github.io/hydroloom/reference/index_points_to_lines.html" class="external-link">hydroloom::index_points_to_lines()</a></code> and <code>hydroloom::navigate_hydro_network(..., "UT")</code>.</li>
 </ul><p>Where these examples currently lean on re-exported helpers (<code>get_node</code>, <code>get_hydro_location</code>, <code>rescale_measures</code>, <code>rename_geometry</code>, etc.), call <code>hydroloom::fn()</code> directly so the vignettes don’t depend on imports that are no longer user-facing.</p>
-<p><strong>Done when:</strong> hydrogeofetch exports only data-fetching, NHD-specific preparation, and visualization functions. No thin hydroloom wrappers remain. R CMD check clean.</p>
-<p><strong>Gate:</strong> Update vignettes and README to show users how to combine hydrogeofetch (for fetching) with hydroloom (for network analysis/indexing). Confirm reverse-dep packages don’t import the removed functions from hydrogeofetch directly.</p>
+<p><strong>Done when:</strong> <del>hydrogeofetch exports only data-fetching, NHD-specific preparation, and visualization functions. No thin hydroloom wrappers remain. R CMD check clean.</del> Complete. Verified directly against the repo: all target files and functions removed, zero <code>:::</code> calls remain, NAMESPACE carries no <code>hydroloom::</code> re-exports (only the plain <code>importFrom</code>), and <code>_pkgdown.yml</code> has zero dangling references to removed functions.</p>
+<p><strong>Gate:</strong> <del>Update vignettes and README to show users how to combine hydrogeofetch (for fetching) with hydroloom (for network analysis/indexing). Confirm reverse-dep packages don’t import the removed functions from hydrogeofetch directly.</del> Complete. README.Rmd and <code>vignettes/hydrogeofetch.Rmd</code>/<code>migrating_from_nhdplusTools.Rmd</code> document the fetch-then-hand-off pattern. Reverse-dependency sweep (2026-06-22, cloned each repo and grepped its source): <code>amadeus</code> uses only <code>get_huc</code>, <code>elfgen</code> uses only <code>get_nhdplus</code>, <code>StreamCatTools</code> uses <code>get_waterbodies</code>/<code>navigate_nldi</code>/<code>get_nldi_basin</code>/<code>get_nhdplus</code>/<code>discover_nhdplus_id</code> — none call a function removed in this milestone.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="id_5-usgs-software-release">5. USGS software release<a class="anchor" aria-label="anchor" href="#id_5-usgs-software-release"></a></h2>
 <p>Create a new entry on code.usgs.gov for hydrogeofetch. Mint a new DOI. The existing nhdplusTools DOI stays pointed at a historical release page.</p>
+<p><strong>Status:</strong> Not started — no DOI minted yet. <code>inst/CITATION</code> title/author/version/year text has already been updated to <code>hydrogeofetch</code> 2.0.0, but <code>url</code>/<code>textVersion</code> are placeholder <code>"TBD"</code> pending the DOI. <code>code.json</code> still describes <code>nhdplusTools</code> (name, version history) and has not been touched. <strong>This is the current blocker</strong> — milestones 6 and 7 depend on identifiers and URLs that come out of this step.</p>
 <p><strong>Done when:</strong> DOI assigned for hydrogeofetch.</p>
-<p><strong>Gate:</strong> Update the items deferred from milestone 2: - inst/CITATION: title, textVersion, citHeader, DOI - code.json: <code>name</code>, URLs, version entries - DESCRIPTION: DOI in any relevant fields Confirm the plan for the old nhdplusTools DOI redirect with the DOI coordinator.</p>
+<p><strong>Gate:</strong> Update the items deferred from milestone 2: - inst/CITATION: <code>url</code>/<code>textVersion</code> DOI fields (title/author/version/year already done) - code.json: <code>name</code>, URLs, version entries - DESCRIPTION: DOI in any relevant fields Confirm the plan for the old nhdplusTools DOI redirect with the DOI coordinator.</p>
 </div>
 <div class="section level2">
 <h2 id="id_6-hydrogeofetch-on-cran">6. hydrogeofetch on CRAN<a class="anchor" aria-label="anchor" href="#id_6-hydrogeofetch-on-cran"></a></h2>

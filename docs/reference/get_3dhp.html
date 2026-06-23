@@ -170,8 +170,14 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># given a workunitid, can query for features in that work unit</span></span></span>
 <span class="r-in"><span><span class="va">wufl</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp</span><span class="op">(</span>ids <span class="op">=</span> <span class="st">"workunitid:300585"</span>, type <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Failed to get JSON from https://hydro.nationalmap.gov/arcgis/rest/services/3DHP_all/MapServer/50/query: HTTP 504 Gateway Timeout.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No flowline features found in area of interest.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 0 to 2000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 2000 to 4000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 4000 to 6000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 6000 to 8000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 8000 to 10000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 10000 to 12000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 12000 to 14000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 14000 to 14676 of 14676</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># given universalreferenceid (reachcodes), can query for them but only</span></span></span>
 <span class="r-in"><span><span class="co"># for hydrolocations. This is useful for looking up mainstem ids.</span></span></span>

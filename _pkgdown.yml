@@ -73,6 +73,7 @@ reference:
       - '`get_vaa_names`'
       - '`get_vaa_path`'
       - '`get_nldi_index`'
+      - '`get_3dhp_index`'
       - '`get_wb_outlet`'
       - '`add_mainstems`'
       - '`check_mainstems`'

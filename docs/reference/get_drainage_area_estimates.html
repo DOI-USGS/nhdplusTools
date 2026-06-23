@@ -125,7 +125,7 @@ by subsetting this table. Default NULL (use web services).</p></dd>
 <dd><p>sf data.frame, character path, or NULL. HUC12 pour
 points to use instead of the NLDI <code>huc12pp</code> service. Accepts either
 a preloaded sf data.frame or a path to a GPKG, which is read with
-<code><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></code>. Columns <code>COMID</code> and <code>FinalWBD_HUC12</code>
+<code><a href="https://rdrr.io/pkg/sf/man/st_read.html" class="external-link">read_sf</a></code>. Columns <code>COMID</code> and <code>FinalWBD_HUC12</code>
 are renamed to <code>comid</code> and <code>identifier</code>; any other columns are
 preserved. When provided, the outlets are filtered to the upstream
 network COMID set and no NLDI <code>huc12pp</code> queries are issued. Pair

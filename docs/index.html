@@ -92,11 +92,28 @@
 <div class="section level2">
 <h2 id="hydrogeofetch-tools-for-accessing-and-working-with-the-nhdplus-and-other-us-hydrographic-data">hydrogeofetch: Tools for Accessing and Working with the NHDPlus and other US hydrographic data.<a class="anchor" aria-label="anchor" href="#hydrogeofetch-tools-for-accessing-and-working-with-the-nhdplus-and-other-us-hydrographic-data"></a>
 </h2>
+</div>
+<div class="section level2">
+<h2 id="major-changes-in-200">Major changes in 2.0.0<a class="anchor" aria-label="anchor" href="#major-changes-in-200"></a>
+</h2>
+<p>Indexing, network navigation, and network attribute functions have moved to <a href="https://doi-usgs.github.io/hydroloom/" class="external-link"><strong>hydroloom</strong></a>. hydrogeofetch is now focused on data access and NHD-specific preparation; hydroloom handles the general-purpose network analysis that was previously bundled here.</p>
+<p>If you use any of the following, you now need <code><a href="https://github.com/DOI-USGS/hydroloom" class="external-link">library(hydroloom)</a></code>:</p>
+<ul>
+<li>
+<strong>Indexing</strong> (<code>get_flowline_index</code>, <code>get_waterbody_index</code>, <code>disambiguate_flowline_indexes</code>) → <a href="https://doi-usgs.github.io/hydroloom/reference/index_points_to_lines.html" class="external-link"><code>hydroloom::index_points_to_lines()</code></a>, <a href="https://doi-usgs.github.io/hydroloom/reference/index_points_to_waterbodies.html" class="external-link"><code>index_points_to_waterbodies()</code></a>, <a href="https://doi-usgs.github.io/hydroloom/reference/disambiguate_indexes.html" class="external-link"><code>disambiguate_indexes()</code></a>
+</li>
+<li>
+<strong>Navigation</strong> (<code>get_UT</code>, <code>get_DM</code>, <code>get_UM</code>, <code>get_DD</code>, <code>navigate_network</code>) → <a href="https://doi-usgs.github.io/hydroloom/reference/navigate_hydro_network.html" class="external-link"><code>hydroloom::navigate_hydro_network()</code></a>
+</li>
+<li>
+<strong>Network attributes</strong> (<code>get_streamorder</code>, <code>get_levelpaths</code>, <code>get_pathlength</code>, <code>calculate_total_drainage_area</code>, etc.) → hydroloom’s <a href="https://doi-usgs.github.io/hydroloom/reference/add_streamorder.html" class="external-link"><code>add_streamorder()</code></a>, <a href="https://doi-usgs.github.io/hydroloom/reference/add_levelpaths.html" class="external-link"><code>add_levelpaths()</code></a>, <a href="https://doi-usgs.github.io/hydroloom/reference/add_pathlength.html" class="external-link"><code>add_pathlength()</code></a>, <a href="https://doi-usgs.github.io/hydroloom/reference/accumulate_downstream.html" class="external-link"><code>accumulate_downstream()</code></a>
+</li>
+</ul>
+<p>The typical workflow is now: use hydrogeofetch to fetch and prepare NHD data, then hand off to hydroloom for indexing, navigation, and network analysis. See <code>vignette("migrating_from_nhdplusTools")</code> for a complete mapping of old to new function names.</p>
 <div class="section level3">
 <h3 id="recommended-citation">Recommended Citation:<a class="anchor" aria-label="anchor" href="#recommended-citation"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>  Blodgett, D. <span class="dv">2026</span>, hydrogeofetch<span class="sc">:</span> Hydrologic Geospatial</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  Fabric Data Extraction Tool Chain, TBD<span class="sc">-</span>DOI</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>Blodgett, D. <span class="dv">2026</span>, hydrogeofetch<span class="sc">:</span> Hydrologic Geospatial Fabric Data Extraction Tool Chain, https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.5066</span><span class="sc">/</span>P13UWPUR</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation:<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -106,7 +123,7 @@
 <p>For the latest development:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DOI-USGS/nhdplusTools"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DOI-USGS/nhdplusTools"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="resources">Resources<a class="anchor" aria-label="anchor" href="#resources"></a>
@@ -117,14 +134,14 @@
 <div class="section level3">
 <h3 id="data">Data:<a class="anchor" aria-label="anchor" href="#data"></a>
 </h3>
-<p><code>hydrogeofetch</code> provides easy access to data associated with the U.S. National Hydrography Dataset. Many functions are thin wrappers around functions that have been migrated to <code>hydroloom</code>.</p>
+<p><code>hydrogeofetch</code> provides easy access to data associated with the U.S. National Hydrography Dataset. Network analysis and spatial indexing live in <a href="https://doi-usgs.github.io/hydroloom/" class="external-link"><code>hydroloom</code></a>.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="package-vision">Package Vision<a class="anchor" aria-label="anchor" href="#package-vision"></a>
 </h2>
-<p>The <code>hydrogeofetch</code> package is intended to provide a reusable set of tools to subset, relate data to, and generate network attributes for U.S. NHDPlus data.</p>
-<p>General, globally applicable functionality has been moved to <a href="https://github.com/DOI-USGS/hydroloom" class="external-link"><code>hydroloom</code></a></p>
+<p>The <code>hydrogeofetch</code> package provides tools to discover, download, subset, and prepare U.S. NHDPlus data. Network analysis (navigation, indexing, attribute generation) belongs in <a href="https://doi-usgs.github.io/hydroloom/" class="external-link"><code>hydroloom</code></a>.</p>
+<p>General, globally applicable functionality has been moved to <a href="https://doi-usgs.github.io/hydroloom/" class="external-link"><code>hydroloom</code></a>.</p>
 <p><code>hydrogeofetch</code> implements a data model consistent with both the <a href="https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus" class="external-link">NHDPlus</a> dataset and the <a href="http://opengeospatial.github.io/HY_Features/" class="external-link">HY_Features</a> data model. The package aims to provide a set of tools that can be used to build workflows using NHDPlus data.</p>
 <p><strong>This vision is intended as a guide to contributors – conveying what kinds of contributions are of interest to the package’s long term vision. It is a reflection of the current thinking and is open to discussion and modification.</strong></p>
 <div class="section level3">
@@ -139,7 +156,7 @@
 <div class="section level5">
 <h5 id="indexing">Indexing<a class="anchor" aria-label="anchor" href="#indexing"></a>
 </h5>
-<p>One of the most important roles of the NHDPlus is as a connecting network for ancillary data and models. The first step in any workflow that uses the network like this is indexing relevant data to the network. A number of methods for indexing exist, they can be broken into two main categories: linear referencing and catchment indexing. Both operate on features represented by points, lines, and polygons. <code>hydrogeofetch</code> supports both linear and catchment indexing.</p>
+<p>Indexing data to the hydrographic network (linear referencing and catchment indexing) is handled by <a href="https://doi-usgs.github.io/hydroloom/" class="external-link"><code>hydroloom</code></a>. <code>hydrogeofetch</code> provides the data access needed to set up indexing workflows.</p>
 </div>
 </div>
 <div class="section level3">
@@ -189,7 +206,7 @@
 </h3>
 <p>Development happens on GitHub (doi-usgs/nhdplusTools). Official builds and release candidates are produced on code.usgs.gov (code.usgs.gov/water/nhdplusTools) using GitLab CI.</p>
 <p><strong>Vignettes</strong> use the <code>BUILD_VIGNETTES</code> environment variable to control code evaluation. Set <code>BUILD_VIGNETTES=TRUE</code> in a local <code>.Renviron</code> to build vignettes with live code. Without it, vignettes render with static output only. An additional <code>BUILD_VIGNETTES_CRAN=TRUE</code> variable controls image size in the drainage area vignette.</p>
-<p><strong>Local development</strong> does not require building the source package. Use <code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code>, <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code>, and <code><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">devtools::document()</a></code> directly.</p>
+<p><strong>Local development</strong> does not require building the source package. Use <code><a href="https://rdrr.io/pkg/devtools/man/test.html" class="external-link">devtools::test()</a></code>, <code><a href="https://rdrr.io/pkg/devtools/man/check.html" class="external-link">devtools::check()</a></code>, and <code><a href="https://rdrr.io/pkg/devtools/man/document.html" class="external-link">devtools::document()</a></code> directly.</p>
 <p><strong>Release candidates</strong> are built on code.usgs.gov. Push a branch named <code>rc/&lt;version&gt;</code> (e.g. <code>rc/2.0.0</code>) to trigger the GitLab CI pipeline, which runs three stages:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -241,7 +258,7 @@
 </li>
 <li>Make sure you use roxygen and run Check before contributing. More on this front as the package matures.</li>
 </ol>
-<p>Other notes: - consider running <code>lintr</code> prior to contributing. - consider running <code>goodpractice::gp()</code> on the package before contributing. - consider running <code><a href="https://devtools.r-lib.org/reference/spell_check.html" class="external-link">devtools::spell_check()</a></code> if you wrote documentation. - this package uses pkgdown. Running <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> will refresh it.</p>
+<p>Other notes: - consider running <code>lintr</code> prior to contributing. - consider running <code>goodpractice::gp()</code> on the package before contributing. - consider running <code><a href="https://rdrr.io/pkg/devtools/man/spell_check.html" class="external-link">devtools::spell_check()</a></code> if you wrote documentation. - this package uses pkgdown. Running <code><a href="https://rdrr.io/pkg/pkgdown/man/build_site.html" class="external-link">pkgdown::build_site()</a></code> will refresh it.</p>
 </div>
 </div>
 </div>

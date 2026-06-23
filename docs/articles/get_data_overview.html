@@ -300,6 +300,9 @@ useful to discover the code needed here.</p>
 <span><span class="va">outdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/hydrogeofetch_data_dir.html">hydrogeofetch_data_dir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"hr_access_demo"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">outdir</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in dir.create(outdir):</span></span>
+<span><span class="co">#&gt; 'C:\Users\dblodgett\AppData\Roaming\R\data\R\hydrogeofetch\hr_access_demo'</span></span>
+<span><span class="co">#&gt; already exists</span></span>
 <span></span>
 <span><span class="va">download_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_nhdplushr.html">download_nhdplushr</a></span><span class="op">(</span><span class="va">outdir</span>, <span class="va">wolf_huc</span><span class="op">$</span><span class="va">huc4</span><span class="op">)</span></span>
 <span></span>
@@ -457,6 +460,9 @@ dataset, the pattern is just the same as with nhdplushr using
 <span><span class="va">outdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/hydrogeofetch_data_dir.html">hydrogeofetch_data_dir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"nhd_access_demo"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">outdir</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in dir.create(outdir):</span></span>
+<span><span class="co">#&gt; 'C:\Users\dblodgett\AppData\Roaming\R\data\R\hydrogeofetch\nhd_access_demo'</span></span>
+<span><span class="co">#&gt; already exists</span></span>
 <span></span>
 <span><span class="va">download_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_nhd.html">download_nhd</a></span><span class="op">(</span><span class="va">outdir</span>, <span class="va">wolf_huc</span><span class="op">$</span><span class="va">huc4</span><span class="op">)</span></span>
 <span></span>
@@ -565,6 +571,8 @@ article for more on how to work with 3DHP data.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">sub_3dhp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_3dhp.html">get_3dhp</a></span><span class="op">(</span><span class="va">basin</span>, type <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Getting features 0 to 2000 of 2199</span></span>
+<span><span class="co">#&gt; Getting features 2000 to 2199 of 2199</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sub_3dhp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: plotting the first 10 out of 34 attributes; use max.plot = 34 to plot</span></span>
@@ -644,11 +652,10 @@ available using <code><a href="../reference/download_wbd.html">download_wbd()</a
 <span><span class="va">wbd_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/hydrogeofetch_data_dir.html">hydrogeofetch_data_dir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"wbd_access_demo"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">wbd_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_wbd.html">download_wbd</a></span><span class="op">(</span><span class="va">wbd_dir</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Downloading WBD_National_GDB.zip</span></span>
 <span><span class="co">#&gt; Extracting data ...</span></span>
 <span><span class="co">#&gt; Error in zip::unzip(file, exdir = outdir, overwrite = FALSE) : </span></span>
 <span><span class="co">#&gt;   zip error: Cannot open zip file `C:\Users\dblodgett\AppData\Roaming\R\data\R\hydrogeofetch\wbd_access_demo\WBD_National_GDB.zip` for reading in file zip.c:144</span></span>
-<span><span class="co">#&gt; WBD data extracted to:</span></span>
+<span><span class="co">#&gt; WBD data extracted to: C:\Users\dblodgett\AppData\Roaming/R/data/R/hydrogeofetch/wbd_access_demo/WBD_National_GDB.gdb</span></span>
 <span></span>
 <span><span class="co"># zip::unzip in download_wbd() doesn't always work -- fall back to utils::unzip</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">wbd_out</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>

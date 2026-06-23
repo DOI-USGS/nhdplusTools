@@ -1,5 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/404.html</loc></url>
+<url><loc>https://doi-usgs.github.io/nhdplusTools/AGENTS.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/articles/drainage_area_estimation.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/articles/get_3dhp_data.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/articles/get_data_overview.html</loc></url>
@@ -10,6 +11,7 @@
 <url><loc>https://doi-usgs.github.io/nhdplusTools/articles/plot_nhdplus.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/authors.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/CLAUDE.html</loc></url>
+<url><loc>https://doi-usgs.github.io/nhdplusTools/CONTEXT.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/DISCLAIMER.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/index.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/LICENSE.html</loc></url>
@@ -28,6 +30,7 @@
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/download_vaa.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/download_wbd.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_3dhp.html</loc></url>
+<url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_3dhp_index.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_boundaries.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_catchment_characteristics.html</loc></url>
 <url><loc>https://doi-usgs.github.io/nhdplusTools/reference/get_characteristics_metadata.html</loc></url>

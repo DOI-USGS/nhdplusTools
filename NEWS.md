@@ -38,6 +38,16 @@ These hydroloom functions are no longer re-exported; call `hydroloom::fn()` dire
 
 - `st_compatibalize()`, `rename_geometry()`, `get_node()`, `fix_flowdir()`, `rescale_measures()`, `get_hydro_location()`, `get_partial_length()`
 
+## Bug fixes
+
+- `get_3dhp()` queries by `universalreferenceid` are now chunked, avoiding the service gateway timeouts (HTTP 504) that previously caused large reachcode lookups to return `NULL`. #475
+- `get_catchment_characteristics()` no longer surfaces the benign arrow "discarded from R metadata" warnings from the parquet metadata roundtrip. #475
+
+## Other changes
+
+- `prepare_nhdplus()` is no longer exported; it remains available internally. #475
+- Documentation and example fixes throughout, following package review (#475): corrected `get_nldi_basin()` and `get_split_catchment()` example plotting, clearer messaging when the experimental `get_xs_point()` cross-section service is unavailable, broadened README scope language, and vignette setup and typo cleanups.
+
 ## Dependency changes
 
 - Removed `pbapply` from Imports (no longer needed)

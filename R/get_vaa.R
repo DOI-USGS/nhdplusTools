@@ -369,7 +369,9 @@ get_catchment_characteristics <- function(varname, ids,
   # See: https://github.com/DOI-USGS/nhdplusTools/issues/449
   url_groups <- split(var_meta$ID, var_meta$s3_url)
 
-  out <- tryCatch({
+  # The arrow S3 metadata roundtrip emits a benign "discarded from R metadata"
+  # (externalptr) warning; muffle only that one so other warnings still surface.
+  out <- withCallingHandlers(tryCatch({
     unlist(lapply(names(url_groups), function(url) {
       vars_in_group <- url_groups[[url]]
 
@@ -414,6 +416,9 @@ get_catchment_characteristics <- function(varname, ids,
     }), recursive = FALSE)
   }, error = function(e) {
     e
+  }), warning = function(w) {
+    if(grepl("discarded from R metadata", conditionMessage(w)))
+      invokeRestart("muffleWarning")
   })
 
   df <- sapply(out, is.data.frame)

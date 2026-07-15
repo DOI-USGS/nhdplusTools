@@ -126,7 +126,7 @@ get_gagesII <- function(AOI = NULL, id = NULL, t_srs = NULL, buffer = .5,
 #' @inherit query_usgs_oafeat details return
 #' @inheritParams query_usgs_oafeat
 #' @param buffer numeric. The amount (in meters) to buffer a POINT AOI by
-#' for an extended search. Default = 20,000. Returned results are arrange
+#' for an extended search. Default = 20,000. Returned results are arranged
 #' by distance from POINT AOI
 #' @importFrom xml2 xml_root xml_children xml_attr read_xml
 #' @importFrom sf st_geometry_type st_transform st_buffer st_as_sf

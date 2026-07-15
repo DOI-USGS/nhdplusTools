@@ -26,6 +26,6 @@ See: https://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml for metadata.
 }
 \examples{
 \dontrun{
-  download_wbd("./data/rf1/")
+  download_rf1("./data/rf1/")
 }
 }

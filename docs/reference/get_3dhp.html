@@ -141,6 +141,8 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-in"><span><span class="co"># get flowlines and hydrolocations</span></span></span>
 <span class="r-in"><span><span class="va">flowlines</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp</span><span class="op">(</span>AOI <span class="op">=</span> <span class="va">AOI</span>, type <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">hydrolocation</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp</span><span class="op">(</span>AOI <span class="op">=</span> <span class="va">AOI</span>, type <span class="op">=</span> <span class="st">"hydrolocation"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No hydrolocation - sink, spring, waterbody outlet features found in area of interest.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No hydrolocation - headwater, terminus, divergence, confluence, catchment outlet features found in area of interest.</span>
 <span class="r-in"><span><span class="va">waterbody</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp</span><span class="op">(</span>AOI <span class="op">=</span> <span class="va">AOI</span>, type <span class="op">=</span> <span class="st">"waterbody"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">waterbody</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">flowlines</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">hydrolocation</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
@@ -168,13 +170,69 @@ EPSG:5070 Albers Equal Area projection</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># given a workunitid, can query for features in that work unit</span></span></span>
 <span class="r-in"><span><span class="va">wufl</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp</span><span class="op">(</span>ids <span class="op">=</span> <span class="st">"workunitid:300585"</span>, type <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 0 to 2000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 2000 to 4000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 4000 to 6000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 6000 to 8000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 8000 to 10000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 10000 to 12000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 12000 to 14000 of 14676</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Getting features 14000 to 14676 of 14676</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># given universalreferenceid (reachcodes), can query for them but only</span></span></span>
 <span class="r-in"><span><span class="co"># for hydrolocations. This is useful for looking up mainstem ids.</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">hydrolocation</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="fu">get_3dhp</span><span class="op">(</span>universalreferenceid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">hydrolocation</span><span class="op">$</span><span class="va">universalreferenceid</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>         type <span class="op">=</span> <span class="st">"hydrolocation"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No hydrolocation - sink, spring, waterbody outlet features found in area of interest.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No hydrolocation - headwater, terminus, divergence, confluence, catchment outlet features found in area of interest.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No hydrolocation - sink, spring, waterbody outlet features found in area of interest.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No hydrolocation - headwater, terminus, divergence, confluence, catchment outlet features found in area of interest.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No hydrolocation - sink, spring, waterbody outlet features found in area of interest.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No hydrolocation - headwater, terminus, divergence, confluence, catchment outlet features found in area of interest.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Failed to get JSON from https://hydro.nationalmap.gov/arcgis/rest/services/3DHP_all/MapServer/40/query: HTTP 504 Gateway Timeout.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No hydrolocation - reach code, external connection features found in area of interest.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 400 features and 9 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POINT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -89.60105 ymin: 43.00059 xmax: -89.23201 ymax: 43.17772</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> First 10 features:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     id3dhp featuredate                                   mainstemid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  01HAK1Q 1.69465e+12    https://geoconnex.us/ref/mainstems/437170</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  01HAK1R 1.69465e+12    https://geoconnex.us/ref/mainstems/437170</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  01HAL98 1.69465e+12  https://geoconnex.us/usgs/mainstems/9985579</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  01HBUU9 1.69465e+12  https://geoconnex.us/usgs/mainstems/2171769</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  01HBUUH 1.69465e+12 https://geoconnex.us/usgs/mainstems/10678439</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  01HBUV1 1.69465e+12  https://geoconnex.us/usgs/mainstems/3994119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  01HBUV3 1.69465e+12 https://geoconnex.us/usgs/mainstems/12977726</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  01HBUV6 1.69465e+12  https://geoconnex.us/usgs/mainstems/9466058</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  01HBUVC 1.69465e+12  https://geoconnex.us/usgs/mainstems/7547107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 01HBUVP 1.69465e+12    https://geoconnex.us/ref/mainstems/666526</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    universalreferenceid  gnisid        gnisidlabel featuretype featuretypelabel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        07070005000218 1561862  Black Earth Creek          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        07070005000219 1561862  Black Earth Creek          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        07070005001966      NA               &lt;NA&gt;          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        07090002004516 1570296 Nine Springs Creek          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        07090002004524      NA               &lt;NA&gt;          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        07090002004544      NA               &lt;NA&gt;          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7        07090002004546      NA               &lt;NA&gt;          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        07090002004549      NA               &lt;NA&gt;          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9        07090002004555      NA               &lt;NA&gt;          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       07090002004568 1574821 Starkweather Creek          10  Reachcode Start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    workunitid                   geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         NHD POINT (-89.56127 43.09289)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         NHD POINT (-89.54642 43.10016)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         NHD POINT (-89.56127 43.09289)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4         NHD POINT (-89.38225 43.02575)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5         NHD POINT (-89.29928 43.06225)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         NHD POINT (-89.55788 43.11944)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         NHD  POINT (-89.4028 43.05283)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         NHD POINT (-89.35483 43.15197)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         NHD POINT (-89.36414 43.03815)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10        NHD POINT (-89.32593 43.10539)</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

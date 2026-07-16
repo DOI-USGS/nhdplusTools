@@ -121,11 +121,11 @@ override the default set by the package.</p></dd>
 
 
 <dt id="arg-actually-plot">actually_plot<a class="anchor" aria-label="anchor" href="#arg-actually-plot"></a></dt>
-<dd><p>boolean actually draw the plot? Use to get data subset only.</p></dd>
+<dd><p>boolean actually draw the plot? Used to get data subset only.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
-<dd><p>passed on the <a href="subset_nhdplus.html">subset_nhdplus</a>.</p></dd>
+<dd><p>passed on to <a href="subset_nhdplus.html">subset_nhdplus</a>.</p></dd>
 
 
 <dt id="arg-flowline-only">flowline_only<a class="anchor" aria-label="anchor" href="#arg-flowline-only"></a></dt>
@@ -167,8 +167,10 @@ The following shows the defaults that can be altered.</p><ol><li><p>basin</p><di
 <span>        nwissite <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"grey40"</span>, border <span class="op">=</span> <span class="cn">NA</span>, pch <span class="op">=</span> <span class="fl">17</span>, cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>        huc12pp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"white"</span>, border <span class="op">=</span> <span class="st">"black"</span>, pch <span class="op">=</span> <span class="fl">22</span>, cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>        wqp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span>, border <span class="op">=</span> <span class="cn">NA</span>, pch <span class="op">=</span> <span class="fl">20</span>, cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div></li>
-<li><p>network_wtbd  <code>list(lwd = 1, col = "lightblue", border = "black")</code></p></li>
-<li><p>off_network_wtbd  <code>list(lwd = 1, col = "darkblue", border = "black")</code></p></li>
+<li><p>network_wtbd</p><div class="sourceCode"><pre><code><span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"lightblue"</span>, border <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div></li>
+<li><p>off_network_wtbd</p><div class="sourceCode"><pre><code><span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"darkblue"</span>, border <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div></li>
 </ol><p>If adding additional layers to the plot, data must be projected to EPSG:3857 with
 `sf::st_transform(x, 3857)` prior to adding to the plot.</p>
     </div>

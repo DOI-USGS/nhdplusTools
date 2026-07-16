@@ -66,63 +66,76 @@
 <h3 id="removed-functions-moved-to-hydroloom-2-0-0">Removed functions (moved to hydroloom)<a class="anchor" aria-label="anchor" href="#removed-functions-moved-to-hydroloom-2-0-0"></a></h3>
 <p>Network analysis and spatial indexing functions that duplicated <a href="https://doi-usgs.github.io/hydroloom/" class="external-link">hydroloom</a> have been removed. Users should call hydroloom directly. See the <a href="https://doi-usgs.github.io/hydroloom/reference/" class="external-link">hydroloom reference</a> for full documentation, especially the <a href="https://doi-usgs.github.io/hydroloom/reference/index.html#indexing-and-linear-referencing" class="external-link">indexing</a> and <a href="https://doi-usgs.github.io/hydroloom/reference/index.html#network-navigation-and-accumulation" class="external-link">navigation</a> sections.</p>
 <ul><li>
-<code>get_flowline_index()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/index_points_to_lines.html" class="external-link">hydroloom::index_points_to_lines()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_flowline_index.html" class="external-link">get_flowline_index()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/index_points_to_lines.html" class="external-link">hydroloom::index_points_to_lines()</a></code>
 </li>
 <li>
-<code>get_waterbody_index()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/index_points_to_waterbodies.html" class="external-link">hydroloom::index_points_to_waterbodies()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_waterbody_index.html" class="external-link">get_waterbody_index()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/index_points_to_waterbodies.html" class="external-link">hydroloom::index_points_to_waterbodies()</a></code>
 </li>
 <li>
-<code>disambiguate_flowline_indexes()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/disambiguate_indexes.html" class="external-link">hydroloom::disambiguate_indexes()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/disambiguate_flowline_indexes.html" class="external-link">disambiguate_flowline_indexes()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/disambiguate_indexes.html" class="external-link">hydroloom::disambiguate_indexes()</a></code>
 </li>
 <li>
-<code>get_UT()</code>, <code>get_DD()</code> → <code>hydroloom::navigate_hydro_network(x, start, "UT")</code> / <code>"DD"</code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_UT.html" class="external-link">get_UT()</a></code>, <code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_DD.html" class="external-link">get_DD()</a></code> → <code>hydroloom::navigate_hydro_network(x, start, "UT")</code> / <code>"DD"</code>
 </li>
 <li>
-<code>get_UM()</code>, <code>get_DM()</code> → <code>hydroloom::navigate_hydro_network(x, start, "UM")</code> / <code>"DM"</code> (note: the old wrappers also ran <code>align_nhdplus_names</code>, filtered, and supported <code>sort</code>/<code>include</code> arguments)</li>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_UM.html" class="external-link">get_UM()</a></code>, <code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_DM.html" class="external-link">get_DM()</a></code> → <code>hydroloom::navigate_hydro_network(x, start, "UM")</code> / <code>"DM"</code> (note: the old wrappers also ran <code>align_nhdplus_names</code>, filtered, and supported <code>sort</code>/<code>include</code> arguments)</li>
 <li>
-<code>navigate_network()</code> — workflow glue; use <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> + <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> or hydroloom navigation directly</li>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/navigate_network.html" class="external-link">navigate_network()</a></code> — workflow glue; use <code><a href="../reference/navigate_nldi.html">navigate_nldi()</a></code> + <code><a href="../reference/subset_nhdplus.html">subset_nhdplus()</a></code> or hydroloom navigation directly</li>
 <li>
-<code>get_sorted()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/sort_network.html" class="external-link">hydroloom::sort_network()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_sorted.html" class="external-link">get_sorted()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/sort_network.html" class="external-link">hydroloom::sort_network()</a></code>
 </li>
 <li>
-<code>get_pathlength()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_pathlength.html" class="external-link">hydroloom::add_pathlength()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_pathlength.html" class="external-link">get_pathlength()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_pathlength.html" class="external-link">hydroloom::add_pathlength()</a></code>
 </li>
 <li>
-<code>get_streamorder()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_streamorder.html" class="external-link">hydroloom::add_streamorder()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_streamorder.html" class="external-link">get_streamorder()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_streamorder.html" class="external-link">hydroloom::add_streamorder()</a></code>
 </li>
 <li>
-<code>get_streamlevel()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_streamlevel.html" class="external-link">hydroloom::add_streamlevel()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_streamlevel.html" class="external-link">get_streamlevel()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_streamlevel.html" class="external-link">hydroloom::add_streamlevel()</a></code>
 </li>
 <li>
-<code>get_levelpaths()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_levelpaths.html" class="external-link">hydroloom::add_levelpaths()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_levelpaths.html" class="external-link">get_levelpaths()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_levelpaths.html" class="external-link">hydroloom::add_levelpaths()</a></code>
 </li>
 <li>
-<code>get_pfaf()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_pfafstetter.html" class="external-link">hydroloom::add_pfafstetter()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_pfaf.html" class="external-link">get_pfaf()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/add_pfafstetter.html" class="external-link">hydroloom::add_pfafstetter()</a></code>
 </li>
 <li>
-<code>get_terminal()</code> → <code>hydroloom::sort_network(x, split = TRUE)</code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_terminal.html" class="external-link">get_terminal()</a></code> → <code>hydroloom::sort_network(x, split = TRUE)</code>
 </li>
 <li>
-<code>calculate_total_drainage_area()</code> → <code>hydroloom::accumulate_downstream(x, "area")</code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/calculate_total_drainage_area.html" class="external-link">calculate_total_drainage_area()</a></code> → <code>hydroloom::accumulate_downstream(x, "area")</code>
 </li>
 <li>
-<code>calculate_arbolate_sum()</code> → <code>hydroloom::accumulate_downstream(x, "length")</code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/calculate_arbolate_sum.html" class="external-link">calculate_arbolate_sum()</a></code> → <code>hydroloom::accumulate_downstream(x, "length")</code>
 </li>
 <li>
-<code>get_path_members()</code>, <code>get_path_lengths()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/navigate_connected_paths.html" class="external-link">hydroloom::navigate_connected_paths()</a></code>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_path_members.html" class="external-link">get_path_members()</a></code>, <code><a href="https://rdrr.io/pkg/nhdplusTools/man/get_path_lengths.html" class="external-link">get_path_lengths()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/navigate_connected_paths.html" class="external-link">hydroloom::navigate_connected_paths()</a></code>
 </li>
 <li>
-<code>make_node_topology()</code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/make_node_topology.html" class="external-link">hydroloom::make_node_topology()</a></code>
+<code><a href="https://rdrr.io/pkg/hydroloom/man/make_node_topology.html" class="external-link">make_node_topology()</a></code> → <code><a href="https://rdrr.io/pkg/hydroloom/man/make_node_topology.html" class="external-link">hydroloom::make_node_topology()</a></code>
 </li>
 <li>
-<code>add_plus_network_attributes()</code> → use hydroloom’s <code>add_levelpaths()</code>, <code>add_pathlength()</code>, <code>accumulate_downstream()</code> etc. directly</li>
+<code><a href="https://rdrr.io/pkg/nhdplusTools/man/add_plus_network_attributes.html" class="external-link">add_plus_network_attributes()</a></code> → use hydroloom’s <code><a href="https://rdrr.io/pkg/hydroloom/man/add_levelpaths.html" class="external-link">add_levelpaths()</a></code>, <code><a href="https://rdrr.io/pkg/hydroloom/man/add_pathlength.html" class="external-link">add_pathlength()</a></code>, <code><a href="https://rdrr.io/pkg/hydroloom/man/accumulate_downstream.html" class="external-link">accumulate_downstream()</a></code> etc. directly</li>
 </ul></div>
 <div class="section level3">
 <h3 id="removed-re-exports-2-0-0">Removed re-exports<a class="anchor" aria-label="anchor" href="#removed-re-exports-2-0-0"></a></h3>
 <p>These hydroloom functions are no longer re-exported; call <code>hydroloom::fn()</code> directly:</p>
 <ul><li>
-<code>st_compatibalize()</code>, <code>rename_geometry()</code>, <code>get_node()</code>, <code>fix_flowdir()</code>, <code>rescale_measures()</code>, <code>get_hydro_location()</code>, <code>get_partial_length()</code>
+<code><a href="https://rdrr.io/pkg/hydroloom/man/st_compatibalize.html" class="external-link">st_compatibalize()</a></code>, <code><a href="https://rdrr.io/pkg/hydroloom/man/rename_geometry.html" class="external-link">rename_geometry()</a></code>, <code><a href="https://rdrr.io/pkg/hydroloom/man/get_node.html" class="external-link">get_node()</a></code>, <code><a href="https://rdrr.io/pkg/hydroloom/man/fix_flowdir.html" class="external-link">fix_flowdir()</a></code>, <code><a href="https://rdrr.io/pkg/hydroloom/man/rescale_measures.html" class="external-link">rescale_measures()</a></code>, <code><a href="https://rdrr.io/pkg/hydroloom/man/get_hydro_location.html" class="external-link">get_hydro_location()</a></code>, <code><a href="https://rdrr.io/pkg/hydroloom/man/get_partial_length.html" class="external-link">get_partial_length()</a></code>
 </li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-2-0-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-0-0"></a></h3>
+<ul><li>
+<code><a href="../reference/get_3dhp.html">get_3dhp()</a></code> queries by <code>universalreferenceid</code> are now chunked, avoiding the service gateway timeouts (HTTP 504) that previously caused large reachcode lookups to return <code>NULL</code>. <a href="https://github.com/doi-usgs/nhdplusTools/issues/475" class="external-link">#475</a></li>
+<li>
+<code><a href="../reference/get_catchment_characteristics.html">get_catchment_characteristics()</a></code> no longer surfaces the benign arrow “discarded from R metadata” warnings from the parquet metadata roundtrip. <a href="https://github.com/doi-usgs/nhdplusTools/issues/475" class="external-link">#475</a></li>
+</ul></div>
+<div class="section level3">
+<h3 id="other-changes-2-0-0">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-2-0-0"></a></h3>
+<ul><li>
+<code><a href="../reference/prepare_nhdplus.html">prepare_nhdplus()</a></code> is no longer exported; it remains available internally. <a href="https://github.com/doi-usgs/nhdplusTools/issues/475" class="external-link">#475</a></li>
+<li>Documentation and example fixes throughout, following package review (<a href="https://github.com/doi-usgs/nhdplusTools/issues/475" class="external-link">#475</a>): corrected <code><a href="../reference/get_nldi_basin.html">get_nldi_basin()</a></code> and <code><a href="../reference/get_split_catchment.html">get_split_catchment()</a></code> example plotting, clearer messaging when the experimental <code><a href="../reference/get_xs_point.html">get_xs_point()</a></code> cross-section service is unavailable, broadened README scope language, and vignette setup and typo cleanups.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="dependency-changes-2-0-0">Dependency changes<a class="anchor" aria-label="anchor" href="#dependency-changes-2-0-0"></a></h3>

@@ -283,7 +283,7 @@ gunzip_keep <- function(file) {
 #' @export
 #' @examples
 #' \dontrun{
-#'   download_wbd("./data/rf1/")
+#'   download_rf1("./data/rf1/")
 #' }
 
 download_rf1 <- function(outdir,

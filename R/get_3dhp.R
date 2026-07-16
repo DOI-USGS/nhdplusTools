@@ -50,8 +50,10 @@
 #' # given universalreferenceid (reachcodes), can query for them but only
 #' # for hydrolocations. This is useful for looking up mainstem ids.
 #'
+#' if(!is.null(hydrolocation)) {
 #' get_3dhp(universalreferenceid = unique(hydrolocation$universalreferenceid),
 #'          type = "hydrolocation")
+#' }
 #'}
 get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
                      universalreferenceid = NULL,
@@ -64,9 +66,27 @@ get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
 
   where <- NULL
   if(!is.null(universalreferenceid)) {
-    where <- paste(paste0("universalreferenceid IN ('",
-                          paste(universalreferenceid, collapse = "', '"), "')"))
     if(!is.null(ids)) stop("can not specify both universalreferenceid and other ids")
+
+    # Large "universalreferenceid IN (...)" queries exceed the service gateway
+    # timeout (HTTP 504), so split them into smaller requests and combine. A
+    # failed chunk degrades to NULL and is dropped rather than failing the
+    # whole call.
+    id_chunks <- split(universalreferenceid,
+                       ceiling(seq_along(universalreferenceid) / 100))
+
+    out <- lapply(id_chunks, function(chunk) {
+      chunk_where <- paste0("universalreferenceid IN ('",
+                           paste(chunk, collapse = "', '"), "')")
+      query_usgs_arcrest(AOI, ids, type, "3DHP_all", chunk_where, t_srs, buffer,
+                         page_size)
+    })
+
+    out <- out[!vapply(out, is.null, logical(1))]
+
+    if(length(out) == 0) return(NULL)
+
+    return(sf::st_sf(data.table::rbindlist(out)))
   }
 
   if(!is.null(ids) && grepl("^https://", ids[1])) {

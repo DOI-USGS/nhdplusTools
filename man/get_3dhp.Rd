@@ -93,7 +93,9 @@ wufl <- get_3dhp(ids = "workunitid:300585", type = "flowline")
 # given universalreferenceid (reachcodes), can query for them but only
 # for hydrolocations. This is useful for looking up mainstem ids.
 
+if(!is.null(hydrolocation)) {
 get_3dhp(universalreferenceid = unique(hydrolocation$universalreferenceid),
          type = "hydrolocation")
+}
 }
 }

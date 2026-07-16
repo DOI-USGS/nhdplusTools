@@ -74,7 +74,7 @@ remotes::install_github("DOI-USGS/nhdplusTools")
 
 For data discovery and access in a U.S. context, start with the
 [**Getting Started
-page**](https://doi-usgs.github.io/nhdplusTools/articles/nhdplusTools.html).
+page**](https://doi-usgs.github.io/nhdplusTools/articles/hydrogeofetch.html).
 
 Detailed documentation of all the package functions can be found at the
 [**Reference
@@ -89,9 +89,10 @@ in [`hydroloom`](https://doi-usgs.github.io/hydroloom/).
 ## Package Vision
 
 The `hydrogeofetch` package provides tools to discover, download,
-subset, and prepare U.S. NHDPlus data. Network analysis (navigation,
-indexing, attribute generation) belongs in
-[`hydroloom`](https://doi-usgs.github.io/hydroloom/).
+subset, and prepare U.S. hydrographic data. NHDPlus is its primary
+dataset, and it increasingly supports others, such as 3DHP and
+mainstems. Network analysis (navigation, indexing, attribute generation)
+belongs in [`hydroloom`](https://doi-usgs.github.io/hydroloom/).
 
 General, globally applicable functionality has been moved to
 [`hydroloom`](https://doi-usgs.github.io/hydroloom/).
@@ -101,7 +102,7 @@ General, globally applicable functionality has been moved to
 dataset and the
 [HY_Features](http://opengeospatial.github.io/HY_Features/) data model.
 The package aims to provide a set of tools that can be used to build
-workflows using NHDPlus data.
+workflows using hydrographic data.
 
 **This vision is intended as a guide to contributors – conveying what
 kinds of contributions are of interest to the package’s long term
@@ -130,10 +131,12 @@ provides the data access needed to set up indexing workflows.
 
 ### Data Model
 
-Given that `hydrogeofetch` is focused on working with NHDPlus data, the
-NHDPlus data model will largely govern the data model the package is
-designed to work with. That said, much of the package functionality also
-uses concepts from the HY_Features standard.
+`hydrogeofetch` works with a range of U.S. hydrographic data, with
+NHDPlus as its primary dataset, so the NHDPlus data model largely
+governs the data model the package is designed to work with. That said,
+much of the package functionality also uses concepts from the
+HY_Features standard, and support for additional datasets, such as 3DHP,
+continues to grow.
 
 *Note:* The HY_Features standard is based on the notion that a
 “catchment” is a holistic feature that can be “realized” (some might say

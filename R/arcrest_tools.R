@@ -2,9 +2,15 @@ get_arcrest_service_info <- memoise::memoise(function(service = "3DHP_all") {
 
   stopifnot(service %in% c("3DHP_all", "NHDPlus_HR"))
 
-  url_base <- paste0(get("arcrest_root", envir = hydrogeofetch_env),
-                     service,
-                     "/MapServer/")
+  if(service == "3DHP_all") {
+    url_base <- paste0(get("arcrest_3dhp_root", envir = hydrogeofetch_env),
+                       "usgs_3dhp_all",
+                       "/FeatureServer/")
+  } else {
+    url_base <- paste0(get("arcrest_root", envir = hydrogeofetch_env),
+                       service,
+                       "/MapServer/")
+  }
 
   all_layers <- hgf_json(paste0(url_base, "?f=json"), simplifyVector = FALSE)
 

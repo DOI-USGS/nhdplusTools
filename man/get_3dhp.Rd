@@ -44,7 +44,7 @@ a simple features (sf) object or valid types if no type supplied
 }
 \description{
 Calls the 3DHP_all web service and returns sf data.frames for the selected
-layers. See https://hydro.nationalmap.gov/arcgis/rest/services/3DHP_all/MapServer
+layers. See https://3dhp.nationalmap.gov/arcgis/rest/services/usgs_3dhp_all/FeatureServer
 for source data documentation.
 }
 \details{

@@ -80,7 +80,7 @@ coordinate reference system with a resolvable EPSG code.</p></dd>
 
 
 <dt id="arg-t-srs">t_srs<a class="anchor" aria-label="anchor" href="#arg-t-srs"></a></dt>
-<dd><p>character or object compatible with <a href="https://rdrr.io/pkg/sf/man/st_crs.html" class="external-link">st_crs</a>. Target
+<dd><p>character or object compatible with <a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a>. Target
 coordinate reference system of the returned features. Defaults to the
 coordinate reference system of `points`.</p></dd>
 
@@ -127,14 +127,16 @@ geoconnex mainstem uri
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">points</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">points</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html" class="external-link">st_sf</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  geometry <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.86934</span>, <span class="fl">39.49328</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.91711</span>, <span class="fl">39.40884</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.88081</span>, <span class="fl">39.36354</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  geometry <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.86934</span>, <span class="fl">39.49328</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                        <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.91711</span>, <span class="fl">39.40884</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                        <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">76.88081</span>, <span class="fl">39.36354</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                        crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">indexed</span> <span class="op">&lt;-</span> <span class="fu">get_3dhp_index</span><span class="op">(</span><span class="va">points</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POST https://apps.usgs.gov/hydroadd3d/api/v1/address</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [{"source_id":"1","x":-76.8693,"y":39.4933,"crs":4326},{"source_id":"2","x":-76.9171,"y":39.4088,"crs":4326},{"source_id":"3","x":-76.8808,"y":39.3635,"crs":4326}]</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">indexed</span>, <span class="st">"sf"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
@@ -145,6 +147,8 @@ geoconnex mainstem uri
 <span class="r-in"><span><span class="fu"><a href="get_3dhp.html">get_3dhp</a></span><span class="op">(</span>ids <span class="op">=</span> <span class="va">indexed</span><span class="op">$</span><span class="va">mainstemid</span><span class="op">[</span><span class="va">indexed</span><span class="op">$</span><span class="va">snapped</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"flowline"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POST https://3dhp.nationalmap.gov/arcgis/rest/services/usgs_3dhp_all/FeatureServer/50/query</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> POST https://3dhp.nationalmap.gov/arcgis/rest/services/usgs_3dhp_all/FeatureServer/50/query</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 6 features and 34 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: LINESTRING</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
@@ -206,13 +210,13 @@ geoconnex mainstem uri
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4    10.80212          0   No divergence              0   5631398           15</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5    11.25512          0   No divergence              0   5631398           15</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6     6.61300          0   No divergence              0   5631398           15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   workunitid shape_Length                       geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        NHD    541.51000 LINESTRING (-76.86794 39.49...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        NHD   2242.83458 LINESTRING (-76.83305 39.47...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        NHD     11.83702 LINESTRING (-76.84362 39.48...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        NHD    527.00804 LINESTRING (-76.86357 39.49...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        NHD     46.02234 LINESTRING (-76.87187 39.49...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        NHD   2993.04821 LINESTRING (-76.84373 39.48...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   workunitid Shape__Length                       geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        NHD     541.51000 LINESTRING (-76.86794 39.49...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        NHD    2242.83458 LINESTRING (-76.83305 39.47...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        NHD      11.83702 LINESTRING (-76.84362 39.48...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        NHD     527.00804 LINESTRING (-76.86357 39.49...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        NHD      46.02234 LINESTRING (-76.87187 39.49...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        NHD    2993.04821 LINESTRING (-76.84373 39.48...</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

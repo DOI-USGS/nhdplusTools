@@ -95,6 +95,9 @@ assign("nhdplus_attributes", nhdplus_attributes, envir = hydrogeofetch_env)
 assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
        envir = hydrogeofetch_env)
 
+assign("arcrest_3dhp_root", "https://3dhp.nationalmap.gov/arcgis/rest/services/",
+       envir = hydrogeofetch_env)
+
 assign("gocnx_ref_base_url", "https://reference.geoconnex.us/",
        envir = hydrogeofetch_env)
 

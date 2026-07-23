@@ -144,6 +144,8 @@ get_split_catchment <- function(point, upstream = TRUE) {
 
   try({
     if(!is.null(out)) {
+      out <- sf::st_make_valid(out)
+
       sf::st_geometry(out) <- sf::st_sfc(lapply(sf::st_geometry(out), remove_shards),
                                          crs = sf::st_crs(out))
 
@@ -431,7 +433,10 @@ make_json_input_split <- function(p, upstream = TRUE) {
                                       list(id = "upstream",
                                            type = "text/plain",
                                            value = ifelse(upstream,
-                                                          "true", "false")))),
+                                                          "true", "false")),
+                                      list(id = "simplified",
+                                           type = "text/plain",
+                                           value = "false"))),
                    pretty = TRUE, auto_unbox = TRUE)
 
 }

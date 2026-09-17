@@ -378,12 +378,60 @@ build_hgf_req <- function(url, body = NULL, content_type = NULL, encode = NULL,
     if(identical(encode, "form")) {
       req <- do.call(httr2::req_body_form, c(list(req), body))
     } else {
-      ct <- content_type %||% "application/octet-stream"
+      ct <- if(is.null(content_type)) "application/octet-stream" else content_type
       req <- httr2::req_body_raw(req, charToRaw(body), type = ct)
     }
   }
 
   req
+}
+
+#' Warn about a failed request, saying what the service said and whether retrying can help
+#'
+#' @description The httr2 condition carries the status line but not the response body, and
+#' pygeoapi puts its reason in the body: a split catchment over a hole in the flow direction
+#' grid comes back as `{"type":"InvalidParameterValue","description":"Error executing process:
+#' Flowtrace intersected a nodata FDR value; cannot continue downhill."}`. Without the body all
+#' the caller sees is `HTTP 400 Bad Request`, which reads like a transient fault.
+#'
+#' A 4xx other than 408 and 429 is determined by the request, so the same input will get the
+#' same response and a caller that retries only spends time. Those are signalled with class
+#' `hgf_permanent_error` so a retry loop can stop. Everything else keeps the previous
+#' behaviour and stays worth retrying.
+#'
+#' @return NULL, invisibly, after signalling the warning.
+#' @noRd
+hgf_fail <- function(what, url, e) {
+  status <- NULL
+  detail <- NULL
+
+  if(inherits(e, "httr2_http")) {
+    status <- e$status
+    detail <- tryCatch({
+      b <- httr2::resp_body_json(e$resp)
+      paste(unlist(b[c("type", "description", "detail")]), collapse = ": ")
+    }, error = function(...) NULL)
+
+    if(is.null(detail) || !nzchar(detail))
+      detail <- tryCatch(substr(httr2::resp_body_string(e$resp), 1, 500),
+                         error = function(...) NULL)
+  }
+
+  permanent <- !is.null(status) && status >= 400 && status < 500 &&
+    !status %in% c(408, 429)
+
+  msg <- paste0("Failed to get ", what, " from ", url, ": ", conditionMessage(e),
+                if(!is.null(detail) && nzchar(detail)) paste0("\n  ", detail) else "",
+                if(permanent) "\n  This response is determined by the request; retrying will not help."
+                else "")
+
+  warning(structure(
+    class = c(if(permanent) "hgf_permanent_error", "hgf_request_failure",
+              "warning", "condition"),
+    list(message = msg, call = NULL)
+  ))
+
+  invisible(NULL)
 }
 
 #' @noRd
@@ -393,8 +441,7 @@ hgf_json <- function(url, body = NULL, content_type = NULL, encode = NULL,
     resp <- httr2::req_perform(build_hgf_req(url, body, content_type, encode))
     httr2::resp_body_json(resp, simplifyVector = simplifyVector, ...)
   }, error = function(e) {
-    warning("Failed to get JSON from ", url, ": ", conditionMessage(e),
-            call. = FALSE)
+    hgf_fail("JSON", url, e)
     NULL
   })
 }
@@ -405,8 +452,7 @@ hgf_sf <- function(url, body = NULL, content_type = NULL, encode = NULL) {
     resp <- httr2::req_perform(build_hgf_req(url, body, content_type, encode))
     sf::st_zm(sf::read_sf(httr2::resp_body_string(resp)))
   }, error = function(e) {
-    warning("Failed to get features from ", url, ": ", conditionMessage(e),
-            call. = FALSE)
+    hgf_fail("features", url, e)
     NULL
   })
 }
